@@ -15,17 +15,17 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHESSBOARDSQUAREITEM_H
-#define CHESSBOARDSQUAREITEM_H
+#ifndef GRAPHICSCHESSBOARDSQUAREITEM_H
+#define GRAPHICSCHESSBOARDSQUAREITEM_H
 
 #include <QGraphicsItem>
 
 class QPainter;
 
 /**
- * ChessboardSquareItem represents a single square in the chessboard.
+ * GraphicsChessboardSquareItem represents a single square in the chessboard.
  *
- * ChessboardSquareItem inherits QGraphicsItem:
+ * GraphicsChessboardSquareItem inherits QGraphicsItem:
  * http://doc.trolltech.com/4.4/qgraphicsitem.html
  *
  * Each square have different states. These states include selected, focused
@@ -39,7 +39,7 @@ class QPainter;
  * color. If the square is in the default state painting is done using light
  * or dark color depending on the square's type.
 */
-class ChessboardSquareItem : public QGraphicsItem
+class GraphicsChessboardSquareItem : public QGraphicsItem
 {
 	public:
 		/** Specifies the square's type: light or dark. */
@@ -50,11 +50,11 @@ class ChessboardSquareItem : public QGraphicsItem
 		};
 
 		/**
-		 * Creates a new ChessboardSquareItem object.
+		 * Creates a new GraphicsChessboardSquareItem object.
 		 * @param parent Square's parent object (i.e. the chessboard).
 		 * @param type Square's type
 		*/
-		ChessboardSquareItem(QGraphicsItem* parent, ChessboardSquareType type);
+		GraphicsChessboardSquareItem(QGraphicsItem* parent, ChessboardSquareType type);
 
 		/** Size of the square. */
 		static const qreal size;
@@ -147,5 +147,5 @@ class ChessboardSquareItem : public QGraphicsItem
 		bool m_selectionWasHandled;
 };
 
-#endif // CHESSBOARDSQUAREITEM_H
+#endif // GRAPHICSCHESSBOARDSQUAREITEM_H
 

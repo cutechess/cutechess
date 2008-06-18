@@ -22,11 +22,11 @@
 #include "chessboarditem.h"
 #include "chessboardsquareitem.h"
 
-ChessboardItem::ChessboardItem(QGraphicsItem* parent)
+GraphicsChessboardItem::GraphicsChessboardItem(QGraphicsItem* parent)
 	: QGraphicsItem(parent)
 {
 	bool colorToggle = false;
-	ChessboardSquareItem* square;
+	GraphicsChessboardSquareItem* square;
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -36,16 +36,16 @@ ChessboardItem::ChessboardItem(QGraphicsItem* parent)
 		{
 			if (colorToggle)
 			{
-				square = new ChessboardSquareItem(this,
-					ChessboardSquareItem::LightSquare);
+				square = new GraphicsChessboardSquareItem(this,
+					GraphicsChessboardSquareItem::LightSquare);
 			}
 			else
 			{
-				square = new ChessboardSquareItem(this,
-					ChessboardSquareItem::DarkSquare);
+				square = new GraphicsChessboardSquareItem(this,
+					GraphicsChessboardSquareItem::DarkSquare);
 			}
 			
-			square->setPos(ChessboardSquareItem::size * j, ChessboardSquareItem::size * i);
+			square->setPos(GraphicsChessboardSquareItem::size * j, GraphicsChessboardSquareItem::size * i);
 			m_squares[i][j] = square;
 
 			colorToggle = !colorToggle;
@@ -53,7 +53,7 @@ ChessboardItem::ChessboardItem(QGraphicsItem* parent)
 	}
 }
 
-ChessboardSquareItem* ChessboardItem::squareAt(int file, int rank)
+GraphicsChessboardSquareItem* GraphicsChessboardItem::squareAt(int file, int rank)
 {
 	Q_ASSERT_X(file >= 0 && file <= 7, "squareAt(int, int)", "invalid file (column) number");
 	Q_ASSERT_X(rank >= 0 && rank <= 7, "squareAt(int, int)", "invalid rank (row) number");
@@ -61,7 +61,7 @@ ChessboardSquareItem* ChessboardItem::squareAt(int file, int rank)
 	return m_squares[rank][file];
 }
 
-ChessboardSquareItem* ChessboardItem::squareAt(const QChar& file, const QChar& rank)
+GraphicsChessboardSquareItem* GraphicsChessboardItem::squareAt(const QChar& file, const QChar& rank)
 {
 	int fileNum = -1;
 	
@@ -86,13 +86,13 @@ ChessboardSquareItem* ChessboardItem::squareAt(const QChar& file, const QChar& r
 	return squareAt(fileNum, 8 - rank.digitValue());
 }
 
-QRectF ChessboardItem::boundingRect() const
+QRectF GraphicsChessboardItem::boundingRect() const
 {
 	// TODO: Use static const qreal
 	return QRectF(0, 0, 400, 400);
 }
 
-void ChessboardItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void GraphicsChessboardItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
 	painter->fillRect(boundingRect(), Qt::red);
 }

@@ -33,8 +33,8 @@ MainWindow::MainWindow()
 
 	setCentralWidget(m_chessboardView);
 
-	m_board = new ChessboardItem();
-	m_chessboardScene->addItem(m_board);
+	m_visualChessboard = new GraphicsChessboardItem();
+	m_chessboardScene->addItem(m_visualChessboard);
 	
 	setStatusBar(new QStatusBar());
 
@@ -81,6 +81,6 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 {
 	Q_UNUSED(event)
 
-	m_chessboardView->fitInView(m_board, Qt::KeepAspectRatio);
+	m_chessboardView->fitInView(m_visualChessboard, Qt::KeepAspectRatio);
 }
 

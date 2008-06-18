@@ -23,13 +23,13 @@
 
 #include "chessboardsquareitem.h"
 
-const qreal ChessboardSquareItem::size = 50;
-QColor ChessboardSquareItem::m_lightSquareColor("navajowhite");
-QColor ChessboardSquareItem::m_darkSquareColor("peru");
-QColor ChessboardSquareItem::m_selectedSquareColor("gold");
-QColor ChessboardSquareItem::m_focusMarkerColor("black");
+const qreal GraphicsChessboardSquareItem::size = 50;
+QColor GraphicsChessboardSquareItem::m_lightSquareColor("navajowhite");
+QColor GraphicsChessboardSquareItem::m_darkSquareColor("peru");
+QColor GraphicsChessboardSquareItem::m_selectedSquareColor("gold");
+QColor GraphicsChessboardSquareItem::m_focusMarkerColor("black");
 
-ChessboardSquareItem::ChessboardSquareItem(QGraphicsItem* parent, ChessboardSquareType type)
+GraphicsChessboardSquareItem::GraphicsChessboardSquareItem(QGraphicsItem* parent, ChessboardSquareType type)
 	: QGraphicsItem(parent), m_type(type)
 {
 	setFlag(ItemIsSelectable);
@@ -37,96 +37,96 @@ ChessboardSquareItem::ChessboardSquareItem(QGraphicsItem* parent, ChessboardSqua
 	m_selectionWasHandled = false;
 }
 
-void ChessboardSquareItem::setLightSquareColor(const QColor& color)
+void GraphicsChessboardSquareItem::setLightSquareColor(const QColor& color)
 {
-	ChessboardSquareItem::m_lightSquareColor = color;
+	GraphicsChessboardSquareItem::m_lightSquareColor = color;
 }
 
-void ChessboardSquareItem::setDarkSquareColor(const QColor& color)
+void GraphicsChessboardSquareItem::setDarkSquareColor(const QColor& color)
 {
-	ChessboardSquareItem::m_darkSquareColor = color;
+	GraphicsChessboardSquareItem::m_darkSquareColor = color;
 }
 
-void ChessboardSquareItem::setSelectedSquareColor(const QColor& color)
+void GraphicsChessboardSquareItem::setSelectedSquareColor(const QColor& color)
 {
-	ChessboardSquareItem::m_selectedSquareColor = color;
+	GraphicsChessboardSquareItem::m_selectedSquareColor = color;
 }
 
-void ChessboardSquareItem::setFocusMarkerColor(const QColor& color)
+void GraphicsChessboardSquareItem::setFocusMarkerColor(const QColor& color)
 {
-	ChessboardSquareItem::m_focusMarkerColor = color;
+	GraphicsChessboardSquareItem::m_focusMarkerColor = color;
 }
 
-QColor ChessboardSquareItem::lightSquareColor()
+QColor GraphicsChessboardSquareItem::lightSquareColor()
 {
-	return ChessboardSquareItem::m_lightSquareColor;
+	return GraphicsChessboardSquareItem::m_lightSquareColor;
 }
 
-QColor ChessboardSquareItem::darkSquareColor()
+QColor GraphicsChessboardSquareItem::darkSquareColor()
 {
-	return ChessboardSquareItem::m_darkSquareColor;
+	return GraphicsChessboardSquareItem::m_darkSquareColor;
 }
 
-QColor ChessboardSquareItem::selectedSquareColor()
+QColor GraphicsChessboardSquareItem::selectedSquareColor()
 {
-	return ChessboardSquareItem::m_selectedSquareColor;
+	return GraphicsChessboardSquareItem::m_selectedSquareColor;
 }
 
-QColor ChessboardSquareItem::focusMarkerColor()
+QColor GraphicsChessboardSquareItem::focusMarkerColor()
 {
-	return ChessboardSquareItem::m_focusMarkerColor;
+	return GraphicsChessboardSquareItem::m_focusMarkerColor;
 }
 
-ChessboardSquareItem::ChessboardSquareType ChessboardSquareItem::squareType() const
+GraphicsChessboardSquareItem::ChessboardSquareType GraphicsChessboardSquareItem::squareType() const
 {
 	return m_type;
 }
 
-bool ChessboardSquareItem::isLightSquare() const
+bool GraphicsChessboardSquareItem::isLightSquare() const
 {
-	return m_type == ChessboardSquareItem::LightSquare;
+	return m_type == GraphicsChessboardSquareItem::LightSquare;
 }
 
-bool ChessboardSquareItem::isDarkSquare() const
+bool GraphicsChessboardSquareItem::isDarkSquare() const
 {
-	return m_type == ChessboardSquareItem::DarkSquare;
+	return m_type == GraphicsChessboardSquareItem::DarkSquare;
 }
 
-void ChessboardSquareItem::setSquareType(ChessboardSquareType type)
+void GraphicsChessboardSquareItem::setSquareType(ChessboardSquareType type)
 {
 	m_type = type;
 }
 
-QRectF ChessboardSquareItem::boundingRect() const
+QRectF GraphicsChessboardSquareItem::boundingRect() const
 {
-	return QRectF(0, 0, ChessboardSquareItem::size, ChessboardSquareItem::size);
+	return QRectF(0, 0, GraphicsChessboardSquareItem::size, GraphicsChessboardSquareItem::size);
 }
 
-void ChessboardSquareItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void GraphicsChessboardSquareItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
 	Q_UNUSED(option)
 	Q_UNUSED(widget)
 
 	if (isSelected())
 	{
-		painter->fillRect(boundingRect(), QBrush(ChessboardSquareItem::selectedSquareColor()));
+		painter->fillRect(boundingRect(), QBrush(GraphicsChessboardSquareItem::selectedSquareColor()));
 	}
 	else
 	{
 		if (isLightSquare())
 		{
-			painter->fillRect(boundingRect(), QBrush(ChessboardSquareItem::lightSquareColor()));
+			painter->fillRect(boundingRect(), QBrush(GraphicsChessboardSquareItem::lightSquareColor()));
 		}
 		else
 		{
-			painter->fillRect(boundingRect(), QBrush(ChessboardSquareItem::darkSquareColor()));
+			painter->fillRect(boundingRect(), QBrush(GraphicsChessboardSquareItem::darkSquareColor()));
 		}
 	}
 	
 	if (hasFocus())
 	{
 		painter->setBrush(Qt::NoBrush);
-		QPen pen(ChessboardSquareItem::focusMarkerColor());
+		QPen pen(GraphicsChessboardSquareItem::focusMarkerColor());
 		pen.setWidth(3);
 		painter->setPen(pen);
 		painter->drawRect(boundingRect().x() + pen.width(), boundingRect().y() + pen.width(),
@@ -134,14 +134,14 @@ void ChessboardSquareItem::paint(QPainter* painter, const QStyleOptionGraphicsIt
 	}
 }
 
-void ChessboardSquareItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
+void GraphicsChessboardSquareItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
 	/*QList<QGraphicsItem*> selected = scene()->selectedItems();
 	if (!selected.isEmpty())
 	{
 		qDebug() << "Would move piece from" << selected.first()->pos() << " to " << pos();
 		
-		if (ChessboardSquareItem* source = dynamic_cast<ChessboardSquareItem* >(selected.first()))
+		if (GraphicsChessboardSquareItem* source = dynamic_cast<GraphicsChessboardSquareItem* >(selected.first()))
 		{
 			if (source->isOccupied())
 			{
@@ -164,7 +164,7 @@ void ChessboardSquareItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 	QGraphicsItem::mousePressEvent(event);
 }
 
-void ChessboardSquareItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+void GraphicsChessboardSquareItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
 	QGraphicsItem::mouseReleaseEvent(event);
 
@@ -175,7 +175,7 @@ void ChessboardSquareItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 	}
 }
 
-void ChessboardSquareItem::focusOutEvent(QFocusEvent* event)
+void GraphicsChessboardSquareItem::focusOutEvent(QFocusEvent* event)
 {
 	QGraphicsItem::focusOutEvent(event);
 
@@ -183,7 +183,7 @@ void ChessboardSquareItem::focusOutEvent(QFocusEvent* event)
 	update();
 }
 
-void ChessboardSquareItem::focusInEvent(QFocusEvent* event)
+void GraphicsChessboardSquareItem::focusInEvent(QFocusEvent* event)
 {
 	QGraphicsItem::focusInEvent(event);
 
@@ -191,7 +191,7 @@ void ChessboardSquareItem::focusInEvent(QFocusEvent* event)
 	update();
 }
 
-bool ChessboardSquareItem::isOccupied() const
+bool GraphicsChessboardSquareItem::isOccupied() const
 {
 	// Check if this square has child items and they're are specific type
 	/*QList<QGraphicsItem*> children = childItems();

@@ -15,30 +15,30 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHESSBOARDITEM_H
-#define CHESSBOARDITEM_H
+#ifndef GRAPHICSCHESSBOARDITEM_H
+#define GRAPHICSCHESSBOARDITEM_H
 
 #include <QGraphicsItem>
 
 class QPainter;
 class QSvgRenderer;
 class QGraphicsSvgItem;
-class ChessboardSquareItem;
+class GraphicsChessboardSquareItem;
 
-class ChessboardItem : public QGraphicsItem
+class GraphicsChessboardItem : public QGraphicsItem
 {
 	public:
-		ChessboardItem(QGraphicsItem* parent = 0);
+		GraphicsChessboardItem(QGraphicsItem* parent = 0);
 
-		ChessboardSquareItem* squareAt(int file, int rank);
-		ChessboardSquareItem* squareAt(const QChar& file, const QChar& rank);
+		GraphicsChessboardSquareItem* squareAt(int file, int rank);
+		GraphicsChessboardSquareItem* squareAt(const QChar& file, const QChar& rank);
 		
 		QRectF boundingRect() const;
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 	
 	private:
-		ChessboardSquareItem* m_squares[8][8];
+		GraphicsChessboardSquareItem* m_squares[8][8];
 };
 
-#endif // CHESSBOARDITEM_H
+#endif // GRAPHICSCHESSBOARDITEM_H
 

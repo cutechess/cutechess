@@ -23,7 +23,7 @@
 class QMenu;
 class QGraphicsView;
 class QGraphicsScene;
-class ChessboardItem;
+class GraphicsChessboardItem;
 
 /**
  * MainWindow
@@ -50,7 +50,7 @@ class MainWindow : public QMainWindow
 
 		QGraphicsView* m_chessboardView;
 		QGraphicsScene* m_chessboardScene;
-		ChessboardItem* m_board;
+		GraphicsChessboardItem* m_visualChessboard;
 
 };
 
