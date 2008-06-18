@@ -22,9 +22,15 @@
 #include "graphicschessboarditem.h"
 #include "graphicschessboardsquareitem.h"
 
+const qreal GraphicsChessboardItem::size = 400;
+const qreal GraphicsChessboardItem::borderSize = 25;
+
 GraphicsChessboardItem::GraphicsChessboardItem(QGraphicsItem* parent)
 	: QGraphicsItem(parent)
 {
+	m_showBorder = true;
+	m_borderColor = QColor("peru");
+
 	bool colorToggle = false;
 	GraphicsChessboardSquareItem* square;
 
@@ -45,7 +51,19 @@ GraphicsChessboardItem::GraphicsChessboardItem(QGraphicsItem* parent)
 					GraphicsChessboardSquareItem::DarkSquare);
 			}
 			
-			square->setPos(GraphicsChessboardSquareItem::size * j, GraphicsChessboardSquareItem::size * i);
+			if (isBorderVisible())
+			{
+				square->setPos(GraphicsChessboardSquareItem::size * j +
+					GraphicsChessboardItem::borderSize,
+					GraphicsChessboardSquareItem::size * i +
+					GraphicsChessboardItem::borderSize);
+			}
+			else
+			{
+				square->setPos(GraphicsChessboardSquareItem::size * j,
+					GraphicsChessboardSquareItem::size * i);
+			}
+
 			m_squares[i][j] = square;
 
 			colorToggle = !colorToggle;
@@ -88,12 +106,31 @@ GraphicsChessboardSquareItem* GraphicsChessboardItem::squareAt(const QChar& file
 
 QRectF GraphicsChessboardItem::boundingRect() const
 {
-	// TODO: Use static const qreal
-	return QRectF(0, 0, 400, 400);
+	if (isBorderVisible())
+	{
+		return QRectF(0, 0, GraphicsChessboardItem::size +
+			(2 * GraphicsChessboardItem::borderSize), GraphicsChessboardItem::size +
+			(2 * GraphicsChessboardItem::borderSize));
+	}
+
+	return QRectF(0, 0, GraphicsChessboardItem::size, GraphicsChessboardItem::size);
 }
 
 void GraphicsChessboardItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-	painter->fillRect(boundingRect(), Qt::red);
+	Q_UNUSED(option)
+	Q_UNUSED(widget)
+
+	painter->fillRect(boundingRect(), m_borderColor);
+}
+
+void GraphicsChessboardItem::showBorder(bool visibility)
+{
+	m_showBorder = visibility;
+}
+
+bool GraphicsChessboardItem::isBorderVisible() const
+{
+	return m_showBorder;
 }
 

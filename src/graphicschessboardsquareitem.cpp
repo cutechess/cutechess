@@ -25,7 +25,7 @@
 
 const qreal GraphicsChessboardSquareItem::size = 50;
 QColor GraphicsChessboardSquareItem::m_lightSquareColor("navajowhite");
-QColor GraphicsChessboardSquareItem::m_darkSquareColor("peru");
+QColor GraphicsChessboardSquareItem::m_darkSquareColor("darkred");
 QColor GraphicsChessboardSquareItem::m_selectedSquareColor("gold");
 QColor GraphicsChessboardSquareItem::m_focusMarkerColor("black");
 
@@ -127,7 +127,7 @@ void GraphicsChessboardSquareItem::paint(QPainter* painter, const QStyleOptionGr
 	{
 		painter->setBrush(Qt::NoBrush);
 		QPen pen(GraphicsChessboardSquareItem::focusMarkerColor());
-		pen.setWidth(3);
+		pen.setWidthF(3.0);
 		painter->setPen(pen);
 		painter->drawRect(boundingRect().x() + pen.width(), boundingRect().y() + pen.width(),
 			boundingRect().height() - (2 * pen.width()), boundingRect().width() - (2 * pen.width()));

@@ -30,14 +30,25 @@ class GraphicsChessboardItem : public QGraphicsItem
 	public:
 		GraphicsChessboardItem(QGraphicsItem* parent = 0);
 
+		/** Size of the board. */
+		static const qreal size;
+
+		/** Size of the border. */
+		static const qreal borderSize;
+
 		GraphicsChessboardSquareItem* squareAt(int file, int rank);
 		GraphicsChessboardSquareItem* squareAt(const QChar& file, const QChar& rank);
 		
 		QRectF boundingRect() const;
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
+
+		bool isBorderVisible() const;
+		void showBorder(bool visible);
 	
 	private:
 		GraphicsChessboardSquareItem* m_squares[8][8];
+		bool m_showBorder;
+		QColor m_borderColor;
 };
 
 #endif // GRAPHICSCHESSBOARDITEM_H
