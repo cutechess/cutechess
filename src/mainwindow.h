@@ -21,6 +21,7 @@
 #include <QMainWindow>
 
 class QMenu;
+class QAction;
 class QGraphicsView;
 class QGraphicsScene;
 class GraphicsChessboardItem;
@@ -51,6 +52,8 @@ class MainWindow : public QMainWindow
 		QGraphicsView* m_chessboardView;
 		QGraphicsScene* m_chessboardScene;
 		GraphicsChessboardItem* m_visualChessboard;
+
+		QAction* m_quitGameAct;
 
 };
 

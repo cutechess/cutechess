@@ -17,6 +17,7 @@
 
 #include <QtGui>
 #include <QDebug>
+#include <QApplication>
 
 #include "mainwindow.h"
 #include "manager.h"
@@ -46,13 +47,17 @@ MainWindow::MainWindow()
 
 void MainWindow::createActions()
 {
-	// Create actions available for menus and toolbars
-	// See: QAction documentation
+	m_quitGameAct = new QAction(tr("&Quit"), this);
+	m_quitGameAct->setShortcut(QKeySequence(tr("Ctrl+Q")));
+
+	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
 }
 
 void MainWindow::createMenus()
 {
 	m_gameMenu = menuBar()->addMenu(tr("&Game"));
+	m_gameMenu->addAction(m_quitGameAct);
+
 	m_viewMenu = menuBar()->addMenu(tr("&View"));
 	m_helpMenu = menuBar()->addMenu(tr("&Help"));
 }
