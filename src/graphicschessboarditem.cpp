@@ -19,8 +19,8 @@
 #include <QSvgRenderer>
 #include <QGraphicsSvgItem>
 
-#include "chessboarditem.h"
-#include "chessboardsquareitem.h"
+#include "graphicschessboarditem.h"
+#include "graphicschessboardsquareitem.h"
 
 GraphicsChessboardItem::GraphicsChessboardItem(QGraphicsItem* parent)
 	: QGraphicsItem(parent)

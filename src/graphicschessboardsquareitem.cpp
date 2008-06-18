@@ -21,7 +21,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsSvgItem>
 
-#include "chessboardsquareitem.h"
+#include "graphicschessboardsquareitem.h"
 
 const qreal GraphicsChessboardSquareItem::size = 50;
 QColor GraphicsChessboardSquareItem::m_lightSquareColor("navajowhite");

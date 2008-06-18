@@ -22,7 +22,7 @@
 #include "manager.h"
 #include "logmanager.h"
 #include "guilogger.h"
-#include "chessboarditem.h"
+#include "graphicschessboarditem.h"
 
 MainWindow::MainWindow()
 {

@@ -5,8 +5,8 @@ win32:debug {
 	CONFIG += console
 }
 
-HEADERS = chessboardsquareitem.h \
-          chessboarditem.h \
+HEADERS = graphicschessboardsquareitem.h \
+          graphicschessboarditem.h \
           manager.h \
           logmanager.h \
           stdoutlogger.h \
@@ -14,8 +14,8 @@ HEADERS = chessboardsquareitem.h \
           loggerbase.h \
           mainwindow.h
 
-SOURCES = chessboardsquareitem.cpp \
-          chessboarditem.cpp \
+SOURCES = graphicschessboardsquareitem.cpp \
+          graphicschessboarditem.cpp \
           manager.cpp \
           logmanager.cpp \
           stdoutlogger.cpp \
