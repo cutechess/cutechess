@@ -20,8 +20,10 @@
 
 #include <QMainWindow>
 
-class ChessboardWidget;
 class QMenu;
+class QGraphicsView;
+class QGraphicsScene;
+class ChessboardItem;
 
 /**
  * MainWindow
@@ -33,16 +35,22 @@ class MainWindow : public QMainWindow
 	public:
 		MainWindow();
 
+	protected:
+		void resizeEvent(QResizeEvent* event);
+
 	private:
 		void createActions();
 		void createMenus();
 		void createToolBars();
 		void createDockWindows();
 
-		ChessboardWidget* m_chessboardWidget;
 		QMenu* m_gameMenu;
 		QMenu* m_viewMenu;
 		QMenu* m_helpMenu;
+
+		QGraphicsView* m_chessboardView;
+		QGraphicsScene* m_chessboardScene;
+		ChessboardItem* m_board;
 
 };
 

@@ -19,15 +19,22 @@
 #include <QDebug>
 
 #include "mainwindow.h"
-#include "chessboardwidget.h"
 #include "manager.h"
 #include "logmanager.h"
 #include "guilogger.h"
+#include "chessboarditem.h"
 
 MainWindow::MainWindow()
 {
-	m_chessboardWidget = new ChessboardWidget();
-	setCentralWidget(m_chessboardWidget);
+	m_chessboardView = new QGraphicsView(this);
+	m_chessboardScene = new QGraphicsScene(m_chessboardView);
+	m_chessboardView->setScene(m_chessboardScene);
+	m_chessboardView->setMinimumSize(400, 400);
+
+	setCentralWidget(m_chessboardView);
+
+	m_board = new ChessboardItem();
+	m_chessboardScene->addItem(m_board);
 	
 	setStatusBar(new QStatusBar());
 
@@ -68,5 +75,12 @@ void MainWindow::createDockWindows()
 
 	// Set up GUI logging
 	Manager::get()->getLogManager()->addLogger(new GuiLogger(logTextEdit));
+}
+
+void MainWindow::resizeEvent(QResizeEvent* event)
+{
+	Q_UNUSED(event)
+
+	m_chessboardView->fitInView(m_board, Qt::KeepAspectRatio);
 }
 
