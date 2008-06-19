@@ -15,44 +15,34 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef CHESSBOARDVIEW_H
+#define CHESSBOARDVIEW_H
 
-#include <QMainWindow>
+#include <QGraphicsView>
 
-class QMenu;
-class QAction;
-class ChessboardView;
-class QGraphicsScene;
-class GraphicsChessboardItem;
+class QResizeEvent;
 
 /**
- * MainWindow
+ * ChessboardView class handles resizing of the visual chessboard correctly.
+ *
+ * ChessboardView doesn't add any extra funtionality compared to QGraphicsView
+ * except proper resizing. Proper resizing meaning: 
+ *
+ * - The visual chessboard is fit in to the view and scaled correctly when
+ *   the main window resizes.
+ *
+ * - The visual chessboard is scaled correctly when expanding or shrinking
+ *   a dock widget.
 */
-class MainWindow : public QMainWindow
+class ChessboardView : public QGraphicsView
 {
-	Q_OBJECT
-
 	public:
-		MainWindow();
+		ChessboardView(QWidget* parent = 0);
 
-	private:
-		void createActions();
-		void createMenus();
-		void createToolBars();
-		void createDockWindows();
-
-		QMenu* m_gameMenu;
-		QMenu* m_viewMenu;
-		QMenu* m_helpMenu;
-
-		ChessboardView* m_chessboardView;
-		QGraphicsScene* m_chessboardScene;
-		GraphicsChessboardItem* m_visualChessboard;
-
-		QAction* m_quitGameAct;
+	protected:
+		void resizeEvent(QResizeEvent* event);
 
 };
 
-#endif // MAINWINDOW_H
+#endif // CHESSBOARDVIEW_H
 

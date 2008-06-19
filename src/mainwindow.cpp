@@ -24,10 +24,11 @@
 #include "logmanager.h"
 #include "guilogger.h"
 #include "graphicschessboarditem.h"
+#include "chessboardview.h"
 
 MainWindow::MainWindow()
 {
-	m_chessboardView = new QGraphicsView(this);
+	m_chessboardView = new ChessboardView(this);
 	m_chessboardScene = new QGraphicsScene(m_chessboardView);
 	m_chessboardView->setScene(m_chessboardScene);
 	m_chessboardView->setMinimumSize(400, 400);
@@ -80,12 +81,5 @@ void MainWindow::createDockWindows()
 
 	// Set up GUI logging
 	Manager::get()->getLogManager()->addLogger(new GuiLogger(logTextEdit));
-}
-
-void MainWindow::resizeEvent(QResizeEvent* event)
-{
-	Q_UNUSED(event)
-
-	m_chessboardView->fitInView(m_visualChessboard, Qt::KeepAspectRatio);
 }
 

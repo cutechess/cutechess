@@ -7,6 +7,7 @@ win32:debug {
 
 HEADERS = graphicschessboardsquareitem.h \
           graphicschessboarditem.h \
+          chessboardview.h \
           manager.h \
           logmanager.h \
           stdoutlogger.h \
@@ -16,6 +17,7 @@ HEADERS = graphicschessboardsquareitem.h \
 
 SOURCES = graphicschessboardsquareitem.cpp \
           graphicschessboarditem.cpp \
+          chessboardview.cpp \
           manager.cpp \
           logmanager.cpp \
           stdoutlogger.cpp \
