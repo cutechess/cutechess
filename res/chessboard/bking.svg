@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="45" height="45" id="svg3128" sodipodi:version="0.32" inkscape:version="0.44.1" version="1.0" sodipodi:docbase="/home/cburnett/wikipedia/images/chess" sodipodi:docname="Chess kdt45.svg">
+  <defs id="defs3130"/>
+  <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" gridtolerance="10000" guidetolerance="10" objecttolerance="10" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="11.313708" inkscape:cx="50.19508" inkscape:cy="20.61116" inkscape:document-units="px" inkscape:current-layer="layer1" height="45px" width="45px" inkscape:grid-points="true" showgrid="true" inkscape:window-width="1272" inkscape:window-height="965" inkscape:window-x="0" inkscape:window-y="31" gridspacingx="0.5px" gridspacingy="0.5px"/>
+  <metadata id="metadata3133">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1">
+    <path style="fill: none; fill-opacity: 0.75; fill-rule: evenodd; stroke: black; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: miter; stroke-opacity: 1; stroke-miterlimit: 4; stroke-dasharray: none;" d="M 22.5,11.625 L 22.5,6" id="path6570"/>
+    <path style="fill: black; fill-opacity: 1; fill-rule: evenodd; stroke: black; stroke-width: 1.5; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-miterlimit: 4; stroke-dasharray: none;" d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25" id="path5683" sodipodi:nodetypes="ccccc"/>
+    <path style="fill: black; fill-opacity: 1; fill-rule: evenodd; stroke: black; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 1; stroke-miterlimit: 4; stroke-dasharray: none;" d="M 11.5,37 C 17,40.5 27,40.5 32.5,37 L 32.5,30 C 32.5,30 41.5,25.5 38.5,19.5 C 34.5,13 25,16 22.5,23.5 L 22.5,27 L 22.5,23.5 C 19,16 9.5,13 6.5,19.5 C 3.5,25.5 11.5,29.5 11.5,29.5 L 11.5,37 z " id="path5681" sodipodi:nodetypes="cccccccccc"/>
+    <path style="fill: none; fill-opacity: 0.75; fill-rule: evenodd; stroke: black; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: miter; stroke-opacity: 1; stroke-miterlimit: 4; stroke-dasharray: none;" d="M 20,8 L 25,8" id="path6572"/>
+    <path style="fill: none; fill-opacity: 0.75; fill-rule: evenodd; stroke: white; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: miter; stroke-opacity: 1; stroke-miterlimit: 4; stroke-dasharray: none;" d="M 11.5,29.5 C 17,27 27,27 32.5,30" id="path6574" sodipodi:nodetypes="cc"/>
+    <path style="fill: none; fill-opacity: 0.75; fill-rule: evenodd; stroke: white; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 1; stroke-miterlimit: 4; stroke-dasharray: none;" d="M 11.5,37 C 17,34.5 27,34.5 32.5,37" id="path6576" sodipodi:nodetypes="cc"/>
+    <path style="fill: none; fill-opacity: 0.75; fill-rule: evenodd; stroke: white; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 1; stroke-miterlimit: 4; stroke-dasharray: none;" d="M 11.5,33.5 C 17,31.5 27,31.5 32.5,33.5" id="path6578" sodipodi:nodetypes="cc"/>
+    <path style="fill: none; fill-opacity: 1; fill-rule: evenodd; stroke: white; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 32,29.5 C 32,29.5 40.5,25.5 38.025969,19.846552 C 34.147406,13.996552 25,18 22.5,24.5 L 22.511718,26.596552 L 22.5,24.5 C 20,18 9.9063892,13.996552 6.9974672,19.846552 C 4.5,25.5 11.845671,28.846552 11.845671,28.846552" id="path5638" sodipodi:nodetypes="ccccccc"/>
+  </g>
+</svg>

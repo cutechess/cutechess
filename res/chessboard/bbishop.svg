@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="45" height="45" id="svg3128" sodipodi:version="0.32" inkscape:version="0.44.1" version="1.0" sodipodi:docbase="/home/cburnett/wikipedia/images/chess" sodipodi:docname="Chess bdt45.svg">
+  <defs id="defs3130"/>
+  <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" gridtolerance="10000" guidetolerance="10" objecttolerance="10" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="16" inkscape:cx="21.47589" inkscape:cy="21.674445" inkscape:document-units="px" inkscape:current-layer="layer1" height="45px" width="45px" inkscape:grid-points="true" showgrid="true" inkscape:window-width="977" inkscape:window-height="965" inkscape:window-x="0" inkscape:window-y="31" gridspacingx="0.5px" gridspacingy="0.5px"/>
+  <metadata id="metadata3133">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" style="display: inline;">
+    <path style="fill: black; fill-opacity: 1; fill-rule: evenodd; stroke: black; stroke-width: 1.5; stroke-linecap: butt; stroke-linejoin: round; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 9,36 C 12.385255,35.027671 19.114744,36.430821 22.5,34 C 25.885256,36.430821 32.614745,35.027671 36,36 C 36,36 37.645898,36.541507 39,38 C 38.322949,38.972328 37.354102,38.986164 36,38.5 C 32.614745,37.527672 25.885256,38.958493 22.5,37.5 C 19.114744,38.958493 12.385255,37.527672 9,38.5 C 7.6458978,38.986164 6.6770511,38.972328 6,38 C 7.3541023,36.055343 9,36 9,36 z " id="path4582" sodipodi:nodetypes="ccccccccc"/>
+    <path style="fill: black; fill-opacity: 1; fill-rule: evenodd; stroke: black; stroke-width: 1.5; stroke-linecap: butt; stroke-linejoin: round; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 15,32 C 17.5,34.5 27.5,34.5 30,32 C 30.5,30.5 30,30 30,30 C 30,27.5 27.5,26 27.5,26 C 33,24.5 33.5,14.5 22.5,10.5 C 11.5,14.5 12,24.5 17.5,26 C 17.5,26 15,27.5 15,30 C 15,30 14.5,30.5 15,32 z " id="path4584" sodipodi:nodetypes="cccccccc"/>
+    <path sodipodi:type="arc" style="opacity: 1; fill: black; fill-opacity: 1; stroke: black; stroke-width: 1.5; stroke-linecap: butt; stroke-linejoin: round; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" id="path4586" sodipodi:cx="22.5" sodipodi:cy="10" sodipodi:rx="2.5" sodipodi:ry="2.5" d="M 25 10 A 2.5 2.5 0 1 1  20,10 A 2.5 2.5 0 1 1  25 10 z" transform="translate(0, -2)"/>
+    <path style="fill: none; fill-opacity: 0.75; fill-rule: evenodd; stroke: white; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 17.5,26 L 27.5,26" id="path4588" sodipodi:nodetypes="cc"/>
+    <path style="fill: none; fill-opacity: 0.75; fill-rule: evenodd; stroke: white; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 15,30 L 30,30" id="path4590" sodipodi:nodetypes="cc"/>
+    <path style="fill: none; fill-opacity: 0.75; fill-rule: evenodd; stroke: white; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 22.5,15.5 L 22.5,20.5" id="path4592"/>
+    <path style="fill: none; fill-opacity: 0.75; fill-rule: evenodd; stroke: white; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: miter; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1;" d="M 20,18 L 25,18" id="path4594"/>
+  </g>
+</svg>
