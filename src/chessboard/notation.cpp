@@ -210,7 +210,7 @@ bool isMoveString(const QString& word)
 }
 
 /* Convert a move string (in coordinate notation) into a move.  */
-quint32 Chessboard::moveFromString(const QString& moveString)
+quint32 Chessboard::moveFromCoord(const QString& moveString)
 {
 	int i;
 	int piece;

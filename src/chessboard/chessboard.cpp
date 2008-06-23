@@ -65,7 +65,7 @@ void Chessboard::makeMove(const QString& moveString)
 {
 	quint32 move;
 	if (isMoveString(moveString))
-		move = moveFromString(QString(moveString));
+		move = moveFromCoord(QString(moveString));
 	else
 		move = moveFromSan(QString(moveString));
 	
