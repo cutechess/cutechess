@@ -21,7 +21,6 @@
 #include <QGraphicsItem>
 
 class QPainter;
-class QSvgRenderer;
 class QGraphicsSvgItem;
 class GraphicsChessboardSquareItem;
 
@@ -46,7 +45,11 @@ class GraphicsChessboardItem : public QGraphicsItem
 		void showBorder(bool visible);
 	
 	private:
+		void initChessboard();
+		void initChessPieces();
+
 		GraphicsChessboardSquareItem* m_squares[8][8];
+		QGraphicsSvgItem* m_pieces[32];
 		bool m_showBorder;
 		QColor m_borderColor;
 };

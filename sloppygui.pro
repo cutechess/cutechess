@@ -25,5 +25,8 @@ SOURCES = src/graphicschessboardsquareitem.cpp \
           src/mainwindow.cpp \
           src/main.cpp
 
+RESOURCES = res/chessboard/chessboard.qrc
+
 OBJECTS_DIR = .obj/
 MOC_DIR = .moc/
+RCC_DIR = .rcc/
