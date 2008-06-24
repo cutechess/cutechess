@@ -31,7 +31,8 @@ void GuiLogger::log(QtMsgType type, const char *message)
 	Q_UNUSED(type)
 
 	QString msg;
-	msg.append("[").append(QTime::currentTime().toString("HH:mm:ss")).append("] ").append(message);
+	msg.append("[").append(QTime::currentTime().toString("HH:mm:ss")).append("] ");
+	msg.append(QString::fromUtf8(message));
 	m_widget->append(msg);
 }
 
