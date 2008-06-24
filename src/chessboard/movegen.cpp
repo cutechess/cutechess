@@ -4,9 +4,9 @@
 
 
 // A mask of files B to H
-#define FILE_B_H 0xFEFEFEFEFEFEFEFE
+#define FILE_B_H Q_UINT64_C(0xFEFEFEFEFEFEFEFE)
 // A mask of files A to G
-#define FILE_A_G 0x7F7F7F7F7F7F7F7F
+#define FILE_A_G Q_UINT64_C(0x7F7F7F7F7F7F7F7F)
 
 /* Shift a bitboard's pieces forward, forward left or forward right.
    Naturally white's forward is black's backward and vice versa.  */
@@ -38,7 +38,7 @@ static quint64 rookXray[64];
 /* X-ray attacks for bishops.  */
 static quint64 bishopXray[64];
 
-static const quint64 seventhRank[2] = { 0x000000000000FF00, 0x00FF000000000000 };
+static const quint64 seventhRank[2] = { Q_UINT64_C(0x000000000000FF00), Q_UINT64_C(0x00FF000000000000) };
 
 
 /* A mask of a straight vertical, horizontal or diagonal line
@@ -128,10 +128,10 @@ initXrays(void)
 	quint64 tmp1;
 	quint64 tmp2;
 
-	const quint64 file_a = 0x00000000000000FF;
-	const quint64 rank_1 = 0x0101010101010101;
-	const quint64 diag_1 = 0x8040201008040201;
-	const quint64 diag_2 = 0x0102040810204080;
+	const quint64 file_a = Q_UINT64_C(0x00000000000000FF);
+	const quint64 rank_1 = Q_UINT64_C(0x0101010101010101);
+	const quint64 diag_1 = Q_UINT64_C(0x8040201008040201);
+	const quint64 diag_2 = Q_UINT64_C(0x0102040810204080);
 	
 	for (square = 0; square < 64; square++) {
 		int i;
@@ -610,7 +610,7 @@ void Chessboard::generatePawnMoves(MoveData *md, MoveList *moveList) const
 	int sign;
 	quint64 target1;	/* 1 square forward target */
 	quint64 target2;	/* 2 squares forward target */
-	static const quint64 rank_4[] = { 0x000000FF00000000, 0x00000000FF000000 };
+	static const quint64 rank_4[] = { Q_UINT64_C(0x000000FF00000000), Q_UINT64_C(0x00000000FF000000) };
 
 	Q_ASSERT(md != NULL);
 	Q_ASSERT(moveList != NULL);
@@ -748,14 +748,14 @@ void Chessboard::generateKingMoves(MoveData *md, MoveList *moveList) const
 	   the opponent when castling.  */
 	static const quint64 castleCheckMask[2][2] =
 	{
-		{ 0x7000000000000000, 0x1C00000000000000 },
-		{ 0x0000000000000070, 0x000000000000001C }
+		{ Q_UINT64_C(0x7000000000000000), Q_UINT64_C(0x1C00000000000000) },
+		{ Q_UINT64_C(0x0000000000000070), Q_UINT64_C(0x000000000000001C) }
 	};
 	/* A mask of squares that have to be empty for a castling move
 	   to be legal.  */
 	static const quint64 castleEmptyMask[2][2] = {
-		{ 0x6000000000000000, 0x0e00000000000000 },
-		{ 0x0000000000000060, 0x000000000000000e }
+		{ Q_UINT64_C(0x6000000000000000), Q_UINT64_C(0x0e00000000000000) },
+		{ Q_UINT64_C(0x0000000000000060), Q_UINT64_C(0x000000000000000e) }
 	};
 
 	Q_ASSERT(md != NULL);
