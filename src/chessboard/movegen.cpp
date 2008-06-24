@@ -904,7 +904,7 @@ void Chessboard::generateMoves(MoveList *moveList) const
 	if (m_posp->inCheck) {
 		quint64 checkMask = getCheckMask();
 		Q_ASSERT(checkMask != 0);
-		Q_ASSERT(is_check());
+		Q_ASSERT(isSideToMoveInCheck());
 		/* In a double check we only generate king moves
 		   because everything else is illegal.  */
 		if (popcount(checkMask & m_pieces[!color][AllPieces]) > 1)
@@ -947,7 +947,7 @@ void Chessboard::generateMovesForPieceType(MoveList *moveList, int piece, int to
 	if (m_posp->inCheck) {
 		quint64 checkMask = getCheckMask();
 		Q_ASSERT(checkMask != 0);
-		Q_ASSERT(is_check());
+		Q_ASSERT(isSideToMoveInCheck());
 
 		/* In a double check we return without any moves.  */
 		if (popcount(checkMask & m_pieces[!color][AllPieces]) > 1)
