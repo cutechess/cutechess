@@ -13,7 +13,7 @@
 
 for file in `find . \( ! -regex '.*/\..*' -a -name "*.cpp" -o -name "*.h" -o -name "*.pro"  \) -type f`
 do
-	if [ "x`svn propget svn:eol-style`" = "x" ]
+	if [ "x`svn propget svn:eol-style $file`" = "x" ]
 	then	
 		echo "$file"
 	fi
