@@ -1,0 +1,39 @@
+SLOPPYGUI(6)
+============
+
+NAME
+----
+sloppygui - A graphical user interface for chess engines
+
+
+SYNOPSIS
+--------
+*sloppygui* ['OPTIONS']
+
+
+DESCRIPTION
+-----------
+Description of SloppyGUI.
+
+
+OPTIONS
+-------
+List of available command-line options.
+
+
+AUTHOR
+------
+Written by Ilari Pihlajisto <ilari.pihlajisto@mbnet.fi> and Arto Jonsson
+<arto.jonsson@gmail.com>.
+
+
+RESOURCES
+---------
+SourceForge: <http://sourceforge.net/projects/sloppygui/>
+
+
+COPYING
+-------
+Copyright \(C) 2008 Ilari Pihlajisto and Arto Jonsson. Free use of this
+software is granted under the terms of GNU General Public License (GPL).
+

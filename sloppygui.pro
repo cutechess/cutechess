@@ -46,7 +46,11 @@ RESOURCES = res/chessboard/chessboard.qrc
 docs-api.target = documentation-api
 docs-api.commands = doxygen api.doxygen
 
-QMAKE_EXTRA_TARGETS += docs-api
+# man documentation
+docs-man.target = documentation-man
+docs-man.commands = a2x -f manpage docs/man/sloppygui.6.txt
+
+QMAKE_EXTRA_TARGETS += docs-api docs-man
 
 OBJECTS_DIR = .obj/
 MOC_DIR = .moc/
