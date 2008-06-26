@@ -1,9 +1,10 @@
 #include "chessmove.h"
+#include "notation.h"
 #include "util.h"
 
 ChessMove::ChessMove()
 {
-	m_move = 0;
+	m_move = NULLMOVE;
 	m_sanMoveString = "";
 	m_coordMoveString = "";
 }
@@ -14,11 +15,34 @@ ChessMove::ChessMove(Chessboard *board,
 	             Chessboard::ChessPiece promotion)
 {
 	m_move = board->intMove(sourceSquare, targetSquare, promotion);
-	if (m_move == 0)
+	if (m_move == NULLMOVE)
 		throw -1; // the move is illegal
 
 	m_coordMoveString = board->coordMoveString(m_move);
 	m_sanMoveString = board->sanMoveString(m_move);
+}
+
+ChessMove::ChessMove(Chessboard *board, quint32 move)
+{
+	m_move = move;
+	m_coordMoveString = board->coordMoveString(m_move);
+	m_sanMoveString = board->sanMoveString(m_move);
+}
+
+ChessMove::ChessMove(Chessboard *board, const QString& moveString)
+{
+	if (isMoveString(moveString)) {
+		m_move = board->moveFromCoord(moveString);
+		m_coordMoveString = moveString;
+		m_sanMoveString = board->sanMoveString(m_move);
+	} else {
+		m_move = board->moveFromSan(moveString);
+		m_sanMoveString = moveString;
+		m_coordMoveString = board->coordMoveString(m_move);
+	}
+	
+	if (m_move == NULLMOVE || m_move == MOVE_ERROR)
+		throw -1;
 }
 
 Chessboard::ChessSquare ChessMove::sourceSquare() const

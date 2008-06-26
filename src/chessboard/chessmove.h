@@ -25,20 +25,83 @@
 class ChessMove
 {
 public:
+	/**
+	 * Constructs an empty chessmove.
+	 */
 	ChessMove();
+	
+	/**
+	 * Constructs a chessmove and verifies its legality.
+	 * @param board a chessboard to verify the move against.
+	 * @param sourceSquare the source square.
+	 * @param targetSquare the target square.
+	 * @param promotion the promotion piece.
+	 */
 	ChessMove(Chessboard *board,
 	          Chessboard::ChessSquare sourceSquare,
 	          Chessboard::ChessSquare targetSquare,
 	          Chessboard::ChessPiece promotion=Chessboard::NoPiece);
+	
+	/**
+	 * Constructs a chessmove and verifies its legality.
+	 * @param board a chessboard to verity the move against.
+	 * @param move a move in integer format.
+	 */
+	ChessMove(Chessboard *board, quint32 move);
+	
+	/**
+	 * Constructs a chessmove and verifies its legality.
+	 * @param board a chessboard to verify the move against.
+	 * @param moveString a move string in SAN or coordinate notation
+	 */
+	ChessMove(Chessboard *board, const QString& moveString);
 
+	/**
+	 * Gets the source square.
+	 * @return the source square.
+	 */
 	Chessboard::ChessSquare sourceSquare() const;
+
+	/**
+	 * Gets the target square.
+	 * @return the target square.
+	 */
 	Chessboard::ChessSquare targetSquare() const;
+
+	/**
+	 * Gets the type of the moving piece.
+	 * @return type of the moving piece.
+	 */
 	Chessboard::ChessPiece movingPiece() const;
+
+	/**
+	 * Gets the type of the promotion piece.
+	 * @return type of the promotion piece.
+	 */
 	Chessboard::ChessPiece promotion() const;
+
+	/**
+	 * Gets the type of the captured piece.
+	 * @return type of the captured piece.
+	 */
 	Chessboard::ChessPiece capture() const;
 
+	/**
+	 * Gets the move in integer format.
+	 * @return the move in integer format.
+	 */
 	quint32 integerFormat() const;
+
+	/**
+	 * Gets the move string in SAN.
+	 * @return the move string in SAN.
+	 */
 	QString sanMoveString() const;
+
+	/**
+	 * Gets the move string in coordinate notation.
+	 * @return the move string in coordinate notation.
+	 */
 	QString coordMoveString() const;
 
 private:
