@@ -10,6 +10,7 @@
 
 #define MAX_NMOVES_PER_GAME 1024	// max. num. of halfmoves per game
 
+class ChessMove;
 
 /**
  * The Chessboard class is used for the internal chessboard of SloppyGUI.
@@ -127,6 +128,13 @@ public:
 
 	/**
 	 * Makes a move.
+	 * @param move a chessmove.
+	 * @see undoMove()
+	 */
+	void makeMove(const ChessMove& move);
+
+	/**
+	 * Makes a move.
 	 * If the move is illegal, an exception is raised.
 	 * @param moveString a move either in SAN or in Coordinate notation.
 	 * @see undoMove()
@@ -145,6 +153,15 @@ public:
 	 * @see setFenString()
 	 */
 	QString fenString() const;
+
+	/**
+	 * Gets a move in integer format.
+	 * @param from the source square.
+	 * @param to the target square.
+	 * @param promotion the promotion piece
+	 * @return a move in integer format.
+	 */
+	quint32 intMove(ChessSquare from, ChessSquare to, ChessPiece promotion);
 
 	/**
 	 * Gets a move string in coordinate notation.

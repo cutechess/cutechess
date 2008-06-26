@@ -1,6 +1,7 @@
 #include "chessboard.h"
 #include "util.h"
 #include "notation.h"
+#include "chessmove.h"
 
 MoveList::MoveList(void)
 {
@@ -61,6 +62,11 @@ int Chessboard::moveCount(void) const
 	return m_nmoves;
 }
 
+void Chessboard::makeMove(const ChessMove& move)
+{
+	makeMove(move.integerFormat());
+}
+
 void Chessboard::makeMove(const QString& moveString)
 {
 	quint32 move;
@@ -80,7 +86,7 @@ QVector<bool> Chessboard::targetSquares(Chessboard::ChessSquare from) const
 	MoveList moveList;
 	QVector<bool> targetSquares(64, 0);
 	
-	if (m_mailbox[from] == false)
+	if (m_mailbox[from] == 0)
 		return targetSquares;
 	
 	generateMoves(&moveList);

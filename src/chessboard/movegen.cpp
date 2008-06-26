@@ -273,6 +273,28 @@ void Chessboard::initialize(void)
 	initKingMoves();
 }
 
+quint32 Chessboard::intMove(Chessboard::ChessSquare from,
+                            Chessboard::ChessSquare to,
+                            Chessboard::ChessPiece promotion)
+{
+	int i;
+	MoveList moveList;
+	
+	if (promotion == NoPiece)
+		promotion = (Chessboard::ChessPiece)0;
+	
+	generateMoves(&moveList);
+	for (i = 0; i < moveList.count(); i++) {
+		quint32 move = moveList[i];
+		if ((Chessboard::ChessSquare)GET_FROM(move) == from
+		&&  (Chessboard::ChessSquare)GET_TO(move) == to
+		&&  (Chessboard::ChessPiece)GET_PROM(move) == promotion)
+			return move;
+	}
+	
+	return NULLMOVE;
+}
+
 /* Returns true if the side to move is in check. This function is mainly
    needed only for debugging, because we encode an IS_CHECK bit
    in the move structure.  */
