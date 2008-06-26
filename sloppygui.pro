@@ -42,6 +42,12 @@ SOURCES = src/graphicschessboardsquareitem.cpp \
 
 RESOURCES = res/chessboard/chessboard.qrc
 
+# API documentation (Doxygen)
+docs-api.target = documentation-api
+docs-api.commands = doxygen api.doxygen
+
+QMAKE_EXTRA_TARGETS += docs-api
+
 OBJECTS_DIR = .obj/
 MOC_DIR = .moc/
 RCC_DIR = .rcc/
