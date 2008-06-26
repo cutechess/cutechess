@@ -44,7 +44,7 @@ RESOURCES = res/chessboard/chessboard.qrc
 
 # API documentation (Doxygen)
 docs-api.target = documentation-api
-docs-api.commands = doxygen api.doxygen
+docs-api.commands = doxygen docs/api/api.doxygen
 QMAKE_EXTRA_TARGETS += docs-api
 
 # man documentation
