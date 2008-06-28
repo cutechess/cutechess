@@ -22,7 +22,7 @@
 
 #include "chessboard/chessboard.h"
 
-/***
+/**
  * Symbols class provides chess symbols found in the Unicode character set.
 */
 class Symbols
