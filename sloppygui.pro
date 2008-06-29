@@ -15,6 +15,7 @@ HEADERS = src/graphicschessboardsquareitem.h \
           src/loggerbase.h \
           src/mainwindow.h \
           src/symbols.h \
+          src/promotiondlg.h \
           src/chessboard/chessboard.h \
           src/chessboard/chessmove.h \
           src/chessboard/magicmoves.h \
@@ -32,6 +33,7 @@ SOURCES = src/graphicschessboardsquareitem.cpp \
           src/guilogger.cpp \
           src/mainwindow.cpp \
           src/symbols.cpp \
+          src/promotiondlg.cpp \
           src/main.cpp \
           src/chessboard/chessboard.cpp \
           src/chessboard/chessmove.cpp \
