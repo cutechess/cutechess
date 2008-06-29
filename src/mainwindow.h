@@ -36,6 +36,9 @@ class MainWindow : public QMainWindow
 	public:
 		MainWindow();
 
+	private slots:
+		void printGame();
+
 	private:
 		void createActions();
 		void createMenus();
@@ -51,6 +54,7 @@ class MainWindow : public QMainWindow
 		GraphicsChessboardItem* m_visualChessboard;
 
 		QAction* m_quitGameAct;
+		QAction* m_printGameAct;
 
 };
 
