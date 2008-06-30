@@ -113,3 +113,53 @@ QString Symbols::symbolOf(Chessboard::ChessSide side, Chessboard::ChessPiece pie
 	return symbol;
 }
 
+QString Symbols::symbolOf(Chessboard::ChessSide side, const QChar& piece)
+{
+	QString symbol;
+
+	switch (side)
+	{
+		case Chessboard::White:
+
+			if (piece.toLower() == QChar('k'))
+				symbol = Symbols::WhiteKing;
+			else if (piece.toLower() == QChar('q'))
+				symbol = Symbols::WhiteQueen;
+			else if (piece.toLower() == QChar('b'))
+				symbol = Symbols::WhiteBishop;
+			else if (piece.toLower() == QChar('n'))
+				symbol = Symbols::WhiteKnight;
+			else if (piece.toLower() == QChar('r'))
+				symbol = Symbols::WhiteRook;
+			else if (piece.toLower() == QChar('p'))
+				symbol = Symbols::WhitePawn;
+			else
+				symbol = "";
+		break;
+
+		case Chessboard::Black:
+
+			if (piece.toLower() == QChar('k'))
+				symbol = Symbols::BlackKing;
+			else if (piece.toLower() == QChar('q'))
+				symbol = Symbols::BlackQueen;
+			else if (piece.toLower() == QChar('b'))
+				symbol = Symbols::BlackBishop;
+			else if (piece.toLower() == QChar('n'))
+				symbol = Symbols::BlackKnight;
+			else if (piece.toLower() == QChar('r'))
+				symbol = Symbols::BlackRook;
+			else if (piece.toLower() == QChar('p'))
+				symbol = Symbols::BlackPawn;
+			else
+				symbol = "";
+		break;
+
+		default:
+			symbol = "";
+		break;
+	}
+
+	return symbol;
+}
+

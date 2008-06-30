@@ -62,6 +62,27 @@ class Symbols
 		 * values are invalid an empty string is returned.
 		*/
 		static QString symbolOf(Chessboard::ChessSide side, Chessboard::ChessPiece piece);
+
+		/**
+		 * Returns a symbol of given side and piece type.
+		 * The piece type is given as a single character. The mappings to
+		 * chess pieces are:
+		 *
+		 * K - King
+		 * Q - Queen
+		 * B - Bishop
+		 * N - Knight
+		 * R - Rook
+		 * P - Pawn
+		 *
+		 * Uppercase and lowercase letters give same results.
+		 * @param side The side of the wanted symbol.
+		 * @param piece The piece type of the wanted symbol (as a single
+		 * character).
+		 * @return The symbol of the given side and piece type. If the given
+		 * values are invalid an empty string is returned.
+		*/
+		static QString symbolOf(Chessboard::ChessSide side, const QChar& piece);
 	
 	private:
 		Symbols() { }
