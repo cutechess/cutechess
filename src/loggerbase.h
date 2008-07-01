@@ -33,6 +33,11 @@ class LoggerBase
 		LoggerBase() { }
 		virtual ~LoggerBase() { }
 
+		/**
+		 * Logs a new messages.
+		 * @param type Message's type.
+		 * @param message The message.
+		*/
 		virtual void log(QtMsgType type, const char *message) = 0;
 };
 

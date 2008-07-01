@@ -57,6 +57,7 @@ template <typename T> class ManagerBase
 		ManagerBase() { }
 		virtual ~ManagerBase() { }
 
+		/** Instance of the template class. */
 		static T* instance;
 };
 

@@ -119,7 +119,7 @@ class GraphicsChessboardSquareItem : public QGraphicsItem
 		bool isDarkSquare() const;
 		/**
 		 * Sets the square's type.
-		 * @type Type for this square.
+		 * @param type Type for this square.
 		*/
 		void setSquareType(ChessboardSquareType type);
 		/**
