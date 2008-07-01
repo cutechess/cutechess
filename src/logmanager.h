@@ -112,6 +112,7 @@ class LogManager : public ManagerBase<LogManager>
 		LogManager();
 		~LogManager();
 
+	private:
 		QList<LoggerBase*> m_loggers;
 		QtMsgType m_loggingLevel;
 };
