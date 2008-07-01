@@ -54,7 +54,7 @@ class GuiLogger : public LoggerBase
 		*/
 		void log(QtMsgType type, const char *message);
 	
-	protected:
+	private:
 		QTextEdit* m_widget;
 };
 
