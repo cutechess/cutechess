@@ -155,3 +155,22 @@ void GraphicsChessboardItem::initChessPieces()
 	}
 }
 
+void GraphicsChessboardItem::makeMove(const ChessMove& move)
+{
+	// Move all child items of source square to children of
+	// target square.
+
+	// TODO: Check if move is valid.
+	// TODO: Implement better debugging (asserts etc.)
+	// TODO: Implement support for promotions.
+
+	QList<QGraphicsItem*> children = m_squares[move.sourceSquare()]->childItems();
+	if (!children.isEmpty())
+	{
+		for (int i = 0; i < children.count(); i++) 
+		{
+			children[i]->setParentItem(m_squares[move.targetSquare()]);
+		}
+	}
+}
+

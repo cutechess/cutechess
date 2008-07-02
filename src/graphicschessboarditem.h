@@ -20,6 +20,8 @@
 
 #include <QGraphicsItem>
 
+#include "chessboard/chessmove.h"
+
 class QPainter;
 class QGraphicsSvgItem;
 class GraphicsChessboardSquareItem;
@@ -40,6 +42,8 @@ class GraphicsChessboardItem : public QGraphicsItem
 
 		bool isBorderVisible() const;
 		void showBorder(bool visible);
+
+		void makeMove(const ChessMove& move);
 	
 	private:
 		void initChessboard();
