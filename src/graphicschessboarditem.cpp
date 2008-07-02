@@ -34,39 +34,6 @@ GraphicsChessboardItem::GraphicsChessboardItem(QGraphicsItem* parent)
 	initChessPieces();
 }
 
-GraphicsChessboardSquareItem* GraphicsChessboardItem::squareAt(int file, int rank)
-{
-	Q_ASSERT_X(file >= 0 && file <= 7, "squareAt(int, int)", "invalid file (column) number");
-	Q_ASSERT_X(rank >= 0 && rank <= 7, "squareAt(int, int)", "invalid rank (row) number");
-
-	return m_squares[rank][file];
-}
-
-GraphicsChessboardSquareItem* GraphicsChessboardItem::squareAt(const QChar& file, const QChar& rank)
-{
-	int fileNum = -1;
-	
-	if (file == QChar('a'))
-		fileNum = 0;
-	else if (file == QChar('b'))
-		fileNum = 1;
-	else if (file == QChar('c'))
-		fileNum = 2;
-	else if (file == QChar('d'))
-		fileNum = 3;
-	else if (file == QChar('e'))
-		fileNum = 4;
-	else if (file == QChar('f'))
-		fileNum = 5;
-	else if (file == QChar('g'))
-		fileNum = 6;
-	else if (file == QChar('h'))
-		fileNum = 7;
-
-	// Returns valid square or hits squareAt(int, int)'s asserts
-	return squareAt(fileNum, 8 - rank.digitValue());
-}
-
 QRectF GraphicsChessboardItem::boundingRect() const
 {
 	if (isBorderVisible())
@@ -100,40 +67,43 @@ bool GraphicsChessboardItem::isBorderVisible() const
 void GraphicsChessboardItem::initChessboard()
 {
 	bool colorToggle = false;
+	int row = 0;
 	GraphicsChessboardSquareItem* square;
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 64; i++)
 	{
 		colorToggle = !colorToggle;
 
-		for (int j = 0; j < 8; j++)
+		if (colorToggle)
 		{
-			if (colorToggle)
-			{
-				square = new GraphicsChessboardSquareItem(this,
-					GraphicsChessboardSquareItem::LightSquare);
-			}
-			else
-			{
-				square = new GraphicsChessboardSquareItem(this,
-					GraphicsChessboardSquareItem::DarkSquare);
-			}
-			
-			if (isBorderVisible())
-			{
-				square->setPos(GraphicsChessboardSquareItem::size * j +
-					GraphicsChessboardItem::borderSize,
-					GraphicsChessboardSquareItem::size * i +
-					GraphicsChessboardItem::borderSize);
-			}
-			else
-			{
-				square->setPos(GraphicsChessboardSquareItem::size * j,
-					GraphicsChessboardSquareItem::size * i);
-			}
+			square = new GraphicsChessboardSquareItem(this,
+				GraphicsChessboardSquareItem::LightSquare);
+		}
+		else
+		{
+			square = new GraphicsChessboardSquareItem(this,
+				GraphicsChessboardSquareItem::DarkSquare);
+		}
+		
+		
+		if (isBorderVisible())
+		{
+			square->setPos(GraphicsChessboardSquareItem::size * (i % 8) +
+				GraphicsChessboardItem::borderSize,
+				GraphicsChessboardSquareItem::size * row +
+				GraphicsChessboardItem::borderSize);
+		}
+		else
+		{
+			square->setPos(GraphicsChessboardSquareItem::size * (i % 8),
+				GraphicsChessboardSquareItem::size * row);
+		}
 
-			m_squares[i][j] = square;
-
+		m_squares[i] = square;
+		
+		if (i > 0 && (i + 1) % 8 == 0)
+		{
+			row++;
 			colorToggle = !colorToggle;
 		}
 	}
@@ -150,18 +120,18 @@ void GraphicsChessboardItem::initChessPieces()
 	// The order of piece initialization is the same as they appear in the
 	// chessboard: Rook, Knigh, Bishop, Queen, King, Bishop, Knight, Rook,
 	// and 8 Pawns.
-	m_pieces[0] = new QGraphicsSvgItem(":/brook.svg", m_squares[0][0]);
-	m_pieces[1] = new QGraphicsSvgItem(":/bknight.svg", m_squares[0][1]);
-	m_pieces[2] = new QGraphicsSvgItem(":/bbishop.svg", m_squares[0][2]);
-	m_pieces[3] = new QGraphicsSvgItem(":/bqueen.svg", m_squares[0][3]);
-	m_pieces[4] = new QGraphicsSvgItem(":/bking.svg", m_squares[0][4]);
-	m_pieces[5] = new QGraphicsSvgItem(":/bbishop.svg", m_squares[0][5]);
-	m_pieces[6] = new QGraphicsSvgItem(":/bknight.svg", m_squares[0][6]);
-	m_pieces[7] = new QGraphicsSvgItem(":/brook.svg", m_squares[0][7]);
+	m_pieces[0] = new QGraphicsSvgItem(":/brook.svg", m_squares[0]);
+	m_pieces[1] = new QGraphicsSvgItem(":/bknight.svg", m_squares[1]);
+	m_pieces[2] = new QGraphicsSvgItem(":/bbishop.svg", m_squares[2]);
+	m_pieces[3] = new QGraphicsSvgItem(":/bqueen.svg", m_squares[3]);
+	m_pieces[4] = new QGraphicsSvgItem(":/bking.svg", m_squares[4]);
+	m_pieces[5] = new QGraphicsSvgItem(":/bbishop.svg", m_squares[5]);
+	m_pieces[6] = new QGraphicsSvgItem(":/bknight.svg", m_squares[6]);
+	m_pieces[7] = new QGraphicsSvgItem(":/brook.svg", m_squares[7]);
 
 	for (int i = 0; i < 8; i++)
 	{
-		m_pieces[8 + i] = new QGraphicsSvgItem(":/bpawn.svg", m_squares[1][i]);
+		m_pieces[8 + i] = new QGraphicsSvgItem(":/bpawn.svg", m_squares[8 + i]);
 	}
 
 	// == WHITE PIECES ==
@@ -169,18 +139,18 @@ void GraphicsChessboardItem::initChessPieces()
 	// The order of piece initialization is the same as they appear in the
 	// chessboard: Rook, Knigh, Bishop, Queen, King, Bishop, Knight, Rook,
 	// and 8 Pawns.
-	m_pieces[15] = new QGraphicsSvgItem(":/wrook.svg", m_squares[7][0]);
-	m_pieces[16] = new QGraphicsSvgItem(":/wknight.svg", m_squares[7][1]);
-	m_pieces[17] = new QGraphicsSvgItem(":/wbishop.svg", m_squares[7][2]);
-	m_pieces[18] = new QGraphicsSvgItem(":/wqueen.svg", m_squares[7][3]);
-	m_pieces[19] = new QGraphicsSvgItem(":/wking.svg", m_squares[7][4]);
-	m_pieces[20] = new QGraphicsSvgItem(":/wbishop.svg", m_squares[7][5]);
-	m_pieces[21] = new QGraphicsSvgItem(":/wknight.svg", m_squares[7][6]);
-	m_pieces[22] = new QGraphicsSvgItem(":/wrook.svg", m_squares[7][7]);
+	m_pieces[15] = new QGraphicsSvgItem(":/wrook.svg", m_squares[56]);
+	m_pieces[16] = new QGraphicsSvgItem(":/wknight.svg", m_squares[57]);
+	m_pieces[17] = new QGraphicsSvgItem(":/wbishop.svg", m_squares[58]);
+	m_pieces[18] = new QGraphicsSvgItem(":/wqueen.svg", m_squares[59]);
+	m_pieces[19] = new QGraphicsSvgItem(":/wking.svg", m_squares[60]);
+	m_pieces[20] = new QGraphicsSvgItem(":/wbishop.svg", m_squares[61]);
+	m_pieces[21] = new QGraphicsSvgItem(":/wknight.svg", m_squares[62]);
+	m_pieces[22] = new QGraphicsSvgItem(":/wrook.svg", m_squares[63]);
 
 	for (int i = 0; i < 8; i++)
 	{
-		m_pieces[23 + i] = new QGraphicsSvgItem(":/wpawn.svg", m_squares[6][i]);
+		m_pieces[23 + i] = new QGraphicsSvgItem(":/wpawn.svg", m_squares[48 + i]);
 	}
 }
 

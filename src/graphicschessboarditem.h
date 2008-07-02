@@ -35,9 +35,6 @@ class GraphicsChessboardItem : public QGraphicsItem
 		/** Size of the border. */
 		static const qreal borderSize;
 
-		GraphicsChessboardSquareItem* squareAt(int file, int rank);
-		GraphicsChessboardSquareItem* squareAt(const QChar& file, const QChar& rank);
-		
 		QRectF boundingRect() const;
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
@@ -48,7 +45,7 @@ class GraphicsChessboardItem : public QGraphicsItem
 		void initChessboard();
 		void initChessPieces();
 
-		GraphicsChessboardSquareItem* m_squares[8][8];
+		GraphicsChessboardSquareItem* m_squares[64];
 		QGraphicsSvgItem* m_pieces[32];
 		bool m_showBorder;
 		QColor m_borderColor;
