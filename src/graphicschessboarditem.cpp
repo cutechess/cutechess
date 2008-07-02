@@ -84,7 +84,8 @@ void GraphicsChessboardItem::initChessboard()
 			square = new GraphicsChessboardSquareItem(this,
 				GraphicsChessboardSquareItem::DarkSquare);
 		}
-		
+
+		square->setPositionInChessboard(Chessboard::ChessSquare(i));
 		
 		if (isBorderVisible())
 		{

@@ -206,3 +206,13 @@ bool GraphicsChessboardSquareItem::isOccupied() const
 	return false;
 }
 
+void GraphicsChessboardSquareItem::setPositionInChessboard(Chessboard::ChessSquare pos)
+{
+	m_posInChessboard = pos;
+}
+
+Chessboard::ChessSquare GraphicsChessboardSquareItem::positionInChessboard() const
+{
+	return m_posInChessboard;
+}
+

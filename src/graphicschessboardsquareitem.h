@@ -20,6 +20,8 @@
 
 #include <QGraphicsItem>
 
+#include "chessboard/chessboard.h"
+
 class QPainter;
 
 /**
@@ -128,6 +130,9 @@ class GraphicsChessboardSquareItem : public QGraphicsItem
 		*/
 		bool isOccupied() const;
 
+		void setPositionInChessboard(Chessboard::ChessSquare pos);
+		Chessboard::ChessSquare positionInChessboard() const;
+
 		QRectF boundingRect() const;
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
@@ -144,6 +149,7 @@ class GraphicsChessboardSquareItem : public QGraphicsItem
 		static QColor m_focusMarkerColor;
 
 		ChessboardSquareType m_type;
+		Chessboard::ChessSquare m_posInChessboard;
 		bool m_selectionWasHandled;
 };
 
