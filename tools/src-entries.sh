@@ -70,7 +70,7 @@ print_entries()
 
 print_usage()
 {
-	echo "Usage: src-entries.h [options]"
+	echo "Usage: src-entries.sh [options]"
 	echo ""
 	echo "Print TODO, FIXME, HACK and NOTE entries from source code files. All"
 	echo "entries are printed by default with the file name and line number."
