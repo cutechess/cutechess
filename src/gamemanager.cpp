@@ -15,26 +15,15 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "manager.h"
-#include "logmanager.h"
 #include "gamemanager.h"
 
-template<> Manager* ManagerBase<Manager>::instance = 0;
+template<> GameManager* ManagerBase<GameManager>::instance = 0;
 
-LogManager* Manager::getLogManager()
+GameManager::GameManager()
 {
-	return LogManager::get();
 }
 
-GameManager* Manager::getGameManager()
+GameManager::~GameManager()
 {
-	return GameManager::get();
-}
-
-void Manager::quit()
-{
-	// Release all managers
-	GameManager::release();
-	LogManager::release();
 }
 

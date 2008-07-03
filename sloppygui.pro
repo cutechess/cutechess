@@ -10,6 +10,7 @@ HEADERS = src/graphicschessboardsquareitem.h \
           src/chessboardview.h \
           src/manager.h \
           src/logmanager.h \
+          src/gamemanager.h \
           src/stdoutlogger.h \
           src/guilogger.h \
           src/loggerbase.h \
@@ -29,6 +30,7 @@ SOURCES = src/graphicschessboardsquareitem.cpp \
           src/chessboardview.cpp \
           src/manager.cpp \
           src/logmanager.cpp \
+          src/gamemanager.cpp \
           src/stdoutlogger.cpp \
           src/guilogger.cpp \
           src/mainwindow.cpp \
