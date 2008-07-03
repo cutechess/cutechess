@@ -20,15 +20,25 @@
 
 #include "manager.h"
 
+class Chessboard;
+
 class GameManager : public ManagerBase<GameManager>
 {
 	friend class ManagerBase<GameManager>;
 
 	public:
+		/**
+		 * Returns the internal chessboard.
+		 * @return Internal chessboard.
+		*/
+		Chessboard* chessboard() const;
 	
 	protected:
 		GameManager();
 		~GameManager();
+	
+	private:
+		Chessboard* m_chessboard;
 	
 };
 

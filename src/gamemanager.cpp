@@ -16,14 +16,22 @@
 */
 
 #include "gamemanager.h"
+#include "chessboard/chessboard.h"
 
 template<> GameManager* ManagerBase<GameManager>::instance = 0;
 
 GameManager::GameManager()
 {
+	m_chessboard = new Chessboard();
 }
 
 GameManager::~GameManager()
 {
+	delete m_chessboard;
+}
+
+Chessboard* GameManager::chessboard() const
+{
+	return m_chessboard;
 }
 
