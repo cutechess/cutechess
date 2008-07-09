@@ -171,12 +171,20 @@ public:
 	bool isLegalMove(const ChessMove& move);
 
 	/**
-	 * Converts a move string into a ChessMove.
+	 * Gets a move in ChessMove format.
 	 * @param moveString a move string in SAN or Coordinate notation.
 	 * @return a chessmove.
 	 */
-	ChessMove stringToChessMove(const QString& moveString);
-
+	ChessMove chessMoveFromString(const QString& moveString);
+	
+	/**
+	 * Gets a move string in coordinate notation.
+	 * @param move a move in ChessMove format.
+	 * @return a move string in coordinate notation.
+	 * @see sanMoveString()
+	 */
+	QString coordMoveString(const ChessMove& move);
+	
 	/**
 	 * Gets a move string in coordinate notation.
 	 * @param move a move in integer format.
@@ -185,6 +193,14 @@ public:
 	 */
 	QString coordMoveString(quint32 move) const;
 	
+	/**
+	 * Gets a move string in SAN (Standard Algebraic Notation)
+	 * @param move a move in ChessMove format.
+	 * @return a move string in SAN.
+	 * @see coordMoveString()
+	 */
+	QString sanMoveString(const ChessMove& move);
+
 	/**
 	 * Gets a move string in SAN (Standard Algebraic Notation)
 	 * @param move a move in integer format.

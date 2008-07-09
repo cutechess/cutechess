@@ -267,6 +267,11 @@ QString Chessboard::coordMoveString(quint32 move) const
 	return QString(moveString, 6);
 }
 
+QString Chessboard::coordMoveString(const ChessMove& move)
+{
+	return coordMoveString(intMove(move.sourceSquare(), move.targetSquare(), move.promotion()));
+}
+
 /* Find out how much detail is needed to describe a move by <piece> to square <to>
    so that it can't be mixed up with any other legal moves.  */
 #define SAN_UNIQUE_MOVE 00
@@ -393,6 +398,11 @@ QString Chessboard::sanMoveString(quint32 move)
 	return QString(sanMove, pos - sanMove);
 }
 
+QString Chessboard::sanMoveString(const ChessMove& move)
+{
+	return sanMoveString(intMove(move.sourceSquare(), move.targetSquare(), move.promotion()));
+}
+
 /* Convert a move string (in SAN notation) into a move.  */
 quint32 Chessboard::moveFromSan(const QString& sanMove)
 {
@@ -449,7 +459,7 @@ quint32 Chessboard::moveFromSan(const QString& sanMove)
 	return NULLMOVE;
 }
 
-ChessMove Chessboard::stringToChessMove(const QString& moveString)
+ChessMove Chessboard::chessMoveFromString(const QString& moveString)
 {
 	quint32 move;
 	if (isMoveString(moveString))
