@@ -64,7 +64,9 @@ int Chessboard::moveCount(void) const
 
 void Chessboard::makeMove(const ChessMove& move)
 {
-	makeMove(move.integerFormat());
+	quint32 fullMove = intMove(move.sourceSquare(), move.targetSquare(), move.promotion());
+	Q_ASSERT(fullMove != NULLMOVE);
+	makeMove(fullMove);
 }
 
 void Chessboard::makeMove(const QString& moveString)
@@ -78,6 +80,14 @@ void Chessboard::makeMove(const QString& moveString)
 	if (move == NULLMOVE || move == MOVE_ERROR)
 		throw -1;
 	makeMove(move);
+}
+
+bool Chessboard::isLegalMove(const ChessMove& move)
+{
+	quint32 fullMove = intMove(move.sourceSquare(), move.targetSquare(), move.promotion());
+	if (fullMove == NULLMOVE)
+		return false;
+	return true;
 }
 
 QVector<bool> Chessboard::targetSquares(Chessboard::ChessSquare from) const

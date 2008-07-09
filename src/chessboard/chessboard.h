@@ -162,6 +162,20 @@ public:
 	 * @return a move in integer format.
 	 */
 	quint32 intMove(ChessSquare from, ChessSquare to, ChessPiece promotion);
+	
+	/**
+	 * Checks the legality of a chessmove against the current board position.
+	 * @param move a chessmove.
+	 * @return true if the move is legal.
+	 */
+	bool isLegalMove(const ChessMove& move);
+
+	/**
+	 * Converts a move string into a ChessMove.
+	 * @param moveString a move string in SAN or Coordinate notation.
+	 * @return a chessmove.
+	 */
+	ChessMove stringToChessMove(const QString& moveString);
 
 	/**
 	 * Gets a move string in coordinate notation.

@@ -2,6 +2,7 @@
 #include <QStringList>
 #include "chessboard.h"
 #include "util.h"
+#include "chessmove.h"
 #include "notation.h"
 
 
@@ -446,6 +447,21 @@ quint32 Chessboard::moveFromSan(const QString& sanMove)
 	}
 
 	return NULLMOVE;
+}
+
+ChessMove Chessboard::stringToChessMove(const QString& moveString)
+{
+	quint32 move;
+	if (isMoveString(moveString))
+		move = moveFromCoord(moveString);
+	else
+		move = moveFromSan(moveString);
+	
+	if (move == NULLMOVE || move == MOVE_ERROR)
+		return ChessMove();
+	return ChessMove((Chessboard::ChessSquare)GET_FROM(move),
+	                 (Chessboard::ChessSquare)GET_TO(move),
+	                 (Chessboard::ChessPiece)GET_PROM(move));
 }
 
 /* Convert castling rights from a part of a FEN string,
