@@ -17,6 +17,7 @@ HEADERS = src/graphicschessboardsquareitem.h \
           src/mainwindow.h \
           src/symbols.h \
           src/promotiondlg.h \
+          src/chessplayer.h \
           src/chessboard/chessboard.h \
           src/chessboard/chessmove.h \
           src/chessboard/magicmoves.h \

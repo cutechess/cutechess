@@ -15,30 +15,18 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gamemanager.h"
-#include "chessboard/chessboard.h"
-#include "chessplayer.h"
+#ifndef CHESSPLAYER_H
+#define CHESSPLAYER_H
 
-template<> GameManager* ManagerBase<GameManager>::instance = 0;
-
-GameManager::GameManager()
+class ChessPlayer
 {
-	m_chessboard = new Chessboard();
-}
+	public:
+		ChessPlayer() { }
+		virtual ~ChessPlayer() { }
 
-GameManager::~GameManager()
-{
-	delete m_chessboard;
-}
+		virtual bool isHuman() const = 0;
 
-Chessboard* GameManager::chessboard() const
-{
-	return m_chessboard;
-}
+};
 
-void GameManager::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
-{
-	m_whitePlayer = whitePlayer;
-	m_blackPlayer = blackPlayer;
-}
+#endif // CHESSPLAYER_H
 
