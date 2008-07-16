@@ -35,7 +35,6 @@ class GameManager : public ManagerBase<GameManager>
 		Chessboard* chessboard() const;
 		/**
 		 * Starts a new game.
-		 * @param type Game's type.
 		 * @param whitePlayer The player that plays the white colored pieces.
 		 * @param blackPlayer The player that plays the black colored pieces.
 		*/
