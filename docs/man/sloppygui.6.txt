@@ -24,7 +24,7 @@ List of available command-line options.
 AUTHOR
 ------
 Written by Ilari Pihlajisto <ilari.pihlajisto@mbnet.fi> and Arto Jonsson
-<arto.jonsson@gmail.com>.
+<ajonsson@kapsi.fi>.
 
 
 RESOURCES
