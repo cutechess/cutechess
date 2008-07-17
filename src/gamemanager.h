@@ -20,8 +20,11 @@
 
 #include "manager.h"
 
+#include <QList>
+
 class Chessboard;
 class ChessPlayer;
+class GameEventListener;
 
 class GameManager : public ManagerBase<GameManager>
 {
@@ -39,6 +42,11 @@ class GameManager : public ManagerBase<GameManager>
 		 * @param blackPlayer The player that plays the black colored pieces.
 		*/
 		void newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer);
+		/**
+		 * Register new event listener for game events.
+		 * @param listener Object which will receive the events.
+		*/
+		void registerEventListener(GameEventListener* listener);
 	
 	protected:
 		GameManager();
@@ -48,6 +56,7 @@ class GameManager : public ManagerBase<GameManager>
 		Chessboard* m_chessboard;
 		ChessPlayer* m_whitePlayer;
 		ChessPlayer* m_blackPlayer;
+		QList<GameEventListener*> m_listeners;
 	
 };
 

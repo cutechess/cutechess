@@ -15,36 +15,20 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gamemanager.h"
-#include "chessboard/chessboard.h"
-#include "chessplayer.h"
-#include "gameeventlistener.h"
+#ifndef GAMEEVENTLISTENER_H
+#define GAMEEVENTLISTENER_H
 
-template<> GameManager* ManagerBase<GameManager>::instance = 0;
+#include "chessboard/chessmove.h"
 
-GameManager::GameManager()
+class GameEventListener
 {
-	m_chessboard = new Chessboard();
-}
+	public:
+		GameEventListener() { }
+		virtual ~GameEventListener() { }
 
-GameManager::~GameManager()
-{
-	delete m_chessboard;
-}
+		virtual void moveEvent(ChessMove* move) = 0;
 
-Chessboard* GameManager::chessboard() const
-{
-	return m_chessboard;
-}
+};
 
-void GameManager::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
-{
-	m_whitePlayer = whitePlayer;
-	m_blackPlayer = blackPlayer;
-}
-
-void GameManager::registerEventListener(GameEventListener* listener)
-{
-	m_listeners << listener;
-}
+#endif // GAMEEVENTLISTENER_H
 
