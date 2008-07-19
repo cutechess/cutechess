@@ -106,3 +106,8 @@ void MainWindow::printGame()
 	painter.end();
 }
 
+void MainWindow::moveEvent(const ChessMove& move)
+{
+	m_visualChessboard->makeMove(move);
+}
+

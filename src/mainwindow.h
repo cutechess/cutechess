@@ -20,6 +20,8 @@
 
 #include <QMainWindow>
 
+#include "gameeventlistener.h"
+
 class QMenu;
 class QAction;
 class ChessboardView;
@@ -29,12 +31,13 @@ class GraphicsChessboardItem;
 /**
  * MainWindow
 */
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public GameEventListener
 {
 	Q_OBJECT
 
 	public:
 		MainWindow();
+		void moveEvent(const ChessMove& move);
 
 	private slots:
 		void printGame();
