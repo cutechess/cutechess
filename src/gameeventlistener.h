@@ -26,7 +26,7 @@ class GameEventListener
 		GameEventListener() { }
 		virtual ~GameEventListener() { }
 
-		virtual void moveEvent(ChessMove* move) = 0;
+		virtual void moveEvent(const ChessMove& move) = 0;
 
 };
 
