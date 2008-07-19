@@ -17,7 +17,6 @@
 
 #include "manager.h"
 #include "logmanager.h"
-#include "gamemanager.h"
 
 template<> Manager* ManagerBase<Manager>::instance = 0;
 
@@ -26,15 +25,9 @@ LogManager* Manager::getLogManager()
 	return LogManager::get();
 }
 
-GameManager* Manager::getGameManager()
-{
-	return GameManager::get();
-}
-
 void Manager::quit()
 {
 	// Release all managers
-	GameManager::release();
 	LogManager::release();
 }
 

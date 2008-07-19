@@ -19,7 +19,6 @@
 #define MANAGER_H
 
 class LogManager;
-class GameManager;
 
 /**
  * ManagerBase is the template base class of each Manager (Singleton) type
@@ -80,12 +79,6 @@ class Manager : public ManagerBase<Manager>
 		 * @see LogManager
 		*/
 		LogManager* getLogManager();
-
-		/**
-		 * Returns an instance of the GameManager class.
-		 * @see GameManager
-		*/
-		GameManager* getGameManager();
 
 		/**
 		 * Signals the end of the application.
