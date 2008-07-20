@@ -1,5 +1,5 @@
 SloppyGUI's API documentation will be placed here. You can build it with the
-"documentation-api" target:
+"doc-api" target:
 
     $ make doc-api
 
