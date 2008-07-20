@@ -1,6 +1,6 @@
 SloppyGUI's API documentation will be placed here. You can build it with the
 "documentation-api" target:
 
-    $ make documentation-api
+    $ make doc-api
 
 Doxygen (http://www.doxygen.org/) is required to build the documentation.
