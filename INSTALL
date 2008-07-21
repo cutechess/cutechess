@@ -1,0 +1,29 @@
+
+    Installation
+
+
+SloppyGUI requires Qt (atleast version 4.2) and qmake, the Qt Makefile
+generator. The current qmake project file doesn't have support for
+installations. However the main executable has the necessary resources
+built-in by default so it's the only thing you need to deploy.
+
+First you need to build the Makefile:
+
+    $ qmake
+
+And to build the source:
+
+    $ make
+
+Manual page is available but you have to built it separately. Building it
+requires asciidoc (http://www.methods.co.nz/asciidoc/).
+
+    $ make doc-man
+
+If you want to have an overview of SloppyGUI's source you can build the API
+documentation:
+
+    $ make doc-api
+
+You need doxygen (http://www.doxygen.org/) in order to build the API
+documentation.

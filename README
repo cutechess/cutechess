@@ -1,0 +1,8 @@
+
+    SloppyGUI - A graphical user interface for chess engines
+
+
+SloppyGUI is a graphical user interface built with Qt for chess engines
+supporting either the Xboard or UCI protocols.
+
+Please read the INSTALL file for installation instructions.
