@@ -1,0 +1,17 @@
+# main executable
+sloppygui
+
+# qmake generated Makefile
+Makefile
+
+# asciidoc generated man page and xml document
+docs/man/sloppygui.6
+docs/man/sloppygui.6.xml
+
+# doxygen generated api documents
+docs/api/html/
+
+# temporary directories used by qmake and compiler
+.rcc/
+.moc/
+.obj/
