@@ -15,30 +15,21 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHESSPLAYER_H
-#define CHESSPLAYER_H
+#include "chessplayer.h"
 
-#include <QObject>
-#include "chessboard/chessboard.h"
-
-class ChessPlayer: public QObject
+ChessPlayer::ChessPlayer(QObject *parent)
+: QObject(parent)
 {
-Q_OBJECT
+	m_side = Chessboard::NoSide;
+}
 
-public:
-	ChessPlayer(QObject *parent = 0);
-	virtual ~ChessPlayer() { }
+void ChessPlayer::setSide(Chessboard::ChessSide side)
+{
+	m_side = side;
+}
 
-	// Set the player to play as 'side'
-	virtual void setSide(Chessboard::ChessSide side);
-
-	Chessboard::ChessSide side() const;
-	
-	virtual bool isHuman() const = 0;
-
-private:
-	Chessboard::ChessSide m_side;
-};
-
-#endif
+Chessboard::ChessSide ChessPlayer::side() const
+{
+	return m_side;
+}
 

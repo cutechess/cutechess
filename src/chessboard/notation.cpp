@@ -262,9 +262,8 @@ QString Chessboard::coordMoveString(quint32 move) const
 	*pos++ = getRankChar(SQ_RANK(GET_TO(move)));
 	if (promotion != 0)
 		*pos++ = getPromotionChar(promotion).toLower();
-	*pos++ = '\0';
 	
-	return QString(moveString, 6);
+	return QString(moveString, pos - moveString);
 }
 
 QString Chessboard::coordMoveString(const ChessMove& move)
@@ -394,7 +393,6 @@ QString Chessboard::sanMoveString(quint32 move)
 	else if (moveType == MT_MATE)
 		*pos++ = '#';
 
-	*pos++ = '\0';
 	return QString(sanMove, pos - sanMove);
 }
 
