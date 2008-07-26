@@ -1,3 +1,31 @@
+SLOPPYGUI_VERSION = unknown
+
+# Check if the version file exists.
+exists(version) {
+
+	# If the version file exists, use its contents as the version number
+	SLOPPYGUI_VERSION = $$system(cat version)
+} else {
+
+	# If the version file doesn't exist, check if we have
+	# .git directory
+	exists(.git) {
+
+		# Check if we can describe this commit
+		system(git describe > /dev/null 2> /dev/null) {
+
+			# If we can, describe it
+			SLOPPYGUI_VERSION = $$system(git describe)
+		} else {
+
+			# If we can't describe it, parse the sha id and use that
+			SLOPPYGUI_VERSION = git-$$system(git rev-parse --short HEAD)
+		}
+	}
+}
+
+DEFINES += SLOPPYGUI_VERSION='\'"$$SLOPPYGUI_VERSION"\''
+
 CONFIG += qt debug
 QT += svg
 
