@@ -16,6 +16,7 @@
 */
 
 #include <QApplication>
+#include <cstdio>
 
 #include "mainwindow.h"
 #include "manager.h"
@@ -23,6 +24,22 @@
 
 int main(int argc, char* argv[])
 {
+	// Use trivial command-line parsing for now
+	for (int i = 1; i < argc; i++)
+	{
+		if (QLatin1String("-v") == argv[i] ||
+			QLatin1String("--version") == argv[i])
+		{
+			printf("SloppyGUI %s\n", SLOPPYGUI_VERSION);
+			printf("Copyright (C) 2008 Ilari Pihlajisto and Arto Jonsson\n");
+			printf("This is free software; see the source for copying ");
+			printf("conditions.  There is NO\nwarranty; not even for ");
+			printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n");
+
+			return 0;
+		}
+	}
+
 	qInstallMsgHandler(LogManager::messageHandler);
 	QApplication app(argc, argv);
 
