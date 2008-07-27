@@ -15,6 +15,8 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QString>
+
 #include "chessplayer.h"
 
 ChessPlayer::ChessPlayer(QObject *parent)
@@ -31,5 +33,15 @@ void ChessPlayer::setSide(Chessboard::ChessSide side)
 Chessboard::ChessSide ChessPlayer::side() const
 {
 	return m_side;
+}
+
+QString ChessPlayer::name() const
+{
+	return m_name;
+}
+
+void ChessPlayer::setName(const QString& name)
+{
+	m_name = name;
 }
 

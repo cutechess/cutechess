@@ -79,7 +79,7 @@ public:
 	 */
 	virtual ChessProtocol protocol() const;
 
-private:
+protected:
 	virtual void parseLine(const QString& line);
 };
 

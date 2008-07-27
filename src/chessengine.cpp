@@ -16,9 +16,7 @@
 */
 
 #include <QString>
-#include <QStringList>
 #include <QIODevice>
-#include <QDebug>
 
 #include "chessengine.h"
 #include "chessboard/chessboard.h"
@@ -58,7 +56,8 @@ bool ChessEngine::isReady() const
 void ChessEngine::write(const QString& data) const
 {
 	Q_ASSERT(m_ioDevice->isWritable());
-	qDebug(">%d: %s", m_id, qPrintable(data));
+	emit debugMessage(QString(">") + name() + ": " + data);
+
 	m_ioDevice->write(data.toAscii() + "\n");
 }
 
@@ -67,7 +66,7 @@ void ChessEngine::on_readyRead()
 	while (m_ioDevice->canReadLine()) {
 		QString line = QString(m_ioDevice->readLine());
 		line.chop(1); // remove the trailing newline
-		qDebug("<%d: %s", m_id, qPrintable(line));
+		emit debugMessage(QString("<") + name() + ": " + line);
 		
 		parseLine(line);
 	}

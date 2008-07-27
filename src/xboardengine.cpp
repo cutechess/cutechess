@@ -26,6 +26,7 @@
 XboardEngine::XboardEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent)
 : ChessEngine(ioDevice, chessboard, parent)
 {
+	setName(QString("XboardEngine ") + m_id);
 	// Tell the engine to turn on xboard mode
 	write("xboard");
 	// Tell the engine that we're using Xboard protocol 2
@@ -95,10 +96,14 @@ void XboardEngine::parseLine(const QString& line)
 			pos += rx.matchedLength();
 			
 			list = arg.split('=');
+			if (list.count() != 2)
+				continue;
 			feature = list[0].trimmed();
 			if (feature == "san") {
 				if (list[1].trimmed() == "1")
 					m_notation = StandardNotation;
+			} else if (feature == "myname") {
+				m_name = list[1].trimmed();
 			} else if (feature == "done") {
 				if (list[1].trimmed() == "1")
 					m_isReady = true;

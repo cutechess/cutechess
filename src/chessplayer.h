@@ -21,20 +21,77 @@
 #include <QObject>
 #include "chessboard/chessboard.h"
 
+class QString;
+
+
+/**
+ * The ChessPlayer class represents any chess player, human or AI.
+ */
 class ChessPlayer: public QObject
 {
 Q_OBJECT
 
 public:
+	/**
+	 * Creates a new ChessPlayer object.
+	 * @param parent The parent object.
+	 */
 	ChessPlayer(QObject *parent = 0);
+	
 	virtual ~ChessPlayer() { }
 
-	// Set the player to play as 'side'
+	/**
+	 * Gets the side of the player.
+	 * @return The side of the player.
+	 * @see setSide()
+	 */
+	Chessboard::ChessSide side() const;
+
+	/**
+	 * Sets the player to play on a specific side (white or black)
+	 * @param side The side of the player.
+	 */
 	virtual void setSide(Chessboard::ChessSide side);
 
-	Chessboard::ChessSide side() const;
+	/**
+	 * Tells the opponent's move to the player.
+	 * @param move A chess move which the opponent made.
+	 */
+	virtual void sendOpponentsMove(const ChessMove& move) const = 0;
 	
+	/**
+	 * Gets the name of the player.
+	 * @return The name of the player.
+	 */
+	QString name() const;
+	
+	/**
+	 * Gives the player a name.
+	 * @param name The player's name.
+	 */
+	void setName(const QString& name);
+
+	/**
+	 * Tells whether or not the player is human.
+	 * @return True if the player is human.
+	 */
 	virtual bool isHuman() const = 0;
+
+signals:
+	/**
+	 * Signals the engine's move.
+	 * @param move A chess move which the engine made.
+	 */
+	void moveMade(const ChessMove& move) const;
+
+	/**
+	 * Signals a debugging message from the player.
+	 * @param data The debugging message.
+	 */
+	void debugMessage(const QString& data) const;
+
+protected:
+	QString m_name;
 
 private:
 	Chessboard::ChessSide m_side;

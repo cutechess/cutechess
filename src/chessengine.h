@@ -76,7 +76,7 @@ public:
 	 * @param parent The parent object.
 	 */
 	ChessEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent = 0);
-	~ChessEngine();
+	virtual ~ChessEngine();
 
 	/**
 	 * Starts a new chess game.
@@ -131,33 +131,26 @@ public:
 	 */
 	void write(const QString& data) const;
 
-signals:
-	/**
-	 * Signals the engine's move.
-	 * @param move A chess move which the engine made.
-	 */
-	void moveMade(const ChessMove& move);
-
 protected:
-	Chessboard *m_chessboard;
-	MoveNotation m_notation;
-	bool m_isReady;
-	int m_id; // The id number of the chess engine
-	static int m_count; // Num. of active chess engines
-
-private slots:
-	/**
-	 * Reads input from the engine.
-	 */
-	void on_readyRead();
-
-private:
 	/**
 	 * Parses a line of input from the engine.
 	 * @param line A line of text.
 	 */
 	virtual void parseLine(const QString& line) = 0;
 
+	Chessboard *m_chessboard;
+	MoveNotation m_notation;
+	bool m_isReady;
+	int m_id; // The id number of the chess engine
+	static int m_count; // Num. of active chess engines
+
+protected slots:
+	/**
+	 * Reads input from the engine.
+	 */
+	void on_readyRead();
+
+private:
 	QIODevice *m_ioDevice;
 };
 
