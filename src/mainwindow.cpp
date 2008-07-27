@@ -25,6 +25,9 @@
 #include "guilogger.h"
 #include "graphicschessboarditem.h"
 #include "chessboardview.h"
+#include "chessgame.h"
+#include "chessplayer.h"
+#include "xboardengine.h"
 
 MainWindow::MainWindow()
 {
@@ -53,8 +56,12 @@ void MainWindow::createActions()
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	m_quitGameAct->setShortcut(QKeySequence(tr("Ctrl+Q")));
 
+	// Debugging actions
+	m_sloppyVersusAct = new QAction("Sloppy vs. Sloppy", this);
+
 	connect(m_printGameAct, SIGNAL(triggered(bool)), this, SLOT(printGame()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
+	connect(m_sloppyVersusAct, SIGNAL(triggered(bool)), this, SLOT(sloppyVersus()));
 }
 
 void MainWindow::createMenus()
@@ -66,6 +73,9 @@ void MainWindow::createMenus()
 
 	m_viewMenu = menuBar()->addMenu(tr("&View"));
 	m_helpMenu = menuBar()->addMenu(tr("&Help"));
+
+	m_debugMenu = menuBar()->addMenu("&Debug");
+	m_debugMenu->addAction(m_sloppyVersusAct);
 }
 
 void MainWindow::createToolBars()
@@ -86,6 +96,14 @@ void MainWindow::createDockWindows()
 
 	// Set up GUI logging
 	Manager::get()->getLogManager()->addLogger(new GuiLogger(logTextEdit));
+
+	// Engine debug
+	QDockWidget* engineDebugDock = new QDockWidget(tr("Engine Debug"), this);
+	m_engineDebugTextEdit = new QTextEdit(engineDebugDock);
+	m_engineDebugTextEdit->setReadOnly(true);
+	engineDebugDock->setWidget(m_engineDebugTextEdit);
+
+	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
 }
 
 void MainWindow::printGame()
@@ -104,5 +122,32 @@ void MainWindow::printGame()
 	m_chessboardView->render(&painter);
 
 	painter.end();
+}
+
+void MainWindow::sloppyVersus()
+{
+	QProcess* process1 = new QProcess(this);
+	QProcess* process2 = new QProcess(this);
+
+	process1->setWorkingDirectory("/home/ilari/apps/sloppy/src");
+	process2->setWorkingDirectory("/home/ilari/apps/sloppy/pak/sloppy-linux64");
+	
+	process1->start("./sloppy");
+	process2->start("./sloppy");
+
+	if (!process1->waitForStarted() || !process2->waitForStarted())
+	{
+		qDebug() << "Cannot start sloppy process.";
+		return;
+	}
+
+	ChessGame* chessgame = new ChessGame(this);
+	connect(chessgame, SIGNAL(debugMessage(const QString&)),
+	        m_engineDebugTextEdit, SLOT(append(const QString&)));
+
+	ChessPlayer* player1 = new XboardEngine(process1, chessgame->chessboard(), this);
+	ChessPlayer* player2 = new XboardEngine(process2, chessgame->chessboard(), this);
+	
+	chessgame->newGame(player1, player2);
 }
 

@@ -21,6 +21,7 @@
 #include "mainwindow.h"
 #include "manager.h"
 #include "logmanager.h"
+#include "chessboard/chessboard.h"
 
 int main(int argc, char* argv[])
 {
@@ -39,6 +40,8 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 	}
+
+	Chessboard::initialize();
 
 	qInstallMsgHandler(LogManager::messageHandler);
 	QApplication app(argc, argv);

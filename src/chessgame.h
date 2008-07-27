@@ -22,23 +22,31 @@
 
 class Chessboard;
 class ChessPlayer;
+class ChessMove;
 
 class ChessGame : public QObject
 {
 	Q_OBJECT
 
 	public:
-		ChessGame();
+		ChessGame(QObject *parent = 0);
 		~ChessGame();
 		Chessboard* chessboard() const;
 		void newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer);
 		ChessPlayer* whitePlayer() const;
 		ChessPlayer* blackPlayer() const;
 
+	public slots:
+		void moveMade(const ChessMove& move);
+
+	signals:
+		void debugMessage(const QString& data) const;
+
 	private:
 		Chessboard* m_chessboard;
 		ChessPlayer* m_whitePlayer;
 		ChessPlayer* m_blackPlayer;
+		ChessPlayer* m_sideToMove;
 
 };
 

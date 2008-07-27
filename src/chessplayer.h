@@ -41,6 +41,18 @@ public:
 	virtual ~ChessPlayer() { }
 
 	/**
+	 * Starts a new chess game.
+	 * @param side The side (color) the player should play as.
+	 * @param fen The FEN string of the starting position.
+	 */
+	virtual void newGame(Chessboard::ChessSide side, const QString& fen) = 0;
+	
+	/**
+	 * Tells the player to start thinking and make its next move.
+	 */
+	virtual void go() = 0;
+
+	/**
 	 * Gets the side of the player.
 	 * @return The side of the player.
 	 * @see setSide()

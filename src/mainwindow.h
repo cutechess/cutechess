@@ -22,6 +22,7 @@
 
 class QMenu;
 class QAction;
+class QTextEdit;
 class ChessboardView;
 class QGraphicsScene;
 class GraphicsChessboardItem;
@@ -38,6 +39,7 @@ class MainWindow : public QMainWindow
 
 	private slots:
 		void printGame();
+		void sloppyVersus();
 
 	private:
 		void createActions();
@@ -48,6 +50,7 @@ class MainWindow : public QMainWindow
 		QMenu* m_gameMenu;
 		QMenu* m_viewMenu;
 		QMenu* m_helpMenu;
+		QMenu* m_debugMenu;
 
 		ChessboardView* m_chessboardView;
 		QGraphicsScene* m_chessboardScene;
@@ -55,6 +58,11 @@ class MainWindow : public QMainWindow
 
 		QAction* m_quitGameAct;
 		QAction* m_printGameAct;
+
+		QTextEdit* m_engineDebugTextEdit;
+
+		// Debugging
+		QAction* m_sloppyVersusAct;
 
 };
 
