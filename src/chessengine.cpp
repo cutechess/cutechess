@@ -56,7 +56,7 @@ bool ChessEngine::isReady() const
 void ChessEngine::write(const QString& data) const
 {
 	Q_ASSERT(m_ioDevice->isWritable());
-	emit debugMessage(QString(">") + name() + ": " + data);
+	emit debugMessage(QString(">") + name() + "(" + QString::number(m_id) +  "): " + data);
 
 	m_ioDevice->write(data.toAscii() + "\n");
 }
@@ -66,7 +66,7 @@ void ChessEngine::on_readyRead()
 	while (m_ioDevice->canReadLine()) {
 		QString line = QString(m_ioDevice->readLine());
 		line.chop(1); // remove the trailing newline
-		emit debugMessage(QString("<") + name() + ": " + line);
+		emit debugMessage(QString("<") + name() + "(" + QString::number(m_id) +  "): " + line);
 		
 		parseLine(line);
 	}

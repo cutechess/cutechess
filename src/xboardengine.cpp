@@ -26,7 +26,7 @@
 XboardEngine::XboardEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent)
 : ChessEngine(ioDevice, chessboard, parent)
 {
-	setName(QString("XboardEngine ") + QString::number(m_id));
+	setName("XboardEngine");
 	// Tell the engine to turn on xboard mode
 	write("xboard");
 	// Tell the engine that we're using Xboard protocol 2

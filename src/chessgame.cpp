@@ -69,11 +69,6 @@ void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
 	m_whitePlayer = whitePlayer;
 	m_blackPlayer = blackPlayer;
 
-	connect(m_whitePlayer, SIGNAL(debugMessage(const QString&)),
-	        this, SIGNAL(debugMessage(const QString&)));
-	connect(m_blackPlayer, SIGNAL(debugMessage(const QString&)),
-	        this, SIGNAL(debugMessage(const QString&)));
-
 	connect(m_whitePlayer, SIGNAL(moveMade(const ChessMove&)),
 	        this, SLOT(moveMade(const ChessMove&)));
 	connect(m_blackPlayer, SIGNAL(moveMade(const ChessMove&)),

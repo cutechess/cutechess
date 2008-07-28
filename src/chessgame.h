@@ -39,9 +39,6 @@ class ChessGame : public QObject
 	public slots:
 		void moveMade(const ChessMove& move);
 
-	signals:
-		void debugMessage(const QString& data) const;
-
 	private:
 		Chessboard* m_chessboard;
 		ChessPlayer* m_whitePlayer;

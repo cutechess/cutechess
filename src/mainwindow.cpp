@@ -129,8 +129,8 @@ void MainWindow::sloppyVersus()
 	QProcess* process1 = new QProcess(this);
 	QProcess* process2 = new QProcess(this);
 
-	process1->setWorkingDirectory("/home/ilari/apps/sloppy/src");
-	process2->setWorkingDirectory("/home/ilari/apps/sloppy/pak/sloppy-linux64");
+	process1->setWorkingDirectory("engines/sloppy-020");
+	process2->setWorkingDirectory("engines/sloppy-020");
 	
 	process1->start("./sloppy");
 	process2->start("./sloppy");
@@ -142,11 +142,14 @@ void MainWindow::sloppyVersus()
 	}
 
 	ChessGame* chessgame = new ChessGame(this);
-	connect(chessgame, SIGNAL(debugMessage(const QString&)),
-	        m_engineDebugTextEdit, SLOT(append(const QString&)));
 
 	ChessPlayer* player1 = new XboardEngine(process1, chessgame->chessboard(), this);
 	ChessPlayer* player2 = new XboardEngine(process2, chessgame->chessboard(), this);
+
+	connect(player1, SIGNAL(debugMessage(const QString&)),
+	        m_engineDebugTextEdit, SLOT(append(const QString&)));
+	connect(player2, SIGNAL(debugMessage(const QString&)),
+	        m_engineDebugTextEdit, SLOT(append(const QString&)));
 	
 	chessgame->newGame(player1, player2);
 }
