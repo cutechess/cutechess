@@ -1,16 +1,5 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-	<file>bpawn.svg</file>
-	<file>brook.svg</file>
-	<file>bknight.svg</file>
-	<file>bbishop.svg</file>
-	<file>bqueen.svg</file>
-	<file>bking.svg</file>
-	<file>wpawn.svg</file>
-	<file>wrook.svg</file>
-	<file>wknight.svg</file>
-	<file>wbishop.svg</file>
-	<file>wqueen.svg</file>
-	<file>wking.svg</file>
+	<file>default.svg</file>
 </qresource>
 </RCC>

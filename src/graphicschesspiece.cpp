@@ -19,14 +19,13 @@
 
 #include "graphicschesspiece.h"
 
-
 GraphicsChessPiece::GraphicsChessPiece(Chessboard::ChessSide side,
                                        Chessboard::ChessPiece piece,
                                        QGraphicsItem* parent)
 : QGraphicsSvgItem(parent)
 {
 	m_side = side;
-	m_piece = piece;
+	setPiece(piece);
 }
 
 Chessboard::ChessSide GraphicsChessPiece::side() const
@@ -42,5 +41,70 @@ Chessboard::ChessPiece GraphicsChessPiece::piece() const
 void GraphicsChessPiece::setPiece(Chessboard::ChessPiece piece)
 {
 	m_piece = piece;
+
+	if (m_side == Chessboard::White)
+	{
+		switch (m_piece)
+		{
+			case Chessboard::Pawn:
+				setElementId("wpawn");
+			break;
+
+			case Chessboard::Knight:
+				setElementId("wknight");
+			break;
+
+			case Chessboard::Bishop:
+				setElementId("wbishop");
+			break;
+
+			case Chessboard::Rook:
+				setElementId("wrook");
+			break;
+
+			case Chessboard::Queen:
+				setElementId("wqueen");
+			break;
+
+			case Chessboard::King:
+				setElementId("wking");
+			break;
+
+			default:
+			break;
+		}
+	}
+	else if (m_side == Chessboard::Black)
+	{
+		switch (m_piece)
+		{
+			case Chessboard::Pawn:
+				setElementId("bpawn");
+			break;
+
+			case Chessboard::Knight:
+				setElementId("bknight");
+			break;
+
+			case Chessboard::Bishop:
+				setElementId("bbishop");
+			break;
+
+			case Chessboard::Rook:
+				setElementId("brook");
+			break;
+
+			case Chessboard::Queen:
+				setElementId("bqueen");
+			break;
+
+			case Chessboard::King:
+				setElementId("bking");
+			break;
+
+			default:
+			break;
+		}
+	}
 }
 

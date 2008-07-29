@@ -35,7 +35,8 @@ class GraphicsChessboardItem : public QObject, public QGraphicsItem
 	Q_OBJECT
 
 	public:
-		GraphicsChessboardItem(QGraphicsItem* parent = 0);
+		GraphicsChessboardItem(const QString& svgResource = ":/default.svg",
+			QGraphicsItem* parent = 0);
 		~GraphicsChessboardItem();
 
 		/** Size of the board. */
@@ -55,11 +56,10 @@ class GraphicsChessboardItem : public QObject, public QGraphicsItem
 	
 	private:
 		void initChessboard();
-		void initSvgRenderers();
 		void initChessPieces();
 
 		GraphicsChessboardSquareItem* m_squares[64];
-		QMap<Chessboard::ChessSide, QMap<Chessboard::ChessPiece, QSvgRenderer*> > m_renderers;
+		QSvgRenderer* m_renderer;
 		GraphicsChessPiece* m_pieces[32];
 		bool m_showBorder;
 		QColor m_borderColor;
