@@ -35,6 +35,7 @@ win32:debug {
 
 HEADERS = src/graphicschessboardsquareitem.h \
           src/graphicschessboarditem.h \
+          src/graphicschesspiece.h \
           src/chessboardview.h \
           src/manager.h \
           src/logmanager.h \
@@ -58,6 +59,7 @@ HEADERS = src/graphicschessboardsquareitem.h \
 
 SOURCES = src/graphicschessboardsquareitem.cpp \
           src/graphicschessboarditem.cpp \
+          src/graphicschesspiece.cpp \
           src/chessboardview.cpp \
           src/manager.cpp \
           src/logmanager.cpp \

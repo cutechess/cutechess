@@ -18,18 +18,22 @@
 #ifndef GRAPHICSCHESSBOARDITEM_H
 #define GRAPHICSCHESSBOARDITEM_H
 
+#include <QObject>
 #include <QGraphicsItem>
 #include <QMap>
 
-#include "chessboard/chessmove.h"
+#include "chessboard/chessboard.h"
 
 class QPainter;
-class QGraphicsSvgItem;
+class GraphicsChessPiece;
 class QSvgRenderer;
+class ChessMove;
 class GraphicsChessboardSquareItem;
 
-class GraphicsChessboardItem : public QGraphicsItem
+class GraphicsChessboardItem : public QObject, public QGraphicsItem
 {
+	Q_OBJECT
+
 	public:
 		GraphicsChessboardItem(QGraphicsItem* parent = 0);
 		~GraphicsChessboardItem();
@@ -46,6 +50,7 @@ class GraphicsChessboardItem : public QGraphicsItem
 		bool isBorderVisible() const;
 		void showBorder(bool visible);
 
+	public slots:
 		void makeMove(const ChessMove& move);
 	
 	private:
@@ -55,7 +60,7 @@ class GraphicsChessboardItem : public QGraphicsItem
 
 		GraphicsChessboardSquareItem* m_squares[64];
 		QMap<Chessboard::ChessSide, QMap<Chessboard::ChessPiece, QSvgRenderer*> > m_renderers;
-		QGraphicsSvgItem* m_pieces[32];
+		GraphicsChessPiece* m_pieces[32];
 		bool m_showBorder;
 		QColor m_borderColor;
 };

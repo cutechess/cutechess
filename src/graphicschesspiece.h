@@ -15,40 +15,30 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CHESSGAME_H
-#define CHESSGAME_H
+#ifndef GRAPHICSCHESSPIECE
+#define GRAPHICSCHESSPIECE
 
-#include <QObject>
+#include <QGraphicsSvgItem>
+#include "chessboard/chessboard.h"
 
-class Chessboard;
-class ChessPlayer;
-class ChessMove;
-
-class ChessGame : public QObject
+class GraphicsChessPiece: public QGraphicsSvgItem
 {
-	Q_OBJECT
+Q_OBJECT
 
-	public:
-		ChessGame(QObject *parent = 0);
-		~ChessGame();
-		Chessboard* chessboard() const;
-		void newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer);
-		ChessPlayer* whitePlayer() const;
-		ChessPlayer* blackPlayer() const;
+public:
+	GraphicsChessPiece(Chessboard::ChessSide side,
+	                   Chessboard::ChessPiece piece,
+	                   QGraphicsItem* parent = 0);
 
-	public slots:
-		void moveMade(const ChessMove& move);
+	Chessboard::ChessSide side() const;
+	Chessboard::ChessPiece piece() const;
 
-	signals:
-		void moveHappened(const ChessMove& move);
+	void setPiece(Chessboard::ChessPiece piece);
 
-	private:
-		Chessboard* m_chessboard;
-		ChessPlayer* m_whitePlayer;
-		ChessPlayer* m_blackPlayer;
-		ChessPlayer* m_playerToMove;
-
+private:
+	Chessboard::ChessSide m_side;
+	Chessboard::ChessPiece m_piece;
 };
 
-#endif // CHESSGAME_H
+#endif // GRAPHICSCHESSPIECE
 

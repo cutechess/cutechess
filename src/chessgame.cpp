@@ -24,7 +24,7 @@ ChessGame::ChessGame(QObject *parent)
 {
 	m_whitePlayer = 0;
 	m_blackPlayer = 0;
-	m_sideToMove = 0;
+	m_playerToMove = 0;
 	m_chessboard = new Chessboard();
 }
 
@@ -43,7 +43,7 @@ void ChessGame::moveMade(const ChessMove& move)
 	ChessPlayer* sender = dynamic_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
 
-	if (sender != m_sideToMove) {
+	if (sender != m_playerToMove) {
 		qDebug("%s tried to make a move on the opponent's turn", qPrintable(sender->name()));
 		return;
 	}
@@ -53,13 +53,15 @@ void ChessGame::moveMade(const ChessMove& move)
 		return;
 	}
 
-	if (m_sideToMove == m_whitePlayer)
-		m_sideToMove = m_blackPlayer;
+	if (m_playerToMove == m_whitePlayer)
+		m_playerToMove = m_blackPlayer;
 	else
-		m_sideToMove = m_whitePlayer;
+		m_playerToMove = m_whitePlayer;
 
-	m_sideToMove->sendOpponentsMove(move);
+	m_playerToMove->sendOpponentsMove(move);
 	m_chessboard->makeMove(move);
+	
+	emit moveHappened(move);
 }
 
 void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
@@ -76,8 +78,8 @@ void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
 
 	m_whitePlayer->setSide(Chessboard::White);
 	m_blackPlayer->setSide(Chessboard::Black);
-	m_sideToMove = m_whitePlayer;
-	m_sideToMove->go();
+	m_playerToMove = m_whitePlayer;
+	m_playerToMove->go();
 }
 
 ChessPlayer* ChessGame::whitePlayer() const

@@ -143,6 +143,9 @@ void MainWindow::sloppyVersus()
 
 	ChessGame* chessgame = new ChessGame(this);
 
+	connect(chessgame, SIGNAL(moveHappened(const ChessMove&)),
+	        m_visualChessboard, SLOT(makeMove(const ChessMove&)));
+
 	ChessPlayer* player1 = new XboardEngine(process1, chessgame->chessboard(), this);
 	ChessPlayer* player2 = new XboardEngine(process2, chessgame->chessboard(), this);
 
