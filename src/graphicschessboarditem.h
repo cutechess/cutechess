@@ -19,17 +19,20 @@
 #define GRAPHICSCHESSBOARDITEM_H
 
 #include <QGraphicsItem>
+#include <QMap>
 
 #include "chessboard/chessmove.h"
 
 class QPainter;
 class QGraphicsSvgItem;
+class QSvgRenderer;
 class GraphicsChessboardSquareItem;
 
 class GraphicsChessboardItem : public QGraphicsItem
 {
 	public:
 		GraphicsChessboardItem(QGraphicsItem* parent = 0);
+		~GraphicsChessboardItem();
 
 		/** Size of the board. */
 		static const qreal size;
@@ -47,9 +50,11 @@ class GraphicsChessboardItem : public QGraphicsItem
 	
 	private:
 		void initChessboard();
+		void initSvgRenderers();
 		void initChessPieces();
 
 		GraphicsChessboardSquareItem* m_squares[64];
+		QMap<Chessboard::ChessSide, QMap<Chessboard::ChessPiece, QSvgRenderer*> > m_renderers;
 		QGraphicsSvgItem* m_pieces[32];
 		bool m_showBorder;
 		QColor m_borderColor;
