@@ -34,6 +34,7 @@ public:
 	Chessboard::ChessPiece piece() const;
 
 	void setPiece(Chessboard::ChessPiece piece);
+	void centerOnParent();
 
 private:
 	Chessboard::ChessSide m_side;

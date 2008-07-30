@@ -108,3 +108,20 @@ void GraphicsChessPiece::setPiece(Chessboard::ChessPiece piece)
 	}
 }
 
+void GraphicsChessPiece::centerOnParent()
+{
+	Q_ASSERT(parentItem() != 0);
+
+	// The size of the SVG image must be smaller than parent
+	Q_ASSERT(sceneBoundingRect().width() <=
+		parentItem()->sceneBoundingRect().width());
+
+	Q_ASSERT(sceneBoundingRect().height() <=
+		parentItem()->sceneBoundingRect().height());
+
+	setPos((parentItem()->sceneBoundingRect().width() -
+		sceneBoundingRect().width()) / 2.0,
+		(parentItem()->sceneBoundingRect().height() -
+		sceneBoundingRect().height()) / 2.0);
+}
+

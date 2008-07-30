@@ -183,17 +183,7 @@ void GraphicsChessboardItem::initChessPieces()
 		piece->setSharedRenderer(m_renderer);
 
 		// Center the piece on its parent
-		// The size of the SVG image must be smaller than its parent
-		Q_ASSERT(piece->sceneBoundingRect().width() <=
-			GraphicsChessboardSquareItem::size);
-
-		Q_ASSERT(piece->sceneBoundingRect().height() <=
-			GraphicsChessboardSquareItem::size);
-
-		piece->setPos((GraphicsChessboardSquareItem::size -
-			piece->sceneBoundingRect().width()) / 2.0,
-			(GraphicsChessboardSquareItem::size -
-			piece->sceneBoundingRect().height()) / 2.0);
+		piece->centerOnParent();
 	}
 }
 
@@ -245,6 +235,7 @@ void GraphicsChessboardItem::makeMove(const ChessMove& move)
 	// Promotion
 	if (move.promotion() != Chessboard::NoPiece) {
 		piece->setPiece(move.promotion());
+		piece->centerOnParent();
 	}
 
 	// Hide all items in the target square if there's any
