@@ -20,7 +20,7 @@
 
 #include <QObject>
 #include <QGraphicsItem>
-#include <QMap>
+#include <QList>
 
 #include "chessboard/chessboard.h"
 
@@ -60,7 +60,7 @@ class GraphicsChessboardItem : public QObject, public QGraphicsItem
 
 		GraphicsChessboardSquareItem* m_squares[64];
 		QSvgRenderer* m_renderer;
-		GraphicsChessPiece* m_pieces[32];
+		QList<GraphicsChessPiece*> m_pieces;
 		bool m_showBorder;
 		QColor m_borderColor;
 };

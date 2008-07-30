@@ -128,34 +128,27 @@ void GraphicsChessboardItem::initChessPieces()
 	// The order of piece initialization is the same as they appear in the
 	// chessboard: Rook, Knigh, Bishop, Queen, King, Bishop, Knight, Rook,
 	// and 8 Pawns.
-	m_pieces[0] = new GraphicsChessPiece(Chessboard::Black, Chessboard::Rook, m_squares[0]);
-	m_pieces[0]->setSharedRenderer(m_renderer);
-
-	m_pieces[1] = new GraphicsChessPiece(Chessboard::Black, Chessboard::Knight, m_squares[1]);
-	m_pieces[1]->setSharedRenderer(m_renderer);
-
-	m_pieces[2] = new GraphicsChessPiece(Chessboard::Black, Chessboard::Bishop, m_squares[2]);
-	m_pieces[2]->setSharedRenderer(m_renderer);
-
-	m_pieces[3] = new GraphicsChessPiece(Chessboard::Black, Chessboard::Queen, m_squares[3]);
-	m_pieces[3]->setSharedRenderer(m_renderer);
-
-	m_pieces[4] = new GraphicsChessPiece(Chessboard::Black, Chessboard::King, m_squares[4]);
-	m_pieces[4]->setSharedRenderer(m_renderer);
-
-	m_pieces[5] = new GraphicsChessPiece(Chessboard::Black, Chessboard::Bishop, m_squares[5]);
-	m_pieces[5]->setSharedRenderer(m_renderer);
-
-	m_pieces[6] = new GraphicsChessPiece(Chessboard::Black, Chessboard::Knight, m_squares[6]);
-	m_pieces[6]->setSharedRenderer(m_renderer);
-
-	m_pieces[7] = new GraphicsChessPiece(Chessboard::Black, Chessboard::Rook, m_squares[7]);
-	m_pieces[7]->setSharedRenderer(m_renderer);
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
+		Chessboard::Rook, m_squares[0]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
+		Chessboard::Knight, m_squares[1]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
+		Chessboard::Bishop, m_squares[2]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
+		Chessboard::Queen, m_squares[3]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
+		Chessboard::King, m_squares[4]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
+		Chessboard::Bishop, m_squares[5]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
+		Chessboard::Knight, m_squares[6]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
+		Chessboard::Rook, m_squares[7]));
 
 	for (int i = 0; i < 8; i++)
 	{
-		m_pieces[8 + i] = new GraphicsChessPiece(Chessboard::Black, Chessboard::Pawn, m_squares[8 + i]);
-		m_pieces[8 + i]->setSharedRenderer(m_renderer);
+		m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
+			Chessboard::Pawn, m_squares[8 + i]));
 	}
 
 	// == WHITE PIECES ==
@@ -163,34 +156,33 @@ void GraphicsChessboardItem::initChessPieces()
 	// The order of piece initialization is the same as they appear in the
 	// chessboard: Rook, Knigh, Bishop, Queen, King, Bishop, Knight, Rook,
 	// and 8 Pawns.
-	m_pieces[15] = new GraphicsChessPiece(Chessboard::White, Chessboard::Rook, m_squares[56]);
-	m_pieces[15]->setSharedRenderer(m_renderer);
-
-	m_pieces[16] = new GraphicsChessPiece(Chessboard::White, Chessboard::Knight, m_squares[57]);
-	m_pieces[16]->setSharedRenderer(m_renderer);
-
-	m_pieces[17] = new GraphicsChessPiece(Chessboard::White, Chessboard::Bishop, m_squares[58]);
-	m_pieces[17]->setSharedRenderer(m_renderer);
-
-	m_pieces[18] = new GraphicsChessPiece(Chessboard::White, Chessboard::Queen, m_squares[59]);
-	m_pieces[18]->setSharedRenderer(m_renderer);
-
-	m_pieces[19] = new GraphicsChessPiece(Chessboard::White, Chessboard::King, m_squares[60]);
-	m_pieces[19]->setSharedRenderer(m_renderer);
-
-	m_pieces[20] = new GraphicsChessPiece(Chessboard::White, Chessboard::Bishop, m_squares[61]);
-	m_pieces[20]->setSharedRenderer(m_renderer);
-
-	m_pieces[21] = new GraphicsChessPiece(Chessboard::White, Chessboard::Knight, m_squares[62]);
-	m_pieces[21]->setSharedRenderer(m_renderer);
-
-	m_pieces[22] = new GraphicsChessPiece(Chessboard::White, Chessboard::Rook, m_squares[63]);
-	m_pieces[22]->setSharedRenderer(m_renderer);
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
+		Chessboard::Rook, m_squares[56]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
+		Chessboard::Knight, m_squares[57]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
+		Chessboard::Bishop, m_squares[58]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
+		Chessboard::Queen, m_squares[59]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
+		Chessboard::King, m_squares[60]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
+		Chessboard::Bishop, m_squares[61]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
+		Chessboard::Knight, m_squares[62]));
+	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
+		Chessboard::Rook, m_squares[63]));
 
 	for (int i = 0; i < 8; i++)
 	{
-		m_pieces[23 + i] = new GraphicsChessPiece(Chessboard::White, Chessboard::Pawn, m_squares[48 + i]);
-		m_pieces[23 + i]->setSharedRenderer(m_renderer);
+		m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
+			Chessboard::Pawn, m_squares[48 + i]));
+	}
+
+	// Associate the shared renderer with the chess pieces
+	foreach (GraphicsChessPiece* piece, m_pieces)
+	{
+		piece->setSharedRenderer(m_renderer);
 	}
 }
 
