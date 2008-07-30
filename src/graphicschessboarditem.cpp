@@ -121,8 +121,6 @@ void GraphicsChessboardItem::initChessboard()
 
 void GraphicsChessboardItem::initChessPieces()
 {
-	// TODO: The pieces aren't centered within the square
-
 	// == BLACK PIECES ==
 	//
 	// The order of piece initialization is the same as they appear in the
@@ -179,10 +177,23 @@ void GraphicsChessboardItem::initChessPieces()
 			Chessboard::Pawn, m_squares[48 + i]));
 	}
 
-	// Associate the shared renderer with the chess pieces
 	foreach (GraphicsChessPiece* piece, m_pieces)
 	{
+		// Associate the shared renderer with the chess pieces
 		piece->setSharedRenderer(m_renderer);
+
+		// Center the piece on its parent
+		// The size of the SVG image must be smaller than its parent
+		Q_ASSERT(piece->sceneBoundingRect().width() <=
+			GraphicsChessboardSquareItem::size);
+
+		Q_ASSERT(piece->sceneBoundingRect().height() <=
+			GraphicsChessboardSquareItem::size);
+
+		piece->setPos((GraphicsChessboardSquareItem::size -
+			piece->sceneBoundingRect().width()) / 2.0,
+			(GraphicsChessboardSquareItem::size -
+			piece->sceneBoundingRect().height()) / 2.0);
 	}
 }
 
