@@ -20,51 +20,10 @@
 #include "graphicschesspiece.h"
 
 
-static QString pieceFileName(Chessboard::ChessSide side, Chessboard::ChessPiece piece)
-{
-	if (side == Chessboard::White) {
-		switch (piece) {
-		case Chessboard::Pawn:
-			return ":/wpawn.svg";
-		case Chessboard::Knight:
-			return ":/wknight.svg";
-		case Chessboard::Bishop:
-			return ":/wbishop.svg";
-		case Chessboard::Rook:
-			return ":/wrook.svg";
-		case Chessboard::Queen:
-			return ":/wqueen.svg";
-		case Chessboard::King:
-			return ":/wking.svg";
-		default:
-			return "";
-		}
-	} else if (side == Chessboard::Black) {
-		switch (piece) {
-		case Chessboard::Pawn:
-			return ":/bpawn.svg";
-		case Chessboard::Knight:
-			return ":/bknight.svg";
-		case Chessboard::Bishop:
-			return ":/bbishop.svg";
-		case Chessboard::Rook:
-			return ":/brook.svg";
-		case Chessboard::Queen:
-			return ":/bqueen.svg";
-		case Chessboard::King:
-			return ":/bking.svg";
-		default:
-			return "";
-		}
-	}
-	
-	return "";
-}
-
 GraphicsChessPiece::GraphicsChessPiece(Chessboard::ChessSide side,
                                        Chessboard::ChessPiece piece,
                                        QGraphicsItem* parent)
-: QGraphicsSvgItem(pieceFileName(side, piece), parent)
+: QGraphicsSvgItem(parent)
 {
 	m_side = side;
 	m_piece = piece;
