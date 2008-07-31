@@ -15,32 +15,33 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef XBOARDENGINE_H
-#define XBOARDENGINE_H
+#ifndef UCIENGINE_H
+#define UCIENGINE_H
 
+#include <QStringList>
 #include "chessengine.h"
 
 
 /**
- * The XboardEngine class represents a chess engine which uses the Xboard
- * chess engine communication protocol.
+ * The UciEngine class represents a chess engine which uses the UCI
+ * chess interface.
  *
- * Xboard's specifications: http://www.tim-mann.org/xboard/engine-intf.html
+ * UCI's specifications: http://wbec-ridderkerk.nl/html/UCIProtocol.html
  * @see ChessEngine
  */
-class XboardEngine: public ChessEngine
+class UciEngine: public ChessEngine
 {
 Q_OBJECT
 
 public:
 	/**
-	 * Creates a new XboardEngine object.
+	 * Creates a new UciEngine object.
 	 * @param ioDevice An open chess engine process or socket.
 	 * @param chessboard A chessboard object for converting between the various move formats.
 	 * @param parent The parent object.
 	 */
-	XboardEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent = 0);
-	~XboardEngine();
+	UciEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent = 0);
+	~UciEngine();
 
 	/**
 	 * Starts a new chess game.
@@ -80,10 +81,10 @@ public:
 
 protected:
 	virtual void parseLine(const QString& line);
-
+	
 private:
-	bool m_forceMode;
+	QStringList m_moves;
 };
 
-#endif
+#endif // UCIENGINE
 

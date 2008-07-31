@@ -28,6 +28,7 @@
 #include "chessgame.h"
 #include "chessplayer.h"
 #include "xboardengine.h"
+#include "uciengine.h"
 
 MainWindow::MainWindow()
 {
@@ -135,9 +136,15 @@ void MainWindow::sloppyVersus()
 	process1->start("./sloppy");
 	process2->start("./sloppy");
 
-	if (!process1->waitForStarted() || !process2->waitForStarted())
+	if (!process1->waitForStarted())
 	{
-		qDebug() << "Cannot start sloppy process.";
+		qDebug() << "Cannot start the first engine process.";
+		return;
+	}
+
+	if (!process2->waitForStarted())
+	{
+		qDebug() << "Cannot start the second engine process.";
 		return;
 	}
 

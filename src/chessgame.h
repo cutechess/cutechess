@@ -47,7 +47,7 @@ class ChessGame : public QObject
 		ChessPlayer* m_whitePlayer;
 		ChessPlayer* m_blackPlayer;
 		ChessPlayer* m_playerToMove;
-
+		bool m_gameInProgress;
 };
 
 #endif // CHESSGAME_H

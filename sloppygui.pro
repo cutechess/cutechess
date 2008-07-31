@@ -49,6 +49,7 @@ HEADERS = src/graphicschessboardsquareitem.h \
           src/chessplayer.h \
           src/chessengine.h \
           src/xboardengine.h \
+          src/uciengine.h \
           src/chessboard/chessboard.h \
           src/chessboard/chessmove.h \
           src/chessboard/magicmoves.h \
@@ -73,6 +74,7 @@ SOURCES = src/graphicschessboardsquareitem.cpp \
           src/chessplayer.cpp \
           src/chessengine.cpp \
           src/xboardengine.cpp \
+          src/uciengine.cpp \
           src/chessboard/chessboard.cpp \
           src/chessboard/chessmove.cpp \
           src/chessboard/magicmoves.cpp \

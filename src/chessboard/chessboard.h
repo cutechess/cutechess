@@ -61,6 +61,17 @@ public:
 		RQ,	// rooks and queens
 		NoPiece
 	};
+	
+	enum ChessResult
+	{
+		WhiteMates,
+		BlackMates,
+		Stalemate,
+		DrawByMaterial,
+		DrawByRepetition,
+		DrawByFiftyMoves,
+		NoResult
+	};
 
 	/**
 	 * Constructor that doesn't set the board to any specific position.
@@ -106,7 +117,7 @@ public:
 	 * Gets the result of the game (in the current position).
 	 * @return the result, or NoResult if the game hasn't ended.
 	 */
-	//ChessResult result();
+	ChessResult result();
 	
 	/**
 	 * Gets the number of halfmoves played (in the current position).
@@ -280,6 +291,9 @@ private:
 	static void initZobristKeys();
 	// Compute the Zobrist key for the current chess position
 	void computeZobristKey();
+
+	bool insufficientMaterial() const;
+	ChessResult getMateType();
 	
 	// makemove
 	void makePawnMove(quint32 move);

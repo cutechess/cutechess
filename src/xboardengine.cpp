@@ -26,6 +26,7 @@
 XboardEngine::XboardEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent)
 : ChessEngine(ioDevice, chessboard, parent)
 {
+	m_forceMode = true;
 	setName("XboardEngine");
 	// Tell the engine to turn on xboard mode
 	write("xboard");
@@ -38,14 +39,15 @@ XboardEngine::~XboardEngine()
 	//write("quit");
 }
 
-void XboardEngine::newGame(Chessboard::ChessSide side, const QString& fen)
+void XboardEngine::newGame(Chessboard::ChessSide side)
 {
 	setSide(side);
+	m_forceMode = true;
 	write("force");
-	write("setboard " + fen);
+	write("setboard " + m_chessboard->fenString());
 }
 
-void XboardEngine::sendOpponentsMove(const ChessMove& move) const
+void XboardEngine::sendOpponentsMove(const ChessMove& move)
 {
 	QString moveString;
 	if (m_notation == LongNotation)
@@ -58,7 +60,10 @@ void XboardEngine::sendOpponentsMove(const ChessMove& move) const
 
 void XboardEngine::go()
 {
-	write("go");
+	if (m_forceMode) {
+		m_forceMode = false;
+		write("go");
+	}
 }
 
 void XboardEngine::setTimeControl(TimeControl timeControl)

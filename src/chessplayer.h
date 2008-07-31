@@ -43,9 +43,8 @@ public:
 	/**
 	 * Starts a new chess game.
 	 * @param side The side (color) the player should play as.
-	 * @param fen The FEN string of the starting position.
 	 */
-	virtual void newGame(Chessboard::ChessSide side, const QString& fen) = 0;
+	virtual void newGame(Chessboard::ChessSide side) = 0;
 	
 	/**
 	 * Tells the player to start thinking and make its next move.
@@ -69,7 +68,7 @@ public:
 	 * Tells the opponent's move to the player.
 	 * @param move A chess move which the opponent made.
 	 */
-	virtual void sendOpponentsMove(const ChessMove& move) const = 0;
+	virtual void sendOpponentsMove(const ChessMove& move) = 0;
 	
 	/**
 	 * Gets the name of the player.

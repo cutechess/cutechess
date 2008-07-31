@@ -25,6 +25,7 @@ ChessGame::ChessGame(QObject *parent)
 	m_whitePlayer = 0;
 	m_blackPlayer = 0;
 	m_playerToMove = 0;
+	m_gameInProgress = false;
 	m_chessboard = new Chessboard();
 }
 
@@ -42,6 +43,11 @@ void ChessGame::moveMade(const ChessMove& move)
 {
 	ChessPlayer* sender = dynamic_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
+
+	if (!m_gameInProgress) {
+		qDebug("%s sent a move when no game is in progress", qPrintable(sender->name()));
+		return;
+	}
 
 	if (sender != m_playerToMove) {
 		qDebug("%s tried to make a move on the opponent's turn", qPrintable(sender->name()));
@@ -61,6 +67,13 @@ void ChessGame::moveMade(const ChessMove& move)
 	m_playerToMove->sendOpponentsMove(move);
 	m_chessboard->makeMove(move);
 	
+	if (m_chessboard->result() == Chessboard::NoResult)
+		m_playerToMove->go();
+	else {
+		m_gameInProgress = false;
+		qDebug("Game ended");
+	}
+	
 	emit moveHappened(move);
 }
 
@@ -76,8 +89,10 @@ void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
 	connect(m_blackPlayer, SIGNAL(moveMade(const ChessMove&)),
 	        this, SLOT(moveMade(const ChessMove&)));
 
-	m_whitePlayer->setSide(Chessboard::White);
-	m_blackPlayer->setSide(Chessboard::Black);
+	m_gameInProgress = true;
+
+	m_whitePlayer->newGame(Chessboard::White);
+	m_blackPlayer->newGame(Chessboard::Black);
 	m_playerToMove = m_whitePlayer;
 	m_playerToMove->go();
 }

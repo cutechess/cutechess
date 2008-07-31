@@ -122,6 +122,56 @@ Chessboard::ChessSide Chessboard::side(void) const
 	return (ChessSide)m_color;
 }
 
+/* Returns true if both sides have insufficient mating material.  */
+bool Chessboard::insufficientMaterial() const
+{
+	const quint64* whites = &m_pieces[White][AllPieces];
+	const quint64* blacks = &m_pieces[Black][AllPieces];
+	
+	if (popcount(*whites) <= 2
+	&&  *whites == (whites[King] | whites[Knight] | whites[Bishop])
+	&&  popcount(*blacks) <= 2
+	&&  *blacks == (blacks[King] | blacks[Knight] | blacks[Bishop]))
+		return true;
+	
+	return false;
+}
+
+Chessboard::ChessResult Chessboard::getMateType()
+{
+	MoveList moveList;
+
+	generateMoves(&moveList);
+	if (moveList.count() > 0)
+		return NoResult;
+
+	if (m_posp->inCheck) {
+		if (m_color == Black)
+			return WhiteMates;
+		return BlackMates;
+	}
+
+	return Stalemate;
+}
+
+/* Print the result of the game and return true if the game is over.
+   Otherwise just return false.  */
+Chessboard::ChessResult Chessboard::result()
+{
+	ChessResult mateType = getMateType();
+	if (mateType != NoResult)
+		return mateType;
+
+	if (getRepeatCount() >= 2)
+		return DrawByRepetition;
+	else if (insufficientMaterial())
+		return DrawByMaterial;
+	else if (m_posp->fifty >= 100)
+		return DrawByFiftyMoves;
+
+	return NoResult;
+}
+
 quint64 Chessboard::perft(int depth)
 {
 	int i;
