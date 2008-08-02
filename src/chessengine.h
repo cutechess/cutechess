@@ -24,27 +24,7 @@ class QString;
 class QIODevice;
 class ChessMove;
 
-/**
- * The TimeControl class represents the time controls of a chess game.
- * It is used for telling the chess engines how much time they can spend
- * thinking of their moves.
- */
-class TimeControl
-{
-	/**
-	 * Number of moves per time control.
-	 * If it's 0 the whole game is played in 'timePerTc' time.
-	 */
-	int movesPerTc;
-	/**
-	 * Time in milliseconds per time control.
-	 */
-	int timePerTc;
-	/**
-	 * Time increment per move in milliseconds.
-	 */
-	int increment;
-};
+class TimeControl;
 
 
 /**
@@ -58,14 +38,12 @@ class ChessEngine : public ChessPlayer
 	Q_OBJECT
 
 	public:
-		enum ChessProtocol
-		{
+		enum ChessProtocol {
 			Xboard,
 			Uci
 		};
-
-		enum MoveNotation
-		{
+		
+		enum MoveNotation {
 			LongNotation, /**< Long Algebraic Notation, or Coordinate Notation. */
 			StandardNotation /**< Standard Algebraic Notation, or SAN. */
 		};
@@ -84,7 +62,7 @@ class ChessEngine : public ChessPlayer
 		 * @param side The side (color) the engine should play as.
 		 */
 		virtual void newGame(Chessboard::ChessSide side) = 0;
-
+		
 		/**
 		 * Tells the engine to start thinking of its next move.
 		 */
@@ -94,25 +72,25 @@ class ChessEngine : public ChessPlayer
 		 * Sets the time control, eg. 40 moves in 2 min. with 1 sec. increment.
 		 * @param timeControl The time control.
 		 */
-		virtual void setTimeControl(TimeControl timeControl) = 0;
-
+		virtual void setTimeControl(const TimeControl& timeControl) = 0;
+		
 		/**
 		 * Tells the engine how much time it has left in the whole game.
 		 * @param timeLeft Time left in milliseconds.
 		 * @see setTimeControl()
 		 */
 		virtual void setTimeLeft(int timeLeft) = 0;
-
+		
 		/**
 		 * @return False, because chess engines aren't humans.
 		 */
 		virtual bool isHuman() const;
-
+		
 		/**
 		 * @return Is the engine ready to play?
 		 */
 		bool isReady() const;
-
+		
 		/**
 		 * Gets the chess protocol which the engine uses.
 		 * @return The chess protocol.
@@ -138,7 +116,7 @@ class ChessEngine : public ChessPlayer
 		 */
 		virtual void parseLine(const QString& line) = 0;
 
-		Chessboard* m_chessboard;
+		Chessboard *m_chessboard;
 		MoveNotation m_notation;
 		bool m_isReady;
 		int m_id; // The id number of the chess engine
@@ -149,10 +127,6 @@ class ChessEngine : public ChessPlayer
 		 * Reads input from the engine.
 		 */
 		void on_readyRead();
-
-	private:
-		QIODevice* m_ioDevice;
-
 };
 
 #endif // CHESSENGINE_H

@@ -61,7 +61,7 @@ void UciEngine::go()
 	write("go movetime 2000");
 }
 
-void UciEngine::setTimeControl(TimeControl timeControl)
+void UciEngine::setTimeControl(const TimeControl& timeControl)
 {
 
 }

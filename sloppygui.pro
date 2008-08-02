@@ -46,6 +46,7 @@ HEADERS = src/graphicschessboardsquareitem.h \
           src/symbols.h \
           src/promotiondlg.h \
           src/chessgame.h \
+          src/timecontrol.h \
           src/chessplayer.h \
           src/chessengine.h \
           src/xboardengine.h \
@@ -71,6 +72,7 @@ SOURCES = src/graphicschessboardsquareitem.cpp \
           src/promotiondlg.cpp \
           src/main.cpp \
           src/chessgame.cpp \
+          src/timecontrol.cpp \
           src/chessplayer.cpp \
           src/chessengine.cpp \
           src/xboardengine.cpp \

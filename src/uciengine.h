@@ -53,7 +53,7 @@ class UciEngine : public ChessEngine
 		 * @param move A chess move which the opponent made.
 		 */
 		virtual void sendOpponentsMove(const ChessMove& move);
-
+		
 		/**
 		 * Tells the engine to start thinking of its next move.
 		 */
@@ -63,15 +63,15 @@ class UciEngine : public ChessEngine
 		 * Sets the time control, eg. 40 moves in 2 min. with 1 sec. increment.
 		 * @param timeControl The time control.
 		 */
-		virtual void setTimeControl(TimeControl timeControl);
-
+		virtual void setTimeControl(const TimeControl& timeControl);
+		
 		/**
 		 * Tells the engine how much time it has left in the whole game.
 		 * @param timeLeft Time left in milliseconds.
 		 * @see setTimeControl()
 		 */
 		virtual void setTimeLeft(int timeLeft);
-
+		
 		/**
 		 * Gets the chess protocol which the engine uses.
 		 * @return The chess protocol, which is Xboard.
@@ -80,10 +80,9 @@ class UciEngine : public ChessEngine
 
 	protected:
 		virtual void parseLine(const QString& line);
-
+		
 	private:
 		QStringList m_moves;
-
 };
 
 #endif // UCIENGINE_H

@@ -66,7 +66,7 @@ void XboardEngine::go()
 	}
 }
 
-void XboardEngine::setTimeControl(TimeControl timeControl)
+void XboardEngine::setTimeControl(const TimeControl& timeControl)
 {
 
 }
