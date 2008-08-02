@@ -64,7 +64,7 @@ class ChessEngine : public ChessPlayer
 		 * Starts a new chess game.
 		 * @param side The side (color) the engine should play as.
 		 */
-		//virtual void newGame(Chessboard::ChessSide side) = 0;
+		virtual void newGame(Chessboard::ChessSide side) = 0;
 		
 		/**
 		 * Tells the engine to start thinking of its next move.
