@@ -132,13 +132,8 @@ void TimeControl::setTimePerMove(int timePerMove)
 
 void TimeControl::setTimeLeft(int timeLeft)
 {
-	if (timeLeft < 0) {
-		qDebug("Negative time left: %d", timeLeft);
-		return;
-	}
-	
 	m_timeLeft = timeLeft;
-	if (timeLeft > 0)
+	if (timeLeft != 0)
 		m_timePerMove = 0;
 }
 
