@@ -22,9 +22,8 @@
 #include "uciengine.h"
 #include "chessboard/chessmove.h"
 
-
 UciEngine::UciEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent)
-: ChessEngine(ioDevice, chessboard, parent)
+	: ChessEngine(ioDevice, chessboard, parent)
 {
 	setName("UciEngine");
 	// Tell the engine to turn on Uci mode
@@ -82,7 +81,8 @@ void UciEngine::parseLine(const QString& line)
 	QString command = line.section(' ', 0, 0);
 	QString args = line.right(line.length() - command.length() - 1);
 
-	if (command == "bestmove") {
+	if (command == "bestmove")
+	{
 		QString moveString = args.section(' ', 0, 0);
 		if (moveString.isEmpty())
 			moveString = args;
@@ -90,9 +90,13 @@ void UciEngine::parseLine(const QString& line)
 		m_moves.append(moveString);
 		ChessMove move = m_chessboard->chessMoveFromString(moveString);
 		emit moveMade(move);
-	} else if (command == "readyok") {
+	}
+	else if (command == "readyok")
+	{
 		m_isReady = true;
-	} else if (command == "id") {
+	}
+	else if (command == "id")
+	{
 		QString tag = args.section(' ', 0, 0);
 		QString tagVal = args.section(' ', 1);
 		

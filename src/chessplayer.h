@@ -23,90 +23,90 @@
 
 class QString;
 
-
 /**
  * The ChessPlayer class represents any chess player, human or AI.
  */
-class ChessPlayer: public QObject
+class ChessPlayer : public QObject
 {
-Q_OBJECT
+	Q_OBJECT
 
-public:
-	/**
-	 * Creates a new ChessPlayer object.
-	 * @param parent The parent object.
-	 */
-	ChessPlayer(QObject *parent = 0);
-	
-	virtual ~ChessPlayer() { }
+	public:
+		/**
+		 * Creates a new ChessPlayer object.
+		 * @param parent The parent object.
+		 */
+		ChessPlayer(QObject* parent = 0);
 
-	/**
-	 * Starts a new chess game.
-	 * @param side The side (color) the player should play as.
-	 */
-	virtual void newGame(Chessboard::ChessSide side) = 0;
-	
-	/**
-	 * Tells the player to start thinking and make its next move.
-	 */
-	virtual void go() = 0;
+		virtual ~ChessPlayer() { }
 
-	/**
-	 * Gets the side of the player.
-	 * @return The side of the player.
-	 * @see setSide()
-	 */
-	Chessboard::ChessSide side() const;
+		/**
+		 * Starts a new chess game.
+		 * @param side The side (color) the player should play as.
+		 */
+		virtual void newGame(Chessboard::ChessSide side) = 0;
 
-	/**
-	 * Sets the player to play on a specific side (white or black)
-	 * @param side The side of the player.
-	 */
-	virtual void setSide(Chessboard::ChessSide side);
+		/**
+		 * Tells the player to start thinking and make its next move.
+		 */
+		virtual void go() = 0;
 
-	/**
-	 * Tells the opponent's move to the player.
-	 * @param move A chess move which the opponent made.
-	 */
-	virtual void sendOpponentsMove(const ChessMove& move) = 0;
-	
-	/**
-	 * Gets the name of the player.
-	 * @return The name of the player.
-	 */
-	QString name() const;
-	
-	/**
-	 * Gives the player a name.
-	 * @param name The player's name.
-	 */
-	void setName(const QString& name);
+		/**
+		 * Gets the side of the player.
+		 * @return The side of the player.
+		 * @see setSide()
+		 */
+		Chessboard::ChessSide side() const;
 
-	/**
-	 * Tells whether or not the player is human.
-	 * @return True if the player is human.
-	 */
-	virtual bool isHuman() const = 0;
+		/**
+		 * Sets the player to play on a specific side (white or black)
+		 * @param side The side of the player.
+		 */
+		virtual void setSide(Chessboard::ChessSide side);
 
-signals:
-	/**
-	 * Signals the engine's move.
-	 * @param move A chess move which the engine made.
-	 */
-	void moveMade(const ChessMove& move) const;
+		/**
+		 * Tells the opponent's move to the player.
+		 * @param move A chess move which the opponent made.
+		 */
+		virtual void sendOpponentsMove(const ChessMove& move) = 0;
 
-	/**
-	 * Signals a debugging message from the player.
-	 * @param data The debugging message.
-	 */
-	void debugMessage(const QString& data) const;
+		/**
+		 * Gets the name of the player.
+		 * @return The name of the player.
+		 */
+		QString name() const;
 
-protected:
-	QString m_name;
+		/**
+		 * Gives the player a name.
+		 * @param name The player's name.
+		 */
+		void setName(const QString& name);
 
-private:
-	Chessboard::ChessSide m_side;
+		/**
+		 * Tells whether or not the player is human.
+		 * @return True if the player is human.
+		 */
+		virtual bool isHuman() const = 0;
+
+	signals:
+		/**
+		 * Signals the engine's move.
+		 * @param move A chess move which the engine made.
+		 */
+		void moveMade(const ChessMove& move) const;
+
+		/**
+		 * Signals a debugging message from the player.
+		 * @param data The debugging message.
+		 */
+		void debugMessage(const QString& data) const;
+
+	protected:
+		QString m_name;
+
+	private:
+		Chessboard::ChessSide m_side;
+
 };
 
-#endif
+#endif // CHESSPLAYER_H
 

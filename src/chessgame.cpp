@@ -20,7 +20,7 @@
 #include "chessplayer.h"
 
 ChessGame::ChessGame(QObject *parent)
-: QObject(parent)
+	: QObject(parent)
 {
 	m_whitePlayer = 0;
 	m_blackPlayer = 0;
@@ -44,17 +44,20 @@ void ChessGame::moveMade(const ChessMove& move)
 	ChessPlayer* sender = dynamic_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
 
-	if (!m_gameInProgress) {
+	if (!m_gameInProgress)
+	{
 		qDebug("%s sent a move when no game is in progress", qPrintable(sender->name()));
 		return;
 	}
 
-	if (sender != m_playerToMove) {
+	if (sender != m_playerToMove)
+	{
 		qDebug("%s tried to make a move on the opponent's turn", qPrintable(sender->name()));
 		return;
 	}
 
-	if (!m_chessboard->isLegalMove(move)) {
+	if (!m_chessboard->isLegalMove(move))
+	{
 		qDebug("%s sent an illegal move", qPrintable(sender->name()));
 		return;
 	}
@@ -69,7 +72,8 @@ void ChessGame::moveMade(const ChessMove& move)
 	
 	if (m_chessboard->result() == Chessboard::NoResult)
 		m_playerToMove->go();
-	else {
+	else
+	{
 		m_gameInProgress = false;
 		qDebug("Game ended");
 	}

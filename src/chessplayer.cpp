@@ -19,8 +19,8 @@
 
 #include "chessplayer.h"
 
-ChessPlayer::ChessPlayer(QObject *parent)
-: QObject(parent)
+ChessPlayer::ChessPlayer(QObject* parent)
+	: QObject(parent)
 {
 	m_side = Chessboard::NoSide;
 }

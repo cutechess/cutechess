@@ -21,11 +21,10 @@
 #include "chessengine.h"
 #include "chessboard/chessboard.h"
 
-
 int ChessEngine::m_count = 0;
 
-ChessEngine::ChessEngine(QIODevice *ioDevice, Chessboard *chessboard, QObject *parent)
-: ChessPlayer(parent)
+ChessEngine::ChessEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent)
+	: ChessPlayer(parent)
 {
 	Q_CHECK_PTR(ioDevice);
 	Q_CHECK_PTR(chessboard);
@@ -63,7 +62,8 @@ void ChessEngine::write(const QString& data) const
 
 void ChessEngine::on_readyRead()
 {
-	while (m_ioDevice->canReadLine()) {
+	while (m_ioDevice->canReadLine())
+	{
 		QString line = QString(m_ioDevice->readLine());
 		line.chop(1); // remove the trailing newline
 		emit debugMessage(QString("<") + name() + "(" + QString::number(m_id) +  "): " + line);

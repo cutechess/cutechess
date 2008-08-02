@@ -24,7 +24,6 @@ class QString;
 class QIODevice;
 class ChessMove;
 
-
 /**
  * The TimeControl class represents the time controls of a chess game.
  * It is used for telling the chess engines how much time they can spend
@@ -54,104 +53,107 @@ class TimeControl
  * Communication between the GUI and the chess engines happens via a QIODevice.
  * @see ChessPlayer
  */
-class ChessEngine: public ChessPlayer
+class ChessEngine : public ChessPlayer
 {
-Q_OBJECT
+	Q_OBJECT
 
-public:
-	enum ChessProtocol {
-		Xboard,
-		Uci
-	};
-	
-	enum MoveNotation {
-		LongNotation, /**< Long Algebraic Notation, or Coordinate Notation. */
-		StandardNotation /**< Standard Algebraic Notation, or SAN. */
-	};
+	public:
+		enum ChessProtocol
+		{
+			Xboard,
+			Uci
+		};
 
-	/**
-	 * Creates a new ChessEngine object.
-	 * @param ioDevice An open chess engine process or socket.
-	 * @param chessboard A chessboard object for converting between the various move formats.
-	 * @param parent The parent object.
-	 */
-	ChessEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent = 0);
-	virtual ~ChessEngine();
+		enum MoveNotation
+		{
+			LongNotation, /**< Long Algebraic Notation, or Coordinate Notation. */
+			StandardNotation /**< Standard Algebraic Notation, or SAN. */
+		};
 
-	/**
-	 * Starts a new chess game.
-	 * @param side The side (color) the engine should play as.
-	 */
-	virtual void newGame(Chessboard::ChessSide side) = 0;
-	
-	/**
-	 * Tells the engine to start thinking of its next move.
-	 */
-	virtual void go() = 0;
+		/**
+		 * Creates a new ChessEngine object.
+		 * @param ioDevice An open chess engine process or socket.
+		 * @param chessboard A chessboard object for converting between the various move formats.
+		 * @param parent The parent object.
+		 */
+		ChessEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent = 0);
+		virtual ~ChessEngine();
 
-	/**
-	 * Sets the time control, eg. 40 moves in 2 min. with 1 sec. increment.
-	 * @param timeControl The time control.
-	 */
-	virtual void setTimeControl(TimeControl timeControl) = 0;
-	
-	/**
-	 * Tells the engine how much time it has left in the whole game.
-	 * @param timeLeft Time left in milliseconds.
-	 * @see setTimeControl()
-	 */
-	virtual void setTimeLeft(int timeLeft) = 0;
-	
-	/**
-	 * @return False, because chess engines aren't humans.
-	 */
-	virtual bool isHuman() const;
-	
-	/**
-	 * @return Is the engine ready to play?
-	 */
-	bool isReady() const;
-	
-	/**
-	 * Gets the chess protocol which the engine uses.
-	 * @return The chess protocol.
-	 */
-	virtual ChessProtocol protocol() const = 0;
+		/**
+		 * Starts a new chess game.
+		 * @param side The side (color) the engine should play as.
+		 */
+		virtual void newGame(Chessboard::ChessSide side) = 0;
 
-	/**
-	 * Tells the opponent's move to the engine.
-	 * @param move A chess move which the opponent made.
-	 */
-	virtual void sendOpponentsMove(const ChessMove& move) = 0;
+		/**
+		 * Tells the engine to start thinking of its next move.
+		 */
+		virtual void go() = 0;
 
-	/**
-	 * Writes data to the chess engine.
-	 * @param data The data that will be written to the engine's device.
-	 */
-	void write(const QString& data) const;
+		/**
+		 * Sets the time control, eg. 40 moves in 2 min. with 1 sec. increment.
+		 * @param timeControl The time control.
+		 */
+		virtual void setTimeControl(TimeControl timeControl) = 0;
 
-protected:
-	/**
-	 * Parses a line of input from the engine.
-	 * @param line A line of text.
-	 */
-	virtual void parseLine(const QString& line) = 0;
+		/**
+		 * Tells the engine how much time it has left in the whole game.
+		 * @param timeLeft Time left in milliseconds.
+		 * @see setTimeControl()
+		 */
+		virtual void setTimeLeft(int timeLeft) = 0;
 
-	Chessboard *m_chessboard;
-	MoveNotation m_notation;
-	bool m_isReady;
-	int m_id; // The id number of the chess engine
-	static int m_count; // Num. of active chess engines
+		/**
+		 * @return False, because chess engines aren't humans.
+		 */
+		virtual bool isHuman() const;
 
-protected slots:
-	/**
-	 * Reads input from the engine.
-	 */
-	void on_readyRead();
+		/**
+		 * @return Is the engine ready to play?
+		 */
+		bool isReady() const;
 
-private:
-	QIODevice *m_ioDevice;
+		/**
+		 * Gets the chess protocol which the engine uses.
+		 * @return The chess protocol.
+		 */
+		virtual ChessProtocol protocol() const = 0;
+
+		/**
+		 * Tells the opponent's move to the engine.
+		 * @param move A chess move which the opponent made.
+		 */
+		virtual void sendOpponentsMove(const ChessMove& move) = 0;
+
+		/**
+		 * Writes data to the chess engine.
+		 * @param data The data that will be written to the engine's device.
+		 */
+		void write(const QString& data) const;
+
+	protected:
+		/**
+		 * Parses a line of input from the engine.
+		 * @param line A line of text.
+		 */
+		virtual void parseLine(const QString& line) = 0;
+
+		Chessboard* m_chessboard;
+		MoveNotation m_notation;
+		bool m_isReady;
+		int m_id; // The id number of the chess engine
+		static int m_count; // Num. of active chess engines
+
+	protected slots:
+		/**
+		 * Reads input from the engine.
+		 */
+		void on_readyRead();
+
+	private:
+		QIODevice* m_ioDevice;
+
 };
 
-#endif
+#endif // CHESSENGINE_H
 

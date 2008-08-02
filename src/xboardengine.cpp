@@ -22,9 +22,8 @@
 #include "xboardengine.h"
 #include "chessboard/chessmove.h"
 
-
 XboardEngine::XboardEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent)
-: ChessEngine(ioDevice, chessboard, parent)
+	: ChessEngine(ioDevice, chessboard, parent)
 {
 	m_forceMode = true;
 	setName("XboardEngine");
@@ -60,7 +59,8 @@ void XboardEngine::sendOpponentsMove(const ChessMove& move)
 
 void XboardEngine::go()
 {
-	if (m_forceMode) {
+	if (m_forceMode)
+	{
 		m_forceMode = false;
 		write("go");
 	}
@@ -86,17 +86,21 @@ void XboardEngine::parseLine(const QString& line)
 	QString command = line.section(' ', 0, 0);
 	QString args = line.right(line.length() - command.length() - 1);
 
-	if (command == "move") {
+	if (command == "move")
+	{
 		ChessMove move = m_chessboard->chessMoveFromString(args);
 		emit moveMade(move);
-	} else if (command == "feature") {
+	}
+	else if (command == "feature")
+	{
 		QRegExp rx("\\w+\\s*=\\s*(\"[^\"]*\"|\\d+)");
 
 		int pos = 0;
 		QString arg;
 		QString feature;
 		QStringList list;
-		while ((pos = args.indexOf(rx, pos)) != -1) {
+		while ((pos = args.indexOf(rx, pos)) != -1)
+		{
 			arg = args.mid(pos, rx.matchedLength());
 			pos += rx.matchedLength();
 			
@@ -104,13 +108,18 @@ void XboardEngine::parseLine(const QString& line)
 			if (list.count() != 2)
 				continue;
 			feature = list[0].trimmed();
-			if (feature == "san") {
+			if (feature == "san")
+			{
 				if (list[1].trimmed() == "1")
 					m_notation = StandardNotation;
-			} else if (feature == "myname") {
+			}
+			else if (feature == "myname")
+			{
 				m_name = list[1].trimmed();
 				m_name.remove('\"');
-			} else if (feature == "done") {
+			}
+			else if (feature == "done")
+			{
 				if (list[1].trimmed() == "1")
 					m_isReady = true;
 			}
