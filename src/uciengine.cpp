@@ -82,10 +82,10 @@ void UciEngine::go()
 	else {
 		command += QString(" wtime ") + QString::number(wtc->timeLeft());
 		command += QString(" btime ") + QString::number(btc->timeLeft());
-		if (wtc->increment() > 0)
-			command += QString(" winc ") + QString::number(wtc->increment());
-		if (btc->increment() > 0)
-			command += QString(" binc ") + QString::number(btc->increment());
+		if (wtc->timeIncrement() > 0)
+			command += QString(" winc ") + QString::number(wtc->timeIncrement());
+		if (btc->timeIncrement() > 0)
+			command += QString(" binc ") + QString::number(btc->timeIncrement());
 		if (otc->movesLeft() > 0)
 			command += QString(" movestogo ") + QString::number(otc->movesLeft());
 	}

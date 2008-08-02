@@ -41,7 +41,7 @@ int TimeControl::movesPerTc() const
 	return m_movesPerTc;
 }
 
-int TimeControl::increment() const
+int TimeControl::timeIncrement() const
 {
 	return m_increment;
 }

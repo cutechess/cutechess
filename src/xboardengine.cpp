@@ -71,7 +71,7 @@ void XboardEngine::newGame(Chessboard::ChessSide side)
 		QString command = "level";
 		command += QString(" ") + QString::number(otc->movesPerTc());
 		command += QString(" ") + msToXboardTime(otc->timePerTc());
-		command += QString(" ") + QString::number(otc->increment() / 1000);
+		command += QString(" ") + QString::number(otc->timeIncrement() / 1000);
 		write(command);
 	}
 }

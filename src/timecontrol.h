@@ -46,7 +46,7 @@ public:
 	/**
 	 * Time increment per move in milliseconds.
 	 */
-	int increment() const;
+	int timeIncrement() const;
 
 	/**
 	 * Time in milliseconds per move.
