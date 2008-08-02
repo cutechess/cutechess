@@ -22,6 +22,7 @@
 #include "chessboard/chessboard.h"
 
 class QString;
+class TimeControl;
 
 /**
  * The ChessPlayer class represents any chess player, human or AI.
@@ -33,22 +34,36 @@ class ChessPlayer : public QObject
 	public:
 		/**
 		 * Creates a new ChessPlayer object.
+		 * @param whiteTimeControl Time controls for the white player.
+		 * @param blackTimeControl Time controls for the black player.
 		 * @param parent The parent object.
 		 */
-		ChessPlayer(QObject* parent = 0);
-
+		ChessPlayer(TimeControl* whiteTimeControl,
+		            TimeControl* blackTimeControl,
+		            QObject *parent = 0);
+		
 		virtual ~ChessPlayer() { }
 
 		/**
 		 * Starts a new chess game.
 		 * @param side The side (color) the player should play as.
 		 */
-		virtual void newGame(Chessboard::ChessSide side) = 0;
-
+		virtual void newGame(Chessboard::ChessSide side);
+		
 		/**
 		 * Tells the player to start thinking and make its next move.
 		 */
 		virtual void go() = 0;
+
+		TimeControl* timeControl() const;
+
+		/**
+		 * Sets the time controls for both players.
+		 * @param whiteTimeControl White player's time control.
+		 * @param blackTimeControl Black player's time control.
+		 */
+		void setTimeControls(TimeControl* whiteTimeControl,
+		                     TimeControl* blackTimeControl);
 
 		/**
 		 * Gets the side of the player.
@@ -61,20 +76,20 @@ class ChessPlayer : public QObject
 		 * Sets the player to play on a specific side (white or black)
 		 * @param side The side of the player.
 		 */
-		virtual void setSide(Chessboard::ChessSide side);
+		void setSide(Chessboard::ChessSide side);
 
 		/**
 		 * Tells the opponent's move to the player.
 		 * @param move A chess move which the opponent made.
 		 */
 		virtual void sendOpponentsMove(const ChessMove& move) = 0;
-
+		
 		/**
 		 * Gets the name of the player.
 		 * @return The name of the player.
 		 */
 		QString name() const;
-
+		
 		/**
 		 * Gives the player a name.
 		 * @param name The player's name.
@@ -102,10 +117,13 @@ class ChessPlayer : public QObject
 
 	protected:
 		QString m_name;
+		TimeControl* m_whiteTimeControl;
+		TimeControl* m_blackTimeControl;
+		TimeControl* m_ownTimeControl;
+		TimeControl* m_opponentsTimeControl;
 
 	private:
 		Chessboard::ChessSide m_side;
-
 };
 
 #endif // CHESSPLAYER_H

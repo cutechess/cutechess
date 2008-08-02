@@ -21,9 +21,27 @@
 
 #include "xboardengine.h"
 #include "chessboard/chessmove.h"
+#include "timecontrol.h"
 
-XboardEngine::XboardEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent)
-	: ChessEngine(ioDevice, chessboard, parent)
+
+static QString msToXboardTime(int ms)
+{
+	int sec = ms / 1000;
+
+	QString number = QString::number(sec / 60);
+	if (sec % 60 != 0)
+		number += QString(":") + QString::number(sec % 60);
+	
+	return number;
+}
+
+
+XboardEngine::XboardEngine(QIODevice* ioDevice,
+                         Chessboard* chessboard,
+                         TimeControl* whiteTimeControl,
+                         TimeControl* blackTimeControl,
+                         QObject* parent)
+: ChessEngine(ioDevice, chessboard, whiteTimeControl, blackTimeControl, parent)
 {
 	m_forceMode = true;
 	setName("XboardEngine");
@@ -40,10 +58,33 @@ XboardEngine::~XboardEngine()
 
 void XboardEngine::newGame(Chessboard::ChessSide side)
 {
-	setSide(side);
+	ChessPlayer::newGame(side);
 	m_forceMode = true;
 	write("force");
 	write("setboard " + m_chessboard->fenString());
+
+	// Send the time controls
+	TimeControl* otc = m_ownTimeControl;
+	if (otc->timePerMove() > 0)
+		write(QString("st ") + QString::number(otc->timePerMove() / 1000));
+	else {
+		QString command = "level";
+		command += QString(" ") + QString::number(otc->movesPerTc());
+		command += QString(" ") + msToXboardTime(otc->timePerTc());
+		command += QString(" ") + QString::number(otc->increment() / 1000);
+		write(command);
+	}
+}
+
+void XboardEngine::sendTimeLeft() const
+{
+	int csLeft = m_ownTimeControl->timeLeft() / 10;
+	int ocsLeft = m_opponentsTimeControl->timeLeft() / 10;
+
+	if (csLeft > 0)
+		write(QString("time ") + QString::number(csLeft));
+	if (ocsLeft > 0)
+		write(QString("otim ") + QString::number(ocsLeft));
 }
 
 void XboardEngine::sendOpponentsMove(const ChessMove& move)
@@ -54,6 +95,8 @@ void XboardEngine::sendOpponentsMove(const ChessMove& move)
 	else if (m_notation == StandardNotation)
 		moveString = m_chessboard->sanMoveString(move);
 	
+	if (!m_forceMode)
+		sendTimeLeft();
 	write(moveString);
 }
 
@@ -62,18 +105,9 @@ void XboardEngine::go()
 	if (m_forceMode)
 	{
 		m_forceMode = false;
+		sendTimeLeft();
 		write("go");
 	}
-}
-
-void XboardEngine::setTimeControl(const TimeControl& timeControl)
-{
-
-}
-
-void XboardEngine::setTimeLeft(int timeLeft)
-{
-
 }
 
 ChessEngine::ChessProtocol XboardEngine::protocol() const

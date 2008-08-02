@@ -19,12 +19,16 @@
 
 #include "timecontrol.h"
 
-TimeControl::TimeControl(int timePerTc, int movesPerTc, int increment, int timePerMove)
+TimeControl::TimeControl(int timePerTc, int movesPerTc, int increment, int timePerMove, QObject* parent)
+: QObject(parent)
 {
 	setTimePerTc(timePerTc);
 	setMovesPerTc(movesPerTc);
 	setIncrement(increment);
 	setTimePerMove(timePerMove);
+
+	setTimeLeft(0);
+	setMovesLeft(0);
 }
 
 int TimeControl::timePerTc() const
@@ -47,6 +51,33 @@ int TimeControl::timePerMove() const
 	return m_timePerMove;
 }
 
+int TimeControl::timeLeft() const
+{
+	return m_timeLeft;
+}
+
+int TimeControl::movesLeft() const
+{
+	return m_movesLeft;
+}
+
+
+void TimeControl::update(int elapsedTime)
+{
+	if (m_timePerMove == 0) {
+		setTimeLeft(m_timeLeft - elapsedTime);
+
+		if (m_movesPerTc > 0) {
+			setMovesLeft(m_movesLeft - 1);
+			
+			// Restart the time control
+			if (m_movesLeft == 0) {
+				setMovesLeft(m_movesPerTc);
+				setTimeLeft(m_timePerTc);
+			}
+		}
+	}
+}
 
 void TimeControl::setTimePerTc(int timePerTc)
 {
@@ -97,5 +128,29 @@ void TimeControl::setTimePerMove(int timePerMove)
 		m_movesPerTc = 0;
 		m_increment = 0;
 	}
+}
+
+void TimeControl::setTimeLeft(int timeLeft)
+{
+	if (timeLeft < 0) {
+		qDebug("Negative time left: %d", timeLeft);
+		return;
+	}
+	
+	m_timeLeft = timeLeft;
+	if (timeLeft > 0)
+		m_timePerMove = 0;
+}
+
+void TimeControl::setMovesLeft(int movesLeft)
+{
+	if (movesLeft < 0) {
+		qDebug("Negative moves left: %d", movesLeft);
+		return;
+	}
+	
+	m_movesLeft = movesLeft;
+	if (movesLeft > 0)
+		m_timePerMove = 0;
 }
 

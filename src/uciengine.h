@@ -37,9 +37,16 @@ class UciEngine : public ChessEngine
 		 * Creates a new UciEngine object.
 		 * @param ioDevice An open chess engine process or socket.
 		 * @param chessboard A chessboard object for converting between the various move formats.
+		 * @param whiteTimeControl Time control for the white player.
+		 * @param blackTimeControl Time control for the black player.
 		 * @param parent The parent object.
 		 */
-		UciEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent = 0);
+		UciEngine(QIODevice* ioDevice,
+		          Chessboard* chessboard,
+		          TimeControl* whiteTimeControl,
+		          TimeControl* blackTimeControl,
+		          QObject* parent = 0);
+
 		~UciEngine();
 
 		/**
@@ -58,19 +65,6 @@ class UciEngine : public ChessEngine
 		 * Tells the engine to start thinking of its next move.
 		 */
 		virtual void go();
-
-		/**
-		 * Sets the time control, eg. 40 moves in 2 min. with 1 sec. increment.
-		 * @param timeControl The time control.
-		 */
-		virtual void setTimeControl(const TimeControl& timeControl);
-		
-		/**
-		 * Tells the engine how much time it has left in the whole game.
-		 * @param timeLeft Time left in milliseconds.
-		 * @see setTimeControl()
-		 */
-		virtual void setTimeLeft(int timeLeft);
 		
 		/**
 		 * Gets the chess protocol which the engine uses.

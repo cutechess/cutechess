@@ -21,9 +21,15 @@
 
 #include "uciengine.h"
 #include "chessboard/chessmove.h"
+#include "timecontrol.h"
 
-UciEngine::UciEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent)
-	: ChessEngine(ioDevice, chessboard, parent)
+
+UciEngine::UciEngine(QIODevice* ioDevice,
+                     Chessboard* chessboard,
+                     TimeControl* whiteTimeControl,
+                     TimeControl* blackTimeControl,
+                     QObject* parent)
+: ChessEngine(ioDevice, chessboard, whiteTimeControl, blackTimeControl, parent)
 {
 	setName("UciEngine");
 	// Tell the engine to turn on Uci mode
@@ -38,7 +44,7 @@ UciEngine::~UciEngine()
 
 void UciEngine::newGame(Chessboard::ChessSide side)
 {
-	setSide(side);
+	ChessPlayer::newGame(side);
 	m_moves.clear();
 	write("ucinewgame");
 	write(QString("position ") + m_chessboard->fenString());
@@ -58,17 +64,24 @@ void UciEngine::sendOpponentsMove(const ChessMove& move)
 
 void UciEngine::go()
 {
-	write("go movetime 2000");
-}
+	TimeControl* wtc = m_whiteTimeControl;
+	TimeControl* btc = m_blackTimeControl;
+	TimeControl* otc = m_ownTimeControl;
 
-void UciEngine::setTimeControl(const TimeControl& timeControl)
-{
-
-}
-
-void UciEngine::setTimeLeft(int timeLeft)
-{
-
+	QString command = "go";
+	if (otc->timePerMove() > 0)
+		command += QString(" movetime ") + QString::number(otc->timePerMove());
+	else {
+		command += QString(" wtime ") + QString::number(wtc->timeLeft());
+		command += QString(" btime ") + QString::number(btc->timeLeft());
+		if (wtc->increment() > 0)
+			command += QString(" winc ") + QString::number(wtc->increment());
+		if (btc->increment() > 0)
+			command += QString(" binc ") + QString::number(btc->increment());
+		if (otc->movesLeft() > 0)
+			command += QString(" movestogo ") + QString::number(otc->movesLeft());
+	}
+	write(command);
 }
 
 ChessEngine::ChessProtocol UciEngine::protocol() const

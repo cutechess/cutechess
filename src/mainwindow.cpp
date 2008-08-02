@@ -29,6 +29,7 @@
 #include "chessplayer.h"
 #include "xboardengine.h"
 #include "uciengine.h"
+#include "timecontrol.h"
 
 MainWindow::MainWindow()
 {
@@ -153,8 +154,11 @@ void MainWindow::sloppyVersus()
 	connect(chessgame, SIGNAL(moveHappened(const ChessMove&)),
 	        m_visualChessboard, SLOT(makeMove(const ChessMove&)));
 
-	ChessPlayer* player1 = new XboardEngine(process1, chessgame->chessboard(), this);
-	ChessPlayer* player2 = new XboardEngine(process2, chessgame->chessboard(), this);
+	TimeControl* tc1 = new TimeControl(60000, 0, 0, 0, this);
+	TimeControl* tc2 = new TimeControl(60000, 0, 0, 0, this);
+
+	ChessPlayer* player1 = new XboardEngine(process1, chessgame->chessboard(), tc1, tc2, this);
+	ChessPlayer* player2 = new XboardEngine(process2, chessgame->chessboard(), tc1, tc2, this);
 
 	connect(player1, SIGNAL(debugMessage(const QString&)),
 	        m_engineDebugTextEdit, SLOT(append(const QString&)));

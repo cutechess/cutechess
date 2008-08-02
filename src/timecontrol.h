@@ -18,15 +18,19 @@
 #ifndef TIMECONTROL_H
 #define TIMECONTROL_H
 
+#include <QObject>
+
 /**
  * The TimeControl class represents the time controls of a chess game.
  * It is used for telling the chess engines how much time they can spend
  * thinking of their moves.
  */
-class TimeControl
+class TimeControl: public QObject
 {
+Q_OBJECT
+
 public:
-	TimeControl(int timePerTc = 0, int movesPerTc = 0, int increment = 0, int timePerMove = 0);
+	TimeControl(int timePerTc = 0, int movesPerTc = 0, int increment = 0, int timePerMove = 0, QObject* parent = 0);
 
 	/**
 	 * Time in milliseconds per time control.
@@ -49,16 +53,32 @@ public:
 	 */
 	int timePerMove() const;
 
+	/**
+	 * Time left in the time control.
+	 */
+	int timeLeft() const;
+
+	/**
+	 * Moves left in the time control.
+	 */
+	int movesLeft() const;
+
 	void setTimePerTc(int movesPerTc);
 	void setMovesPerTc(int timePerTc);
 	void setIncrement(int increment);
 	void setTimePerMove(int timePerMove);
+	void setTimeLeft(int timeLeft);
+	void setMovesLeft(int movesLeft);
+
+	void update(int elapsedTime);
 
 private:
 	int m_movesPerTc;
 	int m_timePerTc;
 	int m_timePerMove;
 	int m_increment;
+	int m_timeLeft;
+	int m_movesLeft;
 };
 
 #endif // TIMECONTROL

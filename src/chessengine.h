@@ -22,10 +22,6 @@
 
 class QString;
 class QIODevice;
-class ChessMove;
-
-class TimeControl;
-
 
 /**
  * The ChessEngine class represents an artificial intelligence chess player,
@@ -52,35 +48,29 @@ class ChessEngine : public ChessPlayer
 		 * Creates a new ChessEngine object.
 		 * @param ioDevice An open chess engine process or socket.
 		 * @param chessboard A chessboard object for converting between the various move formats.
+		 * @param whiteTimeControl Time control for the white player.
+		 * @param blackTimeControl Time control for the black player.
 		 * @param parent The parent object.
 		 */
-		ChessEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent = 0);
+		ChessEngine(QIODevice* ioDevice,
+		            Chessboard* chessboard,
+		            TimeControl* whiteTimeControl,
+		            TimeControl* blackTimeControl,
+		            QObject* parent = 0);
+
 		virtual ~ChessEngine();
 
 		/**
 		 * Starts a new chess game.
 		 * @param side The side (color) the engine should play as.
 		 */
-		virtual void newGame(Chessboard::ChessSide side) = 0;
+		//virtual void newGame(Chessboard::ChessSide side) = 0;
 		
 		/**
 		 * Tells the engine to start thinking of its next move.
 		 */
 		virtual void go() = 0;
 
-		/**
-		 * Sets the time control, eg. 40 moves in 2 min. with 1 sec. increment.
-		 * @param timeControl The time control.
-		 */
-		virtual void setTimeControl(const TimeControl& timeControl) = 0;
-		
-		/**
-		 * Tells the engine how much time it has left in the whole game.
-		 * @param timeLeft Time left in milliseconds.
-		 * @see setTimeControl()
-		 */
-		virtual void setTimeLeft(int timeLeft) = 0;
-		
 		/**
 		 * @return False, because chess engines aren't humans.
 		 */
@@ -127,6 +117,9 @@ class ChessEngine : public ChessPlayer
 		 * Reads input from the engine.
 		 */
 		void on_readyRead();
+
+	private:
+		QIODevice *m_ioDevice;
 };
 
 #endif // CHESSENGINE_H

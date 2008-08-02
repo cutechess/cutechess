@@ -18,10 +18,12 @@
 #include "chessgame.h"
 #include "chessboard/chessboard.h"
 #include "chessplayer.h"
+#include "timecontrol.h"
 
 ChessGame::ChessGame(QObject *parent)
 	: QObject(parent)
 {
+	m_moveCount = 0;
 	m_whitePlayer = 0;
 	m_blackPlayer = 0;
 	m_playerToMove = 0;
@@ -62,10 +64,18 @@ void ChessGame::moveMade(const ChessMove& move)
 		return;
 	}
 
+	m_moveCount++;
+
+	// Get the elapsed time and update the time control
+	m_playerToMove->timeControl()->update(m_timer.elapsed());
+
 	if (m_playerToMove == m_whitePlayer)
 		m_playerToMove = m_blackPlayer;
 	else
 		m_playerToMove = m_whitePlayer;
+
+	// Start counting the duration of the next move
+	m_timer.start();
 
 	m_playerToMove->sendOpponentsMove(move);
 	m_chessboard->makeMove(move);
@@ -85,6 +95,7 @@ void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
 {
 	m_chessboard->setFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
+	m_moveCount = 0;
 	m_whitePlayer = whitePlayer;
 	m_blackPlayer = blackPlayer;
 
@@ -98,6 +109,8 @@ void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
 	m_whitePlayer->newGame(Chessboard::White);
 	m_blackPlayer->newGame(Chessboard::Black);
 	m_playerToMove = m_whitePlayer;
+	
+	m_timer.start();
 	m_playerToMove->go();
 }
 

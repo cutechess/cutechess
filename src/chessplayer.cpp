@@ -18,16 +18,60 @@
 #include <QString>
 
 #include "chessplayer.h"
+#include "timecontrol.h"
 
-ChessPlayer::ChessPlayer(QObject* parent)
-	: QObject(parent)
+ChessPlayer::ChessPlayer(TimeControl* whiteTimeControl,
+                         TimeControl* blackTimeControl,
+                         QObject *parent)
+: QObject(parent)
 {
 	m_side = Chessboard::NoSide;
+
+	m_ownTimeControl = 0;
+	m_opponentsTimeControl = 0;
+	setTimeControls(whiteTimeControl, blackTimeControl);
+}
+
+void ChessPlayer::newGame(Chessboard::ChessSide side)
+{
+	setSide(side);
+	m_ownTimeControl->setTimeLeft(m_ownTimeControl->timePerTc());
+	m_ownTimeControl->setMovesLeft(m_ownTimeControl->movesPerTc());
+}
+
+TimeControl* ChessPlayer::timeControl() const
+{
+	return m_ownTimeControl;
+}
+
+void ChessPlayer::setTimeControls(TimeControl* whiteTimeControl,
+                                  TimeControl* blackTimeControl)
+{
+	Q_CHECK_PTR(whiteTimeControl);
+	Q_CHECK_PTR(blackTimeControl);
+
+	m_whiteTimeControl = whiteTimeControl;
+	m_blackTimeControl = blackTimeControl;
+
+	if (m_side == Chessboard::White) {
+		m_ownTimeControl = m_whiteTimeControl;
+		m_opponentsTimeControl = m_blackTimeControl;
+	} else if (m_side == Chessboard::Black) {
+		m_ownTimeControl = m_blackTimeControl;
+		m_opponentsTimeControl = m_whiteTimeControl;
+	}
 }
 
 void ChessPlayer::setSide(Chessboard::ChessSide side)
 {
 	m_side = side;
+	if (m_side == Chessboard::White) {
+		m_ownTimeControl = m_whiteTimeControl;
+		m_opponentsTimeControl = m_blackTimeControl;
+	} else if (m_side == Chessboard::Black) {
+		m_ownTimeControl = m_blackTimeControl;
+		m_opponentsTimeControl = m_whiteTimeControl;
+	}
 }
 
 Chessboard::ChessSide ChessPlayer::side() const

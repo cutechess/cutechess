@@ -23,8 +23,12 @@
 
 int ChessEngine::m_count = 0;
 
-ChessEngine::ChessEngine(QIODevice* ioDevice, Chessboard* chessboard, QObject* parent)
-	: ChessPlayer(parent)
+ChessEngine::ChessEngine(QIODevice* ioDevice,
+                         Chessboard* chessboard,
+                         TimeControl* whiteTimeControl,
+                         TimeControl* blackTimeControl,
+                         QObject* parent)
+: ChessPlayer(whiteTimeControl, blackTimeControl, parent)
 {
 	Q_CHECK_PTR(ioDevice);
 	Q_CHECK_PTR(chessboard);

@@ -19,6 +19,7 @@
 #define CHESSGAME_H
 
 #include <QObject>
+#include <QTime>
 
 class Chessboard;
 class ChessPlayer;
@@ -48,7 +49,8 @@ class ChessGame : public QObject
 		ChessPlayer* m_blackPlayer;
 		ChessPlayer* m_playerToMove;
 		bool m_gameInProgress;
-
+		int m_moveCount;
+		QTime m_timer;
 };
 
 #endif // CHESSGAME_H
