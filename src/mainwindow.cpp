@@ -157,8 +157,8 @@ void MainWindow::sloppyVersus()
 	TimeControl* tc1 = new TimeControl(60000, 0, 0, 0, this);
 	TimeControl* tc2 = new TimeControl(60000, 0, 0, 0, this);
 
-	ChessPlayer* player1 = new XboardEngine(process1, chessgame->chessboard(), tc1, tc2, this);
-	ChessPlayer* player2 = new XboardEngine(process2, chessgame->chessboard(), tc1, tc2, this);
+	ChessPlayer* player1 = new XboardEngine(process1, chessgame->chessboard(), tc1, this);
+	ChessPlayer* player2 = new XboardEngine(process2, chessgame->chessboard(), tc2, this);
 
 	connect(player1, SIGNAL(debugMessage(const QString&)),
 	        m_engineDebugTextEdit, SLOT(append(const QString&)));

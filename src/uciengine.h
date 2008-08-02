@@ -37,14 +37,12 @@ class UciEngine : public ChessEngine
 		 * Creates a new UciEngine object.
 		 * @param ioDevice An open chess engine process or socket.
 		 * @param chessboard A chessboard object for converting between the various move formats.
-		 * @param whiteTimeControl Time control for the white player.
-		 * @param blackTimeControl Time control for the black player.
+		 * @param timeControl Time control for the player.
 		 * @param parent The parent object.
 		 */
 		UciEngine(QIODevice* ioDevice,
 		          Chessboard* chessboard,
-		          TimeControl* whiteTimeControl,
-		          TimeControl* blackTimeControl,
+		          TimeControl* timeControl,
 		          QObject* parent = 0);
 
 		~UciEngine();

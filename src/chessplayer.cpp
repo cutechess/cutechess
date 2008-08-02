@@ -20,58 +20,45 @@
 #include "chessplayer.h"
 #include "timecontrol.h"
 
-ChessPlayer::ChessPlayer(TimeControl* whiteTimeControl,
-                         TimeControl* blackTimeControl,
-                         QObject *parent)
+ChessPlayer::ChessPlayer(TimeControl* timeControl, QObject* parent)
 : QObject(parent)
 {
 	m_side = Chessboard::NoSide;
 
-	m_ownTimeControl = 0;
-	m_opponentsTimeControl = 0;
-	setTimeControls(whiteTimeControl, blackTimeControl);
+	m_timeControl = 0;
+	m_opponent = 0;
+	setTimeControl(timeControl);
 }
 
 void ChessPlayer::newGame(Chessboard::ChessSide side)
 {
+	Q_CHECK_PTR(m_opponent);
+	
 	setSide(side);
-	m_ownTimeControl->setTimeLeft(m_ownTimeControl->timePerTc());
-	m_ownTimeControl->setMovesLeft(m_ownTimeControl->movesPerTc());
+	m_timeControl->setTimeLeft(m_timeControl->timePerTc());
+	m_timeControl->setMovesLeft(m_timeControl->movesPerTc());
 }
 
 TimeControl* ChessPlayer::timeControl() const
 {
-	return m_ownTimeControl;
+	return m_timeControl;
 }
 
-void ChessPlayer::setTimeControls(TimeControl* whiteTimeControl,
-                                  TimeControl* blackTimeControl)
+void ChessPlayer::setTimeControl(TimeControl* timeControl)
 {
-	Q_CHECK_PTR(whiteTimeControl);
-	Q_CHECK_PTR(blackTimeControl);
-
-	m_whiteTimeControl = whiteTimeControl;
-	m_blackTimeControl = blackTimeControl;
-
-	if (m_side == Chessboard::White) {
-		m_ownTimeControl = m_whiteTimeControl;
-		m_opponentsTimeControl = m_blackTimeControl;
-	} else if (m_side == Chessboard::Black) {
-		m_ownTimeControl = m_blackTimeControl;
-		m_opponentsTimeControl = m_whiteTimeControl;
-	}
+	Q_CHECK_PTR(timeControl);
+	m_timeControl = timeControl;
 }
 
 void ChessPlayer::setSide(Chessboard::ChessSide side)
 {
 	m_side = side;
-	if (m_side == Chessboard::White) {
-		m_ownTimeControl = m_whiteTimeControl;
-		m_opponentsTimeControl = m_blackTimeControl;
-	} else if (m_side == Chessboard::Black) {
-		m_ownTimeControl = m_blackTimeControl;
-		m_opponentsTimeControl = m_whiteTimeControl;
-	}
+}
+
+void ChessPlayer::setOpponent(ChessPlayer* opponent)
+{
+	Q_CHECK_PTR(opponent);
+	m_opponent = opponent;
 }
 
 Chessboard::ChessSide ChessPlayer::side() const

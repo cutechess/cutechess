@@ -34,13 +34,10 @@ class ChessPlayer : public QObject
 	public:
 		/**
 		 * Creates a new ChessPlayer object.
-		 * @param whiteTimeControl Time controls for the white player.
-		 * @param blackTimeControl Time controls for the black player.
+		 * @param timeControl Time control for the player.
 		 * @param parent The parent object.
 		 */
-		ChessPlayer(TimeControl* whiteTimeControl,
-		            TimeControl* blackTimeControl,
-		            QObject *parent = 0);
+		ChessPlayer(TimeControl* timeControl, QObject* parent = 0);
 		
 		virtual ~ChessPlayer() { }
 
@@ -55,15 +52,17 @@ class ChessPlayer : public QObject
 		 */
 		virtual void go() = 0;
 
+		/**
+		 * Gets the player's time control.
+		 * @return The time control.
+		 */
 		TimeControl* timeControl() const;
 
 		/**
-		 * Sets the time controls for both players.
-		 * @param whiteTimeControl White player's time control.
-		 * @param blackTimeControl Black player's time control.
+		 * Sets the time control for the player.
+		 * @param timeControl Time control for the player.
 		 */
-		void setTimeControls(TimeControl* whiteTimeControl,
-		                     TimeControl* blackTimeControl);
+		void setTimeControl(TimeControl* timeControl);
 
 		/**
 		 * Gets the side of the player.
@@ -77,6 +76,12 @@ class ChessPlayer : public QObject
 		 * @param side The side of the player.
 		 */
 		void setSide(Chessboard::ChessSide side);
+
+		/**
+		 * Sets the opponent of the player.
+		 * @param opponent The opponent.
+		 */
+		void setOpponent(ChessPlayer* opponent);
 
 		/**
 		 * Tells the opponent's move to the player.
@@ -117,10 +122,8 @@ class ChessPlayer : public QObject
 
 	protected:
 		QString m_name;
-		TimeControl* m_whiteTimeControl;
-		TimeControl* m_blackTimeControl;
-		TimeControl* m_ownTimeControl;
-		TimeControl* m_opponentsTimeControl;
+		TimeControl* m_timeControl;
+		ChessPlayer* m_opponent;
 
 	private:
 		Chessboard::ChessSide m_side;

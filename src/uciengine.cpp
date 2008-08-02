@@ -26,10 +26,9 @@
 
 UciEngine::UciEngine(QIODevice* ioDevice,
                      Chessboard* chessboard,
-                     TimeControl* whiteTimeControl,
-                     TimeControl* blackTimeControl,
+                     TimeControl* timeControl,
                      QObject* parent)
-: ChessEngine(ioDevice, chessboard, whiteTimeControl, blackTimeControl, parent)
+: ChessEngine(ioDevice, chessboard, timeControl, parent)
 {
 	setName("UciEngine");
 	// Tell the engine to turn on Uci mode
@@ -64,9 +63,18 @@ void UciEngine::sendOpponentsMove(const ChessMove& move)
 
 void UciEngine::go()
 {
-	TimeControl* wtc = m_whiteTimeControl;
-	TimeControl* btc = m_blackTimeControl;
-	TimeControl* otc = m_ownTimeControl;
+	TimeControl* otc = m_timeControl;
+	TimeControl* wtc; // white's time control
+	TimeControl* btc; // black's time control
+	
+	if (side() == Chessboard::White) {
+		wtc = otc;
+		btc = m_opponent->timeControl();
+	} else if (side() == Chessboard::Black) {
+		wtc = m_opponent->timeControl();
+		btc = otc;
+	} else
+		qFatal("Player %s doesn't have a side", qPrintable(m_name));
 
 	QString command = "go";
 	if (otc->timePerMove() > 0)

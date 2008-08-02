@@ -48,14 +48,12 @@ class ChessEngine : public ChessPlayer
 		 * Creates a new ChessEngine object.
 		 * @param ioDevice An open chess engine process or socket.
 		 * @param chessboard A chessboard object for converting between the various move formats.
-		 * @param whiteTimeControl Time control for the white player.
-		 * @param blackTimeControl Time control for the black player.
+		 * @param timeControl Time control for the player.
 		 * @param parent The parent object.
 		 */
 		ChessEngine(QIODevice* ioDevice,
 		            Chessboard* chessboard,
-		            TimeControl* whiteTimeControl,
-		            TimeControl* blackTimeControl,
+		            TimeControl* timeControl,
 		            QObject* parent = 0);
 
 		virtual ~ChessEngine();

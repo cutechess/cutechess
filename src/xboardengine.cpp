@@ -38,10 +38,9 @@ static QString msToXboardTime(int ms)
 
 XboardEngine::XboardEngine(QIODevice* ioDevice,
                          Chessboard* chessboard,
-                         TimeControl* whiteTimeControl,
-                         TimeControl* blackTimeControl,
+                         TimeControl* timeControl,
                          QObject* parent)
-: ChessEngine(ioDevice, chessboard, whiteTimeControl, blackTimeControl, parent)
+: ChessEngine(ioDevice, chessboard, timeControl, parent)
 {
 	m_forceMode = true;
 	setName("XboardEngine");
@@ -64,7 +63,8 @@ void XboardEngine::newGame(Chessboard::ChessSide side)
 	write("setboard " + m_chessboard->fenString());
 
 	// Send the time controls
-	TimeControl* otc = m_ownTimeControl;
+	TimeControl* otc = m_timeControl;
+
 	if (otc->timePerMove() > 0)
 		write(QString("st ") + QString::number(otc->timePerMove() / 1000));
 	else {
@@ -78,8 +78,8 @@ void XboardEngine::newGame(Chessboard::ChessSide side)
 
 void XboardEngine::sendTimeLeft() const
 {
-	int csLeft = m_ownTimeControl->timeLeft() / 10;
-	int ocsLeft = m_opponentsTimeControl->timeLeft() / 10;
+	int csLeft = m_timeControl->timeLeft() / 10;
+	int ocsLeft = m_opponent->timeControl()->timeLeft() / 10;
 
 	if (csLeft > 0)
 		write(QString("time ") + QString::number(csLeft));
