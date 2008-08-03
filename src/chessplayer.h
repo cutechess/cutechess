@@ -121,8 +121,13 @@ class ChessPlayer : public QObject
 		void debugMessage(const QString& data) const;
 
 	protected:
+		/** The player's name. */
 		QString m_name;
+
+		/** Time control for the player's moves. */
 		TimeControl* m_timeControl;
+
+		/** The opposing player. */
 		ChessPlayer* m_opponent;
 
 	private:

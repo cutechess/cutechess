@@ -44,9 +44,7 @@ class ChessEngine : public ChessPlayer
 		};
 		
 		/**
-		 * The chess move notation the engine wants to use.
-		 * All moves which are sent to and received from the engine must
-		 * be in this format.
+		 * Chess move notation for move strings.
 		 */
 		enum MoveNotation
 		{
@@ -75,7 +73,7 @@ class ChessEngine : public ChessPlayer
 		virtual void sendOpponentsMove(const ChessMove& move) = 0;
 		
 		/**
-		 * @return Is the player ready to play?
+		 * Is the player ready to play?
 		 */
 		bool isReady() const;
 		
@@ -98,11 +96,25 @@ class ChessEngine : public ChessPlayer
 		 */
 		virtual void parseLine(const QString& line) = 0;
 
+
+		/** The chessboard which the player plays on. */
 		Chessboard *m_chessboard;
+
+		/**
+		 * The chess move notation the engine wants to use.
+		 * All moves which are sent to and received from the engine must
+		 * be in this format.
+		 */
 		MoveNotation m_notation;
+
+		/** Is the player ready to play? */
 		bool m_isReady;
-		int m_id; // The id number of the chess engine
-		static int m_count; // Num. of active chess engines
+		
+		/** The ID number of the chess engine. */
+		int m_id;
+		
+		/** The number of active chess engines. */
+		static int m_count;
 
 	protected slots:
 		/**
