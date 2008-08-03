@@ -15,31 +15,32 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GRAPHICSCHESSPIECE
-#define GRAPHICSCHESSPIECE
+#ifndef GRAPHICSCHESSPIECE_H
+#define GRAPHICSCHESSPIECE_H
 
 #include <QGraphicsSvgItem>
 #include "chessboard/chessboard.h"
 
-class GraphicsChessPiece: public QGraphicsSvgItem
+class GraphicsChessPiece : public QGraphicsSvgItem
 {
-Q_OBJECT
+	Q_OBJECT
 
-public:
-	GraphicsChessPiece(Chessboard::ChessSide side,
-	                   Chessboard::ChessPiece piece,
-	                   QGraphicsItem* parent = 0);
+	public:
+		GraphicsChessPiece(Chessboard::ChessSide side,
+		                   Chessboard::ChessPiece piece,
+		                   QGraphicsItem* parent = 0);
 
-	Chessboard::ChessSide side() const;
-	Chessboard::ChessPiece piece() const;
+		Chessboard::ChessSide side() const;
+		Chessboard::ChessPiece piece() const;
 
-	void setPiece(Chessboard::ChessPiece piece);
-	void centerOnParent();
+		void setPiece(Chessboard::ChessPiece piece);
+		void centerOnParent();
 
-private:
-	Chessboard::ChessSide m_side;
-	Chessboard::ChessPiece m_piece;
+	private:
+		Chessboard::ChessSide m_side;
+		Chessboard::ChessPiece m_piece;
+
 };
 
-#endif // GRAPHICSCHESSPIECE
+#endif // GRAPHICSCHESSPIECE_H
 

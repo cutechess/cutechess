@@ -22,7 +22,7 @@
 GraphicsChessPiece::GraphicsChessPiece(Chessboard::ChessSide side,
                                        Chessboard::ChessPiece piece,
                                        QGraphicsItem* parent)
-: QGraphicsSvgItem(parent)
+	: QGraphicsSvgItem(parent)
 {
 	m_side = side;
 	setPiece(piece);
