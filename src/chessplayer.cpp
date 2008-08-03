@@ -21,7 +21,7 @@
 #include "timecontrol.h"
 
 ChessPlayer::ChessPlayer(TimeControl* timeControl, QObject* parent)
-: QObject(parent)
+	: QObject(parent)
 {
 	m_side = Chessboard::NoSide;
 

@@ -27,7 +27,7 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
                          Chessboard* chessboard,
                          TimeControl* timeControl,
                          QObject* parent)
-: ChessPlayer(timeControl, parent)
+	: ChessPlayer(timeControl, parent)
 {
 	Q_CHECK_PTR(ioDevice);
 	Q_CHECK_PTR(chessboard);

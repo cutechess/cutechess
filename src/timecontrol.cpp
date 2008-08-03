@@ -20,7 +20,7 @@
 #include "timecontrol.h"
 
 TimeControl::TimeControl(int timePerTc, int movesPerTc, int increment, int timePerMove, QObject* parent)
-: QObject(parent)
+	: QObject(parent)
 {
 	setTimePerTc(timePerTc);
 	setMovesPerTc(movesPerTc);
@@ -61,17 +61,19 @@ int TimeControl::movesLeft() const
 	return m_movesLeft;
 }
 
-
 void TimeControl::update(int elapsedTime)
 {
-	if (m_timePerMove == 0) {
+	if (m_timePerMove == 0)
+	{
 		setTimeLeft(m_timeLeft - elapsedTime);
 
-		if (m_movesPerTc > 0) {
+		if (m_movesPerTc > 0)
+		{
 			setMovesLeft(m_movesLeft - 1);
 			
 			// Restart the time control
-			if (m_movesLeft == 0) {
+			if (m_movesLeft == 0)
+			{
 				setMovesLeft(m_movesPerTc);
 				setTimeLeft(m_timePerTc);
 			}
@@ -81,7 +83,8 @@ void TimeControl::update(int elapsedTime)
 
 void TimeControl::setTimePerTc(int timePerTc)
 {
-	if (timePerTc < 0) {
+	if (timePerTc < 0)
+	{
 		qDebug("Negative time per time control: %d", timePerTc);
 		return;
 	}
@@ -93,7 +96,8 @@ void TimeControl::setTimePerTc(int timePerTc)
 
 void TimeControl::setMovesPerTc(int movesPerTc)
 {
-	if (movesPerTc < 0) {
+	if (movesPerTc < 0)
+	{
 		qDebug("Negative moves per time control: %d", movesPerTc);
 		return;
 	}
@@ -105,7 +109,8 @@ void TimeControl::setMovesPerTc(int movesPerTc)
 
 void TimeControl::setIncrement(int increment)
 {
-	if (increment < 0) {
+	if (increment < 0)
+	{
 		qDebug("Negative time control increment: %d", increment);
 		return;
 	}
@@ -117,13 +122,15 @@ void TimeControl::setIncrement(int increment)
 
 void TimeControl::setTimePerMove(int timePerMove)
 {
-	if (timePerMove < 0) {
+	if (timePerMove < 0)
+	{
 		qDebug("Negative time per move: %d", timePerMove);
 		return;
 	}
 	
 	m_timePerMove = timePerMove;
-	if (m_timePerMove > 0) {
+	if (m_timePerMove > 0)
+	{
 		m_timePerTc = 0;
 		m_movesPerTc = 0;
 		m_increment = 0;
@@ -139,7 +146,8 @@ void TimeControl::setTimeLeft(int timeLeft)
 
 void TimeControl::setMovesLeft(int movesLeft)
 {
-	if (movesLeft < 0) {
+	if (movesLeft < 0)
+	{
 		qDebug("Negative moves left: %d", movesLeft);
 		return;
 	}

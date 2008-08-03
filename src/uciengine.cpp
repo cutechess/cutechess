@@ -28,7 +28,7 @@ UciEngine::UciEngine(QIODevice* ioDevice,
                      Chessboard* chessboard,
                      TimeControl* timeControl,
                      QObject* parent)
-: ChessEngine(ioDevice, chessboard, timeControl, parent)
+	: ChessEngine(ioDevice, chessboard, timeControl, parent)
 {
 	setName("UciEngine");
 	// Tell the engine to turn on Uci mode
@@ -58,7 +58,8 @@ void UciEngine::sendOpponentsMove(const ChessMove& move)
 		moveString = m_chessboard->sanMoveString(move);
 	
 	m_moves.append(moveString);
-	write(QString("position ") + m_chessboard->fenString() + QString(" moves ") + m_moves.join(" "));
+	write(QString("position ") + m_chessboard->fenString() +
+		QString(" moves ") + m_moves.join(" "));
 }
 
 void UciEngine::go()
@@ -67,19 +68,24 @@ void UciEngine::go()
 	TimeControl* wtc; // white's time control
 	TimeControl* btc; // black's time control
 	
-	if (side() == Chessboard::White) {
+	if (side() == Chessboard::White)
+	{
 		wtc = otc;
 		btc = m_opponent->timeControl();
-	} else if (side() == Chessboard::Black) {
+	}
+	else if (side() == Chessboard::Black)
+	{
 		wtc = m_opponent->timeControl();
 		btc = otc;
-	} else
+	}
+	else
 		qFatal("Player %s doesn't have a side", qPrintable(m_name));
 
 	QString command = "go";
 	if (otc->timePerMove() > 0)
 		command += QString(" movetime ") + QString::number(otc->timePerMove());
-	else {
+	else
+	{
 		command += QString(" wtime ") + QString::number(wtc->timeLeft());
 		command += QString(" btime ") + QString::number(btc->timeLeft());
 		if (wtc->timeIncrement() > 0)

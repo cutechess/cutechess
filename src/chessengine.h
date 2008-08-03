@@ -34,12 +34,14 @@ class ChessEngine : public ChessPlayer
 	Q_OBJECT
 
 	public:
-		enum ChessProtocol {
+		enum ChessProtocol
+		{
 			Xboard,
 			Uci
 		};
 		
-		enum MoveNotation {
+		enum MoveNotation
+		{
 			LongNotation, /**< Long Algebraic Notation, or Coordinate Notation. */
 			StandardNotation /**< Standard Algebraic Notation, or SAN. */
 		};
@@ -47,7 +49,8 @@ class ChessEngine : public ChessPlayer
 		/**
 		 * Creates a new ChessEngine object.
 		 * @param ioDevice An open chess engine process or socket.
-		 * @param chessboard A chessboard object for converting between the various move formats.
+		 * @param chessboard A chessboard object for converting between the
+		 * various move formats.
 		 * @param timeControl Time control for the player.
 		 * @param parent The parent object.
 		 */
@@ -118,6 +121,7 @@ class ChessEngine : public ChessPlayer
 
 	private:
 		QIODevice *m_ioDevice;
+
 };
 
 #endif // CHESSENGINE_H

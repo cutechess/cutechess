@@ -40,7 +40,7 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
                          Chessboard* chessboard,
                          TimeControl* timeControl,
                          QObject* parent)
-: ChessEngine(ioDevice, chessboard, timeControl, parent)
+	: ChessEngine(ioDevice, chessboard, timeControl, parent)
 {
 	m_forceMode = true;
 	setName("XboardEngine");
@@ -67,7 +67,8 @@ void XboardEngine::newGame(Chessboard::ChessSide side)
 
 	if (otc->timePerMove() > 0)
 		write(QString("st ") + QString::number(otc->timePerMove() / 1000));
-	else {
+	else
+	{
 		QString command = "level";
 		command += QString(" ") + QString::number(otc->movesPerTc());
 		command += QString(" ") + msToXboardTime(otc->timePerTc());

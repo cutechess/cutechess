@@ -36,7 +36,8 @@ class UciEngine : public ChessEngine
 		/**
 		 * Creates a new UciEngine object.
 		 * @param ioDevice An open chess engine process or socket.
-		 * @param chessboard A chessboard object for converting between the various move formats.
+		 * @param chessboard A chessboard object for converting between the
+		 * various move formats.
 		 * @param timeControl Time control for the player.
 		 * @param parent The parent object.
 		 */

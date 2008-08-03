@@ -25,61 +25,63 @@
  * It is used for telling the chess engines how much time they can spend
  * thinking of their moves.
  */
-class TimeControl: public QObject
+class TimeControl : public QObject
 {
-Q_OBJECT
+	Q_OBJECT
 
-public:
-	TimeControl(int timePerTc = 0, int movesPerTc = 0, int increment = 0, int timePerMove = 0, QObject* parent = 0);
+	public:
+		TimeControl(int timePerTc = 0, int movesPerTc = 0, int increment = 0,
+			int timePerMove = 0, QObject* parent = 0);
 
-	/**
-	 * Time in milliseconds per time control.
-	 */
-	int timePerTc() const;
+		/**
+		 * Time in milliseconds per time control.
+		 */
+		int timePerTc() const;
 
-	/**
-	 * Number of moves per time control.
-	 * If it's 0 the whole game is played in 'timePerTc' time.
-	 */
-	int movesPerTc() const;
+		/**
+		 * Number of moves per time control.
+		 * If it's 0 the whole game is played in 'timePerTc' time.
+		 */
+		int movesPerTc() const;
 
-	/**
-	 * Time increment per move in milliseconds.
-	 */
-	int timeIncrement() const;
+		/**
+		 * Time increment per move in milliseconds.
+		 */
+		int timeIncrement() const;
 
-	/**
-	 * Time in milliseconds per move.
-	 */
-	int timePerMove() const;
+		/**
+		 * Time in milliseconds per move.
+		 */
+		int timePerMove() const;
 
-	/**
-	 * Time left in the time control.
-	 */
-	int timeLeft() const;
+		/**
+		 * Time left in the time control.
+		 */
+		int timeLeft() const;
 
-	/**
-	 * Moves left in the time control.
-	 */
-	int movesLeft() const;
+		/**
+		 * Moves left in the time control.
+		 */
+		int movesLeft() const;
 
-	void setTimePerTc(int movesPerTc);
-	void setMovesPerTc(int timePerTc);
-	void setIncrement(int increment);
-	void setTimePerMove(int timePerMove);
-	void setTimeLeft(int timeLeft);
-	void setMovesLeft(int movesLeft);
+		void setTimePerTc(int movesPerTc);
+		void setMovesPerTc(int timePerTc);
+		void setIncrement(int increment);
+		void setTimePerMove(int timePerMove);
+		void setTimeLeft(int timeLeft);
+		void setMovesLeft(int movesLeft);
 
-	void update(int elapsedTime);
+		void update(int elapsedTime);
 
-private:
-	int m_movesPerTc;
-	int m_timePerTc;
-	int m_timePerMove;
-	int m_increment;
-	int m_timeLeft;
-	int m_movesLeft;
+	private:
+		int m_movesPerTc;
+		int m_timePerTc;
+		int m_timePerMove;
+		int m_increment;
+		int m_timeLeft;
+		int m_movesLeft;
+
 };
 
-#endif // TIMECONTROL
+#endif // TIMECONTROL_H
 
