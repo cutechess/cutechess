@@ -12,7 +12,7 @@ void ChessboardView::resizeEvent(QResizeEvent* event)
 	Q_UNUSED(event)
 
 	QList<QGraphicsItem*> items = scene()->items();
-	if (items.count() > 0)
+	if (!items.isEmpty())
 	{
 		fitInView(items.first(), Qt::KeepAspectRatio);
 	}
