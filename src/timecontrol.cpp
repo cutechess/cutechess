@@ -83,11 +83,7 @@ void TimeControl::update(int elapsedTime)
 
 void TimeControl::setTimePerTc(int timePerTc)
 {
-	if (timePerTc < 0)
-	{
-		qDebug("Negative time per time control: %d", timePerTc);
-		return;
-	}
+	Q_ASSERT(timePerTc >= 0);
 	
 	m_timePerTc = timePerTc;
 	if (m_timePerTc > 0)
@@ -96,11 +92,7 @@ void TimeControl::setTimePerTc(int timePerTc)
 
 void TimeControl::setMovesPerTc(int movesPerTc)
 {
-	if (movesPerTc < 0)
-	{
-		qDebug("Negative moves per time control: %d", movesPerTc);
-		return;
-	}
+	Q_ASSERT(movesPerTc >= 0);
 	
 	m_movesPerTc = movesPerTc;
 	if (m_movesPerTc > 0)
@@ -109,11 +101,7 @@ void TimeControl::setMovesPerTc(int movesPerTc)
 
 void TimeControl::setIncrement(int increment)
 {
-	if (increment < 0)
-	{
-		qDebug("Negative time control increment: %d", increment);
-		return;
-	}
+	Q_ASSERT(increment >= 0);
 	
 	m_increment = increment;
 	if (m_increment > 0)
@@ -122,11 +110,7 @@ void TimeControl::setIncrement(int increment)
 
 void TimeControl::setTimePerMove(int timePerMove)
 {
-	if (timePerMove < 0)
-	{
-		qDebug("Negative time per move: %d", timePerMove);
-		return;
-	}
+	Q_ASSERT(timePerMove >= 0);
 	
 	m_timePerMove = timePerMove;
 	if (m_timePerMove > 0)
@@ -146,11 +130,7 @@ void TimeControl::setTimeLeft(int timeLeft)
 
 void TimeControl::setMovesLeft(int movesLeft)
 {
-	if (movesLeft < 0)
-	{
-		qDebug("Negative moves left: %d", movesLeft);
-		return;
-	}
+	Q_ASSERT(movesLeft >= 0);
 	
 	m_movesLeft = movesLeft;
 	if (movesLeft > 0)
