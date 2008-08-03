@@ -47,27 +47,9 @@ class XboardEngine : public ChessEngine
 
 		~XboardEngine();
 
-		/**
-		 * Starts a new chess game.
-		 * @param side The side (color) the engine should play as.
-		 */
 		virtual void newGame(Chessboard::ChessSide side);
-
-		/**
-		 * Tells the opponent's move to the engine.
-		 * @param move A chess move which the opponent made.
-		 */
-		virtual void sendOpponentsMove(const ChessMove& move);
-		
-		/**
-		 * Tells the engine to start thinking of its next move.
-		 */
 		virtual void go();
-
-		/**
-		 * Gets the chess protocol which the engine uses.
-		 * @return The chess protocol, which is Xboard.
-		 */
+		virtual void sendOpponentsMove(const ChessMove& move);
 		virtual ChessProtocol protocol() const;
 
 	protected:

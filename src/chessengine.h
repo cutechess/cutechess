@@ -34,12 +34,20 @@ class ChessEngine : public ChessPlayer
 	Q_OBJECT
 
 	public:
+		/**
+		 * The chess protocol that is used to communicate with the engine.
+		 */
 		enum ChessProtocol
 		{
-			Xboard,
-			Uci
+			Xboard, /**< The Xboard/Winboard chess protocol. */
+			Uci /**< The Universal Chess Interface (UCI). */
 		};
 		
+		/**
+		 * The chess move notation the engine wants to use.
+		 * All moves which are sent to and received from the engine must
+		 * be in this format.
+		 */
 		enum MoveNotation
 		{
 			LongNotation, /**< Long Algebraic Notation, or Coordinate Notation. */
@@ -61,24 +69,13 @@ class ChessEngine : public ChessPlayer
 
 		virtual ~ChessEngine();
 
-		/**
-		 * Starts a new chess game.
-		 * @param side The side (color) the engine should play as.
-		 */
 		virtual void newGame(Chessboard::ChessSide side) = 0;
-		
-		/**
-		 * Tells the engine to start thinking of its next move.
-		 */
 		virtual void go() = 0;
-
-		/**
-		 * @return False, because chess engines aren't humans.
-		 */
 		virtual bool isHuman() const;
+		virtual void sendOpponentsMove(const ChessMove& move) = 0;
 		
 		/**
-		 * @return Is the engine ready to play?
+		 * @return Is the player ready to play?
 		 */
 		bool isReady() const;
 		
@@ -87,12 +84,6 @@ class ChessEngine : public ChessPlayer
 		 * @return The chess protocol.
 		 */
 		virtual ChessProtocol protocol() const = 0;
-
-		/**
-		 * Tells the opponent's move to the engine.
-		 * @param move A chess move which the opponent made.
-		 */
-		virtual void sendOpponentsMove(const ChessMove& move) = 0;
 
 		/**
 		 * Writes data to the chess engine.
