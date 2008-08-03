@@ -20,6 +20,7 @@
 
 #include <QObject>
 
+
 /**
  * The TimeControl class represents the time controls of a chess game.
  * It is used for telling the chess engines how much time they can spend
@@ -30,47 +31,95 @@ class TimeControl : public QObject
 	Q_OBJECT
 
 	public:
+		/**
+		 * Creates a new TimeControl object.
+		 * @param timePerTc Time in milliseconds per time control.
+		 * @param movesPerTc Number of full moves per time control.
+		 * @param increment Time increment in milliseconds per move.
+		 * @param timePerMove Time in milliseconds per move.
+		 * @param parent The parent object.
+		 */
 		TimeControl(int timePerTc = 0, int movesPerTc = 0, int increment = 0,
 			int timePerMove = 0, QObject* parent = 0);
 
 		/**
 		 * Time in milliseconds per time control.
+		 * Returns 0 if there's no specified time per time control.
+		 * @see timePerMove()
 		 */
 		int timePerTc() const;
 
 		/**
 		 * Number of moves per time control.
-		 * If it's 0 the whole game is played in 'timePerTc' time.
+		 * Returns 0 if the whole game is played in timePerTc() time.
 		 */
 		int movesPerTc() const;
 
 		/**
-		 * Time increment per move in milliseconds.
+		 * Time increment in milliseconds per move.
 		 */
 		int timeIncrement() const;
 
 		/**
 		 * Time in milliseconds per move.
+		 * The player will think of each move this long at most.
+		 * Returns 0 if there's no specified time per move.
+		 * @see timePerTc()
 		 */
 		int timePerMove() const;
 
 		/**
-		 * Time left in the time control.
+		 * Time in milliseconds left in the time control.
 		 */
 		int timeLeft() const;
 
 		/**
-		 * Moves left in the time control.
+		 * Number of full moves left in the time control.
+		 * Returns 0 if there's no specific number of moves per time control.
 		 */
 		int movesLeft() const;
 
-		void setTimePerTc(int movesPerTc);
-		void setMovesPerTc(int timePerTc);
-		void setIncrement(int increment);
-		void setTimePerMove(int timePerMove);
-		void setTimeLeft(int timeLeft);
-		void setMovesLeft(int movesLeft);
 
+		/**
+		 * Sets the time in milliseconds per time control.
+		 * @see timePerTc()
+		 */
+		void setTimePerTc(int movesPerTc);
+
+		/**
+		 * Sets the number of moves per time control.
+		 * @see movesPerTc()
+		 */
+		void setMovesPerTc(int movesPerTc);
+
+		/**
+		 * Sets the time increment in milliseconds per move.
+		 * @see timeIncrement()
+		 */
+		void setIncrement(int increment);
+
+		/**
+		 * Sets the time in milliseconds per move.
+		 * @see timePerMove()
+		 */
+		void setTimePerMove(int timePerMove);
+		
+		/**
+		 * Sets the time in milliseconds left in the time control.
+		 * @see timeLeft()
+		 */
+		void setTimeLeft(int timeLeft);
+		
+		/**
+		 * Sets the number of full moves left in the time control.
+		 * @see movesLeft()
+		 */
+		void setMovesLeft(int movesLeft);
+		
+		/**
+		 * Update the time control after a move was made.
+		 * @param elapsedTime The time in milliseconds it took to make the last move.
+		 */
 		void update(int elapsedTime);
 
 	private:
