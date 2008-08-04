@@ -62,7 +62,7 @@ class ChessEngine : public ChessPlayer
 		 */
 		ChessEngine(QIODevice* ioDevice,
 		            Chessboard* chessboard,
-		            TimeControl* timeControl,
+		            const TimeControl& timeControl,
 		            QObject* parent = 0);
 
 		virtual ~ChessEngine();

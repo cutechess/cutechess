@@ -18,16 +18,14 @@
 #include <QString>
 
 #include "chessplayer.h"
-#include "timecontrol.h"
 
-ChessPlayer::ChessPlayer(TimeControl* timeControl, QObject* parent)
+ChessPlayer::ChessPlayer(const TimeControl& timeControl, QObject* parent)
 	: QObject(parent)
 {
 	m_side = Chessboard::NoSide;
+	m_timeControl = timeControl;
 
-	m_timeControl = 0;
 	m_opponent = 0;
-	setTimeControl(timeControl);
 }
 
 void ChessPlayer::newGame(Chessboard::ChessSide side)
@@ -35,18 +33,17 @@ void ChessPlayer::newGame(Chessboard::ChessSide side)
 	Q_CHECK_PTR(m_opponent);
 	
 	setSide(side);
-	m_timeControl->setTimeLeft(m_timeControl->timePerTc());
-	m_timeControl->setMovesLeft(m_timeControl->movesPerTc());
+	m_timeControl.setTimeLeft(m_timeControl.timePerTc());
+	m_timeControl.setMovesLeft(m_timeControl.movesPerTc());
 }
 
-TimeControl* ChessPlayer::timeControl() const
+TimeControl ChessPlayer::timeControl() const
 {
 	return m_timeControl;
 }
 
-void ChessPlayer::setTimeControl(TimeControl* timeControl)
+void ChessPlayer::setTimeControl(const TimeControl& timeControl)
 {
-	Q_CHECK_PTR(timeControl);
 	m_timeControl = timeControl;
 }
 

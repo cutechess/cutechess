@@ -42,7 +42,7 @@ class XboardEngine : public ChessEngine
 		 */
 		XboardEngine(QIODevice* ioDevice,
 		             Chessboard* chessboard,
-		             TimeControl* timeControl,
+		             const TimeControl& timeControl,
 		             QObject* parent = 0);
 
 		~XboardEngine();

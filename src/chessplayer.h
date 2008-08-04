@@ -20,9 +20,9 @@
 
 #include <QObject>
 #include "chessboard/chessboard.h"
+#include "timecontrol.h"
 
 class QString;
-class TimeControl;
 
 /**
  * The ChessPlayer class represents any chess player, human or AI.
@@ -37,7 +37,7 @@ class ChessPlayer : public QObject
 		 * @param timeControl Time control for the player.
 		 * @param parent The parent object.
 		 */
-		ChessPlayer(TimeControl* timeControl, QObject* parent = 0);
+		ChessPlayer(const TimeControl& timeControl, QObject* parent = 0);
 		
 		virtual ~ChessPlayer() { }
 
@@ -56,13 +56,13 @@ class ChessPlayer : public QObject
 		 * Gets the player's time control.
 		 * @return The time control.
 		 */
-		TimeControl* timeControl() const;
+		TimeControl timeControl() const;
 
 		/**
 		 * Sets the time control for the player.
 		 * @param timeControl Time control for the player.
 		 */
-		void setTimeControl(TimeControl* timeControl);
+		void setTimeControl(const TimeControl& timeControl);
 
 		/**
 		 * Gets the side of the player.
@@ -125,7 +125,7 @@ class ChessPlayer : public QObject
 		QString m_name;
 
 		/** Time control for the player's moves. */
-		TimeControl* m_timeControl;
+		TimeControl m_timeControl;
 
 		/** The opposing player. */
 		ChessPlayer* m_opponent;

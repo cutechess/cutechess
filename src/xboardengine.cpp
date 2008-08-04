@@ -38,7 +38,7 @@ static QString msToXboardTime(int ms)
 
 XboardEngine::XboardEngine(QIODevice* ioDevice,
                          Chessboard* chessboard,
-                         TimeControl* timeControl,
+                         const TimeControl& timeControl,
                          QObject* parent)
 	: ChessEngine(ioDevice, chessboard, timeControl, parent)
 {
@@ -63,24 +63,22 @@ void XboardEngine::newGame(Chessboard::ChessSide side)
 	write("setboard " + m_chessboard->fenString());
 
 	// Send the time controls
-	TimeControl* otc = m_timeControl;
-
-	if (otc->timePerMove() > 0)
-		write(QString("st ") + QString::number(otc->timePerMove() / 1000));
+	if (m_timeControl.timePerMove() > 0)
+		write(QString("st ") + QString::number(m_timeControl.timePerMove() / 1000));
 	else
 	{
 		QString command = "level";
-		command += QString(" ") + QString::number(otc->movesPerTc());
-		command += QString(" ") + msToXboardTime(otc->timePerTc());
-		command += QString(" ") + QString::number(otc->timeIncrement() / 1000);
+		command += QString(" ") + QString::number(m_timeControl.movesPerTc());
+		command += QString(" ") + msToXboardTime(m_timeControl.timePerTc());
+		command += QString(" ") + QString::number(m_timeControl.timeIncrement() / 1000);
 		write(command);
 	}
 }
 
 void XboardEngine::sendTimeLeft() const
 {
-	int csLeft = m_timeControl->timeLeft() / 10;
-	int ocsLeft = m_opponent->timeControl()->timeLeft() / 10;
+	int csLeft = m_timeControl.timeLeft() / 10;
+	int ocsLeft = m_opponent->timeControl().timeLeft() / 10;
 
 	if (csLeft > 0)
 		write(QString("time ") + QString::number(csLeft));

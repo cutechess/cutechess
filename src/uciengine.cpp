@@ -26,7 +26,7 @@
 
 UciEngine::UciEngine(QIODevice* ioDevice,
                      Chessboard* chessboard,
-                     TimeControl* timeControl,
+                     const TimeControl& timeControl,
                      QObject* parent)
 	: ChessEngine(ioDevice, chessboard, timeControl, parent)
 {
@@ -64,36 +64,35 @@ void UciEngine::sendOpponentsMove(const ChessMove& move)
 
 void UciEngine::go()
 {
-	TimeControl* otc = m_timeControl;
-	TimeControl* wtc; // white's time control
-	TimeControl* btc; // black's time control
+	TimeControl blackTimeControl;
+	TimeControl whiteTimeControl;
 	
 	if (side() == Chessboard::White)
 	{
-		wtc = otc;
-		btc = m_opponent->timeControl();
+		whiteTimeControl = m_timeControl;
+		blackTimeControl = m_opponent->timeControl();
 	}
 	else if (side() == Chessboard::Black)
 	{
-		wtc = m_opponent->timeControl();
-		btc = otc;
+		whiteTimeControl = m_opponent->timeControl();
+		blackTimeControl = m_timeControl;
 	}
 	else
 		qFatal("Player %s doesn't have a side", qPrintable(m_name));
 
 	QString command = "go";
-	if (otc->timePerMove() > 0)
-		command += QString(" movetime ") + QString::number(otc->timePerMove());
+	if (m_timeControl.timePerMove() > 0)
+		command += QString(" movetime ") + QString::number(m_timeControl.timePerMove());
 	else
 	{
-		command += QString(" wtime ") + QString::number(wtc->timeLeft());
-		command += QString(" btime ") + QString::number(btc->timeLeft());
-		if (wtc->timeIncrement() > 0)
-			command += QString(" winc ") + QString::number(wtc->timeIncrement());
-		if (btc->timeIncrement() > 0)
-			command += QString(" binc ") + QString::number(btc->timeIncrement());
-		if (otc->movesLeft() > 0)
-			command += QString(" movestogo ") + QString::number(otc->movesLeft());
+		command += QString(" wtime ") + QString::number(whiteTimeControl.timeLeft());
+		command += QString(" btime ") + QString::number(blackTimeControl.timeLeft());
+		if (whiteTimeControl.timeIncrement() > 0)
+			command += QString(" winc ") + QString::number(whiteTimeControl.timeIncrement());
+		if (blackTimeControl.timeIncrement() > 0)
+			command += QString(" binc ") + QString::number(blackTimeControl.timeIncrement());
+		if (m_timeControl.movesLeft() > 0)
+			command += QString(" movestogo ") + QString::number(m_timeControl.movesLeft());
 	}
 	write(command);
 }
