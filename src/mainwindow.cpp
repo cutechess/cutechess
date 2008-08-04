@@ -60,10 +60,14 @@ void MainWindow::createActions()
 
 	// Debugging actions
 	m_sloppyVersusAct = new QAction("Sloppy vs. Sloppy", this);
+	m_killFirstEngineAct = new QAction("Kill First Engine", this);
+	m_killSecondEngineAct = new QAction("Kill Second Engine", this);
 
 	connect(m_printGameAct, SIGNAL(triggered(bool)), this, SLOT(printGame()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
 	connect(m_sloppyVersusAct, SIGNAL(triggered(bool)), this, SLOT(sloppyVersus()));
+	connect(m_killFirstEngineAct, SIGNAL(triggered(bool)), this, SLOT(killEngine()));
+	connect(m_killSecondEngineAct, SIGNAL(triggered(bool)), this, SLOT(killEngine()));
 }
 
 void MainWindow::createMenus()
@@ -78,6 +82,9 @@ void MainWindow::createMenus()
 
 	m_debugMenu = menuBar()->addMenu("&Debug");
 	m_debugMenu->addAction(m_sloppyVersusAct);
+	m_debugMenu->addSeparator();
+	m_debugMenu->addAction(m_killFirstEngineAct);
+	m_debugMenu->addAction(m_killSecondEngineAct);
 }
 
 void MainWindow::createToolBars()
@@ -128,22 +135,22 @@ void MainWindow::printGame()
 
 void MainWindow::sloppyVersus()
 {
-	QProcess* process1 = new QProcess(this);
-	QProcess* process2 = new QProcess(this);
+	m_process1 = new QProcess(this);
+	m_process2 = new QProcess(this);
 
-	process1->setWorkingDirectory("engines/sloppy-020");
-	process2->setWorkingDirectory("engines/sloppy-020");
+	m_process1->setWorkingDirectory("engines/sloppy-020");
+	m_process2->setWorkingDirectory("engines/sloppy-020");
 	
-	process1->start("./sloppy");
-	process2->start("./sloppy");
+	m_process1->start("./sloppy");
+	m_process2->start("./sloppy");
 
-	if (!process1->waitForStarted())
+	if (!m_process1->waitForStarted())
 	{
 		qDebug() << "Cannot start the first engine process.";
 		return;
 	}
 
-	if (!process2->waitForStarted())
+	if (!m_process2->waitForStarted())
 	{
 		qDebug() << "Cannot start the second engine process.";
 		return;
@@ -154,10 +161,10 @@ void MainWindow::sloppyVersus()
 	connect(chessgame, SIGNAL(moveHappened(const ChessMove&)),
 	        m_visualChessboard, SLOT(makeMove(const ChessMove&)));
 
-	ChessPlayer* player1 = new XboardEngine(process1, chessgame->chessboard(),
+	ChessPlayer* player1 = new XboardEngine(m_process1, chessgame->chessboard(),
 		TimeControl(60000, 0, 0, 0), this);
 
-	ChessPlayer* player2 = new XboardEngine(process2, chessgame->chessboard(),
+	ChessPlayer* player2 = new XboardEngine(m_process2, chessgame->chessboard(),
 		TimeControl(60000, 0, 0, 0), this);
 
 	connect(player1, SIGNAL(debugMessage(const QString&)),
@@ -166,5 +173,28 @@ void MainWindow::sloppyVersus()
 	        m_engineDebugTextEdit, SLOT(append(const QString&)));
 	
 	chessgame->newGame(player1, player2);
+}
+
+void MainWindow::killEngine()
+{
+	QAction* engineAct = qobject_cast<QAction *>(QObject::sender());
+	Q_CHECK_PTR(engineAct);
+
+	if (engineAct == m_killFirstEngineAct)
+	{
+		Q_CHECK_PTR(m_process1);
+		m_process1->kill();
+		qDebug() << "Terminated.";
+	}
+	else if (engineAct == m_killSecondEngineAct)
+	{
+		Q_CHECK_PTR(m_process2);
+		m_process2->kill();
+		qDebug() << "Terminated.";
+	}
+	else
+	{
+		qDebug() << "Can't do that.";
+	}
 }
 
