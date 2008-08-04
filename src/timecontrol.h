@@ -18,8 +18,6 @@
 #ifndef TIMECONTROL_H
 #define TIMECONTROL_H
 
-#include <QObject>
-
 /**
  * The TimeControl class represents the time controls of a chess game.
  *
@@ -28,10 +26,8 @@
  *
  * All time handling is done in milliseconds.
  */
-class TimeControl : public QObject
+class TimeControl
 {
-	Q_OBJECT
-
 	public:
 		/**
 		 * Creates a new TimeControl object.
@@ -42,7 +38,7 @@ class TimeControl : public QObject
 		 * @param parent The parent object.
 		 */
 		TimeControl(int timePerTc = 0, int movesPerTc = 0, int increment = 0,
-			int timePerMove = 0, QObject* parent = 0);
+			int timePerMove = 0);
 
 		/**
 		 * Returns the time per time control.

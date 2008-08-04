@@ -154,8 +154,8 @@ void MainWindow::sloppyVersus()
 	connect(chessgame, SIGNAL(moveHappened(const ChessMove&)),
 	        m_visualChessboard, SLOT(makeMove(const ChessMove&)));
 
-	TimeControl* tc1 = new TimeControl(60000, 0, 0, 0, this);
-	TimeControl* tc2 = new TimeControl(60000, 0, 0, 0, this);
+	TimeControl* tc1 = new TimeControl(60000, 0, 0, 0);
+	TimeControl* tc2 = new TimeControl(60000, 0, 0, 0);
 
 	ChessPlayer* player1 = new XboardEngine(process1, chessgame->chessboard(), tc1, this);
 	ChessPlayer* player2 = new XboardEngine(process2, chessgame->chessboard(), tc2, this);

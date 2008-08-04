@@ -19,8 +19,7 @@
 
 #include "timecontrol.h"
 
-TimeControl::TimeControl(int timePerTc, int movesPerTc, int increment, int timePerMove, QObject* parent)
-	: QObject(parent)
+TimeControl::TimeControl(int timePerTc, int movesPerTc, int increment, int timePerMove)
 {
 	setTimePerTc(timePerTc);
 	setMovesPerTc(movesPerTc);
