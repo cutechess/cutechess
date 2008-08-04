@@ -476,7 +476,7 @@ bool Chessboard::moveIsCheck(quint32 move, MoveData *md) const
 			quint64 allPieces;
 			
 			castle = GET_CASTLE(move);
-			rookSquare = castling.rookSquare[color][castle][C_TO];
+			rookSquare = castling.rookSquares[color][castle][C_TO];
 			allPieces = m_allPieces ^ m_pieces[color][King];
 			if (R_MAGIC(rookSquare, allPieces) & bit64[kingSquare])
 				return true;
@@ -518,7 +518,7 @@ void Chessboard::addMove(MoveData *md, MoveList *moveList) const
 	if (moveIsCheck(move, md))
 		move |= CHECK_BIT;
 	
-	*moveList += move;
+	moveList->add(move);
 }
 
 /* Make sure a pawn capture is legal, then call addMove() to add it to the
@@ -809,7 +809,7 @@ void Chessboard::generateKingMoves(MoveData *md, MoveList *moveList) const
 		return;
 
 	for (i = 0; i < 2; i++) {
-		int rookSquare = castling.rookSquare[color][i][C_FROM];
+		int rookSquare = castling.rookSquares[color][i][C_FROM];
 		md->to = castling.kingSquares[color][i][C_TO];
 		if ((m_posp->castleRights & castling.rights[color][i])
 		&& !(m_allPieces & castleEmptyMask[color][i])

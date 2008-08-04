@@ -20,8 +20,16 @@
 
 #include <QtGlobal>
 #include <QString>
+
 #include "chessboard.h"
 
+
+/**
+ * The ChessMove class represents a simple chess move with minimal information
+ * about the move. A Chessboard object is needed to verify the move's legality
+ * or to convert it to a string.
+ * @see Chessboard
+ */
 class ChessMove
 {
 public:
@@ -31,7 +39,7 @@ public:
 	ChessMove();
 	
 	/**
-	 * Constructs a chessmove and verifies its legality.
+	 * Creates a ChessMove object.
 	 * @param sourceSquare the source square.
 	 * @param targetSquare the target square.
 	 * @param promotion the promotion piece.
@@ -41,20 +49,17 @@ public:
 	          Chessboard::ChessPiece promotion=Chessboard::NoPiece);
 	
 	/**
-	 * Gets the source square.
-	 * @return the source square.
+	 * The source square.
 	 */
 	Chessboard::ChessSquare sourceSquare() const;
 
 	/**
-	 * Gets the target square.
-	 * @return the target square.
+	 * The target square.
 	 */
 	Chessboard::ChessSquare targetSquare() const;
 
 	/**
-	 * Gets the type of the promotion piece.
-	 * @return type of the promotion piece.
+	 * The type of the promotion piece.
 	 */
 	Chessboard::ChessPiece promotion() const;
 	

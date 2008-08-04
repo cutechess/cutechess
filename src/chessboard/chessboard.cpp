@@ -14,7 +14,7 @@ quint32 MoveList::operator[](int index)
 	return m_moves[index];
 }
 
-void MoveList::operator+=(quint32 move)
+void MoveList::add(quint32 move)
 {
 	Q_ASSERT(m_nmoves < MAX_NMOVES);
 	m_moves[m_nmoves++] = move;

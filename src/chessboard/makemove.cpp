@@ -72,11 +72,11 @@ void Chessboard::makeRookMove(quint32 move)
 	
 	/* Make sure the player loses his castling rights in the corner
 	   the rook moves from, if any.  */
-	if (from == castling.rookSquare[color][C_KSIDE][C_FROM]
+	if (from == castling.rookSquares[color][C_KSIDE][C_FROM]
 	&& *castleRights & castling.rights[color][C_KSIDE]) {
 		*key ^= zobrist.castle[color][C_KSIDE];
 		*castleRights &= ~castling.rights[color][C_KSIDE];
-	} else if (from == castling.rookSquare[color][C_QSIDE][C_FROM]
+	} else if (from == castling.rookSquares[color][C_QSIDE][C_FROM]
 	&& *castleRights & castling.rights[color][C_QSIDE]) {
 		*key ^= zobrist.castle[color][C_QSIDE];
 		*castleRights &= ~castling.rights[color][C_QSIDE];
@@ -112,8 +112,8 @@ void Chessboard::makeKingMove(quint32 move)
 		castle = GET_CASTLE(move);
 		Q_ASSERT(castle == C_KSIDE || castle == C_QSIDE);
 		
-		rookFromSquare = castling.rookSquare[color][castle][C_FROM];
-		rookToSquare = castling.rookSquare[color][castle][C_TO];
+		rookFromSquare = castling.rookSquares[color][castle][C_FROM];
+		rookToSquare = castling.rookSquares[color][castle][C_TO];
 		rookMask = bit64[rookFromSquare] | bit64[rookToSquare];
 
 		m_mailbox[rookFromSquare] = 0;
@@ -258,8 +258,8 @@ void Chessboard::undoKingMove(quint32 move)
 		castle = GET_CASTLE(move);
 		Q_ASSERT(castle == C_KSIDE || castle == C_QSIDE);
 
-		rookFromSquare = castling.rookSquare[color][castle][C_FROM];
-		rookToSquare = castling.rookSquare[color][castle][C_TO];
+		rookFromSquare = castling.rookSquares[color][castle][C_FROM];
+		rookToSquare = castling.rookSquares[color][castle][C_TO];
 		rookMask = bit64[rookFromSquare] | bit64[rookToSquare];
 
 		m_mailbox[rookToSquare] = 0;
