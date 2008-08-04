@@ -69,10 +69,7 @@ void ChessGame::moveMade(const ChessMove& move)
 	// Get the elapsed time and update the time control
 	m_playerToMove->timeControl()->update(m_timer.elapsed());
 
-	if (m_playerToMove == m_whitePlayer)
-		m_playerToMove = m_blackPlayer;
-	else
-		m_playerToMove = m_whitePlayer;
+	m_playerToMove = (m_playerToMove == m_whitePlayer) ? m_blackPlayer : m_whitePlayer;
 
 	// Start counting the duration of the next move
 	m_timer.start();
