@@ -43,7 +43,7 @@ Chessboard* ChessGame::chessboard() const
 
 void ChessGame::moveMade(const ChessMove& move)
 {
-	ChessPlayer* sender = dynamic_cast<ChessPlayer*>(QObject::sender());
+	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
 
 	if (!m_gameInProgress)
