@@ -30,6 +30,7 @@
 #include "xboardengine.h"
 #include "uciengine.h"
 #include "timecontrol.h"
+#include "engineconfigurationmodel.h"
 
 MainWindow::MainWindow()
 {
@@ -44,6 +45,8 @@ MainWindow::MainWindow()
 	m_chessboardScene->addItem(m_visualChessboard);
 	
 	setStatusBar(new QStatusBar());
+
+	m_engineConfigurations = new EngineConfigurationModel(this);
 
 	createActions();
 	createMenus();

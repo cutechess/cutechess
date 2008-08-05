@@ -27,6 +27,7 @@ class ChessboardView;
 class QGraphicsScene;
 class GraphicsChessboardItem;
 class QProcess;
+class EngineConfigurationModel;
 
 /**
  * MainWindow
@@ -57,6 +58,8 @@ class MainWindow : public QMainWindow
 		ChessboardView* m_chessboardView;
 		QGraphicsScene* m_chessboardScene;
 		GraphicsChessboardItem* m_visualChessboard;
+
+		EngineConfigurationModel* m_engineConfigurations;
 
 		QAction* m_quitGameAct;
 		QAction* m_printGameAct;

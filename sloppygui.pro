@@ -49,6 +49,8 @@ HEADERS = src/graphicschessboardsquareitem.h \
           src/timecontrol.h \
           src/chessplayer.h \
           src/chessengine.h \
+          src/engineconfiguration.h \
+          src/engineconfigurationmodel.h \
           src/xboardengine.h \
           src/uciengine.h \
           src/chessboard/chessboard.h \
@@ -75,6 +77,8 @@ SOURCES = src/graphicschessboardsquareitem.cpp \
           src/timecontrol.cpp \
           src/chessplayer.cpp \
           src/chessengine.cpp \
+          src/engineconfiguration.cpp \
+          src/engineconfigurationmodel.cpp \
           src/xboardengine.cpp \
           src/uciengine.cpp \
           src/chessboard/chessboard.cpp \
