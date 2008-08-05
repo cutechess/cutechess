@@ -164,11 +164,13 @@ void MainWindow::sloppyVersus()
 	connect(chessgame, SIGNAL(moveHappened(const ChessMove&)),
 	        m_visualChessboard, SLOT(makeMove(const ChessMove&)));
 
-	ChessPlayer* player1 = new XboardEngine(m_process1, chessgame->chessboard(),
-		TimeControl(60000, 0, 0, 0), this);
+	TimeControl tc;
+	tc.setTimePerTc(10000);
+	tc.setIncrement(1000);
 
-	ChessPlayer* player2 = new XboardEngine(m_process2, chessgame->chessboard(),
-		TimeControl(60000, 0, 0, 0), this);
+	ChessPlayer* player1 = new XboardEngine(m_process1, chessgame->chessboard(), tc, this);
+
+	ChessPlayer* player2 = new XboardEngine(m_process2, chessgame->chessboard(), tc, this);
 
 	connect(player1, SIGNAL(debugMessage(const QString&)),
 	        m_engineDebugTextEdit, SLOT(append(const QString&)));

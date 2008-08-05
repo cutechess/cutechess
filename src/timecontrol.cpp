@@ -19,14 +19,14 @@
 
 #include "timecontrol.h"
 
-TimeControl::TimeControl(int timePerTc, int movesPerTc, int increment, int timePerMove)
+TimeControl::TimeControl()
 {
-	setTimePerTc(timePerTc);
-	setMovesPerTc(movesPerTc);
-	setIncrement(increment);
-	setTimePerMove(timePerMove);
+	setTimePerTc(60000);
+	setMovesPerTc(0);
+	setIncrement(0);
+	setTimePerMove(0);
 
-	setTimeLeft(0);
+	setTimeLeft(m_timePerTc);
 	setMovesLeft(0);
 }
 
@@ -64,7 +64,7 @@ void TimeControl::update(int elapsedTime)
 {
 	if (m_timePerMove == 0)
 	{
-		setTimeLeft(m_timeLeft - elapsedTime);
+		setTimeLeft(m_timeLeft + m_increment - elapsedTime);
 
 		if (m_movesPerTc > 0)
 		{

@@ -31,14 +31,8 @@ class TimeControl
 	public:
 		/**
 		 * Creates a new TimeControl object.
-		 * @param timePerTc Time per time control.
-		 * @param movesPerTc Number of full moves per time control.
-		 * @param increment Time increment per move.
-		 * @param timePerMove Time per move.
-		 * @param parent The parent object.
 		 */
-		TimeControl(int timePerTc = 0, int movesPerTc = 0, int increment = 0,
-			int timePerMove = 0);
+		TimeControl();
 
 		/**
 		 * Returns the time per time control.
