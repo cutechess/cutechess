@@ -49,6 +49,9 @@ MainWindow::MainWindow()
 	createMenus();
 	createToolBars();
 	createDockWindows();
+
+	m_process1 = 0;
+	m_process2 = 0;
 }
 
 void MainWindow::createActions()
@@ -178,17 +181,14 @@ void MainWindow::sloppyVersus()
 void MainWindow::killEngine()
 {
 	QAction* engineAct = qobject_cast<QAction *>(QObject::sender());
-	Q_CHECK_PTR(engineAct);
 
-	if (engineAct == m_killFirstEngineAct)
+	if (engineAct == m_killFirstEngineAct && m_process1)
 	{
-		Q_CHECK_PTR(m_process1);
 		m_process1->kill();
 		qDebug() << "Terminated.";
 	}
-	else if (engineAct == m_killSecondEngineAct)
+	else if (engineAct == m_killSecondEngineAct && m_process2)
 	{
-		Q_CHECK_PTR(m_process2);
 		m_process2->kill();
 		qDebug() << "Terminated.";
 	}
