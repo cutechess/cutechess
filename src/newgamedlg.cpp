@@ -26,7 +26,7 @@ NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,
 {
 	setupUi(this);
 
-	// Add Start button to the dialog box at the bottom
+	// Add Start button to the standard button box at the bottom
 	QPushButton* startButton = new QPushButton(tr("Start"));
 	m_buttonBox->addButton(startButton, QDialogButtonBox::AcceptRole);
 
