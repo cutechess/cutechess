@@ -43,7 +43,6 @@ class MainWindow : public QMainWindow
 		void newGame();
 		void printGame();
 		void sloppyVersus();
-		void killEngine();
 
 	private:
 		void createActions();
@@ -70,8 +69,6 @@ class MainWindow : public QMainWindow
 
 		// Debugging
 		QAction* m_sloppyVersusAct;
-		QAction* m_killFirstEngineAct;
-		QAction* m_killSecondEngineAct;
 
 		QProcess* m_process1;
 		QProcess* m_process2;

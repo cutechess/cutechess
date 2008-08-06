@@ -72,15 +72,11 @@ void MainWindow::createActions()
 
 	// Debugging actions
 	m_sloppyVersusAct = new QAction("Sloppy vs. Sloppy", this);
-	m_killFirstEngineAct = new QAction("Kill First Engine", this);
-	m_killSecondEngineAct = new QAction("Kill Second Engine", this);
 
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
 	connect(m_printGameAct, SIGNAL(triggered(bool)), this, SLOT(printGame()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
 	connect(m_sloppyVersusAct, SIGNAL(triggered(bool)), this, SLOT(sloppyVersus()));
-	connect(m_killFirstEngineAct, SIGNAL(triggered(bool)), this, SLOT(killEngine()));
-	connect(m_killSecondEngineAct, SIGNAL(triggered(bool)), this, SLOT(killEngine()));
 }
 
 void MainWindow::createMenus()
@@ -97,9 +93,6 @@ void MainWindow::createMenus()
 
 	m_debugMenu = menuBar()->addMenu("&Debug");
 	m_debugMenu->addAction(m_sloppyVersusAct);
-	m_debugMenu->addSeparator();
-	m_debugMenu->addAction(m_killFirstEngineAct);
-	m_debugMenu->addAction(m_killSecondEngineAct);
 }
 
 void MainWindow::createToolBars()
@@ -273,25 +266,5 @@ void MainWindow::sloppyVersus()
 	        m_engineDebugTextEdit, SLOT(append(const QString&)));
 	
 	chessgame->newGame(player1, player2);
-}
-
-void MainWindow::killEngine()
-{
-	QAction* engineAct = qobject_cast<QAction *>(QObject::sender());
-
-	if (engineAct == m_killFirstEngineAct && m_process1)
-	{
-		m_process1->kill();
-		qDebug() << "Terminated.";
-	}
-	else if (engineAct == m_killSecondEngineAct && m_process2)
-	{
-		m_process2->kill();
-		qDebug() << "Terminated.";
-	}
-	else
-	{
-		qDebug() << "Can't do that.";
-	}
 }
 
