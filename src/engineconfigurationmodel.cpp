@@ -15,8 +15,6 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDebug>
-
 #include "engineconfigurationmodel.h"
 
 EngineConfigurationModel::EngineConfigurationModel(QObject* parent)
