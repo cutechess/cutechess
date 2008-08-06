@@ -40,6 +40,7 @@ class MainWindow : public QMainWindow
 		MainWindow();
 
 	private slots:
+		void newGame();
 		void printGame();
 		void sloppyVersus();
 		void killEngine();
@@ -63,6 +64,7 @@ class MainWindow : public QMainWindow
 
 		QAction* m_quitGameAct;
 		QAction* m_printGameAct;
+		QAction* m_newGameAct;
 
 		QTextEdit* m_engineDebugTextEdit;
 
