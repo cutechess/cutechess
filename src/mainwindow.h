@@ -42,7 +42,6 @@ class MainWindow : public QMainWindow
 	private slots:
 		void newGame();
 		void printGame();
-		void sloppyVersus();
 
 	private:
 		void createActions();
@@ -66,12 +65,6 @@ class MainWindow : public QMainWindow
 		QAction* m_newGameAct;
 
 		QTextEdit* m_engineDebugTextEdit;
-
-		// Debugging
-		QAction* m_sloppyVersusAct;
-
-		QProcess* m_process1;
-		QProcess* m_process2;
 
 };
 

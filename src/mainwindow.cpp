@@ -56,9 +56,6 @@ MainWindow::MainWindow()
 	createMenus();
 	createToolBars();
 	createDockWindows();
-
-	m_process1 = 0;
-	m_process2 = 0;
 }
 
 void MainWindow::createActions()
@@ -70,13 +67,9 @@ void MainWindow::createActions()
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	m_quitGameAct->setShortcut(QKeySequence(tr("Ctrl+Q")));
 
-	// Debugging actions
-	m_sloppyVersusAct = new QAction("Sloppy vs. Sloppy", this);
-
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
 	connect(m_printGameAct, SIGNAL(triggered(bool)), this, SLOT(printGame()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
-	connect(m_sloppyVersusAct, SIGNAL(triggered(bool)), this, SLOT(sloppyVersus()));
 }
 
 void MainWindow::createMenus()
@@ -92,7 +85,6 @@ void MainWindow::createMenus()
 	m_helpMenu = menuBar()->addMenu(tr("&Help"));
 
 	m_debugMenu = menuBar()->addMenu("&Debug");
-	m_debugMenu->addAction(m_sloppyVersusAct);
 }
 
 void MainWindow::createToolBars()
@@ -222,49 +214,5 @@ void MainWindow::printGame()
 	m_chessboardView->render(&painter);
 
 	painter.end();
-}
-
-void MainWindow::sloppyVersus()
-{
-	m_process1 = new QProcess(this);
-	m_process2 = new QProcess(this);
-
-	m_process1->setWorkingDirectory("engines/sloppy-020");
-	m_process2->setWorkingDirectory("engines/sloppy-020");
-	
-	m_process1->start("./sloppy");
-	m_process2->start("./sloppy");
-
-	if (!m_process1->waitForStarted())
-	{
-		qDebug() << "Cannot start the first engine process.";
-		return;
-	}
-
-	if (!m_process2->waitForStarted())
-	{
-		qDebug() << "Cannot start the second engine process.";
-		return;
-	}
-
-	ChessGame* chessgame = new ChessGame(this);
-
-	connect(chessgame, SIGNAL(moveHappened(const ChessMove&)),
-	        m_visualChessboard, SLOT(makeMove(const ChessMove&)));
-
-	TimeControl tc;
-	tc.setTimePerTc(10000);
-	tc.setIncrement(1000);
-
-	ChessPlayer* player1 = new XboardEngine(m_process1, chessgame->chessboard(), tc, this);
-
-	ChessPlayer* player2 = new XboardEngine(m_process2, chessgame->chessboard(), tc, this);
-
-	connect(player1, SIGNAL(debugMessage(const QString&)),
-	        m_engineDebugTextEdit, SLOT(append(const QString&)));
-	connect(player2, SIGNAL(debugMessage(const QString&)),
-	        m_engineDebugTextEdit, SLOT(append(const QString&)));
-	
-	chessgame->newGame(player1, player2);
 }
 
