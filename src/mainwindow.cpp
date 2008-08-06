@@ -49,6 +49,8 @@ MainWindow::MainWindow()
 	setStatusBar(new QStatusBar());
 
 	m_engineConfigurations = new EngineConfigurationModel(this);
+	m_engineConfigurations->addEngineConfiguration(
+		EngineConfiguration("Sloppy", "./sloppy", EngineConfiguration::Xboard));
 
 	createActions();
 	createMenus();
