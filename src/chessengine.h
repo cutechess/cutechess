@@ -18,6 +18,8 @@
 #ifndef CHESSENGINE_H
 #define CHESSENGINE_H
 
+#include <QStringList>
+
 #include "chessplayer.h"
 
 class QString;
@@ -73,21 +75,22 @@ class ChessEngine : public ChessPlayer
 		virtual void sendOpponentsMove(const ChessMove& move) = 0;
 		
 		/**
-		 * Is the player ready to play?
-		 */
-		bool isReady() const;
-		
-		/**
 		 * Gets the chess protocol which the engine uses.
 		 * @return The chess protocol.
 		 */
 		virtual ChessProtocol protocol() const = 0;
 
 		/**
+		 * Checks if the engine is still responding, and synchronizes
+		 * it with the GUI.
+		 */
+		virtual void ping() = 0;
+
+		/**
 		 * Writes data to the chess engine.
 		 * @param data The data that will be written to the engine's device.
 		 */
-		void write(const QString& data) const;
+		void write(const QString& data);
 
 	protected:
 		/**
@@ -107,23 +110,34 @@ class ChessEngine : public ChessPlayer
 		 */
 		MoveNotation m_notation;
 
-		/** Is the player ready to play? */
+		/** Is the engine ready to receive commands? */
 		bool m_isReady;
 		
+		/** Is the engine initialized? */
+		bool m_initialized;
+
 		/** The ID number of the chess engine. */
 		int m_id;
-		
+
 		/** The number of active chess engines. */
 		static int m_count;
-
+		
 	protected slots:
 		/**
 		 * Reads input from the engine.
 		 */
 		void on_readyRead();
 
+		/**
+		 * Flushes the write buffer.
+		 * If there are any commands in the buffer, they will be sent
+		 * to the engine.
+		 */
+		void flushWriteBuffer();
+
 	private:
 		QIODevice *m_ioDevice;
+		QStringList m_writeBuffer;
 
 };
 

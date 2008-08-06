@@ -15,6 +15,7 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGlobal>
 #include <QString>
 #include <QStringList>
 #include <QDebug>
@@ -43,11 +44,16 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
 	: ChessEngine(ioDevice, chessboard, timeControl, parent)
 {
 	m_forceMode = true;
+	m_lastPing = 0;
+
 	setName("XboardEngine");
 	// Tell the engine to turn on xboard mode
 	write("xboard");
 	// Tell the engine that we're using Xboard protocol 2
 	write("protover 2");
+	
+	// Wait for the engine to initialize
+	m_isReady = false;
 }
 
 XboardEngine::~XboardEngine()
@@ -75,7 +81,7 @@ void XboardEngine::newGame(Chessboard::ChessSide side)
 	}
 }
 
-void XboardEngine::sendTimeLeft() const
+void XboardEngine::sendTimeLeft()
 {
 	int csLeft = m_timeControl.timeLeft() / 10;
 	int ocsLeft = m_opponent->timeControl().timeLeft() / 10;
@@ -114,6 +120,18 @@ ChessEngine::ChessProtocol XboardEngine::protocol() const
 	return ChessEngine::Xboard;
 }
 
+void XboardEngine::ping()
+{
+	if (m_isReady)
+	{
+		// Ping the engine with a random number. The engine should
+		// later send the number back at us.
+		m_lastPing = qrand() % 32;
+		write(QString("ping ") + QString::number(m_lastPing));
+		m_isReady = false;
+	}
+}
+
 void XboardEngine::parseLine(const QString& line)
 {
 	QString command = line.section(' ', 0, 0);
@@ -123,6 +141,15 @@ void XboardEngine::parseLine(const QString& line)
 	{
 		ChessMove move = m_chessboard->chessMoveFromString(args);
 		emit moveMade(move);
+	}
+	else if (command == "pong")
+	{
+		int pong = args.toInt();
+		if (!m_isReady && pong == m_lastPing)
+		{
+			m_isReady = true;
+			flushWriteBuffer();
+		}
 	}
 	else if (command == "feature")
 	{
@@ -153,8 +180,14 @@ void XboardEngine::parseLine(const QString& line)
 			}
 			else if (feature == "done")
 			{
-				if (list[1].trimmed() == "1")
+				if (!m_initialized && list[1].trimmed() == "1")
+				{
+					Q_ASSERT(!m_isReady);
+					m_initialized = true;
 					m_isReady = true;
+					write("accepted done");
+					flushWriteBuffer();
+				}
 			}
 		}
 	}

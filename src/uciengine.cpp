@@ -31,9 +31,12 @@ UciEngine::UciEngine(QIODevice* ioDevice,
 	: ChessEngine(ioDevice, chessboard, timeControl, parent)
 {
 	setName("UciEngine");
+	
 	// Tell the engine to turn on Uci mode
 	write("uci");
-	write("isready");
+
+	// Don't send any commands to the engine until it's initialized.
+	m_isReady = false;
 }
 
 UciEngine::~UciEngine()
@@ -102,6 +105,15 @@ ChessEngine::ChessProtocol UciEngine::protocol() const
 	return ChessEngine::Uci;
 }
 
+void UciEngine::ping()
+{
+	if (m_isReady)
+	{
+		write("isready");
+		m_isReady = false;
+	}
+}
+
 void UciEngine::parseLine(const QString& line)
 {
 	QString command = line.section(' ', 0, 0);
@@ -117,9 +129,26 @@ void UciEngine::parseLine(const QString& line)
 		ChessMove move = m_chessboard->chessMoveFromString(moveString);
 		emit moveMade(move);
 	}
+	else if (command == "uciok")
+	{
+		if (!m_initialized)
+		{
+			Q_ASSERT(!m_isReady);
+			m_initialized = true;
+			m_isReady = true;
+
+			// TODO: Send the engine the "setoption" commands
+
+			ping();
+		}
+	}
 	else if (command == "readyok")
 	{
-		m_isReady = true;
+		if (!m_isReady)
+		{
+			m_isReady = true;
+			flushWriteBuffer();
+		}
 	}
 	else if (command == "id")
 	{

@@ -47,18 +47,20 @@ class XboardEngine : public ChessEngine
 
 		~XboardEngine();
 
-		virtual void newGame(Chessboard::ChessSide side);
-		virtual void go();
-		virtual void sendOpponentsMove(const ChessMove& move);
-		virtual ChessProtocol protocol() const;
+		void newGame(Chessboard::ChessSide side);
+		void go();
+		void sendOpponentsMove(const ChessMove& move);
+		ChessProtocol protocol() const;
+		void ping();
 
 	protected:
-		virtual void parseLine(const QString& line);
+		void parseLine(const QString& line);
 
 	private:
 		bool m_forceMode;
+		int m_lastPing;
 		
-		void sendTimeLeft() const;
+		void sendTimeLeft();
 };
 
 #endif // XBOARDENGINE_H

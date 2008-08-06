@@ -48,13 +48,14 @@ class UciEngine : public ChessEngine
 
 		~UciEngine();
 
-		virtual void newGame(Chessboard::ChessSide side);
-		virtual void go();
-		virtual void sendOpponentsMove(const ChessMove& move);
-		virtual ChessProtocol protocol() const;
+		void newGame(Chessboard::ChessSide side);
+		void go();
+		void sendOpponentsMove(const ChessMove& move);
+		ChessProtocol protocol() const;
+		void ping();
 
 	protected:
-		virtual void parseLine(const QString& line);
+		void parseLine(const QString& line);
 		
 	private:
 		QStringList m_moves;

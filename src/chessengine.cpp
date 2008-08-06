@@ -31,7 +31,8 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
 {
 	Q_CHECK_PTR(ioDevice);
 	Q_CHECK_PTR(chessboard);
-	m_isReady = false;
+	m_isReady = true;
+	m_initialized = false;
 	m_notation = LongNotation;
 	m_ioDevice = ioDevice;
 	m_id = m_count++;
@@ -50,13 +51,14 @@ bool ChessEngine::isHuman() const
 	return false;
 }
 
-bool ChessEngine::isReady() const
+void ChessEngine::write(const QString& data)
 {
-	return m_isReady;
-}
+	if (!m_isReady)
+	{
+		m_writeBuffer.append(data);
+		return;
+	}
 
-void ChessEngine::write(const QString& data) const
-{
 	Q_ASSERT(m_ioDevice->isWritable());
 	emit debugMessage(QString(">") + name() + "(" + QString::number(m_id) +  "): " + data);
 
@@ -73,5 +75,19 @@ void ChessEngine::on_readyRead()
 		
 		parseLine(line);
 	}
+}
+
+void ChessEngine::flushWriteBuffer()
+{
+	Q_ASSERT(m_isReady);
+	
+	if (m_writeBuffer.isEmpty())
+		return;
+
+	foreach (QString line, m_writeBuffer)
+	{
+		write(line);
+	}
+	m_writeBuffer.clear();
 }
 
