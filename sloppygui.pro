@@ -24,7 +24,11 @@ exists(version) {
 	}
 }
 
-DEFINES += SLOPPYGUI_VERSION='\'"$$SLOPPYGUI_VERSION"\''
+macx-xcode {
+	DEFINES += SLOPPYGUI_VERSION=\"$$SLOPPYGUI_VERSION\"
+} else {
+	DEFINES += SLOPPYGUI_VERSION=\\\"$$SLOPPYGUI_VERSION\\\"
+}
 
 CONFIG += qt debug
 QT += svg
@@ -97,9 +101,11 @@ UI_HEADERS_DIR = src
 
 RESOURCES = res/chessboard/chessboard.qrc
 
-OBJECTS_DIR = .obj/
-MOC_DIR = .moc/
-RCC_DIR = .rcc/
+!macx-xcode {
+	OBJECTS_DIR = .obj/
+	MOC_DIR = .moc/
+	RCC_DIR = .rcc/
+}
 
 # API documentation (Doxygen)
 doc-api.commands = doxygen docs/api/api.doxygen
