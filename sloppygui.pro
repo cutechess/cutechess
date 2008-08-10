@@ -41,6 +41,7 @@ HEADERS = src/graphicschessboardsquareitem.h \
           src/graphicschessboarditem.h \
           src/graphicschesspiece.h \
           src/chessboardview.h \
+          src/chessclock.h \
           src/manager.h \
           src/logmanager.h \
           src/newgamedlg.h \
@@ -66,10 +67,12 @@ HEADERS = src/graphicschessboardsquareitem.h \
           src/chessboard/util.h \
           src/chessboard/zobrist.h
 
-SOURCES = src/graphicschessboardsquareitem.cpp \
+SOURCES = src/main.cpp \
+          src/graphicschessboardsquareitem.cpp \
           src/graphicschessboarditem.cpp \
           src/graphicschesspiece.cpp \
           src/chessboardview.cpp \
+          src/chessclock.cpp \
           src/manager.cpp \
           src/logmanager.cpp \
           src/stdoutlogger.cpp \
@@ -77,7 +80,6 @@ SOURCES = src/graphicschessboardsquareitem.cpp \
           src/mainwindow.cpp \
           src/symbols.cpp \
           src/promotiondlg.cpp \
-          src/main.cpp \
           src/chessgame.cpp \
           src/timecontrol.cpp \
           src/chessplayer.cpp \
