@@ -129,8 +129,12 @@ void GraphicsChessboardSquareItem::paint(QPainter* painter, const QStyleOptionGr
 		QPen pen(GraphicsChessboardSquareItem::focusMarkerColor());
 		pen.setWidthF(3.0);
 		painter->setPen(pen);
-		painter->drawRect(boundingRect().x() + pen.width(), boundingRect().y() + pen.width(),
-			boundingRect().height() - (2 * pen.width()), boundingRect().width() - (2 * pen.width()));
+		
+		int x = (int)(boundingRect().x() + pen.width());
+		int y = (int)(boundingRect().y() + pen.width());
+		int width = (int)(boundingRect().height() - (2 * pen.width()));
+		int height = (int)(boundingRect().width() - (2 * pen.width()));
+		painter->drawRect(x, y, width, height);
 	}
 }
 
