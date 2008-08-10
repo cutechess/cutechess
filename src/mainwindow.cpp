@@ -50,7 +50,9 @@ MainWindow::MainWindow()
 
 	m_engineConfigurations = new EngineConfigurationModel(this);
 	m_engineConfigurations->addEngineConfiguration(
-		EngineConfiguration("Sloppy", "./sloppy", EngineConfiguration::Xboard));
+		EngineConfiguration("Sloppy", "sloppy", EngineConfiguration::Xboard));
+	m_engineConfigurations->addEngineConfiguration(
+		EngineConfiguration("Fruit", "fruit", EngineConfiguration::UCI));
 
 	createActions();
 	createMenus();
