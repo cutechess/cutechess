@@ -36,6 +36,14 @@ int EngineConfigurationModel::rowCount(const QModelIndex& parent) const
 	return m_configurations.count();
 }
 
+int EngineConfigurationModel::columnCount(const QModelIndex& parent) const
+{
+	Q_UNUSED(parent)
+
+	// Engine's name, command and protocol
+	return 3;
+}
+
 QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) const
 {
 	if (!index.isValid())
