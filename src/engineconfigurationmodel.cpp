@@ -100,6 +100,23 @@ QVariant EngineConfigurationModel::headerData(int section, Qt::Orientation orien
 	return QVariant();
 }
 
+bool EngineConfigurationModel::insertRows(int row, int count,
+                                          const QModelIndex& parent)
+{
+	Q_UNUSED(parent)
+
+	beginInsertRows(QModelIndex(), row, row + count - 1);
+
+	for (int i = 0; i < count; i++)
+	{
+		EngineConfiguration config(" ", " ", EngineConfiguration::Xboard);
+		m_configurations.insert(row, config);
+	}
+
+	endInsertRows();
+	return true;
+}
+
 void EngineConfigurationModel::addEngineConfiguration(const EngineConfiguration& configuration)
 {
 	beginInsertRows(QModelIndex(), m_configurations.count(), m_configurations.count() + 1);
