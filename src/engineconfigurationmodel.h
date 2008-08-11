@@ -42,8 +42,8 @@ class EngineConfigurationModel : public QAbstractListModel
 		bool setData(const QModelIndex& index, const QVariant& value,
 		             int role = Qt::EditRole);
 
-		void addEngineConfiguration(const EngineConfiguration& configuration);
-		QList<EngineConfiguration> engineConfigurations() const;
+		void addConfiguration(const EngineConfiguration& configuration);
+		QList<EngineConfiguration> configurations() const;
 	
 	private:
 		QList<EngineConfiguration> m_configurations;

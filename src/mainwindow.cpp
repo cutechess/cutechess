@@ -65,9 +65,9 @@ MainWindow::MainWindow()
 	setStatusBar(new QStatusBar());
 
 	m_engineConfigurations = new EngineConfigurationModel(this);
-	m_engineConfigurations->addEngineConfiguration(
+	m_engineConfigurations->addConfiguration(
 		EngineConfiguration("Sloppy", "sloppy", EngineConfiguration::Xboard));
-	m_engineConfigurations->addEngineConfiguration(
+	m_engineConfigurations->addConfiguration(
 		EngineConfiguration("Fruit", "fruit", EngineConfiguration::UCI));
 
 	createActions();
@@ -147,10 +147,10 @@ void MainWindow::newGame()
 	}
 
 	const EngineConfiguration whiteEngineConfig =
-		m_engineConfigurations->engineConfigurations().at(dlg.selectedWhiteEngine());
+		m_engineConfigurations->configurations().at(dlg.selectedWhiteEngine());
 
 	const EngineConfiguration blackEngineConfig =
-		m_engineConfigurations->engineConfigurations().at(dlg.selectedBlackEngine());
+		m_engineConfigurations->configurations().at(dlg.selectedBlackEngine());
 
 	QProcess* whiteEngineProcess = new QProcess(this);
 	QProcess* blackEngineProcess = new QProcess(this);

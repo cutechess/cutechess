@@ -167,7 +167,7 @@ bool EngineConfigurationModel::setData(const QModelIndex& index,
 	return false;
 }
 
-void EngineConfigurationModel::addEngineConfiguration(const EngineConfiguration& configuration)
+void EngineConfigurationModel::addConfiguration(const EngineConfiguration& configuration)
 {
 	beginInsertRows(QModelIndex(), m_configurations.count(), m_configurations.count() + 1);
 
@@ -176,7 +176,7 @@ void EngineConfigurationModel::addEngineConfiguration(const EngineConfiguration&
 	endInsertRows();
 }
 
-QList<EngineConfiguration> EngineConfigurationModel::engineConfigurations() const
+QList<EngineConfiguration> EngineConfigurationModel::configurations() const
 {
 	return m_configurations;
 }
