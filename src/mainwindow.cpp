@@ -18,6 +18,8 @@
 #include <QtGui>
 #include <QDebug>
 #include <QApplication>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 #include "mainwindow.h"
 #include "manager.h"
@@ -33,18 +35,32 @@
 #include "engineconfigurationmodel.h"
 #include "engineconfiguration.h"
 #include "newgamedlg.h"
+#include "chessclock.h"
 
 MainWindow::MainWindow()
 {
-	m_chessboardView = new ChessboardView(this);
+	m_whiteClock = new ChessClock();
+	m_blackClock = new ChessClock();
+	
+	QHBoxLayout* clockLayout = new QHBoxLayout();
+	clockLayout->addWidget(m_whiteClock);
+	clockLayout->addWidget(m_blackClock);
+
+	m_chessboardView = new ChessboardView;
 	m_chessboardScene = new QGraphicsScene(m_chessboardView);
 	m_chessboardView->setScene(m_chessboardScene);
 	m_chessboardView->setMinimumSize(400, 400);
 
-	setCentralWidget(m_chessboardView);
+	QVBoxLayout* mainLayout = new QVBoxLayout();
+	mainLayout->addLayout(clockLayout);
+	mainLayout->addWidget(m_chessboardView);
 
 	m_visualChessboard = new GraphicsChessboardItem();
 	m_chessboardScene->addItem(m_visualChessboard);
+
+	QWidget* mainWidget = new QWidget(this);
+	mainWidget->setLayout(mainLayout);
+	setCentralWidget(mainWidget);
 	
 	setStatusBar(new QStatusBar());
 
@@ -163,8 +179,8 @@ void MainWindow::newGame()
 	ChessPlayer* blackPlayer = 0;
 
 	TimeControl tc;
-	tc.setTimePerTc(10000);
-	tc.setIncrement(1000);
+	tc.setTimePerTc(180000);
+	tc.setMovesPerTc(40);
 
 	switch (whiteEngineConfig.protocol())
 	{
@@ -191,6 +207,16 @@ void MainWindow::newGame()
 				tc, this);
 		break;
 	}
+
+	connect(whitePlayer, SIGNAL(startedThinking(int)),
+		m_whiteClock, SLOT(start(int)));
+	connect(blackPlayer, SIGNAL(startedThinking(int)),
+		m_blackClock, SLOT(start(int)));
+
+	connect(whitePlayer, SIGNAL(moveMade(const ChessMove&)),
+		m_whiteClock, SLOT(stop()));
+	connect(blackPlayer, SIGNAL(moveMade(const ChessMove&)),
+		m_blackClock, SLOT(stop()));
 
 	connect(whitePlayer, SIGNAL(debugMessage(const QString&)),
 	        m_engineDebugTextEdit, SLOT(append(const QString&)));

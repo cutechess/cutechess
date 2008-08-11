@@ -40,18 +40,24 @@ void ChessClock::start(int totalTime)
 void ChessClock::stop()
 {
 	killTimer(m_timerId);
+	updateDisplay();
 }
 
 void ChessClock::updateDisplay()
 {
-	QTime timeLeft = QTime().addMSecs(m_totalTime - m_timer.elapsed());
+	int msLeft = m_totalTime - m_timer.elapsed();
+	QTime timeLeft = QTime().addMSecs(abs(msLeft));
+
 	QString format;
 	if (timeLeft.hour() > 0)
 		format = "hh:mm:ss";
 	else
 		format = "mm:ss";
 	
-	QString str = timeLeft.toString(format);
+	QString str;
+	if (msLeft < 0)
+		str += "-";
+	str += timeLeft.toString(format);
 	setNumDigits(str.length());
 	display(str);
 }

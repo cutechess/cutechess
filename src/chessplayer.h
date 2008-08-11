@@ -50,7 +50,7 @@ class ChessPlayer : public QObject
 		/**
 		 * Tells the player to start thinking and make its next move.
 		 */
-		virtual void go() = 0;
+		virtual void go();
 
 		/**
 		 * Gets the player's time control.
@@ -108,6 +108,13 @@ class ChessPlayer : public QObject
 		virtual bool isHuman() const = 0;
 
 	signals:
+		/**
+		 * Signals the time left in the player's clock when they
+		 * start thinking of their next move.
+		 * @param timeLeft Time left in milliseconds.
+		 */
+		void startedThinking(int timeLeft) const;
+
 		/**
 		 * Signals the engine's move.
 		 * @param move A chess move which the engine made.

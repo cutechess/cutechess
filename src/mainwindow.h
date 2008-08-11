@@ -28,6 +28,7 @@ class QGraphicsScene;
 class GraphicsChessboardItem;
 class QProcess;
 class EngineConfigurationModel;
+class ChessClock;
 
 /**
  * MainWindow
@@ -57,6 +58,8 @@ class MainWindow : public QMainWindow
 		ChessboardView* m_chessboardView;
 		QGraphicsScene* m_chessboardScene;
 		GraphicsChessboardItem* m_visualChessboard;
+		ChessClock* m_whiteClock;
+		ChessClock* m_blackClock;
 
 		EngineConfigurationModel* m_engineConfigurations;
 

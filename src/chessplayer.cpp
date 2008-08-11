@@ -37,6 +37,14 @@ void ChessPlayer::newGame(Chessboard::ChessSide side)
 	m_timeControl.setMovesLeft(m_timeControl.movesPerTc());
 }
 
+void ChessPlayer::go()
+{
+	if (m_timeControl.timePerTc() != 0)
+		emit startedThinking(m_timeControl.timeLeft());
+	else if (m_timeControl.timePerMove() != 0)
+		emit startedThinking(m_timeControl.timePerMove());
+}
+
 TimeControl ChessPlayer::timeControl() const
 {
 	return m_timeControl;

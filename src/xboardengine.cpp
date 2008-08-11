@@ -113,6 +113,8 @@ void XboardEngine::go()
 		sendTimeLeft();
 		write("go");
 	}
+
+	ChessPlayer::go();
 }
 
 ChessEngine::ChessProtocol XboardEngine::protocol() const

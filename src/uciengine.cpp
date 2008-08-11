@@ -98,6 +98,8 @@ void UciEngine::go()
 			command += QString(" movestogo ") + QString::number(m_timeControl.movesLeft());
 	}
 	write(command);
+	
+	ChessPlayer::go();
 }
 
 ChessEngine::ChessProtocol UciEngine::protocol() const
