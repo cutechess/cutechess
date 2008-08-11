@@ -133,6 +133,40 @@ bool EngineConfigurationModel::removeRows(int row, int count,
 	return true;
 }
 
+bool EngineConfigurationModel::setData(const QModelIndex& index,
+                                       const QVariant& value, int role)
+{
+	if (index.isValid() && role == Qt::EditRole)
+	{
+		EngineConfiguration config = m_configurations.at(index.row());
+
+		switch (index.column())
+		{
+			case 0:
+				config.setName(value.toString());
+			break;
+
+			case 1:
+				config.setCommand(value.toString());
+			break;
+
+			case 2:
+				config.setProtocol(EngineConfiguration::ChessEngineProtocol(
+					value.toInt()));
+			break;
+
+			default:
+				return false;
+		}
+
+		m_configurations[index.row()] = config;
+		emit(dataChanged(index, index));
+
+		return true;
+	}
+	return false;
+}
+
 void EngineConfigurationModel::addEngineConfiguration(const EngineConfiguration& configuration)
 {
 	beginInsertRows(QModelIndex(), m_configurations.count(), m_configurations.count() + 1);
