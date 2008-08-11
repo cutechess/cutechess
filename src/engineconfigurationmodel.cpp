@@ -117,6 +117,22 @@ bool EngineConfigurationModel::insertRows(int row, int count,
 	return true;
 }
 
+bool EngineConfigurationModel::removeRows(int row, int count,
+                                          const QModelIndex& parent)
+{
+	Q_UNUSED(parent)
+
+	beginRemoveRows(QModelIndex(), row, row + count - 1);
+
+	for (int i = 0; i < count; i++)
+	{
+		m_configurations.removeAt(row);
+	}
+
+	endRemoveRows();
+	return true;
+}
+
 void EngineConfigurationModel::addEngineConfiguration(const EngineConfiguration& configuration)
 {
 	beginInsertRows(QModelIndex(), m_configurations.count(), m_configurations.count() + 1);

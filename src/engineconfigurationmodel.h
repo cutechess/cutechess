@@ -38,6 +38,7 @@ class EngineConfigurationModel : public QAbstractListModel
 		QVariant headerData(int section, Qt::Orientation orientation,
 		                    int role = Qt::DisplayRole) const;
 		bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex());
+		bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
 
 		void addEngineConfiguration(const EngineConfiguration& configuration);
 		QList<EngineConfiguration> engineConfigurations() const;
