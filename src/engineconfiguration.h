@@ -50,7 +50,6 @@ class EngineConfiguration
 		*/
 		EngineConfiguration(const QString& name, const QString& command,
 		                    ChessEngineProtocol protocol);
-		~EngineConfiguration();
 
 		/**
 		 * Sets the engine's name.

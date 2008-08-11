@@ -31,10 +31,6 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 	m_protocol = protocol;
 }
 
-EngineConfiguration::~EngineConfiguration()
-{
-}
-
 void EngineConfiguration::setName(const QString& name)
 {
 	m_name = name;
