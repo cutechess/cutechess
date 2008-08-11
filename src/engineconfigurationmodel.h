@@ -29,6 +29,8 @@ class EngineConfigurationModel : public QAbstractListModel
 
 	public:
 		EngineConfigurationModel(QObject* parent = 0);
+		EngineConfigurationModel(const QList<EngineConfiguration>& configurations,
+		                         QObject* parent = 0);
 		
 		int rowCount(const QModelIndex& parent = QModelIndex()) const;
 		QVariant data(const QModelIndex& index, int role) const;
