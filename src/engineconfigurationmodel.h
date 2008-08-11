@@ -46,7 +46,7 @@ class EngineConfigurationModel : public QAbstractListModel
 		/**
 		 * Creates a new EngineConfigurationModel object.
 		 * @param configurations Existing list of engine configurations to use.
-		 * @param Parent object.
+		 * @param parent Parent object.
 		*/
 		EngineConfigurationModel(const QList<EngineConfiguration>& configurations,
 		                         QObject* parent = 0);
@@ -85,7 +85,7 @@ class EngineConfigurationModel : public QAbstractListModel
 		 * @param orientation Orientation that is used to retrieve the header
 		 * information.
 		 * @param role Role that is used to retrieve the header information.
-		 * @param Header information.
+		 * @return Header information.
 		*/
 		QVariant headerData(int section, Qt::Orientation orientation,
 		                    int role = Qt::DisplayRole) const;
@@ -93,7 +93,7 @@ class EngineConfigurationModel : public QAbstractListModel
 		 * Inserts empty chess engine configurations to the model.
 		 * @param row The location where the new configurations will be inserted.
 		 * @param count The number of new configurations to be inserted.
-		 * @parent Parent item. NOTE: This parameter is always ignored in
+		 * @param parent Parent item. NOTE: This parameter is always ignored in
 		 * this model because items don't have a parent-child relationship.
 		 * @return True if configurations were inserted successfully, false
 		 * otherwise.
