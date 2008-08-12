@@ -20,12 +20,10 @@
 
 #include <QtGlobal>
 
-/**
- * LoggerBase class defines a common interface for logger classes.
+/*!
+ * \brief The LoggerBase class defines a common interface for logger classes.
  *
- * @see LogManager
- * @see GuiLogger
- * @see StdOutLogger
+ * \sa LogManager, GuiLogger, StdOutLogger
 */
 class LoggerBase
 {
@@ -33,12 +31,9 @@ class LoggerBase
 		LoggerBase() { }
 		virtual ~LoggerBase() { }
 
-		/**
-		 * Logs a new messages.
-		 * @param type Message's type.
-		 * @param message The message.
-		*/
+		/*! Logs a new message. */
 		virtual void log(QtMsgType type, const char *message) = 0;
 };
 
 #endif // LOGGERBASE_H
+
