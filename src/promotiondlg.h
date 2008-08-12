@@ -25,27 +25,24 @@
 class QRadioButton;
 class QSignalMapper;
 
-/**
- * PromotionDialog provides an UI for chess piece promotion.
+/*!
+ * \brief The PromotionDialog class provides a dialog for chess piece promotion.
 */
 class PromotionDialog : public QDialog
 {
 	Q_OBJECT
 
 	public:
-		/**
+		/*!
 		 * Creates a new promotion dialog.
-		 * @param parent Dialog's parent widget.
-		 * @param f Dialog's window flags.
 		*/
 		PromotionDialog(QWidget* parent = 0, Qt::WindowFlags f = 0);
-		/**
+		/*!
 		 * Returns the user selected promotion type.
-		 * The promotion type this method returns is always valid even if
+		 *
+		 * This method always returns a valid promotion type even if
 		 * the user cancelled the dialog. By default the promotion type
 		 * is queen.
-		 * @return User selected promotion type. Always valid even if dialog
-		 * was cancelled.
 		*/
 		Chessboard::ChessPiece promotionType() const;
 	
