@@ -15,6 +15,12 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGlobal>
+
+#if QT_VERSION < 0x040400
+  #error "Qt version 4.4.0 or later is required"
+#endif
+
 #include <QApplication>
 #include <cstdio>
 
