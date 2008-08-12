@@ -159,7 +159,7 @@ bool EngineConfigurationModel::setData(const QModelIndex& index,
 				return false;
 		}
 
-		m_configurations[index.row()] = config;
+		m_configurations.insert(index.row(), config);
 		emit(dataChanged(index, index));
 
 		return true;
