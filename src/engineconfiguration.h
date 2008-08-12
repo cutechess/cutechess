@@ -20,66 +20,68 @@
 
 #include <QString>
 
-/**
- * EngineConfiguration is a class for storing a chess engine configuration.
+/*!
+ * \brief The EngineConfiguration class defines a chess engine configuration.
  *
- * EngineConfiguration holds information about a single chess engine. This
- * information includes the engine's name, the engine's command and
- * protocol.
+ * \sa EngineConfigurationModel
 */
 class EngineConfiguration
 {
 	public:
 
-		/** The procol the engine uses for communication. */
+		/*! The procol the engine uses for communication. */
 		enum ChessEngineProtocol
 		{
+			/*! The Xboard protocol. */
 			Xboard,
+			/*! The UCI protocol. */
 			UCI
 		};
 
-		/**
-		 * Creates an empty EngineConfiguration object.
-		*/
+		/*! Creates an empty chess engine configuration. */
 		EngineConfiguration();
-		/**
-		 * Creates a new EngineConfiguration object.
-		 * @param name The engine's name.
-		 * @param command The command which used to launch the engine.
-		 * @param protocol The communication protocol the engine uses.
+		/*!
+		 * Creates a new chess engine configuration with specified name,
+		 * command and protocol settings.
 		*/
 		EngineConfiguration(const QString& name, const QString& command,
 		                    ChessEngineProtocol protocol);
 
-		/**
+		/*!
 		 * Sets the engine's name.
-		 * @param name Name for the engine.
+		 *
+		 * \sa name()
 		*/
 		void setName(const QString& name);
-		/**
+		/*!
 		 * Sets the command which is used to launch the engine.
-		 * @param command Command for the engine.
+		 *
+		 * \sa command()
 		*/
 		void setCommand(const QString& command);
-		/**
+		/*!
 		 * Sets the communication protocol the engine uses.
-		 * @param protocol Protocol for the engine.
+		 *
+		 * \sa protocol()
 		*/
 		void setProtocol(ChessEngineProtocol protocol);
 
-		/**
+		/*!
 		 * Returns the engine's name.
-		 * @return Name of the engine.
+		 *
+		 * \sa setName()
 		*/
 		QString name() const;
-		/**
+		/*!
 		 * Returns the command which is used to launch the engine.
-		 * @return Command of the engine.
+		 *
+		 * \sa setCommand()
 		*/
 		QString command() const;
-		/**
+		/*!
 		 * Returns the communication protocol the engine uses.
-		 * @return Protocol of the engine.
+		 *
+		 * \sa setProtocol()
 		*/
 		ChessEngineProtocol protocol() const;
 	
