@@ -20,16 +20,9 @@
 
 #include "loggerbase.h"
 
-/**
- * StdOutLogger class provides logging output to standard output and
+/*!
+ * \brief The StdOutLogger class provides logging output to standard output and
  * standard error.
- *
- * StdOutLogger is the default logger of LogManager, you don't
- * need to add it separately.
- *
- * You should not use this class directly but use Qt's own debug functions
- * qDebug(), qWarning(), qCritical() and qFatal() to do the logging. See
- * Qt's documentation how to use these functions.
  *
  * Depending on the message's type the message is printed to different
  * output steam. Debug messages are printed to standard output and all
@@ -39,13 +32,12 @@
 class StdOutLogger : public LoggerBase
 {
 	public:
-		/**
+		/*!
 		 * Prints a new log message to standard output / error.
+		 *
 		 * The message's type defines the output steam. Only debug
 		 * messages are printed to standard output, all other
 		 * messages are printed to standard error.
-		 * @param type Message's type.
-		 * @param message The message.
 		*/
 		void log(QtMsgType type, const char *message);
 };
