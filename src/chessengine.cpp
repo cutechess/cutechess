@@ -69,8 +69,7 @@ void ChessEngine::on_readyRead()
 {
 	while (m_ioDevice->canReadLine())
 	{
-		QString line = QString(m_ioDevice->readLine());
-		line.chop(1); // remove the trailing newline
+		QString line = QString(m_ioDevice->readLine()).trimmed();
 		emit debugMessage(QString("<") + name() + "(" + QString::number(m_id) +  "): " + line);
 		
 		parseLine(line);
