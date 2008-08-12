@@ -103,13 +103,10 @@ void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
 	connect(m_blackPlayer, SIGNAL(moveMade(const ChessMove&)),
 	        this, SLOT(moveMade(const ChessMove&)));
 
-	m_whitePlayer->setOpponent(m_blackPlayer);
-	m_blackPlayer->setOpponent(m_whitePlayer);
-
 	m_gameInProgress = true;
 
-	m_whitePlayer->newGame(Chessboard::White);
-	m_blackPlayer->newGame(Chessboard::Black);
+	m_whitePlayer->newGame(Chessboard::White, m_blackPlayer);
+	m_blackPlayer->newGame(Chessboard::Black, m_whitePlayer);
 	m_playerToMove = m_whitePlayer;
 	
 	m_timer.start();

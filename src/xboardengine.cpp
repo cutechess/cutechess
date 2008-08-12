@@ -61,9 +61,9 @@ XboardEngine::~XboardEngine()
 	//write("quit");
 }
 
-void XboardEngine::newGame(Chessboard::ChessSide side)
+void XboardEngine::newGame(Chessboard::ChessSide side, ChessPlayer* opponent)
 {
-	ChessPlayer::newGame(side);
+	ChessPlayer::newGame(side, opponent);
 	m_forceMode = true;
 	write("force");
 	write("setboard " + m_chessboard->fenString());

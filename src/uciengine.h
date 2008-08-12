@@ -48,7 +48,7 @@ class UciEngine : public ChessEngine
 
 		~UciEngine();
 
-		void newGame(Chessboard::ChessSide side);
+		void newGame(Chessboard::ChessSide side, ChessPlayer* opponent);
 		void go();
 		void sendOpponentsMove(const ChessMove& move);
 		ChessProtocol protocol() const;

@@ -44,9 +44,9 @@ UciEngine::~UciEngine()
 	//write("quit");
 }
 
-void UciEngine::newGame(Chessboard::ChessSide side)
+void UciEngine::newGame(Chessboard::ChessSide side, ChessPlayer* opponent)
 {
-	ChessPlayer::newGame(side);
+	ChessPlayer::newGame(side, opponent);
 	m_moves.clear();
 	write("ucinewgame");
 	write(QString("position ") + m_chessboard->fenString());

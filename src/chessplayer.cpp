@@ -28,10 +28,11 @@ ChessPlayer::ChessPlayer(const TimeControl& timeControl, QObject* parent)
 	m_opponent = 0;
 }
 
-void ChessPlayer::newGame(Chessboard::ChessSide side)
+void ChessPlayer::newGame(Chessboard::ChessSide side, ChessPlayer* opponent)
 {
-	Q_CHECK_PTR(m_opponent);
-	
+	Q_ASSERT(opponent != 0);
+
+	m_opponent = opponent;
 	setSide(side);
 	m_timeControl.setTimeLeft(m_timeControl.timePerTc());
 	m_timeControl.setMovesLeft(m_timeControl.movesPerTc());
@@ -58,12 +59,6 @@ void ChessPlayer::setTimeControl(const TimeControl& timeControl)
 void ChessPlayer::setSide(Chessboard::ChessSide side)
 {
 	m_side = side;
-}
-
-void ChessPlayer::setOpponent(ChessPlayer* opponent)
-{
-	Q_CHECK_PTR(opponent);
-	m_opponent = opponent;
 }
 
 Chessboard::ChessSide ChessPlayer::side() const

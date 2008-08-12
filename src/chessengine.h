@@ -69,7 +69,7 @@ class ChessEngine : public ChessPlayer
 
 		virtual ~ChessEngine();
 
-		virtual void newGame(Chessboard::ChessSide side) = 0;
+		virtual void newGame(Chessboard::ChessSide side, ChessPlayer* opponent) = 0;
 		virtual void go() = 0;
 		virtual bool isHuman() const;
 		virtual void sendOpponentsMove(const ChessMove& move) = 0;

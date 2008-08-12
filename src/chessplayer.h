@@ -44,8 +44,9 @@ class ChessPlayer : public QObject
 		/**
 		 * Starts a new chess game.
 		 * @param side The side (color) the player should play as.
+		 * @param opponent The opposing player.
 		 */
-		virtual void newGame(Chessboard::ChessSide side);
+		virtual void newGame(Chessboard::ChessSide side, ChessPlayer* opponent);
 		
 		/**
 		 * Tells the player to start thinking and make its next move.
@@ -76,12 +77,6 @@ class ChessPlayer : public QObject
 		 * @param side The side of the player.
 		 */
 		void setSide(Chessboard::ChessSide side);
-
-		/**
-		 * Sets the opponent of the player.
-		 * @param opponent The opponent.
-		 */
-		void setOpponent(ChessPlayer* opponent);
 
 		/**
 		 * Tells the opponent's move to the player.
