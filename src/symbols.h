@@ -22,65 +22,60 @@
 
 #include "chessboard/chessboard.h"
 
-/**
- * Symbols class provides chess symbols found in the Unicode character set.
+/*!
+ * \brief The Symbols class provides chess symbols found in the Unicode character set.
 */
 class Symbols
 {
 	public:
-		/** Symbol of black pawn. */
+		/*! Symbol of black pawn. */
 		static const QString BlackPawn;
-		/** Symbol of black rook. */
+		/*! Symbol of black rook. */
 		static const QString BlackRook;
-		/** Symbol of black knight. */
+		/*! Symbol of black knight. */
 		static const QString BlackKnight;
-		/** Symbol of black bishop. */
+		/*! Symbol of black bishop. */
 		static const QString BlackBishop;
-		/** Symbol of black queen. */
+		/*! Symbol of black queen. */
 		static const QString BlackQueen;
-		/** Symbol of black king. */
+		/*! Symbol of black king. */
 		static const QString BlackKing;
 
-		/** Symbol of white pawn. */
+		/*! Symbol of white pawn. */
 		static const QString WhitePawn;
-		/** Symbol of white rook. */
+		/*! Symbol of white rook. */
 		static const QString WhiteRook;
-		/** Symbol of white knight. */
+		/*! Symbol of white knight. */
 		static const QString WhiteKnight;
-		/** Symbol of white bishop. */
+		/*! Symbol of white bishop. */
 		static const QString WhiteBishop;
-		/** Symbol of white queen. */
+		/*! Symbol of white queen. */
 		static const QString WhiteQueen;
-		/** Symbol of white king. */
+		/*! Symbol of white king. */
 		static const QString WhiteKing;
 
-		/**
+		/*!
 		 * Returns a symbol of given side and piece type.
-		 * @param side The side of the wanted symbol.
-		 * @param piece The piece type of the wanted symbol.
-		 * @return The symbol of the given side and piece type. If the given
-		 * values are invalid an empty string is returned.
+		 *
+		 * If the given values are invalid an empty string is returned.
 		*/
 		static QString symbolOf(Chessboard::ChessSide side, Chessboard::ChessPiece piece);
 
-		/**
+		/*!
 		 * Returns a symbol of given side and piece type.
-		 * The piece type is given as a single character. The mappings to
-		 * chess pieces are:
 		 *
-		 * K - King
-		 * Q - Queen
-		 * B - Bishop
-		 * N - Knight
-		 * R - Rook
-		 * P - Pawn
+		 * The valid values for \a piece are:
+		 *
+		 * - 'k' - King
+		 * - 'q' - Queen
+		 * - 'b' - Bishop
+		 * - 'n' - Knight
+		 * - 'r' - Rook
+		 * - 'p' - Pawn
 		 *
 		 * Uppercase and lowercase letters give same results.
-		 * @param side The side of the wanted symbol.
-		 * @param piece The piece type of the wanted symbol (as a single
-		 * character).
-		 * @return The symbol of the given side and piece type. If the given
-		 * values are invalid an empty string is returned.
+		 *
+		 * If the given values are invalid an empty string is returned.
 		*/
 		static QString symbolOf(Chessboard::ChessSide side, const QChar& piece);
 	
