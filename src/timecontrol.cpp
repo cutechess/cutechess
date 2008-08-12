@@ -74,7 +74,7 @@ void TimeControl::update(int elapsedTime)
 			if (m_movesLeft == 0)
 			{
 				setMovesLeft(m_movesPerTc);
-				setTimeLeft(m_timePerTc);
+				setTimeLeft(m_timePerTc + m_timeLeft);
 			}
 		}
 	}
