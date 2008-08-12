@@ -72,7 +72,7 @@ class ChessEngine : public ChessPlayer
 		virtual void newGame(Chessboard::ChessSide side, ChessPlayer* opponent) = 0;
 		virtual void go() = 0;
 		virtual bool isHuman() const;
-		virtual void sendOpponentsMove(const ChessMove& move) = 0;
+		virtual void makeMove(const ChessMove& move) = 0;
 		
 		/**
 		 * Gets the chess protocol which the engine uses.

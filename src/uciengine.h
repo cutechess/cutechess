@@ -50,7 +50,7 @@ class UciEngine : public ChessEngine
 
 		void newGame(Chessboard::ChessSide side, ChessPlayer* opponent);
 		void go();
-		void sendOpponentsMove(const ChessMove& move);
+		void makeMove(const ChessMove& move);
 		ChessProtocol protocol() const;
 		void ping();
 

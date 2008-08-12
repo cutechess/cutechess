@@ -52,7 +52,7 @@ void UciEngine::newGame(Chessboard::ChessSide side, ChessPlayer* opponent)
 	write(QString("position ") + m_chessboard->fenString());
 }
 
-void UciEngine::sendOpponentsMove(const ChessMove& move)
+void UciEngine::makeMove(const ChessMove& move)
 {
 	QString moveString;
 	if (m_notation == LongNotation)

@@ -76,7 +76,7 @@ void ChessGame::moveMade(const ChessMove& move)
 	// Start counting the duration of the next move
 	m_timer.start();
 
-	m_playerToMove->sendOpponentsMove(move);
+	m_playerToMove->makeMove(move);
 	m_chessboard->makeMove(move);
 	
 	if (m_chessboard->result() == Chessboard::NoResult)

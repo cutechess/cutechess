@@ -92,7 +92,7 @@ void XboardEngine::sendTimeLeft()
 		write(QString("otim ") + QString::number(ocsLeft));
 }
 
-void XboardEngine::sendOpponentsMove(const ChessMove& move)
+void XboardEngine::makeMove(const ChessMove& move)
 {
 	QString moveString;
 	if (m_notation == LongNotation)

@@ -79,10 +79,12 @@ class ChessPlayer : public QObject
 		void setSide(Chessboard::ChessSide side);
 
 		/**
-		 * Tells the opponent's move to the player.
-		 * @param move A chess move which the opponent made.
+		 * Sends the next move to the player.
+		 * If the player is in force/observer mode, the move wasn't
+		 * necessarily made by the opponent.
+		 * @param move A chess move.
 		 */
-		virtual void sendOpponentsMove(const ChessMove& move) = 0;
+		virtual void makeMove(const ChessMove& move) = 0;
 		
 		/**
 		 * Gets the name of the player.
