@@ -22,15 +22,10 @@
 
 class QTextEdit;
 
-/**
- * GuiLogger class provides logging output to QTextEdit.
+/*!
+ * \brief The GuiLogger class provides logging output to QTextEdit.
  *
- * Like in the LogManager's case, you should not use this class directly but
- * add GuiLogger to the list of loggers (LogManager::addLogger) and use Qt's
- * own debugging functions qDebug(), qWarning(), qCritical() and qFatal() to
- * do the logging. See Qt's documentation how to use these functions.
- *
- * In addition to the log message GuiLogger logs the time when the message
+ * In addition to the log message %GuiLogger logs the time when the message
  * was added. This functionality is not configurable.
  *
  * The message's type does not affect the output; all messages are handled
@@ -39,18 +34,17 @@ class QTextEdit;
 class GuiLogger : public LoggerBase
 {
 	public:
-		/**
-		 * Creates a new GuiLogger object.
-		 * @param logWidget The widget which will receive the log messages.
+		/*!
+		 * Creates a new GuiLogger with \a logWidget as the target widget.
 		*/
 		GuiLogger(QTextEdit* logWidget);
 
-		/**
-		 * Appends a new log messages to the QTextEdit widget.
+		/*!
+		 * Appends a new log messages to the target widget.
+		 *
 		 * Message's type does not affect the output.
+		 *
 		 * The current time is added before the log message.
-		 * @param type Message's type.
-		 * @param message The message.
 		*/
 		void log(QtMsgType type, const char *message);
 	
