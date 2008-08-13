@@ -25,85 +25,84 @@
 
 class LoggerBase;
 
-/**
- * LogManager is a singleton type class for handling logging.
+/*!
+ * \brief The LogManager class provides logging management.
  *
- * The functionality of LogManager resolves around the different loggers
+ * The functionality of %LogManager resolves around the different loggers
  * derieved from the LoggerBase class. Different loggers enable logging
- * messages to different output formats such as to the GUI and standard
+ * messages to different output formats such as to the GUI and to the standard
  * output steams.
  *
- * LogManager always has one logger enabled called the StdOutLogger which
- * log messages to standard output and standard error.
+ * %LogManager by default has the standard output / error logger enabled. This
+ * logger cannot be removed and is guaranteed to be available.
  *
  * You can create your own loggers by creating a derieved class from
  * LoggerBase and calling the addLogger() method.
  *
  * For application logging purposes you shouldn't use this class directly
  * but use Qt's own logging functions such as qDebug(), qWarning(),
- * qCritical() and qFatal().
+ * qCritical() and qFatal(). This ensures backwards compatiblity if you
+ * at some point later decide not to use %LogManager.
  *
- * You can control the output of messages by setting the logging level
- * higher (setLoggingLevel() method).
+ * To enable usage of %LogManager through Qt's own logging functions, you
+ * have to use Qt's \e qInstallMsgHandler() function with
+ * LogManager::messageHandler() method as argument.
  *
- * @see StdOutLogger
- * @see GuiLogger
- * @see setLoggingLevel
+ * You can control the output of messages by modifying the logging level
+ * by using the setLoggingLevel() method.
+ *
+ * \sa StdOutLogger, GuiLogger, setLoggingLevel()
 */
 class LogManager : public ManagerBase<LogManager>
 {
 	friend class ManagerBase<LogManager>;
 
 	public:
-		/**
+		/*!
 		 * Adds new a logger to the list of loggers.
-		 * @param logger Logger to add.
 		*/
 		void addLogger(LoggerBase* logger);
 
-		/**
+		/*!
 		 * Restores the default logger (standard output logger) and
 		 * removes all other loggers.
 		*/
 		void restoreDefaultLogger();
 
-		/**
-		 * Logs a message with the currently installed loggers.
+		/*!
+		 * Logs \a message of \a type with the currently installed loggers.
+		 *
 		 * You should use Qt's debug message functions (qDebug, qWarning etc.)
 		 * instead of calling this function.
-		 * @param type Message's type.
-		 * @param message The message.
 		*/
 		void log(QtMsgType type, const char *message);
 
-		/**
-		 * Sets the visibility of logging messages.
+		/*!
+		 * Sets the visibility of logging messages to \a level.
+		 *
 		 * Logging level controls which messages are passed to the active
 		 * loggers. If the message's level is lower than the current
 		 * logging level the message is ignored.
-		 * The priorities of the messages are (from lowest):
 		 *
-		 * Debug messages
-		 * Warning messages
-		 * Critical messages
-		 * Fatal messages
+		 * The priorities of the messages are (from lowest to highest):
 		 *
-		 * So for example calling this method with value QtWarningMsg would
+		 * - Debug messages
+		 * - Warning messages
+		 * - Critical messages
+		 * - Fatal messages
+		 *
+		 * For example calling this method with value \e QtWarningMsg would
 		 * allow only warning, critical and fatal messages to pass.
-		 *
-		 * @param level The level that message must be in order to be logged.
-		 * @see loggingLevel
 		*/
 		void setLoggingLevel(QtMsgType level);
 
-		/**
-		 * Return the current logging level.
-		 * @return Current logging level.
-		 * @see setLoggingLevel
+		/*!
+		 * Returns the current logging level.
+		 * \sa setLoggingLevel()
 		*/
 		QtMsgType loggingLevel() const;
 
-		/**
+		/*!
 		 * Custom message handler for Qt.
 		*/
 		static void messageHandler(QtMsgType type, const char *message);
