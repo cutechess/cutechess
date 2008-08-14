@@ -61,11 +61,13 @@ template <typename T> class ManagerBase
 		static T* instance;
 };
 
-/**
- * Manager class is the base of operations.
+/*!
+ * \brief The Manager class is the base of operations.
  *
- * The Manager class has two main tasks: provide access to other managers and
- * provide methods which are required across the application.
+ * The %Manager has two main tasks:
+ *
+ * - Provide access to other managers
+ * - Provide methods which are required across the application
 */
 class Manager : public ManagerBase<Manager>
 {
@@ -74,14 +76,14 @@ class Manager : public ManagerBase<Manager>
 	friend class ManagerBase<Manager>;
 	
 	public:
-		/**
+		/*!
 		 * Returns an instance of the LogManager class.
-		 * @see LogManager
+		 * \sa LogManager
 		*/
 		LogManager* getLogManager();
 
-		/**
-		 * Signals the end of the application.
+		/*!
+		 * Releases all managers.
 		*/
 		static void quit();
 
