@@ -24,16 +24,14 @@
 
 class QPainter;
 
-/**
- * GraphicsChessboardSquareItem represents a single square in the chessboard.
+/*!
+ * \brief The GraphicsChessboardSquareItem class represents a single square in
+ * the visual chessboard.
  *
- * GraphicsChessboardSquareItem inherits QGraphicsItem:
- * http://doc.trolltech.com/4.4/qgraphicsitem.html
- *
- * Each square have different states. These states include selected, focused
- * and the default state. Within a chessboard only one item can have selected
- * state and one can have a focused state. A single square can have however
- * can also have these both states.
+ * Each square can have different states. These states include selected, focused
+ * and the default state. Within a visuals chessboard only one item can have
+ * selected state and one can have a focused state. A single square can
+ * however have both states.
  *
  * The painting is done depending on the square's state. If the square is
  * selected the square's color is overridden with the selected color. If the
@@ -44,102 +42,111 @@ class QPainter;
 class GraphicsChessboardSquareItem : public QGraphicsItem
 {
 	public:
-		/** Specifies the square's type: light or dark. */
+		/*! Specifies the square's type. */
 		enum ChessboardSquareType
 		{
+			/*! A light square. */
 			LightSquare,
+			/*! A dark square. */
 			DarkSquare
 		};
 
-		/**
-		 * Creates a new GraphicsChessboardSquareItem object.
-		 * @param parent Square's parent object (i.e. the chessboard).
-		 * @param type Square's type
+		/*!
+		 * Creates a new GraphicsChessboardSquareItem of \a type as a child of
+		 * \a parent.
 		*/
 		GraphicsChessboardSquareItem(QGraphicsItem* parent, ChessboardSquareType type);
 
-		/** Size of the square. */
+		/*! Size of the square. */
 		static const qreal size;
 
-		/**
-		 * Sets the color of all light squares.
-		 * @param color Color for all light squares.
+		/*!
+		 * Sets the color of all light squares to \a color.
 		*/
 		static void setLightSquareColor(const QColor& color);
-		/**
-		 * Sets the color of all dark squares.
-		 * @param color Color for all dark squares.
+		/*!
+		 * Sets the color of all dark squares to \a color.
 		*/
 		static void setDarkSquareColor(const QColor& color);
-		/**
-		 * Sets the color of all selected squares.
+		/*!
+		 * Sets the color of all selected squares to \a color.
+		 *
 		 * The selected color overrides squares default color
 		 * when the square is selected.
-		 * @param color Color for all selected squares.
 		*/
 		static void setSelectedSquareColor(const QColor& color);
-		/**
-		 * Sets the color of the focus marker.
-		 * @param color Color for the focus marker.
+		/*!
+		 * Sets the color of the focus marker to \a color.
 		*/
 		static void setFocusMarkerColor(const QColor& color);
-		/**
+		/*!
 		 * Returns the color of light squares.
-		 * @return Color of light squares.
 		*/
 		static QColor lightSquareColor();
-		/**
+		/*!
 		 * Returns the color of dark squares.
-		 * @return Color of dark squares.
 		*/
 		static QColor darkSquareColor();
-		/**
+		/*!
 		 * Returns the color of selected squares.
-		 * @return Color of selected squares.
 		*/
 		static QColor selectedSquareColor();
-		/**
+		/*!
 		 * Returns the color of the focus marker.
-		 * @return Color of the focus marker.
 		*/
 		static QColor focusMarkerColor();
 
-		/**
-		 * Returns the square's type: light or dark.
-		 * @return Square's type.
+		/*!
+		 * Returns the square's type.
 		*/
 		ChessboardSquareType squareType() const;
-		/**
+		/*!
 		 * Returns true if the square is light.
-		 * @return True if the square is light.
+		 *
+		 * This method is provided for convenience.
 		*/
 		bool isLightSquare() const;
-		/**
+		/*!
 		 * Returns true if the square is dark.
-		 * @return True if the square is dark.
+		 *
+		 * This method is provided for convenience.
 		*/
 		bool isDarkSquare() const;
-		/**
-		 * Sets the square's type.
-		 * @param type Type for this square.
+		/*!
+		 * Sets the square's type to \a type.
 		*/
 		void setSquareType(ChessboardSquareType type);
-		/**
+		/*!
 		 * Returns true if this square is occupied (has a chess piece).
-		 * @return True if square is occupied.
 		*/
 		bool isOccupied() const;
 
+		/*!
+		 * Sets the square's position in the chessboard to \a pos.
+		*/
 		void setPositionInChessboard(Chessboard::ChessSquare pos);
+		/*!
+		 * Returns the square's position in the chessboard.
+		*/
 		Chessboard::ChessSquare positionInChessboard() const;
 
+		/*!
+		 * Returns the bounds of the square.
+		*/
 		QRectF boundingRect() const;
+		/*!
+		 * Paints the square using \a painter with set of options and \a widget as target.
+		*/
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
 	protected:
+		/*! Fired when square receives a mouse press event */
 		void mousePressEvent(QGraphicsSceneMouseEvent* event);
+		/*! Fired when square receives a mouse release event. */
 		void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+		/*! Fired when square loses focus. */
 		void focusOutEvent (QFocusEvent* event);
+		/*! Fired when square receives focus. */
 		void focusInEvent (QFocusEvent* event);
 	
 	private:
