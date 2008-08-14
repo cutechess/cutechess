@@ -24,23 +24,46 @@
 
 class EngineConfigurationModel;
 
+/*!
+ * \brief The NewGameDialog class provides a dialog for creating a new game.
+*/
 class NewGameDialog : public QDialog, private Ui::NewGameDialog
 {
 	Q_OBJECT
 
 	public:
+		/*! Player's type. */
 		enum PlayerType
 		{
+			/*! Human player. */
 			Human,
+			/*! Computer controlled player. */
 			CPU
 		};
 
+		/*!
+		 * Creates a new game dialog with \a engineConfigurations as the
+		 * list of chess engines and given \a parent.
+		*/
 		NewGameDialog(EngineConfigurationModel* engineConfigurations,
 		              QWidget* parent = 0);
 
+		/*! Returns the user selected player type for white. */
 		PlayerType whitePlayerType() const;
+		/*! Returns the user selected player type for black. */
 		PlayerType blackPlayerType() const;
+
+		/*!
+		 * Returns the user selected chess engine for white.
+		 *
+		 * The return value is an index to the engine configurations model.
+		*/
 		int selectedWhiteEngine() const;
+		/*!
+		 * Returns the user selected chess engine for black.
+		 *
+		 * The return value is an index to the engine configurations model.
+		*/
 		int selectedBlackEngine() const;
 
 };
