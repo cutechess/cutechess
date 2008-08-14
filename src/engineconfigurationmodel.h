@@ -23,14 +23,21 @@
 
 #include "engineconfiguration.h"
 
-/**
- * EngineConfigurationModel is used to hold EngineConfiguration objects
- * and presents them to different views.
+/*!
+ * \brief The EngineConfigurationModel class represents a chess engine
+ * configuration based model.
  *
- * EngineConfigurationModel is the 'model' part in the Model-View architecture.
- * It holds the the data and provides methods to modify it.
+ * %EngineConfigurationModel is the \e model part in the Model-View
+ * architecture.
  *
- * Almost all of the method calls are inherited from QAbstractItemModel. Refer
+ * The model contains the data providing view classes access to it. When the
+ * model is updated (either from the view or by calling methods), all the
+ * views are notified about the updates.
+ *
+ * %EngineConfigurationModel is a \e list based model; its items don't have
+ * parent-child relationship.
+ *
+ * Almost all of the method calls are inherited from \e QAbstractItemModel. Refer
  * to QAbstractItemModel's documentation for better overview of each method.
 */
 class EngineConfigurationModel : public QAbstractListModel
@@ -38,97 +45,88 @@ class EngineConfigurationModel : public QAbstractListModel
 	Q_OBJECT
 
 	public:
-		/**
-		 * Creates an empty EngineConfigurationModel object.
-		 * @param parent Parent object.
+		/*!
+		 * Creates an empty model.
 		*/
 		EngineConfigurationModel(QObject* parent = 0);
-		/**
-		 * Creates a new EngineConfigurationModel object.
-		 * @param configurations Existing list of engine configurations to use.
-		 * @param parent Parent object.
+		/*!
+		 * Creates a new model from from \a configurations.
 		*/
 		EngineConfigurationModel(const QList<EngineConfiguration>& configurations,
 		                         QObject* parent = 0);
 		
-		/**
-		 * Returns the number of engine configurations in the model.
-		 * @param parent Parent item. NOTE: This parameter is always ignored
-		 * in this model because items don't have a parent-child relationship.
-		 * @return Number of engine configurations (rows) in the model.
+		/*!
+		 * Returns the number of chess engine configurations in the model.
+		 *
+		 * \b Note: The \a parent parameter is always ignored in this model
+		 * because items don't have a parent-child relationship.
 		*/
 		int rowCount(const QModelIndex& parent = QModelIndex()) const;
-		/**
-		 * Returns the number of data entries a single item has.
-		 * This method should be used only by the view classes.
-		 * @param parent Parent. NOTE: This parameter is always ignored in
-		 * this model because items don't have a parent-child relationship.
-		 * @return Number of data entries in the model.
+		/*!
+		 * Returns the number of columns the model has.
+		 *
+		 * \b Note: This method should be used only by the view classes.
+		 *
+		 * \b Note: The \a parent parameter is always ignored in this model
+		 * because items don't have a parent-child relationship.
 		*/
 		int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
-		/**
-		 * Returns information about a chess engine configuration with a given
-		 * index and role.
-		 * This method should be used only by the view classes.
-		 * @param index The index of the item which is used to retrieve the
-		 * information.
-		 * @param role The role that is used to retrieve the information.
-		 * @return Information about a chess engine configuration.
+		/*!
+		 * Returns the data stored under the given \a role for the item
+		 * referred by \a index.
+		 *
+		 * If the data cannot be returned, an invalid QVariant is
+		 * returned.
 		*/
 		QVariant data(const QModelIndex& index, int role) const;
-		/**
-		 * Returns header information from a given section, orientation and
-		 * role.
-		 * @param section Section that is used to retrieve the header
-		 * information.
-		 * @param orientation Orientation that is used to retrieve the header
-		 * information.
-		 * @param role Role that is used to retrieve the header information.
-		 * @return Header information.
+		/*!
+		 * Returns the data for the given \a role and \a section in the
+		 * header with specified \a orientation.
+		 *
+		 * \b Note: This method should be used only by the view classes.
 		*/
 		QVariant headerData(int section, Qt::Orientation orientation,
 		                    int role = Qt::DisplayRole) const;
-		/**
-		 * Inserts empty chess engine configurations to the model.
-		 * @param row The location where the new configurations will be inserted.
-		 * @param count The number of new configurations to be inserted.
-		 * @param parent Parent item. NOTE: This parameter is always ignored in
+		/*!
+		 * Inserts \a count of empty chess engine configurations to the model
+		 * before given \a row.
+		 *
+		 * Returns true if the rows were successfully inserted; otherwise
+		 * return false.
+		 *
+		 * \b Note: The \a parent parameter is always ignored in
 		 * this model because items don't have a parent-child relationship.
-		 * @return True if configurations were inserted successfully, false
-		 * otherwise.
 		*/
 		bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex());
-		/**
-		 * Removes chess engine configurations from the model.
-		 * @param row The location where the configurations will be removed.
-		 * @param count The number of configurations to remove.
-		 * @param parent Parent item. NOTE: This parameter is always ignored in
+		/*!
+		 * Removes \a count of chess engine configurations starting from given
+		 * \a row.
+		 *
+		 * Returns true if the rows were successfully removed; otherwise
+		 * returns false.
+		 *
+		 * \b Note: The \a parent parameter is always ignored in
 		 * this model because items don't have a parent-child relationship.
-		 * @return True if configurations were remove successfully, false
-		 * otherwise.
 		*/
 		bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex());
-		/**
-		 * Modifies chess engine configuration's information in the model.
-		 * @param index The index of the item to be updated.
-		 * @param value The new value.
-		 * @param role Role to use.
-		 * @return True if the configuration was updated successfully, false
-		 * otherwise.
+		/*!
+		 * Sets the \a role data for the item at \a index to \a value.
+		 *
+		 * Returns true if the data was updated successfully; otherwise
+		 * returns false.
 		*/
 		bool setData(const QModelIndex& index, const QVariant& value,
 		             int role = Qt::EditRole);
 
-		/**
+		/*!
 		 * Adds new chess engine configuration to the model.
+		 *
 		 * This method is provided for convenience.
-		 * @param configuration New configuration to add.
 		*/
 		void addConfiguration(const EngineConfiguration& configuration);
-		/**
-		 * Returns all chess engine configurations this model has.
-		 * @return All chess engine configurations in this model.
+		/*!
+		 * Returns all chess engine configurations in this model.
 		*/
 		QList<EngineConfiguration> configurations() const;
 	
