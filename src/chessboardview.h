@@ -22,14 +22,15 @@
 
 class QResizeEvent;
 
-/**
- * ChessboardView class handles resizing of the visual chessboard correctly.
+/*!
+ * \brief The ChessboardView class provides correct resizing of the visual
+ * chessboard.
  *
- * ChessboardView doesn't add any extra funtionality compared to QGraphicsView
- * except proper resizing. Proper resizing meaning: 
+ * %ChessboardView doesn't add any extra funtionality compared to
+ * \e QGraphicsView except correct resizing. Correct resizing meaning:
  *
  * - The visual chessboard is fit in to the view and scaled correctly when
- *   the main window resizes.
+ *   the view resizes.
  *
  * - The visual chessboard is scaled correctly when expanding or shrinking
  *   a dock widget.
@@ -37,9 +38,15 @@ class QResizeEvent;
 class ChessboardView : public QGraphicsView
 {
 	public:
+		/*!
+		 * Constructs a ChessboardView.
+		*/
 		ChessboardView(QWidget* parent = 0);
 
 	protected:
+		/*!
+		 * Fired after viewport has been given a new geometry.
+		*/
 		void resizeEvent(QResizeEvent* event);
 
 };
