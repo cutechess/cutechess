@@ -236,6 +236,9 @@ quint32 Chessboard::moveFromCoord(const QString& moveString)
 	}
 
 	piece = m_mailbox[from];
+	if (piece == 0)
+		return NULLMOVE;
+	
 	generateMovesForPieceType(&moveList, piece, to);
 	nmoves = moveList.count();
 	for (i = 0; i < nmoves; i++) {
