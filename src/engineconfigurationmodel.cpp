@@ -166,7 +166,7 @@ bool EngineConfigurationModel::setData(const QModelIndex& index,
 
 void EngineConfigurationModel::addConfiguration(const EngineConfiguration& configuration)
 {
-	beginInsertRows(QModelIndex(), m_configurations.count(), m_configurations.count() + 1);
+	beginInsertRows(QModelIndex(), m_configurations.count(), m_configurations.count());
 
 	m_configurations << configuration;
 
