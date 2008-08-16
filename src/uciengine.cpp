@@ -48,8 +48,10 @@ void UciEngine::newGame(Chessboard::ChessSide side, ChessPlayer* opponent)
 {
 	ChessPlayer::newGame(side, opponent);
 	m_moves.clear();
+	m_startFen = m_chessboard->fenString();
+	
 	write("ucinewgame");
-	write(QString("position ") + m_chessboard->fenString());
+	write(QString("position fen ") + m_startFen);
 }
 
 void UciEngine::makeMove(const ChessMove& move)
@@ -61,7 +63,7 @@ void UciEngine::makeMove(const ChessMove& move)
 		moveString = m_chessboard->sanMoveString(move);
 	
 	m_moves.append(moveString);
-	write(QString("position ") + m_chessboard->fenString() +
+	write(QString("position fen ") + m_startFen +
 		QString(" moves ") + m_moves.join(" "));
 }
 

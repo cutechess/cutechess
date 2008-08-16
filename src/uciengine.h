@@ -18,6 +18,7 @@
 #ifndef UCIENGINE_H
 #define UCIENGINE_H
 
+#include <QString>
 #include <QStringList>
 #include "chessengine.h"
 
@@ -58,6 +59,7 @@ class UciEngine : public ChessEngine
 		void parseLine(const QString& line);
 		
 	private:
+		QString m_startFen;
 		QStringList m_moves;
 };
 
