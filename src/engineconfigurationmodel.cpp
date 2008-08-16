@@ -49,9 +49,6 @@ QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) cons
 	if (!index.isValid())
 		return QVariant();
 	
-	if (index.row() > m_configurations.count())
-		return QVariant();
-	
 	if (role == Qt::DisplayRole)
 	{
 		switch (index.column())
