@@ -36,6 +36,7 @@
 #include "engineconfiguration.h"
 #include "newgamedlg.h"
 #include "chessclock.h"
+#include "enginemanagementdlg.h"
 
 MainWindow::MainWindow()
 {
@@ -85,9 +86,14 @@ void MainWindow::createActions()
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	m_quitGameAct->setShortcut(QKeySequence(tr("Ctrl+Q")));
 
+	m_manageEnginesAct = new QAction(tr("Manage..."), this);
+
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
 	connect(m_printGameAct, SIGNAL(triggered(bool)), this, SLOT(printGame()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
+
+	connect (m_manageEnginesAct, SIGNAL(triggered(bool)), this,
+		SLOT(manageEngines()));
 }
 
 void MainWindow::createMenus()
@@ -100,6 +106,10 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_quitGameAct);
 
 	m_viewMenu = menuBar()->addMenu(tr("&View"));
+
+	m_enginesMenu = menuBar()->addMenu(tr("En&gines"));
+	m_enginesMenu->addAction(m_manageEnginesAct);
+
 	m_helpMenu = menuBar()->addMenu(tr("&Help"));
 
 	m_debugMenu = menuBar()->addMenu("&Debug");
@@ -242,5 +252,11 @@ void MainWindow::printGame()
 	m_chessboardView->render(&painter);
 
 	painter.end();
+}
+
+void MainWindow::manageEngines()
+{
+	EngineManagementDialog dlg(m_engineConfigurations, this);
+	dlg.exec();
 }
 

@@ -45,6 +45,8 @@ HEADERS = src/graphicschessboardsquareitem.h \
           src/manager.h \
           src/logmanager.h \
           src/newgamedlg.h \
+          src/enginemanagementdlg.h \
+          src/engineconfigurationdlg.h \
           src/stdoutlogger.h \
           src/guilogger.h \
           src/loggerbase.h \
@@ -89,6 +91,8 @@ SOURCES = src/main.cpp \
           src/xboardengine.cpp \
           src/uciengine.cpp \
           src/newgamedlg.cpp \
+          src/enginemanagementdlg.cpp \
+          src/engineconfigurationdlg.cpp \
           src/chessboard/chessboard.cpp \
           src/chessboard/chessmove.cpp \
           src/chessboard/magicmoves.cpp \
@@ -98,7 +102,10 @@ SOURCES = src/main.cpp \
           src/chessboard/util.cpp \
           src/chessboard/zobrist.cpp
 
-FORMS = ui/newgamedlg.ui
+FORMS = ui/newgamedlg.ui \
+        ui/enginemanagementdlg.ui \
+        ui/engineconfigdlg.ui
+
 UI_HEADERS_DIR = src
 
 RESOURCES = res/chessboard/chessboard.qrc

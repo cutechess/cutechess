@@ -43,6 +43,7 @@ class MainWindow : public QMainWindow
 	private slots:
 		void newGame();
 		void printGame();
+		void manageEngines();
 
 	private:
 		void createActions();
@@ -52,6 +53,7 @@ class MainWindow : public QMainWindow
 
 		QMenu* m_gameMenu;
 		QMenu* m_viewMenu;
+		QMenu* m_enginesMenu;
 		QMenu* m_helpMenu;
 		QMenu* m_debugMenu;
 
@@ -66,6 +68,7 @@ class MainWindow : public QMainWindow
 		QAction* m_quitGameAct;
 		QAction* m_printGameAct;
 		QAction* m_newGameAct;
+		QAction* m_manageEnginesAct;
 
 		QTextEdit* m_engineDebugTextEdit;
 
