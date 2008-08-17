@@ -29,6 +29,7 @@ class GraphicsChessboardItem;
 class QProcess;
 class EngineConfigurationModel;
 class ChessClock;
+class QCloseEvent;
 
 /**
  * MainWindow
@@ -40,6 +41,9 @@ class MainWindow : public QMainWindow
 	public:
 		MainWindow();
 
+	protected:
+		void closeEvent(QCloseEvent* event);
+
 	private slots:
 		void newGame();
 		void printGame();
@@ -50,6 +54,8 @@ class MainWindow : public QMainWindow
 		void createMenus();
 		void createToolBars();
 		void createDockWindows();
+		void writeSettings();
+		void readSettings();
 
 		QMenu* m_gameMenu;
 		QMenu* m_viewMenu;

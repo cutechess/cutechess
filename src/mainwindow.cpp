@@ -71,6 +71,14 @@ MainWindow::MainWindow()
 	createMenus();
 	createToolBars();
 	createDockWindows();
+
+	readSettings();
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+	writeSettings();
+	event->accept();
 }
 
 void MainWindow::createActions()
@@ -137,6 +145,49 @@ void MainWindow::createDockWindows()
 	engineDebugDock->setWidget(m_engineDebugTextEdit);
 
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
+}
+
+void MainWindow::writeSettings()
+{
+	QSettings settings(QSettings::IniFormat, QSettings::UserScope,
+		QCoreApplication::organizationName(),
+		QCoreApplication::applicationName());
+
+	QList<EngineConfiguration> engines = m_engineConfigurations->configurations();
+
+	settings.beginWriteArray("engines");
+	for (int i = 0; i < engines.size(); i++)
+	{
+		settings.setArrayIndex(i);
+		settings.setValue("name", engines.at(i).name());
+		settings.setValue("command", engines.at(i).command());
+		settings.setValue("working_directory", engines.at(i).workingDirectory());
+		settings.setValue("protocol", engines.at(i).protocol());
+	}
+	settings.endArray();
+}
+
+void MainWindow::readSettings()
+{
+	QSettings settings(QSettings::IniFormat, QSettings::UserScope,
+		QCoreApplication::organizationName(),
+		QCoreApplication::applicationName());
+
+	int size = settings.beginReadArray("engines");
+	for (int i = 0; i < size; i++)
+	{
+		settings.setArrayIndex(i);
+		EngineConfiguration config;
+		config.setName(settings.value("name").toString());
+		config.setCommand(settings.value("command").toString());
+		config.setWorkingDirectory(
+			settings.value("working_directory").toString());
+		config.setProtocol(EngineConfiguration::ChessEngineProtocol(
+			settings.value("protocol").toInt()));
+
+		m_engineConfigurations->addConfiguration(config);
+	}
+	settings.endArray();
 }
 
 void MainWindow::newGame()

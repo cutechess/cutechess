@@ -31,6 +31,10 @@
 
 int main(int argc, char* argv[])
 {
+	QCoreApplication::setOrganizationName("SloppyGUI");
+	QCoreApplication::setOrganizationDomain("sloppygui.org");
+	QCoreApplication::setApplicationName("SloppyGUI");
+
 	// Use trivial command-line parsing for now
 	for (int i = 1; i < argc; i++)
 	{
