@@ -66,10 +66,6 @@ MainWindow::MainWindow()
 	setStatusBar(new QStatusBar());
 
 	m_engineConfigurations = new EngineConfigurationModel(this);
-	m_engineConfigurations->addConfiguration(
-		EngineConfiguration("Sloppy", "sloppy", EngineConfiguration::Xboard));
-	m_engineConfigurations->addConfiguration(
-		EngineConfiguration("Fruit", "fruit", EngineConfiguration::UCI));
 
 	createActions();
 	createMenus();
