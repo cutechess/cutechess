@@ -109,6 +109,9 @@ void EngineManagementDialog::configureEngine()
 			newConfiguration.command());
 
 		m_originalModel->setData(m_originalModel->index(index.row(), 2),
+			newConfiguration.workingDirectory());
+
+		m_originalModel->setData(m_originalModel->index(index.row(), 3),
 			newConfiguration.protocol());
 	}
 }

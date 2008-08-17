@@ -60,6 +60,12 @@ class EngineConfiguration
 		*/
 		void setCommand(const QString& command);
 		/*!
+		 * Sets the working directory the engine uses.
+		 *
+		 * \sa workingDirectory()
+		*/
+		void setWorkingDirectory(const QString& workingDir);
+		/*!
 		 * Sets the communication protocol the engine uses.
 		 *
 		 * \sa protocol()
@@ -79,15 +85,22 @@ class EngineConfiguration
 		*/
 		QString command() const;
 		/*!
+		 * Returns the working directory the engine uses.
+		 *
+		 * \sa setWorkingDirectory()
+		*/
+		QString workingDirectory() const;
+		/*!
 		 * Returns the communication protocol the engine uses.
 		 *
 		 * \sa setProtocol()
 		*/
 		ChessEngineProtocol protocol() const;
-	
+
 	private:
 		QString m_name;
 		QString m_command;
+		QString m_workingDirectory;
 		ChessEngineProtocol m_protocol;
 
 };

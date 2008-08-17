@@ -38,6 +38,8 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	m_protocolCombo->addItem("UCI");
 
 	connect(m_browseCmdBtn, SIGNAL(clicked(bool)), this, SLOT(browseCommand()));
+	connect(m_browseWorkingDirBtn, SIGNAL(clicked(bool)), this,
+		SLOT(browseWorkingDir()));
 }
 
 void EngineConfigurationDialog::applyEngineInformation(
@@ -45,6 +47,7 @@ void EngineConfigurationDialog::applyEngineInformation(
 {
 	m_nameEdit->setText(engine.name());
 	m_commandEdit->setText(engine.command());
+	m_workingDirEdit->setText(engine.workingDirectory());
 	m_protocolCombo->setCurrentIndex(engine.protocol());
 }
 
@@ -53,6 +56,7 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 	EngineConfiguration engine;
 	engine.setName(m_nameEdit->text());
 	engine.setCommand(m_commandEdit->text());
+	engine.setWorkingDirectory(m_workingDirEdit->text());
 	engine.setProtocol(EngineConfiguration::ChessEngineProtocol(
 		m_protocolCombo->currentIndex()));
 
@@ -72,5 +76,13 @@ void EngineConfigurationDialog::browseCommand()
 		tr("Select Engine Executable"), m_commandEdit->text());
 	
 	m_commandEdit->setText(fileName);
+}
+
+void EngineConfigurationDialog::browseWorkingDir()
+{
+	QString directory = QFileDialog::getExistingDirectory(this,
+		tr("Select Engine Working Directory"), m_workingDirEdit->text());
+
+	m_workingDirEdit->setText(directory);
 }
 

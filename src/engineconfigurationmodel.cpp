@@ -40,8 +40,8 @@ int EngineConfigurationModel::columnCount(const QModelIndex& parent) const
 {
 	Q_UNUSED(parent)
 
-	// Engine's name, command and protocol
-	return 3;
+	// Engine's name, command, working directory and protocol
+	return 4;
 }
 
 QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) const
@@ -60,6 +60,9 @@ QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) cons
 				return m_configurations.at(index.row()).command();
 
 			case 2:
+				return m_configurations.at(index.row()).workingDirectory();
+
+			case 3:
 				return m_configurations.at(index.row()).protocol();
 
 			default:
@@ -87,6 +90,9 @@ QVariant EngineConfigurationModel::headerData(int section, Qt::Orientation orien
 				return QString(tr("Command"));
 
 			case 2:
+				return QString(tr("Working Directory"));
+
+			case 3:
 				return QString(tr("Protocol"));
 				
 			default:
@@ -148,6 +154,9 @@ bool EngineConfigurationModel::setData(const QModelIndex& index,
 			break;
 
 			case 2:
+				config.setWorkingDirectory(value.toString());
+
+			case 3:
 				config.setProtocol(EngineConfiguration::ChessEngineProtocol(
 					value.toInt()));
 			break;

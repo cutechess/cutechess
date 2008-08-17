@@ -46,6 +46,11 @@ void EngineConfiguration::setProtocol(EngineConfiguration::ChessEngineProtocol p
 	m_protocol = protocol;
 }
 
+void EngineConfiguration::setWorkingDirectory(const QString& workingDir)
+{
+	m_workingDirectory = workingDir;
+}
+
 QString EngineConfiguration::name() const
 {
 	return m_name;
@@ -54,6 +59,11 @@ QString EngineConfiguration::name() const
 QString EngineConfiguration::command() const
 {
 	return m_command;
+}
+
+QString EngineConfiguration::workingDirectory() const
+{
+	return m_workingDirectory;
 }
 
 EngineConfiguration::ChessEngineProtocol EngineConfiguration::protocol() const

@@ -165,6 +165,28 @@ void MainWindow::newGame()
 	QProcess* whiteEngineProcess = new QProcess(this);
 	QProcess* blackEngineProcess = new QProcess(this);
 
+	// Set up working directories for the engines:
+	// If user hasn't set any directory, use temp
+	if (whiteEngineConfig.workingDirectory().isEmpty())
+	{
+		whiteEngineProcess->setWorkingDirectory(QDir::tempPath());
+	}
+	else
+	{
+		whiteEngineProcess->setWorkingDirectory(
+			whiteEngineConfig.workingDirectory());
+	}
+
+	if (blackEngineConfig.workingDirectory().isEmpty())
+	{
+		blackEngineProcess->setWorkingDirectory(QDir::tempPath());
+	}
+	else
+	{
+		blackEngineProcess->setWorkingDirectory(
+			blackEngineConfig.workingDirectory());
+	}
+
 	whiteEngineProcess->start(whiteEngineConfig.command());
 	blackEngineProcess->start(blackEngineConfig.command());
 

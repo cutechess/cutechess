@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>363</width>
-    <height>197</height>
+    <width>397</width>
+    <height>233</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout" >
@@ -43,7 +43,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" >
+          <item row="3" column="0" >
            <widget class="QLabel" name="label_3" >
             <property name="text" >
              <string>&amp;Protocol:</string>
@@ -56,7 +56,7 @@
           <item row="0" column="1" >
            <widget class="QLineEdit" name="m_nameEdit" />
           </item>
-          <item row="2" column="1" >
+          <item row="3" column="1" >
            <widget class="QComboBox" name="m_protocolCombo" />
           </item>
           <item row="1" column="1" >
@@ -66,6 +66,33 @@
             </item>
             <item>
              <widget class="QToolButton" name="m_browseCmdBtn" >
+              <property name="text" >
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="label_4" >
+            <property name="text" >
+             <string>Working &amp;Directory:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>m_workingDirEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <layout class="QHBoxLayout" name="horizontalLayout_2" >
+            <item>
+             <widget class="QLineEdit" name="m_workingDirEdit" />
+            </item>
+            <item>
+             <widget class="QToolButton" name="m_browseWorkingDirBtn" >
+              <property name="toolTip" >
+               <string>Browse working directory.</string>
+              </property>
               <property name="text" >
                <string>...</string>
               </property>
@@ -96,6 +123,8 @@
   <tabstop>m_nameEdit</tabstop>
   <tabstop>m_commandEdit</tabstop>
   <tabstop>m_browseCmdBtn</tabstop>
+  <tabstop>m_workingDirEdit</tabstop>
+  <tabstop>m_browseWorkingDirBtn</tabstop>
   <tabstop>m_protocolCombo</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
@@ -108,8 +137,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>258</x>
-     <y>186</y>
+     <x>268</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel" >
      <x>157</x>
@@ -124,8 +153,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>326</x>
-     <y>186</y>
+     <x>336</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel" >
      <x>286</x>
