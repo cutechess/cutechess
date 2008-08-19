@@ -187,3 +187,14 @@ QList<EngineConfiguration> EngineConfigurationModel::configurations() const
 	return m_configurations;
 }
 
+bool EngineConfigurationModel::setConfiguration(const QModelIndex& index,
+                                                const EngineConfiguration& configuration)
+{
+	if (index.isValid())
+	{
+		m_configurations[index.row()] = configuration;
+		emit(dataChanged(index, index));
+		return true;
+	}
+	return false;
+}

@@ -99,20 +99,8 @@ void EngineManagementDialog::configureEngine()
 
 	if (dlg.exec() == QDialog::Accepted)
 	{
-		EngineConfiguration newConfiguration = dlg.engineConfiguration();
-
 		// Update the configuration in the model
-		m_originalModel->setData(m_originalModel->index(index.row(), 0),
-			newConfiguration.name());
-
-		m_originalModel->setData(m_originalModel->index(index.row(), 1),
-			newConfiguration.command());
-
-		m_originalModel->setData(m_originalModel->index(index.row(), 2),
-			newConfiguration.workingDirectory());
-
-		m_originalModel->setData(m_originalModel->index(index.row(), 3),
-			newConfiguration.protocol());
+		m_originalModel->setConfiguration(index, dlg.engineConfiguration());
 	}
 }
 

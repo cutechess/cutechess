@@ -129,6 +129,17 @@ class EngineConfigurationModel : public QAbstractListModel
 		 * Returns all chess engine configurations in this model.
 		*/
 		QList<EngineConfiguration> configurations() const;
+		/*!
+		 * Sets the chess engine configuration in \a index to
+		 * \a configuration.
+		 *
+		 * Returns true if the data was updated succesfully; otherwise
+		 * return false.
+		 *
+		 * This method is provided for convenience.
+		*/
+		bool setConfiguration(const QModelIndex& index,
+		                      const EngineConfiguration& configuration);
 	
 	private:
 		QList<EngineConfiguration> m_configurations;
