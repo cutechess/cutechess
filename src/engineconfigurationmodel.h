@@ -20,6 +20,7 @@
 
 #include <QAbstractListModel>
 #include <QList>
+#include <QStringList>
 
 #include "engineconfiguration.h"
 
@@ -142,6 +143,7 @@ class EngineConfigurationModel : public QAbstractListModel
 		                      const EngineConfiguration& configuration);
 	
 	private:
+		static const QStringList m_headers;
 		QList<EngineConfiguration> m_configurations;
 
 };

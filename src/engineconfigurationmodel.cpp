@@ -17,6 +17,9 @@
 
 #include "engineconfigurationmodel.h"
 
+const QStringList EngineConfigurationModel::m_headers = (QStringList() <<
+	tr("Name") << tr("Command") << tr("Working Directory") << tr("Protocol"));
+
 EngineConfigurationModel::EngineConfigurationModel(QObject* parent)
 	: QAbstractListModel(parent)
 {
@@ -40,8 +43,7 @@ int EngineConfigurationModel::columnCount(const QModelIndex& parent) const
 {
 	Q_UNUSED(parent)
 
-	// Engine's name, command, working directory and protocol
-	return 4;
+	return m_headers.count();
 }
 
 QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) const
@@ -81,23 +83,7 @@ QVariant EngineConfigurationModel::headerData(int section, Qt::Orientation orien
 	
 	if (orientation == Qt::Horizontal)
 	{
-		switch (section)
-		{
-			case 0:
-				return QString(tr("Name"));
-
-			case 1:
-				return QString(tr("Command"));
-
-			case 2:
-				return QString(tr("Working Directory"));
-
-			case 3:
-				return QString(tr("Protocol"));
-				
-			default:
-				return QVariant();
-		}
+		return m_headers.at(section);
 	}
 
 	return QVariant();
