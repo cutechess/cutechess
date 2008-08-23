@@ -153,7 +153,7 @@ void MainWindow::writeSettings()
 		QCoreApplication::organizationName(),
 		QCoreApplication::applicationName());
 
-	QList<EngineConfiguration> engines = m_engineConfigurations->configurations();
+	const QList<EngineConfiguration> engines = m_engineConfigurations->configurations();
 
 	settings.beginWriteArray("engines");
 	for (int i = 0; i < engines.size(); i++)
