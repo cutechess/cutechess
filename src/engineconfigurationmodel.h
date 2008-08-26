@@ -51,7 +51,7 @@ class EngineConfigurationModel : public QAbstractListModel
 		*/
 		EngineConfigurationModel(QObject* parent = 0);
 		/*!
-		 * Creates a new model from from \a configurations.
+		 * Creates a new model from a list of \a configurations.
 		*/
 		EngineConfigurationModel(const QList<EngineConfiguration>& configurations,
 		                         QObject* parent = 0);
