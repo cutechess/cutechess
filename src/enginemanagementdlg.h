@@ -21,7 +21,6 @@
 #include <QDialog>
 
 #include "ui_enginemanagementdlg.h"
-#include "engineconfigurationmodel.h"
 
 class EngineConfigurationModel;
 class QSortFilterProxyModel;
