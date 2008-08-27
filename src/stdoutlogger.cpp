@@ -15,19 +15,22 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <cstdio>
+#include <QTextStream>
 
 #include "stdoutlogger.h"
 
 void StdOutLogger::log(QtMsgType type, const char *message)
 {
+	QTextStream out(stdout);
+	QTextStream err(stderr);
+
 	if (type == QtDebugMsg)
 	{
-		fprintf(stdout, "%s\n", message);
+		out << message << endl;
 	}
 	else
 	{
-		fprintf(stderr, "%s\n", message);
+		err << message << endl;
 	}
 }
 
