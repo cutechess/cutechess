@@ -22,7 +22,8 @@
 #endif
 
 #include <QApplication>
-#include <cstdio>
+#include <QTextStream>
+#include <QDebug>
 
 #include "mainwindow.h"
 #include "manager.h"
@@ -35,26 +36,37 @@ int main(int argc, char* argv[])
 	QCoreApplication::setOrganizationDomain("sloppygui.org");
 	QCoreApplication::setApplicationName("SloppyGUI");
 
-	// Use trivial command-line parsing for now
-	for (int i = 1; i < argc; i++)
-	{
-		if (QLatin1String("-v") == argv[i] ||
-			QLatin1String("--version") == argv[i])
-		{
-			printf("SloppyGUI %s\n", SLOPPYGUI_VERSION);
-			printf("Copyright (C) 2008 Ilari Pihlajisto and Arto Jonsson\n");
-			printf("This is free software; see the source for copying ");
-			printf("conditions.  There is NO\nwarranty; not even for ");
-			printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n");
-
-			return 0;
-		}
-	}
-
 	Chessboard::initialize();
 
 	qInstallMsgHandler(LogManager::messageHandler);
 	QApplication app(argc, argv);
+
+	QStringList arguments = app.arguments();
+	arguments.takeFirst(); // application name
+
+	// Use trivial command-line parsing for now
+	while (!arguments.empty())
+	{
+		QTextStream out(stdout);
+
+		if (arguments.first() == QLatin1String("-v") ||
+			arguments.first() == QLatin1String("--version"))
+		{
+			out << "SloppyGUI " << SLOPPYGUI_VERSION << endl;
+			out << "Copyright (C) 2008 Ilari Pihlajisto and Arto Jonsson" << endl;
+			out << "This is free software; see the source for copying ";
+			out << "conditions.  There is NO" << endl << "warranty; not even for ";
+			out << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
+			out << endl << endl;
+
+			return 0;
+		}
+		else
+		{
+			qWarning() << "Unknown argument:" << arguments.first();
+		}
+		arguments.takeFirst();
+	}
 
 	MainWindow mainWindow;
 	mainWindow.show();
