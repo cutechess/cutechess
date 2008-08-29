@@ -83,7 +83,7 @@ void EngineManagementDialog::addEngine()
 void EngineManagementDialog::configureEngine()
 {
 	// Map the index from the filtered model to the original model
-	QModelIndex index = m_filteredModel->mapToSource(
+	const QModelIndex index = m_filteredModel->mapToSource(
 		m_enginesList->selectionModel()->currentIndex());
 
 	QList<EngineConfiguration> engines = m_originalModel->configurations();
@@ -100,7 +100,7 @@ void EngineManagementDialog::configureEngine()
 
 void EngineManagementDialog::removeEngine()
 {
-	QList<QModelIndex> selected =
+	const QList<QModelIndex> selected =
 		m_enginesList->selectionModel()->selectedIndexes();
 
 	foreach (QModelIndex index, selected)
