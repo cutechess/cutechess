@@ -72,7 +72,7 @@ void EngineConfigurationDialog::browseCommand()
 	QString filter = tr("All Files (*.*)");
 	#endif
 
-	QString fileName = QFileDialog::getOpenFileName(this,
+	const QString fileName = QFileDialog::getOpenFileName(this,
 		tr("Select Engine Executable"), m_commandEdit->text());
 	
 	m_commandEdit->setText(fileName);
@@ -80,7 +80,7 @@ void EngineConfigurationDialog::browseCommand()
 
 void EngineConfigurationDialog::browseWorkingDir()
 {
-	QString directory = QFileDialog::getExistingDirectory(this,
+	const QString directory = QFileDialog::getExistingDirectory(this,
 		tr("Select Engine Working Directory"), m_workingDirEdit->text());
 
 	m_workingDirEdit->setText(directory);
