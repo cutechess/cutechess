@@ -48,10 +48,7 @@ int EngineConfigurationModel::columnCount(const QModelIndex& parent) const
 
 QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) const
 {
-	if (!index.isValid())
-		return QVariant();
-	
-	if (role == Qt::DisplayRole)
+	if (index.isValid() && role == Qt::DisplayRole)
 	{
 		switch (index.column())
 		{
@@ -78,10 +75,7 @@ QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) cons
 QVariant EngineConfigurationModel::headerData(int section, Qt::Orientation orientation,
                                               int role) const
 {
-	if (role != Qt::DisplayRole)
-		return QVariant();
-	
-	if (orientation == Qt::Horizontal)
+	if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
 	{
 		return m_headers.at(section);
 	}
