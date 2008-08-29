@@ -58,18 +58,11 @@ EngineManagementDialog::EngineManagementDialog(
 void EngineManagementDialog::updateUi()
 {
 	// Enable buttons depending on item selections
-	if (m_filteredModel->rowCount() > 0)
+	if (m_filteredModel->rowCount() > 0 &&
+	    m_enginesList->selectionModel()->hasSelection())
 	{
-		if (m_enginesList->selectionModel()->hasSelection())
-		{
 			m_configureBtn->setEnabled(true);
 			m_removeBtn->setEnabled(true);
-		}
-		else
-		{
-			m_configureBtn->setEnabled(false);
-			m_removeBtn->setEnabled(false);
-		}
 	}
 	else
 	{
