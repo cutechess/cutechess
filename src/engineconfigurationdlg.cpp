@@ -73,7 +73,7 @@ void EngineConfigurationDialog::browseCommand()
 	#endif
 
 	const QString fileName = QFileDialog::getOpenFileName(this,
-		tr("Select Engine Executable"), m_commandEdit->text());
+		tr("Select Engine Executable"), m_commandEdit->text(), filter);
 	
 	m_commandEdit->setText(fileName);
 }
