@@ -66,6 +66,13 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 		*/
 		int selectedBlackEngine() const;
 
+	private slots:
+		void configureWhiteEngine();
+		void configureBlackEngine();
+
+	private:
+		EngineConfigurationModel* m_engines;
+
 };
 
 #endif // NEWGAMEDIALOG_H

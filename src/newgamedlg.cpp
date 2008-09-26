@@ -19,6 +19,7 @@
 
 #include "newgamedlg.h"
 #include "engineconfigurationmodel.h"
+#include "engineconfigurationdlg.h"
 
 NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,
                              QWidget* parent)
@@ -32,8 +33,15 @@ NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,
 
 	connect(startButton, SIGNAL(clicked(bool)), this, SLOT(accept()));
 
+	connect(m_configureWhiteEngineButton, SIGNAL(clicked(bool)), this,
+		SLOT(configureWhiteEngine()));
+	connect(m_configureBlackEngineButton, SIGNAL(clicked(bool)), this,
+		SLOT(configureBlackEngine()));
+
 	m_whiteEngineComboBox->setModel(engineConfigurations);
 	m_blackEngineComboBox->setModel(engineConfigurations);
+
+	m_engines = engineConfigurations;
 	
 	if (engineConfigurations->rowCount() > 0)
 	{
@@ -61,5 +69,33 @@ int NewGameDialog::selectedWhiteEngine() const
 int NewGameDialog::selectedBlackEngine() const
 {
 	return m_blackEngineComboBox->currentIndex();
+}
+
+void NewGameDialog::configureWhiteEngine()
+{
+	EngineConfigurationDialog dlg(EngineConfigurationDialog::EditEngine, this);
+	int selected = m_whiteEngineComboBox->currentIndex();
+
+	dlg.applyEngineInformation(m_engines->configurations().at(selected));
+
+	if (dlg.exec() == QDialog::Accepted)
+	{
+		m_engines->setConfiguration(m_engines->index(selected, 0),
+			dlg.engineConfiguration());
+	}
+}
+
+void NewGameDialog::configureBlackEngine()
+{
+	EngineConfigurationDialog dlg(EngineConfigurationDialog::EditEngine, this);
+	int selected  = m_blackEngineComboBox->currentIndex();
+
+	dlg.applyEngineInformation(m_engines->configurations().at(selected));
+
+	if (dlg.exec() == QDialog::Accepted)
+	{
+		m_engines->setConfiguration(m_engines->index(selected, 0),
+			dlg.engineConfiguration());
+	}
 }
 
