@@ -15,6 +15,10 @@ And to build the source:
 
     $ make
 
+    or
+
+    $ nmake (Visual C++)
+
 Manual page is available but you have to built it separately. Building it
 requires asciidoc (http://www.methods.co.nz/asciidoc/).
 
