@@ -86,10 +86,9 @@ void EngineManagementDialog::configureEngine()
 	const QModelIndex index = m_filteredModel->mapToSource(
 		m_enginesList->selectionModel()->currentIndex());
 
-	const QList<EngineConfiguration> engines = m_originalModel->configurations();
-
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::EditEngine, this);
-	dlg.applyEngineInformation(engines.at(index.row()));
+	dlg.applyEngineInformation(m_originalModel->configurations().at(
+		index.row()));
 
 	if (dlg.exec() == QDialog::Accepted)
 	{
