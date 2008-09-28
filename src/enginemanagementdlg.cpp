@@ -102,7 +102,7 @@ void EngineManagementDialog::removeEngine()
 	const QList<QModelIndex> selected =
 		m_enginesList->selectionModel()->selectedIndexes();
 
-	foreach (QModelIndex index, selected)
+	foreach (const QModelIndex& index, selected)
 	{
 		// Map the index from the filtered model to the original model
 		m_originalModel->removeRows(
