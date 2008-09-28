@@ -37,6 +37,9 @@ win32:debug {
 	CONFIG += console
 }
 
+# Components
+include(src/components/hintlineedit/src/hintlineedit.pri)
+
 HEADERS = src/graphicschessboardsquareitem.h \
           src/graphicschessboarditem.h \
           src/graphicschesspiece.h \
