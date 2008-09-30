@@ -56,11 +56,7 @@ void UciEngine::newGame(Chessboard::ChessSide side, ChessPlayer* opponent)
 
 void UciEngine::makeMove(const ChessMove& move)
 {
-	QString moveString;
-	if (m_notation == LongNotation)
-		moveString = m_chessboard->coordMoveString(move);
-	else if (m_notation == StandardNotation)
-		moveString = m_chessboard->sanMoveString(move);
+	QString moveString = m_chessboard->moveString(move, m_notation);
 	
 	m_moves.append(moveString);
 	write(QString("position fen ") + m_startFen +
@@ -130,7 +126,7 @@ void UciEngine::parseLine(const QString& line)
 			moveString = args;
 
 		m_moves.append(moveString);
-		ChessMove move = m_chessboard->chessMoveFromString(moveString);
+		ChessMove move = m_chessboard->moveFromString(moveString);
 		emit moveMade(move);
 	}
 	else if (command == "uciok")

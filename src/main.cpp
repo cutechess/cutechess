@@ -28,7 +28,7 @@
 #include "mainwindow.h"
 #include "manager.h"
 #include "logmanager.h"
-#include "chessboard/chessboard.h"
+#include "chessboard/zobrist.h"
 
 int main(int argc, char* argv[])
 {
@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 	QCoreApplication::setOrganizationDomain("sloppygui.org");
 	QCoreApplication::setApplicationName("SloppyGUI");
 
-	Chessboard::initialize();
+	Zobrist::initialize();
 
 	qInstallMsgHandler(LogManager::messageHandler);
 	QApplication app(argc, argv);

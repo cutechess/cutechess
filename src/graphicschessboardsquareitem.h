@@ -124,11 +124,11 @@ class GraphicsChessboardSquareItem : public QGraphicsItem
 		/*!
 		 * Sets the square's position in the chessboard to \a pos.
 		*/
-		void setPositionInChessboard(Chessboard::ChessSquare pos);
+		void setPositionInChessboard(int pos);
 		/*!
 		 * Returns the square's position in the chessboard.
 		*/
-		Chessboard::ChessSquare positionInChessboard() const;
+		int positionInChessboard() const;
 
 		/*!
 		 * Returns the bounds of the square.
@@ -156,7 +156,7 @@ class GraphicsChessboardSquareItem : public QGraphicsItem
 		static QColor m_focusMarkerColor;
 
 		ChessboardSquareType m_type;
-		Chessboard::ChessSquare m_posInChessboard;
+		int m_posInChessboard;
 		bool m_selectionWasHandled;
 };
 

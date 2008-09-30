@@ -94,11 +94,7 @@ void XboardEngine::sendTimeLeft()
 
 void XboardEngine::makeMove(const ChessMove& move)
 {
-	QString moveString;
-	if (m_notation == LongNotation)
-		moveString = m_chessboard->coordMoveString(move);
-	else if (m_notation == StandardNotation)
-		moveString = m_chessboard->sanMoveString(move);
+	QString moveString = m_chessboard->moveString(move, m_notation);
 	
 	if (!m_forceMode)
 		sendTimeLeft();
@@ -141,7 +137,7 @@ void XboardEngine::parseLine(const QString& line)
 
 	if (command == "move")
 	{
-		ChessMove move = m_chessboard->chessMoveFromString(args);
+		ChessMove move = m_chessboard->moveFromString(args);
 		emit moveMade(move);
 	}
 	else if (command == "pong")
@@ -173,7 +169,7 @@ void XboardEngine::parseLine(const QString& line)
 			if (feature == "san")
 			{
 				if (list[1].trimmed() == "1")
-					m_notation = StandardNotation;
+					m_notation = StandardAlgebraic;
 			}
 			else if (feature == "myname")
 			{

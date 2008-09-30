@@ -16,7 +16,8 @@
 */
 
 #include "chessgame.h"
-#include "chessboard/chessboard.h"
+#include "chessboard/standardchessboard.h"
+#include "chessboard/chessmove.h"
 #include "chessplayer.h"
 #include "timecontrol.h"
 
@@ -28,7 +29,7 @@ ChessGame::ChessGame(QObject *parent)
 	m_blackPlayer = 0;
 	m_playerToMove = 0;
 	m_gameInProgress = false;
-	m_chessboard = new Chessboard();
+	m_chessboard = new StandardChessboard();
 }
 
 ChessGame::~ChessGame()
@@ -58,7 +59,7 @@ void ChessGame::moveMade(const ChessMove& move)
 		return;
 	}
 
-	if (!m_chessboard->isLegalMove(move))
+	if (move.isEmpty())
 	{
 		qDebug("%s sent an illegal move", qPrintable(sender->name()));
 		return;

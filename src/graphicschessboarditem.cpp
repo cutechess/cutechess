@@ -94,7 +94,7 @@ void GraphicsChessboardItem::initChessboard()
 				GraphicsChessboardSquareItem::DarkSquare);
 		}
 
-		square->setPositionInChessboard(Chessboard::ChessSquare(i));
+		square->setPositionInChessboard(i);
 		
 		if (isBorderVisible())
 		{
@@ -127,26 +127,26 @@ void GraphicsChessboardItem::initChessPieces()
 	// chessboard: Rook, Knigh, Bishop, Queen, King, Bishop, Knight, Rook,
 	// and 8 Pawns.
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		Chessboard::Rook, m_squares[0]));
+		ChessPiece::PT_Rook, m_squares[0]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		Chessboard::Knight, m_squares[1]));
+		ChessPiece::PT_Knight, m_squares[1]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		Chessboard::Bishop, m_squares[2]));
+		ChessPiece::PT_Bishop, m_squares[2]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		Chessboard::Queen, m_squares[3]));
+		ChessPiece::PT_Queen, m_squares[3]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		Chessboard::King, m_squares[4]));
+		ChessPiece::PT_King, m_squares[4]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		Chessboard::Bishop, m_squares[5]));
+		ChessPiece::PT_Bishop, m_squares[5]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		Chessboard::Knight, m_squares[6]));
+		ChessPiece::PT_Knight, m_squares[6]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		Chessboard::Rook, m_squares[7]));
+		ChessPiece::PT_Rook, m_squares[7]));
 
 	for (int i = 0; i < 8; i++)
 	{
 		m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-			Chessboard::Pawn, m_squares[8 + i]));
+			ChessPiece::PT_Pawn, m_squares[8 + i]));
 	}
 
 	// == WHITE PIECES ==
@@ -155,26 +155,26 @@ void GraphicsChessboardItem::initChessPieces()
 	// chessboard: Rook, Knigh, Bishop, Queen, King, Bishop, Knight, Rook,
 	// and 8 Pawns.
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		Chessboard::Rook, m_squares[56]));
+		ChessPiece::PT_Rook, m_squares[56]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		Chessboard::Knight, m_squares[57]));
+		ChessPiece::PT_Knight, m_squares[57]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		Chessboard::Bishop, m_squares[58]));
+		ChessPiece::PT_Bishop, m_squares[58]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		Chessboard::Queen, m_squares[59]));
+		ChessPiece::PT_Queen, m_squares[59]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		Chessboard::King, m_squares[60]));
+		ChessPiece::PT_King, m_squares[60]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		Chessboard::Bishop, m_squares[61]));
+		ChessPiece::PT_Bishop, m_squares[61]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		Chessboard::Knight, m_squares[62]));
+		ChessPiece::PT_Knight, m_squares[62]));
 	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		Chessboard::Rook, m_squares[63]));
+		ChessPiece::PT_Rook, m_squares[63]));
 
 	for (int i = 0; i < 8; i++)
 	{
 		m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-			Chessboard::Pawn, m_squares[48 + i]));
+			ChessPiece::PT_Pawn, m_squares[48 + i]));
 	}
 
 	foreach (GraphicsChessPiece* piece, m_pieces)
@@ -198,7 +198,7 @@ void GraphicsChessboardItem::makeMove(const ChessMove& move)
 	Q_ASSERT(piece != 0);
 
 	// En passant capture
-	if (capturedItems.isEmpty() && piece->piece() == Chessboard::Pawn) {
+	if (capturedItems.isEmpty() && piece->piece() == ChessPiece::PT_Pawn) {
 		if (piece->side() == Chessboard::White
 		&&  move.targetSquare() - move.sourceSquare() != -16
 		&&  move.targetSquare() - move.sourceSquare() != -8)
@@ -210,7 +210,10 @@ void GraphicsChessboardItem::makeMove(const ChessMove& move)
 	}
 
 	// Castling
-	if (piece->piece() == Chessboard::King) {
+	// TODO: It's not possible to handle castling moves for all variants here,
+	//       The Chessboard class should take care of it.
+#if 0
+	if (piece->piece() == ChessPiece::PT_King) {
 		if (piece->side() == Chessboard::White
 		&&  move.sourceSquare() == Chessboard::E1) {
 			if (move.targetSquare() == Chessboard::G1) {
@@ -231,9 +234,10 @@ void GraphicsChessboardItem::makeMove(const ChessMove& move)
 			}
 		}
 	}
+#endif
 
 	// Promotion
-	if (move.promotion() != Chessboard::NoPiece) {
+	if (move.promotion() != ChessPiece::PT_None) {
 		piece->setPiece(move.promotion());
 		piece->centerOnParent();
 	}

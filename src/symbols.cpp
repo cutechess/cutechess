@@ -31,7 +31,7 @@ const QString Symbols::WhiteBishop = QString::fromUtf8("\342\231\227");
 const QString Symbols::WhiteQueen = QString::fromUtf8("\342\231\225");
 const QString Symbols::WhiteKing = QString::fromUtf8("\342\231\224");
 
-QString Symbols::symbolOf(Chessboard::ChessSide side, Chessboard::ChessPiece piece)
+QString Symbols::symbolOf(Chessboard::ChessSide side, ChessPiece::PieceType piece)
 {
 	QString symbol;
 
@@ -41,27 +41,27 @@ QString Symbols::symbolOf(Chessboard::ChessSide side, Chessboard::ChessPiece pie
 		
 			switch (piece)
 			{
-				case Chessboard::Pawn:
+				case ChessPiece::PT_Pawn:
 					symbol = Symbols::WhitePawn;
 				break;
 
-				case Chessboard::Rook:
+				case ChessPiece::PT_Rook:
 					symbol = Symbols::WhiteRook;
 				break;
 
-				case Chessboard::Knight:
+				case ChessPiece::PT_Knight:
 					symbol = Symbols::WhiteKnight;
 				break;
 
-				case Chessboard::Bishop:
+				case ChessPiece::PT_Bishop:
 					symbol = Symbols::WhiteBishop;
 				break;
 
-				case Chessboard::Queen:
+				case ChessPiece::PT_Queen:
 					symbol = Symbols::WhiteBishop;
 				break;
 
-				case Chessboard::King:
+				case ChessPiece::PT_King:
 					symbol = Symbols::WhiteKing;
 				break;
 				
@@ -75,27 +75,27 @@ QString Symbols::symbolOf(Chessboard::ChessSide side, Chessboard::ChessPiece pie
 			
 			switch (piece)
 			{
-				case Chessboard::Pawn:
+				case ChessPiece::PT_Pawn:
 					symbol = Symbols::WhitePawn;
 				break;
 
-				case Chessboard::Rook:
+				case ChessPiece::PT_Rook:
 					symbol = Symbols::WhiteRook;
 				break;
 
-				case Chessboard::Knight:
+				case ChessPiece::PT_Knight:
 					symbol = Symbols::WhiteKnight;
 				break;
 
-				case Chessboard::Bishop:
+				case ChessPiece::PT_Bishop:
 					symbol = Symbols::WhiteBishop;
 				break;
 
-				case Chessboard::Queen:
+				case ChessPiece::PT_Queen:
 					symbol = Symbols::WhiteBishop;
 				break;
 
-				case Chessboard::King:
+				case ChessPiece::PT_King:
 					symbol = Symbols::WhiteKing;
 				break;
 				

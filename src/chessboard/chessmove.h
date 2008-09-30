@@ -18,10 +18,8 @@
 #ifndef CHESSMOVE_H
 #define CHESSMOVE_H
 
-#include <QtGlobal>
 #include <QString>
-
-#include "chessboard.h"
+#include "chesspiece.h"
 
 
 /**
@@ -33,41 +31,34 @@
 class ChessMove
 {
 public:
-	/**
-	 * Constructs an empty chessmove.
-	 */
 	ChessMove();
 	
-	/**
-	 * Creates a ChessMove object.
-	 * @param sourceSquare the source square.
-	 * @param targetSquare the target square.
-	 * @param promotion the promotion piece.
-	 */
-	ChessMove(Chessboard::ChessSquare sourceSquare,
-	          Chessboard::ChessSquare targetSquare,
-	          Chessboard::ChessPiece promotion=Chessboard::NoPiece);
+	ChessMove(int sourceSquare,
+	          int targetSquare,
+	          ChessPiece::PieceType promotion = ChessPiece::PT_None);
 	
 	/**
 	 * The source square.
 	 */
-	Chessboard::ChessSquare sourceSquare() const;
+	int sourceSquare() const;
 
 	/**
 	 * The target square.
 	 */
-	Chessboard::ChessSquare targetSquare() const;
+	int targetSquare() const;
 
 	/**
 	 * The type of the promotion piece.
 	 */
-	Chessboard::ChessPiece promotion() const;
-	
-private:
-	Chessboard::ChessSquare m_sourceSquare;
-	Chessboard::ChessSquare m_targetSquare;
-	Chessboard::ChessPiece m_promotion;
+	ChessPiece::PieceType promotion() const;
+
+	bool isEmpty() const;
+
+protected:
+	int m_sourceSquare;
+	int m_targetSquare;
+	ChessPiece::PieceType m_promotion;
+	bool m_isEmpty;
 };
 
 #endif // CHESSMOVE_H
-

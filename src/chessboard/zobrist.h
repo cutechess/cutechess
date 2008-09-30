@@ -19,29 +19,33 @@
 #define ZOBRIST_H
 
 #include <QtGlobal>
+#include "chessboard.h"
+#include "chesspiece.h"
 
-
-/**
- * Random 64-bit values for generating Zobrist hash keys.
- */
-typedef struct _Zobrist
+class Zobrist
 {
-	/** Zobrist value to hash the color. */
-	quint64 color;
-	/** Zobrist values to hash the en passant square. */
-	quint64 enpassant[64];
-	/** Zobrist values to hash the castling rights. */
-	quint64 castle[2][2];
-	/** Zobrist values to hash the piece types and positions. */
-	quint64 piece[2][8][64];
-} Zobrist;
+	public:
+		static void initialize();
+		static quint64 key(const Chessboard* board);
+		
+		static quint64 side();
+		static quint64 enpassant(int square);
+		static quint64 castling(Chessboard::ChessSide side, int castlingSide);
+		static quint64 piece(Chessboard::ChessSide side, ChessPiece::PieceType type, int square);
 
+		static const int MaxSquares = 120;
+		static const int MaxPieceTypes = 16;
+	private:
+		Zobrist();
+		
+		static int random();
+		static quint64 random64();
+		static int m_randomSeed;
+		
+		static quint64 m_side;
+		static quint64 m_enpassant[MaxSquares];
+		static quint64 m_castling[2][2];
+		static quint64 m_piece[2][MaxPieceTypes][MaxSquares];
+};
 
-/**
- * Values for everything that's needed to create a hash key (side to move,
- * enpassant square, castling rights, and piece positions).
- */
-extern Zobrist zobrist;
-
-#endif // ZOBRIST_H
-
+#endif // ZOBRIST

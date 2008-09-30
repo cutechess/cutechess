@@ -1,37 +1,40 @@
 #include "chessmove.h"
-#include "notation.h"
-#include "util.h"
+
 
 ChessMove::ChessMove()
 {
-	m_sourceSquare = Chessboard::NoSquare;
-	m_targetSquare = Chessboard::NoSquare;
-	m_promotion = Chessboard::NoPiece;
+	m_sourceSquare = -1;
+	m_targetSquare = -1;
+	m_promotion = ChessPiece::PT_None;
+	m_isEmpty = true;
 }
 
-ChessMove::ChessMove(Chessboard::ChessSquare sourceSquare,
-	             Chessboard::ChessSquare targetSquare,
-	             Chessboard::ChessPiece promotion)
+ChessMove::ChessMove(int sourceSquare,
+	             int targetSquare,
+	             ChessPiece::PieceType promotion)
 {
 	m_sourceSquare = sourceSquare;
 	m_targetSquare = targetSquare;
-	if (promotion == (Chessboard::ChessPiece)0)
-		promotion = Chessboard::NoPiece;
 	m_promotion = promotion;
+	m_isEmpty = false;
 }
 
-Chessboard::ChessSquare ChessMove::sourceSquare() const
+int ChessMove::sourceSquare() const
 {
 	return m_sourceSquare;
 }
 
-Chessboard::ChessSquare ChessMove::targetSquare() const
+int ChessMove::targetSquare() const
 {
 	return m_targetSquare;
 }
 
-Chessboard::ChessPiece ChessMove::promotion() const
+ChessPiece::PieceType ChessMove::promotion() const
 {
 	return m_promotion;
 }
 
+bool ChessMove::isEmpty() const
+{
+	return m_isEmpty;
+}

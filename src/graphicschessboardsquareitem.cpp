@@ -209,12 +209,12 @@ bool GraphicsChessboardSquareItem::isOccupied() const
 	return false;
 }
 
-void GraphicsChessboardSquareItem::setPositionInChessboard(Chessboard::ChessSquare pos)
+void GraphicsChessboardSquareItem::setPositionInChessboard(int pos)
 {
 	m_posInChessboard = pos;
 }
 
-Chessboard::ChessSquare GraphicsChessboardSquareItem::positionInChessboard() const
+int GraphicsChessboardSquareItem::positionInChessboard() const
 {
 	return m_posInChessboard;
 }

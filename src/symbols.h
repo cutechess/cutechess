@@ -21,6 +21,7 @@
 #include <QString>
 
 #include "chessboard/chessboard.h"
+#include "chessboard/chesspiece.h"
 
 /*!
  * \brief The Symbols class provides chess symbols found in the Unicode character set.
@@ -59,7 +60,7 @@ class Symbols
 		 *
 		 * If the given values are invalid an empty string is returned.
 		*/
-		static QString symbolOf(Chessboard::ChessSide side, Chessboard::ChessPiece piece);
+		static QString symbolOf(Chessboard::ChessSide side, ChessPiece::PieceType piece);
 
 		/*!
 		 * Returns a symbol of given side and piece type.

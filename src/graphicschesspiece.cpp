@@ -20,7 +20,7 @@
 #include "graphicschesspiece.h"
 
 GraphicsChessPiece::GraphicsChessPiece(Chessboard::ChessSide side,
-                                       Chessboard::ChessPiece piece,
+                                       ChessPiece::PieceType piece,
                                        QGraphicsItem* parent)
 	: QGraphicsSvgItem(parent)
 {
@@ -33,12 +33,12 @@ Chessboard::ChessSide GraphicsChessPiece::side() const
 	return m_side;
 }
 
-Chessboard::ChessPiece GraphicsChessPiece::piece() const
+ChessPiece::PieceType GraphicsChessPiece::piece() const
 {
 	return m_piece;
 }
 
-void GraphicsChessPiece::setPiece(Chessboard::ChessPiece piece)
+void GraphicsChessPiece::setPiece(ChessPiece::PieceType piece)
 {
 	m_piece = piece;
 
@@ -46,27 +46,27 @@ void GraphicsChessPiece::setPiece(Chessboard::ChessPiece piece)
 	{
 		switch (m_piece)
 		{
-			case Chessboard::Pawn:
+			case ChessPiece::PT_Pawn:
 				setElementId("wpawn");
 			break;
 
-			case Chessboard::Knight:
+			case ChessPiece::PT_Knight:
 				setElementId("wknight");
 			break;
 
-			case Chessboard::Bishop:
+			case ChessPiece::PT_Bishop:
 				setElementId("wbishop");
 			break;
 
-			case Chessboard::Rook:
+			case ChessPiece::PT_Rook:
 				setElementId("wrook");
 			break;
 
-			case Chessboard::Queen:
+			case ChessPiece::PT_Queen:
 				setElementId("wqueen");
 			break;
 
-			case Chessboard::King:
+			case ChessPiece::PT_King:
 				setElementId("wking");
 			break;
 
@@ -78,27 +78,27 @@ void GraphicsChessPiece::setPiece(Chessboard::ChessPiece piece)
 	{
 		switch (m_piece)
 		{
-			case Chessboard::Pawn:
+			case ChessPiece::PT_Pawn:
 				setElementId("bpawn");
 			break;
 
-			case Chessboard::Knight:
+			case ChessPiece::PT_Knight:
 				setElementId("bknight");
 			break;
 
-			case Chessboard::Bishop:
+			case ChessPiece::PT_Bishop:
 				setElementId("bbishop");
 			break;
 
-			case Chessboard::Rook:
+			case ChessPiece::PT_Rook:
 				setElementId("brook");
 			break;
 
-			case Chessboard::Queen:
+			case ChessPiece::PT_Queen:
 				setElementId("bqueen");
 			break;
 
-			case Chessboard::King:
+			case ChessPiece::PT_King:
 				setElementId("bking");
 			break;
 

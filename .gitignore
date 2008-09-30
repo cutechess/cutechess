@@ -15,3 +15,14 @@ docs/api/html/
 .rcc/
 .moc/
 .obj/
+
+# other temporary files
+*.h~
+*.cpp~
+
+# files created by KDevelop
+Doxyfile
+sloppygui.kdevelop
+sloppygui.kdevelop.pcs
+sloppygui.kdevses
+

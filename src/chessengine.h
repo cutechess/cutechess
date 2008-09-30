@@ -46,15 +46,6 @@ class ChessEngine : public ChessPlayer
 		};
 		
 		/**
-		 * Chess move notation for move strings.
-		 */
-		enum MoveNotation
-		{
-			LongNotation, /**< Long Algebraic Notation, or Coordinate Notation. */
-			StandardNotation /**< Standard Algebraic Notation, or SAN. */
-		};
-
-		/**
 		 * Creates a new ChessEngine object.
 		 * @param ioDevice An open chess engine process or socket.
 		 * @param chessboard A chessboard object for converting between the

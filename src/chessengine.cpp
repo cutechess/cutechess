@@ -33,7 +33,7 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
 	Q_CHECK_PTR(chessboard);
 	m_isReady = true;
 	m_initialized = false;
-	m_notation = LongNotation;
+	m_notation = LongAlgebraic;
 	m_ioDevice = ioDevice;
 	m_id = m_count++;
 	m_chessboard = chessboard;

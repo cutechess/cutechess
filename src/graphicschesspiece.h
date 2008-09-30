@@ -20,6 +20,7 @@
 
 #include <QGraphicsSvgItem>
 #include "chessboard/chessboard.h"
+#include "chessboard/chesspiece.h"
 
 class GraphicsChessPiece : public QGraphicsSvgItem
 {
@@ -27,18 +28,18 @@ class GraphicsChessPiece : public QGraphicsSvgItem
 
 	public:
 		GraphicsChessPiece(Chessboard::ChessSide side,
-		                   Chessboard::ChessPiece piece,
+		                   ChessPiece::PieceType piece,
 		                   QGraphicsItem* parent = 0);
 
 		Chessboard::ChessSide side() const;
-		Chessboard::ChessPiece piece() const;
+		ChessPiece::PieceType piece() const;
 
-		void setPiece(Chessboard::ChessPiece piece);
+		void setPiece(ChessPiece::PieceType piece);
 		void centerOnParent();
 
 	private:
 		Chessboard::ChessSide m_side;
-		Chessboard::ChessPiece m_piece;
+		ChessPiece::PieceType m_piece;
 
 };
 

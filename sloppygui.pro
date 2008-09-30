@@ -1,41 +1,41 @@
 SLOPPYGUI_VERSION = unknown
 
 # Check if the version file exists.
-exists(version) {
+exists(version){
 
-	# If the version file exists, use its contents as the version number
-	SLOPPYGUI_VERSION = $$system(cat version)
-} else {
+    # If the version file exists, use its contents as the version number
+    SLOPPYGUI_VERSION = $$system(cat version)
+}else {
 
-	# If the version file doesn't exist, check if we have
-	# .git directory
-	exists(.git) {
+    # If the version file doesn't exist, check if we have
+    # .git directory
+    exists(.git){
 
-		# Check if we can describe this commit
-		system(git describe > /dev/null 2> /dev/null) {
+        # Check if we can describe this commit
+        system(git describe > /dev/null 2> /dev/null){
 
-			# If we can, describe it
-			SLOPPYGUI_VERSION = $$system(git describe)
-		} else {
+            # If we can, describe it
+            SLOPPYGUI_VERSION = $$system(git describe)
+        }        else {
 
-			# If we can't describe it, parse the sha id and use that
-			SLOPPYGUI_VERSION = git-$$system(git rev-parse --short HEAD)
-		}
-	}
+            # If we can't describe it, parse the sha id and use that
+            SLOPPYGUI_VERSION = git-$$system(git rev-parse --short HEAD)
+        }
+    }
 }
 
 macx-xcode {
-	DEFINES += SLOPPYGUI_VERSION=\"$$SLOPPYGUI_VERSION\"
-} else {
-	DEFINES += SLOPPYGUI_VERSION=\\\"$$SLOPPYGUI_VERSION\\\"
+    DEFINES += SLOPPYGUI_VERSION=\"$$SLOPPYGUI_VERSION\"
+}else {
+    DEFINES += SLOPPYGUI_VERSION=\\\"$$SLOPPYGUI_VERSION\\\"
 }
 
 CONFIG += qt debug
 QT += svg
 
-win32:debug {
-	CONFIG += console
-}
+win32 : debug {
+        CONFIG += console
+    }
 
 # Components
 include(src/components/hintlineedit/src/hintlineedit.pri)
@@ -64,12 +64,23 @@ HEADERS += src/graphicschessboardsquareitem.h \
            src/engineconfigurationmodel.h \
            src/xboardengine.h \
            src/uciengine.h \
+           src/chessboard/archbishop.h \
+           src/chessboard/fen.h \
+           src/chessboard/bishop.h \
+           src/chessboard/king.h \
+           src/chessboard/capablancachessboard.h \
+           src/chessboard/knight.h \
+           src/chessboard/castlingrights.h \
+           src/chessboard/movenotation.h \
+           src/chessboard/chancellor.h \
+           src/chessboard/pawn.h \
            src/chessboard/chessboard.h \
+           src/chessboard/queen.h \
            src/chessboard/chessmove.h \
-           src/chessboard/magicmoves.h \
-           src/chessboard/movegen.h \
-           src/chessboard/notation.h \
-           src/chessboard/util.h \
+           src/chessboard/rook.h \
+           src/chessboard/chesspiece.h \
+           src/chessboard/standardchessboard.h \
+           src/chessboard/completechessmove.h \
            src/chessboard/zobrist.h
 
 SOURCES += src/main.cpp \
@@ -96,13 +107,23 @@ SOURCES += src/main.cpp \
            src/newgamedlg.cpp \
            src/enginemanagementdlg.cpp \
            src/engineconfigurationdlg.cpp \
+           src/chessboard/archbishop.cpp \
+           src/chessboard/fen.cpp \
+           src/chessboard/bishop.cpp \
+           src/chessboard/king.cpp \
+           src/chessboard/capablancachessboard.cpp \
+           src/chessboard/knight.cpp \
+           src/chessboard/castlingrights.cpp \
+           src/chessboard/movenotation.cpp \
+           src/chessboard/chancellor.cpp \
+           src/chessboard/pawn.cpp \
            src/chessboard/chessboard.cpp \
+           src/chessboard/queen.cpp \
            src/chessboard/chessmove.cpp \
-           src/chessboard/magicmoves.cpp \
-           src/chessboard/makemove.cpp \
-           src/chessboard/movegen.cpp \
-           src/chessboard/notation.cpp \
-           src/chessboard/util.cpp \
+           src/chessboard/rook.cpp \
+           src/chessboard/chesspiece.cpp \
+           src/chessboard/standardchessboard.cpp \
+           src/chessboard/completechessmove.cpp \
            src/chessboard/zobrist.cpp
 
 FORMS += ui/newgamedlg.ui \
@@ -114,9 +135,9 @@ UI_HEADERS_DIR = src
 RESOURCES += res/chessboard/chessboard.qrc
 
 !macx-xcode {
-	OBJECTS_DIR = .obj/
-	MOC_DIR = .moc/
-	RCC_DIR = .rcc/
+    OBJECTS_DIR = .obj/
+    MOC_DIR = .moc/
+    RCC_DIR = .rcc/
 }
 
 # API documentation (Doxygen)
@@ -124,6 +145,6 @@ doc-api.commands = doxygen docs/api/api.doxygen
 QMAKE_EXTRA_TARGETS += doc-api
 
 # man documentation
-unix:doc-man.commands = a2x -f manpage docs/man/sloppygui.6.txt
-unix:QMAKE_EXTRA_TARGETS += doc-man
+unix : doc-man.commands = a2x -f manpage docs/man/sloppygui.6.txt
+unix : QMAKE_EXTRA_TARGETS += doc-man
 
