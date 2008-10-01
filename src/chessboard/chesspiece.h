@@ -25,7 +25,8 @@ class ChessPiece
 		};
 		
 		ChessPiece(Chessboard::ChessSide side, int square, Chessboard* board);
-	
+		virtual ~ChessPiece() {}
+		
 		virtual void generateMoves(QList<CompleteChessMove>* moves) const;
 		virtual void makeMove(const CompleteChessMove& move);
 		virtual void undoMove(const CompleteChessMove& move);

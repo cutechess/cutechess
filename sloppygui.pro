@@ -71,7 +71,6 @@ HEADERS += src/graphicschessboardsquareitem.h \
            src/chessboard/capablancachessboard.h \
            src/chessboard/knight.h \
            src/chessboard/castlingrights.h \
-           src/chessboard/movenotation.h \
            src/chessboard/chancellor.h \
            src/chessboard/pawn.h \
            src/chessboard/chessboard.h \
