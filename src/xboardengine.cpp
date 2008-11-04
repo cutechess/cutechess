@@ -157,7 +157,8 @@ void XboardEngine::parseLine(const QString& line)
 		QString arg;
 		QString feature;
 		QStringList list;
-		while ((pos = args.indexOf(rx, pos)) != -1)
+		//while ((pos = args.indexOf(rx, pos)) != -1)
+		while ((pos = rx.indexIn(args, pos)) != -1)
 		{
 			arg = args.mid(pos, rx.matchedLength());
 			pos += rx.matchedLength();
