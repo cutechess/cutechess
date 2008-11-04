@@ -93,7 +93,7 @@ void ChessGame::moveMade(const ChessMove& move)
 
 void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
 {
-	m_chessboard->setFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+	m_chessboard->setFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
 
 	m_moveCount = 0;
 	m_whitePlayer = whitePlayer;
