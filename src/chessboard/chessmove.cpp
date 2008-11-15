@@ -1,40 +1,61 @@
+/*
+    This file is part of SloppyGUI.
+
+    SloppyGUI is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SloppyGUI is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "chessmove.h"
 
+using Chess::Move;
 
-ChessMove::ChessMove()
+Move::Move()
+: m_sourceSquare(0),
+  m_targetSquare(0),
+  m_promotion(0),
+  m_castlingSide(-1)
 {
-	m_sourceSquare = -1;
-	m_targetSquare = -1;
-	m_promotion = ChessPiece::PT_None;
-	m_isEmpty = true;
+
 }
 
-ChessMove::ChessMove(int sourceSquare,
-	             int targetSquare,
-	             ChessPiece::PieceType promotion)
+Move::Move(int sourceSquare,
+           int targetSquare,
+           int promotion,
+           int castlingSide)
+: m_sourceSquare(sourceSquare),
+  m_targetSquare(targetSquare),
+  m_promotion(promotion),
+  m_castlingSide(castlingSide)
 {
-	m_sourceSquare = sourceSquare;
-	m_targetSquare = targetSquare;
-	m_promotion = promotion;
-	m_isEmpty = false;
+
 }
 
-int ChessMove::sourceSquare() const
+int Move::sourceSquare() const
 {
 	return m_sourceSquare;
 }
 
-int ChessMove::targetSquare() const
+int Move::targetSquare() const
 {
 	return m_targetSquare;
 }
 
-ChessPiece::PieceType ChessMove::promotion() const
+int Move::promotion() const
 {
 	return m_promotion;
 }
 
-bool ChessMove::isEmpty() const
+int Move::castlingSide() const
 {
-	return m_isEmpty;
+	return m_castlingSide;
 }

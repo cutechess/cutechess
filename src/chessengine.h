@@ -54,16 +54,16 @@ class ChessEngine : public ChessPlayer
 		 * @param parent The parent object.
 		 */
 		ChessEngine(QIODevice* ioDevice,
-		            Chessboard* chessboard,
+		            Chess::Board* chessboard,
 		            const TimeControl& timeControl,
 		            QObject* parent = 0);
 
 		virtual ~ChessEngine();
 
-		virtual void newGame(Chessboard::ChessSide side, ChessPlayer* opponent) = 0;
+		virtual void newGame(Chess::Side side, ChessPlayer* opponent) = 0;
 		virtual void go() = 0;
 		virtual bool isHuman() const;
-		virtual void makeMove(const ChessMove& move) = 0;
+		virtual void makeMove(const Chess::Move& move) = 0;
 		
 		/**
 		 * Gets the chess protocol which the engine uses.
@@ -92,14 +92,14 @@ class ChessEngine : public ChessPlayer
 
 
 		/** The chessboard which the player plays on. */
-		Chessboard *m_chessboard;
+		Chess::Board* m_chessboard;
 
 		/**
 		 * The chess move notation the engine wants to use.
 		 * All moves which are sent to and received from the engine must
 		 * be in this format.
 		 */
-		MoveNotation m_notation;
+		Chess::MoveNotation m_notation;
 
 		/** Is the engine ready to receive commands? */
 		bool m_isReady;

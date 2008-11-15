@@ -1,14 +1,44 @@
-#include "zobrist.h"
+/*
+    This file is part of SloppyGUI.
 
+    SloppyGUI is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SloppyGUI is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "zobrist.h"
+#include "chess.h"
 
 int Zobrist::m_randomSeed = 1;
+bool Zobrist::m_isInitialized = false;
 quint64 Zobrist::m_side;
 quint64 Zobrist::m_enpassant[MaxSquares];
-quint64 Zobrist::m_castling[2][2];
+quint64 Zobrist::m_castling[2][MaxSquares];
 quint64 Zobrist::m_piece[2][MaxPieceTypes][MaxSquares];
 
-/* The "minimal standard" random number generator by Park and Miller.
-   Returns a pseudo-random integer between 1 and 2147483646.  */
+
+/*! \cond ZobristInitializer. */
+class ZobristInitializer
+{
+	public:
+		ZobristInitializer()
+		{
+			Zobrist::initialize();
+		}
+};
+/*! \endcond ZobristInitializer. */
+static ZobristInitializer zobristInitializer;
+
+
 int Zobrist::random()
 {
 	const int a = 16807;
@@ -28,7 +58,6 @@ int Zobrist::random()
 	return m_randomSeed;
 }
 
-// Returns a pseudo-random unsigned 64-bit number
 quint64 Zobrist::random64()
 {
 	quint64 random1 = (quint64)random();
@@ -46,70 +75,47 @@ quint64 Zobrist::side()
 quint64 Zobrist::enpassant(int square)
 {
 	Q_ASSERT(square >= 0 && square < MaxSquares);
+	
 	return m_enpassant[square];
 }
 
-quint64 Zobrist::castling(Chessboard::ChessSide side, int castlingSide)
+quint64 Zobrist::castling(int side, int square)
 {
-	Q_ASSERT(side != Chessboard::NoSide);
-	Q_ASSERT(castlingSide == CastlingRights::LeftSide || castlingSide == CastlingRights::RightSide);
-	return m_castling[side][castlingSide];
+	Q_ASSERT(side != -1);
+	Q_ASSERT(square >= 0 && square < MaxSquares);
+	
+	return m_castling[side][square];
 }
 
-quint64 Zobrist::piece(Chessboard::ChessSide side, ChessPiece::PieceType type, int square)
+quint64 Zobrist::piece(int side, int type, int square)
 {
-	Q_ASSERT(side != Chessboard::NoSide);
-	Q_ASSERT(type != ChessPiece::PT_None);
+	Q_ASSERT(side != -1);
+	Q_ASSERT(type > 0);
 	Q_ASSERT(square >= 0 && square < MaxSquares);
+	
 	return m_piece[side][type][square];
 }
 
-// Initialize the zobrist values
 void Zobrist::initialize()
 {
+	if (m_isInitialized)
+		return;
+	
 	int side;
 	int square;
-
+	
 	m_side = random64();
-	for (side = 0; side < 2; side++)
-	{
-		int piece;
-		m_castling[side][CastlingRights::LeftSide] = random64();
-		m_castling[side][CastlingRights::RightSide] = random64();
-		for (piece = 0; piece < MaxPieceTypes; piece++)
-		{
-			for (square = 0; square < MaxSquares; square++)
-			{
+	for (side = 0; side < 2; side++) {
+		for (square = 0; square < MaxSquares; square++) {
+			m_castling[side][square] = random64();
+			
+			for (int piece = 0; piece < MaxPieceTypes; piece++) {
 				m_piece[side][piece][square] = random64();
 			}
 		}
 	}
 	for (square = 0; square < MaxSquares; square++)
 		m_enpassant[square] = random64();
-}
-
-// Generate the Zobrist key for a board position
-quint64 Zobrist::key(const Chessboard* board)
-{
-	quint64 key = 0;
-
-	for (int i = 0; i < 2; i++)
-	{
-		const CastlingRights *cr = board->castlingRights((Chessboard::ChessSide)i);
-		
-		if (cr->canCastle(CastlingRights::LeftSide))
-			key ^= castling((Chessboard::ChessSide)i, CastlingRights::LeftSide);
-		if (cr->canCastle(CastlingRights::RightSide))
-			key ^= castling((Chessboard::ChessSide)i, CastlingRights::RightSide);
-
-		foreach (ChessPiece* pc, board->m_pieces[i])
-			key ^= piece((Chessboard::ChessSide)i, pc->type(), pc->square());
-	}
 	
-	if (board->enpassantSquare() != -1)
-		key ^= enpassant(board->enpassantSquare());
-	if (board->side() == Chessboard::Black)
-		key ^= side();
-
-	return key;
+	m_isInitialized = true;
 }

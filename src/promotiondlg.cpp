@@ -33,7 +33,7 @@ PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 
 	// Assign Queen as the default promotion type
 	m_queenRadio->setChecked(true);
-	m_promotionType = ChessPiece::PT_Queen;
+	m_promotionType = Chess::Queen;
 
 	QLabel* promoteToLabel = new QLabel(tr("Promote to:"));
 
@@ -113,26 +113,26 @@ PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 	m_signalMapper = new QSignalMapper(this);
 
 	connect(m_queenRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_queenRadio, ChessPiece::PT_Queen);
+	m_signalMapper->setMapping(m_queenRadio, Chess::Queen);
 
 	connect(m_knightRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_knightRadio, ChessPiece::PT_Knight);
+	m_signalMapper->setMapping(m_knightRadio, Chess::Knight);
 
 	connect(m_rookRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_rookRadio, ChessPiece::PT_Rook);
+	m_signalMapper->setMapping(m_rookRadio, Chess::Rook);
 
 	connect(m_bishopRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_bishopRadio, ChessPiece::PT_Bishop);
+	m_signalMapper->setMapping(m_bishopRadio, Chess::Bishop);
 
 	connect(m_signalMapper, SIGNAL(mapped(int)), this, SLOT(selectPromotionType(int)));
 }
 
 void PromotionDialog::selectPromotionType(int type)
 {
-	m_promotionType = ChessPiece::PieceType(type);
+	m_promotionType = Chess::Piece(type);
 }
 
-ChessPiece::PieceType PromotionDialog::promotionType() const
+Chess::Piece PromotionDialog::promotionType() const
 {
 	return m_promotionType;
 }

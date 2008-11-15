@@ -1,64 +1,59 @@
-/*
-    This file is part of SloppyGUI.
-
-    SloppyGUI is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SloppyGUI is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #ifndef CHESSMOVE_H
 #define CHESSMOVE_H
 
-#include <QString>
-#include "chesspiece.h"
+#include "chess.h"
 
 
 /**
- * The ChessMove class represents a simple chess move with minimal information
- * about the move. A Chessboard object is needed to verify the move's legality
- * or to convert it to a string.
- * @see Chessboard
+ * \brief A simple chess move.
+ *
+ * Move was designed to have minimal information about the move,
+ * so a Chess::Board object is needed to verify the move's legality or
+ * to convert it to a string.
+ *
+ * The source and target squares have an integer format specific to a
+ * certain type of chess variant. The Chess::Board class has methods for
+ * converting between these integers and the generic ChessSquare type.
+ *
+ * \sa Chess::Board
+ * \sa Chess::Square
+ * \sa Chess::Piece
  */
-class ChessMove
+class Chess::Move
 {
-public:
-	ChessMove();
+	public:
+		/*! Creates an empty Move. */
+		Move();
+		
+		/*!
+		 * Creates a new Move with at least a source square
+		 * and a target square.
+		 */
+		Move(int sourceSquare,
+		     int targetSquare,
+		     int promotion = 0,
+		     int castlingSide = -1);
+		
+		/*! The source square. */
+		int sourceSquare() const;
+		
+		/*! The target square. */
+		int targetSquare() const;
+		
+		/*!
+		 * Type of the promotion piece.
+		 * \sa Chess::Piece
+		 */
+		int promotion() const;
+		
+		/*! Castling side, or -1 if the move is not a castling move. */
+		int castlingSide() const;
 	
-	ChessMove(int sourceSquare,
-	          int targetSquare,
-	          ChessPiece::PieceType promotion = ChessPiece::PT_None);
-	
-	/**
-	 * The source square.
-	 */
-	int sourceSquare() const;
-
-	/**
-	 * The target square.
-	 */
-	int targetSquare() const;
-
-	/**
-	 * The type of the promotion piece.
-	 */
-	ChessPiece::PieceType promotion() const;
-
-	bool isEmpty() const;
-
-protected:
-	int m_sourceSquare;
-	int m_targetSquare;
-	ChessPiece::PieceType m_promotion;
-	bool m_isEmpty;
+	private:
+		int m_sourceSquare;
+		int m_targetSquare;
+		int m_promotion;
+		int m_castlingSide;
 };
 
-#endif // CHESSMOVE_H
+#endif // CHESSMOVE

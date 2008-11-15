@@ -20,8 +20,7 @@
 
 #include <QDialog>
 
-#include "chessboard/chessboard.h"
-#include "chessboard/chesspiece.h"
+#include "chessboard/chess.h"
 
 class QRadioButton;
 class QSignalMapper;
@@ -45,13 +44,13 @@ class PromotionDialog : public QDialog
 		 * the user cancelled the dialog. By default the promotion type
 		 * is queen.
 		*/
-		ChessPiece::PieceType promotionType() const;
+		Chess::Piece promotionType() const;
 	
 	private slots:
 		void selectPromotionType(int type);
 
 	private:
-		ChessPiece::PieceType m_promotionType;
+		Chess::Piece m_promotionType;
 		QRadioButton* m_queenRadio;
 		QRadioButton* m_knightRadio;
 		QRadioButton* m_rookRadio;
@@ -61,4 +60,3 @@ class PromotionDialog : public QDialog
 };
 
 #endif // PROMOTIONDLG_H
-

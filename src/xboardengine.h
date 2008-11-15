@@ -41,15 +41,15 @@ class XboardEngine : public ChessEngine
 		 * @param parent The parent object.
 		 */
 		XboardEngine(QIODevice* ioDevice,
-		             Chessboard* chessboard,
+		             Chess::Board* chessboard,
 		             const TimeControl& timeControl,
 		             QObject* parent = 0);
 
 		~XboardEngine();
 
-		void newGame(Chessboard::ChessSide side, ChessPlayer* opponent);
+		void newGame(Chess::Side side, ChessPlayer* opponent);
 		void go();
-		void makeMove(const ChessMove& move);
+		void makeMove(const Chess::Move& move);
 		ChessProtocol protocol() const;
 		void ping();
 

@@ -20,10 +20,9 @@
 
 #include <QObject>
 #include <QTime>
+#include "chessboard/chess.h"
 
-class Chessboard;
 class ChessPlayer;
-class ChessMove;
 
 class ChessGame : public QObject
 {
@@ -32,19 +31,19 @@ class ChessGame : public QObject
 	public:
 		ChessGame(QObject *parent = 0);
 		~ChessGame();
-		Chessboard* chessboard() const;
+		Chess::Board* chessboard() const;
 		void newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer);
 		ChessPlayer* whitePlayer() const;
 		ChessPlayer* blackPlayer() const;
 
 	public slots:
-		void moveMade(const ChessMove& move);
+		void moveMade(const Chess::Move& move);
 
 	signals:
-		void moveHappened(const ChessMove& move);
+		void moveHappened(const Chess::Move& move);
 
 	private:
-		Chessboard* m_chessboard;
+		Chess::Board* m_chessboard;
 		ChessPlayer* m_whitePlayer;
 		ChessPlayer* m_blackPlayer;
 		ChessPlayer* m_playerToMove;

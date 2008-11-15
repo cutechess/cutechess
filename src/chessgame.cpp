@@ -16,8 +16,7 @@
 */
 
 #include "chessgame.h"
-#include "chessboard/standardchessboard.h"
-#include "chessboard/chessmove.h"
+#include "chessboard/chessboard.h"
 #include "chessplayer.h"
 #include "timecontrol.h"
 
@@ -29,7 +28,7 @@ ChessGame::ChessGame(QObject *parent)
 	m_blackPlayer = 0;
 	m_playerToMove = 0;
 	m_gameInProgress = false;
-	m_chessboard = new StandardChessboard();
+	m_chessboard = new Chess::Board();
 }
 
 ChessGame::~ChessGame()
@@ -37,12 +36,12 @@ ChessGame::~ChessGame()
 	delete m_chessboard;
 }
 
-Chessboard* ChessGame::chessboard() const
+Chess::Board* ChessGame::chessboard() const
 {
 	return m_chessboard;
 }
 
-void ChessGame::moveMade(const ChessMove& move)
+void ChessGame::moveMade(const Chess::Move& move)
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
@@ -59,7 +58,7 @@ void ChessGame::moveMade(const ChessMove& move)
 		return;
 	}
 
-	if (move.isEmpty())
+	if (!m_chessboard->isLegalMove(move))
 	{
 		qDebug("%s sent an illegal move", qPrintable(sender->name()));
 		return;
@@ -80,7 +79,7 @@ void ChessGame::moveMade(const ChessMove& move)
 	m_playerToMove->makeMove(move);
 	m_chessboard->makeMove(move);
 	
-	if (m_chessboard->result() == Chessboard::NoResult)
+	if (m_chessboard->result() == Chess::NoResult)
 		m_playerToMove->go();
 	else
 	{
@@ -93,21 +92,21 @@ void ChessGame::moveMade(const ChessMove& move)
 
 void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
 {
-	m_chessboard->setFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
+	m_chessboard->setBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
 
 	m_moveCount = 0;
 	m_whitePlayer = whitePlayer;
 	m_blackPlayer = blackPlayer;
 
-	connect(m_whitePlayer, SIGNAL(moveMade(const ChessMove&)),
-	        this, SLOT(moveMade(const ChessMove&)));
-	connect(m_blackPlayer, SIGNAL(moveMade(const ChessMove&)),
-	        this, SLOT(moveMade(const ChessMove&)));
+	connect(m_whitePlayer, SIGNAL(moveMade(const Chess::Move&)),
+	        this, SLOT(moveMade(const Chess::Move&)));
+	connect(m_blackPlayer, SIGNAL(moveMade(const Chess::Move&)),
+	        this, SLOT(moveMade(const Chess::Move&)));
 
 	m_gameInProgress = true;
 
-	m_whitePlayer->newGame(Chessboard::White, m_blackPlayer);
-	m_blackPlayer->newGame(Chessboard::Black, m_whitePlayer);
+	m_whitePlayer->newGame(Chess::White, m_blackPlayer);
+	m_blackPlayer->newGame(Chess::Black, m_whitePlayer);
 	m_playerToMove = m_whitePlayer;
 	
 	m_timer.start();

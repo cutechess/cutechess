@@ -21,6 +21,7 @@
 #include <QDebug>
 
 #include "xboardengine.h"
+#include "chessboard/chessboard.h"
 #include "chessboard/chessmove.h"
 #include "timecontrol.h"
 
@@ -38,7 +39,7 @@ static QString msToXboardTime(int ms)
 
 
 XboardEngine::XboardEngine(QIODevice* ioDevice,
-                         Chessboard* chessboard,
+                         Chess::Board* chessboard,
                          const TimeControl& timeControl,
                          QObject* parent)
 	: ChessEngine(ioDevice, chessboard, timeControl, parent)
@@ -61,7 +62,7 @@ XboardEngine::~XboardEngine()
 	//write("quit");
 }
 
-void XboardEngine::newGame(Chessboard::ChessSide side, ChessPlayer* opponent)
+void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	ChessPlayer::newGame(side, opponent);
 	m_forceMode = true;
@@ -92,7 +93,7 @@ void XboardEngine::sendTimeLeft()
 		write(QString("otim ") + QString::number(ocsLeft));
 }
 
-void XboardEngine::makeMove(const ChessMove& move)
+void XboardEngine::makeMove(const Chess::Move& move)
 {
 	QString moveString = m_chessboard->moveString(move, m_notation);
 	
@@ -137,7 +138,7 @@ void XboardEngine::parseLine(const QString& line)
 
 	if (command == "move")
 	{
-		ChessMove move = m_chessboard->moveFromString(args);
+		Chess::Move move = m_chessboard->moveFromString(args);
 		emit moveMade(move);
 	}
 	else if (command == "pong")
@@ -170,7 +171,7 @@ void XboardEngine::parseLine(const QString& line)
 			if (feature == "san")
 			{
 				if (list[1].trimmed() == "1")
-					m_notation = StandardAlgebraic;
+					m_notation = Chess::StandardAlgebraic;
 			}
 			else if (feature == "myname")
 			{

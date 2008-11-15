@@ -31,37 +31,37 @@ const QString Symbols::WhiteBishop = QString::fromUtf8("\342\231\227");
 const QString Symbols::WhiteQueen = QString::fromUtf8("\342\231\225");
 const QString Symbols::WhiteKing = QString::fromUtf8("\342\231\224");
 
-QString Symbols::symbolOf(Chessboard::ChessSide side, ChessPiece::PieceType piece)
+QString Symbols::symbolOf(Chess::Side side, Chess::Piece piece)
 {
 	QString symbol;
 
 	switch (side)
 	{
-		case Chessboard::White:
+		case Chess::White:
 		
 			switch (piece)
 			{
-				case ChessPiece::PT_Pawn:
+				case Chess::Pawn:
 					symbol = Symbols::WhitePawn;
 				break;
 
-				case ChessPiece::PT_Rook:
+				case Chess::Rook:
 					symbol = Symbols::WhiteRook;
 				break;
 
-				case ChessPiece::PT_Knight:
+				case Chess::Knight:
 					symbol = Symbols::WhiteKnight;
 				break;
 
-				case ChessPiece::PT_Bishop:
+				case Chess::Bishop:
 					symbol = Symbols::WhiteBishop;
 				break;
 
-				case ChessPiece::PT_Queen:
+				case Chess::Queen:
 					symbol = Symbols::WhiteBishop;
 				break;
 
-				case ChessPiece::PT_King:
+				case Chess::King:
 					symbol = Symbols::WhiteKing;
 				break;
 				
@@ -71,31 +71,31 @@ QString Symbols::symbolOf(Chessboard::ChessSide side, ChessPiece::PieceType piec
 			}
 		break;
 
-		case Chessboard::Black:
+		case Chess::Black:
 			
 			switch (piece)
 			{
-				case ChessPiece::PT_Pawn:
+				case Chess::Pawn:
 					symbol = Symbols::WhitePawn;
 				break;
 
-				case ChessPiece::PT_Rook:
+				case Chess::Rook:
 					symbol = Symbols::WhiteRook;
 				break;
 
-				case ChessPiece::PT_Knight:
+				case Chess::Knight:
 					symbol = Symbols::WhiteKnight;
 				break;
 
-				case ChessPiece::PT_Bishop:
+				case Chess::Bishop:
 					symbol = Symbols::WhiteBishop;
 				break;
 
-				case ChessPiece::PT_Queen:
+				case Chess::Queen:
 					symbol = Symbols::WhiteBishop;
 				break;
 
-				case ChessPiece::PT_King:
+				case Chess::King:
 					symbol = Symbols::WhiteKing;
 				break;
 				
@@ -113,13 +113,13 @@ QString Symbols::symbolOf(Chessboard::ChessSide side, ChessPiece::PieceType piec
 	return symbol;
 }
 
-QString Symbols::symbolOf(Chessboard::ChessSide side, const QChar& piece)
+QString Symbols::symbolOf(Chess::Side side, const QChar& piece)
 {
 	QString symbol;
 
 	switch (side)
 	{
-		case Chessboard::White:
+		case Chess::White:
 
 			if (piece.toLower() == QChar('k'))
 				symbol = Symbols::WhiteKing;
@@ -137,7 +137,7 @@ QString Symbols::symbolOf(Chessboard::ChessSide side, const QChar& piece)
 				symbol = "";
 		break;
 
-		case Chessboard::Black:
+		case Chess::Black:
 
 			if (piece.toLower() == QChar('k'))
 				symbol = Symbols::BlackKing;

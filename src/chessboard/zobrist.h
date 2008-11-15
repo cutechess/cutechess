@@ -1,50 +1,73 @@
-/*
-    This file is part of SloppyGUI.
-
-    SloppyGUI is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    SloppyGUI is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #ifndef ZOBRIST_H
 #define ZOBRIST_H
 
 #include <QtGlobal>
-#include "chessboard.h"
-#include "chesspiece.h"
 
+/*!
+ * \brief Unsigned 64-bit values for generating zobrist position keys.
+ *
+ * Chess::Board uses zobrist keys to quickly and easily compare two
+ * positions for equality. Primary uses for zobrist keys are:
+ * - Detecting repetitions, ie. a draw by three-fold repetition
+ * - Opening books
+ * - In hash table entries
+ *
+ * \note This class is automatically initialized by a static
+ * initializer object, so users should try to initialize it.
+ */
 class Zobrist
 {
 	public:
-		static void initialize();
-		static quint64 key(const Chessboard* board);
-		
+		/*!
+		 * Returns the zobrist value for side to move.
+		 * This value must be in the key on black's turn.
+		 */
 		static quint64 side();
+		
+		/*!
+		 * Returns the zobrist value for en-passant target
+		 * at \a square.
+		 */
 		static quint64 enpassant(int square);
-		static quint64 castling(Chessboard::ChessSide side, int castlingSide);
-		static quint64 piece(Chessboard::ChessSide side, ChessPiece::PieceType type, int square);
-
-		static const int MaxSquares = 120;
-		static const int MaxPieceTypes = 16;
+		
+		/*!
+		 * Returns the zobrist value for player \a side's
+		 * castling rook at \a square.
+		 */
+		static quint64 castling(int side, int square);
+		
+		/*!
+		 * Returns the zobrist value for player \a side's
+		 * \a type piece at \a square.
+		 */
+		static quint64 piece(int side, int type, int square);
+		
 	private:
+		friend class ZobristInitializer;
+		static const int MaxSquares = 144;
+		static const int MaxPieceTypes = 16;
+		
 		Zobrist();
 		
+		/*! Initializes all zobrist components. */
+		static void initialize();
+		
+		/*!
+		 * The "minimal standard" random number generator
+		 * by Park and Miller.
+		 * Returns a pseudo-random integer between 1 and 2147483646.
+		 */
 		static int random();
+		
+		/*! Returns an unsigned 64-bit pseudo-random number. */
 		static quint64 random64();
+		
 		static int m_randomSeed;
+		static bool m_isInitialized;
 		
 		static quint64 m_side;
 		static quint64 m_enpassant[MaxSquares];
-		static quint64 m_castling[2][2];
+		static quint64 m_castling[2][MaxSquares];
 		static quint64 m_piece[2][MaxPieceTypes][MaxSquares];
 };
 

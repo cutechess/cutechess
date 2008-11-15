@@ -22,12 +22,11 @@
 #include <QGraphicsItem>
 #include <QList>
 
-#include "chessboard/chessboard.h"
+#include "chessboard/chess.h"
 
 class QPainter;
 class GraphicsChessPiece;
 class QSvgRenderer;
-class ChessMove;
 class GraphicsChessboardSquareItem;
 
 class GraphicsChessboardItem : public QObject, public QGraphicsItem
@@ -52,7 +51,7 @@ class GraphicsChessboardItem : public QObject, public QGraphicsItem
 		void showBorder(bool visible);
 
 	public slots:
-		void makeMove(const ChessMove& move);
+		void makeMove(const Chess::Move& move);
 	
 	private:
 		void initChessboard();

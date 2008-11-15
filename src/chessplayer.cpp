@@ -22,13 +22,13 @@
 ChessPlayer::ChessPlayer(const TimeControl& timeControl, QObject* parent)
 	: QObject(parent)
 {
-	m_side = Chessboard::NoSide;
+	m_side = Chess::NoSide;
 	m_timeControl = timeControl;
 
 	m_opponent = 0;
 }
 
-void ChessPlayer::newGame(Chessboard::ChessSide side, ChessPlayer* opponent)
+void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	Q_ASSERT(opponent != 0);
 
@@ -56,12 +56,12 @@ void ChessPlayer::setTimeControl(const TimeControl& timeControl)
 	m_timeControl = timeControl;
 }
 
-void ChessPlayer::setSide(Chessboard::ChessSide side)
+void ChessPlayer::setSide(Chess::Side side)
 {
 	m_side = side;
 }
 
-Chessboard::ChessSide ChessPlayer::side() const
+Chess::Side ChessPlayer::side() const
 {
 	return m_side;
 }

@@ -19,8 +19,8 @@
 
 #include "graphicschesspiece.h"
 
-GraphicsChessPiece::GraphicsChessPiece(Chessboard::ChessSide side,
-                                       ChessPiece::PieceType piece,
+GraphicsChessPiece::GraphicsChessPiece(Chess::Side side,
+                                       Chess::Piece piece,
                                        QGraphicsItem* parent)
 	: QGraphicsSvgItem(parent)
 {
@@ -28,45 +28,45 @@ GraphicsChessPiece::GraphicsChessPiece(Chessboard::ChessSide side,
 	setPiece(piece);
 }
 
-Chessboard::ChessSide GraphicsChessPiece::side() const
+Chess::Side GraphicsChessPiece::side() const
 {
 	return m_side;
 }
 
-ChessPiece::PieceType GraphicsChessPiece::piece() const
+Chess::Piece GraphicsChessPiece::piece() const
 {
 	return m_piece;
 }
 
-void GraphicsChessPiece::setPiece(ChessPiece::PieceType piece)
+void GraphicsChessPiece::setPiece(Chess::Piece piece)
 {
 	m_piece = piece;
 
-	if (m_side == Chessboard::White)
+	if (m_side == Chess::White)
 	{
 		switch (m_piece)
 		{
-			case ChessPiece::PT_Pawn:
+			case Chess::Pawn:
 				setElementId("wpawn");
 			break;
 
-			case ChessPiece::PT_Knight:
+			case Chess::Knight:
 				setElementId("wknight");
 			break;
 
-			case ChessPiece::PT_Bishop:
+			case Chess::Bishop:
 				setElementId("wbishop");
 			break;
 
-			case ChessPiece::PT_Rook:
+			case Chess::Rook:
 				setElementId("wrook");
 			break;
 
-			case ChessPiece::PT_Queen:
+			case Chess::Queen:
 				setElementId("wqueen");
 			break;
 
-			case ChessPiece::PT_King:
+			case Chess::King:
 				setElementId("wking");
 			break;
 
@@ -74,31 +74,31 @@ void GraphicsChessPiece::setPiece(ChessPiece::PieceType piece)
 			break;
 		}
 	}
-	else if (m_side == Chessboard::Black)
+	else if (m_side == Chess::Black)
 	{
 		switch (m_piece)
 		{
-			case ChessPiece::PT_Pawn:
+			case Chess::Pawn:
 				setElementId("bpawn");
 			break;
 
-			case ChessPiece::PT_Knight:
+			case Chess::Knight:
 				setElementId("bknight");
 			break;
 
-			case ChessPiece::PT_Bishop:
+			case Chess::Bishop:
 				setElementId("bbishop");
 			break;
 
-			case ChessPiece::PT_Rook:
+			case Chess::Rook:
 				setElementId("brook");
 			break;
 
-			case ChessPiece::PT_Queen:
+			case Chess::Queen:
 				setElementId("bqueen");
 			break;
 
-			case ChessPiece::PT_King:
+			case Chess::King:
 				setElementId("bking");
 			break;
 
@@ -124,4 +124,3 @@ void GraphicsChessPiece::centerOnParent()
 		(parentItem()->sceneBoundingRect().height() -
 		sceneBoundingRect().height()) / 2.0);
 }
-

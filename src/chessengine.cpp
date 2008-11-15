@@ -19,12 +19,12 @@
 #include <QIODevice>
 
 #include "chessengine.h"
-#include "chessboard/chessboard.h"
+#include "chessboard/chess.h"
 
 int ChessEngine::m_count = 0;
 
 ChessEngine::ChessEngine(QIODevice* ioDevice,
-                         Chessboard* chessboard,
+                         Chess::Board* chessboard,
                          const TimeControl& timeControl,
                          QObject* parent)
 	: ChessPlayer(timeControl, parent)
@@ -33,7 +33,7 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
 	Q_CHECK_PTR(chessboard);
 	m_isReady = true;
 	m_initialized = false;
-	m_notation = LongAlgebraic;
+	m_notation = Chess::LongAlgebraic;
 	m_ioDevice = ioDevice;
 	m_id = m_count++;
 	m_chessboard = chessboard;

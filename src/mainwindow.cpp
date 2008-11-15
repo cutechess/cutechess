@@ -251,8 +251,8 @@ void MainWindow::newGame()
 
 	ChessGame* chessgame = new ChessGame(this);
 
-	connect(chessgame, SIGNAL(moveHappened(const ChessMove&)),
-	        m_visualChessboard, SLOT(makeMove(const ChessMove&)));
+	connect(chessgame, SIGNAL(moveHappened(const Chess::Move&)),
+	        m_visualChessboard, SLOT(makeMove(const Chess::Move&)));
 
 	ChessPlayer* whitePlayer = 0;
 	ChessPlayer* blackPlayer = 0;
@@ -292,9 +292,9 @@ void MainWindow::newGame()
 	connect(blackPlayer, SIGNAL(startedThinking(int)),
 		m_blackClock, SLOT(start(int)));
 
-	connect(whitePlayer, SIGNAL(moveMade(const ChessMove&)),
+	connect(whitePlayer, SIGNAL(moveMade(const Chess::Move&)),
 		m_whiteClock, SLOT(stop()));
-	connect(blackPlayer, SIGNAL(moveMade(const ChessMove&)),
+	connect(blackPlayer, SIGNAL(moveMade(const Chess::Move&)),
 		m_blackClock, SLOT(stop()));
 
 	connect(whitePlayer, SIGNAL(debugMessage(const QString&)),

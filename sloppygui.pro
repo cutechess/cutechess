@@ -64,22 +64,10 @@ HEADERS += src/graphicschessboardsquareitem.h \
            src/engineconfigurationmodel.h \
            src/xboardengine.h \
            src/uciengine.h \
-           src/chessboard/archbishop.h \
-           src/chessboard/fen.h \
-           src/chessboard/bishop.h \
-           src/chessboard/king.h \
-           src/chessboard/capablancachessboard.h \
-           src/chessboard/knight.h \
-           src/chessboard/castlingrights.h \
-           src/chessboard/chancellor.h \
-           src/chessboard/pawn.h \
+           src/chessboard/chess.h \
            src/chessboard/chessboard.h \
-           src/chessboard/queen.h \
            src/chessboard/chessmove.h \
-           src/chessboard/rook.h \
-           src/chessboard/chesspiece.h \
-           src/chessboard/standardchessboard.h \
-           src/chessboard/completechessmove.h \
+           src/chessboard/notation.h \
            src/chessboard/zobrist.h
 
 SOURCES += src/main.cpp \
@@ -106,23 +94,12 @@ SOURCES += src/main.cpp \
            src/newgamedlg.cpp \
            src/enginemanagementdlg.cpp \
            src/engineconfigurationdlg.cpp \
-           src/chessboard/archbishop.cpp \
-           src/chessboard/fen.cpp \
-           src/chessboard/bishop.cpp \
-           src/chessboard/king.cpp \
-           src/chessboard/capablancachessboard.cpp \
-           src/chessboard/knight.cpp \
-           src/chessboard/castlingrights.cpp \
-           src/chessboard/movenotation.cpp \
-           src/chessboard/chancellor.cpp \
-           src/chessboard/pawn.cpp \
            src/chessboard/chessboard.cpp \
-           src/chessboard/queen.cpp \
+           src/chessboard/fen.cpp \
+           src/chessboard/movegen.cpp \
+           src/chessboard/notation.cpp \
            src/chessboard/chessmove.cpp \
-           src/chessboard/rook.cpp \
-           src/chessboard/chesspiece.cpp \
-           src/chessboard/standardchessboard.cpp \
-           src/chessboard/completechessmove.cpp \
+           src/chessboard/movestring.cpp \
            src/chessboard/zobrist.cpp
 
 FORMS += ui/newgamedlg.ui \

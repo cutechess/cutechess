@@ -19,27 +19,26 @@
 #define GRAPHICSCHESSPIECE_H
 
 #include <QGraphicsSvgItem>
-#include "chessboard/chessboard.h"
-#include "chessboard/chesspiece.h"
+#include "chessboard/chess.h"
 
 class GraphicsChessPiece : public QGraphicsSvgItem
 {
 	Q_OBJECT
 
 	public:
-		GraphicsChessPiece(Chessboard::ChessSide side,
-		                   ChessPiece::PieceType piece,
+		GraphicsChessPiece(Chess::Side side,
+		                   Chess::Piece piece,
 		                   QGraphicsItem* parent = 0);
 
-		Chessboard::ChessSide side() const;
-		ChessPiece::PieceType piece() const;
+		Chess::Side side() const;
+		Chess::Piece piece() const;
 
-		void setPiece(ChessPiece::PieceType piece);
+		void setPiece(Chess::Piece piece);
 		void centerOnParent();
 
 	private:
-		Chessboard::ChessSide m_side;
-		ChessPiece::PieceType m_piece;
+		Chess::Side m_side;
+		Chess::Piece m_piece;
 
 };
 

@@ -20,12 +20,13 @@
 #include <QDebug>
 
 #include "uciengine.h"
+#include "chessboard/chessboard.h"
 #include "chessboard/chessmove.h"
 #include "timecontrol.h"
 
 
 UciEngine::UciEngine(QIODevice* ioDevice,
-                     Chessboard* chessboard,
+                     Chess::Board* chessboard,
                      const TimeControl& timeControl,
                      QObject* parent)
 	: ChessEngine(ioDevice, chessboard, timeControl, parent)
@@ -44,7 +45,7 @@ UciEngine::~UciEngine()
 	//write("quit");
 }
 
-void UciEngine::newGame(Chessboard::ChessSide side, ChessPlayer* opponent)
+void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	ChessPlayer::newGame(side, opponent);
 	m_moves.clear();
@@ -54,7 +55,7 @@ void UciEngine::newGame(Chessboard::ChessSide side, ChessPlayer* opponent)
 	write(QString("position fen ") + m_startFen);
 }
 
-void UciEngine::makeMove(const ChessMove& move)
+void UciEngine::makeMove(const Chess::Move& move)
 {
 	QString moveString = m_chessboard->moveString(move, m_notation);
 	
@@ -68,12 +69,12 @@ void UciEngine::go()
 	TimeControl blackTimeControl;
 	TimeControl whiteTimeControl;
 	
-	if (side() == Chessboard::White)
+	if (side() == Chess::White)
 	{
 		whiteTimeControl = m_timeControl;
 		blackTimeControl = m_opponent->timeControl();
 	}
-	else if (side() == Chessboard::Black)
+	else if (side() == Chess::Black)
 	{
 		whiteTimeControl = m_opponent->timeControl();
 		blackTimeControl = m_timeControl;
@@ -126,7 +127,7 @@ void UciEngine::parseLine(const QString& line)
 			moveString = args;
 
 		m_moves.append(moveString);
-		ChessMove move = m_chessboard->moveFromString(moveString);
+		Chess::Move move = m_chessboard->moveFromString(moveString);
 		emit moveMade(move);
 	}
 	else if (command == "uciok")

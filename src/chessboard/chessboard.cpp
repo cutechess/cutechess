@@ -1,343 +1,433 @@
-#include <QChar>
-#include <iostream>
+/*
+    This file is part of SloppyGUI.
+
+    SloppyGUI is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SloppyGUI is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "chessboard.h"
-#include "chesspiece.h"
-#include "completechessmove.h"
-#include "fen.h"
+#include "notation.h"
 #include "zobrist.h"
 
+using namespace Chess;
 
-Chessboard::Chessboard(int width, int height)
-{
-	m_width = width;
-	m_height = height;
-	m_boardSize = m_width * m_height;
-	m_arraySize = (m_width + 2) * m_height;
-	m_moveCount = 0;
-	m_history.append(MoveData());
-}
 
-Chessboard::~Chessboard()
+Board::Board(Variant variant)
+: m_variant(variant), m_isRandom(false)
 {
-	clear();
-}
-
-Chessboard::ChessSide Chessboard::side() const
-{
-	return m_side;
-}
-
-int Chessboard::width() const
-{
-	return m_width;
-}
-
-int Chessboard::height() const
-{
-	return m_height;
-}
-
-int Chessboard::arrayWidth() const
-{
-	return m_width + 2;
-}
-
-ChessPiece* Chessboard::pieceAt(int square) const
-{
-	Q_ASSERT(isValidSquare(square));
-	return m_squares[square];
-}
-
-void Chessboard::setSquare(int square, ChessPiece* piece)
-{
-	Q_ASSERT(isValidSquare(square));
+	switch (m_variant) {
+	case StandardChess:
+		m_width = 8;
+		m_height = 8;
+		break;
+	case CapablancaChess:
+		m_width = 10;
+		m_height = 8;
+		break;
+	}
 	
-	ChessPiece* old = m_squares[square];
-	if (old != 0)
-		updateZobristKey(Zobrist::piece(old->side(), old->type(), square));
-	if (piece != 0)
-		updateZobristKey(Zobrist::piece(piece->side(), piece->type(), square));
-	m_squares[square] = piece;
+	// Allocate the squares, with one 'wall' file on both sides,
+	// and two 'wall' ranks at the top and bottom.
+	m_arwidth = m_width + 2;
+	m_squares.fill(InvalidPiece, m_arwidth * (m_height + 4));
+	
+	
+	// Initialize the move offsets
+	
+	m_castleTarget[White][QueenSide] = (m_height + 1) * m_arwidth + 3;
+	m_castleTarget[White][KingSide] = (m_height + 1) * m_arwidth + m_width - 1;
+	m_castleTarget[Black][QueenSide] = 2 * m_arwidth + 3;
+	m_castleTarget[Black][KingSide] = 2 * m_arwidth + m_width - 1;
+	
+	m_knightOffsets.resize(8);
+	m_knightOffsets[0] = -2 * m_arwidth - 1;
+	m_knightOffsets[1] = -2 * m_arwidth + 1;
+	m_knightOffsets[2] = -m_arwidth - 2;
+	m_knightOffsets[3] = -m_arwidth + 2;
+	m_knightOffsets[4] = m_arwidth - 2;
+	m_knightOffsets[5] = m_arwidth + 2;
+	m_knightOffsets[6] = 2 * m_arwidth - 1;
+	m_knightOffsets[7] = 2 * m_arwidth + 1;
+	
+	m_bishopOffsets.resize(4);
+	m_bishopOffsets[0] = -m_arwidth - 1;
+	m_bishopOffsets[1] = -m_arwidth + 1;
+	m_bishopOffsets[2] = m_arwidth - 1;
+	m_bishopOffsets[3] = m_arwidth + 1;
+	
+	m_rookOffsets.resize(4);
+	m_rookOffsets[0] = -m_arwidth;
+	m_rookOffsets[1] = -1;
+	m_rookOffsets[2] = 1;
+	m_rookOffsets[3] = m_arwidth;
 }
 
-bool Chessboard::isValidSquare(int square) const
+void Board::initZobristKey()
 {
-	if (square < 0 || square >= m_arraySize)
+	m_key = 0;
+	
+	for (int side = White; side <= Black; side++) {
+		const int* rookSq = m_castlingRights.rookSquare[side];
+		if (rookSq[QueenSide] != 0)
+			m_key ^= Zobrist::castling(side, rookSq[QueenSide]);
+		if (rookSq[KingSide] != 0)
+			m_key ^= Zobrist::castling(side, rookSq[KingSide]);
+		
+		for (int sq = 0; sq < m_squares.size(); sq++) {
+			int piece = m_squares[sq];
+			if (piece == InvalidPiece || piece == NoPiece
+			||  piece * m_sign <= 0)
+				continue;
+			
+			m_key ^= Zobrist::piece(side, piece, sq);
+		}
+	}
+	
+	if (m_enpassantSquare != 0)
+		m_key ^= Zobrist::enpassant(m_enpassantSquare);
+	if (m_side == Black)
+		m_key ^= Zobrist::side();
+}
+
+Variant Board::variant() const
+{
+	return m_variant;
+}
+
+quint64 Board::key() const
+{
+	return m_key;
+}
+
+void Board::print() const
+{
+	int i = m_arwidth * 2;
+	for (int y = 0; y < m_height; y++) {
+		i++;
+		QString file;
+		for (int x = 0; x < m_width; x++) {
+			int pc = m_squares[i];
+			QChar c = '.';
+			
+			if (pc != NoPiece)
+				c = Notation::pieceChar(pc);
+			file += c;
+			file += ' ';
+			
+			i++;
+		}
+		i++;
+		qDebug("%s", qPrintable(file));
+	}
+	qDebug("FEN: %s", qPrintable(fenString()));
+}
+
+Square Board::chessSquare(int index) const
+{
+	int file = (index % m_arwidth) - 1;
+	int rank = (m_height - 1) - ((index / m_arwidth) - 2);
+	Square square = { file, rank };
+	
+	return square;
+}
+
+int Board::squareIndex(const Square& square) const
+{
+	if (square.file < 0 || square.file >= m_width
+	||  square.rank < 0 || square.rank >= m_height)
+		return 0;
+	
+	int rank = (m_height - 1) - square.rank;
+	return (rank + 2) * m_arwidth + 1 + square.file;
+}
+
+bool Board::isValidSquare(const Chess::Square& square) const
+{
+	if (square.file < 0 || square.file >= m_width
+	||  square.rank < 0 || square.rank >= m_height)
+		return false;
+	return true;
+}
+
+bool Board::inCheck(int side, int square) const
+{
+	if (square == 0)
+		square = m_kingSquare[side];
+	
+	int sign = (side == White) ? 1 : -1;
+	int attacker;
+	
+	// Pawn attacks
+	int step = -sign * m_arwidth;
+	// Left side
+	attacker  = m_squares[square + step - 1];
+	if ((attacker * sign) == -Pawn)
+		return true;
+	// Right side
+	attacker = m_squares[square + step + 1];
+	if ((attacker * sign) == -Pawn)
+		return true;
+	
+	QVector<int>::const_iterator it;
+	
+	// Knight, archbishop, chancellor attacks
+	for (it = m_knightOffsets.begin(); it != m_knightOffsets.end(); ++it) {
+		attacker = m_squares[square + *it];
+		switch (attacker * sign) {
+		case -Knight: case -Archbishop: case -Chancellor:
+			return true;
+		}
+	}
+	
+	// Bishop, queen, archbishop, king attacks
+	for (it = m_bishopOffsets.begin(); it != m_bishopOffsets.end(); ++it) {
+		int targetSquare = square + *it;
+		if (targetSquare == m_kingSquare[!side])
+			return true;
+		while ((attacker = m_squares[targetSquare]) != InvalidPiece
+		&&      attacker * sign <= 0) {
+			switch (attacker * sign) {
+			case -Bishop: case -Queen: case -Archbishop:
+				return true;
+			}
+			if (attacker != NoPiece)
+				break;
+			targetSquare += *it;
+		}
+	}
+	
+	// Rook, queen, chancellor, king attacks
+	for (it = m_rookOffsets.begin(); it != m_rookOffsets.end(); ++it) {
+		int targetSquare = square + *it;
+		if (targetSquare == m_kingSquare[!side])
+			return true;
+		while ((attacker = m_squares[targetSquare]) != InvalidPiece
+		&&      attacker * sign <= 0) {
+			switch (attacker * sign) {
+			case -Rook: case -Queen: case -Chancellor:
+				return true;
+			}
+			if (attacker != NoPiece)
+				break;
+			targetSquare += *it;
+		}
+	}
+	
+	return false;
+}
+
+void Board::makeMove(const Move& move)
+{
+	int source = move.sourceSquare();
+	int target = move.targetSquare();
+	int promotion = move.promotion();
+	int piece = m_squares[source] * m_sign;
+	int capture = m_squares[target];
+	int epSq = m_enpassantSquare;
+	int* rookSq = m_castlingRights.rookSquare[m_side];
+	
+	Q_ASSERT(source != 0);
+	Q_ASSERT(target != 0);
+	
+	MoveData md = { move, capture, epSq, m_castlingRights,
+	                m_key, m_reversibleMoveCount };
+	
+	m_key ^= Zobrist::piece(m_side, piece, source);
+	
+	if (epSq != 0) {
+		m_key ^= Zobrist::enpassant(epSq);
+		m_enpassantSquare = 0;
+	}
+	
+	bool isReversible = true;
+	if (piece == King) {
+		m_kingSquare[m_side] = target;
+		
+		// In case of a castling move, make the rook's move
+		if (move.castlingSide() != -1) {
+			int cside = move.castlingSide();
+			int rsource = rookSq[cside];
+			int rtarget = (cside == QueenSide) ? target + 1 : target -1;
+			
+			m_squares[rsource] = NoPiece;
+			m_squares[rtarget] = Rook * m_sign;
+			m_key ^= Zobrist::piece(m_side, Rook, rsource);
+			m_key ^= Zobrist::piece(m_side, Rook, rtarget);
+			isReversible = false;
+		}
+		// Any king move removes all castling rights
+		for (int i = QueenSide; i <= KingSide; i++) {
+			int& rs = rookSq[i];
+			if (rs != 0) {
+				m_key ^= Zobrist::castling(m_side, rs);
+				rs = 0;
+			}
+		}
+	} else if (piece == Pawn) {
+		isReversible = false;
+		
+		// Make an en-passant capture
+		if (target == epSq) {
+			int epTarget = target + m_arwidth * m_sign;
+			m_squares[epTarget] = NoPiece;
+			m_key ^= Zobrist::piece(!m_side, Pawn, epTarget);
+		// Push a pawn two squares ahead, creating an en-passant
+		// opportunity for the opponent.
+		} else if ((source - target) * m_sign == m_arwidth * 2) {
+			m_enpassantSquare = source - m_arwidth * m_sign;
+			m_key ^= Zobrist::enpassant(m_enpassantSquare);
+		} else if (promotion != NoPiece)
+			piece = promotion;
+	} else if (piece == Rook) {
+		// Remove castling rights from the rook's square
+		for (int i = QueenSide; i <= KingSide; i++) {
+			if (source == rookSq[i]) {
+				m_key ^= Zobrist::castling(m_side, source);
+				rookSq[i] = 0;
+				isReversible = false;
+				break;
+			}
+		}
+	}
+	
+	capture *= m_sign;
+	// If the move captures opponent's castling rook, remove
+	// his castling rights from that side.
+	if (capture == -Rook) {
+		int* opCr = m_castlingRights.rookSquare[!m_side];
+		if (target == opCr[QueenSide]) {
+			m_key ^= Zobrist::castling(!m_side, target);
+			opCr[QueenSide] = 0;
+		} else if (target == opCr[KingSide]) {
+			m_key ^= Zobrist::castling(!m_side, target);
+			opCr[KingSide] = 0;
+		}
+	}
+	
+	if (capture < 0) {
+		isReversible = false;
+		m_key ^= Zobrist::piece(!m_side, -capture, target);
+	}
+	m_key ^= Zobrist::side();
+	m_key ^= Zobrist::piece(m_side, piece, target);
+	m_squares[target] = piece * m_sign;
+	m_squares[source] = NoPiece;
+	
+	if (isReversible)
+		m_reversibleMoveCount++;
+	else
+		m_reversibleMoveCount = 0;
+	
+	m_history.push_back(md);
+	m_sign *= -1;
+	m_side = !m_side;
+}
+
+void Board::undoMove()
+{
+	if (m_history.empty())
+		return;
+	
+	const MoveData& md = m_history.back();
+	const Move& move = md.move;
+	int target = move.targetSquare();
+	int source = move.sourceSquare();
+	
+	m_history.pop_back();
+	m_sign *= -1;
+	m_side = !m_side;
+	
+	m_enpassantSquare = md.enpassantSquare;
+	m_castlingRights = md.castlingRights;
+	m_key = md.key;
+	m_reversibleMoveCount = md.reversibleMoveCount;
+	
+	if (target == m_kingSquare[m_side]) {
+		m_kingSquare[m_side] = source;
+		
+		int cside = move.castlingSide();
+		if (cside != -1) {
+			// Move the rook back after castling
+			if (cside == QueenSide)
+				m_squares[target + 1] = NoPiece;
+			else
+				m_squares[target - 1] = NoPiece;
+			const int* cr = m_castlingRights.rookSquare[m_side];
+			m_squares[cr[cside]] = Rook * m_sign;
+		}
+	} else if (target == m_enpassantSquare) {
+		// Restore the pawn captured by the en-passant move
+		int epTarget = target + m_arwidth * m_sign;
+		m_squares[epTarget] = -Pawn * m_sign;
+	}
+	
+	if (move.promotion() != NoPiece)
+		m_squares[source] = Pawn * m_sign;
+	else
+		m_squares[source] = m_squares[target];
+	
+	m_squares[target] = md.capture;
+}
+
+bool Board::isLegalPosition() const
+{
+	if (inCheck(!m_side))
 		return false;
 	
-	int file = square % (m_width + 2);
-	if (file == 0 || file == m_width + 1)
-		return false;
+	if (m_history.empty())
+		return true;
+	
+	const MoveData& md = m_history.back();
+	const Move& move = md.move;
+	
+	// Make sure that no square between the king's initial and final
+	// squares (including the initial and final squares) are under
+	// attack (in check) by the opponent.
+	if (move.castlingSide() != -1) {
+		int source = move.sourceSquare();
+		int target = move.targetSquare();
+		int offset = (target >= source) ? 1 : -1;
+		for (int i = source; i != target; i += offset) {
+			if (inCheck(!m_side, i))
+				return false;
+		}
+	}
 	
 	return true;
 }
 
-int Chessboard::squareToIndex(int square) const
+bool Board::isLegalMove(const Chess::Move& move)
 {
-	int rank = square / m_width;
-	int file = (square % m_width) + 1;
-	return (rank * (m_width + 2)) + file;
-}
-
-void Chessboard::clear()
-{
-	while (m_history.count() > 1)
-		m_history.removeLast();
-	for (int side = White; side <= Black; side++)
-	{
-		QLinkedList<ChessPiece*>* list = &m_pieces[side];
-		QLinkedList<ChessPiece*>::iterator i = list->begin();
-		while (i != list->end())
-		{
-			Q_ASSERT(*i != 0);
-			delete *i;
-			i = list->erase(i);
-		}
-	}
-	
-	for (int i = 0; i < m_arraySize; i++)
-		m_squares[i] = 0;
-}
-
-QString Chessboard::fenString() const
-{
-	return Fen::fenString(this);
-}
-
-void Chessboard::addPiece(ChessPiece* piece)
-{
-	Q_ASSERT(piece != 0);
-	Q_ASSERT(isValidSquare(piece->square()));
-
-	setSquare(piece->square(), piece);
-	
-	m_pieces[piece->side()].append(piece);
-	if (piece->type() == ChessPiece::PT_King)
-		m_king[piece->side()] = piece;
-}
-
-void Chessboard::removePiece(ChessPiece* piece)
-{
-	Q_ASSERT(piece != 0);
-	
-	bool success = m_pieces[piece->side()].removeOne(piece);
-	Q_ASSERT(success);
-}
-
-bool Chessboard::canSideAttackSquare(Chessboard::ChessSide side, int square)
-{
-	foreach(ChessPiece* piece, m_pieces[side])
-	{
-		Q_ASSERT(piece->enabled());
-		if (piece->canAttack(square))
+	QVector<Move> moves = legalMoves();
+	QVector<Move>::const_iterator it;
+	for (it = moves.begin(); it != moves.end(); it++) {
+		if (it->sourceSquare() == move.sourceSquare()
+		&&  it->targetSquare() == move.targetSquare()
+		&&  it->promotion() == move.promotion()
+		&&  it->castlingSide() == move.castlingSide())
 			return true;
 	}
 	
 	return false;
 }
 
-bool Chessboard::isSideInCheck(Chessboard::ChessSide side)
+Result Board::result()
 {
-	int square = m_king[side]->square();
-	return canSideAttackSquare((ChessSide)!side, square);
-}
-
-CompleteChessMove Chessboard::completeMove(const ChessMove& move)
-{
-	int source = squareToIndex(move.sourceSquare());
-	int target = squareToIndex(move.targetSquare());
-	Q_ASSERT(isValidSquare(source));
-	Q_ASSERT(isValidSquare(target));
-	ChessPiece::PieceType promotion = move.promotion();
-	ChessPiece* piece = pieceAt(source);
-
-	if (piece == 0)
-		return CompleteChessMove();
-
-	// Fischer Random Castling
-	const CastlingRights *cr = castlingRights();
- 	bool allowCastling = false;
- 	if (abs(source - target) != 1)
- 		allowCastling = true;
-	for (int cside = 0; cside < 2; cside++)
+	QVector<Move> moves(legalMoves());
+	
+	if (moves.size() == 0)
 	{
-		ChessPiece* rook = cr->rook(cside);
-		if (rook != 0 && rook->square() == target)
-		{
-			target = cr->kingTarget(cside);
-			allowCastling = true;
-			break;
-		}
-	}
-
-	QList<CompleteChessMove> moves;
-	piece->generateMoves(&moves);
-
-	foreach (CompleteChessMove tmpMove, moves)
-	{
-		if (tmpMove.sourceSquare() != source)
-			continue;
-		if (tmpMove.promotion() != promotion)
-			continue;
-		if (tmpMove.rookSquare() != -1 && !allowCastling)
-			continue;
-		if (tmpMove.targetSquare() != target)
-			continue;
-		
-		return tmpMove;
-	}
-	
-	return CompleteChessMove();
-}
-
-void Chessboard::generateMoves(QList<CompleteChessMove>* moves) const
-{
-	foreach(ChessPiece* piece, m_pieces[m_side])
-	{
-		Q_ASSERT(piece->enabled());
-		piece->generateMoves(moves);
-	}
-}
-
-void Chessboard::updateZobristKey(quint64 component)
-{
-	m_history.last().m_zobristKey ^= component;
-}
-
-int Chessboard::reversibleMoveCount() const
-{
-	return m_history.last().m_reversibleMoveCount;
-}
-
-void Chessboard::setReversibleMoveCount(int count)
-{
-	Q_ASSERT(count >= 0);
-	m_history.last().m_reversibleMoveCount = count;
-}
-
-quint64 Chessboard::zobristKey() const
-{
-	return m_history.last().m_zobristKey;
-}
-
-void Chessboard::setZobristKey(quint64 key)
-{
-	m_history.last().m_zobristKey = key;
-}
-
-void Chessboard::makeMove(const CompleteChessMove& move)
-{
-	int source = move.sourceSquare();
-	Q_ASSERT(isValidSquare(source));
-	
-	ChessPiece* piece = pieceAt(source);
-	Q_ASSERT(piece != 0);
-	Q_ASSERT(piece->enabled());
-	Q_ASSERT(piece->side() == m_side);
-	
-	m_history.append(m_history.last());
-	m_history.last().m_move = move;
-	piece->makeMove(move);
-	
-	updateZobristKey(Zobrist::side());
-	
-	m_moveCount++;
-	if (piece->type() == ChessPiece::PT_Pawn || move.capture() != 0 || move.rookSquare() != -1)
-		setReversibleMoveCount(0);
-	else
-		setReversibleMoveCount(reversibleMoveCount() + 1);
-	
-	m_side = (m_side == White) ? Black : White;
-}
-
-void Chessboard::makeMove(const ChessMove& move)
-{
-	makeMove(completeMove(move));
-}
-
-void Chessboard::undoMove()
-{
-	Q_ASSERT(!m_history.isEmpty());
-	CompleteChessMove move = m_history.takeLast().m_move;
-	
-	ChessPiece* piece;
-	if (move.promotedPawn() != 0)
-		piece = (ChessPiece*)move.promotedPawn();
-	else
-		piece = pieceAt(move.targetSquare());
-	Q_ASSERT(piece != 0);
-	
-	piece->undoMove(move);
-
-	m_side = (m_side == White) ? Black : White;
-	m_moveCount--;
-
-	ChessPiece* rook = move.castlingRook();
-	if (rook != 0)
-		rook->setSquare(move.rookSquare());
-}
-
-const CastlingRights* Chessboard::castlingRights(Chessboard::ChessSide side) const
-{
-	if (side == NoSide)
-		side = m_side;
-	return &m_history.last().m_castlingRights[side];
-}
-
-void Chessboard::setCastlingRights(Chessboard::ChessSide side, const CastlingRights& castlingRights)
-{
-	m_history.last().m_castlingRights[side] = castlingRights;
-}
-
-void Chessboard::disableCastlingRights(Chessboard::ChessSide side, int castlingSide)
-{
-	m_history.last().m_castlingRights[side].disable(castlingSide);
-}
-
-int Chessboard::enpassantSquare() const
-{
-	return m_history.last().m_enpassantSquare;
-}
-
-void Chessboard::setEnpassantSquare(int square)
-{
-	int& epSq = m_history.last().m_enpassantSquare;
-	if (epSq != -1)
-		updateZobristKey(Zobrist::enpassant(epSq));
-	if (square != -1)
-		updateZobristKey(Zobrist::enpassant(square));
-	epSq = square;
-}
-
-bool Chessboard::setFenString(const QString& fenString)
-{
-	Fen fen(this, fenString);
-	if (fen.isValid())
-	{
-		fen.apply();
-		return true;
-	}
-	
-	return false;
-}
-
-Chessboard::Result Chessboard::result()
-{
-	bool hasLegalMoves = false;
-	QList<CompleteChessMove> moves;
-	generateMoves(&moves);
-	foreach (CompleteChessMove move, moves)
-	{
-		if (isMoveLegal(move))
-		{
-			hasLegalMoves = true;
-			break;
-		}
-	}
-	
-	if (!hasLegalMoves)
-	{
-		if (isSideInCheck(m_side))
+		if (inCheck(m_side))
 		{
 			if (m_side == Black)
 				return WhiteMates;
@@ -348,23 +438,31 @@ Chessboard::Result Chessboard::result()
 			return Stalemate;
 	}
 	
-	bool enoughMaterial = false;
-	for (int side = 0; side < 2; side++)
+	int material[2] = { 0, 0 };
+	QVector<int>::iterator it;
+	for (it = m_squares.begin(); it != m_squares.end(); ++it)
 	{
-		foreach (ChessPiece* piece, m_pieces[side])
+		int piece = *it;
+		if (piece == NoPiece || piece == InvalidPiece)
+			continue;
+		int side;
+		if (piece > 0)
+			side = White;
+		else
 		{
-			ChessPiece::PieceType type = piece->type();
-			if (type != ChessPiece::PT_King && type != ChessPiece::PT_Knight && type != ChessPiece::PT_Bishop)
-			{
-				enoughMaterial = true;
-				break;
-			}
+			side = Black;
+			piece *= -1;
 		}
+		
+		if (piece == Knight || piece == Bishop)
+			material[side] += 1;
+		else
+			material[side] += 2;
 	}
-	if (!enoughMaterial)
+	if (material[White] <= 3 && material[Black] <= 3)
 		return DrawByMaterial;
 	
-	if (reversibleMoveCount() >= 100)
+	if (m_reversibleMoveCount >= 100)
 		return DrawByFiftyMoves;
 	
 	if (repeatCount() >= 2)
@@ -373,139 +471,24 @@ Chessboard::Result Chessboard::result()
 	return NoResult;
 }
 
-/* Returns the number of times the current position has been reached
-   in the game.  */
-int Chessboard::repeatCount(int maxRepeats) const
+int Board::repeatCount() const
 {
 	int repeatCount = 0;
 
-	Q_ASSERT(m_history.count() >= reversibleMoveCount());
+	Q_ASSERT(m_history.size() >= m_reversibleMoveCount);
 
-	/* If the num. of reversible moves in a row is less than 4, then
-	   there's no way we could already have a repetition.  */
-	if (reversibleMoveCount() < 4)
+	// If the num. of reversible moves in a row is less than 4, then
+	// there's no way we could already have a repetition.
+	if (m_reversibleMoveCount < 4)
 		return 0;
 
-	int firstIndex = m_history.count() - 1;
-	int lastIndex = firstIndex - reversibleMoveCount();
+	int firstIndex = m_history.size() - 1;
+	int lastIndex = firstIndex - m_reversibleMoveCount;
 	for (int i = firstIndex; i > lastIndex; i--)
 	{
-		if (m_history[i].m_zobristKey == zobristKey())
-		{
+		if (m_history[i].key == m_key)
 			repeatCount++;
-			if (repeatCount >= maxRepeats)
-				return repeatCount;
-		}
 	}
 
 	return repeatCount;
-}
-
-void Chessboard::print() const
-{
-	QString str;
-	for (int i = 0; i < m_boardSize; i++) {
-		int square = squareToIndex(i);
-		Q_ASSERT(isValidSquare(square));
-
-		ChessPiece* piece = pieceAt(square);
-		if (piece != 0)
-			str += piece->toString();
-		else
-			str += ".";
-		if ((i % m_width) == m_width - 1)
-		{
-			qDebug("%s", qPrintable(str));
-			str.clear();
-		}
-	}
-	qDebug("FEN: %s", qPrintable(fenString()));
-	qDebug("Key: %llu", zobristKey());
-}
-
-bool Chessboard::isMoveLegal(const CompleteChessMove& move)
-{
-	bool isLegal = true;
-	makeMove(move);
-	if (isSideInCheck((ChessSide)!m_side))
-		isLegal = false;
-	
-	undoMove();
-	return isLegal;
-}
-
-bool Chessboard::isMoveLegal(const ChessMove& move)
-{
-	CompleteChessMove tmpMove = completeMove(move);
-	if (tmpMove.isEmpty())
-		return false;
-	return isMoveLegal(tmpMove);
-}
-
-bool Chessboard::isMoveCheck(const CompleteChessMove& move)
-{
-	bool isCheck = false;
-	makeMove(move);
-	if (isSideInCheck(m_side))
-		isCheck = true;
-
-	undoMove();
-	return isCheck;
-}
-
-bool Chessboard::isMoveMate(const CompleteChessMove& move)
-{
-	bool isMate = true;
-
-	makeMove(move);
-	if (isSideInCheck(m_side))
-	{
-		QList<CompleteChessMove> moves;
-		generateMoves(&moves);
-		foreach (CompleteChessMove tmpMove, moves)
-		{
-			if (isMoveLegal(tmpMove))
-			{
-				isMate = false;
-				break;
-			}
-		}
-	}
-	else
-		isMate = false;
-
-	undoMove();
-	return isMate;
-}
-
-qint64 Chessboard::perft(int depth, bool divide)
-{
-	Q_ASSERT(depth >= 0);
-
-	if (depth == 0)
-		return 1;
-
-	qint64 nodes = 0;
-	qint64 newNodes;
-	QList<CompleteChessMove> moves;
-	generateMoves(&moves);
-
-	foreach (CompleteChessMove move, moves)
-	{
-		QString moveString = coordStringFromMove(move);
-		makeMove(move);
-		if (isSideInCheck((ChessSide)!m_side))
-		{
-			undoMove();
-			continue;
-		}
-		
-		newNodes = perft(depth - 1, false);
-		if (divide)
-			qDebug("%s %lld", qPrintable(moveString), newNodes);
-		nodes += newNodes;
-		undoMove();
-	}
-
-	return nodes;
 }

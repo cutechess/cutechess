@@ -126,27 +126,27 @@ void GraphicsChessboardItem::initChessPieces()
 	// The order of piece initialization is the same as they appear in the
 	// chessboard: Rook, Knigh, Bishop, Queen, King, Bishop, Knight, Rook,
 	// and 8 Pawns.
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		ChessPiece::PT_Rook, m_squares[0]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		ChessPiece::PT_Knight, m_squares[1]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		ChessPiece::PT_Bishop, m_squares[2]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		ChessPiece::PT_Queen, m_squares[3]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		ChessPiece::PT_King, m_squares[4]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		ChessPiece::PT_Bishop, m_squares[5]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		ChessPiece::PT_Knight, m_squares[6]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-		ChessPiece::PT_Rook, m_squares[7]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::Black,
+		Chess::Rook, m_squares[0]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::Black,
+		Chess::Knight, m_squares[1]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::Black,
+		Chess::Bishop, m_squares[2]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::Black,
+		Chess::Queen, m_squares[3]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::Black,
+		Chess::King, m_squares[4]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::Black,
+		Chess::Bishop, m_squares[5]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::Black,
+		Chess::Knight, m_squares[6]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::Black,
+		Chess::Rook, m_squares[7]));
 
 	for (int i = 0; i < 8; i++)
 	{
-		m_pieces.push_back(new GraphicsChessPiece(Chessboard::Black,
-			ChessPiece::PT_Pawn, m_squares[8 + i]));
+		m_pieces.push_back(new GraphicsChessPiece(Chess::Black,
+			Chess::Pawn, m_squares[8 + i]));
 	}
 
 	// == WHITE PIECES ==
@@ -154,27 +154,27 @@ void GraphicsChessboardItem::initChessPieces()
 	// The order of piece initialization is the same as they appear in the
 	// chessboard: Rook, Knigh, Bishop, Queen, King, Bishop, Knight, Rook,
 	// and 8 Pawns.
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		ChessPiece::PT_Rook, m_squares[56]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		ChessPiece::PT_Knight, m_squares[57]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		ChessPiece::PT_Bishop, m_squares[58]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		ChessPiece::PT_Queen, m_squares[59]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		ChessPiece::PT_King, m_squares[60]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		ChessPiece::PT_Bishop, m_squares[61]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		ChessPiece::PT_Knight, m_squares[62]));
-	m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-		ChessPiece::PT_Rook, m_squares[63]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::White,
+		Chess::Rook, m_squares[56]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::White,
+		Chess::Knight, m_squares[57]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::White,
+		Chess::Bishop, m_squares[58]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::White,
+		Chess::Queen, m_squares[59]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::White,
+		Chess::King, m_squares[60]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::White,
+		Chess::Bishop, m_squares[61]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::White,
+		Chess::Knight, m_squares[62]));
+	m_pieces.push_back(new GraphicsChessPiece(Chess::White,
+		Chess::Rook, m_squares[63]));
 
 	for (int i = 0; i < 8; i++)
 	{
-		m_pieces.push_back(new GraphicsChessPiece(Chessboard::White,
-			ChessPiece::PT_Pawn, m_squares[48 + i]));
+		m_pieces.push_back(new GraphicsChessPiece(Chess::White,
+			Chess::Pawn, m_squares[48 + i]));
 	}
 
 	foreach (GraphicsChessPiece* piece, m_pieces)
@@ -187,10 +187,24 @@ void GraphicsChessboardItem::initChessPieces()
 	}
 }
 
-void GraphicsChessboardItem::makeMove(const ChessMove& move)
+void GraphicsChessboardItem::makeMove(const Chess::Move& move)
 {
-	QList<QGraphicsItem*> sourceItems = m_squares[move.sourceSquare()]->childItems();
-	QList<QGraphicsItem*> capturedItems = m_squares[move.targetSquare()]->childItems();
+	// HACK
+	// Temporary solution until the internal and graphical board
+	// are properly synchronized.
+	int source = move.sourceSquare();
+	int srcFile = (source % 10) - 1;
+	int srcRank = (source / 10) - 2;
+	source = srcRank * 8 + srcFile;
+	
+	int target = move.targetSquare();
+	int trgFile = (target % 10) - 1;
+	int trgRank = (target / 10) - 2;
+	target = trgRank * 8 + trgFile;
+	
+	
+	QList<QGraphicsItem*> sourceItems = m_squares[source]->childItems();
+	QList<QGraphicsItem*> capturedItems = m_squares[target]->childItems();
 
 	Q_ASSERT(!sourceItems.isEmpty());
 
@@ -198,37 +212,37 @@ void GraphicsChessboardItem::makeMove(const ChessMove& move)
 	Q_ASSERT(piece != 0);
 
 	// En passant capture
-	if (capturedItems.isEmpty() && piece->piece() == ChessPiece::PT_Pawn) {
-		if (piece->side() == Chessboard::White
-		&&  move.targetSquare() - move.sourceSquare() != -16
-		&&  move.targetSquare() - move.sourceSquare() != -8)
-			capturedItems = m_squares[move.targetSquare() + 8]->childItems();
-		else if (piece->side() == Chessboard::Black
-		     &&  move.targetSquare() - move.sourceSquare() != 16
-		     &&  move.targetSquare() - move.sourceSquare() != 8)
-			capturedItems = m_squares[move.targetSquare() - 8]->childItems();
+	if (capturedItems.isEmpty() && piece->piece() == Chess::Pawn) {
+		if (piece->side() == Chess::White
+		&&  target - source != -16
+		&&  target - source != -8)
+			capturedItems = m_squares[target + 8]->childItems();
+		else if (piece->side() == Chess::Black
+		     &&  target - source != 16
+		     &&  target - source != 8)
+			capturedItems = m_squares[target - 8]->childItems();
 	}
 
 	// Castling
 	// TODO: It's not possible to handle castling moves for all variants here,
 	//       The Chessboard class should take care of it.
 #if 0
-	if (piece->piece() == ChessPiece::PT_King) {
-		if (piece->side() == Chessboard::White
-		&&  move.sourceSquare() == Chessboard::E1) {
-			if (move.targetSquare() == Chessboard::G1) {
+	if (piece->piece() == Chess::King) {
+		if (piece->side() == Chess::White
+		&&  source == Chessboard::E1) {
+			if (target == Chessboard::G1) {
 				foreach (QGraphicsItem* it, m_squares[Chessboard::H1]->childItems())
 					it->setParentItem(m_squares[Chessboard::F1]);
-			} else if (move.targetSquare() == Chessboard::C1) {
+			} else if (target == Chessboard::C1) {
 				foreach (QGraphicsItem* it, m_squares[Chessboard::A1]->childItems())
 					it->setParentItem(m_squares[Chessboard::D1]);
 			}
-		} else if (piece->side() == Chessboard::Black
-		       &&  move.sourceSquare() == Chessboard::E8) {
-			if (move.targetSquare() == Chessboard::G8) {
+		} else if (piece->side() == Chess::Black
+		       &&  source == Chessboard::E8) {
+			if (target == Chessboard::G8) {
 				foreach (QGraphicsItem* it, m_squares[Chessboard::H8]->childItems())
 					it->setParentItem(m_squares[Chessboard::F8]);
-			} else if (move.targetSquare() == Chessboard::C8) {
+			} else if (target == Chessboard::C8) {
 				foreach (QGraphicsItem* it, m_squares[Chessboard::A8]->childItems())
 					it->setParentItem(m_squares[Chessboard::D8]);
 			}
@@ -237,8 +251,8 @@ void GraphicsChessboardItem::makeMove(const ChessMove& move)
 #endif
 
 	// Promotion
-	if (move.promotion() != ChessPiece::PT_None) {
-		piece->setPiece(move.promotion());
+	if (move.promotion() != Chess::NoPiece) {
+		piece->setPiece((Chess::Piece)move.promotion());
 		piece->centerOnParent();
 	}
 
@@ -253,6 +267,6 @@ void GraphicsChessboardItem::makeMove(const ChessMove& move)
 
 	// Move all items from the source square to the target square
 	foreach (QGraphicsItem* it, sourceItems)
-		it->setParentItem(m_squares[move.targetSquare()]);
+		it->setParentItem(m_squares[target]);
 }
 

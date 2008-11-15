@@ -2,133 +2,280 @@
 #define CHESSBOARD_H
 
 #include <QtGlobal>
-#include <QList>
-#include <QLinkedList>
-#include "castlingrights.h"
+#include <QVector>
+#include <QString>
+#include "chess.h"
+#include "chessmove.h"
 
-class QChar;
-class QString;
-class ChessMove;
-class CompleteChessMove;
-class ChessPiece;
-class MoveData;
 
-enum MoveNotation
-{
-	LongAlgebraic, StandardAlgebraic
-};
-
-class Chessboard
+/*!
+ * \brief An internal chessboard.
+ *
+ * Board's main purposes are:
+ * - keeping track of the game, and not just piece positions, but also castling
+ *   rights, en passant square, played moves, repetitions, etc.
+ * - verifying the legality of moves played
+ * - parsing and generating strings for moves and positions in notations
+ *   such as FEN, SAN, and Coordinate notation
+ *
+ * \internal
+ * The board representation is (width + 2) x (height + 4), so a
+ * traditional 8x8 board would be 10x12, and stored in a one-dimensional
+ * vector with 10 * 12 = 120 elements.
+ */
+class Chess::Board
 {
 	public:
-		enum ChessSide
-		{
-			NoSide = -1, White, Black
-		};
+		/*! Creates a new Board of a specific chess variant. */
+		explicit Board(Chess::Variant variant = Chess::StandardChess);
 		
-		enum Variant
-		{
-			StandardChess, FischerRandomChess, CapablancaChess
-		};
-		
-		/**
-		* The result of a chess game.
+		/*!
+		* Sets the board position according to a FEN string.
+		*
+		* The \a fen string can be in standard FEN, X-FEN or
+		* Shredder FEN format.
+		*
+		* FEN: http://en.wikipedia.org/wiki/Forsyth-Edwards_Notation
+		* \n X-FEN: http://en.wikipedia.org/wiki/X-FEN
 		*/
-		enum Result
-		{
-			/** White wins by mating the black player. */
-			WhiteMates,
-			/** Black wins by mating the white player. */
-			BlackMates,
-			/** Draw by a stalemate. */
-			Stalemate,
-			/** Draw by insufficient mating material on both sides. */
-			DrawByMaterial,
-			/** Draw by 3 repetitions of the same position. */
-			DrawByRepetition,
-			/** Draw by 50 consecutive reversible moves. */
-			DrawByFiftyMoves,
-			/** No result. The game may continue. */
-			NoResult
-		};
+		bool setBoard(const QString& fen);
 		
-		friend class Fen;
-		friend class Zobrist;
-		Chessboard(int width, int height);
-		virtual ~Chessboard();
-
+		/*!
+		 * Returns the FEN string of the current board position.
+		 *
+		 * The FEN string is in X-FEN format, which is fully
+		 * compatible with standard FEN.
+		 */
 		QString fenString() const;
-		virtual bool setFenString(const QString& fen);
-
-		void print() const;
-		virtual Variant variant() const = 0;
 		
-		void makeMove(const ChessMove& move);
-		void makeMove(const CompleteChessMove& move);
+		/*! Makes a chess move on the board. */
+		void makeMove(const Chess::Move& move);
+		
+		/*! Reverses the last move. */
 		void undoMove();
-
-		void addPiece(ChessPiece* piece);
-		void removePiece(ChessPiece* piece);
-		bool canSideAttackSquare(ChessSide side, int square);
-		bool isSideInCheck(ChessSide side);
 		
-		CompleteChessMove completeMove(const ChessMove& move);
-		void generateMoves(QList<CompleteChessMove>* moves) const;
+		/*! Returns true if \a move is legal. */
+		bool isLegalMove(const Chess::Move& move);
+		
+		/*!
+		 * Converts a Move into a string.
+		 *
+		 * Supported notations are Long Algebraic notation and
+		 * Standard Algebraic notation (SAN).
+		 *
+		 * \sa moveFromString()
+		 */
+		QString moveString(const Chess::Move& move,
+		                   Chess::MoveNotation notation);
+		
+		/*!
+		* Converts a move string into a Move.
+		*
+		* The notation is automatically detected, and can be either
+		* Long Algebraic notation or Standard Algebraic notation (SAN).
+		*
+		* \sa moveString()
+		*/
+		Chess::Move moveFromString(const QString& str);
+		
+		/*! Returns the board's chess variant. */
+		Chess::Variant variant() const;
+		
+		/*! Returns the result of the game. */
 		Result result();
 		
-		//QList<ChessMove> legalMoves();
-
-		ChessSide side() const;
-		int squareToIndex(int square) const;
-		int width() const;
-		int height() const;
-		int arrayWidth() const;
-		ChessPiece* pieceAt(int square) const;
-		void setSquare(int square, ChessPiece* piece);
-		const CastlingRights* castlingRights(ChessSide side = NoSide) const;
-		void setCastlingRights(ChessSide side, const CastlingRights& castlingRights);
-		void disableCastlingRights(ChessSide side, int castlingSide);
-		int enpassantSquare() const;
-		void setEnpassantSquare(int square);
-
-		qint64 perft(int depth, bool divide = true);
-
-		bool isValidSquare(int square) const;
-		int squareFromString(const QString& str) const;
-		void clear();
-		QString moveString(const ChessMove& move, MoveNotation notation);
-		ChessMove moveFromString(const QString& str);
-		bool isMoveLegal(const ChessMove& move);
-		void updateZobristKey(quint64 component);
-
-	protected:
-		ChessPiece** m_squares;
+		/*! Prints an ASCII version of the board. */
+		void print() const;
+		
+	private:
+		/*! The castling side of a castling move. */
+		enum CastlingSide
+		{
+			QueenSide,	//!< Left side.
+			KingSide	//!< Right side.
+		};
+		
+		/*!
+		* \brief A struct for castling rights.
+		*/
+		struct CastlingRights
+		{
+			/*!
+			* The rook squares for both castling sides for both players.
+			*
+			* The format is: \c rookSquare[ChessSide][CastlingSide]
+			* A value of 0 means no castling rights.
+			*
+			* Example:
+			* If the value of \c rookSquare[White][QueenSide] is 0, then
+			* castling is not possible for White on QueenSide.
+			*/
+			int rookSquare[2][2];
+		};
+		
+		/*!
+		* \brief A struct for storing the move history of a game.
+		*
+		* After each move, a Board object adds a MoveData object to
+		* its history. This allows all moves to be completely reversible,
+		* something that couldn't be done with plain Move objects.
+		*/
+		struct MoveData
+		{
+			//! A chess move.
+			Chess::Move move;
+			//! Piece type of the captured piece.
+			int capture;
+			//! Target square of an en-passant capture before the move.
+			int enpassantSquare;
+			//! Castling rights before the move.
+			CastlingRights castlingRights;
+			//! Hash key before the move.
+			quint64 key;
+			//! Number of successive reversible moves before the move.
+			int reversibleMoveCount;
+		};
+		
+		/*!
+		* \brief Temporary storage for FEN position data.
+		*
+		* When parsing a FEN string, the data related to the position
+		* goes here. If all parts of it turn out to be valid, the data
+		* will be copied to a Board object and the FenData object
+		* can be discarded.
+		*/
+		class FenData
+		{
+			public:
+				//! Initializes (zeroes) the FEN data.
+				FenData();
+				
+				//! Castling rights.
+				CastlingRights cr;
+				//! The contents of the board.
+				QVector<int> squares;
+				//! Square indexes for the king on both sides.
+				int kingSquare[2];
+				//! Is support for random starting positions required?
+				bool isRandom;
+		};
+		
+		
+		/*! Converts a square index into a Chess::Square object. */
+		Chess::Square chessSquare(int index) const;
+		
+		/*! Converts a Chess::Square object into a square index. */
+		int squareIndex(const Chess::Square& square) const;
+		
+		/*! Returns true if \a square is on the board. */
+		bool isValidSquare(const Chess::Square& square) const;
+		
+		/*! Generates moves for a hopping piece at \a sourceSquare. */
+		void generateHoppingMoves(int sourceSquare,
+		                          const QVector<int>& offsets,
+		                          QVector<Chess::Move>& moves) const;
+		
+		/*! Generates moves for a sliding piece at \a sourceSquare. */
+		void generateSlidingMoves(int sourceSquare,
+		                          const QVector<int>& offsets,
+		                          QVector<Chess::Move>& moves) const;
+		
+		/*! Generates castling moves. */
+		void generateCastlingMoves(QVector<Chess::Move>& moves) const;
+		
+		/*! Generates moves for a pawn at \a sourceSquare. */
+		void generatePawnMoves(int sourceSquare,
+		                       QVector<Chess::Move>& moves) const;
+		
+		/*!
+		 * Generates pseudo-legal moves.
+		 * \sa legalMoves()
+		 */
+		void generateMoves(QVector<Chess::Move>& moves) const;
+		
+		/*!
+		 * Adds pawn promotions (from \a sourceSquare to \a targetSquare)
+		 * to a vector (\a moves).
+		 */
+		void addPromotions(int sourceSquare,
+		                   int targetSquare,
+		                   QVector<Chess::Move>& moves) const;
+		
+		/*! Returns true if side to move can castle to \a castlingSide. */
+		bool canCastle(int castlingSide) const;
+		
+		/*!
+		 * Returns true if player \a side is under attack in \a square.
+		 *
+		 * If \a square is 0, then the player's king square is used.
+		 */
+		bool inCheck(int side, int square = 0) const;
+		
+		/*!
+		 * Returns true if the position is legal.
+		 *
+		 * This method only checks if the side to move can capture the opposing
+		 * king, or if the last move (if any) was an illegal castling.
+		 * So this is not sufficient for verifying FEN strings.
+		 */
+		bool isLegalPosition() const;
+		
+		/*! Calculates a Zobrist key for the current position. */
+		void initZobristKey();
+		
+		/*!
+		 * Parses the castling rights part of a FEN/X-FEN string and stores
+		 * the data in \a fd.
+		 */
+		bool parseCastlingRights(FenData& fd, QChar c) const;
+		
+		/*!
+		 * Returns the castling rights part of the current position's
+		 * FEN/X-FEN string.
+		 */
+		QString castlingRightsString() const;
+		
+		/*! Converts a Move into a string in Long Algebraic notation. */
+		QString longAlgebraicMoveString(const Chess::Move& move) const;
+		
+		/*! Converts a Move into a string in Standard Algebraic Notation. */
+		QString sanMoveString(const Chess::Move& move);
+		
+		/*! Converts a string in Long Algebraic Notation into a Move. */
+		Chess::Move moveFromLongAlgebraicString(const QString& str) const;
+		
+		/*! Converts a string in Standard Algebraic Notation into a Move. */
+		Chess::Move moveFromSanString(const QString& str);
+		
+		/*! Returns a vector of legal chess moves. */
+		QVector<Chess::Move> legalMoves();
+		
+		/*! Returns the Zobrist key for the current position. */
+		quint64 key() const;
+		
+		/*! Returns the number of times the current position was reached. */
+		int repeatCount() const;
+		
+		Chess::Variant m_variant;
+		bool m_isRandom;
 		int m_width;
 		int m_height;
-		int m_boardSize;
-		int m_arraySize;
-	
-	private:
-		bool isMoveLegal(const CompleteChessMove& move);
-		bool isMoveCheck(const CompleteChessMove& move);
-		bool isMoveMate(const CompleteChessMove& move);
-		QString stringFromSquare(int square) const;
-		QString coordStringFromMove(const CompleteChessMove& move);
-		CompleteChessMove moveFromCoordString(const QString& str);
-		CompleteChessMove moveFromSanString(const QString& str);
-		QString sanStringFromMove(const CompleteChessMove& move);
-		int repeatCount(int maxRepeats = 3) const;
-		int reversibleMoveCount() const;
-		void setReversibleMoveCount(int count);
-		quint64 zobristKey() const;
-		void setZobristKey(quint64 key);
+		int m_arwidth;
+		int m_side;
+		int m_sign;
+		int m_kingSquare[2];
+		int m_enpassantSquare;
+		int m_reversibleMoveCount;
+		QVector<int> m_squares;
+		QVector<MoveData> m_history;
+		CastlingRights m_castlingRights;
+		int m_castleTarget[2][2];
+		quint64 m_key;
 		
-		ChessSide m_side;
-		QLinkedList<ChessPiece*> m_pieces[2];
-		QList<MoveData> m_history;
-		ChessPiece* m_king[2];
-		int m_moveCount;
+		QVector<int> m_knightOffsets;
+		QVector<int> m_bishopOffsets;
+		QVector<int> m_rookOffsets;
 };
 
 
-#endif // CHESSBOARD_H
+#endif // CHESSBOARD

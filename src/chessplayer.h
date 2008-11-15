@@ -19,7 +19,7 @@
 #define CHESSPLAYER_H
 
 #include <QObject>
-#include "chessboard/chessboard.h"
+#include "chessboard/chess.h"
 #include "timecontrol.h"
 
 class QString;
@@ -46,7 +46,7 @@ class ChessPlayer : public QObject
 		 * @param side The side (color) the player should play as.
 		 * @param opponent The opposing player.
 		 */
-		virtual void newGame(Chessboard::ChessSide side, ChessPlayer* opponent);
+		virtual void newGame(Chess::Side side, ChessPlayer* opponent);
 		
 		/**
 		 * Tells the player to start thinking and make its next move.
@@ -70,13 +70,13 @@ class ChessPlayer : public QObject
 		 * @return The side of the player.
 		 * @see setSide()
 		 */
-		Chessboard::ChessSide side() const;
+		Chess::Side side() const;
 
 		/**
 		 * Sets the player to play on a specific side (white or black)
 		 * @param side The side of the player.
 		 */
-		void setSide(Chessboard::ChessSide side);
+		void setSide(Chess::Side side);
 
 		/**
 		 * Sends the next move to the player.
@@ -84,7 +84,7 @@ class ChessPlayer : public QObject
 		 * necessarily made by the opponent.
 		 * @param move A chess move.
 		 */
-		virtual void makeMove(const ChessMove& move) = 0;
+		virtual void makeMove(const Chess::Move& move) = 0;
 		
 		/**
 		 * Gets the name of the player.
@@ -116,7 +116,7 @@ class ChessPlayer : public QObject
 		 * Signals the engine's move.
 		 * @param move A chess move which the engine made.
 		 */
-		void moveMade(const ChessMove& move) const;
+		void moveMade(const Chess::Move& move) const;
 
 		/**
 		 * Signals a debugging message from the player.
@@ -135,7 +135,7 @@ class ChessPlayer : public QObject
 		ChessPlayer* m_opponent;
 
 	private:
-		Chessboard::ChessSide m_side;
+		Chess::Side m_side;
 };
 
 #endif // CHESSPLAYER_H
