@@ -40,12 +40,12 @@
 
 MainWindow::MainWindow()
 {
-	m_whiteClock = new ChessClock();
-	m_blackClock = new ChessClock();
-	
 	QHBoxLayout* clockLayout = new QHBoxLayout();
-	clockLayout->addWidget(m_whiteClock);
-	clockLayout->addWidget(m_blackClock);
+	for (int i = 0; i < 2; i++)
+	{
+		m_chessClock[i] = new ChessClock();
+		clockLayout->addWidget(m_chessClock[i]);
+	}
 
 	m_chessboardView = new ChessboardView;
 	m_chessboardScene = new QGraphicsScene(m_chessboardView);
@@ -203,50 +203,32 @@ void MainWindow::newGame()
 		return;
 	}
 
-	const EngineConfiguration whiteEngineConfig =
-		m_engineConfigurations->configurations().at(dlg.selectedWhiteEngine());
-
-	const EngineConfiguration blackEngineConfig =
-		m_engineConfigurations->configurations().at(dlg.selectedBlackEngine());
-
-	QProcess* whiteEngineProcess = new QProcess(this);
-	QProcess* blackEngineProcess = new QProcess(this);
+	const EngineConfiguration engineConfig[2] =
+	{
+		m_engineConfigurations->configurations().at(dlg.selectedWhiteEngine()),
+		m_engineConfigurations->configurations().at(dlg.selectedBlackEngine())
+	};
+	
+	QProcess* engineProcess[2] = { new QProcess(this), new QProcess(this) };
 
 	// Set up working directories for the engines:
 	// If user hasn't set any directory, use temp
-	if (whiteEngineConfig.workingDirectory().isEmpty())
+	for (int i = 0; i < 2; i++)
 	{
-		whiteEngineProcess->setWorkingDirectory(QDir::tempPath());
-	}
-	else
-	{
-		whiteEngineProcess->setWorkingDirectory(
-			whiteEngineConfig.workingDirectory());
-	}
+		QProcess* engine = engineProcess[i];
+		const EngineConfiguration& config = engineConfig[i];
 
-	if (blackEngineConfig.workingDirectory().isEmpty())
-	{
-		blackEngineProcess->setWorkingDirectory(QDir::tempPath());
-	}
-	else
-	{
-		blackEngineProcess->setWorkingDirectory(
-			blackEngineConfig.workingDirectory());
-	}
-
-	whiteEngineProcess->start(whiteEngineConfig.command());
-	blackEngineProcess->start(blackEngineConfig.command());
-
-	if (!whiteEngineProcess->waitForStarted())
-	{
-		qDebug() << "Cannot start the engine process:" << whiteEngineConfig.command();
-		return;
-	}
-
-	if (!blackEngineProcess->waitForStarted())
-	{
-		qDebug() << "Cannot start the engine process:" << blackEngineConfig.command();
-		return;
+		if (config.workingDirectory().isEmpty())
+			engine->setWorkingDirectory(QDir::tempPath());
+		else
+			engine->setWorkingDirectory(config.workingDirectory());
+		
+		engine->start(config.command());
+		if (!engine->waitForStarted())
+		{
+			qDebug() << "Cannot start the engine process:" << config.command();
+			return;
+		}
 	}
 
 	ChessGame* chessgame = new ChessGame(this);
@@ -254,55 +236,35 @@ void MainWindow::newGame()
 	connect(chessgame, SIGNAL(moveHappened(const Chess::Move&)),
 	        m_visualChessboard, SLOT(makeMove(const Chess::Move&)));
 
-	ChessPlayer* whitePlayer = 0;
-	ChessPlayer* blackPlayer = 0;
+	ChessPlayer* player[2] = { 0, 0 };
 
 	TimeControl tc;
 	tc.setTimePerTc(180000);
 	tc.setMovesPerTc(40);
 
-	switch (whiteEngineConfig.protocol())
+	for (int i = 0; i < 2; i++)
 	{
+		switch (engineConfig[i].protocol())
+		{
 		case EngineConfiguration::UCI:
-			whitePlayer = new UciEngine(whiteEngineProcess, chessgame->chessboard(),
-				tc, this);
-		break;
-
+			player[i] = new UciEngine(engineProcess[i], chessgame->chessboard(), tc, this);
+			break;
 		default:
-			whitePlayer = new XboardEngine(whiteEngineProcess, chessgame->chessboard(),
-				tc, this);
-		break;
+			player[i] = new XboardEngine(engineProcess[i], chessgame->chessboard(), tc, this);
+			break;
+		}
+		
+		connect(player[i], SIGNAL(startedThinking(int)),
+			m_chessClock[i], SLOT(start(int)));
+
+		connect(player[i], SIGNAL(moveMade(const Chess::Move&)),
+			m_chessClock[i], SLOT(stop()));
+
+		connect(player[i], SIGNAL(debugMessage(const QString&)),
+			m_engineDebugTextEdit, SLOT(append(const QString&)));
 	}
 
-	switch (blackEngineConfig.protocol())
-	{
-		case EngineConfiguration::UCI:
-			blackPlayer = new UciEngine(blackEngineProcess, chessgame->chessboard(),
-				tc, this);
-		break;
-
-		default:
-			blackPlayer = new XboardEngine(blackEngineProcess, chessgame->chessboard(),
-				tc, this);
-		break;
-	}
-
-	connect(whitePlayer, SIGNAL(startedThinking(int)),
-		m_whiteClock, SLOT(start(int)));
-	connect(blackPlayer, SIGNAL(startedThinking(int)),
-		m_blackClock, SLOT(start(int)));
-
-	connect(whitePlayer, SIGNAL(moveMade(const Chess::Move&)),
-		m_whiteClock, SLOT(stop()));
-	connect(blackPlayer, SIGNAL(moveMade(const Chess::Move&)),
-		m_blackClock, SLOT(stop()));
-
-	connect(whitePlayer, SIGNAL(debugMessage(const QString&)),
-	        m_engineDebugTextEdit, SLOT(append(const QString&)));
-	connect(blackPlayer, SIGNAL(debugMessage(const QString&)),
-	        m_engineDebugTextEdit, SLOT(append(const QString&)));
-
-	chessgame->newGame(whitePlayer, blackPlayer);
+	chessgame->newGame(player[0], player[1]);
 }
 
 void MainWindow::printGame()

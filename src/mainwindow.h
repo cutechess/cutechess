@@ -66,8 +66,7 @@ class MainWindow : public QMainWindow
 		ChessboardView* m_chessboardView;
 		QGraphicsScene* m_chessboardScene;
 		GraphicsChessboardItem* m_visualChessboard;
-		ChessClock* m_whiteClock;
-		ChessClock* m_blackClock;
+		ChessClock* m_chessClock[2];
 
 		EngineConfigurationModel* m_engineConfigurations;
 
