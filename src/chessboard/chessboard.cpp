@@ -83,13 +83,13 @@ void Board::initZobristKey()
 		if (rookSq[KingSide] != 0)
 			m_key ^= Zobrist::castling(side, rookSq[KingSide]);
 		
+		int sign = (side == White) ? 1 : -1;
 		for (int sq = 0; sq < m_squares.size(); sq++) {
 			int piece = m_squares[sq];
-			if (piece == InvalidPiece || piece == NoPiece
-			||  piece * m_sign <= 0)
+			if (piece == InvalidPiece || piece * sign <= 0)
 				continue;
 			
-			m_key ^= Zobrist::piece(side, piece, sq);
+			m_key ^= Zobrist::piece(side, piece * sign, sq);
 		}
 	}
 	
