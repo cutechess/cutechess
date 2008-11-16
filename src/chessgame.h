@@ -38,6 +38,7 @@ class ChessGame : public QObject
 		             OpeningBook* book = 0);
 		ChessPlayer* whitePlayer() const;
 		ChessPlayer* blackPlayer() const;
+		Chess::Result result() const;
 
 	public slots:
 		void moveMade(const Chess::Move& move);
@@ -55,6 +56,7 @@ class ChessGame : public QObject
 		OpeningBook* m_book;
 		bool m_gameInProgress;
 		int m_moveCount;
+		Chess::Result m_result;
 		QTime m_timer;
 };
 

@@ -115,6 +115,32 @@ quint64 Board::key() const
 	return m_key;
 }
 
+QString Board::startingFen() const
+{
+	return m_startFen;
+}
+
+bool Board::isRandomVariant() const
+{
+	return m_isRandom;
+}
+
+QStringList Board::moveStringList(MoveNotation notation) const
+{
+	QStringList strList;
+	Board board(m_variant);
+	board.setBoard(m_startFen);
+	
+	QVector<MoveData>::const_iterator it;
+	for (it = m_history.begin(); it != m_history.end(); ++it)
+	{
+		strList += board.moveString(it->move, notation);
+		board.makeMove(it->move);
+	}
+	
+	return strList;
+}
+
 void Board::print() const
 {
 	int i = m_arwidth * 2;

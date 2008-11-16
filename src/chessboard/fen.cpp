@@ -239,6 +239,7 @@ bool Board::setBoard(const QString& fen)
 	m_kingSquare[Black] = fd.kingSquare[Black];
 	m_squares = fd.squares;
 	m_history.clear();
+	m_startFen = fenString();
 	
 	// It sucks if this legality check fails, because at this point
 	// we can't undo the changes, and the board is unusable until

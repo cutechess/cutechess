@@ -4,6 +4,7 @@
 #include <QtGlobal>
 #include <QVector>
 #include <QString>
+#include <QStringList>
 #include "chess.h"
 #include "chessmove.h"
 
@@ -49,6 +50,9 @@ class Chess::Board
 		 */
 		QString fenString() const;
 		
+		/*! Returns the FEN string of the game's starting position. */
+		QString startingFen() const;
+		
 		/*! Returns the side to move. */
 		Chess::Side sideToMove() const;
 		
@@ -91,8 +95,14 @@ class Chess::Board
 		/*! Converts an opening book move into a Move. */
 		Chess::Move moveFromBook(const BookMove& bookMove) const;
 		
+		/*! Returns the played moves as a list of strings. */
+		QStringList moveStringList(Chess::MoveNotation notation) const;
+		
 		/*! Returns the board's chess variant. */
 		Chess::Variant variant() const;
+		
+		/*! Returns true if the game type is a "random" variant. */
+		bool isRandomVariant() const;
 		
 		/*! Returns the result of the game. */
 		Result result();
@@ -293,6 +303,7 @@ class Chess::Board
 		CastlingRights m_castlingRights;
 		int m_castleTarget[2][2];
 		quint64 m_key;
+		QString m_startFen;
 		
 		QVector<int> m_knightOffsets;
 		QVector<int> m_bishopOffsets;

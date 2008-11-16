@@ -1,6 +1,8 @@
 #ifndef CHESS_H
 #define CHESS_H
 
+#include <QString>
+
 /*!
  * \brief Fundamental Chess types.
  */
@@ -35,8 +37,12 @@ namespace Chess
 	{
 		//! White wins by mating the black player.
 		WhiteMates,
+		//! White wins when black resigns
+		BlackResigns,
 		//! Black wins by mating the white player.
 		BlackMates,
+		//! Black wins when white resigns
+		WhiteResigns,
 		//! Draw by a stalemate.
 		Stalemate,
 		//! Draw by insufficient mating material on both sides.
@@ -45,6 +51,8 @@ namespace Chess
 		DrawByRepetition,
 		//! Draw by 50 consecutive reversible moves.
 		DrawByFiftyMoves,
+		//! Both players agree to a draw.
+		DrawByAgreement,
 		//! No result. The game may continue.
 		NoResult
 	};
@@ -80,6 +88,10 @@ namespace Chess
 	
 	class Board;
 	class Move;
+	
+	const QString standardFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+	const QString capablancaFen = "rnabqkbvnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNABQKBCNR w KQkq - 0 1";
+	const QString gothicFen = "rnbqckabnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBQCKABNR w KQkq - 0 1";
 }
 
 #endif // CHESS

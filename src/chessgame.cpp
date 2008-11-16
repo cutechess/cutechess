@@ -20,6 +20,7 @@
 #include "chessplayer.h"
 #include "timecontrol.h"
 #include "chessboard/openingbook.h"
+#include "pgngame.h"
 
 ChessGame::ChessGame(QObject *parent)
 	: QObject(parent)
@@ -80,11 +81,13 @@ void ChessGame::moveMade(const Chess::Move& move)
 	m_playerToMove->makeMove(move);
 	m_chessboard->makeMove(move);
 	
-	if (m_chessboard->result() == Chess::NoResult)
+	m_result = m_chessboard->result();
+	if (m_result == Chess::NoResult)
 		m_playerToMove->go();
 	else
 	{
 		m_gameInProgress = false;
+		PgnGame(this).write("game.pgn"); // for debugging
 		qDebug("Game ended");
 	}
 	
@@ -104,7 +107,7 @@ void ChessGame::newGame(ChessPlayer* whitePlayer,
                         ChessPlayer* blackPlayer,
                         OpeningBook* book)
 {
-	m_chessboard->setBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+	m_chessboard->setBoard(Chess::standardFen);
 
 	m_moveCount = 0;
 	m_whitePlayer = whitePlayer;
@@ -160,3 +163,7 @@ ChessPlayer* ChessGame::blackPlayer() const
 	return m_blackPlayer;
 }
 
+Chess::Result ChessGame::result() const
+{
+	return m_result;
+}

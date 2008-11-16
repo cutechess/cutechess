@@ -64,6 +64,7 @@ HEADERS += src/graphicschessboardsquareitem.h \
            src/engineconfigurationmodel.h \
            src/xboardengine.h \
            src/uciengine.h \
+           src/pgngame.h \
            src/chessboard/chess.h \
            src/chessboard/chessboard.h \
            src/chessboard/chessmove.h \
@@ -96,6 +97,7 @@ SOURCES += src/main.cpp \
            src/newgamedlg.cpp \
            src/enginemanagementdlg.cpp \
            src/engineconfigurationdlg.cpp \
+           src/pgngame.cpp \
            src/chessboard/chessboard.cpp \
            src/chessboard/fen.cpp \
            src/chessboard/movegen.cpp \
