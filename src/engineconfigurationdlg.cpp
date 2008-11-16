@@ -16,6 +16,7 @@
 */
 
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QDir>
 
 #include "engineconfigurationdlg.h"
@@ -75,15 +76,22 @@ void EngineConfigurationDialog::browseCommand()
 
 	QString fileName = QFileDialog::getOpenFileName(this,
 		tr("Select Engine Executable"), m_commandEdit->text(), filter);
+	if (fileName.isEmpty())
+		return;
+
+	if (m_workingDirEdit->text().isEmpty())
+	{
+		QString path(QFileInfo(fileName).absolutePath());
+		m_workingDirEdit->setText(QDir::toNativeSeparators(path));
+	}
+
 	fileName = QDir::toNativeSeparators(fileName);
-	
 	// Paths with spaces must be wrapped in quotes
 	if (fileName.contains(' '))
 	{
 		fileName.push_front('\"');
 		fileName.push_back('\"');
 	}
-	
 	m_commandEdit->setText(fileName);
 }
 
@@ -91,6 +99,8 @@ void EngineConfigurationDialog::browseWorkingDir()
 {
 	const QString directory = QFileDialog::getExistingDirectory(this,
 		tr("Select Engine Working Directory"), m_workingDirEdit->text());
+	if (directory.isEmpty())
+		return;
 
 	m_workingDirEdit->setText(QDir::toNativeSeparators(directory));
 }
