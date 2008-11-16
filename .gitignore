@@ -19,6 +19,7 @@ docs/api/html/
 # other temporary files
 *.h~
 *.cpp~
+ui_*.h
 
 # files created by KDevelop
 Doxyfile
