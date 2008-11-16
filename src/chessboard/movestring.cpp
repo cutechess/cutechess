@@ -308,6 +308,8 @@ Move Board::moveFromSanString(const QString& str)
 		// Castling moves were handled earlier
 		if (move->castlingSide() != -1)
 			continue;
+		if (move->promotion() != promotion)
+			continue;
 		
 		// Return an empty move if there are multiple moves that
 		// match the move string.
