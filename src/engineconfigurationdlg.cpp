@@ -73,10 +73,18 @@ void EngineConfigurationDialog::browseCommand()
 	QString filter = tr("All Files (*.*)");
 	#endif
 
-	const QString fileName = QFileDialog::getOpenFileName(this,
+	QString fileName = QFileDialog::getOpenFileName(this,
 		tr("Select Engine Executable"), m_commandEdit->text(), filter);
+	fileName = QDir::toNativeSeparators(fileName);
 	
-	m_commandEdit->setText(QDir::toNativeSeparators(fileName));
+	// Paths with spaces must be wrapped in quotes
+	if (fileName.contains(' '))
+	{
+		fileName.push_front('\"');
+		fileName.push_back('\"');
+	}
+	
+	m_commandEdit->setText(fileName);
 }
 
 void EngineConfigurationDialog::browseWorkingDir()
