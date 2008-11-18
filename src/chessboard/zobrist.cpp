@@ -524,10 +524,10 @@ void Zobrist::initialize()
 		}
 	}
 	
-	m_castling[Chess::White][91] = randomTable[i++];
 	m_castling[Chess::White][98] = randomTable[i++];
-	m_castling[Chess::Black][21] = randomTable[i++];
+	m_castling[Chess::White][91] = randomTable[i++];
 	m_castling[Chess::Black][28] = randomTable[i++];
+	m_castling[Chess::Black][21] = randomTable[i++];
 	
 	for (int square = 41; square < 49; square++) {
 		m_enpassant[square] = randomTable[i];

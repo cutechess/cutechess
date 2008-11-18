@@ -86,6 +86,12 @@ class Chess::Board
 		
 		/*! Prints an ASCII version of the board. */
 		void print() const;
+
+		/*!
+		 * Runs a series of tests to make sure that everything
+		 * works. Returns true if successfull.
+		 */
+		 static bool unitTest();
 		
 	private:
 		/*! The castling side of a castling move. */
@@ -255,6 +261,9 @@ class Chess::Board
 		
 		/*! Returns the number of times the current position was reached. */
 		int repeatCount() const;
+		
+		/*! Unit test for the movegen, makemove, and undomove routines. */
+		quint64 perft(int depth);
 		
 		Chess::Variant m_variant;
 		bool m_isRandom;

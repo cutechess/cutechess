@@ -495,3 +495,112 @@ int Board::repeatCount() const
 
 	return repeatCount;
 }
+
+quint64 Board::perft(int depth)
+{
+	quint64 nodeCount = 0;
+	QVector<Move> moves(legalMoves());
+	if (depth == 1 || moves.size() == 0)
+		return moves.size();
+
+	QVector<Move>::const_iterator it;
+	for (it = moves.begin(); it != moves.end(); ++it) {
+		makeMove(*it);
+		nodeCount += perft(depth - 1);
+		undoMove();
+	}
+
+	return nodeCount;
+}
+
+bool Board::unitTest()
+{
+	Board b(StandardChess);
+	int i = 1;
+	
+	// Check Zobrist keys
+	
+	if (!b.setBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+	||  b.m_key != Q_UINT64_C(0x463b96181691fc9c))
+		return false;
+	qDebug("Passed test %d.", i++);
+	
+	if (!b.setBoard("rnbq1bnr/ppp1pkpp/8/3pPp2/8/8/PPPPKPPP/RNBQ1BNR w - - 0 4")
+	||  b.m_key != Q_UINT64_C(0x00fdd303c946bdd9))
+		return false;
+	qDebug("Passed test %d.", i++);
+	
+	if (!b.setBoard("rnbqkbnr/p1pppppp/8/8/PpP4P/8/1P1PPPP1/RNBQKBNR b KQkq c3 0 3")
+	||  b.m_key != Q_UINT64_C(0x3c8123ea7b067637))
+		return false;
+	qDebug("Passed test %d.", i++);
+	
+	if (!b.setBoard("rnbqkbnr/p1pppppp/8/8/P6P/R1p5/1P1PPPP1/1NBQKBNR b Kkq - 0 4")
+	||  b.m_key != Q_UINT64_C(0x5c3f9b829b279560))
+		return false;
+	qDebug("Passed test %d.", i++);
+	
+	if (!b.setBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -")
+	||  b.m_key != Q_UINT64_C(0xc3ce103f01d15e1d))
+		return false;
+	qDebug("Passed test %d.", i++);
+	
+	
+	// Check perft values
+	
+	if (!b.setBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+	||  b.perft(1) != 20
+	||  b.perft(2) != 400
+	||  b.perft(3) != 8902
+	||  b.perft(4) != 197281
+	||  b.perft(5) != 4865609)
+		return false;
+	qDebug("Passed test %d.", i++);
+	
+	if (!b.setBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -")
+	||  b.perft(1) != 48
+	||  b.perft(2) != 2039
+	||  b.perft(3) != 97862
+	||  b.perft(4) != 4085603)
+		return false;
+	qDebug("Passed test %d.", i++);
+	
+	if (!b.setBoard("8/3K4/2p5/p2b2r1/5k2/8/8/1q6 b - - 1 67")
+	||  b.perft(1) != 50
+	||  b.perft(2) != 279)
+		return false;
+	qDebug("Passed test %d.", i++);
+	
+	if (!b.setBoard("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -")
+	||  b.perft(6) != 11030083)
+		return false;
+	qDebug("Passed test %d.", i++);
+
+	b = Board(CapablancaChess);
+
+	if (!b.setBoard("rnbqckabnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBQCKABNR w KQkq - 0 1")
+	||  b.perft(1) != 28
+	||  b.perft(2) != 784
+	||  b.perft(3) != 25283
+	||  b.perft(4) != 808984)
+		return false;
+	qDebug("Passed test %d.", i++);
+
+	if (!b.setBoard("r1b1c2rk1/p4a1ppp/1ppq2pn2/3p1p4/3A1Pn3/1PN3PN2/P1PQP1BPPP/3RC2RK1 w - - 0 15")
+	||  b.perft(1) != 50
+	||  b.perft(2) != 2801
+	||  b.perft(3) != 143032
+	||  b.perft(4) != 7917813)
+		return false;
+	qDebug("Passed test %d.", i++);
+
+	if (!b.setBoard("r1b2k2nr/p1ppq1ppbp/n1Pcpa2p1/5p4/5P4/1p1PBCPN2/PP1QP1BPPP/RN3KA2R w KQkq - 6 12")
+	||  b.perft(1) != 41
+	||  b.perft(2) != 2107
+	||  b.perft(3) != 93962
+	||  b.perft(4) != 4869569)
+		return false;
+	qDebug("Passed test %d.", i++);
+	
+	return true;
+}
