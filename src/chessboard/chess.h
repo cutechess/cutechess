@@ -16,9 +16,9 @@ namespace Chess
 		Bishop,		//!< Bishop
 		Rook,		//!< Rook
 		Queen,		//!< Queen
+		King,		//!< King
 		Archbishop,	//!< Archbishop. Only for Capablanca variants.
 		Chancellor,	//!< Chancellor. Only for Capablanca variants.
-		King,		//!< King
 		InvalidPiece	//!< Invalid piece, for wall squares outside of board.
 	};
 	

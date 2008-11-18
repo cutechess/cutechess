@@ -12,8 +12,11 @@
  * - Opening books
  * - In hash table entries
  *
+ * The Zobrist keys are compatible with the Polyglot opening book
+ * specs: http://alpha.uhasselt.be/Research/Algebra/Toga/book_format.html
+ *
  * \note This class is automatically initialized by a static
- * initializer object, so users should try to initialize it.
+ * initializer object, so users shouldn't try to initialize it.
  */
 class Zobrist
 {

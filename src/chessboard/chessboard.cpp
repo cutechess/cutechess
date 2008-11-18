@@ -95,7 +95,7 @@ void Board::initZobristKey()
 	
 	if (m_enpassantSquare != 0)
 		m_key ^= Zobrist::enpassant(m_enpassantSquare);
-	if (m_side == Black)
+	if (m_side == White)
 		m_key ^= Zobrist::side();
 }
 
@@ -284,8 +284,11 @@ void Board::makeMove(const Move& move)
 		// Push a pawn two squares ahead, creating an en-passant
 		// opportunity for the opponent.
 		} else if ((source - target) * m_sign == m_arwidth * 2) {
-			m_enpassantSquare = source - m_arwidth * m_sign;
-			m_key ^= Zobrist::enpassant(m_enpassantSquare);
+			if ((m_squares[target - 1] * m_sign) == -Pawn
+			||  (m_squares[target + 1] * m_sign) == -Pawn) {
+				m_enpassantSquare = source - m_arwidth * m_sign;
+				m_key ^= Zobrist::enpassant(m_enpassantSquare);
+			}
 		} else if (promotion != NoPiece)
 			piece = promotion;
 	} else if (piece == Rook) {

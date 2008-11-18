@@ -206,6 +206,14 @@ bool Board::setBoard(const QString& fen)
 		epSq = squareIndex(Notation::square(*token));
 		if (epSq == 0)
 			return false;
+		
+		// Ignore the en-passant square if an en-passant
+		// capture isn't possible.
+		int sign = (side == White) ? 1 : -1;
+		int pawnSq = epSq + m_arwidth * sign;
+		if ((fd.squares[pawnSq - 1] * sign) != Pawn
+		&&  (fd.squares[pawnSq + 1] * sign) != Pawn)
+			epSq = 0;
 	}
 	
 	// Reversible halfmove count
