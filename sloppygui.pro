@@ -68,6 +68,8 @@ HEADERS += src/graphicschessboardsquareitem.h \
            src/chessboard/chessboard.h \
            src/chessboard/chessmove.h \
            src/chessboard/notation.h \
+           src/chessboard/openingbook.h \
+           src/chessboard/polyglotbook.h \
            src/chessboard/zobrist.h
 
 SOURCES += src/main.cpp \
@@ -100,6 +102,8 @@ SOURCES += src/main.cpp \
            src/chessboard/notation.cpp \
            src/chessboard/chessmove.cpp \
            src/chessboard/movestring.cpp \
+           src/chessboard/openingbook.cpp \
+           src/chessboard/polyglotbook.cpp \
            src/chessboard/zobrist.cpp
 
 FORMS += ui/newgamedlg.ui \
