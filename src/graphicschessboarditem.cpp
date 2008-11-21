@@ -224,31 +224,17 @@ void GraphicsChessboardItem::makeMove(const Chess::Move& move)
 	}
 
 	// Castling
-	// TODO: It's not possible to handle castling moves for all variants here,
-	//       The Chessboard class should take care of it.
-#if 0
-	if (piece->piece() == Chess::King) {
-		if (piece->side() == Chess::White
-		&&  source == Chessboard::E1) {
-			if (target == Chessboard::G1) {
-				foreach (QGraphicsItem* it, m_squares[Chessboard::H1]->childItems())
-					it->setParentItem(m_squares[Chessboard::F1]);
-			} else if (target == Chessboard::C1) {
-				foreach (QGraphicsItem* it, m_squares[Chessboard::A1]->childItems())
-					it->setParentItem(m_squares[Chessboard::D1]);
-			}
-		} else if (piece->side() == Chess::Black
-		       &&  source == Chessboard::E8) {
-			if (target == Chessboard::G8) {
-				foreach (QGraphicsItem* it, m_squares[Chessboard::H8]->childItems())
-					it->setParentItem(m_squares[Chessboard::F8]);
-			} else if (target == Chessboard::C8) {
-				foreach (QGraphicsItem* it, m_squares[Chessboard::A8]->childItems())
-					it->setParentItem(m_squares[Chessboard::D8]);
-			}
-		}
+	// HACK
+	if (move.castlingSide() == 0)
+	{
+		foreach (QGraphicsItem* it, m_squares[target - 2]->childItems())
+			it->setParentItem(m_squares[target + 1]);
 	}
-#endif
+	else if (move.castlingSide() == 1)
+	{
+		foreach (QGraphicsItem* it, m_squares[target + 1]->childItems())
+			it->setParentItem(m_squares[target - 1]);
+	}
 
 	// Promotion
 	if (move.promotion() != Chess::NoPiece) {
