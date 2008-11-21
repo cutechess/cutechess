@@ -24,6 +24,8 @@
 #include <QApplication>
 #include <QTextStream>
 #include <QDebug>
+#include <QtGlobal>
+#include <QTime>
 
 #include "mainwindow.h"
 #include "manager.h"
@@ -31,6 +33,8 @@
 
 int main(int argc, char* argv[])
 {
+	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+	
 	QCoreApplication::setOrganizationName("SloppyGUI");
 	QCoreApplication::setOrganizationDomain("sloppygui.org");
 	QCoreApplication::setApplicationName("SloppyGUI");

@@ -18,6 +18,7 @@
 #include "chessboard.h"
 #include "notation.h"
 #include "zobrist.h"
+#include "openingbook.h"
 
 using namespace Chess;
 
@@ -99,6 +100,11 @@ void Board::initZobristKey()
 		m_key ^= Zobrist::side();
 }
 
+Side Board::sideToMove() const
+{
+	return (Side)m_side;
+}
+
 Variant Board::variant() const
 {
 	return m_variant;
@@ -157,6 +163,24 @@ bool Board::isValidSquare(const Chess::Square& square) const
 	||  square.rank < 0 || square.rank >= m_height)
 		return false;
 	return true;
+}
+
+Move Board::moveFromBook(const BookMove& bookMove) const
+{
+	int source = squareIndex(bookMove.source);
+	int target = squareIndex(bookMove.target);
+
+	int castlingSide = -1;
+	if ((m_squares[source] * m_sign) == King)
+	{
+		int diff = target - source;
+		if (diff == -2 || diff == -3)
+			castlingSide = QueenSide;
+		else if (diff == 2 || diff == 3)
+			castlingSide = KingSide;
+	}
+	
+	return Move(source, target, bookMove.promotion, castlingSide);
 }
 
 bool Board::inCheck(int side, int square) const
@@ -494,6 +518,18 @@ int Board::repeatCount() const
 	}
 
 	return repeatCount;
+}
+
+bool Board::isRepeatMove(const Chess::Move& move)
+{
+	bool isRepeat = false;
+	
+	makeMove(move);
+	if (repeatCount() > 0)
+		isRepeat = true;
+	undoMove();
+	
+	return isRepeat;
 }
 
 quint64 Board::perft(int depth)

@@ -7,6 +7,7 @@
 #include "chess.h"
 #include "chessmove.h"
 
+struct BookMove;
 
 /*!
  * \brief An internal chessboard.
@@ -48,6 +49,9 @@ class Chess::Board
 		 */
 		QString fenString() const;
 		
+		/*! Returns the side to move. */
+		Chess::Side sideToMove() const;
+		
 		/*! Makes a chess move on the board. */
 		void makeMove(const Chess::Move& move);
 		
@@ -56,6 +60,12 @@ class Chess::Board
 		
 		/*! Returns true if \a move is legal. */
 		bool isLegalMove(const Chess::Move& move);
+		
+		/*!
+		 * Returns true if \a move repeats a position that was
+		 * reached earlier in the game.
+		 */
+		bool isRepeatMove(const Chess::Move& move);
 		
 		/*!
 		 * Converts a Move into a string.
@@ -78,6 +88,9 @@ class Chess::Board
 		*/
 		Chess::Move moveFromString(const QString& str);
 		
+		/*! Converts an opening book move into a Move. */
+		Chess::Move moveFromBook(const BookMove& bookMove) const;
+		
 		/*! Returns the board's chess variant. */
 		Chess::Variant variant() const;
 		
@@ -86,6 +99,9 @@ class Chess::Board
 		
 		/*! Prints an ASCII version of the board. */
 		void print() const;
+		
+		/*! Returns the Zobrist key. */
+		quint64 key() const;
 
 		/*!
 		 * Runs a series of tests to make sure that everything
@@ -255,9 +271,6 @@ class Chess::Board
 		
 		/*! Returns a vector of legal chess moves. */
 		QVector<Chess::Move> legalMoves();
-		
-		/*! Returns the Zobrist key for the current position. */
-		quint64 key() const;
 		
 		/*! Returns the number of times the current position was reached. */
 		int repeatCount() const;

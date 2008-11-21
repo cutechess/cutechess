@@ -19,6 +19,7 @@
 #include "chessboard/chessboard.h"
 #include "chessplayer.h"
 #include "timecontrol.h"
+#include "chessboard/openingbook.h"
 
 ChessGame::ChessGame(QObject *parent)
 	: QObject(parent)
@@ -90,13 +91,25 @@ void ChessGame::moveMade(const Chess::Move& move)
 	emit moveHappened(move);
 }
 
-void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
+Chess::Move ChessGame::bookMove()
 {
-	m_chessboard->setBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
+	if (m_book == 0)
+		return Chess::Move(0, 0);
+	
+	BookMove bookMove = m_book->move(m_chessboard->key());
+	return m_chessboard->moveFromBook(bookMove);
+}
+
+void ChessGame::newGame(ChessPlayer* whitePlayer,
+                        ChessPlayer* blackPlayer,
+                        OpeningBook* book)
+{
+	m_chessboard->setBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 	m_moveCount = 0;
 	m_whitePlayer = whitePlayer;
 	m_blackPlayer = blackPlayer;
+	m_book = book;
 
 	connect(m_whitePlayer, SIGNAL(moveMade(const Chess::Move&)),
 	        this, SLOT(moveMade(const Chess::Move&)));
@@ -107,7 +120,31 @@ void ChessGame::newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer)
 
 	m_whitePlayer->newGame(Chess::White, m_blackPlayer);
 	m_blackPlayer->newGame(Chess::Black, m_whitePlayer);
-	m_playerToMove = m_whitePlayer;
+	if (m_chessboard->sideToMove() == Chess::White)
+		m_playerToMove = m_whitePlayer;
+	else
+		m_playerToMove = m_blackPlayer;
+	
+	// Play the opening book moves first
+	Chess::Move move;
+	while (m_chessboard->isLegalMove(move = bookMove())
+	   &&  !m_chessboard->isRepeatMove(move)
+	   &&  m_moveCount < 30)
+	{
+		// Update the time control
+		TimeControl playerTimeControl = m_playerToMove->timeControl();
+		playerTimeControl.update(0);
+		m_playerToMove->setTimeControl(playerTimeControl);
+		
+		m_playerToMove->makeMove(move);
+		m_playerToMove = (m_playerToMove == m_whitePlayer) ? m_blackPlayer : m_whitePlayer;
+		
+		m_playerToMove->makeMove(move);
+		m_chessboard->makeMove(move);
+		
+		Q_ASSERT(m_chessboard->result() == Chess::NoResult);
+		emit moveHappened(move);
+	}
 	
 	m_timer.start();
 	m_playerToMove->go();

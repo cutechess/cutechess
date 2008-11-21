@@ -23,6 +23,7 @@
 #include "chessboard/chess.h"
 
 class ChessPlayer;
+class OpeningBook;
 
 class ChessGame : public QObject
 {
@@ -32,7 +33,9 @@ class ChessGame : public QObject
 		ChessGame(QObject *parent = 0);
 		~ChessGame();
 		Chess::Board* chessboard() const;
-		void newGame(ChessPlayer* whitePlayer, ChessPlayer* blackPlayer);
+		void newGame(ChessPlayer* whitePlayer,
+		             ChessPlayer* blackPlayer,
+		             OpeningBook* book = 0);
 		ChessPlayer* whitePlayer() const;
 		ChessPlayer* blackPlayer() const;
 
@@ -43,10 +46,13 @@ class ChessGame : public QObject
 		void moveHappened(const Chess::Move& move);
 
 	private:
+		Chess::Move bookMove();
+		
 		Chess::Board* m_chessboard;
 		ChessPlayer* m_whitePlayer;
 		ChessPlayer* m_blackPlayer;
 		ChessPlayer* m_playerToMove;
+		OpeningBook* m_book;
 		bool m_gameInProgress;
 		int m_moveCount;
 		QTime m_timer;
