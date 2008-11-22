@@ -30,7 +30,14 @@ bool OpeningBook::load(const QString& filename)
 	
 	m_map.clear();
 	while (!in.atEnd())
+	{
 		loadEntry(in);
+		if (in.status() != QDataStream::Ok)
+		{
+			m_map.clear();
+			return false;
+		}
+	}
 	
 	return true;
 }
