@@ -6,6 +6,9 @@ DEPENDPATH += $$PWD
 macx-xcode {
     DEFINES += SLOPPYGUI_VERSION=\"$$SLOPPYGUI_VERSION\"
 }else {
+    OBJECTS_DIR = .obj/
+    MOC_DIR = .moc/
+    RCC_DIR = .rcc/
     DEFINES += SLOPPYGUI_VERSION=\\\"$$SLOPPYGUI_VERSION\\\"
 }
 
