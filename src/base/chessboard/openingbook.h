@@ -3,7 +3,8 @@
 
 #include <QtGlobal>
 #include <QMultiMap>
-#include "chessboard/chess.h"
+#include "chess.h"
+
 class QString;
 class QDataStream;
 

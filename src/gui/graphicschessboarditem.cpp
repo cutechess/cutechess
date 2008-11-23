@@ -17,11 +17,11 @@
 
 #include <QPainter>
 #include <QSvgRenderer>
+#include <base/chessboard/chessmove.h>
 
 #include "graphicschessboarditem.h"
 #include "graphicschessboardsquareitem.h"
 #include "graphicschesspiece.h"
-#include "chessboard/chessmove.h"
 
 const qreal GraphicsChessboardItem::size = 400;
 const qreal GraphicsChessboardItem::borderSize = 25;

@@ -16,9 +16,9 @@
 */
 
 #include <QAbstractItemView>
+#include <base/engineconfigurationmodel.h>
 
 #include "newgamedlg.h"
-#include "engineconfigurationmodel.h"
 #include "engineconfigurationdlg.h"
 
 NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,

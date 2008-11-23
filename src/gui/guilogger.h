@@ -18,7 +18,7 @@
 #ifndef GUILOGGER_H
 #define GUILOGGER_H
 
-#include "loggerbase.h"
+#include <base/loggerbase.h>
 
 class QTextEdit;
 

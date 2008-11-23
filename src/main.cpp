@@ -27,9 +27,9 @@
 #include <QtGlobal>
 #include <QTime>
 
-#include "mainwindow.h"
-#include "manager.h"
-#include "logmanager.h"
+#include <gui/mainwindow.h>
+#include <base/manager.h>
+#include <base/logmanager.h>
 
 int main(int argc, char* argv[])
 {

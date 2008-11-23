@@ -16,9 +16,10 @@
 */
 
 #include <QSortFilterProxyModel>
+#include <base/engineconfigurationmodel.h>
+
 #include "enginemanagementdlg.h"
 #include "engineconfigurationdlg.h"
-#include "engineconfigurationmodel.h"
 
 EngineManagementDialog::EngineManagementDialog(
 	EngineConfigurationModel* engineConfigurations, QWidget* parent)

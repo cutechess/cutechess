@@ -16,9 +16,9 @@
 */
 
 #include <QtGui>
+#include <base/symbols.h>
 
 #include "promotiondlg.h"
-#include "symbols.h"
 
 PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 	: QDialog(parent, f)
