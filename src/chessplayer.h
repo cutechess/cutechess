@@ -117,6 +117,13 @@ class ChessPlayer : public QObject
 		 * @param move A chess move which the engine made.
 		 */
 		void moveMade(const Chess::Move& move) const;
+		
+		/**
+		 * Signals that the player resigns the game.
+		 * Invalid draw or victory claims will also be treated as
+		 * resignations.
+		 */
+		void resign() const;
 
 		/**
 		 * Signals a debugging message from the player.

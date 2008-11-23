@@ -43,6 +43,16 @@ Chess::Board* ChessGame::chessboard() const
 	return m_chessboard;
 }
 
+void ChessGame::endGame()
+{
+	if (m_gameInProgress)
+	{
+		m_gameInProgress = false;
+		// PgnGame(this).write("games.pgn");
+		qDebug("Game ended");
+	}
+}
+
 void ChessGame::moveMade(const Chess::Move& move)
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
@@ -85,13 +95,24 @@ void ChessGame::moveMade(const Chess::Move& move)
 	if (m_result == Chess::NoResult)
 		m_playerToMove->go();
 	else
-	{
-		m_gameInProgress = false;
-		PgnGame(this).write("game.pgn"); // for debugging
-		qDebug("Game ended");
-	}
+		endGame();
 	
 	emit moveHappened(move);
+}
+
+void ChessGame::resign()
+{
+	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
+	Q_ASSERT(sender != 0);
+
+	if (m_result == Chess::NoResult)
+	{
+		if (sender == m_whitePlayer)
+			m_result = Chess::WhiteResigns;
+		else if (sender == m_blackPlayer)
+			m_result = Chess::BlackResigns;
+	}
+	endGame();
 }
 
 Chess::Move ChessGame::bookMove()
@@ -118,6 +139,9 @@ void ChessGame::newGame(ChessPlayer* whitePlayer,
 	        this, SLOT(moveMade(const Chess::Move&)));
 	connect(m_blackPlayer, SIGNAL(moveMade(const Chess::Move&)),
 	        this, SLOT(moveMade(const Chess::Move&)));
+	
+	connect(m_whitePlayer, SIGNAL(resign()), this, SLOT(resign()));
+	connect(m_blackPlayer, SIGNAL(resign()), this, SLOT(resign()));
 
 	m_gameInProgress = true;
 

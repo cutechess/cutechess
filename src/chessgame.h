@@ -42,12 +42,14 @@ class ChessGame : public QObject
 
 	public slots:
 		void moveMade(const Chess::Move& move);
+		void resign();
 
 	signals:
 		void moveHappened(const Chess::Move& move);
 
 	private:
 		Chess::Move bookMove();
+		void endGame();
 		
 		Chess::Board* m_chessboard;
 		ChessPlayer* m_whitePlayer;

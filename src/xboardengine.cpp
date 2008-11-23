@@ -42,11 +42,9 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
                          Chess::Board* chessboard,
                          const TimeControl& timeControl,
                          QObject* parent)
-	: ChessEngine(ioDevice, chessboard, timeControl, parent)
+	: ChessEngine(ioDevice, chessboard, timeControl, parent),
+	  m_forceMode(true), m_drawOnNextMove(false), m_lastPing(0)
 {
-	m_forceMode = true;
-	m_lastPing = 0;
-
 	setName("XboardEngine");
 	// Tell the engine to turn on xboard mode
 	write("xboard");
@@ -66,6 +64,7 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	ChessPlayer::newGame(side, opponent);
 	m_forceMode = true;
+	m_drawOnNextMove = false;
 	write("force");
 	write("setboard " + m_chessboard->fenString());
 
@@ -140,6 +139,23 @@ void XboardEngine::parseLine(const QString& line)
 	{
 		Chess::Move move = m_chessboard->moveFromString(args);
 		emit moveMade(move);
+		
+		if (m_drawOnNextMove)
+		{
+			m_drawOnNextMove = false;
+			Chess::Result result = m_chessboard->result();
+			
+			// If the engine claimed a draw before this move, the
+			// game must have ended in a draw by now
+			if (result != Chess::DrawByMaterial
+			&&  result != Chess::DrawByRepetition
+			&&  result != Chess::DrawByFiftyMoves)
+			{
+				qDebug("%s forfeits by invalid draw claim",
+				       qPrintable(name()));
+				emit resign();
+			}
+		}
 	}
 	else if (command == "pong")
 	{
@@ -149,6 +165,25 @@ void XboardEngine::parseLine(const QString& line)
 			m_isReady = true;
 			flushWriteBuffer();
 		}
+	}
+	else if (command == "1-0" || command == "0-1" || command == "1/2-1/2")
+	{
+		if (m_chessboard->result() != Chess::NoResult)
+			return;
+		if (command == "1/2-1/2")
+		{
+			// The engine claims that its next move will draw the game
+			m_drawOnNextMove = true;
+			return;
+		}
+		
+		if ((command == "1-0" && side() == Chess::White)
+		||  (command == "0-1" && side() == Chess::Black))
+			qDebug("%s forfeits by invalid victory claim",
+			       qPrintable(name()));
+		else
+			qDebug("%s resigns", qPrintable(name()));
+		emit resign();
 	}
 	else if (command == "feature")
 	{

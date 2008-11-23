@@ -58,6 +58,7 @@ class XboardEngine : public ChessEngine
 
 	private:
 		bool m_forceMode;
+		bool m_drawOnNextMove;
 		int m_lastPing;
 		
 		void sendTimeLeft();
