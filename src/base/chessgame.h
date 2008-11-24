@@ -30,7 +30,8 @@ class ChessGame : public QObject
 	Q_OBJECT
 
 	public:
-		ChessGame(QObject *parent = 0);
+		ChessGame(QObject *parent = 0,
+		          Chess::Variant variant = Chess::StandardChess);
 		~ChessGame();
 		Chess::Board* chessboard() const;
 		void newGame(ChessPlayer* whitePlayer,

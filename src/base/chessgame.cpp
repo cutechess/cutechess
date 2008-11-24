@@ -22,15 +22,18 @@
 #include "chessboard/openingbook.h"
 #include "pgngame.h"
 
-ChessGame::ChessGame(QObject *parent)
-	: QObject(parent)
+
+ChessGame::ChessGame(QObject *parent, Chess::Variant variant)
+	: QObject(parent),
+	  m_whitePlayer(0),
+	  m_blackPlayer(0),
+	  m_playerToMove(0),
+	  m_book(0),
+	  m_gameInProgress(false),
+	  m_moveCount(0),
+	  m_result(Chess::NoResult)
 {
-	m_moveCount = 0;
-	m_whitePlayer = 0;
-	m_blackPlayer = 0;
-	m_playerToMove = 0;
-	m_gameInProgress = false;
-	m_chessboard = new Chess::Board();
+	m_chessboard = new Chess::Board(variant);
 }
 
 ChessGame::~ChessGame()
@@ -130,6 +133,7 @@ void ChessGame::newGame(ChessPlayer* whitePlayer,
 {
 	m_chessboard->setBoard(Chess::standardFen);
 
+	m_result = Chess::NoResult;
 	m_moveCount = 0;
 	m_whitePlayer = whitePlayer;
 	m_blackPlayer = blackPlayer;
