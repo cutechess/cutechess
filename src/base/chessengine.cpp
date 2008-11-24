@@ -29,8 +29,9 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
                          QObject* parent)
 	: ChessPlayer(timeControl, parent)
 {
-	Q_CHECK_PTR(ioDevice);
-	Q_CHECK_PTR(chessboard);
+	Q_ASSERT(ioDevice != 0);
+	Q_ASSERT(chessboard != 0);
+	
 	m_isReady = true;
 	m_initialized = false;
 	m_notation = Chess::LongAlgebraic;
