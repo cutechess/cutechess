@@ -112,12 +112,9 @@ class Chess::Board
 		
 		/*! Returns the Zobrist key. */
 		quint64 key() const;
-
-		/*!
-		 * Runs a series of tests to make sure that everything
-		 * works. Returns true if successfull.
-		 */
-		 static bool unitTest();
+		
+		/*! Returns a vector of legal chess moves. */
+		QVector<Chess::Move> legalMoves();
 		
 	private:
 		/*! The castling side of a castling move. */
@@ -279,14 +276,9 @@ class Chess::Board
 		/*! Converts a string in Standard Algebraic Notation into a Move. */
 		Chess::Move moveFromSanString(const QString& str);
 		
-		/*! Returns a vector of legal chess moves. */
-		QVector<Chess::Move> legalMoves();
-		
 		/*! Returns the number of times the current position was reached. */
 		int repeatCount() const;
-		
-		/*! Unit test for the movegen, makemove, and undomove routines. */
-		quint64 perft(int depth);
+
 		
 		Chess::Variant m_variant;
 		bool m_isRandom;
