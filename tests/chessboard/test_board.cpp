@@ -30,6 +30,28 @@ static quint64 perft(Chess::Board& board, int depth)
 	return nodeCount;
 }
 
+static quint64 smpPerft(Chess::Board& board, int depth)
+{
+	QVector<Chess::Move> moves(board.legalMoves());
+	if (depth <= 1)
+		return moves.size();
+	
+	QVector<Chess::Board> boards(moves.size(), board);
+	QVector< QFuture<quint64> > futures(moves.size());
+	
+	for (int i = 0; i < moves.size(); i++)
+	{
+		boards[i].makeMove(moves[i]);
+		futures[i] = QtConcurrent::run(perft, boards[i], depth - 1);
+	}
+	
+	quint64 nodeCount = 0;
+	for (int i = 0; i < futures.size(); i++)
+		nodeCount += futures[i].result();
+
+	return nodeCount;
+}
+
 
 void TestBoard::zobristKeys() const
 {
@@ -56,24 +78,24 @@ void TestBoard::standardPerft() const
 	Chess::Board b(Chess::StandardChess);
 
 	QCOMPARE(b.setBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"), true);
-	QCOMPARE(perft(b, 1), Q_UINT64_C(20));
-	QCOMPARE(perft(b, 2), Q_UINT64_C(400));
-	QCOMPARE(perft(b, 3), Q_UINT64_C(8902));
-	QCOMPARE(perft(b, 4), Q_UINT64_C(197281));
-	QCOMPARE(perft(b, 5), Q_UINT64_C(4865609));
+	QCOMPARE(smpPerft(b, 1), Q_UINT64_C(20));
+	QCOMPARE(smpPerft(b, 2), Q_UINT64_C(400));
+	QCOMPARE(smpPerft(b, 3), Q_UINT64_C(8902));
+	QCOMPARE(smpPerft(b, 4), Q_UINT64_C(197281));
+	QCOMPARE(smpPerft(b, 5), Q_UINT64_C(4865609));
 
 	QCOMPARE(b.setBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -"), true);
-	QCOMPARE(perft(b, 1), Q_UINT64_C(48));
-	QCOMPARE(perft(b, 2), Q_UINT64_C(2039));
-	QCOMPARE(perft(b, 3), Q_UINT64_C(97862));
-	QCOMPARE(perft(b, 4), Q_UINT64_C(4085603));
+	QCOMPARE(smpPerft(b, 1), Q_UINT64_C(48));
+	QCOMPARE(smpPerft(b, 2), Q_UINT64_C(2039));
+	QCOMPARE(smpPerft(b, 3), Q_UINT64_C(97862));
+	QCOMPARE(smpPerft(b, 4), Q_UINT64_C(4085603));
 
 	QCOMPARE(b.setBoard("8/3K4/2p5/p2b2r1/5k2/8/8/1q6 b - - 1 67"), true);
-	QCOMPARE(perft(b, 1), Q_UINT64_C(50));
-	QCOMPARE(perft(b, 2), Q_UINT64_C(279));
+	QCOMPARE(smpPerft(b, 1), Q_UINT64_C(50));
+	QCOMPARE(smpPerft(b, 2), Q_UINT64_C(279));
 
 	QCOMPARE(b.setBoard("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -"), true);
-	QCOMPARE(perft(b, 6), Q_UINT64_C(11030083));
+	QCOMPARE(smpPerft(b, 6), Q_UINT64_C(11030083));
 }
 
 void TestBoard::gothicPerft() const
@@ -81,22 +103,22 @@ void TestBoard::gothicPerft() const
 	Chess::Board b(Chess::CapablancaChess);
 
 	QCOMPARE(b.setBoard("rnbqckabnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBQCKABNR w KQkq - 0 1"), true);
-	QCOMPARE(perft(b, 1), Q_UINT64_C(28));
-	QCOMPARE(perft(b, 2), Q_UINT64_C(784));
-	QCOMPARE(perft(b, 3), Q_UINT64_C(25283));
-	QCOMPARE(perft(b, 4), Q_UINT64_C(808984));
+	QCOMPARE(smpPerft(b, 1), Q_UINT64_C(28));
+	QCOMPARE(smpPerft(b, 2), Q_UINT64_C(784));
+	QCOMPARE(smpPerft(b, 3), Q_UINT64_C(25283));
+	QCOMPARE(smpPerft(b, 4), Q_UINT64_C(808984));
 
 	QCOMPARE(b.setBoard("r1b1c2rk1/p4a1ppp/1ppq2pn2/3p1p4/3A1Pn3/1PN3PN2/P1PQP1BPPP/3RC2RK1 w - - 0 15"), true);
-	QCOMPARE(perft(b, 1), Q_UINT64_C(50));
-	QCOMPARE(perft(b, 2), Q_UINT64_C(2801));
-	QCOMPARE(perft(b, 3), Q_UINT64_C(143032));
-	QCOMPARE(perft(b, 4), Q_UINT64_C(7917813));
+	QCOMPARE(smpPerft(b, 1), Q_UINT64_C(50));
+	QCOMPARE(smpPerft(b, 2), Q_UINT64_C(2801));
+	QCOMPARE(smpPerft(b, 3), Q_UINT64_C(143032));
+	QCOMPARE(smpPerft(b, 4), Q_UINT64_C(7917813));
 
 	QCOMPARE(b.setBoard("r1b2k2nr/p1ppq1ppbp/n1Pcpa2p1/5p4/5P4/1p1PBCPN2/PP1QP1BPPP/RN3KA2R w KQkq - 6 12"), true);
-	QCOMPARE(perft(b, 1), Q_UINT64_C(41));
-	QCOMPARE(perft(b, 2), Q_UINT64_C(2107));
-	QCOMPARE(perft(b, 3), Q_UINT64_C(93962));
-	QCOMPARE(perft(b, 4), Q_UINT64_C(4869569));
+	QCOMPARE(smpPerft(b, 1), Q_UINT64_C(41));
+	QCOMPARE(smpPerft(b, 2), Q_UINT64_C(2107));
+	QCOMPARE(smpPerft(b, 3), Q_UINT64_C(93962));
+	QCOMPARE(smpPerft(b, 4), Q_UINT64_C(4869569));
 }
 
 QTEST_MAIN(TestBoard)
