@@ -16,7 +16,7 @@
 */
 
 #include <QSortFilterProxyModel>
-#include <base/engineconfigurationmodel.h>
+#include <../../lib/src/engineconfigurationmodel.h>
 
 #include "enginemanagementdlg.h"
 #include "engineconfigurationdlg.h"

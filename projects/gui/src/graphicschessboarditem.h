@@ -22,7 +22,7 @@
 #include <QGraphicsItem>
 #include <QList>
 
-#include <base/chessboard/chess.h>
+#include <../../lib/src/chessboard/chess.h>
 
 class QPainter;
 class GraphicsChessPiece;

@@ -1,5 +1,5 @@
 #include <QtTest/QtTest>
-#include <base/chessboard/chessboard.h>
+#include <chessboard/chessboard.h>
 
 
 class TestBoard: public QObject

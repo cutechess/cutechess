@@ -16,7 +16,7 @@
 */
 
 #include <QtGui>
-#include <base/symbols.h>
+#include <../../lib/src/symbols.h>
 
 #include "promotiondlg.h"
 

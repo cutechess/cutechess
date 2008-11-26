@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = sloppygui
-DESTDIR = ../
+DESTDIR = $$PWD
 
-include(src.pri)
+include(gui.pri)
 
 SOURCES += main.cpp

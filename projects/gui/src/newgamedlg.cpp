@@ -16,7 +16,7 @@
 */
 
 #include <QAbstractItemView>
-#include <base/engineconfigurationmodel.h>
+#include <../../lib/src/engineconfigurationmodel.h>
 
 #include "newgamedlg.h"
 #include "engineconfigurationdlg.h"

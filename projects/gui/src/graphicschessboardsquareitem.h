@@ -20,8 +20,6 @@
 
 #include <QGraphicsItem>
 
-#include <base/chessboard/chessboard.h>
-
 class QPainter;
 
 /*!

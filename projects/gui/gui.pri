@@ -23,15 +23,15 @@ win32 : debug {
 include(components/hintlineedit/src/hintlineedit.pri)
 
 # Base 
-include(base/base.pri)
+include(../lib/src/src.pri)
 
 # GUI
-include(gui/gui.pri)
+include(src/src.pri)
 
 # Forms
-include(../ui/ui.pri)
+include(ui/ui.pri)
 
 UI_HEADERS_DIR = gui
 
 # Resources
-include(../res/res.pri)
+include(res/res.pri)
