@@ -12,7 +12,8 @@ HEADERS += chessboardview.h \
            newgamedlg.h \
            promotiondlg.h
 
-SOURCES += chessboardview.cpp \
+SOURCES += main.cpp \
+           chessboardview.cpp \
            chessclock.cpp \
            engineconfigurationdlg.cpp \
            enginemanagementdlg.cpp \

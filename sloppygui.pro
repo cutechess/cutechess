@@ -1,0 +1,2 @@
+TEMPLATE = subdirs
+SUBDIRS = projects

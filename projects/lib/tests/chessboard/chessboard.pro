@@ -1,11 +1,9 @@
 TEMPLATE = app
+TARGET = test_board
+
 include(../tests.pri)
 
-TARGET = test_board
-DEPENDPATH += $$PWD
-INCLUDEPATH += $$PWD
-
-include($$SRC_PATH/chessboard/chessboard.pri)
-
-# Input
 SOURCES += test_board.cpp
+
+OBJECTS_DIR = .obj
+MOC_DIR = .moc
