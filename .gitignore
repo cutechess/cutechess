@@ -1,6 +1,10 @@
 # main executable
 sloppygui
 
+# libraries
+*.so
+*.so.*
+
 # qmake generated Makefile
 Makefile
 
