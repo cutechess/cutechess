@@ -1,6 +1,7 @@
 TEMPLATE = lib
 TARGET = chess
 QT = core
+CONFIG += qt debug
 
 include(src/src.pri)
 
