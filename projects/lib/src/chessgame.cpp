@@ -19,7 +19,7 @@
 #include "chessboard/chessboard.h"
 #include "chessplayer.h"
 #include "timecontrol.h"
-#include "chessboard/openingbook.h"
+#include "openingbook.h"
 #include "pgngame.h"
 
 

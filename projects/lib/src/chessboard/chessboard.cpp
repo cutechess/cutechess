@@ -18,7 +18,7 @@
 #include "chessboard.h"
 #include "notation.h"
 #include "zobrist.h"
-#include "openingbook.h"
+#include "bookmove.h"
 
 using namespace Chess;
 
@@ -125,20 +125,14 @@ bool Board::isRandomVariant() const
 	return m_isRandom;
 }
 
-QStringList Board::moveStringList(MoveNotation notation) const
+QVector<Move> Board::moveHistory() const
 {
-	QStringList strList;
-	Board board(m_variant);
-	board.setBoard(m_startFen);
+	QVector<Move> moves;
 	
-	QVector<MoveData>::const_iterator it;
-	for (it = m_history.begin(); it != m_history.end(); ++it)
-	{
-		strList += board.moveString(it->move, notation);
-		board.makeMove(it->move);
-	}
+	foreach (const MoveData& md, m_history)
+		moves.append(md.move);
 	
-	return strList;
+	return moves;
 }
 
 void Board::print() const
@@ -193,8 +187,8 @@ bool Board::isValidSquare(const Chess::Square& square) const
 
 Move Board::moveFromBook(const BookMove& bookMove) const
 {
-	int source = squareIndex(bookMove.source);
-	int target = squareIndex(bookMove.target);
+	int source = squareIndex(bookMove.sourceSquare());
+	int target = squareIndex(bookMove.targetSquare());
 
 	int castlingSide = -1;
 	if ((m_squares[source] * m_sign) == King)
@@ -206,7 +200,7 @@ Move Board::moveFromBook(const BookMove& bookMove) const
 			castlingSide = KingSide;
 	}
 	
-	return Move(source, target, bookMove.promotion, castlingSide);
+	return Move(source, target, bookMove.promotion(), castlingSide);
 }
 
 bool Board::inCheck(int side, int square) const

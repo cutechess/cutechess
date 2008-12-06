@@ -2,10 +2,11 @@
 #define PGNGAME_H
 
 #include <QString>
-#include <QStringList>
+#include <QVector>
 #include <QDate>
-#include "chessboard/chess.h"
+#include "chessboard/chessmove.h"
 class ChessGame;
+class QTextStream;
 
 
 /*!
@@ -22,15 +23,20 @@ class ChessGame;
 class LIB_EXPORT PgnGame
 {
 	public:
+		friend class OpeningBook;
+		
 		/*! Constructs a PgnGame from a ChessGame object. */
-		PgnGame(const ChessGame* game);
+		explicit PgnGame(const ChessGame* game);
 		
 		/*!
-		 * Constructs a PgnGame from a PGN file.
-		 * \note If the PGN file contains multiple games, only
-		 * the first one will be read.
+		 * Constructs a PgnGame from a text stream.
+		 *
+		 * \param in The input text stream.
+		 * \param maxMoves The maximum number of halfmoves to read.
+		 * \note Even if the stream contains multiple games,
+		 * only one will be read.
 		 */
-		PgnGame(const QString& filename);
+		PgnGame(QTextStream& in, int maxMoves = 1000);
 		
 		/*!
 		 * Write the game to a file.
@@ -38,9 +44,25 @@ class LIB_EXPORT PgnGame
 		 * to the end of the file.
 		 */
 		void write(const QString& filename) const;
+		
+		/*! Returns true if the game doesn't contain any moves. */
+		bool isEmpty() const;
 	
 	private:
-		QStringList m_moves;
+		enum PgnItem
+		{
+			PgnMove,
+			PgnMoveNumber,
+			PgnTag,
+			PgnComment,
+			PgnNag,
+			PgnResult,
+			PgnError
+		};
+
+		PgnItem readItem(QTextStream& in, Chess::Board& board);
+		
+		QVector<Chess::Move> m_moves;
 		QString m_whitePlayer;
 		QString m_blackPlayer;
 		QString m_event;
@@ -48,8 +70,10 @@ class LIB_EXPORT PgnGame
 		QString m_fen;
 		Chess::Variant m_variant;
 		bool m_isRandomVariant;
+		bool m_isEmpty;
 		Chess::Result m_result;
 		int m_round;
 };
 
 #endif // PGNGAME_H
+

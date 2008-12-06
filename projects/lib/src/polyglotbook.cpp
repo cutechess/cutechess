@@ -21,30 +21,40 @@
 
 static BookMove moveFromBits(quint16 pgMove)
 {
-	BookMove move;
+	using Chess::Square;
 	
-	move.target.file = (quint16)(pgMove << 13) >> 13;
-	move.target.rank = (quint16)(pgMove << 10) >> 13;
-	move.source.file = (quint16)(pgMove << 7) >> 13;
-	move.source.rank = (quint16)(pgMove << 4) >> 13;
-	move.promotion = (quint16)(pgMove << 1) >> 13;
-	if (move.promotion > 0)
-		move.promotion++;
+	Square target = { (quint16)(pgMove << 13) >> 13,
+	                  (quint16)(pgMove << 10) >> 13 };
+	Square source = { (quint16)(pgMove << 7) >> 13,
+	                  (quint16)(pgMove << 4) >> 13 };
+	int promotion = (quint16)(pgMove << 1) >> 13;
+	if (promotion > 0)
+		promotion++;
 	
-	return move;
+	return BookMove(source, target, promotion);
 }
 
 static quint16 moveToBits(const BookMove& move)
 {
-	quint16 target = move.target.file | (move.target.rank << 3);
-	quint16 source = (move.source.file << 6) | (move.source.rank << 9);
+	using Chess::Square;
+	
+	const Square& src = move.sourceSquare();
+	const Square& trg = move.targetSquare();
+	
+	quint16 target = trg.file | (trg.rank << 3);
+	quint16 source = (src.file << 6) | (src.rank << 9);
 	quint16 promotion = 0;
-	if (move.promotion > 0)
-		promotion = (move.promotion - 1) << 12;
+	if (move.promotion() > 0)
+		promotion = (move.promotion() - 1) << 12;
 	
 	return target | source | promotion;
 }
 
+
+Chess::Variant PolyglotBook::variant() const
+{
+	return Chess::StandardChess;
+}
 
 void PolyglotBook::loadEntry(QDataStream& in)
 {

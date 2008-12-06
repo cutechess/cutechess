@@ -15,11 +15,32 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "openingbook.h"
 #include <QString>
 #include <QFile>
 #include <QDataStream>
-#include "openingbook.h"
+#include <QTextStream>
+#include "chessboard/chessboard.h"
+#include "pgngame.h"
 
+
+void OpeningBook::addEntry(const BookMove& move, quint64 key)
+{
+	Map::iterator it = m_map.find(key);
+	while (it != m_map.end() && it.key() == key)
+	{
+		Entry& entry = it.value();
+		if (entry.move == move)
+		{
+			entry.weight++;
+			return;
+		}
+		++it;
+	}
+	
+	Entry entry = { move, 1 };
+	m_map.insert(key, entry);
+}
 
 bool OpeningBook::load(const QString& filename)
 {
@@ -56,9 +77,52 @@ bool OpeningBook::save(const QString& filename) const
 	return true;
 }
 
+bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
+{
+	using namespace Chess;
+	
+	Q_ASSERT(maxMoves > 0);
+	
+	QFile file(filename);
+	if (!file.open(QIODevice::ReadOnly))
+		return false;
+	QTextStream in(&file);
+	
+	Board board;
+	int gameCount = 0;
+	int moveCount = 0;
+	while (in.status() == QTextStream::Ok)
+	{
+		PgnGame game(in, maxMoves);
+		if (game.isEmpty())
+			break;
+		if (game.m_variant != variant())
+			continue;
+		
+		if (game.m_variant != board.variant())
+			board = Board(game.m_variant);
+		board.setBoard(game.m_fen);
+		
+		foreach (const Move& srcMove, game.m_moves)
+		{
+			Square src = board.chessSquare(srcMove.sourceSquare());
+			Square trg = board.chessSquare(srcMove.targetSquare());
+			int prom = srcMove.promotion();
+
+			addEntry(BookMove(src, trg, prom), board.key());
+			board.makeMove(srcMove);
+			moveCount++;
+		}
+		gameCount++;
+	}
+	qDebug("Imported %d moves from %d games", moveCount, gameCount);
+	
+	return true;
+}
+
 BookMove OpeningBook::move(quint64 key) const
 {
-	BookMove move = { {0, 0}, {0, 0}, 0 };
+	BookMove move;
 	
 	// There can be multiple entries/moves with the same key.
 	// We need to find the all to choose the best one

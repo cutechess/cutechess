@@ -95,8 +95,8 @@ class LIB_EXPORT Chess::Board
 		/*! Converts an opening book move into a Move. */
 		Chess::Move moveFromBook(const BookMove& bookMove) const;
 		
-		/*! Returns the played moves as a list of strings. */
-		QStringList moveStringList(Chess::MoveNotation notation) const;
+		/*! Returns a vector of played moves. */
+		QVector<Chess::Move> moveHistory() const;
 		
 		/*! Returns the board's chess variant. */
 		Chess::Variant variant() const;
@@ -112,6 +112,9 @@ class LIB_EXPORT Chess::Board
 		
 		/*! Returns the Zobrist key. */
 		quint64 key() const;
+		
+		/*! Converts a square index into a Chess::Square object. */
+		Chess::Square chessSquare(int index) const;
 		
 		/*! Returns a vector of legal chess moves. */
 		QVector<Chess::Move> legalMoves();
@@ -189,9 +192,6 @@ class LIB_EXPORT Chess::Board
 				bool isRandom;
 		};
 		
-		
-		/*! Converts a square index into a Chess::Square object. */
-		Chess::Square chessSquare(int index) const;
 		
 		/*! Converts a Chess::Square object into a square index. */
 		int squareIndex(const Chess::Square& square) const;
@@ -302,5 +302,5 @@ class LIB_EXPORT Chess::Board
 		QVector<int> m_rookOffsets;
 };
 
-
 #endif // CHESSBOARD
+

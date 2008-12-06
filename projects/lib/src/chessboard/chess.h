@@ -54,7 +54,9 @@ namespace Chess
 		//! Both players agree to a draw.
 		DrawByAgreement,
 		//! No result. The game may continue.
-		NoResult
+		NoResult,
+		//! Result error, caused by an invalid result string.
+		ResultError
 	};
 	
 	/*! All supported variants of chess. */

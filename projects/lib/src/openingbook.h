@@ -3,27 +3,11 @@
 
 #include <QtGlobal>
 #include <QMultiMap>
-#include "chess.h"
+#include "chessboard/bookmove.h"
 
 class QString;
 class QDataStream;
 
-/*!
- * \brief A variant and book-independent opening book move.
- *
- * When a move is retrieved from an opening book of any kind, it will
- * be in this format. Later it can be converted to a Chess::Move by a
- * Chess::Board object.
- */
-struct BookMove
-{
-	/*! The source square. */
-	Chess::Square source;
-	/*! The target square. */
-	Chess::Square target;
-	/*! Promotion piece. */
-	int promotion;
-};
 
 /*!
  * \brief A collection of opening moves for chess.
@@ -44,6 +28,15 @@ class LIB_EXPORT OpeningBook
 		 * \return True if successfull.
 		 */
 		bool load(const QString& filename);
+		
+		
+		/*!
+		 * Imports games in PGN format.
+		 * \param filename The PGN file
+		 * \param maxMoves Store at most this many full moves per game
+		 * \return True if successfull.
+		 */
+		bool pgnImport(const QString& filename, int maxMoves);
 		
 		/*!
 		 * Stores the book to a binary file.
@@ -86,6 +79,13 @@ class LIB_EXPORT OpeningBook
 		
 		/*! The type of binary tree. */
 		typedef QMultiMap<quint64, Entry> Map;
+		
+		
+		/*! Returns the book's chess variant. */
+		virtual Chess::Variant variant() const = 0;
+		
+		/*! Adds a new entry to the book. */
+		void addEntry(const BookMove& move, quint64 key);
 		
 		/*! Loads a new book entry from \a in. */
 		virtual void loadEntry(QDataStream& in) = 0;

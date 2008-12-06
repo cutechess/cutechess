@@ -22,9 +22,7 @@
 #endif
 
 #include <QApplication>
-#include <QTextStream>
 #include <QDebug>
-#include <QtGlobal>
 #include <QTime>
 
 #include "mainwindow.h"

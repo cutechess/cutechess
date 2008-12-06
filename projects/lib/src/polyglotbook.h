@@ -15,8 +15,9 @@
 class LIB_EXPORT PolyglotBook: public OpeningBook
 {
 	private:
-		virtual void loadEntry(QDataStream& in);
-		virtual void saveEntry(const Map::const_iterator& it,
+		Chess::Variant variant() const;
+		void loadEntry(QDataStream& in);
+		void saveEntry(const Map::const_iterator& it,
 		                       QDataStream& out) const;
 };
 
