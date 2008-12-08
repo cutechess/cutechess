@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include <../../lib/src/chessboard/chess.h>
+#include <chessboard/chess.h>
 
 class QRadioButton;
 class QSignalMapper;

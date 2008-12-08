@@ -17,7 +17,7 @@
 
 #include <QPainter>
 #include <QSvgRenderer>
-#include <../../lib/src/chessboard/chessmove.h>
+#include <chessboard/chessmove.h>
 
 #include "graphicschessboarditem.h"
 #include "graphicschessboardsquareitem.h"

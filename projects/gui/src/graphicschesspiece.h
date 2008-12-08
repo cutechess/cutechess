@@ -19,7 +19,7 @@
 #define GRAPHICSCHESSPIECE_H
 
 #include <QGraphicsSvgItem>
-#include <../../lib/src/chessboard/chess.h>
+#include <chessboard/chess.h>
 
 class GraphicsChessPiece : public QGraphicsSvgItem
 {

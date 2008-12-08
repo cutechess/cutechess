@@ -19,7 +19,7 @@
 #define ENGINECONFIGURATIONDIALOG_H
 
 #include <QDialog>
-#include <../../lib/src/engineconfiguration.h>
+#include <engineconfiguration.h>
 
 #include "ui_engineconfigdlg.h"
 

@@ -21,15 +21,15 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-#include <../../lib/src/manager.h>
-#include <../../lib/src/logmanager.h>
-#include <../../lib/src/chessgame.h>
-#include <../../lib/src/chessplayer.h>
-#include <../../lib/src/xboardengine.h>
-#include <../../lib/src/uciengine.h>
-#include <../../lib/src/timecontrol.h>
-#include <../../lib/src/engineconfigurationmodel.h>
-#include <../../lib/src/engineconfiguration.h>
+#include <manager.h>
+#include <logmanager.h>
+#include <chessgame.h>
+#include <chessplayer.h>
+#include <xboardengine.h>
+#include <uciengine.h>
+#include <timecontrol.h>
+#include <engineconfigurationmodel.h>
+#include <engineconfiguration.h>
 
 #include "mainwindow.h"
 #include "guilogger.h"
