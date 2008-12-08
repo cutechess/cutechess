@@ -7,7 +7,6 @@ HEADERS += chessengine.h \
            chessgame.h \
            chessplayer.h \
            engineconfiguration.h \
-           engineconfigurationmodel.h \
            loggerbase.h \
            logmanager.h \
            manager.h \
@@ -22,7 +21,6 @@ SOURCES += chessengine.cpp \
            chessgame.cpp \
            chessplayer.cpp \
            engineconfiguration.cpp \
-           engineconfigurationmodel.cpp \
            logmanager.cpp \
            manager.cpp \
            pgngame.cpp \

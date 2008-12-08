@@ -28,7 +28,6 @@
 #include <xboardengine.h>
 #include <uciengine.h>
 #include <timecontrol.h>
-#include <engineconfigurationmodel.h>
 #include <engineconfiguration.h>
 
 #include "mainwindow.h"
@@ -37,6 +36,7 @@
 #include "chessboardview.h"
 #include "newgamedlg.h"
 #include "chessclock.h"
+#include "engineconfigurationmodel.h"
 #include "enginemanagementdlg.h"
 
 MainWindow::MainWindow()

@@ -22,7 +22,7 @@
 #include <QList>
 #include <QStringList>
 
-#include "engineconfiguration.h"
+#include <engineconfiguration.h>
 
 /*!
  * \brief The EngineConfigurationModel class represents a chess engine
