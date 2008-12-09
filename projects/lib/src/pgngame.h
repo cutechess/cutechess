@@ -19,7 +19,7 @@ class ChessGame;
  * an opening book, etc.
  * PgnGame can also take a ChessGame object and convert it into PGN format.
  */
-class PgnGame
+class LIB_EXPORT PgnGame
 {
 	public:
 		/*! Constructs a PgnGame from a ChessGame object. */

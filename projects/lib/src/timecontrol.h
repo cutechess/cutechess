@@ -26,7 +26,7 @@
  *
  * All time handling is done in milliseconds.
  */
-class TimeControl
+class LIB_EXPORT TimeControl
 {
 	public:
 		/**

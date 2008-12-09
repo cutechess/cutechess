@@ -25,7 +25,7 @@
 class ChessPlayer;
 class OpeningBook;
 
-class ChessGame : public QObject
+class LIB_EXPORT ChessGame : public QObject
 {
 	Q_OBJECT
 

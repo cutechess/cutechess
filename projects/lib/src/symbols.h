@@ -25,7 +25,7 @@
 /*!
  * \brief The Symbols class provides chess symbols found in the Unicode character set.
 */
-class Symbols
+class LIB_EXPORT Symbols
 {
 	public:
 		/*! Symbol of black pawn. */

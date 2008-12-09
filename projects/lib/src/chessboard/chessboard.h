@@ -25,7 +25,7 @@ struct BookMove;
  * traditional 8x8 board would be 10x12, and stored in a one-dimensional
  * vector with 10 * 12 = 120 elements.
  */
-class Chess::Board
+class LIB_EXPORT Chess::Board
 {
 	public:
 		/*! Creates a new Board of a specific chess variant. */

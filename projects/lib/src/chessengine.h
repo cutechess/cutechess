@@ -31,7 +31,7 @@ class QIODevice;
  * Communication between the GUI and the chess engines happens via a QIODevice.
  * @see ChessPlayer
  */
-class ChessEngine : public ChessPlayer
+class LIB_EXPORT ChessEngine : public ChessPlayer
 {
 	Q_OBJECT
 

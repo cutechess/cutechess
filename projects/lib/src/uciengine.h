@@ -29,7 +29,7 @@
  * UCI's specifications: http://wbec-ridderkerk.nl/html/UCIProtocol.html
  * @see ChessEngine
  */
-class UciEngine : public ChessEngine
+class LIB_EXPORT UciEngine : public ChessEngine
 {
 	Q_OBJECT
 

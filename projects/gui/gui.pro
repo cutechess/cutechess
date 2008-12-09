@@ -4,6 +4,12 @@ DESTDIR = $$PWD
 
 include(../lib/lib.pri)
 
+win32 {
+    DEFINES += LIB_EXPORT=\"__declspec(dllimport)\"
+} else {
+    DEFINES += LIB_EXPORT=\"\"
+}
+
 SLOPPYGUI_VERSION = unknown
 
 INCLUDEPATH += $$PWD

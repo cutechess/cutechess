@@ -12,7 +12,7 @@
  *
  * Specs: http://alpha.uhasselt.be/Research/Algebra/Toga/book_format.html
  */
-class PolyglotBook: public OpeningBook
+class LIB_EXPORT PolyglotBook: public OpeningBook
 {
 	private:
 		virtual void loadEntry(QDataStream& in);

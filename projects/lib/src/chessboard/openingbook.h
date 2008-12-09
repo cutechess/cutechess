@@ -36,7 +36,7 @@ struct BookMove
  * it is loaded in memory, and positions can be found quickly by searching
  * the book for Zobrist keys that match the current board position.
  */
-class OpeningBook
+class LIB_EXPORT OpeningBook
 {
 	public:
 		/*!

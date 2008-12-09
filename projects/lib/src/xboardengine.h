@@ -27,7 +27,7 @@
  * Xboard's specifications: http://www.tim-mann.org/xboard/engine-intf.html
  * @see ChessEngine
  */
-class XboardEngine : public ChessEngine
+class LIB_EXPORT XboardEngine : public ChessEngine
 {
 	Q_OBJECT
 

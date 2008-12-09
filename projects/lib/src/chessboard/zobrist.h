@@ -18,7 +18,7 @@
  * \note This class is automatically initialized by a static
  * initializer object, so users shouldn't try to initialize it.
  */
-class Zobrist
+class LIB_EXPORT Zobrist
 {
 	public:
 		/*!

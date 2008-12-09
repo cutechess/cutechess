@@ -27,7 +27,7 @@ class QString;
 /**
  * The ChessPlayer class represents any chess player, human or AI.
  */
-class ChessPlayer : public QObject
+class LIB_EXPORT ChessPlayer : public QObject
 {
 	Q_OBJECT
 

@@ -25,7 +25,7 @@
  *
  * \sa EngineConfigurationModel
 */
-class EngineConfiguration
+class LIB_EXPORT EngineConfiguration
 {
 	public:
 

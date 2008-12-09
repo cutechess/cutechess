@@ -19,7 +19,7 @@
  * \sa Chess::Square
  * \sa Chess::Piece
  */
-class Chess::Move
+class LIB_EXPORT Chess::Move
 {
 	public:
 		/*! Creates an empty Move. */
