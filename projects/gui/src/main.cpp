@@ -28,8 +28,6 @@
 #include <QTime>
 
 #include "mainwindow.h"
-#include <manager.h>
-#include <logmanager.h>
 
 int main(int argc, char* argv[])
 {
@@ -39,7 +37,6 @@ int main(int argc, char* argv[])
 	QCoreApplication::setOrganizationDomain("sloppygui.org");
 	QCoreApplication::setApplicationName("SloppyGUI");
 
-	qInstallMsgHandler(LogManager::messageHandler);
 	QApplication app(argc, argv);
 
 	QStringList arguments = app.arguments();
@@ -73,13 +70,6 @@ int main(int argc, char* argv[])
 	mainWindow.show();
 
 	int ret = app.exec();
-
-	// Install the default message handler
-	qInstallMsgHandler(0);
-
-	// Release the managers
-	Manager::quit();
-	Manager::release();
 
 	return ret;
 }

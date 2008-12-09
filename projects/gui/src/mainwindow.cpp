@@ -21,8 +21,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-#include <manager.h>
-#include <logmanager.h>
 #include <chessgame.h>
 #include <chessplayer.h>
 #include <xboardengine.h>
@@ -31,7 +29,6 @@
 #include <engineconfiguration.h>
 
 #include "mainwindow.h"
-#include "guilogger.h"
 #include "graphicschessboarditem.h"
 #include "chessboardview.h"
 #include "newgamedlg.h"
@@ -135,9 +132,6 @@ void MainWindow::createDockWindows()
 	logDock->setWidget(logTextEdit);
 
 	addDockWidget(Qt::BottomDockWidgetArea, logDock);
-
-	// Set up GUI logging
-	Manager::get()->getLogManager()->addLogger(new GuiLogger(logTextEdit));
 
 	// Engine debug
 	QDockWidget* engineDebugDock = new QDockWidget(tr("Engine Debug"), this);
