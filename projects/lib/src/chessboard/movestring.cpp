@@ -278,13 +278,11 @@ Move Board::moveFromSanString(const QString& str)
 	int promotion = NoPiece;
 	if (it != mstr.end())
 	{
-		if (*it == '=') {
-			if (++it == mstr.end())
-				return Move(0, 0);
-			promotion = Notation::pieceCode(*it);
-			if (promotion == NoPiece)
-				return Move(0, 0);
-		} else
+		if ((*it == '=' || *it == '(') && ++it == mstr.end())
+			return Move(0, 0);
+		
+		promotion = Notation::pieceCode(*it);
+		if (promotion == NoPiece)
 			return Move(0, 0);
 	}
 	
