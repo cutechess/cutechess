@@ -3,8 +3,7 @@ include(chessboard/chessboard.pri)
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
-HEADERS += bookmove.h \
-           chessengine.h \
+HEADERS += chessengine.h \
            chessgame.h \
            chessplayer.h \
            engineconfiguration.h \
@@ -16,8 +15,7 @@ HEADERS += bookmove.h \
            uciengine.h \
            xboardengine.h
 
-SOURCES += bookmove.cpp \
-           chessengine.cpp \
+SOURCES += chessengine.cpp \
            chessgame.cpp \
            chessplayer.cpp \
            engineconfiguration.cpp \

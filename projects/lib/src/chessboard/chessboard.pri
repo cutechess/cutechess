@@ -1,13 +1,15 @@
 DEPENDPATH += $$PWD
 
-HEADERS += chessboard.h \
+HEADERS += bookmove.h \
+           chessboard.h \
            chess.h \
            chessmove.h \
            notation.h \
            zobrist.h
 
 
-SOURCES += chessboard.cpp \
+SOURCES += bookmove.cpp \
+           chessboard.cpp \
            chessmove.cpp \
            fen.cpp \
            movegen.cpp \
