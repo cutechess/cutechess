@@ -24,7 +24,7 @@
  * \brief The EngineConfiguration class defines a chess engine configuration.
  *
  * \sa EngineConfigurationModel
-*/
+ */
 class LIB_EXPORT EngineConfiguration
 {
 	public:
@@ -32,10 +32,8 @@ class LIB_EXPORT EngineConfiguration
 		/*! The procol the engine uses for communication. */
 		enum ChessEngineProtocol
 		{
-			/*! The Xboard protocol. */
-			Xboard,
-			/*! The UCI protocol. */
-			UCI
+			Xboard,	//!< The Xboard/Winboard chess protocol.
+			UCI	//!< The Universal Chess Interface (UCI).
 		};
 
 		/*! Creates an empty chess engine configuration. */
@@ -43,7 +41,7 @@ class LIB_EXPORT EngineConfiguration
 		/*!
 		 * Creates a new chess engine configuration with specified name,
 		 * command and protocol settings.
-		*/
+		 */
 		EngineConfiguration(const QString& name, const QString& command,
 		                    ChessEngineProtocol protocol);
 
@@ -51,50 +49,50 @@ class LIB_EXPORT EngineConfiguration
 		 * Sets the engine's name.
 		 *
 		 * \sa name()
-		*/
+		 */
 		void setName(const QString& name);
 		/*!
 		 * Sets the command which is used to launch the engine.
 		 *
 		 * \sa command()
-		*/
+		 */
 		void setCommand(const QString& command);
 		/*!
 		 * Sets the working directory the engine uses.
 		 *
 		 * \sa workingDirectory()
-		*/
+		 */
 		void setWorkingDirectory(const QString& workingDir);
 		/*!
 		 * Sets the communication protocol the engine uses.
 		 *
 		 * \sa protocol()
-		*/
+		 */
 		void setProtocol(ChessEngineProtocol protocol);
 
 		/*!
 		 * Returns the engine's name.
 		 *
 		 * \sa setName()
-		*/
+		 */
 		QString name() const;
 		/*!
 		 * Returns the command which is used to launch the engine.
 		 *
 		 * \sa setCommand()
-		*/
+		 */
 		QString command() const;
 		/*!
 		 * Returns the working directory the engine uses.
 		 *
 		 * \sa setWorkingDirectory()
-		*/
+		 */
 		QString workingDirectory() const;
 		/*!
 		 * Returns the communication protocol the engine uses.
 		 *
 		 * \sa setProtocol()
-		*/
+		 */
 		ChessEngineProtocol protocol() const;
 
 	private:
@@ -106,4 +104,3 @@ class LIB_EXPORT EngineConfiguration
 };
 
 #endif // ENGINE_CONFIGURATION_H
-

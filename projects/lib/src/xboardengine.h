@@ -20,25 +20,23 @@
 
 #include "chessengine.h"
 
-/**
- * The XboardEngine class represents a chess engine which uses the Xboard
- * chess engine communication protocol.
+/*!
+ * \brief A chess engine which uses the Xboard chess engine communication protocol.
  *
  * Xboard's specifications: http://www.tim-mann.org/xboard/engine-intf.html
- * @see ChessEngine
  */
 class LIB_EXPORT XboardEngine : public ChessEngine
 {
 	Q_OBJECT
 
 	public:
-		/**
+		/*!
 		 * Creates a new XboardEngine object.
-		 * @param ioDevice An open chess engine process or socket.
-		 * @param chessboard A chessboard object for converting between the
+		 * \param ioDevice An open chess engine process or socket.
+		 * \param chessboard A chessboard object for converting between the
 		 * various move formats.
-		 * @param timeControl Time control for the player.
-		 * @param parent The parent object.
+		 * \param timeControl Time control for the player.
+		 * \param parent The parent object.
 		 */
 		XboardEngine(QIODevice* ioDevice,
 		             Chess::Board* chessboard,
@@ -65,4 +63,3 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 };
 
 #endif // XBOARDENGINE_H
-

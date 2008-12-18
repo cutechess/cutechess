@@ -19,39 +19,37 @@
 #define CHESSENGINE_H
 
 #include <QStringList>
-
 #include "chessplayer.h"
 
 class QString;
 class QIODevice;
 
-/**
- * The ChessEngine class represents an artificial intelligence chess player,
- * which is a separate program using either the Xboard or Uci chess protocol.
- * Communication between the GUI and the chess engines happens via a QIODevice.
- * @see ChessPlayer
+/*!
+ * \brief An artificial intelligence chess player.
+ *
+ * ChessEngine is a separate process (run locally or over a network) using
+ * either the Xboard or Uci chess protocol. Communication between the GUI
+ * and the chess engines happens via a QIODevice.
+ *
+ * \sa XboardEngine
+ * \sa UciEngine
  */
 class LIB_EXPORT ChessEngine : public ChessPlayer
 {
 	Q_OBJECT
 
 	public:
-		/**
-		 * The chess protocol that is used to communicate with the engine.
-		 */
+		/*! The chess communication protocol. */
 		enum ChessProtocol
 		{
-			Xboard, /**< The Xboard/Winboard chess protocol. */
-			Uci /**< The Universal Chess Interface (UCI). */
+			Xboard,	//!< The Xboard/Winboard chess protocol.
+			Uci	//!< The Universal Chess Interface (UCI).
 		};
 		
-		/**
-		 * Creates a new ChessEngine object.
-		 * @param ioDevice An open chess engine process or socket.
-		 * @param chessboard A chessboard object for converting between the
-		 * various move formats.
-		 * @param timeControl Time control for the player.
-		 * @param parent The parent object.
+		/*!
+		 * Creates and initializes a new ChessEngine object.
+		 * \note The engine process (\a ioDevice) must be
+		 * already started.
 		 */
 		ChessEngine(QIODevice* ioDevice,
 		            Chess::Board* chessboard,
@@ -59,67 +57,55 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		            QObject* parent = 0);
 
 		virtual ~ChessEngine();
-
 		virtual void newGame(Chess::Side side, ChessPlayer* opponent) = 0;
 		virtual void go() = 0;
-		virtual bool isHuman() const;
 		virtual void makeMove(const Chess::Move& move) = 0;
+		bool isHuman() const;
 		
-		/**
-		 * Gets the chess protocol which the engine uses.
-		 * @return The chess protocol.
-		 */
+		/*! Returns the engine's chess protocol. */
 		virtual ChessProtocol protocol() const = 0;
 
-		/**
+		/*!
 		 * Checks if the engine is still responding, and synchronizes
 		 * it with the GUI.
 		 */
 		virtual void ping() = 0;
 
-		/**
-		 * Writes data to the chess engine.
-		 * @param data The data that will be written to the engine's device.
-		 */
+		/*! Writes text data to the chess engine. */
 		void write(const QString& data);
 
 	protected:
-		/**
-		 * Parses a line of input from the engine.
-		 * @param line A line of text.
-		 */
+		/*! Parses a line of input from the engine. */
 		virtual void parseLine(const QString& line) = 0;
 
 
-		/** The chessboard which the player plays on. */
+		/*! The chessboard which the player plays on. */
 		Chess::Board* m_chessboard;
 
-		/**
+		/*!
 		 * The chess move notation the engine wants to use.
 		 * All moves which are sent to and received from the engine must
 		 * be in this format.
 		 */
 		Chess::MoveNotation m_notation;
 
-		/** Is the engine ready to receive commands? */
+		/*! Is the engine ready to receive commands? */
 		bool m_isReady;
 		
-		/** Is the engine initialized? */
+		/*! Is the engine initialized? */
 		bool m_initialized;
 
-		/** The ID number of the chess engine. */
+		/*! The ID number of the chess engine. */
 		int m_id;
 
-		/** The number of active chess engines. */
+		/*! The number of active chess engines. */
 		static int m_count;
 		
 	protected slots:
-		/**
-		 * Reads input from the engine.
-		 */
+		/*! Reads input from the engine. */
 		void on_readyRead();
 
-		/**
+		/*!
 		 * Flushes the write buffer.
 		 * If there are any commands in the buffer, they will be sent
 		 * to the engine.
@@ -133,4 +119,3 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 };
 
 #endif // CHESSENGINE_H
-

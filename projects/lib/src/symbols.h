@@ -24,7 +24,7 @@
 
 /*!
  * \brief The Symbols class provides chess symbols found in the Unicode character set.
-*/
+ */
 class LIB_EXPORT Symbols
 {
 	public:
@@ -58,7 +58,7 @@ class LIB_EXPORT Symbols
 		 * Returns a symbol of given side and piece type.
 		 *
 		 * If the given values are invalid an empty string is returned.
-		*/
+		 */
 		static QString symbolOf(Chess::Side side, Chess::Piece piece);
 
 		/*!
@@ -76,7 +76,7 @@ class LIB_EXPORT Symbols
 		 * Uppercase and lowercase letters give same results.
 		 *
 		 * If the given values are invalid an empty string is returned.
-		*/
+		 */
 		static QString symbolOf(Chess::Side side, const QChar& piece);
 	
 	private:
@@ -85,4 +85,3 @@ class LIB_EXPORT Symbols
 };
 
 #endif // SYMBOLS_H
-

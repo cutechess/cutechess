@@ -22,25 +22,24 @@
 #include <QStringList>
 #include "chessengine.h"
 
-/**
- * The UciEngine class represents a chess engine which uses the UCI
- * chess interface.
+/*!
+ * \brief A chess engine which uses the UCI chess interface.
  *
  * UCI's specifications: http://wbec-ridderkerk.nl/html/UCIProtocol.html
- * @see ChessEngine
  */
 class LIB_EXPORT UciEngine : public ChessEngine
 {
 	Q_OBJECT
 
 	public:
-		/**
+		/*!
 		 * Creates a new UciEngine object.
-		 * @param ioDevice An open chess engine process or socket.
-		 * @param chessboard A chessboard object for converting between the
+		 *
+		 * \param ioDevice An open chess engine process or socket.
+		 * \param chessboard A chessboard object for converting between the
 		 * various move formats.
-		 * @param timeControl Time control for the player.
-		 * @param parent The parent object.
+		 * \param timeControl Time control for the player.
+		 * \param parent The parent object.
 		 */
 		UciEngine(QIODevice* ioDevice,
 		          Chess::Board* chessboard,
@@ -64,4 +63,3 @@ class LIB_EXPORT UciEngine : public ChessEngine
 };
 
 #endif // UCIENGINE_H
-
