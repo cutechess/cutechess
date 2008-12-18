@@ -30,9 +30,9 @@ BookMove::BookMove()
 BookMove::BookMove(const Chess::Square& sourceSquare,
                    const Chess::Square& targetSquare,
                    int promotion)
-: m_sourceSquare(sourceSquare),
-  m_targetSquare(targetSquare),
-  m_promotion(promotion)
+	: m_sourceSquare(sourceSquare),
+	  m_targetSquare(targetSquare),
+	  m_promotion(promotion)
 {
 
 }
@@ -62,4 +62,3 @@ int BookMove::promotion() const
 {
 	return m_promotion;
 }
-

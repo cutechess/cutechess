@@ -24,7 +24,8 @@ using namespace Chess;
 
 
 Board::Board(Variant variant)
-: m_variant(variant), m_isRandom(false)
+	: m_variant(variant),
+	  m_isRandom(false)
 {
 	switch (m_variant) {
 	case StandardChess:

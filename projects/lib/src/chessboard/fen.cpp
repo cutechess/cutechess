@@ -23,6 +23,7 @@ using namespace Chess;
 
 
 Board::FenData::FenData()
+	: isRandom(false)
 {
 	cr.rookSquare[White][QueenSide] = 0;
 	cr.rookSquare[White][KingSide] = 0;
@@ -30,7 +31,6 @@ Board::FenData::FenData()
 	cr.rookSquare[Black][KingSide] = 0;
 	kingSquare[White] = 0;
 	kingSquare[Black] = 0;
-	isRandom = false;
 }
 
 bool Board::parseCastlingRights(FenData& fd, QChar c) const

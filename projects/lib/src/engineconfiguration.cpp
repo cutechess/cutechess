@@ -18,17 +18,19 @@
 #include "engineconfiguration.h"
 
 EngineConfiguration::EngineConfiguration()
+	: m_protocol(Xboard)
 {
-	m_protocol = Xboard;
+
 }
 
 EngineConfiguration::EngineConfiguration(const QString& name,
                                          const QString& command,
                                          ChessEngineProtocol protocol)
+	: m_name(name),
+	  m_command(command),
+	  m_protocol(protocol)
 {
-	m_name = name;
-	m_command = command;
-	m_protocol = protocol;
+
 }
 
 void EngineConfiguration::setName(const QString& name)
@@ -70,4 +72,3 @@ EngineConfiguration::ChessEngineProtocol EngineConfiguration::protocol() const
 {
 	return m_protocol;
 }
-

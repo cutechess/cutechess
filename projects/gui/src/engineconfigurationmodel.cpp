@@ -27,9 +27,10 @@ EngineConfigurationModel::EngineConfigurationModel(QObject* parent)
 
 EngineConfigurationModel::EngineConfigurationModel(
 	const QList<EngineConfiguration>& configurations, QObject* parent)
-	: QAbstractListModel(parent)
+	: QAbstractListModel(parent),
+	  m_configurations(configurations)
 {
-	m_configurations = configurations;
+
 }
 
 int EngineConfigurationModel::rowCount(const QModelIndex& parent) const

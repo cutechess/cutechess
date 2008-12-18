@@ -43,7 +43,9 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
                          const TimeControl& timeControl,
                          QObject* parent)
 	: ChessEngine(ioDevice, chessboard, timeControl, parent),
-	  m_forceMode(true), m_drawOnNextMove(false), m_lastPing(0)
+	  m_forceMode(true),
+	  m_drawOnNextMove(false),
+	  m_lastPing(0)
 {
 	setName("XboardEngine");
 	// Tell the engine to turn on xboard mode

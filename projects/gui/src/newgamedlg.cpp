@@ -23,7 +23,8 @@
 
 NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,
                              QWidget* parent)
-	: QDialog(parent)
+	: QDialog(parent),
+	  m_engines(engineConfigurations)
 {
 	setupUi(this);
 
@@ -38,12 +39,10 @@ NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,
 	connect(m_configureBlackEngineButton, SIGNAL(clicked(bool)), this,
 		SLOT(configureBlackEngine()));
 
-	m_whiteEngineComboBox->setModel(engineConfigurations);
-	m_blackEngineComboBox->setModel(engineConfigurations);
+	m_whiteEngineComboBox->setModel(m_engines);
+	m_blackEngineComboBox->setModel(m_engines);
 
-	m_engines = engineConfigurations;
-	
-	if (engineConfigurations->rowCount() > 0)
+	if (m_engines->rowCount() > 0)
 	{
 		// TODO: The selected engine is not remembered
 		m_whiteEngineComboBox->setCurrentIndex(0);

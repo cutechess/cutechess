@@ -20,10 +20,10 @@
 using Chess::Move;
 
 Move::Move()
-: m_sourceSquare(0),
-  m_targetSquare(0),
-  m_promotion(0),
-  m_castlingSide(-1)
+	: m_sourceSquare(0),
+	  m_targetSquare(0),
+	  m_promotion(0),
+	  m_castlingSide(-1)
 {
 
 }
@@ -32,10 +32,10 @@ Move::Move(int sourceSquare,
            int targetSquare,
            int promotion,
            int castlingSide)
-: m_sourceSquare(sourceSquare),
-  m_targetSquare(targetSquare),
-  m_promotion(promotion),
-  m_castlingSide(castlingSide)
+	: m_sourceSquare(sourceSquare),
+	  m_targetSquare(targetSquare),
+	  m_promotion(promotion),
+	  m_castlingSide(castlingSide)
 {
 
 }

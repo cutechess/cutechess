@@ -23,14 +23,13 @@
 
 EngineManagementDialog::EngineManagementDialog(
 	EngineConfigurationModel* engineConfigurations, QWidget* parent)
-	: QDialog(parent)
+	: QDialog(parent),
+	  m_filteredModel(new QSortFilterProxyModel(this)),
+	  m_originalModel(engineConfigurations)
 {
 	setupUi(this);
 
-	m_originalModel = engineConfigurations;
-
-	// Create a filtered model
-	m_filteredModel = new QSortFilterProxyModel(this);
+	// Set up a filtered model
 	m_filteredModel->setSourceModel(engineConfigurations);
 	m_filteredModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 

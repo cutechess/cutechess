@@ -27,13 +27,12 @@ const qreal GraphicsChessboardItem::size = 400;
 const qreal GraphicsChessboardItem::borderSize = 25;
 
 GraphicsChessboardItem::GraphicsChessboardItem(const QString& svgResource, QGraphicsItem* parent)
-	: QObject(0), QGraphicsItem(parent)
+	: QObject(0),
+	  QGraphicsItem(parent),
+	  m_renderer(new QSvgRenderer(svgResource)),
+	  m_showBorder(true),
+	  m_borderColor(QColor("peru"))
 {
-	m_showBorder = true;
-	m_borderColor = QColor("peru");
-	
-	m_renderer = new QSvgRenderer(svgResource);
-
 	initChessboard();
 	initChessPieces();
 }

@@ -20,13 +20,12 @@
 
 
 ChessClock::ChessClock(QWidget* parent)
-	:QLCDNumber(parent)
+	: QLCDNumber(parent),
+	  m_totalTime(0),
+	  m_timerId(-1)
 {
 	setFrameShape(QFrame::NoFrame);
 	setSegmentStyle(QLCDNumber::Flat);
-	
-	m_totalTime = 0;
-	m_timerId = -1;
 }
 
 void ChessClock::start(int totalTime)

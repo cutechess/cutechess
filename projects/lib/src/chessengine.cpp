@@ -27,17 +27,17 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
                          Chess::Board* chessboard,
                          const TimeControl& timeControl,
                          QObject* parent)
-	: ChessPlayer(timeControl, parent)
+	: ChessPlayer(timeControl, parent),
+	  m_chessboard(chessboard),
+	  m_notation(Chess::LongAlgebraic),
+	  m_isReady(true),
+	  m_initialized(false),
+	  m_id(m_count++),
+	  m_ioDevice(ioDevice)
 {
-	Q_ASSERT(ioDevice != 0);
-	Q_ASSERT(chessboard != 0);
+	Q_ASSERT(m_ioDevice != 0);
+	Q_ASSERT(m_chessboard != 0);
 	
-	m_isReady = true;
-	m_initialized = false;
-	m_notation = Chess::LongAlgebraic;
-	m_ioDevice = ioDevice;
-	m_id = m_count++;
-	m_chessboard = chessboard;
 	QObject::connect(m_ioDevice, SIGNAL(readyRead()),
 	                 this, SLOT(on_readyRead()));
 }

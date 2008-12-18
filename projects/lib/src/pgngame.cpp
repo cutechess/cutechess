@@ -25,7 +25,7 @@
 
 
 PgnGame::PgnGame(const ChessGame* game)
-: m_isEmpty(true)
+	: m_isEmpty(true)
 {
 	Q_ASSERT(game != 0);
 	
@@ -248,8 +248,11 @@ PgnGame::PgnItem PgnGame::readItem(QTextStream& in, Chess::Board& board)
 }
 
 PgnGame::PgnGame(QTextStream& in, int maxMoves)
-: m_variant(Chess::StandardChess), m_isRandomVariant(false),
-  m_isEmpty(true), m_result(Chess::NoResult), m_round(0)
+	: m_variant(Chess::StandardChess),
+	  m_isRandomVariant(false),
+	  m_isEmpty(true),
+	  m_result(Chess::NoResult),
+	  m_round(0)
 {
 	Chess::Board board(Chess::StandardChess);
 	board.setBoard(Chess::standardFen);

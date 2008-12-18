@@ -20,12 +20,12 @@
 #include "chessplayer.h"
 
 ChessPlayer::ChessPlayer(const TimeControl& timeControl, QObject* parent)
-	: QObject(parent)
+	: QObject(parent),
+	  m_timeControl(timeControl),
+	  m_opponent(0),
+	  m_side(Chess::NoSide)
 {
-	m_side = Chess::NoSide;
-	m_timeControl = timeControl;
 
-	m_opponent = 0;
 }
 
 void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent)
