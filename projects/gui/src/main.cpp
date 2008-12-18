@@ -23,6 +23,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QTextStream>
 #include <QTime>
 
 #include "mainwindow.h"
