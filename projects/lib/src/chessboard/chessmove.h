@@ -3,23 +3,24 @@
 
 #include "chess.h"
 
+namespace Chess {
 
 /**
  * \brief A simple chess move.
  *
  * Move was designed to have minimal information about the move,
- * so a Chess::Board object is needed to verify the move's legality or
+ * so a Board object is needed to verify the move's legality or
  * to convert it to a string.
  *
  * The source and target squares have an integer format specific to a
- * certain type of chess variant. The Chess::Board class has methods for
+ * certain type of chess variant. The Board class has methods for
  * converting between these integers and the generic ChessSquare type.
  *
- * \sa Chess::Board
- * \sa Chess::Square
- * \sa Chess::Piece
+ * \sa Board
+ * \sa Square
+ * \sa Piece
  */
-class LIB_EXPORT Chess::Move
+class LIB_EXPORT Move
 {
 	public:
 		/*! Creates an empty Move. */
@@ -56,4 +57,5 @@ class LIB_EXPORT Chess::Move
 		int m_castlingSide;
 };
 
+} // namespace Chess
 #endif // CHESSMOVE

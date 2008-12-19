@@ -9,6 +9,7 @@
 #include "chessmove.h"
 
 struct BookMove;
+namespace Chess {
 
 /*!
  * \brief An internal chessboard.
@@ -25,11 +26,11 @@ struct BookMove;
  * traditional 8x8 board would be 10x12, and stored in a one-dimensional
  * vector with 10 * 12 = 120 elements.
  */
-class LIB_EXPORT Chess::Board
+class LIB_EXPORT Board
 {
 	public:
 		/*! Creates a new Board of a specific chess variant. */
-		explicit Board(Chess::Variant variant = Chess::StandardChess);
+		explicit Board(Variant variant = StandardChess);
 		
 		/*!
 		* Sets the board position according to a FEN string.
@@ -54,22 +55,22 @@ class LIB_EXPORT Chess::Board
 		QString startingFen() const;
 		
 		/*! Returns the side to move. */
-		Chess::Side sideToMove() const;
+		Side sideToMove() const;
 		
 		/*! Makes a chess move on the board. */
-		void makeMove(const Chess::Move& move);
+		void makeMove(const Move& move);
 		
 		/*! Reverses the last move. */
 		void undoMove();
 		
 		/*! Returns true if \a move is legal. */
-		bool isLegalMove(const Chess::Move& move);
+		bool isLegalMove(const Move& move);
 		
 		/*!
 		 * Returns true if \a move repeats a position that was
 		 * reached earlier in the game.
 		 */
-		bool isRepeatMove(const Chess::Move& move);
+		bool isRepeatMove(const Move& move);
 		
 		/*!
 		 * Converts a Move into a string.
@@ -79,8 +80,7 @@ class LIB_EXPORT Chess::Board
 		 *
 		 * \sa moveFromString()
 		 */
-		QString moveString(const Chess::Move& move,
-		                   Chess::MoveNotation notation);
+		QString moveString(const Move& move, MoveNotation notation);
 		
 		/*!
 		* Converts a move string into a Move.
@@ -90,16 +90,16 @@ class LIB_EXPORT Chess::Board
 		*
 		* \sa moveString()
 		*/
-		Chess::Move moveFromString(const QString& str);
+		Move moveFromString(const QString& str);
 		
 		/*! Converts an opening book move into a Move. */
-		Chess::Move moveFromBook(const BookMove& bookMove) const;
+		Move moveFromBook(const BookMove& bookMove) const;
 		
 		/*! Returns a vector of played moves. */
-		QVector<Chess::Move> moveHistory() const;
+		QVector<Move> moveHistory() const;
 		
 		/*! Returns the board's chess variant. */
-		Chess::Variant variant() const;
+		Variant variant() const;
 		
 		/*! Returns true if the game type is a "random" variant. */
 		bool isRandomVariant() const;
@@ -113,11 +113,11 @@ class LIB_EXPORT Chess::Board
 		/*! Returns the Zobrist key. */
 		quint64 key() const;
 		
-		/*! Converts a square index into a Chess::Square object. */
-		Chess::Square chessSquare(int index) const;
+		/*! Converts a square index into a Square object. */
+		Square chessSquare(int index) const;
 		
 		/*! Returns a vector of legal chess moves. */
-		QVector<Chess::Move> legalMoves();
+		QVector<Move> legalMoves();
 		
 	private:
 		/*! The castling side of a castling move. */
@@ -155,7 +155,7 @@ class LIB_EXPORT Chess::Board
 		struct MoveData
 		{
 			//! A chess move.
-			Chess::Move move;
+			Move move;
 			//! Piece type of the captured piece.
 			int capture;
 			//! Target square of an en-passant capture before the move.
@@ -193,34 +193,34 @@ class LIB_EXPORT Chess::Board
 		};
 		
 		
-		/*! Converts a Chess::Square object into a square index. */
-		int squareIndex(const Chess::Square& square) const;
+		/*! Converts a Square object into a square index. */
+		int squareIndex(const Square& square) const;
 		
 		/*! Returns true if \a square is on the board. */
-		bool isValidSquare(const Chess::Square& square) const;
+		bool isValidSquare(const Square& square) const;
 		
 		/*! Generates moves for a hopping piece at \a sourceSquare. */
 		void generateHoppingMoves(int sourceSquare,
 		                          const QVector<int>& offsets,
-		                          QVector<Chess::Move>& moves) const;
+		                          QVector<Move>& moves) const;
 		
 		/*! Generates moves for a sliding piece at \a sourceSquare. */
 		void generateSlidingMoves(int sourceSquare,
 		                          const QVector<int>& offsets,
-		                          QVector<Chess::Move>& moves) const;
+		                          QVector<Move>& moves) const;
 		
 		/*! Generates castling moves. */
-		void generateCastlingMoves(QVector<Chess::Move>& moves) const;
+		void generateCastlingMoves(QVector<Move>& moves) const;
 		
 		/*! Generates moves for a pawn at \a sourceSquare. */
 		void generatePawnMoves(int sourceSquare,
-		                       QVector<Chess::Move>& moves) const;
+		                       QVector<Move>& moves) const;
 		
 		/*!
 		 * Generates pseudo-legal moves.
 		 * \sa legalMoves()
 		 */
-		void generateMoves(QVector<Chess::Move>& moves) const;
+		void generateMoves(QVector<Move>& moves) const;
 		
 		/*!
 		 * Adds pawn promotions (from \a sourceSquare to \a targetSquare)
@@ -228,7 +228,7 @@ class LIB_EXPORT Chess::Board
 		 */
 		void addPromotions(int sourceSquare,
 		                   int targetSquare,
-		                   QVector<Chess::Move>& moves) const;
+		                   QVector<Move>& moves) const;
 		
 		/*! Returns true if side to move can castle to \a castlingSide. */
 		bool canCastle(int castlingSide) const;
@@ -265,22 +265,22 @@ class LIB_EXPORT Chess::Board
 		QString castlingRightsString() const;
 		
 		/*! Converts a Move into a string in Long Algebraic notation. */
-		QString longAlgebraicMoveString(const Chess::Move& move) const;
+		QString longAlgebraicMoveString(const Move& move) const;
 		
 		/*! Converts a Move into a string in Standard Algebraic Notation. */
-		QString sanMoveString(const Chess::Move& move);
+		QString sanMoveString(const Move& move);
 		
 		/*! Converts a string in Long Algebraic Notation into a Move. */
-		Chess::Move moveFromLongAlgebraicString(const QString& str) const;
+		Move moveFromLongAlgebraicString(const QString& str) const;
 		
 		/*! Converts a string in Standard Algebraic Notation into a Move. */
-		Chess::Move moveFromSanString(const QString& str);
+		Move moveFromSanString(const QString& str);
 		
 		/*! Returns the number of times the current position was reached. */
 		int repeatCount() const;
 
 		
-		Chess::Variant m_variant;
+		Variant m_variant;
 		bool m_isRandom;
 		int m_width;
 		int m_height;
@@ -302,5 +302,5 @@ class LIB_EXPORT Chess::Board
 		QVector<int> m_rookOffsets;
 };
 
+} // namespace Chess
 #endif // CHESSBOARD
-
