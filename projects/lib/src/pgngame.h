@@ -4,6 +4,7 @@
 #include <QString>
 #include <QVector>
 #include <QDate>
+#include "chessboard/chess.h"
 #include "chessboard/chessmove.h"
 class ChessGame;
 class QTextStream;

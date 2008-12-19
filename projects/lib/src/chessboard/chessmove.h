@@ -1,8 +1,6 @@
 #ifndef CHESSMOVE_H
 #define CHESSMOVE_H
 
-#include "chess.h"
-
 namespace Chess {
 
 /**

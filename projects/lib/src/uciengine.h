@@ -19,7 +19,6 @@
 #define UCIENGINE_H
 
 #include <QString>
-#include <QStringList>
 #include "chessengine.h"
 
 /*!

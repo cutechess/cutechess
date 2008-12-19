@@ -15,8 +15,9 @@
     along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "chessboard.h"
 #include "notation.h"
+#include <QtGlobal>
+#include "chess.h"
 
 using namespace Chess;
 
@@ -52,7 +53,7 @@ QChar pieceChar(int pieceCode)
 {
 	QChar c;
 	
-	switch (abs(pieceCode)) {
+	switch (qAbs(pieceCode)) {
 	case Pawn:
 		c = 'P';
 		break;
