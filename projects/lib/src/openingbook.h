@@ -23,6 +23,8 @@ class QDataStream;
 class LIB_EXPORT OpeningBook
 {
 	public:
+		virtual ~OpeningBook() {}
+		
 		/*!
 		 * Loads a book from a binary file.
 		 * \return True if successfull.
