@@ -39,9 +39,8 @@ EngineManagementDialog::EngineManagementDialog(
 		m_filteredModel, SLOT(setFilterWildcard(const QString&)));
 	
 	// Signals for updating the UI
-	connect(m_enginesList, SIGNAL(clicked(const QModelIndex&)),
-		this, SLOT(updateUi()));
-	connect(m_filteredModel, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
+	connect(m_enginesList->selectionModel(),
+		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
 		this, SLOT(updateUi()));
 	
 	// Add button
@@ -58,8 +57,7 @@ EngineManagementDialog::EngineManagementDialog(
 void EngineManagementDialog::updateUi()
 {
 	// Enable buttons depending on item selections
-	if (m_filteredModel->rowCount() > 0 &&
-	    m_enginesList->selectionModel()->hasSelection())
+	if (m_enginesList->selectionModel()->hasSelection())
 	{
 			m_configureBtn->setEnabled(true);
 			m_removeBtn->setEnabled(true);
