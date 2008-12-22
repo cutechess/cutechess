@@ -85,6 +85,11 @@ void EngineConfigurationDialog::browseCommand()
 		m_workingDirEdit->setText(QDir::toNativeSeparators(path));
 	}
 
+	if (m_nameEdit->text().isEmpty())
+	{
+		m_nameEdit->setText(QFileInfo(fileName).baseName());
+	}
+
 	fileName = QDir::toNativeSeparators(fileName);
 	// Paths with spaces must be wrapped in quotes
 	if (fileName.contains(' '))
