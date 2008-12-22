@@ -79,10 +79,11 @@ void EngineConfigurationDialog::browseCommand()
 	if (fileName.isEmpty())
 		return;
 
+	fileName = QDir::toNativeSeparators(fileName);
+
 	if (m_workingDirEdit->text().isEmpty())
 	{
-		QString path(QFileInfo(fileName).absolutePath());
-		m_workingDirEdit->setText(QDir::toNativeSeparators(path));
+		m_workingDirEdit->setText(QFileInfo(fileName).absolutePath());
 	}
 
 	if (m_nameEdit->text().isEmpty())
@@ -90,7 +91,6 @@ void EngineConfigurationDialog::browseCommand()
 		m_nameEdit->setText(QFileInfo(fileName).baseName());
 	}
 
-	fileName = QDir::toNativeSeparators(fileName);
 	// Paths with spaces must be wrapped in quotes
 	if (fileName.contains(' '))
 	{
