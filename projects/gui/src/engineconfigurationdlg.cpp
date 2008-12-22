@@ -71,7 +71,7 @@ void EngineConfigurationDialog::browseCommand()
 	#ifdef Q_WS_WIN
 	QString filter = tr("Executables (*.exe *.bat *.cmd);;All Files (*.*)");
 	#else
-	QString filter = tr("All Files (*.*)");
+	QString filter = tr("All Files (*)");
 	#endif
 
 	QString fileName = QFileDialog::getOpenFileName(this,
