@@ -92,7 +92,7 @@ void MainWindow::createActions()
 
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
 	connect(m_printGameAct, SIGNAL(triggered(bool)), this, SLOT(printGame()));
-	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
+	connect(m_quitGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
 
 	connect (m_manageEnginesAct, SIGNAL(triggered(bool)), this,
 		SLOT(manageEngines()));
