@@ -65,7 +65,7 @@
              <widget class="QLineEdit" name="m_commandEdit" />
             </item>
             <item>
-             <widget class="QToolButton" name="m_browseCmdBtn" >
+             <widget class="QPushButton" name="m_browseCmdBtn" >
               <property name="text" >
                <string>Browse...</string>
               </property>
@@ -89,7 +89,7 @@
              <widget class="QLineEdit" name="m_workingDirEdit" />
             </item>
             <item>
-             <widget class="QToolButton" name="m_browseWorkingDirBtn" >
+             <widget class="QPushButton" name="m_browseWorkingDirBtn" >
               <property name="toolTip" >
                <string>Browse working directory.</string>
               </property>
