@@ -67,7 +67,7 @@
             <item>
              <widget class="QToolButton" name="m_browseCmdBtn" >
               <property name="text" >
-               <string>...</string>
+               <string>Browse...</string>
               </property>
              </widget>
             </item>
@@ -94,7 +94,7 @@
                <string>Browse working directory.</string>
               </property>
               <property name="text" >
-               <string>...</string>
+               <string>Browse...</string>
               </property>
              </widget>
             </item>
