@@ -40,7 +40,7 @@ include(src/src.pri)
 # Forms
 include(ui/ui.pri)
 
-UI_HEADERS_DIR = gui
+UI_HEADERS_DIR = src
 
 # Resources
 include(res/res.pri)
