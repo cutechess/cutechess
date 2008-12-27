@@ -33,7 +33,7 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	}
 	else
 	{
-		setWindowTitle(tr("Edit Engine"));
+		setWindowTitle(tr("Configure Engine"));
 	}
 
 	m_protocolCombo->addItem("Xboard");

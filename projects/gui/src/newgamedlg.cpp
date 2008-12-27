@@ -72,7 +72,7 @@ int NewGameDialog::selectedBlackEngine() const
 
 void NewGameDialog::configureWhiteEngine()
 {
-	EngineConfigurationDialog dlg(EngineConfigurationDialog::EditEngine, this);
+	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 	int selected = m_whiteEngineComboBox->currentIndex();
 
 	dlg.applyEngineInformation(m_engines->configurations().at(selected));
@@ -86,7 +86,7 @@ void NewGameDialog::configureWhiteEngine()
 
 void NewGameDialog::configureBlackEngine()
 {
-	EngineConfigurationDialog dlg(EngineConfigurationDialog::EditEngine, this);
+	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 	int selected  = m_blackEngineComboBox->currentIndex();
 
 	dlg.applyEngineInformation(m_engines->configurations().at(selected));

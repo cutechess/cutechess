@@ -37,8 +37,8 @@ class EngineConfigurationDialog : public QDialog, private Ui::EngineConfiguratio
 		{
 			/*! Mode for adding new engine. */
 			AddEngine,
-			/*! Mode for editing existing engine. */
-			EditEngine
+			/*! Mode for configuring existing engine. */
+			ConfigureEngine
 		};
 
 		/*!

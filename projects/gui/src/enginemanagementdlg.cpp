@@ -84,7 +84,7 @@ void EngineManagementDialog::configureEngine()
 	const QModelIndex index = m_filteredModel->mapToSource(
 		m_enginesList->selectionModel()->currentIndex());
 
-	EngineConfigurationDialog dlg(EngineConfigurationDialog::EditEngine, this);
+	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 	dlg.applyEngineInformation(m_originalModel->configurations().at(
 		index.row()));
 
