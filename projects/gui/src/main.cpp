@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 			arguments.first() == QLatin1String("--version"))
 		{
 			out << "SloppyGUI " << SLOPPYGUI_VERSION << endl;
-			out << "Copyright (C) 2008 Ilari Pihlajisto and Arto Jonsson" << endl;
+			out << "Copyright (C) 2008-2009 Ilari Pihlajisto and Arto Jonsson" << endl;
 			out << "This is free software; see the source for copying ";
 			out << "conditions.  There is NO" << endl << "warranty; not even for ";
 			out << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
