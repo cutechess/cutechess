@@ -86,7 +86,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		void startedThinking(int timeLeft) const;
 
-		/*! Signals the engine's move. */
+		/*! Signals the player's move. */
 		void moveMade(const Chess::Move& move) const;
 		
 		/*!
