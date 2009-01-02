@@ -82,6 +82,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 void MainWindow::createActions()
 {
 	m_newGameAct = new QAction(tr("&New game..."), this);
+	m_newGameAct->setShortcut(QKeySequence("Ctrl+N"));
 
 	m_printGameAct = new QAction(tr("&Print..."), this);
 
