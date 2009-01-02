@@ -68,8 +68,6 @@ int main(int argc, char* argv[])
 	MainWindow mainWindow;
 	mainWindow.show();
 
-	int ret = app.exec();
-
-	return ret;
+	return app.exec();
 }
 
