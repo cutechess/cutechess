@@ -141,9 +141,7 @@ void MainWindow::createDockWindows()
 
 void MainWindow::writeSettings()
 {
-	QSettings settings(QSettings::IniFormat, QSettings::UserScope,
-		QCoreApplication::organizationName(),
-		QCoreApplication::applicationName());
+	QSettings settings;
 
 	const QList<EngineConfiguration> engines = m_engineConfigurations->configurations();
 
@@ -161,9 +159,7 @@ void MainWindow::writeSettings()
 
 void MainWindow::readSettings()
 {
-	QSettings settings(QSettings::IniFormat, QSettings::UserScope,
-		QCoreApplication::organizationName(),
-		QCoreApplication::applicationName());
+	QSettings settings;
 
 	int size = settings.beginReadArray("engines");
 	for (int i = 0; i < size; i++)

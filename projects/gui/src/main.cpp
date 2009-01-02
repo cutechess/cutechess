@@ -25,6 +25,7 @@
 #include <QDebug>
 #include <QTextStream>
 #include <QTime>
+#include <QSettings>
 
 #include "mainwindow.h"
 
@@ -37,6 +38,9 @@ int main(int argc, char* argv[])
 	QCoreApplication::setApplicationName("SloppyGUI");
 
 	QApplication app(argc, argv);
+
+	// Use Ini format on all platforms
+	QSettings::setDefaultFormat(QSettings::IniFormat);
 
 	QStringList arguments = app.arguments();
 	arguments.takeFirst(); // application name
