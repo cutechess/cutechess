@@ -16,10 +16,6 @@
 */
 
 #include <QtGui>
-#include <QDebug>
-#include <QApplication>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 
 #include <chessgame.h>
 #include <chessplayer.h>
