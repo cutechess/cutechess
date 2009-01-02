@@ -285,7 +285,16 @@ void MainWindow::printGame()
 
 void MainWindow::manageEngines()
 {
+	QList<EngineConfiguration> oldConfigurations =
+		m_engineConfigurations->configurations();
+
 	EngineManagementDialog dlg(m_engineConfigurations, this);
-	dlg.exec();
+	if (dlg.exec() != QDialog::Accepted)
+	{
+		// Release the engine configurations model and use
+		// the old configurations as base for the new model
+		delete m_engineConfigurations;
+		m_engineConfigurations = new EngineConfigurationModel(oldConfigurations);
+	}
 }
 
