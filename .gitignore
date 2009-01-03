@@ -1,5 +1,5 @@
 # main executable
-sloppygui
+cutechess
 
 # libraries
 *.so
@@ -9,8 +9,8 @@ sloppygui
 Makefile
 
 # asciidoc generated man page and xml document
-docs/man/sloppygui.6
-docs/man/sloppygui.6.xml
+docs/man/cutechess.6
+docs/man/cutechess.6.xml
 
 # doxygen generated api documents
 docs/api/html/
@@ -27,7 +27,7 @@ ui_*.h
 
 # files created by KDevelop
 Doxyfile
-sloppygui.kdevelop
-sloppygui.kdevelop.pcs
-sloppygui.kdevses
+cutechess.kdevelop
+cutechess.kdevelop.pcs
+cutechess.kdevses
 

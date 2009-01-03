@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = sloppygui
+TARGET = cutechess
 DESTDIR = $$PWD
 
 include(../lib/lib.pri)
@@ -10,18 +10,18 @@ win32 {
     DEFINES += LIB_EXPORT=\"\"
 }
 
-SLOPPYGUI_VERSION = unknown
+CUTECHESS_VERSION = unknown
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 macx-xcode {
-    DEFINES += SLOPPYGUI_VERSION=\"$$SLOPPYGUI_VERSION\"
+    DEFINES += CUTECHESS_VERSION=\"$$CUTECHESS_VERSION\"
 }else {
     OBJECTS_DIR = .obj/
     MOC_DIR = .moc/
     RCC_DIR = .rcc/
-    DEFINES += SLOPPYGUI_VERSION=\\\"$$SLOPPYGUI_VERSION\\\"
+    DEFINES += CUTECHESS_VERSION=\\\"$$CUTECHESS_VERSION\\\"
 }
 
 CONFIG += qt debug

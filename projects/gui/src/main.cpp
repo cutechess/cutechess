@@ -1,18 +1,18 @@
 /*
-    This file is part of SloppyGUI.
+    This file is part of Cute Chess.
 
-    SloppyGUI is free software: you can redistribute it and/or modify
+    Cute Chess is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    SloppyGUI is distributed in the hope that it will be useful,
+    Cute Chess is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with SloppyGUI.  If not, see <http://www.gnu.org/licenses/>.
+    along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <QtGlobal>
@@ -33,9 +33,9 @@ int main(int argc, char* argv[])
 {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 	
-	QCoreApplication::setOrganizationName("SloppyGUI");
-	QCoreApplication::setOrganizationDomain("sloppygui.org");
-	QCoreApplication::setApplicationName("SloppyGUI");
+	QCoreApplication::setOrganizationName("Cute Chess");
+	QCoreApplication::setOrganizationDomain("cutechess.org");
+	QCoreApplication::setApplicationName("Cute Chess");
 
 	QApplication app(argc, argv);
 
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 		if (arguments.first() == QLatin1String("-v") ||
 			arguments.first() == QLatin1String("--version"))
 		{
-			out << "SloppyGUI " << SLOPPYGUI_VERSION << endl;
+			out << "Cute Chess " << CUTECHESS_VERSION << endl;
 			out << "Copyright (C) 2008-2009 Ilari Pihlajisto and Arto Jonsson" << endl;
 			out << "This is free software; see the source for copying ";
 			out << "conditions.  There is NO" << endl << "warranty; not even for ";

@@ -1,19 +1,19 @@
-SLOPPYGUI(6)
+CUTECHESS(6)
 ============
 
 NAME
 ----
-sloppygui - A graphical user interface for chess engines
+cutechess - A graphical user interface for chess engines
 
 
 SYNOPSIS
 --------
-*sloppygui* ['OPTIONS']
+*cutechess* ['OPTIONS']
 
 
 DESCRIPTION
 -----------
-Description of SloppyGUI.
+Description of Cute Chess.
 
 
 OPTIONS
@@ -29,7 +29,7 @@ Written by Ilari Pihlajisto <ilari.pihlajisto@mbnet.fi> and Arto Jonsson
 
 RESOURCES
 ---------
-SourceForge: <http://sourceforge.net/projects/sloppygui/>
+repo.or.cz: <http://repo.or.cz/w/sloppygui.git>
 
 
 COPYING

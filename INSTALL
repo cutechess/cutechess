@@ -2,7 +2,7 @@
     Installation
 
 
-SloppyGUI requires Qt (atleast version 4.4) and qmake, the Qt Makefile
+Cute Chess requires Qt (atleast version 4.4) and qmake, the Qt Makefile
 generator. The current qmake project file doesn't have support for
 installations. However the main executable has the necessary resources
 built-in by default so it's the only thing you need to deploy.
@@ -24,7 +24,7 @@ requires asciidoc (http://www.methods.co.nz/asciidoc/).
 
     $ make doc-man
 
-If you want to have an overview of SloppyGUI's source you can build the API
+If you want to have an overview of Cute Chess's source you can build the API
 documentation:
 
     $ make doc-api
