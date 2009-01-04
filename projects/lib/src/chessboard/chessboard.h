@@ -69,8 +69,12 @@ class LIB_EXPORT Board : public QObject
 		/*! Returns the side to move. */
 		Side sideToMove() const;
 		
-		/*! Makes a chess move on the board. */
-		void makeMove(const Move& move);
+		/*!
+		 * Makes a chess move on the board.
+		 * \param sendSignal If True, the squareChanged signal is sent
+		 * for every square that changes.
+		 */
+		void makeMove(const Move& move, bool sendSignal = false);
 		
 		/*! Reverses the last move. */
 		void undoMove();
@@ -119,6 +123,15 @@ class LIB_EXPORT Board : public QObject
 		/*! Returns the result of the game. */
 		Result result();
 		
+		/*! Returns the board's width in squares. */
+		int width() const;
+		
+		/*! Returns the board's height in squares. */
+		int height() const;
+		
+		/*! Returns the chess piece at \a square. */
+		int pieceAt(const Square& square) const;
+		
 		/*! Prints an ASCII version of the board. */
 		void print() const;
 		
@@ -130,6 +143,10 @@ class LIB_EXPORT Board : public QObject
 		
 		/*! Returns a vector of legal chess moves. */
 		QVector<Move> legalMoves();
+	
+	signals:
+		void squareChanged(const Chess::Square& square);
+		void boardReset();
 		
 	private:
 		/*! The castling side of a castling move. */

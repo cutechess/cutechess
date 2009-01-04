@@ -133,6 +133,24 @@ bool Board::isRandomVariant() const
 	return m_isRandom;
 }
 
+int Board::width() const
+{
+	return m_width;
+}
+
+int Board::height() const
+{
+	return m_height;
+}
+
+int Board::pieceAt(const Square& square) const
+{
+	if (!isValidSquare(square))
+		return InvalidPiece;
+	
+	return m_squares.at(squareIndex(square));
+}
+
 QVector<Move> Board::moveHistory() const
 {
 	QVector<Move> moves;
@@ -278,7 +296,7 @@ bool Board::inCheck(int side, int square) const
 	return false;
 }
 
-void Board::makeMove(const Move& move)
+void Board::makeMove(const Move& move, bool sendSignal)
 {
 	int source = move.sourceSquare();
 	int target = move.targetSquare();
@@ -287,6 +305,9 @@ void Board::makeMove(const Move& move)
 	int capture = m_squares[target];
 	int epSq = m_enpassantSquare;
 	int* rookSq = m_castlingRights.rookSquare[m_side];
+	int rookSource = 0;
+	int rookTarget = 0;
+	int epTarget = 0;
 	
 	Q_ASSERT(source != 0);
 	Q_ASSERT(target != 0);
@@ -308,13 +329,13 @@ void Board::makeMove(const Move& move)
 		// In case of a castling move, make the rook's move
 		if (move.castlingSide() != -1) {
 			int cside = move.castlingSide();
-			int rsource = rookSq[cside];
-			int rtarget = (cside == QueenSide) ? target + 1 : target -1;
+			rookSource = rookSq[cside];
+			rookTarget = (cside == QueenSide) ? target + 1 : target -1;
 			
-			m_squares[rsource] = NoPiece;
-			m_squares[rtarget] = Rook * m_sign;
-			m_key ^= Zobrist::piece(m_side, Rook, rsource);
-			m_key ^= Zobrist::piece(m_side, Rook, rtarget);
+			m_squares[rookSource] = NoPiece;
+			m_squares[rookTarget] = Rook * m_sign;
+			m_key ^= Zobrist::piece(m_side, Rook, rookSource);
+			m_key ^= Zobrist::piece(m_side, Rook, rookTarget);
 			isReversible = false;
 		}
 		// Any king move removes all castling rights
@@ -330,7 +351,7 @@ void Board::makeMove(const Move& move)
 		
 		// Make an en-passant capture
 		if (target == epSq) {
-			int epTarget = target + m_arwidth * m_sign;
+			epTarget = target + m_arwidth * m_sign;
 			m_squares[epTarget] = NoPiece;
 			m_key ^= Zobrist::piece(!m_side, Pawn, epTarget);
 		// Push a pawn two squares ahead, creating an en-passant
@@ -386,6 +407,18 @@ void Board::makeMove(const Move& move)
 	m_history.push_back(md);
 	m_sign *= -1;
 	m_side = !m_side;
+	
+	if (sendSignal)
+	{
+		emit squareChanged(chessSquare(source));
+		emit squareChanged(chessSquare(target));
+		if (epTarget != 0)
+			emit squareChanged(chessSquare(epTarget));
+		if (rookSource != 0)
+			emit squareChanged(chessSquare(rookSource));
+		if (rookTarget != 0)
+			emit squareChanged(chessSquare(rookTarget));
+	}
 }
 
 void Board::undoMove()

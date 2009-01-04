@@ -248,6 +248,7 @@ bool Board::setBoard(const QString& fen)
 		return false;
 	
 	initZobristKey();
+	emit boardReset();
 	return true;
 }
 
