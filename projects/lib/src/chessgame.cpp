@@ -92,7 +92,7 @@ void ChessGame::moveMade(const Chess::Move& move)
 	m_timer.start();
 
 	m_playerToMove->makeMove(move);
-	m_chessboard->makeMove(move);
+	m_chessboard->makeMove(move, true);
 	
 	m_result = m_chessboard->result();
 	if (m_result == Chess::NoResult)
@@ -171,7 +171,7 @@ void ChessGame::newGame(ChessPlayer* whitePlayer,
 		m_playerToMove = (m_playerToMove == m_whitePlayer) ? m_blackPlayer : m_whitePlayer;
 		
 		m_playerToMove->makeMove(move);
-		m_chessboard->makeMove(move);
+		m_chessboard->makeMove(move, true);
 		
 		Q_ASSERT(m_chessboard->result() == Chess::NoResult);
 		emit moveHappened(move);
