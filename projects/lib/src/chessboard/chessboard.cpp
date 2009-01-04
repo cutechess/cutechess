@@ -24,13 +24,17 @@ using namespace Chess;
 
 
 Board::Board(Variant variant, QObject* parent)
-	: QObject(parent)
+	: QObject(parent),
+	  m_variant(NoVariant)
 {
 	setVariant(variant);
 }
 
 void Board::setVariant(Variant variant)
 {
+	if (variant == m_variant)
+		return;
+	
 	m_variant = variant;
 	m_isRandom = false;
 	
@@ -42,6 +46,9 @@ void Board::setVariant(Variant variant)
 	case CapablancaChess:
 		m_width = 10;
 		m_height = 8;
+		break;
+	default:
+		Q_ASSERT(m_variant != NoVariant);
 		break;
 	}
 	

@@ -61,7 +61,8 @@ enum Result
 /*! All supported variants of chess. */
 enum Variant
 {
-	StandardChess,	//!< Standard chess or Chess960
+	NoVariant,	//!< No chess variant.
+	StandardChess,	//!< Standard chess or Chess960.
 	CapablancaChess	//!< Capablanca/Gothic chess.
 };
 
