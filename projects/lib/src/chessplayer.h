@@ -51,7 +51,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void go();
 
 		/*! Returns the player's time control. */
-		TimeControl timeControl() const;
+		const TimeControl& timeControl() const;
 
 		/*! Sets the time control for the player. */
 		void setTimeControl(const TimeControl& timeControl);

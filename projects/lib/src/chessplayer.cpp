@@ -46,7 +46,7 @@ void ChessPlayer::go()
 		emit startedThinking(m_timeControl.timePerMove());
 }
 
-TimeControl ChessPlayer::timeControl() const
+const TimeControl& ChessPlayer::timeControl() const
 {
 	return m_timeControl;
 }

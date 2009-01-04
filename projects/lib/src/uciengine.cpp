@@ -66,22 +66,24 @@ void UciEngine::makeMove(const Chess::Move& move)
 
 void UciEngine::go()
 {
-	TimeControl blackTimeControl;
-	TimeControl whiteTimeControl;
-	
+	const ChessPlayer* whitePlayer;
+	const ChessPlayer* blackPlayer;
 	if (side() == Chess::White)
 	{
-		whiteTimeControl = m_timeControl;
-		blackTimeControl = m_opponent->timeControl();
+		whitePlayer = this;
+		blackPlayer = m_opponent;
 	}
 	else if (side() == Chess::Black)
 	{
-		whiteTimeControl = m_opponent->timeControl();
-		blackTimeControl = m_timeControl;
+		whitePlayer = m_opponent;
+		blackPlayer = this;
 	}
 	else
 		qFatal("Player %s doesn't have a side", qPrintable(m_name));
-
+	
+	const TimeControl& whiteTimeControl = whitePlayer->timeControl();
+	const TimeControl& blackTimeControl = blackPlayer->timeControl();
+	
 	QString command = "go";
 	if (m_timeControl.timePerMove() > 0)
 		command += QString(" movetime ") + QString::number(m_timeControl.timePerMove());
