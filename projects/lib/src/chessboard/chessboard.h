@@ -45,14 +45,14 @@ class LIB_EXPORT Board : public QObject
 		void setVariant(Variant variant);
 		
 		/*!
-		* Sets the board position according to a FEN string.
-		*
-		* The \a fen string can be in standard FEN, X-FEN or
-		* Shredder FEN format.
-		*
-		* FEN: http://en.wikipedia.org/wiki/Forsyth-Edwards_Notation
-		* \n X-FEN: http://en.wikipedia.org/wiki/X-FEN
-		*/
+		 * Sets the board position according to a FEN string.
+		 *
+		 * The \a fen string can be in standard FEN, X-FEN or
+		 * Shredder FEN format.
+		 *
+		 * FEN: http://en.wikipedia.org/wiki/Forsyth-Edwards_Notation
+		 * \n X-FEN: http://en.wikipedia.org/wiki/X-FEN
+		 */
 		bool setBoard(const QString& fen);
 		
 		/*!
@@ -99,13 +99,13 @@ class LIB_EXPORT Board : public QObject
 		QString moveString(const Move& move, MoveNotation notation);
 		
 		/*!
-		* Converts a move string into a Move.
-		*
-		* The notation is automatically detected, and can be either
-		* Long Algebraic notation or Standard Algebraic notation (SAN).
-		*
-		* \sa moveString()
-		*/
+		 * Converts a move string into a Move.
+		 *
+		 * The notation is automatically detected, and can be either
+		 * Long Algebraic notation or Standard Algebraic notation (SAN).
+		 *
+		 * \sa moveString()
+		 */
 		Move moveFromString(const QString& str);
 		
 		/*! Converts an opening book move into a Move. */
@@ -157,30 +157,30 @@ class LIB_EXPORT Board : public QObject
 		};
 		
 		/*!
-		* \brief A struct for castling rights.
-		*/
+		 * \brief A struct for castling rights.
+		 */
 		struct CastlingRights
 		{
 			/*!
-			* The rook squares for both castling sides for both players.
-			*
-			* The format is: \c rookSquare[ChessSide][CastlingSide]
-			* A value of 0 means no castling rights.
-			*
-			* Example:
-			* If the value of \c rookSquare[White][QueenSide] is 0, then
-			* castling is not possible for White on QueenSide.
-			*/
+			 * The rook squares for both castling sides for both players.
+			 *
+			 * The format is: \c rookSquare[ChessSide][CastlingSide]
+			 * A value of 0 means no castling rights.
+			 *
+			 * Example:
+			 * If the value of \c rookSquare[White][QueenSide] is 0, then
+			 * castling is not possible for White on QueenSide.
+			 */
 			int rookSquare[2][2];
 		};
 		
 		/*!
-		* \brief A struct for storing the move history of a game.
-		*
-		* After each move, a Board object adds a MoveData object to
-		* its history. This allows all moves to be completely reversible,
-		* something that couldn't be done with plain Move objects.
-		*/
+		 * \brief A struct for storing the move history of a game.
+		 *
+		 * After each move, a Board object adds a MoveData object to
+		 * its history. This allows all moves to be completely reversible,
+		 * something that couldn't be done with plain Move objects.
+		 */
 		struct MoveData
 		{
 			//! A chess move.
@@ -198,13 +198,13 @@ class LIB_EXPORT Board : public QObject
 		};
 		
 		/*!
-		* \brief Temporary storage for FEN position data.
-		*
-		* When parsing a FEN string, the data related to the position
-		* goes here. If all parts of it turn out to be valid, the data
-		* will be copied to a Board object and the FenData object
-		* can be discarded.
-		*/
+		 * \brief Temporary storage for FEN position data.
+		 *
+		 * When parsing a FEN string, the data related to the position
+		 * goes here. If all parts of it turn out to be valid, the data
+		 * will be copied to a Board object and the FenData object
+		 * can be discarded.
+		 */
 		class FenData
 		{
 			public:
