@@ -88,7 +88,7 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 		return false;
 	QTextStream in(&file);
 	
-	Board board;
+	Board board(variant());
 	int gameCount = 0;
 	int moveCount = 0;
 	while (in.status() == QTextStream::Ok)
@@ -96,10 +96,9 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 		PgnGame game(in, maxMoves);
 		if (game.isEmpty())
 			break;
-		if (game.m_variant != variant())
+		if (game.m_variant != board.variant())
 			continue;
 		
-		board.setVariant(game.m_variant);
 		board.setBoard(game.m_fen);
 		
 		foreach (const Move& srcMove, game.m_moves)
