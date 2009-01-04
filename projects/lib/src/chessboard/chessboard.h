@@ -2,6 +2,7 @@
 #define CHESSBOARD_H
 
 #include <QtGlobal>
+#include <QObject>
 #include <QVector>
 #include <QString>
 #include <QStringList>
@@ -26,11 +27,13 @@ namespace Chess {
  * traditional 8x8 board would be 10x12, and stored in a one-dimensional
  * vector with 10 * 12 = 120 elements.
  */
-class LIB_EXPORT Board
+class LIB_EXPORT Board : public QObject
 {
+	Q_OBJECT
+	
 	public:
 		/*! Creates a new Board of a specific chess variant. */
-		explicit Board(Variant variant = StandardChess);
+		explicit Board(Variant variant = StandardChess, QObject* parent = 0);
 		
 		/*!
 		 * Sets the chess variant to \a variant.

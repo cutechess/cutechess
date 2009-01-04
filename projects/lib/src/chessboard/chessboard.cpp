@@ -23,7 +23,8 @@
 using namespace Chess;
 
 
-Board::Board(Variant variant)
+Board::Board(Variant variant, QObject* parent)
+	: QObject(parent)
 {
 	setVariant(variant);
 }
