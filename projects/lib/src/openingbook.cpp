@@ -99,8 +99,7 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 		if (game.m_variant != variant())
 			continue;
 		
-		if (game.m_variant != board.variant())
-			board = Board(game.m_variant);
+		board.setVariant(game.m_variant);
 		board.setBoard(game.m_fen);
 		
 		foreach (const Move& srcMove, game.m_moves)

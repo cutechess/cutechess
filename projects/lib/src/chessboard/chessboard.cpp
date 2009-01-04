@@ -24,9 +24,15 @@ using namespace Chess;
 
 
 Board::Board(Variant variant)
-	: m_variant(variant),
-	  m_isRandom(false)
 {
+	setVariant(variant);
+}
+
+void Board::setVariant(Variant variant)
+{
+	m_variant = variant;
+	m_isRandom = false;
+	
 	switch (m_variant) {
 	case StandardChess:
 		m_width = 8;

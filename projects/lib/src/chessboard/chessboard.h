@@ -33,6 +33,15 @@ class LIB_EXPORT Board
 		explicit Board(Variant variant = StandardChess);
 		
 		/*!
+		 * Sets the chess variant to \a variant.
+		 *
+		 * The board's contents will be reset to an unusable state,
+		 * so a call to setBoard() is needed after the variant has
+		 * been changed.
+		 */
+		void setVariant(Variant variant);
+		
+		/*!
 		* Sets the board position according to a FEN string.
 		*
 		* The \a fen string can be in standard FEN, X-FEN or
