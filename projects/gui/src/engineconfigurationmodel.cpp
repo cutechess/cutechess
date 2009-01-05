@@ -93,7 +93,7 @@ bool EngineConfigurationModel::insertRows(int row, int count,
 
 	for (int i = 0; i < count; i++)
 	{
-		EngineConfiguration config(" ", " ", EngineConfiguration::Xboard);
+		EngineConfiguration config(" ", " ", ChessEngine::Xboard);
 		m_configurations.insert(row, config);
 	}
 
@@ -138,8 +138,7 @@ bool EngineConfigurationModel::setData(const QModelIndex& index,
 				config.setWorkingDirectory(value.toString());
 
 			case 3:
-				config.setProtocol(EngineConfiguration::ChessEngineProtocol(
-					value.toInt()));
+				config.setProtocol(ChessEngine::Protocol(value.toInt()));
 			break;
 
 			default:

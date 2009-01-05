@@ -19,6 +19,7 @@
 #define ENGINE_CONFIGURATION_H
 
 #include <QString>
+#include "chessengine.h"
 
 /*!
  * \brief The EngineConfiguration class defines a chess engine configuration.
@@ -29,13 +30,6 @@ class LIB_EXPORT EngineConfiguration
 {
 	public:
 
-		/*! The procol the engine uses for communication. */
-		enum ChessEngineProtocol
-		{
-			Xboard,	//!< The Xboard/Winboard chess protocol.
-			UCI	//!< The Universal Chess Interface (UCI).
-		};
-
 		/*! Creates an empty chess engine configuration. */
 		EngineConfiguration();
 		/*!
@@ -43,7 +37,7 @@ class LIB_EXPORT EngineConfiguration
 		 * command and protocol settings.
 		 */
 		EngineConfiguration(const QString& name, const QString& command,
-		                    ChessEngineProtocol protocol);
+		                    ChessEngine::Protocol protocol);
 
 		/*!
 		 * Sets the engine's name.
@@ -68,7 +62,7 @@ class LIB_EXPORT EngineConfiguration
 		 *
 		 * \sa protocol()
 		 */
-		void setProtocol(ChessEngineProtocol protocol);
+		void setProtocol(ChessEngine::Protocol protocol);
 
 		/*!
 		 * Returns the engine's name.
@@ -93,13 +87,13 @@ class LIB_EXPORT EngineConfiguration
 		 *
 		 * \sa setProtocol()
 		 */
-		ChessEngineProtocol protocol() const;
+		ChessEngine::Protocol protocol() const;
 
 	private:
 		QString m_name;
 		QString m_command;
 		QString m_workingDirectory;
-		ChessEngineProtocol m_protocol;
+		ChessEngine::Protocol m_protocol;
 
 };
 

@@ -19,6 +19,8 @@
 #include <QFileInfo>
 #include <QDir>
 
+#include <chessengine.h>
+
 #include "engineconfigurationdlg.h"
 
 EngineConfigurationDialog::EngineConfigurationDialog(
@@ -59,7 +61,7 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 	engine.setName(m_nameEdit->text());
 	engine.setCommand(m_commandEdit->text());
 	engine.setWorkingDirectory(m_workingDirEdit->text());
-	engine.setProtocol(EngineConfiguration::ChessEngineProtocol(
+	engine.setProtocol(ChessEngine::Protocol(
 		m_protocolCombo->currentIndex()));
 
 	return engine;

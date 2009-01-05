@@ -170,7 +170,7 @@ void MainWindow::readSettings()
 		config.setCommand(settings.value("command").toString());
 		config.setWorkingDirectory(
 			settings.value("working_directory").toString());
-		config.setProtocol(EngineConfiguration::ChessEngineProtocol(
+		config.setProtocol(ChessEngine::Protocol(
 			settings.value("protocol").toInt()));
 
 		m_engineConfigurations->addConfiguration(config);
@@ -234,7 +234,7 @@ void MainWindow::newGame()
 	{
 		switch (engineConfig[i].protocol())
 		{
-		case EngineConfiguration::UCI:
+		case ChessEngine::Uci:
 			player[i] = new UciEngine(engineProcess[i], chessgame->chessboard(), this);
 			break;
 		default:
