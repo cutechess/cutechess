@@ -99,7 +99,7 @@ void UciEngine::go()
 	ChessPlayer::go();
 }
 
-ChessEngine::ChessProtocol UciEngine::protocol() const
+ChessEngine::Protocol UciEngine::protocol() const
 {
 	return ChessEngine::Uci;
 }

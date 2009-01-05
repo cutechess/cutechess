@@ -40,7 +40,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 	public:
 		/*! The chess communication protocol. */
-		enum ChessProtocol
+		enum Protocol
 		{
 			Xboard,	//!< The Xboard/Winboard chess protocol.
 			Uci	//!< The Universal Chess Interface (UCI).
@@ -62,7 +62,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		bool isHuman() const;
 		
 		/*! Returns the engine's chess protocol. */
-		virtual ChessProtocol protocol() const = 0;
+		virtual Protocol protocol() const = 0;
 
 		/*!
 		 * Checks if the engine is still responding, and synchronizes

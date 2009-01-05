@@ -48,7 +48,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		void newGame(Chess::Side side, ChessPlayer* opponent);
 		void go();
 		void makeMove(const Chess::Move& move);
-		ChessProtocol protocol() const;
+		Protocol protocol() const;
 		void ping();
 
 	protected:

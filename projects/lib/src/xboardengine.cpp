@@ -114,7 +114,7 @@ void XboardEngine::go()
 	ChessPlayer::go();
 }
 
-ChessEngine::ChessProtocol XboardEngine::protocol() const
+ChessEngine::Protocol XboardEngine::protocol() const
 {
 	return ChessEngine::Xboard;
 }
