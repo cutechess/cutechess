@@ -82,9 +82,7 @@ void ChessGame::moveMade(const Chess::Move& move)
 	m_moveCount++;
 
 	// Get the elapsed time and update the time control
-	TimeControl playerTimeControl = m_playerToMove->timeControl();
-	playerTimeControl.update(m_timer.elapsed());
-	m_playerToMove->setTimeControl(playerTimeControl);
+	m_playerToMove->timeControl()->update(m_timer.elapsed());
 
 	m_playerToMove = (m_playerToMove == m_whitePlayer) ? m_blackPlayer : m_whitePlayer;
 
@@ -162,10 +160,7 @@ void ChessGame::newGame(ChessPlayer* whitePlayer,
 	   &&  !m_chessboard->isRepeatMove(move)
 	   &&  m_moveCount < 30)
 	{
-		// Update the time control
-		TimeControl playerTimeControl = m_playerToMove->timeControl();
-		playerTimeControl.update(0);
-		m_playerToMove->setTimeControl(playerTimeControl);
+		m_playerToMove->timeControl()->update(0);
 		
 		m_playerToMove->makeMove(move);
 		m_playerToMove = (m_playerToMove == m_whitePlayer) ? m_blackPlayer : m_whitePlayer;

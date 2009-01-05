@@ -19,9 +19,8 @@
 
 #include "chessplayer.h"
 
-ChessPlayer::ChessPlayer(const TimeControl& timeControl, QObject* parent)
+ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
-	  m_timeControl(timeControl),
 	  m_opponent(0),
 	  m_side(Chess::NoSide)
 {
@@ -46,9 +45,9 @@ void ChessPlayer::go()
 		emit startedThinking(m_timeControl.timePerMove());
 }
 
-const TimeControl& ChessPlayer::timeControl() const
+TimeControl* ChessPlayer::timeControl()
 {
-	return m_timeControl;
+	return &m_timeControl;
 }
 
 void ChessPlayer::setTimeControl(const TimeControl& timeControl)

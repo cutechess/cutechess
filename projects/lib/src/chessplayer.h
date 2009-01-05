@@ -35,7 +35,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 
 	public:
 		/*! Creates and initializes a new ChessPlayer object. */
-		ChessPlayer(const TimeControl& timeControl, QObject* parent = 0);
+		ChessPlayer(QObject* parent = 0);
 		
 		virtual ~ChessPlayer() { }
 
@@ -51,7 +51,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void go();
 
 		/*! Returns the player's time control. */
-		const TimeControl& timeControl() const;
+		TimeControl* timeControl();
 
 		/*! Sets the time control for the player. */
 		void setTimeControl(const TimeControl& timeControl);

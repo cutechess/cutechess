@@ -25,9 +25,8 @@ int ChessEngine::m_count = 0;
 
 ChessEngine::ChessEngine(QIODevice* ioDevice,
                          Chess::Board* chessboard,
-                         const TimeControl& timeControl,
                          QObject* parent)
-	: ChessPlayer(timeControl, parent),
+	: ChessPlayer(parent),
 	  m_chessboard(chessboard),
 	  m_notation(Chess::LongAlgebraic),
 	  m_isReady(true),

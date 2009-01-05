@@ -53,7 +53,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 */
 		ChessEngine(QIODevice* ioDevice,
 		            Chess::Board* chessboard,
-		            const TimeControl& timeControl,
 		            QObject* parent = 0);
 
 		virtual ~ChessEngine();

@@ -235,12 +235,14 @@ void MainWindow::newGame()
 		switch (engineConfig[i].protocol())
 		{
 		case EngineConfiguration::UCI:
-			player[i] = new UciEngine(engineProcess[i], chessgame->chessboard(), tc, this);
+			player[i] = new UciEngine(engineProcess[i], chessgame->chessboard(), this);
 			break;
 		default:
-			player[i] = new XboardEngine(engineProcess[i], chessgame->chessboard(), tc, this);
+			player[i] = new XboardEngine(engineProcess[i], chessgame->chessboard(), this);
 			break;
 		}
+		
+		player[i]->setTimeControl(tc);
 		
 		connect(player[i], SIGNAL(startedThinking(int)),
 			m_chessClock[i], SLOT(start(int)));

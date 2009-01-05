@@ -35,12 +35,10 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		 * \param ioDevice An open chess engine process or socket.
 		 * \param chessboard A chessboard object for converting between the
 		 * various move formats.
-		 * \param timeControl Time control for the player.
 		 * \param parent The parent object.
 		 */
 		XboardEngine(QIODevice* ioDevice,
 		             Chess::Board* chessboard,
-		             const TimeControl& timeControl,
 		             QObject* parent = 0);
 
 		~XboardEngine();
