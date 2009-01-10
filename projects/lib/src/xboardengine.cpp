@@ -138,6 +138,7 @@ void XboardEngine::parseLine(const QString& line)
 
 	if (command == "move")
 	{
+		m_timeControl.update();
 		Chess::Move move = m_chessboard->moveFromString(args);
 		emit moveMade(move);
 		

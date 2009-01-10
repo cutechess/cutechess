@@ -18,7 +18,6 @@
 #include "chessgame.h"
 #include "chessboard/chessboard.h"
 #include "chessplayer.h"
-#include "timecontrol.h"
 #include "openingbook.h"
 #include "pgngame.h"
 
@@ -81,13 +80,7 @@ void ChessGame::moveMade(const Chess::Move& move)
 
 	m_moveCount++;
 
-	// Get the elapsed time and update the time control
-	m_playerToMove->timeControl()->update(m_timer.elapsed());
-
 	m_playerToMove = (m_playerToMove == m_whitePlayer) ? m_blackPlayer : m_whitePlayer;
-
-	// Start counting the duration of the next move
-	m_timer.start();
 
 	m_playerToMove->makeMove(move);
 	m_chessboard->makeMove(move, true);
@@ -160,9 +153,8 @@ void ChessGame::newGame(ChessPlayer* whitePlayer,
 	   &&  !m_chessboard->isRepeatMove(move)
 	   &&  m_moveCount < 30)
 	{
-		m_playerToMove->timeControl()->update(0);
+		m_playerToMove->makeBookMove(move);
 		
-		m_playerToMove->makeMove(move);
 		m_playerToMove = (m_playerToMove == m_whitePlayer) ? m_blackPlayer : m_whitePlayer;
 		
 		m_playerToMove->makeMove(move);
@@ -172,7 +164,6 @@ void ChessGame::newGame(ChessPlayer* whitePlayer,
 		emit moveHappened(move);
 	}
 	
-	m_timer.start();
 	m_playerToMove->go();
 }
 

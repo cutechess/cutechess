@@ -18,6 +18,8 @@
 #ifndef TIMECONTROL_H
 #define TIMECONTROL_H
 
+#include <QTime>
+
 /*!
  * \brief Time controls of a chess game.
  *
@@ -82,11 +84,11 @@ class LIB_EXPORT TimeControl
 		/*! Sets the number of full moves left in the time control. */
 		void setMovesLeft(int movesLeft);
 		
-		/*!
-		 * Updates the time control after a move was made.
-		 * \param elapsedTime The time it took to make the last move.
-		 */
-		void update(int elapsedTime);
+		/*! Start the timer. */
+		void startTimer();
+		
+		/*! Update the time control with the elapsed time. */
+		void update();
 
 	private:
 		int m_movesPerTc;
@@ -95,6 +97,7 @@ class LIB_EXPORT TimeControl
 		int m_increment;
 		int m_timeLeft;
 		int m_movesLeft;
+		QTime m_timer;
 
 };
 

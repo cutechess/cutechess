@@ -19,7 +19,6 @@
 #define CHESSGAME_H
 
 #include <QObject>
-#include <QTime>
 #include "chessboard/chess.h"
 
 class ChessPlayer;
@@ -60,8 +59,6 @@ class LIB_EXPORT ChessGame : public QObject
 		bool m_gameInProgress;
 		int m_moveCount;
 		Chess::Result m_result;
-		QTime m_timer;
 };
 
 #endif // CHESSGAME_H
-

@@ -120,6 +120,7 @@ void UciEngine::parseLine(const QString& line)
 
 	if (command == "bestmove")
 	{
+		m_timeControl.update();
 		QString moveString = args.section(' ', 0, 0);
 		if (moveString.isEmpty())
 			moveString = args;

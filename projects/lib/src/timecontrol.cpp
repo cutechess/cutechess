@@ -60,26 +60,6 @@ int TimeControl::movesLeft() const
 	return m_movesLeft;
 }
 
-void TimeControl::update(int elapsedTime)
-{
-	if (m_timePerMove == 0)
-	{
-		setTimeLeft(m_timeLeft + m_increment - elapsedTime);
-
-		if (m_movesPerTc > 0)
-		{
-			setMovesLeft(m_movesLeft - 1);
-			
-			// Restart the time control
-			if (m_movesLeft == 0)
-			{
-				setMovesLeft(m_movesPerTc);
-				setTimeLeft(m_timePerTc + m_timeLeft);
-			}
-		}
-	}
-}
-
 void TimeControl::setTimePerTc(int timePerTc)
 {
 	Q_ASSERT(timePerTc >= 0);
@@ -136,3 +116,27 @@ void TimeControl::setMovesLeft(int movesLeft)
 		m_timePerMove = 0;
 }
 
+void TimeControl::startTimer()
+{
+	m_timer.start();
+}
+
+void TimeControl::update()
+{
+	if (m_timePerMove == 0)
+	{
+		setTimeLeft(m_timeLeft + m_increment - m_timer.elapsed());
+		
+		if (m_movesPerTc > 0)
+		{
+			setMovesLeft(m_movesLeft - 1);
+			
+			// Restart the time control
+			if (m_movesLeft == 0)
+			{
+				setMovesLeft(m_movesPerTc);
+				setTimeLeft(m_timePerTc + m_timeLeft);
+			}
+		}
+	}
+}

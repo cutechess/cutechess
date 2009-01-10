@@ -43,6 +43,15 @@ void ChessPlayer::go()
 		emit startedThinking(m_timeControl.timeLeft());
 	else if (m_timeControl.timePerMove() != 0)
 		emit startedThinking(m_timeControl.timePerMove());
+	
+	m_timeControl.startTimer();
+}
+
+void ChessPlayer::makeBookMove(const Chess::Move& move)
+{
+	m_timeControl.startTimer();
+	makeMove(move);
+	m_timeControl.update();
 }
 
 TimeControl* ChessPlayer::timeControl()
