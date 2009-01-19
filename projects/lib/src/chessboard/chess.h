@@ -94,7 +94,7 @@ class Move;
 //! The default starting position for standard chess
 const QString standardFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 //! The default starting position for Capablanca chess
-const QString capablancaFen = "rnabqkbvnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNABQKBCNR w KQkq - 0 1";
+const QString capablancaFen = "rnabqkbcnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNABQKBCNR w KQkq - 0 1";
 //! The default starting position for Gothic chess
 const QString gothicFen = "rnbqckabnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBQCKABNR w KQkq - 0 1";
 
