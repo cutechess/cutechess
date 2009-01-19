@@ -58,7 +58,7 @@ QString Symbols::symbolOf(Chess::Side side, Chess::Piece piece)
 				break;
 
 				case Chess::Queen:
-					symbol = Symbols::WhiteBishop;
+					symbol = Symbols::WhiteQueen;
 				break;
 
 				case Chess::King:
@@ -76,27 +76,27 @@ QString Symbols::symbolOf(Chess::Side side, Chess::Piece piece)
 			switch (piece)
 			{
 				case Chess::Pawn:
-					symbol = Symbols::WhitePawn;
+					symbol = Symbols::BlackPawn;
 				break;
 
 				case Chess::Rook:
-					symbol = Symbols::WhiteRook;
+					symbol = Symbols::BlackRook;
 				break;
 
 				case Chess::Knight:
-					symbol = Symbols::WhiteKnight;
+					symbol = Symbols::BlackKnight;
 				break;
 
 				case Chess::Bishop:
-					symbol = Symbols::WhiteBishop;
+					symbol = Symbols::BlackBishop;
 				break;
 
 				case Chess::Queen:
-					symbol = Symbols::WhiteBishop;
+					symbol = Symbols::BlackQueen;
 				break;
 
 				case Chess::King:
-					symbol = Symbols::WhiteKing;
+					symbol = Symbols::BlackKing;
 				break;
 				
 				default:
