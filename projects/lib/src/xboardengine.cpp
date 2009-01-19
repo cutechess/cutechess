@@ -67,8 +67,36 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	m_forceMode = true;
 	m_drawOnNextMove = false;
 	write("force");
+	write("new");
+	
+	QString variant;
+	switch (m_chessboard->variant())
+	{
+	case Chess::StandardChess:
+		if (m_chessboard->isRandomVariant())
+			variant = "fischerandom";
+		else
+			variant = "normal";
+		break;
+	case Chess::CapablancaChess:
+		if (m_chessboard->isRandomVariant())
+		{
+			if (m_chessboard->fenString() == Chess::gothicFen)
+				variant = "gothic";
+			else
+				variant = "capablancarandom";
+		}
+		else
+			variant = "capablanca";
+		break;
+	default:
+		break;
+	}
+	
+	if (variant != "normal")
+		write("variant " + variant);
 	write("setboard " + m_chessboard->fenString());
-
+	
 	// Send the time controls
 	if (m_timeControl.timePerMove() > 0)
 		write(QString("st ") + QString::number(m_timeControl.timePerMove() / 1000));
@@ -190,12 +218,12 @@ void XboardEngine::parseLine(const QString& line)
 	else if (command == "feature")
 	{
 		QRegExp rx("\\w+\\s*=\\s*(\"[^\"]*\"|\\d+)");
-
+		
 		int pos = 0;
 		QString arg;
 		QString feature;
 		QStringList list;
-		//while ((pos = args.indexOf(rx, pos)) != -1)
+		
 		while ((pos = rx.indexIn(args, pos)) != -1)
 		{
 			arg = args.mid(pos, rx.matchedLength());
@@ -205,19 +233,55 @@ void XboardEngine::parseLine(const QString& line)
 			if (list.count() != 2)
 				continue;
 			feature = list[0].trimmed();
+			
+			QString val;
+			if (list.size() > 1)
+			{
+				val = list[1].trimmed();
+				val.remove('\"');
+			}
+			
 			if (feature == "san")
 			{
-				if (list[1].trimmed() == "1")
+				if (val == "1")
 					m_notation = Chess::StandardAlgebraic;
 			}
 			else if (feature == "myname")
 			{
-				m_name = list[1].trimmed();
-				m_name.remove('\"');
+				m_name = val;
+			}
+			else if (feature == "variants")
+			{
+				QStringList variants = val.split(',');
+				QString gameVariant;
+				
+				switch (m_chessboard->variant())
+				{
+				case Chess::StandardChess:
+					// TODO: Chess 960
+					gameVariant = "normal";
+					break;
+				case Chess::CapablancaChess:
+					// TODO: Gothic chess
+					gameVariant = "capablanca";
+					break;
+				default:
+					return;
+				}
+				
+				bool variantFound = false;
+				foreach (QString variant, variants)
+				{
+					if (variant == gameVariant)
+						variantFound = true;
+				}
+				if (!variantFound)
+					qDebug("Engine %s doesn't support variant %s",
+					       qPrintable(m_name), qPrintable(gameVariant));
 			}
 			else if (feature == "done")
 			{
-				if (!m_initialized && list[1].trimmed() == "1")
+				if (!m_initialized && val == "1")
 				{
 					Q_ASSERT(!m_isReady);
 					m_initialized = true;

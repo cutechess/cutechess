@@ -120,9 +120,10 @@ Chess::Move ChessGame::bookMove()
 
 void ChessGame::newGame(ChessPlayer* whitePlayer,
                         ChessPlayer* blackPlayer,
+                        const QString& fen,
                         OpeningBook* book)
 {
-	m_chessboard->setBoard(Chess::standardFen);
+	m_chessboard->setBoard(fen);
 
 	m_result = Chess::NoResult;
 	m_moveCount = 0;
