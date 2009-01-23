@@ -33,6 +33,9 @@ class LIB_EXPORT Move
 		     int promotion = 0,
 		     int castlingSide = -1);
 		
+		/*! Returns true if move \a other is equal to this move. */
+		bool operator==(const Move &other) const;
+		
 		/*! The source square. */
 		int sourceSquare() const;
 		

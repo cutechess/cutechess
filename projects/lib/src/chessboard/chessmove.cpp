@@ -40,6 +40,14 @@ Move::Move(int sourceSquare,
 
 }
 
+bool Move::operator==(const Move &other) const
+{
+	return (other.sourceSquare() == m_sourceSquare &&
+	        other.targetSquare() == m_targetSquare &&
+	        other.promotion() == m_promotion &&
+	        other.castlingSide() == m_castlingSide);
+}
+
 int Move::sourceSquare() const
 {
 	return m_sourceSquare;
