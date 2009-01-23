@@ -36,18 +36,18 @@ static quint64 smpPerft(Chess::Board& board, int depth)
 	if (depth <= 1)
 		return moves.size();
 	
-	QVector<Chess::Board> boards(moves.size(), board);
 	QVector< QFuture<quint64> > futures(moves.size());
 	
 	for (int i = 0; i < moves.size(); i++)
 	{
-		boards[i].makeMove(moves[i]);
-		futures[i] = QtConcurrent::run(perft, boards[i], depth - 1);
+		board.makeMove(moves[i]);
+		futures[i] = QtConcurrent::run(perft, board, depth - 1);
+		board.undoMove();
 	}
 	
 	quint64 nodeCount = 0;
-	for (int i = 0; i < futures.size(); i++)
-		nodeCount += futures[i].result();
+	foreach (const QFuture<quint64>& future, futures)
+		nodeCount += future.result();
 
 	return nodeCount;
 }
