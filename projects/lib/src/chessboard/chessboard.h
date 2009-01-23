@@ -35,6 +35,9 @@ class LIB_EXPORT Board : public QObject
 		/*! Creates a new Board of a specific chess variant. */
 		explicit Board(Variant variant = StandardChess, QObject* parent = 0);
 		
+		/*! The copy constructor. */
+		explicit Board(const Board& other);
+		
 		/*!
 		 * Sets the chess variant to \a variant.
 		 *

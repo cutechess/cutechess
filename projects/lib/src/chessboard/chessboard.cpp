@@ -30,6 +30,14 @@ Board::Board(Variant variant, QObject* parent)
 	setVariant(variant);
 }
 
+Board::Board(const Board& other)
+	: QObject(0),
+	  m_variant(NoVariant)
+{
+	setVariant(other.variant());
+	setBoard(other.fenString());
+}
+
 void Board::setVariant(Variant variant)
 {
 	if (variant == m_variant)
