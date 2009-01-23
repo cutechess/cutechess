@@ -66,8 +66,8 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	ChessPlayer::newGame(side, opponent);
 	m_forceMode = true;
 	m_drawOnNextMove = false;
-	write("force");
 	write("new");
+	write("force");
 	
 	QString variant;
 	switch (m_chessboard->variant())
