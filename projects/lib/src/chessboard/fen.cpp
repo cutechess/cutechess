@@ -261,7 +261,7 @@ QString Board::castlingRightsString() const
 		for (int cside = KingSide; cside >= QueenSide; cside--) {
 			int rs = m_castlingRights.rookSquare[side][cside];
 			if (rs == 0)
-				break;
+				continue;
 			
 			int offset = (cside == QueenSide) ? -1: 1;
 			int piece;
