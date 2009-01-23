@@ -98,14 +98,14 @@ QString Board::sanMoveString(const Move& move)
 		str += Notation::pieceChar(piece);
 		QVector<Move> moves = legalMoves();
 		
-		QVector<Move>::iterator it;
-		for (it = moves.begin(); it != moves.end(); ++it) {
-			int source2 = it->sourceSquare();
+		foreach (const Move& move2, moves)
+		{
+			int source2 = move2.sourceSquare();
 			if (source2 == source)
 				continue;
 			if ((m_squares[source2] * m_sign) != piece)
 				continue;
-			if (it->targetSquare() == target) {
+			if (move2.targetSquare() == target) {
 				Square square2 = chessSquare(source2);
 				if (square2.file != square.file)
 					needFile = true;
@@ -287,36 +287,36 @@ Move Board::moveFromSanString(const QString& str)
 	}
 	
 	QVector<Move> moves = legalMoves();
-	QVector<Move>::const_iterator move;
-	QVector<Move>::const_iterator match = moves.end();
+	const Move* match = 0;
 	
 	// Loop through all legal moves to find a move that matches
 	// the data we got from the move string.
-	for (move = moves.begin(); move != moves.end(); ++move) {
-		int piece2 = m_squares[move->sourceSquare()] * m_sign;
+	foreach (const Move& move, moves)
+	{
+		int piece2 = m_squares[move.sourceSquare()] * m_sign;
 		if (piece2 != piece)
 			continue;
-		if (move->targetSquare() != target)
+		if (move.targetSquare() != target)
 			continue;
-		Square sourceSq2 = chessSquare(move->sourceSquare());
+		Square sourceSq2 = chessSquare(move.sourceSquare());
 		if (sourceSq.rank != -1 && sourceSq2.rank != sourceSq.rank)
 			continue;
 		if (sourceSq.file != -1 && sourceSq2.file != sourceSq.file)
 			continue;
 		// Castling moves were handled earlier
-		if (move->castlingSide() != -1)
+		if (move.castlingSide() != -1)
 			continue;
-		if (move->promotion() != promotion)
+		if (move.promotion() != promotion)
 			continue;
 		
 		// Return an empty move if there are multiple moves that
 		// match the move string.
-		if (match != moves.end())
+		if (match != 0)
 			return Move(0, 0);
-		match = move;
+		match = &move;
 	}
 	
-	if (match != moves.end())
+	if (match != 0)
 		return *match;
 	
 	return Move(0, 0);

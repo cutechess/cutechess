@@ -207,9 +207,9 @@ void Board::generateHoppingMoves(int sourceSquare,
                                  const QVector<int>& offsets,
                                  QVector<Chess::Move>& moves) const
 {
-	QVector<int>::const_iterator it;
-	for (it = offsets.begin(); it != offsets.end(); ++it) {
-		int targetSquare = sourceSquare + *it;
+	foreach (int i, offsets)
+	{
+		int targetSquare = sourceSquare + i;
 		int capture = m_squares[targetSquare];
 		if (capture == InvalidPiece || capture * m_sign > 0)
 			continue;
@@ -221,16 +221,16 @@ void Board::generateSlidingMoves(int sourceSquare,
                                  const QVector<int>& offsets,
                                  QVector<Chess::Move>& moves) const
 {
-	QVector<int>::const_iterator it;
-	for (it = offsets.begin(); it != offsets.end(); ++it) {
-		int targetSquare = sourceSquare + *it;
+	foreach (int i, offsets)
+	{
+		int targetSquare = sourceSquare + i;
 		int capture;
 		while ((capture = m_squares[targetSquare]) != InvalidPiece
 		&&      capture * m_sign <= 0) {
 			moves.push_back(Move(sourceSquare, targetSquare));
 			if (capture != NoPiece)
 				break;
-			targetSquare += *it;
+			targetSquare += i;
 		}
 	}
 }

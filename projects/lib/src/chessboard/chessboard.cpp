@@ -255,11 +255,10 @@ bool Board::inCheck(int side, int square) const
 	if ((attacker * sign) == -Pawn)
 		return true;
 	
-	QVector<int>::const_iterator it;
-	
 	// Knight, archbishop, chancellor attacks
-	for (it = m_knightOffsets.begin(); it != m_knightOffsets.end(); ++it) {
-		attacker = m_squares[square + *it];
+	foreach (int i, m_knightOffsets)
+	{
+		attacker = m_squares[square + i];
 		switch (attacker * sign) {
 		case -Knight: case -Archbishop: case -Chancellor:
 			return true;
@@ -267,8 +266,9 @@ bool Board::inCheck(int side, int square) const
 	}
 	
 	// Bishop, queen, archbishop, king attacks
-	for (it = m_bishopOffsets.begin(); it != m_bishopOffsets.end(); ++it) {
-		int targetSquare = square + *it;
+	foreach (int i, m_bishopOffsets)
+	{
+		int targetSquare = square + i;
 		if (targetSquare == m_kingSquare[!side])
 			return true;
 		while ((attacker = m_squares[targetSquare]) != InvalidPiece
@@ -279,13 +279,14 @@ bool Board::inCheck(int side, int square) const
 			}
 			if (attacker != NoPiece)
 				break;
-			targetSquare += *it;
+			targetSquare += i;
 		}
 	}
 	
 	// Rook, queen, chancellor, king attacks
-	for (it = m_rookOffsets.begin(); it != m_rookOffsets.end(); ++it) {
-		int targetSquare = square + *it;
+	foreach (int i, m_rookOffsets)
+	{
+		int targetSquare = square + i;
 		if (targetSquare == m_kingSquare[!side])
 			return true;
 		while ((attacker = m_squares[targetSquare]) != InvalidPiece
@@ -296,7 +297,7 @@ bool Board::inCheck(int side, int square) const
 			}
 			if (attacker != NoPiece)
 				break;
-			targetSquare += *it;
+			targetSquare += i;
 		}
 	}
 	
@@ -524,10 +525,8 @@ Result Board::result()
 	}
 	
 	int material[2] = { 0, 0 };
-	QVector<int>::iterator it;
-	for (it = m_squares.begin(); it != m_squares.end(); ++it)
+	foreach (int piece, m_squares)
 	{
-		int piece = *it;
 		if (piece == NoPiece || piece == InvalidPiece)
 			continue;
 		int side;
