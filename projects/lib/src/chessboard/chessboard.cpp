@@ -503,17 +503,7 @@ bool Board::isLegalPosition() const
 
 bool Board::isLegalMove(const Chess::Move& move)
 {
-	QVector<Move> moves = legalMoves();
-	QVector<Move>::const_iterator it;
-	for (it = moves.begin(); it != moves.end(); it++) {
-		if (it->sourceSquare() == move.sourceSquare()
-		&&  it->targetSquare() == move.targetSquare()
-		&&  it->promotion() == move.promotion()
-		&&  it->castlingSide() == move.castlingSide())
-			return true;
-	}
-	
-	return false;
+	return legalMoves().contains(move);
 }
 
 Result Board::result()
