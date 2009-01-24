@@ -84,10 +84,8 @@ void ChessEngine::flushWriteBuffer()
 	if (m_writeBuffer.isEmpty())
 		return;
 
-	foreach (QString line, m_writeBuffer)
-	{
+	foreach (const QString& line, m_writeBuffer)
 		write(line);
-	}
 	m_writeBuffer.clear();
 }
 

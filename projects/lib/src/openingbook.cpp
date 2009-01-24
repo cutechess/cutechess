@@ -130,19 +130,18 @@ BookMove OpeningBook::move(quint64 key) const
 	
 	// Calculate the total weight of all available moves
 	int totalWeight = 0;
-	QList<Entry>::const_iterator it;
-	for (it = entries.constBegin(); it != entries.constEnd(); ++it)
-		totalWeight += it->weight;
+	foreach (const Entry& entry, entries)
+		totalWeight += entry.weight;
 	
 	// Pick a move randomly, with the highest-weighted move having
 	// the highest probability of getting being picked.
 	int pick = qrand() % totalWeight;
 	int currentWeight = 0;
-	for (it = entries.constBegin(); it != entries.constEnd(); ++it)
+	foreach (const Entry& entry, entries)
 	{
-		currentWeight += it->weight;
+		currentWeight += entry.weight;
 		if (currentWeight > pick)
-			return it->move;
+			return entry.move;
 	}
 	
 	return move;

@@ -234,12 +234,8 @@ void XboardEngine::parseLine(const QString& line)
 				continue;
 			feature = list[0].trimmed();
 			
-			QString val;
-			if (list.size() > 1)
-			{
-				val = list[1].trimmed();
-				val.remove('\"');
-			}
+			QString val = list[1].trimmed();
+			val.remove('\"');
 			
 			if (feature == "san")
 			{
@@ -269,13 +265,7 @@ void XboardEngine::parseLine(const QString& line)
 					return;
 				}
 				
-				bool variantFound = false;
-				foreach (QString variant, variants)
-				{
-					if (variant == gameVariant)
-						variantFound = true;
-				}
-				if (!variantFound)
+				if (!variants.contains(gameVariant))
 					qDebug("Engine %s doesn't support variant %s",
 					       qPrintable(m_name), qPrintable(gameVariant));
 			}
