@@ -1,7 +1,6 @@
 TEMPLATE = lib
 TARGET = chess
 QT = core
-CONFIG += qt debug
 DESTDIR = $$PWD
 
 win32 {

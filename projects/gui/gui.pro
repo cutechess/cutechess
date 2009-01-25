@@ -24,7 +24,6 @@ macx-xcode {
     DEFINES += CUTECHESS_VERSION=\\\"$$CUTECHESS_VERSION\\\"
 }
 
-CONFIG += qt debug
 QT += svg
 
 win32 : debug {
