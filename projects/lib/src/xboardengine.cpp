@@ -84,7 +84,7 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 			if (m_chessboard->fenString() == Chess::gothicFen)
 				variant = "gothic";
 			else
-				variant = "capablancarandom";
+				variant = "caparandom";
 		}
 		else
 			variant = "capablanca";
