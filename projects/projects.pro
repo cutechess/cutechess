@@ -1,4 +1,4 @@
 CONFIG += ordered
 
 TEMPLATE = subdirs
-SUBDIRS = lib gui
+SUBDIRS = lib gui cli
