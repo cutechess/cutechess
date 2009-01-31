@@ -65,8 +65,8 @@ void UciEngine::makeMove(const Chess::Move& move)
 
 void UciEngine::go()
 {
-	const TimeControl* whiteTc;
-	const TimeControl* blackTc;
+	const TimeControl* whiteTc = 0;
+	const TimeControl* blackTc = 0;
 	if (side() == Chess::White)
 	{
 		whiteTc = timeControl();
