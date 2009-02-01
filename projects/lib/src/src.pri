@@ -8,6 +8,7 @@ HEADERS += chessengine.h \
            chessplayer.h \
            engineconfiguration.h \
            openingbook.h \
+           pgnfile.h \
            pgngame.h \
            polyglotbook.h \
            symbols.h \
@@ -20,6 +21,7 @@ SOURCES += chessengine.cpp \
            chessplayer.cpp \
            engineconfiguration.cpp \
            openingbook.cpp \
+           pgnfile.cpp \
            pgngame.cpp \
            polyglotbook.cpp \
            symbols.cpp \
