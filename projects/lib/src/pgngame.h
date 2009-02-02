@@ -7,7 +7,7 @@
 #include "chessboard/chess.h"
 #include "chessboard/chessmove.h"
 class ChessGame;
-class QTextStream;
+class PgnFile;
 
 
 /*!
@@ -32,12 +32,12 @@ class LIB_EXPORT PgnGame
 		/*!
 		 * Constructs a PgnGame from a text stream.
 		 *
-		 * \param in The input text stream.
+		 * \param in The input PGN file.
 		 * \param maxMoves The maximum number of halfmoves to read.
 		 * \note Even if the stream contains multiple games,
 		 * only one will be read.
 		 */
-		PgnGame(QTextStream& in, int maxMoves = 1000);
+		PgnGame(PgnFile& in, int maxMoves = 1000);
 		
 		/*!
 		 * Write the game to a file.
@@ -58,10 +58,11 @@ class LIB_EXPORT PgnGame
 			PgnComment,
 			PgnNag,
 			PgnResult,
+			PgnEmpty,
 			PgnError
 		};
 
-		PgnItem readItem(QTextStream& in, Chess::Board& board);
+		PgnItem readItem(PgnFile& in);
 		
 		QVector<Chess::Move> m_moves;
 		QString m_whitePlayer;
@@ -71,7 +72,7 @@ class LIB_EXPORT PgnGame
 		QString m_fen;
 		Chess::Variant m_variant;
 		bool m_isRandomVariant;
-		bool m_isEmpty;
+		bool m_hasTags;
 		Chess::Result m_result;
 		int m_round;
 };

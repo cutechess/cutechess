@@ -18,14 +18,16 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDate>
+#include <QtDebug>
 #include "pgngame.h"
 #include "chessgame.h"
 #include "chessboard/chessboard.h"
 #include "chessplayer.h"
+#include "pgnfile.h"
 
 
 PgnGame::PgnGame(const ChessGame* game)
-	: m_isEmpty(true)
+	: m_hasTags(false)
 {
 	Q_ASSERT(game != 0);
 	
@@ -38,7 +40,7 @@ PgnGame::PgnGame(const ChessGame* game)
 	m_isRandomVariant = board->isRandomVariant();
 	m_result = game->result();
 	
-	m_isEmpty = false;
+	m_hasTags = true;
 }
 
 static QString resultToString(Chess::Result result)
@@ -72,7 +74,7 @@ static Chess::Result resultFromString(const QString& str)
 	return Chess::ResultError;
 }
 
-PgnGame::PgnItem PgnGame::readItem(QTextStream& in, Chess::Board& board)
+PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 {
 	in.skipWhiteSpace();
 	PgnItem itemType = PgnMove;
@@ -82,11 +84,12 @@ PgnGame::PgnItem PgnGame::readItem(QTextStream& in, Chess::Board& board)
 	QChar closingBracket;
 	int bracketLevel = 0;
 	QString str;
+	Chess::Board* board = in.board();
 	
 	while (in.status() == QTextStream::Ok)
 	{
-		in >> c;
-		if (m_isEmpty && itemType != PgnTag && c != '[')
+		c = in.readChar();
+		if (!m_hasTags && itemType != PgnTag && c != '[')
 			continue;
 		if ((c == '\n' || c == '\r') && itemType != PgnComment)
 			break;
@@ -131,9 +134,9 @@ PgnGame::PgnItem PgnGame::readItem(QTextStream& in, Chess::Board& board)
 				if (m_moves.size() > 0)
 				{
 					// We may be reading the next game in
-					// the stream, so rewind by one byte.
-					in.seek(in.pos() - 1);
-					qDebug("No termination marker");
+					// the stream, so rewind by one character.
+					in.rewindChar();
+					qDebug() << "No termination marker";
 					return PgnError;
 				}
 				
@@ -175,15 +178,15 @@ PgnGame::PgnItem PgnGame::readItem(QTextStream& in, Chess::Board& board)
 	
 	str = str.trimmed();
 	if (str.isEmpty())
-		return PgnError;
+		return PgnEmpty;
 	
 	if ((itemType == PgnMove || itemType == PgnMoveNumber)
 	&&  (str == "*" || str == "1/2-1/2" || str == "1-0" || str == "0-1"))
 	{
 		Chess::Result result = resultFromString(str);
 		if (result != m_result)
-			qDebug("The termination marker is different"
-			       " from the result tag");
+			qDebug() << "Line" << in.lineNumber() << "The termination "
+			            "marker is different from the result tag";
 		m_result = result;
 		return PgnResult;
 	}
@@ -201,35 +204,43 @@ PgnGame::PgnItem PgnGame::readItem(QTextStream& in, Chess::Board& board)
 		{
 			m_result = resultFromString(param);
 			if (m_result == Chess::ResultError)
-				qDebug("Invalid result: %s", qPrintable(param));
+				qDebug() << "Invalid result:" << param;
 		}
 		else if (tag == "FEN")
 		{
 			m_fen = param;
-			if (!board.setBoard(m_fen))
+			if (!board->setBoard(m_fen))
 			{
-				qDebug("Invalid FEN: %s", qPrintable(m_fen));
+				qDebug() << "Invalid FEN:" << m_fen;
 				return PgnError;
 			}
 		}
 	}
 	else if (itemType == PgnMove)
 	{
-		if (m_isEmpty)
+		if (!m_hasTags)
 		{
-			qDebug("No tags found");
+			qDebug() << "No tags found";
 			return PgnError;
 		}
 		
-		Chess::Move move = board.moveFromString(str);
-		if (board.isLegalMove(move))
+		// If the FEN string wasn't already set by the FEN tag,
+		// set the board when we get the first move
+		if (m_fen.isEmpty())
+		{
+			board->setBoard();
+			m_fen = board->startingFen();
+		}
+		
+		Chess::Move move = board->moveFromString(str);
+		if (board->isLegalMove(move))
 		{
 			m_moves.append(move);
-			board.makeMove(move);
+			board->makeMove(move);
 		}
 		else
 		{
-			qDebug("Illegal move: %s", qPrintable(str));
+			qDebug() << "Illegal move:" << str;
 			return PgnError;
 		}
 	}
@@ -239,7 +250,7 @@ PgnGame::PgnItem PgnGame::readItem(QTextStream& in, Chess::Board& board)
 		int nag = str.toInt(&ok);
 		if (!ok || nag < 0 || nag > 255)
 		{
-			qDebug("Invalid NAG: %s", qPrintable(str));
+			qDebug() << "Invalid NAG:" << str;
 			return PgnError;
 		}
 	}
@@ -247,33 +258,40 @@ PgnGame::PgnItem PgnGame::readItem(QTextStream& in, Chess::Board& board)
 	return itemType;
 }
 
-PgnGame::PgnGame(QTextStream& in, int maxMoves)
+PgnGame::PgnGame(PgnFile& in, int maxMoves)
 	: m_variant(Chess::StandardChess),
 	  m_isRandomVariant(false),
-	  m_isEmpty(true),
+	  m_hasTags(false),
 	  m_result(Chess::NoResult),
 	  m_round(0)
 {
-	Chess::Board board(Chess::StandardChess);
-	board.setBoard(Chess::standardFen);
-	m_fen = board.fenString();
-
+	Chess::Board* board = in.board();
+	if (in.variant() != Chess::NoVariant)
+		m_variant = in.variant();
+	else
+		board->setVariant(m_variant);
+	
 	while (in.status() == QTextStream::Ok
 	   &&  m_moves.size() < maxMoves)
 	{
-		PgnItem item = readItem(in, board);
+		PgnItem item = readItem(in);
 		if (item == PgnError)
+		{
+			qDebug() << "PGN error on line" << in.lineNumber();
 			break;
+		}
 		else if (item == PgnTag)
-			m_isEmpty = false;
+			m_hasTags = true;
 		else if (item == PgnResult)
+			break;
+		else if (item == PgnEmpty)
 			break;
 	}
 }
 
 void PgnGame::write(const QString& filename) const
 {
-	if (m_isEmpty)
+	if (!m_hasTags)
 		return;
 	
 	bool useFen = false;
@@ -294,7 +312,7 @@ void PgnGame::write(const QString& filename) const
 		else
 			useFen = true;
 		if (m_isRandomVariant)
-			variantString = "Capablancarandom";
+			variantString = "Caparandom";
 	}
 	
 	QString resultString = resultToString(m_result);
@@ -331,6 +349,6 @@ void PgnGame::write(const QString& filename) const
 
 bool PgnGame::isEmpty() const
 {
-	return m_isEmpty;
+	return m_moves.isEmpty();
 }
 

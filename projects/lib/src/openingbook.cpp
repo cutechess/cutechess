@@ -19,9 +19,9 @@
 #include <QString>
 #include <QFile>
 #include <QDataStream>
-#include <QTextStream>
 #include "chessboard/chessboard.h"
 #include "pgngame.h"
+#include "pgnfile.h"
 
 
 void OpeningBook::addEntry(const BookMove& move, quint64 key)
@@ -83,12 +83,11 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 	
 	Q_ASSERT(maxMoves > 0);
 	
-	QFile file(filename);
-	if (!file.open(QIODevice::ReadOnly))
+	PgnFile in(filename, variant());
+	if (!in.isOpen())
 		return false;
-	QTextStream in(&file);
+	Chess::Board* board = in.board();
 	
-	Board board(variant());
 	int gameCount = 0;
 	int moveCount = 0;
 	while (in.status() == QTextStream::Ok)
@@ -96,21 +95,18 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 		PgnGame game(in, maxMoves);
 		if (game.isEmpty())
 			break;
-		if (game.m_variant != board.variant())
-			continue;
 		
-		board.setBoard(game.m_fen);
-		
+		board->setBoard(game.m_fen);
 		foreach (const Move& srcMove, game.m_moves)
 		{
-			Square src = board.chessSquare(srcMove.sourceSquare());
-			Square trg = board.chessSquare(srcMove.targetSquare());
+			Square src = board->chessSquare(srcMove.sourceSquare());
+			Square trg = board->chessSquare(srcMove.targetSquare());
 			int prom = srcMove.promotion();
 
-			addEntry(BookMove(src, trg, prom), board.key());
-			board.makeMove(srcMove);
-			moveCount++;
+			addEntry(BookMove(src, trg, prom), board->key());
+			board->makeMove(srcMove);
 		}
+		moveCount += game.m_moves.size();
 		gameCount++;
 	}
 	qDebug("Imported %d moves from %d games", moveCount, gameCount);
