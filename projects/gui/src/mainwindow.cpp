@@ -257,7 +257,7 @@ void MainWindow::newGame()
 			m_engineDebugTextEdit, SLOT(append(const QString&)));
 	}
 
-	chessgame->newGame(player[0], player[1], Chess::standardFen);
+	chessgame->newGame(player[0], player[1]);
 }
 
 void MainWindow::printGame()

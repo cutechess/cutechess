@@ -55,8 +55,18 @@ class LIB_EXPORT Board : public QObject
 		 *
 		 * FEN: http://en.wikipedia.org/wiki/Forsyth-Edwards_Notation
 		 * \n X-FEN: http://en.wikipedia.org/wiki/X-FEN
+		 *
+		 * Returns true if successfull.
 		 */
 		bool setBoard(const QString& fen);
+		
+		/*!
+		 * Sets the board position to the default starting position
+		 * of the current chess variant.
+		 *
+		 * Returns true if successfull.
+		 */
+		bool setBoard();
 		
 		/*!
 		 * Returns the FEN string of the current board position.

@@ -35,7 +35,7 @@ class LIB_EXPORT ChessGame : public QObject
 		Chess::Board* chessboard() const;
 		void newGame(ChessPlayer* whitePlayer,
 		             ChessPlayer* blackPlayer,
-		             const QString& fen,
+		             const QString& fen = "",
 		             OpeningBook* book = 0);
 		ChessPlayer* whitePlayer() const;
 		ChessPlayer* blackPlayer() const;

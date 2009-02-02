@@ -252,6 +252,19 @@ bool Board::setBoard(const QString& fen)
 	return true;
 }
 
+bool Board::setBoard()
+{
+	switch (m_variant)
+	{
+	case StandardChess:
+		return setBoard(standardFen);
+	case CapablancaChess:
+		return setBoard(capablancaFen);
+	default:
+		return false;
+	}
+}
+
 QString Board::castlingRightsString() const
 {
 	QString str;
