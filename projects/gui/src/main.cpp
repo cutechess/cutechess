@@ -33,9 +33,9 @@ int main(int argc, char* argv[])
 {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 	
-	QCoreApplication::setOrganizationName("Cute Chess");
+	QCoreApplication::setOrganizationName("cutechess");
 	QCoreApplication::setOrganizationDomain("cutechess.org");
-	QCoreApplication::setApplicationName("Cute Chess");
+	QCoreApplication::setApplicationName("cutechess");
 
 	QApplication app(argc, argv);
 
