@@ -7,9 +7,17 @@ generator. The current qmake project file doesn't have support for
 installations. However the main executable has the necessary resources
 built-in by default so it's the only thing you need to deploy.
 
-First you need to build the Makefile:
+First you need to build the Makefile in either release or debug mode.
+Release mode is for general program usage and offers the best
+performance. Debug mode is for debugging Cute Chess.
+
+To build the Makefile in release mode (default):
 
     $ qmake
+
+    or in debug mode:
+
+    $ qmake "CONFIG += debug"
 
 And to build the source:
 
