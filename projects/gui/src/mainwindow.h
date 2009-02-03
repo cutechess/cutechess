@@ -48,6 +48,7 @@ class MainWindow : public QMainWindow
 		void newGame();
 		void printGame();
 		void manageEngines();
+		void openConfigurationFile();
 
 	private:
 		void createActions();
@@ -74,6 +75,7 @@ class MainWindow : public QMainWindow
 		QAction* m_printGameAct;
 		QAction* m_newGameAct;
 		QAction* m_manageEnginesAct;
+		QAction* m_openConfigurationFileAct;
 
 		QTextEdit* m_engineDebugTextEdit;
 

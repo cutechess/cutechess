@@ -87,12 +87,17 @@ void MainWindow::createActions()
 
 	m_manageEnginesAct = new QAction(tr("Manage..."), this);
 
+	m_openConfigurationFileAct = new QAction("Open configuration file", this);
+
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
 	connect(m_printGameAct, SIGNAL(triggered(bool)), this, SLOT(printGame()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
 
 	connect (m_manageEnginesAct, SIGNAL(triggered(bool)), this,
 		SLOT(manageEngines()));
+
+	connect(m_openConfigurationFileAct, SIGNAL(triggered(bool)), this,
+		SLOT(openConfigurationFile()));
 }
 
 void MainWindow::createMenus()
@@ -112,6 +117,7 @@ void MainWindow::createMenus()
 	m_helpMenu = menuBar()->addMenu(tr("&Help"));
 
 	m_debugMenu = menuBar()->addMenu("&Debug");
+	m_debugMenu->addAction(m_openConfigurationFileAct);
 }
 
 void MainWindow::createToolBars()
@@ -291,5 +297,11 @@ void MainWindow::manageEngines()
 		delete m_engineConfigurations;
 		m_engineConfigurations = new EngineConfigurationModel(oldConfigurations);
 	}
+}
+
+void MainWindow::openConfigurationFile()
+{
+	QSettings settings;
+	QDesktopServices::openUrl(QUrl("file://" + settings.fileName()));
 }
 
