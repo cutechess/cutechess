@@ -132,18 +132,16 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 	
-	QByteArray content = file.readAll();
-	file.close();
-	
 	QDomDocument doc;
 	QString errorMsg;
 	int line, col;
-	if (!doc.setContent(content, &errorMsg, &line, &col))
+	if (!doc.setContent(&file, &errorMsg, &line, &col))
 	{
 		qWarning() << "Error in line" << line << "column" << col;
 		qWarning() << errorMsg;
 		return 1;
 	}
+	file.close();
 	
 	if (!trimDoc(doc))
 	{
