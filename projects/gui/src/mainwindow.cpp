@@ -225,7 +225,7 @@ void MainWindow::newGame()
 		}
 	}
 
-	ChessGame* chessgame = new ChessGame(this);
+	ChessGame* chessgame = new ChessGame(Chess::StandardChess, this);
 
 	connect(chessgame, SIGNAL(moveHappened(const Chess::Move&)),
 	        m_visualChessboard, SLOT(makeMove(const Chess::Move&)));
@@ -241,29 +241,27 @@ void MainWindow::newGame()
 		switch (engineConfig[i].protocol())
 		{
 		case ChessEngine::Uci:
-			player[i] = new UciEngine(engineProcess[i], chessgame->chessboard(), this);
+			player[i] = new UciEngine(engineProcess[i], chessgame->board(), this);
 			break;
 		default:
-			player[i] = new XboardEngine(engineProcess[i], chessgame->chessboard(), this);
+			player[i] = new XboardEngine(engineProcess[i], chessgame->board(), this);
 			break;
 		}
 		
 		player[i]->setTimeControl(tc);
+		chessgame->setPlayer((Chess::Side)i, player[i]);
 		
 		connect(player[i], SIGNAL(startedThinking(int)),
 			m_chessClock[i], SLOT(start(int)));
-
 		connect(player[i], SIGNAL(moveMade(const Chess::Move&)),
 			m_chessClock[i], SLOT(stop()));
-		
 		connect(chessgame, SIGNAL(gameEnded()),
 		        m_chessClock[i], SLOT(stop()));
-
 		connect(player[i], SIGNAL(debugMessage(const QString&)),
 			m_engineDebugTextEdit, SLOT(append(const QString&)));
 	}
 
-	chessgame->newGame(player[0], player[1]);
+	chessgame->start();
 }
 
 void MainWindow::printGame()

@@ -16,33 +16,47 @@
 */
 
 #include "chessgame.h"
+#include <QtDebug>
 #include "chessboard/chessboard.h"
 #include "chessplayer.h"
 #include "openingbook.h"
 #include "pgngame.h"
 
 
-ChessGame::ChessGame(QObject *parent, Chess::Variant variant)
+ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 	: QObject(parent),
-	  m_whitePlayer(0),
-	  m_blackPlayer(0),
-	  m_playerToMove(0),
 	  m_book(0),
 	  m_gameInProgress(false),
 	  m_moveCount(0),
 	  m_result(Chess::NoResult)
 {
-	m_chessboard = new Chess::Board(variant);
+	m_player[Chess::White] = 0;
+	m_player[Chess::Black] = 0;
+	m_board = new Chess::Board(variant);
 }
 
 ChessGame::~ChessGame()
 {
-	delete m_chessboard;
+	delete m_board;
 }
 
-Chess::Board* ChessGame::chessboard() const
+Chess::Board* ChessGame::board() const
 {
-	return m_chessboard;
+	return m_board;
+}
+
+ChessPlayer* ChessGame::playerToMove()
+{
+	if (m_board->sideToMove() == Chess::NoSide)
+		return 0;
+	return m_player[m_board->sideToMove()];
+}
+
+ChessPlayer* ChessGame::playerToWait()
+{
+	if (m_board->sideToMove() == Chess::NoSide)
+		return 0;
+	return m_player[!((int)m_board->sideToMove())];
 }
 
 void ChessGame::endGame()
@@ -51,7 +65,7 @@ void ChessGame::endGame()
 	{
 		m_gameInProgress = false;
 		// PgnGame(this).write("games.pgn");
-		qDebug("Game ended");
+		qDebug() << "Game ended";
 	}
 	emit gameEnded();
 }
@@ -63,32 +77,30 @@ void ChessGame::moveMade(const Chess::Move& move)
 
 	if (!m_gameInProgress)
 	{
-		qDebug("%s sent a move when no game is in progress", qPrintable(sender->name()));
+		qDebug() << sender->name() << "sent a move when no game is in progress";
 		return;
 	}
 
-	if (sender != m_playerToMove)
+	if (sender != playerToMove())
 	{
-		qDebug("%s tried to make a move on the opponent's turn", qPrintable(sender->name()));
+		qDebug() << sender->name() << "tried to make a move on the opponent's turn";
 		return;
 	}
 
-	if (!m_chessboard->isLegalMove(move))
+	if (!m_board->isLegalMove(move))
 	{
-		qDebug("%s sent an illegal move", qPrintable(sender->name()));
+		qDebug() << sender->name() << "sent an illegal move";
 		return;
 	}
 
 	m_moveCount++;
 
-	m_playerToMove = (m_playerToMove == m_whitePlayer) ? m_blackPlayer : m_whitePlayer;
-
-	m_playerToMove->makeMove(move);
-	m_chessboard->makeMove(move, true);
+	playerToWait()->makeMove(move);
+	m_board->makeMove(move, true);
 	
-	m_result = m_chessboard->result();
+	m_result = m_board->result();
 	if (m_result == Chess::NoResult)
-		m_playerToMove->go();
+		playerToMove()->go();
 	else
 		endGame();
 	
@@ -102,9 +114,9 @@ void ChessGame::resign()
 
 	if (m_result == Chess::NoResult)
 	{
-		if (sender == m_whitePlayer)
+		if (sender == m_player[Chess::White])
 			m_result = Chess::WhiteResigns;
-		else if (sender == m_blackPlayer)
+		else if (sender == m_player[Chess::Black])
 			m_result = Chess::BlackResigns;
 	}
 	endGame();
@@ -114,17 +126,17 @@ void ChessGame::onTimeout()
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
-	Q_ASSERT(sender == m_playerToMove);
+	Q_ASSERT(sender == playerToMove());
 	
-	if (sender == m_whitePlayer)
+	if (sender == m_player[Chess::White])
 	{
 		m_result = Chess::WhiteResigns;
-		qDebug("White loses on time");
+		qDebug() << "White loses on time";
 	}
-	else
+	else if (sender == m_player[Chess::Black])
 	{
 		m_result = Chess::BlackResigns;
-		qDebug("Black loses on time");
+		qDebug() << "Black loses on time";
 	}
 	endGame();
 }
@@ -134,74 +146,70 @@ Chess::Move ChessGame::bookMove()
 	if (m_book == 0)
 		return Chess::Move(0, 0);
 	
-	BookMove bookMove = m_book->move(m_chessboard->key());
-	return m_chessboard->moveFromBook(bookMove);
+	BookMove bookMove = m_book->move(m_board->key());
+	return m_board->moveFromBook(bookMove);
 }
 
-void ChessGame::newGame(ChessPlayer* whitePlayer,
-                        ChessPlayer* blackPlayer,
-                        const QString& fen,
-                        OpeningBook* book)
+void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
 {
-	if (fen.isEmpty())
-		m_chessboard->setBoard();
-	else
-		m_chessboard->setBoard(fen);
+	Q_ASSERT(side != Chess::NoSide);
+	Q_ASSERT(player != 0);
+	m_player[side] = player;
 
-	m_result = Chess::NoResult;
-	m_moveCount = 0;
-	m_whitePlayer = whitePlayer;
-	m_blackPlayer = blackPlayer;
+	connect(player, SIGNAL(moveMade(const Chess::Move&)),
+	        this, SLOT(moveMade(const Chess::Move&)));
+	connect(player, SIGNAL(resign()), this, SLOT(resign()));
+	connect(player, SIGNAL(timeout()), this, SLOT(onTimeout()));
+}
+
+void ChessGame::setFenString(const QString& fen)
+{
+	m_fen = fen;
+}
+
+void ChessGame::setOpeningBook(OpeningBook* book)
+{
+	Q_ASSERT(book != 0);
 	m_book = book;
+}
 
-	connect(m_whitePlayer, SIGNAL(moveMade(const Chess::Move&)),
-	        this, SLOT(moveMade(const Chess::Move&)));
-	connect(m_blackPlayer, SIGNAL(moveMade(const Chess::Move&)),
-	        this, SLOT(moveMade(const Chess::Move&)));
+void ChessGame::start()
+{
+	if (m_fen.isEmpty())
+		m_board->setBoard();
+	else
+		m_board->setBoard(m_fen);
 	
-	connect(m_whitePlayer, SIGNAL(resign()), this, SLOT(resign()));
-	connect(m_blackPlayer, SIGNAL(resign()), this, SLOT(resign()));
-	
-	connect(m_whitePlayer, SIGNAL(timeout()), this, SLOT(onTimeout()));
-	connect(m_blackPlayer, SIGNAL(timeout()), this, SLOT(onTimeout()));
-
 	m_gameInProgress = true;
 
-	m_whitePlayer->newGame(Chess::White, m_blackPlayer);
-	m_blackPlayer->newGame(Chess::Black, m_whitePlayer);
-	if (m_chessboard->sideToMove() == Chess::White)
-		m_playerToMove = m_whitePlayer;
-	else
-		m_playerToMove = m_blackPlayer;
+	for (int i = 0; i < 2; i++)
+	{
+		Q_ASSERT(m_player[i] != 0);
+		m_player[i]->newGame((Chess::Side)i, m_player[!i]);
+	}
 	
 	// Play the opening book moves first
 	Chess::Move move;
-	while (m_chessboard->isLegalMove(move = bookMove())
-	   &&  !m_chessboard->isRepeatMove(move)
+	while (m_board->isLegalMove(move = bookMove())
+	   &&  !m_board->isRepeatMove(move)
 	   &&  m_moveCount < 30)
 	{
-		m_playerToMove->makeBookMove(move);
+		playerToMove()->makeBookMove(move);
 		
-		m_playerToMove = (m_playerToMove == m_whitePlayer) ? m_blackPlayer : m_whitePlayer;
+		playerToWait()->makeMove(move);
+		m_board->makeMove(move, true);
 		
-		m_playerToMove->makeMove(move);
-		m_chessboard->makeMove(move, true);
-		
-		Q_ASSERT(m_chessboard->result() == Chess::NoResult);
+		Q_ASSERT(m_board->result() == Chess::NoResult);
 		emit moveHappened(move);
 	}
 	
-	m_playerToMove->go();
+	playerToMove()->go();
 }
 
-ChessPlayer* ChessGame::whitePlayer() const
+ChessPlayer* ChessGame::player(Chess::Side side) const
 {
-	return m_whitePlayer;
-}
-
-ChessPlayer* ChessGame::blackPlayer() const
-{
-	return m_blackPlayer;
+	Q_ASSERT(side != Chess::NoSide);
+	return m_player[side];
 }
 
 Chess::Result ChessGame::result() const

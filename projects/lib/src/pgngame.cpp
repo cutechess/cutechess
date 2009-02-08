@@ -31,9 +31,9 @@ PgnGame::PgnGame(const ChessGame* game)
 {
 	Q_ASSERT(game != 0);
 	
-	m_whitePlayer = game->whitePlayer()->name();
-	m_blackPlayer = game->blackPlayer()->name();
-	Chess::Board* board = game->chessboard();
+	m_whitePlayer = game->player(Chess::White)->name();
+	m_blackPlayer = game->player(Chess::Black)->name();
+	Chess::Board* board = game->board();
 	m_moves = board->moveHistory();
 	m_fen = board->startingFen();
 	m_variant = board->variant();

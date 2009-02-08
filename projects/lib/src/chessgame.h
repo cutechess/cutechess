@@ -29,17 +29,17 @@ class LIB_EXPORT ChessGame : public QObject
 	Q_OBJECT
 
 	public:
-		ChessGame(QObject *parent = 0,
-		          Chess::Variant variant = Chess::StandardChess);
+		explicit ChessGame(Chess::Variant variant, QObject* parent = 0);
 		~ChessGame();
-		Chess::Board* chessboard() const;
-		void newGame(ChessPlayer* whitePlayer,
-		             ChessPlayer* blackPlayer,
-		             const QString& fen = "",
-		             OpeningBook* book = 0);
-		ChessPlayer* whitePlayer() const;
-		ChessPlayer* blackPlayer() const;
+		
+		Chess::Board* board() const;
+		ChessPlayer* player(Chess::Side) const;
+		void setPlayer(Chess::Side, ChessPlayer* player);
+		void setFenString(const QString& fen);
+		void setOpeningBook(OpeningBook* book);
 		Chess::Result result() const;
+
+		void start();
 
 	public slots:
 		void moveMade(const Chess::Move& move);
@@ -53,11 +53,12 @@ class LIB_EXPORT ChessGame : public QObject
 	private:
 		Chess::Move bookMove();
 		void endGame();
+		ChessPlayer* playerToMove();
+		ChessPlayer* playerToWait();
 		
-		Chess::Board* m_chessboard;
-		ChessPlayer* m_whitePlayer;
-		ChessPlayer* m_blackPlayer;
-		ChessPlayer* m_playerToMove;
+		Chess::Board* m_board;
+		QString m_fen;
+		ChessPlayer* m_player[2];
 		OpeningBook* m_book;
 		bool m_gameInProgress;
 		int m_moveCount;
