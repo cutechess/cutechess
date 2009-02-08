@@ -44,9 +44,11 @@ class LIB_EXPORT ChessGame : public QObject
 	public slots:
 		void moveMade(const Chess::Move& move);
 		void resign();
+		void onTimeout();
 
 	signals:
 		void moveHappened(const Chess::Move& move);
+		void gameEnded();
 
 	private:
 		Chess::Move bookMove();

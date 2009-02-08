@@ -15,16 +15,18 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QString>
-
 #include "chessplayer.h"
+#include <QString>
+#include <QTimer>
+
 
 ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
 	  m_opponent(0),
 	  m_side(Chess::NoSide)
 {
-
+	m_timer.setSingleShot(true);
+	connect(&m_timer, SIGNAL(timeout()), this, SIGNAL(timeout()));
 }
 
 void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent)
@@ -45,6 +47,7 @@ void ChessPlayer::go()
 		emit startedThinking(m_timeControl.timePerMove());
 	
 	m_timeControl.startTimer();
+	m_timer.start(m_timeControl.timeLeft());
 }
 
 void ChessPlayer::makeBookMove(const Chess::Move& move)
@@ -84,3 +87,15 @@ void ChessPlayer::setName(const QString& name)
 	m_name = name;
 }
 
+void ChessPlayer::emitMove(const Chess::Move& move)
+{
+	m_timeControl.update();
+	if (m_timer.isActive())
+	{
+		m_timer.stop();
+		if (m_timeControl.timeLeft() <= 0)
+			emit timeout();
+	}
+	
+	emit moveMade(move);
+}

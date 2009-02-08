@@ -19,10 +19,11 @@
 #define CHESSPLAYER_H
 
 #include <QObject>
+#include <QString>
+#include <QTimer>
 #include "chessboard/chess.h"
 #include "timecontrol.h"
 
-class QString;
 
 /*!
  * \brief A chess player, human or AI.
@@ -101,8 +102,17 @@ class LIB_EXPORT ChessPlayer : public QObject
 
 		/*! Signals a debugging message from the player. */
 		void debugMessage(const QString& data) const;
-
+		
+		/*! The player has run out of thinking time. */
+		void timeout() const;
+	
 	protected:
+		/*!
+		 * Emits the player's move, and a timeout signal if the
+		 * move came too late.
+		 */
+		void emitMove(const Chess::Move& move);
+		
 		/*! The player's name. */
 		QString m_name;
 
@@ -111,6 +121,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 
 		/*! The opposing player. */
 		ChessPlayer* m_opponent;
+		
+		/*! Timer for detecting when the player's time is up. */
+		QTimer m_timer;
 
 	private:
 		Chess::Side m_side;

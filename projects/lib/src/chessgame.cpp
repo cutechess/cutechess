@@ -53,6 +53,7 @@ void ChessGame::endGame()
 		// PgnGame(this).write("games.pgn");
 		qDebug("Game ended");
 	}
+	emit gameEnded();
 }
 
 void ChessGame::moveMade(const Chess::Move& move)
@@ -109,6 +110,25 @@ void ChessGame::resign()
 	endGame();
 }
 
+void ChessGame::onTimeout()
+{
+	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
+	Q_ASSERT(sender != 0);
+	Q_ASSERT(sender == m_playerToMove);
+	
+	if (sender == m_whitePlayer)
+	{
+		m_result = Chess::WhiteResigns;
+		qDebug("White loses on time");
+	}
+	else
+	{
+		m_result = Chess::BlackResigns;
+		qDebug("Black loses on time");
+	}
+	endGame();
+}
+
 Chess::Move ChessGame::bookMove()
 {
 	if (m_book == 0)
@@ -141,6 +161,9 @@ void ChessGame::newGame(ChessPlayer* whitePlayer,
 	
 	connect(m_whitePlayer, SIGNAL(resign()), this, SLOT(resign()));
 	connect(m_blackPlayer, SIGNAL(resign()), this, SLOT(resign()));
+	
+	connect(m_whitePlayer, SIGNAL(timeout()), this, SLOT(onTimeout()));
+	connect(m_blackPlayer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 
 	m_gameInProgress = true;
 

@@ -256,7 +256,7 @@ void MainWindow::newGame()
 		connect(player[i], SIGNAL(moveMade(const Chess::Move&)),
 			m_chessClock[i], SLOT(stop()));
 		
-		connect(player[i], SIGNAL(resign()),
+		connect(chessgame, SIGNAL(gameEnded()),
 		        m_chessClock[i], SLOT(stop()));
 
 		connect(player[i], SIGNAL(debugMessage(const QString&)),
