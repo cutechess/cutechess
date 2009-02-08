@@ -7,6 +7,7 @@
 #include <QString>
 #include <QStringList>
 #include "chess.h"
+#include "result.h"
 #include "chessmove.h"
 
 struct BookMove;

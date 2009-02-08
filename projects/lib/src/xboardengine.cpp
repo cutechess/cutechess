@@ -172,13 +172,10 @@ void XboardEngine::parseLine(const QString& line)
 		if (m_drawOnNextMove)
 		{
 			m_drawOnNextMove = false;
-			Chess::Result result = m_chessboard->result();
 			
 			// If the engine claimed a draw before this move, the
 			// game must have ended in a draw by now
-			if (result != Chess::DrawByMaterial
-			&&  result != Chess::DrawByRepetition
-			&&  result != Chess::DrawByFiftyMoves)
+			if (!m_chessboard->result().isDraw())
 			{
 				qDebug("%s forfeits by invalid draw claim",
 				       qPrintable(name()));
@@ -197,7 +194,7 @@ void XboardEngine::parseLine(const QString& line)
 	}
 	else if (command == "1-0" || command == "0-1" || command == "1/2-1/2")
 	{
-		if (m_chessboard->result() != Chess::NoResult)
+		if (!m_chessboard->result().isNone())
 			return;
 		if (command == "1/2-1/2")
 		{

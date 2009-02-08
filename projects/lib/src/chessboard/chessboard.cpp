@@ -524,12 +524,12 @@ Result Board::result()
 		if (inCheck(m_side))
 		{
 			if (m_side == Black)
-				return WhiteMates;
+				return Result::WhiteMates;
 			else
-				return BlackMates;
+				return Result::BlackMates;
 		}
 		else
-			return Stalemate;
+			return Result::Stalemate;
 	}
 	
 	int material[2] = { 0, 0 };
@@ -552,15 +552,15 @@ Result Board::result()
 			material[side] += 2;
 	}
 	if (material[White] <= 3 && material[Black] <= 3)
-		return DrawByMaterial;
+		return Result::DrawByMaterial;
 	
 	if (m_reversibleMoveCount >= 100)
-		return DrawByFiftyMoves;
+		return Result::DrawByFiftyMoves;
 	
 	if (repeatCount() >= 2)
-		return DrawByRepetition;
+		return Result::DrawByRepetition;
 	
-	return NoResult;
+	return Result::NoResult;
 }
 
 int Board::repeatCount() const

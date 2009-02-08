@@ -43,37 +43,6 @@ PgnGame::PgnGame(const ChessGame* game)
 	m_hasTags = true;
 }
 
-static QString resultToString(Chess::Result result)
-{
-	switch (result)
-	{
-	case Chess::WhiteMates: case Chess::BlackResigns:
-		return "1-0";
-	case Chess::BlackMates: case Chess::WhiteResigns:
-		return "0-1";
-	case Chess::Stalemate: case Chess::DrawByMaterial:
-	case Chess::DrawByRepetition: case Chess::DrawByFiftyMoves:
-	case Chess::DrawByAgreement:
-		return "1/2-1/2";
-	default:
-		return "*";
-	};
-}
-
-static Chess::Result resultFromString(const QString& str)
-{
-	if (str == "*")
-		return Chess::NoResult;
-	else if (str == "1-0")
-		return Chess::WhiteMates;
-	else if (str == "0-1")
-		return Chess::BlackMates;
-	else if (str == "1/2-1/2")
-		return Chess::DrawByAgreement;
-
-	return Chess::ResultError;
-}
-
 PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 {
 	in.skipWhiteSpace();
@@ -183,7 +152,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 	if ((itemType == PgnMove || itemType == PgnMoveNumber)
 	&&  (str == "*" || str == "1/2-1/2" || str == "1-0" || str == "0-1"))
 	{
-		Chess::Result result = resultFromString(str);
+		Chess::Result result(str);
 		if (result != m_result)
 			qDebug() << "Line" << in.lineNumber() << "The termination "
 			            "marker is different from the result tag";
@@ -202,8 +171,8 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 			m_blackPlayer = param;
 		else if (tag == "Result")
 		{
-			m_result = resultFromString(param);
-			if (m_result == Chess::ResultError)
+			m_result = param;
+			if (m_result == Chess::Result::ResultError)
 				qDebug() << "Invalid result:" << param;
 		}
 		else if (tag == "FEN")
@@ -262,7 +231,6 @@ PgnGame::PgnGame(PgnFile& in, int maxMoves)
 	: m_variant(Chess::StandardChess),
 	  m_isRandomVariant(false),
 	  m_hasTags(false),
-	  m_result(Chess::NoResult),
 	  m_round(0)
 {
 	Chess::Board* board = in.board();
@@ -315,7 +283,6 @@ void PgnGame::write(const QString& filename) const
 			variantString = "Caparandom";
 	}
 	
-	QString resultString = resultToString(m_result);
 	QString date = QDate::currentDate().toString("yyyy.MM.dd");
 	
 	QFile file(filename);
@@ -326,7 +293,7 @@ void PgnGame::write(const QString& filename) const
 		out << "[Date \"" << date << "\"]\n";
 		out << "[White \"" << m_whitePlayer << "\"]\n";
 		out << "[Black \"" << m_blackPlayer << "\"]\n";
-		out << "[Result \"" << resultString << "\"]\n";
+		out << "[Result \"" << m_result.toSimpleString() << "\"]\n";
 		if (!variantString.isEmpty())
 			out << "[Variant \"" << variantString << "\"]\n";
 		if (useFen)
@@ -343,7 +310,7 @@ void PgnGame::write(const QString& filename) const
 			out << board.moveString(m_moves[i], Chess::StandardAlgebraic) << " ";
 			board.makeMove(m_moves[i]);
 		}
-		out << resultString << "\n\n";
+		out << m_result.toString() << "\n\n";
 	}
 }
 

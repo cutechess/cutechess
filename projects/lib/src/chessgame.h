@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include "chessboard/chess.h"
+#include "chessboard/result.h"
 
 class ChessPlayer;
 class OpeningBook;

@@ -27,8 +27,7 @@ ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 	: QObject(parent),
 	  m_book(0),
 	  m_gameInProgress(false),
-	  m_moveCount(0),
-	  m_result(Chess::NoResult)
+	  m_moveCount(0)
 {
 	m_player[Chess::White] = 0;
 	m_player[Chess::Black] = 0;
@@ -65,7 +64,7 @@ void ChessGame::endGame()
 	{
 		m_gameInProgress = false;
 		// PgnGame(this).write("games.pgn");
-		qDebug() << "Game ended";
+		qDebug() << "Game ended:" << m_result.toString();
 	}
 	emit gameEnded();
 }
@@ -99,7 +98,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	m_board->makeMove(move, true);
 	
 	m_result = m_board->result();
-	if (m_result == Chess::NoResult)
+	if (m_result.isNone())
 		playerToMove()->go();
 	else
 		endGame();
@@ -112,12 +111,12 @@ void ChessGame::resign()
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
 
-	if (m_result == Chess::NoResult)
+	if (m_result.isNone())
 	{
 		if (sender == m_player[Chess::White])
-			m_result = Chess::WhiteResigns;
+			m_result = Chess::Result::WhiteResigns;
 		else if (sender == m_player[Chess::Black])
-			m_result = Chess::BlackResigns;
+			m_result = Chess::Result::BlackResigns;
 	}
 	endGame();
 }
@@ -130,12 +129,12 @@ void ChessGame::onTimeout()
 	
 	if (sender == m_player[Chess::White])
 	{
-		m_result = Chess::WhiteResigns;
+		m_result = Chess::Result::WhiteTimeout;
 		qDebug() << "White loses on time";
 	}
 	else if (sender == m_player[Chess::Black])
 	{
-		m_result = Chess::BlackResigns;
+		m_result = Chess::Result::BlackTimeout;
 		qDebug() << "Black loses on time";
 	}
 	endGame();
@@ -199,7 +198,7 @@ void ChessGame::start()
 		playerToWait()->makeMove(move);
 		m_board->makeMove(move, true);
 		
-		Q_ASSERT(m_board->result() == Chess::NoResult);
+		Q_ASSERT(m_board->result().isNone());
 		emit moveMade(move);
 	}
 	

@@ -31,33 +31,6 @@ enum Side
 	Black		//!< The side with the black pieces.
 };
 
-/*! The result of a chess game. */
-enum Result
-{
-	//! White wins by mating the black player.
-	WhiteMates,
-	//! White wins when black resigns
-	BlackResigns,
-	//! Black wins by mating the white player.
-	BlackMates,
-	//! Black wins when white resigns
-	WhiteResigns,
-	//! Draw by a stalemate.
-	Stalemate,
-	//! Draw by insufficient mating material on both sides.
-	DrawByMaterial,
-	//! Draw by 3 repetitions of the same position.
-	DrawByRepetition,
-	//! Draw by 50 consecutive reversible moves.
-	DrawByFiftyMoves,
-	//! Both players agree to a draw.
-	DrawByAgreement,
-	//! No result. The game may continue.
-	NoResult,
-	//! Result error, caused by an invalid result string.
-	ResultError
-};
-
 /*! All supported variants of chess. */
 enum Variant
 {
@@ -88,6 +61,7 @@ struct Square
 	int rank;
 };
 
+class Result;
 class Board;
 class Move;
 
