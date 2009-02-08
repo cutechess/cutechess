@@ -70,7 +70,7 @@ void ChessGame::endGame()
 	emit gameEnded();
 }
 
-void ChessGame::moveMade(const Chess::Move& move)
+void ChessGame::onMoveMade(const Chess::Move& move)
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
@@ -104,7 +104,7 @@ void ChessGame::moveMade(const Chess::Move& move)
 	else
 		endGame();
 	
-	emit moveHappened(move);
+	emit moveMade(move);
 }
 
 void ChessGame::resign()
@@ -157,7 +157,7 @@ void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
 	m_player[side] = player;
 
 	connect(player, SIGNAL(moveMade(const Chess::Move&)),
-	        this, SLOT(moveMade(const Chess::Move&)));
+	        this, SLOT(onMoveMade(const Chess::Move&)));
 	connect(player, SIGNAL(resign()), this, SLOT(resign()));
 	connect(player, SIGNAL(timeout()), this, SLOT(onTimeout()));
 }
@@ -200,7 +200,7 @@ void ChessGame::start()
 		m_board->makeMove(move, true);
 		
 		Q_ASSERT(m_board->result() == Chess::NoResult);
-		emit moveHappened(move);
+		emit moveMade(move);
 	}
 	
 	playerToMove()->go();

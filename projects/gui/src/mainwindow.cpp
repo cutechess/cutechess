@@ -227,7 +227,7 @@ void MainWindow::newGame()
 
 	ChessGame* chessgame = new ChessGame(Chess::StandardChess, this);
 
-	connect(chessgame, SIGNAL(moveHappened(const Chess::Move&)),
+	connect(chessgame, SIGNAL(moveMade(const Chess::Move&)),
 	        m_visualChessboard, SLOT(makeMove(const Chess::Move&)));
 
 	ChessPlayer* player[2] = { 0, 0 };
