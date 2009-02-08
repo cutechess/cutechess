@@ -110,6 +110,11 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	}
 }
 
+void XboardEngine::endGame(Chess::Result result)
+{
+	write("result " + result.toString());
+}
+
 void XboardEngine::sendTimeLeft()
 {
 	int csLeft = m_timeControl.timeLeft() / 10;

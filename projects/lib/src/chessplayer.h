@@ -22,6 +22,7 @@
 #include <QString>
 #include <QTimer>
 #include "chessboard/chess.h"
+#include "chessboard/result.h"
 #include "timecontrol.h"
 
 
@@ -47,6 +48,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 * \param opponent The opposing player.
 		 */
 		virtual void newGame(Chess::Side side, ChessPlayer* opponent);
+		
+		/*! Tells the player that the game ended by \a result. */
+		virtual void endGame(Chess::Result result);
 		
 		/*! Tells the player to start thinking and make its move. */
 		virtual void go();

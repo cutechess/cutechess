@@ -44,6 +44,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		~XboardEngine();
 
 		void newGame(Chess::Side side, ChessPlayer* opponent);
+		void endGame(Chess::Result result);
 		void go();
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;

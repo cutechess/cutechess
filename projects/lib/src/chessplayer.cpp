@@ -39,6 +39,12 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent)
 	m_timeControl.setMovesLeft(m_timeControl.movesPerTc());
 }
 
+void ChessPlayer::endGame(Chess::Result result)
+{
+	Q_UNUSED(result);
+	m_timer.stop();
+}
+
 void ChessPlayer::go()
 {
 	if (m_timeControl.timePerTc() != 0)

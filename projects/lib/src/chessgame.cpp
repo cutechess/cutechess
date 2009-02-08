@@ -60,12 +60,14 @@ ChessPlayer* ChessGame::playerToWait()
 
 void ChessGame::endGame()
 {
-	if (m_gameInProgress)
-	{
-		m_gameInProgress = false;
-		// PgnGame(this).write("games.pgn");
-		qDebug() << "Game ended:" << m_result.toString();
-	}
+	if (!m_gameInProgress)
+		return;
+	
+	m_gameInProgress = false;
+	qDebug() << "Game ended:" << m_result.toString();
+
+	m_player[Chess::White]->endGame(m_result);
+	m_player[Chess::Black]->endGame(m_result);
 	emit gameEnded();
 }
 
