@@ -12,7 +12,7 @@ namespace Chess {
  * to compare it to other results, and to convert between the
  * result codes and result strings.
  */
-class Result
+class LIB_EXPORT Result
 {
 	public:
 		/*! Result code. */
