@@ -17,11 +17,6 @@
 
 - Give better weights (not just popularity) to imported opening book moves
 
-- A PgnStream class is probably needed to track the line numbers and to
-  eliminate the need to rewind the file when the next game is encountered.
-  This would also improve performance, because the same board object could be
-  used for the whole game collection.
-
 - Better error handling in OpeningBook
 
 - Better error handling in PgnGame
