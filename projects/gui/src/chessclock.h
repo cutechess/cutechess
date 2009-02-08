@@ -43,7 +43,7 @@ class ChessClock: public QLCDNumber
 		
 		int m_totalTime;
 		int m_timerId;
-		QTime m_timer;
+		QTime m_time;
 };
 
 

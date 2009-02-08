@@ -30,7 +30,7 @@ ChessClock::ChessClock(QWidget* parent)
 
 void ChessClock::start(int totalTime)
 {
-	m_timer.start();
+	m_time.start();
 	m_totalTime = totalTime;
 	m_timerId = startTimer(1000);
 	updateDisplay();
@@ -44,7 +44,7 @@ void ChessClock::stop()
 
 void ChessClock::updateDisplay()
 {
-	int msLeft = m_totalTime - m_timer.elapsed();
+	int msLeft = m_totalTime - m_time.elapsed();
 	QTime timeLeft = QTime().addMSecs(abs(msLeft));
 
 	QString format;
