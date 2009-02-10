@@ -6,6 +6,7 @@ HEADERS += bookmove.h \
            chessmove.h \
            notation.h \
            result.h \
+           variant.h \
            zobrist.h
 
 
@@ -17,4 +18,5 @@ SOURCES += bookmove.cpp \
            movestring.cpp \
            notation.cpp \
            result.cpp \
+           variant.cpp \
            zobrist.cpp

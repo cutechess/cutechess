@@ -8,6 +8,7 @@
 #include <QStringList>
 #include "chess.h"
 #include "result.h"
+#include "variant.h"
 #include "chessmove.h"
 
 struct BookMove;
@@ -34,7 +35,8 @@ class LIB_EXPORT Board : public QObject
 	
 	public:
 		/*! Creates a new Board of a specific chess variant. */
-		explicit Board(Variant variant = StandardChess, QObject* parent = 0);
+		explicit Board(Variant variant = Variant::Standard,
+		               QObject* parent = 0);
 		
 		/*! The copy constructor. */
 		explicit Board(const Board& other);

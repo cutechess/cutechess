@@ -6,6 +6,7 @@
 #include <QDate>
 #include "chessboard/chess.h"
 #include "chessboard/result.h"
+#include "chessboard/variant.h"
 #include "chessboard/chessmove.h"
 class ChessGame;
 class PgnFile;

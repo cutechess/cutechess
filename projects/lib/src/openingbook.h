@@ -3,6 +3,7 @@
 
 #include <QtGlobal>
 #include <QMultiMap>
+#include "chessboard/variant.h"
 #include "chessboard/bookmove.h"
 
 class QString;

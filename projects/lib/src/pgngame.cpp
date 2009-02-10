@@ -175,6 +175,16 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 			if (m_result == Chess::Result::ResultError)
 				qDebug() << "Invalid result:" << param;
 		}
+		else if (tag == "Variant")
+		{
+			m_variant = param;
+			if (m_variant.isNone())
+			{
+				qDebug() << "Invalid variant:" << param;
+				return PgnError;
+			}
+			board->setVariant(m_variant);
+		}
 		else if (tag == "FEN")
 		{
 			m_fen = param;
@@ -228,13 +238,13 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 }
 
 PgnGame::PgnGame(PgnFile& in, int maxMoves)
-	: m_variant(Chess::StandardChess),
+	: m_variant(Chess::Variant::Standard),
 	  m_isRandomVariant(false),
 	  m_hasTags(false),
 	  m_round(0)
 {
 	Chess::Board* board = in.board();
-	if (in.variant() != Chess::NoVariant)
+	if (!in.variant().isNone())
 		m_variant = in.variant();
 	else
 		board->setVariant(m_variant);
@@ -262,27 +272,6 @@ void PgnGame::write(const QString& filename) const
 	if (!m_hasTags)
 		return;
 	
-	bool useFen = false;
-	QString variantString;
-	if (m_variant == Chess::StandardChess)
-	{
-		if (m_fen != Chess::standardFen)
-			useFen = true;
-		if (m_isRandomVariant)
-			variantString = "Fischerandom";
-	}
-	else if (m_variant == Chess::CapablancaChess)
-	{
-		if (m_fen == Chess::capablancaFen)
-			variantString = "Capablanca";
-		else if (m_fen == Chess::gothicFen)
-			variantString = "Gothic";
-		else
-			useFen = true;
-		if (m_isRandomVariant)
-			variantString = "Caparandom";
-	}
-	
 	QString date = QDate::currentDate().toString("yyyy.MM.dd");
 	
 	QFile file(filename);
@@ -294,9 +283,9 @@ void PgnGame::write(const QString& filename) const
 		out << "[White \"" << m_whitePlayer << "\"]\n";
 		out << "[Black \"" << m_blackPlayer << "\"]\n";
 		out << "[Result \"" << m_result.toSimpleString() << "\"]\n";
-		if (!variantString.isEmpty())
-			out << "[Variant \"" << variantString << "\"]\n";
-		if (useFen)
+		if (m_variant != Chess::Variant::Standard)
+			out << "[Variant \"" << m_variant.toString() << "\"]\n";
+		if (m_variant.isRandom() || m_fen != m_variant.startingFen())
 			out << "[FEN \"" << m_fen << "\"]\n";
 		
 		Chess::Board board(m_variant);

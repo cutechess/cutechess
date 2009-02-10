@@ -29,7 +29,7 @@ PgnFile::PgnFile(const QString& filename, Chess::Variant variant)
 		return;
 	
 	m_in.setDevice(&m_file);
-	if (m_variant != Chess::NoVariant)
+	if (!m_variant.isNone())
 		m_board.setVariant(m_variant);
 }
 

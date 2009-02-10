@@ -55,6 +55,8 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		void parseLine(const QString& line);
 		
 	private:
+		void sendPosition();
+		
 		QString m_startFen;
 		QStringList m_moves;
 };

@@ -24,15 +24,13 @@ using namespace Chess;
 
 
 Board::Board(Variant variant, QObject* parent)
-	: QObject(parent),
-	  m_variant(NoVariant)
+	: QObject(parent)
 {
 	setVariant(variant);
 }
 
 Board::Board(const Board& other)
-	: QObject(0),
-	  m_variant(NoVariant)
+	: QObject(0)
 {
 	setVariant(other.variant());
 	setBoard(other.fenString());
@@ -42,23 +40,12 @@ void Board::setVariant(Variant variant)
 {
 	if (variant == m_variant)
 		return;
+	Q_ASSERT(!variant.isNone());
 	
 	m_variant = variant;
 	m_isRandom = false;
-	
-	switch (m_variant) {
-	case StandardChess:
-		m_width = 8;
-		m_height = 8;
-		break;
-	case CapablancaChess:
-		m_width = 10;
-		m_height = 8;
-		break;
-	default:
-		Q_ASSERT(m_variant != NoVariant);
-		break;
-	}
+	m_width = variant.boardWidth();
+	m_height = variant.boardHeight();
 	
 	// Allocate the squares, with one 'wall' file on both sides,
 	// and two 'wall' ranks at the top and bottom.

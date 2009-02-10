@@ -53,7 +53,7 @@ static quint16 moveToBits(const BookMove& move)
 
 Chess::Variant PolyglotBook::variant() const
 {
-	return Chess::StandardChess;
+	return Chess::Variant::Standard;
 }
 
 void PolyglotBook::loadEntry(QDataStream& in)

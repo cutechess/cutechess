@@ -44,6 +44,22 @@ UciEngine::~UciEngine()
 	//write("quit");
 }
 
+void UciEngine::sendPosition()
+{
+	QString str("position");
+	
+	const Chess::Variant& variant = m_chessboard->variant();
+	if (variant.isRandom() || m_startFen != variant.startingFen())
+		str += QString(" fen ") + m_startFen;
+	else
+		str += " startpos";
+	
+	if (m_moves.count() > 0)
+		str += QString(" moves ") + m_moves.join(" ");
+	
+	write(str);
+}
+
 void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	ChessPlayer::newGame(side, opponent);
@@ -51,16 +67,13 @@ void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	m_startFen = m_chessboard->fenString();
 	
 	write("ucinewgame");
-	write(QString("position fen ") + m_startFen);
+	sendPosition();
 }
 
 void UciEngine::makeMove(const Chess::Move& move)
 {
-	QString moveString = m_chessboard->moveString(move, m_notation);
-	
-	m_moves.append(moveString);
-	write(QString("position fen ") + m_startFen +
-		QString(" moves ") + m_moves.join(" "));
+	m_moves.append(m_chessboard->moveString(move, m_notation));
+	sendPosition();
 }
 
 void UciEngine::go()

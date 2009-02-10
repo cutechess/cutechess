@@ -61,6 +61,25 @@ XboardEngine::~XboardEngine()
 	//write("quit");
 }
 
+static QString variantString(Chess::Variant variant)
+{
+	switch (variant.code())
+	{
+	case Chess::Variant::Standard:
+		return "normal";
+	case Chess::Variant::Fischerandom:
+		return "fischerandom";
+	case Chess::Variant::Capablanca:
+		return "capablanca";
+	case Chess::Variant::Gothic:
+		return "gothic";
+	case Chess::Variant::Caparandom:
+		return "caparandom";
+	default:
+		return "unknown";
+	}
+}
+
 void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	ChessPlayer::newGame(side, opponent);
@@ -69,33 +88,13 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	write("new");
 	write("force");
 	
-	QString variant;
-	switch (m_chessboard->variant())
-	{
-	case Chess::StandardChess:
-		if (m_chessboard->isRandomVariant())
-			variant = "fischerandom";
-		else
-			variant = "normal";
-		break;
-	case Chess::CapablancaChess:
-		if (m_chessboard->isRandomVariant())
-		{
-			if (m_chessboard->fenString() == Chess::gothicFen)
-				variant = "gothic";
-			else
-				variant = "caparandom";
-		}
-		else
-			variant = "capablanca";
-		break;
-	default:
-		break;
-	}
+	const Chess::Variant& variant = m_chessboard->variant();
 	
-	if (variant != "normal")
-		write("variant " + variant);
-	write("setboard " + m_chessboard->fenString());
+	if (variant != Chess::Variant::Standard)
+		write("variant " + variantString(variant));
+	
+	if (variant.isRandom() || m_chessboard->fenString() != variant.startingFen())
+		write("setboard " + m_chessboard->fenString());
 	
 	// Send the time controls
 	if (m_timeControl.timePerMove() > 0)
@@ -250,25 +249,11 @@ void XboardEngine::parseLine(const QString& line)
 			else if (feature == "variants")
 			{
 				QStringList variants = val.split(',');
-				QString gameVariant;
+				QString v = variantString(m_chessboard->variant());
 				
-				switch (m_chessboard->variant())
-				{
-				case Chess::StandardChess:
-					// TODO: Chess 960
-					gameVariant = "normal";
-					break;
-				case Chess::CapablancaChess:
-					// TODO: Gothic chess
-					gameVariant = "capablanca";
-					break;
-				default:
-					return;
-				}
-				
-				if (!variants.contains(gameVariant))
+				if (!variants.contains(v))
 					qDebug("Engine %s doesn't support variant %s",
-					       qPrintable(m_name), qPrintable(gameVariant));
+					       qPrintable(m_name), qPrintable(v));
 			}
 			else if (feature == "done")
 			{

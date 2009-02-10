@@ -21,6 +21,7 @@
 #include <QObject>
 #include "chessboard/chess.h"
 #include "chessboard/result.h"
+#include "chessboard/variant.h"
 
 class ChessPlayer;
 class OpeningBook;

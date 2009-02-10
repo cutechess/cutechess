@@ -254,15 +254,7 @@ bool Board::setBoard(const QString& fen)
 
 bool Board::setBoard()
 {
-	switch (m_variant)
-	{
-	case StandardChess:
-		return setBoard(standardFen);
-	case CapablancaChess:
-		return setBoard(capablancaFen);
-	default:
-		return false;
-	}
+	return setBoard(m_variant.startingFen());
 }
 
 QString Board::castlingRightsString() const

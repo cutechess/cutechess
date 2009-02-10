@@ -94,7 +94,7 @@ void Board::addPromotions(int sourceSquare,
 	moves.push_back(Move(sourceSquare, targetSquare, Rook));
 	moves.push_back(Move(sourceSquare, targetSquare, Queen));
 	
-	if (m_variant == CapablancaChess) {
+	if (m_variant.isCapablanca()) {
 		moves.push_back(Move(sourceSquare, targetSquare, Archbishop));
 		moves.push_back(Move(sourceSquare, targetSquare, Chancellor));
 	}

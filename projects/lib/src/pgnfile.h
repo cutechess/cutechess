@@ -50,7 +50,7 @@ class LIB_EXPORT PgnFile
 		 * Use Chess::NoVariant (default) to allow multiple variants.
 		 */
 		explicit PgnFile(const QString& filename,
-		                 Chess::Variant variant = Chess::NoVariant);
+		                 Chess::Variant variant = Chess::Variant::NoVariant);
 		
 		/*!
 		 * Returns the Board object which is used to verify the moves
