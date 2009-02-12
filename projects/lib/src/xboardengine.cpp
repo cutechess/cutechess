@@ -44,6 +44,10 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
 	: ChessEngine(ioDevice, chessboard, parent),
 	  m_forceMode(true),
 	  m_drawOnNextMove(false),
+	  m_ftPing(false),
+	  m_ftSetboard(false),
+	  m_ftTime(true),
+	  m_ftUsermove(false),
 	  m_lastPing(0)
 {
 	setName("XboardEngine");
@@ -59,6 +63,22 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
 XboardEngine::~XboardEngine()
 {
 	//write("quit");
+}
+
+static Chess::Variant variantCode(const QString& str)
+{
+	if (str == "normal")
+		return Chess::Variant::Standard;
+	else if (str == "fischerandom")
+		return Chess::Variant::Fischerandom;
+	else if (str == "capablanca")
+		return Chess::Variant::Capablanca;
+	else if (str == "gothic")
+		return Chess::Variant::Gothic;
+	else if (str == "caparandom")
+		return Chess::Variant::Caparandom;
+	
+	return Chess::Variant::NoVariant;
 }
 
 static QString variantString(Chess::Variant variant)
@@ -94,7 +114,12 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 		write("variant " + variantString(variant));
 	
 	if (variant.isRandom() || m_chessboard->fenString() != variant.startingFen())
-		write("setboard " + m_chessboard->fenString());
+	{
+		if (m_ftSetboard)
+			write("setboard " + m_chessboard->fenString());
+		else
+			qDebug() << m_name << "doesn't support the setboard command.";
+	}
 	
 	// Send the time controls
 	if (m_timeControl.timePerMove() > 0)
@@ -116,6 +141,9 @@ void XboardEngine::endGame(Chess::Result result)
 
 void XboardEngine::sendTimeLeft()
 {
+	if (!m_ftTime)
+		return;
+	
 	int csLeft = m_timeControl.timeLeft() / 10;
 	int ocsLeft = m_opponent->timeControl()->timeLeft() / 10;
 
@@ -130,19 +158,25 @@ void XboardEngine::makeMove(const Chess::Move& move)
 	QString moveString = m_chessboard->moveString(move, m_notation);
 	
 	if (!m_forceMode)
+	{
 		sendTimeLeft();
-	write(moveString);
+		ChessPlayer::go();
+	}
+	
+	if (m_ftUsermove)
+		write(QString("usermove ") + moveString);
+	else
+		write(moveString);
 }
 
 void XboardEngine::go()
 {
-	if (m_forceMode)
-	{
-		m_forceMode = false;
-		sendTimeLeft();
-		write("go");
-	}
-
+	if (!m_forceMode)
+		return;
+	
+	m_forceMode = false;
+	sendTimeLeft();
+	write("go");
 	ChessPlayer::go();
 }
 
@@ -153,7 +187,7 @@ ChessEngine::Protocol XboardEngine::protocol() const
 
 void XboardEngine::ping()
 {
-	if (m_isReady)
+	if (m_ftPing && m_isReady)
 	{
 		// Ping the engine with a random number. The engine should
 		// later send the number back at us.
@@ -161,6 +195,69 @@ void XboardEngine::ping()
 		write(QString("ping ") + QString::number(m_lastPing));
 		m_isReady = false;
 	}
+}
+
+void XboardEngine::setFeature(const QString& name, const QString& val)
+{
+	if (name == "ping")
+	{
+		if (val == "1")
+			m_ftPing = true;
+	}
+	else if (name == "setboard")
+	{
+		if (val == "1")
+			m_ftSetboard = true;
+	}
+	else if (name == "san")
+	{
+		if (val == "1")
+			m_notation = Chess::StandardAlgebraic;
+	}
+	else if (name == "usermove")
+	{
+		if (val == "1")
+			m_ftUsermove = true;
+	}
+	else if (name == "time")
+	{
+		if (val == "0")
+			m_ftTime = false;
+	}
+	else if (name == "myname")
+	{
+		m_name = val;
+	}
+	else if (name == "variants")
+	{
+		QStringList variants = val.split(',');
+		foreach (const QString& str, variants)
+		{
+			Chess::Variant v = variantCode(str);
+			if (!v.isNone())
+				m_variants.append(v);
+		}
+	}
+	else if (name == "done")
+	{
+		if (!m_initialized && val == "1")
+		{
+			Q_ASSERT(!m_isReady);
+			m_initialized = true;
+			m_isReady = true;
+			
+			flushWriteBuffer();
+			write("accepted done");
+			return;
+		}
+	}
+	else
+	{
+		write(QString("rejected ") + name);
+		return;
+	}
+	
+	write(QString("accepted ") + name);
 }
 
 void XboardEngine::parseLine(const QString& line)
@@ -237,36 +334,7 @@ void XboardEngine::parseLine(const QString& line)
 			QString val = list[1].trimmed();
 			val.remove('\"');
 			
-			if (feature == "san")
-			{
-				if (val == "1")
-					m_notation = Chess::StandardAlgebraic;
-			}
-			else if (feature == "myname")
-			{
-				m_name = val;
-			}
-			else if (feature == "variants")
-			{
-				QStringList variants = val.split(',');
-				QString v = variantString(m_chessboard->variant());
-				
-				if (!variants.contains(v))
-					qDebug("Engine %s doesn't support variant %s",
-					       qPrintable(m_name), qPrintable(v));
-			}
-			else if (feature == "done")
-			{
-				if (!m_initialized && val == "1")
-				{
-					Q_ASSERT(!m_isReady);
-					m_initialized = true;
-					m_isReady = true;
-					write("accepted done");
-					flushWriteBuffer();
-				}
-			}
+			setFeature(feature, val);
 		}
 	}
 }
-

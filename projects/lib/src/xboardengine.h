@@ -54,11 +54,19 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void parseLine(const QString& line);
 
 	private:
+		void setFeature(const QString& name, const QString& val);
+		void sendTimeLeft();
+		
 		bool m_forceMode;
 		bool m_drawOnNextMove;
-		int m_lastPing;
 		
-		void sendTimeLeft();
+		// Engine features
+		bool m_ftPing;
+		bool m_ftSetboard;
+		bool m_ftTime;
+		bool m_ftUsermove;
+		
+		int m_lastPing;
 };
 
 #endif // XBOARDENGINE_H
