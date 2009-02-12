@@ -50,6 +50,8 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
 	  m_ftUsermove(false),
 	  m_lastPing(0)
 {
+	m_variants.append(Chess::Variant::Standard);
+	
 	setName("XboardEngine");
 	// Tell the engine to turn on xboard mode
 	write("xboard");
@@ -230,6 +232,7 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	}
 	else if (name == "variants")
 	{
+		m_variants.clear();
 		QStringList variants = val.split(',');
 		foreach (const QString& str, variants)
 		{
@@ -248,6 +251,7 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 			
 			flushWriteBuffer();
 			write("accepted done");
+			emit ready();
 			return;
 		}
 	}
@@ -291,6 +295,7 @@ void XboardEngine::parseLine(const QString& line)
 		{
 			m_isReady = true;
 			flushWriteBuffer();
+			emit ready();
 		}
 	}
 	else if (command == "1-0" || command == "0-1" || command == "1/2-1/2")

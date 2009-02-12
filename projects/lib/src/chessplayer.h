@@ -21,8 +21,10 @@
 #include <QObject>
 #include <QString>
 #include <QTimer>
+#include <QVector>
 #include "chessboard/chess.h"
 #include "chessboard/result.h"
+#include "chessboard/variant.h"
 #include "timecontrol.h"
 
 
@@ -40,6 +42,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		ChessPlayer(QObject* parent = 0);
 		
 		virtual ~ChessPlayer() { }
+		
+		/*! Returns true if the player is ready to play. */
+		bool isReady() const;
 
 		/*!
 		 * Starts a new chess game.
@@ -82,11 +87,17 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		/*! Sets the player's name. */
 		void setName(const QString& name);
+		
+		/*! Returns true if the player can play \a variant. */
+		bool supportsVariant(Chess::Variant variant) const;
 
 		/*! Returns true if the player is human. */
 		virtual bool isHuman() const = 0;
 
 	signals:
+		/*! Signals that the player is ready to play. */
+		void ready() const;
+		
 		/*!
 		 * Signals the time left in the player's clock when they
 		 * start thinking of their next move.
@@ -117,6 +128,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		void emitMove(const Chess::Move& move);
 		
+		/*! Is the player ready to play? */
+		bool m_isReady;
+		
 		/*! The player's name. */
 		QString m_name;
 
@@ -128,6 +142,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		/*! Timer for detecting when the player's time is up. */
 		QTimer m_timer;
+		
+		/*! Supported variants. */
+		QVector<Chess::Variant> m_variants;
 
 	private:
 		Chess::Side m_side;

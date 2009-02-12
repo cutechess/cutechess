@@ -30,6 +30,8 @@ UciEngine::UciEngine(QIODevice* ioDevice,
                      QObject* parent)
 	: ChessEngine(ioDevice, chessboard, parent)
 {
+	m_variants.append(Chess::Variant::Standard);
+	
 	setName("UciEngine");
 	
 	// Tell the engine to turn on Uci mode
@@ -160,6 +162,7 @@ void UciEngine::parseLine(const QString& line)
 		{
 			m_isReady = true;
 			flushWriteBuffer();
+			emit ready();
 		}
 	}
 	else if (command == "id")
@@ -171,4 +174,3 @@ void UciEngine::parseLine(const QString& line)
 			m_name = tagVal;
 	}
 }
-

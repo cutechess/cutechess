@@ -41,9 +41,8 @@ class LIB_EXPORT ChessGame : public QObject
 		void setOpeningBook(OpeningBook* book);
 		Chess::Result result() const;
 
-		void start();
-
 	public slots:
+		void start();
 		void onMoveMade(const Chess::Move& move);
 		void onTimeout();
 		void resign();

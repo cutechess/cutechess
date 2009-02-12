@@ -88,9 +88,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 */
 		Chess::MoveNotation m_notation;
 
-		/*! Is the engine ready to receive commands? */
-		bool m_isReady;
-		
 		/*! Is the engine initialized? */
 		bool m_initialized;
 

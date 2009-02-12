@@ -176,18 +176,54 @@ void ChessGame::setOpeningBook(OpeningBook* book)
 
 void ChessGame::start()
 {
+	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
+	if (!sender)
+	{
+		bool ready = true;
+		for (int i = 0; i < 2; i++)
+		{
+			if (!m_player[i]->isReady())
+			{
+				ready = false;
+				connect(m_player[i], SIGNAL(ready()),
+				        this, SLOT(start()));
+			}
+		}
+		// Wait for players to get ready
+		if (!ready)
+			return;
+	}
+	else
+	{
+		disconnect(sender, SIGNAL(ready()), this, SLOT(start()));
+		if (!m_player[Chess::White]->isReady()
+		||  !m_player[Chess::Black]->isReady())
+			return;
+	}
+	
+	for (int i = 0; i < 2; i++)
+	{
+		ChessPlayer* player = m_player[i];
+		Q_ASSERT(player != 0);
+		Q_ASSERT(player->isReady());
+		
+		if (!player->supportsVariant(m_board->variant()))
+		{
+			qDebug() << player->name() << "doesn't support"
+			         << m_board->variant().toString() << "chess.";
+			return;
+		}	
+	}
+	
 	if (m_fen.isEmpty())
 		m_board->setBoard();
 	else
 		m_board->setBoard(m_fen);
 	
-	m_gameInProgress = true;
-
 	for (int i = 0; i < 2; i++)
-	{
-		Q_ASSERT(m_player[i] != 0);
 		m_player[i]->newGame((Chess::Side)i, m_player[!i]);
-	}
+	
+	m_gameInProgress = true;
 	
 	// Play the opening book moves first
 	Chess::Move move;

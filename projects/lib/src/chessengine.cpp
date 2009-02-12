@@ -29,7 +29,6 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
 	: ChessPlayer(parent),
 	  m_chessboard(chessboard),
 	  m_notation(Chess::LongAlgebraic),
-	  m_isReady(true),
 	  m_initialized(false),
 	  m_id(m_count++),
 	  m_ioDevice(ioDevice)

@@ -22,6 +22,7 @@
 
 ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
+	  m_isReady(true),
 	  m_opponent(0),
 	  m_side(Chess::NoSide)
 {
@@ -29,9 +30,15 @@ ChessPlayer::ChessPlayer(QObject* parent)
 	connect(&m_timer, SIGNAL(timeout()), this, SIGNAL(timeout()));
 }
 
+bool ChessPlayer::isReady() const
+{
+	return m_isReady;
+}
+
 void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	Q_ASSERT(opponent != 0);
+	Q_ASSERT(m_isReady);
 
 	m_opponent = opponent;
 	setSide(side);
@@ -91,6 +98,11 @@ QString ChessPlayer::name() const
 void ChessPlayer::setName(const QString& name)
 {
 	m_name = name;
+}
+
+bool ChessPlayer::supportsVariant(Chess::Variant variant) const
+{
+	return m_variants.contains(variant);
 }
 
 void ChessPlayer::emitMove(const Chess::Move& move)
