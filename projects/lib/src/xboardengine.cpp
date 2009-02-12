@@ -160,15 +160,15 @@ void XboardEngine::makeMove(const Chess::Move& move)
 	QString moveString = m_chessboard->moveString(move, m_notation);
 	
 	if (!m_forceMode)
-	{
 		sendTimeLeft();
-		ChessPlayer::go();
-	}
 	
 	if (m_ftUsermove)
 		write(QString("usermove ") + moveString);
 	else
 		write(moveString);
+	
+	if (!m_forceMode)
+		ChessPlayer::go();
 }
 
 void XboardEngine::go()
