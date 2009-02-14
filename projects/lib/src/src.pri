@@ -14,6 +14,7 @@ HEADERS += chessengine.h \
            symbols.h \
            timecontrol.h \
            uciengine.h \
+           ucioption.h \
            xboardengine.h
 
 SOURCES += chessengine.cpp \
@@ -27,4 +28,5 @@ SOURCES += chessengine.cpp \
            symbols.cpp \
            timecontrol.cpp \
            uciengine.cpp \
+           ucioption.cpp \
            xboardengine.cpp
