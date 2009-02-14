@@ -322,16 +322,12 @@ void XboardEngine::parseLine(const QString& line)
 		QRegExp rx("\\w+\\s*=\\s*(\"[^\"]*\"|\\d+)");
 		
 		int pos = 0;
-		QString arg;
 		QString feature;
 		QStringList list;
 		
 		while ((pos = rx.indexIn(args, pos)) != -1)
 		{
-			arg = args.mid(pos, rx.matchedLength());
-			pos += rx.matchedLength();
-			
-			list = arg.split('=');
+			list = rx.cap().split('=');
 			if (list.count() != 2)
 				continue;
 			feature = list[0].trimmed();
@@ -340,6 +336,7 @@ void XboardEngine::parseLine(const QString& line)
 			val.remove('\"');
 			
 			setFeature(feature, val);
+			pos += rx.matchedLength();
 		}
 	}
 }
