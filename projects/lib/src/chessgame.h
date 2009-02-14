@@ -37,7 +37,7 @@ class LIB_EXPORT ChessGame : public QObject
 		Chess::Board* board() const;
 		ChessPlayer* player(Chess::Side) const;
 		void setPlayer(Chess::Side, ChessPlayer* player);
-		void setFenString(const QString& fen);
+		bool setFenString(const QString& fen);
 		void setOpeningBook(OpeningBook* book);
 		Chess::Result result() const;
 

@@ -163,9 +163,12 @@ void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
 	connect(player, SIGNAL(timeout()), this, SLOT(onTimeout()));
 }
 
-void ChessGame::setFenString(const QString& fen)
+bool ChessGame::setFenString(const QString& fen)
 {
+	if (!m_board->setBoard(fen))
+		return false;
 	m_fen = fen;
+	return true;
 }
 
 void ChessGame::setOpeningBook(OpeningBook* book)
@@ -216,9 +219,10 @@ void ChessGame::start()
 	}
 	
 	if (m_fen.isEmpty())
-		m_board->setBoard();
-	else
+	{
+		m_fen = m_board->variant().startingFen();
 		m_board->setBoard(m_fen);
+	}
 	
 	for (int i = 0; i < 2; i++)
 		m_player[i]->newGame((Chess::Side)i, m_player[!i]);
