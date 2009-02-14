@@ -20,6 +20,7 @@
 
 #include <QString>
 #include "chessengine.h"
+#include "ucioption.h"
 
 /*!
  * \brief A chess engine which uses the UCI chess interface.
@@ -43,22 +44,41 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		          Chess::Board* chessboard,
 		          QObject* parent = 0);
 
+		/*! Destroys the engine. */
 		~UciEngine();
 
+		// Inherited methods
 		void newGame(Chess::Side side, ChessPlayer* opponent);
 		void go();
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
 		void ping();
+		
+		/*!
+		 * Sets \a option to \a value, and sends it to the engine.
+		 *
+		 * \note If the option is invalid, or the engine doesn't
+		 * have the option, nothing happens.
+		 */
+		void setOption(const UciOption& option, const QString& value);
+		/*!
+		 * Sets an option with the name \a name to \a value.
+		 *
+		 * \note If the engine doesn't have an option called \a name,
+		 * nothing happens.
+		 */
+		void setOption(const QString& name, const QString& value);
 
 	protected:
 		void parseLine(const QString& line);
 		
 	private:
+		void addVariants();
 		void sendPosition();
 		
 		QString m_startFen;
 		QStringList m_moves;
+		QVector<UciOption> m_options;
 };
 
 #endif // UCIENGINE_H

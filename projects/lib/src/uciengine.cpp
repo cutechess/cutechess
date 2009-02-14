@@ -62,12 +62,46 @@ void UciEngine::sendPosition()
 	write(str);
 }
 
+static Chess::Variant variantCode(const QString& str)
+{
+	if (str == "UCI_Chess960")
+		return Chess::Variant::Fischerandom;
+	else if (str == "UCI_Capablanca")
+		return Chess::Variant::Capablanca;
+	else if (str == "UCI_Gothic")
+		return Chess::Variant::Gothic;
+	else if (str == "UCI_CapaRandom")
+		return Chess::Variant::Caparandom;
+	
+	return Chess::Variant::NoVariant;
+}
+
+static QString variantString(Chess::Variant variant)
+{
+	switch (variant.code())
+	{
+	case Chess::Variant::Fischerandom:
+		return "UCI_Chess960";
+	case Chess::Variant::Capablanca:
+		return "UCI_Capablanca";
+	case Chess::Variant::Gothic:
+		return "UCI_Gothic";
+	case Chess::Variant::Caparandom:
+		return "UCI_CapaRandom";
+	default:
+		return QString();
+	}
+}
+
 void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	ChessPlayer::newGame(side, opponent);
 	m_moves.clear();
 	m_startFen = m_chessboard->fenString();
 	
+	const Chess::Variant& variant = m_chessboard->variant();
+	if (variant != Chess::Variant::Standard)
+		setOption(variantString(variant), "true");
 	write("ucinewgame");
 	sendPosition();
 }
@@ -128,6 +162,16 @@ void UciEngine::ping()
 	}
 }
 
+void UciEngine::addVariants()
+{
+	foreach (const UciOption& option, m_options)
+	{
+		Chess::Variant v = variantCode(option.name());
+		if (!v.isNone())
+			m_variants.append(v);
+	}
+}
+
 void UciEngine::parseLine(const QString& line)
 {
 	QString command = line.section(' ', 0, 0);
@@ -148,6 +192,7 @@ void UciEngine::parseLine(const QString& line)
 		if (!m_initialized)
 		{
 			Q_ASSERT(!m_isReady);
+			addVariants();
 			m_initialized = true;
 			m_isReady = true;
 
@@ -173,4 +218,46 @@ void UciEngine::parseLine(const QString& line)
 		if (tag == "name")
 			m_name = tagVal;
 	}
+	else if (command == "option")
+	{
+		UciOption option(args);
+		if (option.isOk())
+			m_options.append(option);
+		else
+		{
+			qDebug() << "Invalid UCI option from" << m_name << ":"
+			         << args;
+		}
+	}
+}
+
+void UciEngine::setOption(const UciOption& option, const QString& value)
+{
+	if (!option.isOk())
+	{
+		qDebug() << "Trying to pass an invalid option to" << m_name;
+		return;
+	}
+	
+	setOption(option.name(), value);
+}
+
+void UciEngine::setOption(const QString& name, const QString& value)
+{
+	bool found = false;
+	foreach (const UciOption& option, m_options)
+	{
+		if (option.name() == name)
+		{
+			found = true;
+			break;
+		}
+	}
+	if (!found)
+	{
+		qDebug() << m_name << "doesn't have UCI option" << name;
+		return;
+	}
+	
+	write(QString("setoption name ") + name + QString(" value ") + value);
 }
