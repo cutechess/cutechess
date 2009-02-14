@@ -244,10 +244,10 @@ static QString randomFen(const QVector<int>& pieces)
 	
 	// White pawns
 	fen += QString(pieces.size(), Notation::pieceChar(Chess::Pawn));
+	fen += '/';
 	// White pieces
 	foreach (int piece, pieces)
 		fen += Notation::pieceChar(piece);
-	fen += '/';
 
 	// Side to move, castling rights, enpassant square, etc.
 	fen += " w KQkq - 0 1";
