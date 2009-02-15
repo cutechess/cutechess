@@ -198,30 +198,79 @@ static QVector<int> fischerandomVector()
 	return pieces;
 }
 
+static bool safePawns(const QVector<int>& pieces)
+{
+	int len = pieces.size();
+	
+	for (int i = 0; i < len; i++)
+	{
+		int p;
+		bool safe = false;
+		
+		for (int j = i - 2; j <= i + 2; j += 4)
+		{
+			if (j < 0 || j >= len)
+				continue;
+			p = pieces[j];
+			if (p == Chess::Knight
+			||  p == Chess::Archbishop
+			||  p == Chess::Chancellor)
+				safe = true;
+		}
+		for (int j = i - 1; j <= i + 1; j += 2)
+		{
+			if (j < 0 || j >= len)
+				continue;
+			p = pieces[j];
+			if (p == Chess::Bishop
+			||  p == Chess::Queen
+			||  p == Chess::Archbishop
+			||  p == Chess::King)
+				safe = true;
+		}
+		p = pieces[i];
+		if (p == Chess::Rook
+		||  p == Chess::Queen
+		||  p == Chess::Chancellor
+		||  p == Chess::King)
+			safe = true;
+		
+		if (!safe)
+			return false;
+	}
+	
+	return true;
+}
+
 static QVector<int> caparandomVector()
 {
-	QVector<int> pieces(10, 0);
-
-	if ((qrand() % 2) == 0)
-	{
-		addPiece(pieces, Chess::Queen, qrand() % 5, 0, 2);
-		addPiece(pieces, Chess::Archbishop, qrand() % 5, 1, 2);
-	}
-	else
-	{
-		addPiece(pieces, Chess::Archbishop, qrand() % 5, 0, 2);
-		addPiece(pieces, Chess::Queen, qrand() % 5, 1, 2);
-	}
-	addPiece(pieces, Chess::Bishop, qrand() % 4, 0, 2);
-	addPiece(pieces, Chess::Bishop, qrand() % 4, 1, 2);
-	addPiece(pieces, Chess::Chancellor, qrand() % 6);
-	addPiece(pieces, Chess::Knight, qrand() % 5);
-	addPiece(pieces, Chess::Knight, qrand() % 4);
-	addPiece(pieces, Chess::Rook, 0);
-	addPiece(pieces, Chess::King, 0);
-	addPiece(pieces, Chess::Rook, 0);
+	QVector<int> pieces(10);
 	
-	// TODO: Check for unprotected pawns
+	// Generate positions until we get one where all the pawns are
+	// protected. This usually takes a handful of tries.
+	do
+	{
+		pieces.fill(0);
+		if ((qrand() % 2) == 0)
+		{
+			addPiece(pieces, Chess::Queen, qrand() % 5, 0, 2);
+			addPiece(pieces, Chess::Archbishop, qrand() % 5, 1, 2);
+		}
+		else
+		{
+			addPiece(pieces, Chess::Archbishop, qrand() % 5, 0, 2);
+			addPiece(pieces, Chess::Queen, qrand() % 5, 1, 2);
+		}
+		addPiece(pieces, Chess::Bishop, qrand() % 4, 0, 2);
+		addPiece(pieces, Chess::Bishop, qrand() % 4, 1, 2);
+		addPiece(pieces, Chess::Chancellor, qrand() % 6);
+		addPiece(pieces, Chess::Knight, qrand() % 5);
+		addPiece(pieces, Chess::Knight, qrand() % 4);
+		addPiece(pieces, Chess::Rook, 0);
+		addPiece(pieces, Chess::King, 0);
+		addPiece(pieces, Chess::Rook, 0);
+	}
+	while (!safePawns(pieces));
 
 	return pieces;
 }
