@@ -84,6 +84,8 @@ class LIB_EXPORT UciOption
 		
 		/*! Returns true if the option is free of errors. */
 		bool isOk() const;
+		/*! Returns true if \a value is valid for this option. */
+		bool isValueOk(const QVariant& value) const;
 		
 		/*! Sets the option name. */
 		void setName(const QString& name);

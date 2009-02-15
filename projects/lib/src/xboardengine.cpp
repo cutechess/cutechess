@@ -44,6 +44,8 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
 	: ChessEngine(ioDevice, chessboard, parent),
 	  m_forceMode(true),
 	  m_drawOnNextMove(false),
+	  m_ftSmp(false),
+	  m_ftMemory(false),
 	  m_ftName(false),
 	  m_ftPing(false),
 	  m_ftSetboard(false),
@@ -255,6 +257,16 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 		if (val == "1")
 			m_ftName = true;
 	}
+	else if (name == "memory")
+	{
+		if (val == "1")
+			m_ftMemory = true;
+	}
+	else if (name == "smp")
+	{
+		if (val == "1")
+			m_ftSmp = true;
+	}
 	else if (name == "done")
 	{
 		if (!m_initialized && val == "1")
@@ -353,4 +365,16 @@ void XboardEngine::parseLine(const QString& line)
 			pos += rx.matchedLength();
 		}
 	}
+}
+
+void XboardEngine::setConcurrency(int limit)
+{
+	if (m_ftSmp)
+		write(QString("cores ") + QString::number(limit));
+}
+
+void XboardEngine::setMemory(int limit)
+{
+	if (m_ftMemory)
+		write(QString("memory ") + QString::number(limit));
 }

@@ -61,14 +61,17 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		 * \note If the option is invalid, or the engine doesn't
 		 * have the option, nothing happens.
 		 */
-		void setOption(const UciOption& option, const QString& value);
+		void setOption(const UciOption* option, const QVariant& value);
 		/*!
 		 * Sets an option with the name \a name to \a value.
 		 *
 		 * \note If the engine doesn't have an option called \a name,
 		 * nothing happens.
 		 */
-		void setOption(const QString& name, const QString& value);
+		void setOption(const QString& name, const QVariant& value);
+		
+		void setConcurrency(int limit);
+		void setMemory(int limit);
 
 	protected:
 		void parseLine(const QString& line);
@@ -76,6 +79,8 @@ class LIB_EXPORT UciEngine : public ChessEngine
 	private:
 		void addVariants();
 		void sendPosition();
+		const UciOption* getOption(const QString& name) const;
+		bool hasOption(const QString& name) const;
 		
 		QString m_startFen;
 		QStringList m_moves;

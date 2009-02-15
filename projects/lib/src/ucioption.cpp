@@ -186,6 +186,11 @@ void UciOption::addVar(const QString& str)
 
 bool UciOption::isOk() const
 {
+	return isValueOk(m_defaultVal);
+}
+
+bool UciOption::isValueOk(const QVariant& value) const
+{
 	bool ok = false;
 	int val = 0;
 	
@@ -195,7 +200,7 @@ bool UciOption::isOk() const
 	switch (m_type)
 	{
 	case Check:
-		if (!m_defaultVal.canConvert<bool>())
+		if (!value.canConvert<bool>())
 			return false;
 		if (m_min != 0 || m_max != 0)
 			return false;
@@ -205,26 +210,26 @@ bool UciOption::isOk() const
 	case Spin:
 		if (m_min >= m_max)
 			return false;
-		val = m_defaultVal.toInt(&ok);
+		val = value.toInt(&ok);
 		if (!ok || val < m_min || val > m_max)
 			return false;
 		if (!m_var.isEmpty())
 			return false;
 		return true;
 	case Combo:
-		if (!m_var.contains(m_defaultVal.toString()))
+		if (!m_var.contains(value.toString()))
 			return false;
 		if (m_min != 0 || m_max != 0)
 			return false;
 		return true;
 	case Button:
-		if (m_defaultVal.isValid() || !m_var.isEmpty())
+		if (value.isValid() || !m_var.isEmpty())
 			return false;
 		if (m_min != 0 || m_max != 0)
 			return false;
 		return true;
 	case String:
-		if (m_defaultVal.toString().isEmpty())
+		if (value.toString().isEmpty())
 			return false;
 		if (m_min != 0 || m_max != 0)
 			return false;

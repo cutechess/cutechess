@@ -49,6 +49,9 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
 		void ping();
+		
+		void setConcurrency(int limit);
+		void setMemory(int limit);
 
 	protected:
 		void parseLine(const QString& line);
@@ -61,6 +64,8 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		bool m_drawOnNextMove;
 		
 		// Engine features
+		bool m_ftSmp;
+		bool m_ftMemory;
 		bool m_ftName;
 		bool m_ftPing;
 		bool m_ftSetboard;

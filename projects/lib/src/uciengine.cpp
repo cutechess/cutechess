@@ -238,33 +238,64 @@ void UciEngine::parseLine(const QString& line)
 	}
 }
 
-void UciEngine::setOption(const UciOption& option, const QString& value)
+const UciOption* UciEngine::getOption(const QString& name) const
 {
-	if (!option.isOk())
+	for (int i = 0; i < m_options.size(); i++)
+	{
+		if (m_options[i].name() == name)
+			return &m_options[i];
+	}
+	
+	return 0;
+}
+
+bool UciEngine::hasOption(const QString& name) const
+{
+	foreach (const UciOption& option, m_options)
+	{
+		if (option.name() == name)
+			return true;
+	}
+	return false;
+}
+
+void UciEngine::setOption(const UciOption* option, const QVariant& value)
+{
+	Q_ASSERT(option != 0);
+	if (!option->isOk())
 	{
 		qDebug() << "Trying to pass an invalid option to" << m_name;
 		return;
 	}
+	if (!option->isValueOk(value))
+	{
+		qDebug() << "Can't set option" << option->name()
+		         << "to" << value.toString();
+		return;
+	}
 	
-	setOption(option.name(), value);
+	write(QString("setoption name ") + option->name() +
+	      QString(" value ") + value.toString());
 }
 
-void UciEngine::setOption(const QString& name, const QString& value)
+void UciEngine::setOption(const QString& name, const QVariant& value)
 {
-	bool found = false;
-	foreach (const UciOption& option, m_options)
-	{
-		if (option.name() == name)
-		{
-			found = true;
-			break;
-		}
-	}
-	if (!found)
+	const UciOption* option = getOption(name);
+	if (!option)
 	{
 		qDebug() << m_name << "doesn't have UCI option" << name;
 		return;
 	}
 	
-	write(QString("setoption name ") + name + QString(" value ") + value);
+	setOption(option, value);
+}
+
+void UciEngine::setConcurrency(int limit)
+{
+	setOption("Threads", limit);
+}
+
+void UciEngine::setMemory(int limit)
+{
+	setOption("Hash", limit);
 }
