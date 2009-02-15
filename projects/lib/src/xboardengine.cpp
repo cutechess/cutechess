@@ -146,6 +146,7 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 
 void XboardEngine::endGame(Chess::Result result)
 {
+	ChessPlayer::endGame(result);
 	write("result " + result.toString());
 }
 

@@ -49,6 +49,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 
 		// Inherited methods
 		void newGame(Chess::Side side, ChessPlayer* opponent);
+		void endGame(Chess::Result result);
 		void go();
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;

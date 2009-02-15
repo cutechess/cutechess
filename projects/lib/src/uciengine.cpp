@@ -106,6 +106,13 @@ void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	sendPosition();
 }
 
+void UciEngine::endGame(Chess::Result result)
+{
+	if (m_timer.isActive())
+		write("stop");
+	ChessPlayer::endGame(result);
+}
+
 void UciEngine::makeMove(const Chess::Move& move)
 {
 	m_moves.append(m_chessboard->moveString(move, m_notation));
