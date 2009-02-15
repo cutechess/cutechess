@@ -221,7 +221,10 @@ void ChessGame::start()
 	if (m_fen.isEmpty())
 	{
 		m_fen = m_board->variant().startingFen();
-		m_board->setBoard(m_fen);
+		// The default starting positions, even those generated
+		// for random variants, should never fail.
+		if (!m_board->setBoard(m_fen))
+			qFatal("Invalid FEN: %s", qPrintable(m_fen));
 	}
 	
 	for (int i = 0; i < 2; i++)
