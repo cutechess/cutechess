@@ -8,11 +8,6 @@
 - Allow players to resign on the opponent's turn. This means stopping the
   other player's thinking.
 
-- Detect when a player's flag falls. When the player gets his turn, start a timer
-  which fires when the time runs out. If the player moves before it happens,
-  the timer is killed/reset. But even then, check the accurate elapsed time to
-  see if the flag fell.
-
 - More unit tests for the Chess library
 
 - Give better weights (not just popularity) to imported opening book moves
@@ -35,4 +30,8 @@
   - invalid time controls (eg. negative time left)
   - negative minimum search depth
   - test the ping time
+
+- Include annotations (eval + search depth + move time) in saved PGN files
+
+- Use ECO codes to determine the opening name for PGN games
 
