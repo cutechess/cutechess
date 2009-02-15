@@ -55,6 +55,10 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 
 	protected:
 		void parseLine(const QString& line);
+	
+	private slots:
+		/*! Initializes the engine, and emits the 'ready' signal. */
+		void initialize();
 
 	private:
 		void setFeature(const QString& name, const QString& val);
@@ -73,6 +77,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		bool m_ftUsermove;
 		
 		int m_lastPing;
+		QTimer m_initTimer;
 };
 
 #endif // XBOARDENGINE_H

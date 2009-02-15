@@ -61,13 +61,30 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
 	// Tell the engine that we're using Xboard protocol 2
 	write("protover 2");
 	
-	// Wait for the engine to initialize
+	// Give the engine 2 seconds to reply to the protover command.
+	// This is how Xboard deals with protocol 1 engines.
 	m_isReady = false;
+	m_initTimer.setSingleShot(true);
+	connect(&m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
+	m_initTimer.start(2000);
 }
 
 XboardEngine::~XboardEngine()
 {
 	//write("quit");
+}
+
+void XboardEngine::initialize()
+{
+	if (!m_initialized)
+	{
+		Q_ASSERT(!m_isReady);
+		m_initialized = true;
+		m_isReady = true;
+		
+		flushWriteBuffer();
+		emit ready();
+	}
 }
 
 static Chess::Variant variantCode(const QString& str)
@@ -269,17 +286,12 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	}
 	else if (name == "done")
 	{
-		if (!m_initialized && val == "1")
-		{
-			Q_ASSERT(!m_isReady);
-			m_initialized = true;
-			m_isReady = true;
-			
-			flushWriteBuffer();
-			write("accepted done");
-			emit ready();
-			return;
-		}
+		write("accepted done");
+		m_initTimer.stop();
+		
+		if (val == "1")
+			initialize();
+		return;
 	}
 	else
 	{
