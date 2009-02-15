@@ -25,18 +25,12 @@
 
 ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 	: QObject(parent),
-	  m_book(0),
-	  m_gameInProgress(false),
-	  m_moveCount(0)
+	  m_maxOpeningMoveCount(1000),
+	  m_gameInProgress(false)
 {
 	m_player[Chess::White] = 0;
 	m_player[Chess::Black] = 0;
-	m_board = new Chess::Board(variant);
-}
-
-ChessGame::~ChessGame()
-{
-	delete m_board;
+	m_board = new Chess::Board(variant, this);
 }
 
 Chess::Board* ChessGame::board() const
@@ -94,8 +88,6 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 		return;
 	}
 
-	m_moveCount++;
-
 	playerToWait()->makeMove(move);
 	m_board->makeMove(move, true);
 	
@@ -142,12 +134,12 @@ void ChessGame::onTimeout()
 	endGame();
 }
 
-Chess::Move ChessGame::bookMove()
+Chess::Move ChessGame::bookMove(const OpeningBook* book)
 {
-	if (m_book == 0)
+	if (book == 0)
 		return Chess::Move(0, 0);
 	
-	BookMove bookMove = m_book->move(m_board->key());
+	BookMove bookMove = book->move(m_board->key());
 	return m_board->moveFromBook(bookMove);
 }
 
@@ -171,10 +163,45 @@ bool ChessGame::setFenString(const QString& fen)
 	return true;
 }
 
-void ChessGame::setOpeningBook(OpeningBook* book)
+void ChessGame::setMaxOpeningMoveCount(int count)
+{
+	m_maxOpeningMoveCount = count;
+}
+
+void ChessGame::setOpeningMoves(const QVector<Chess::Move>& moves)
+{
+	m_openingMoves = moves;
+}
+
+void ChessGame::setOpeningMoves(const OpeningBook* book)
 {
 	Q_ASSERT(book != 0);
-	m_book = book;
+	
+	setBoard();
+	m_openingMoves.clear();	
+	for (int i = 0; i < m_maxOpeningMoveCount; i++)
+	{
+		Chess::Move move = bookMove(book);
+		if (!m_board->isLegalMove(move)
+		||  m_board->isRepeatMove(move))
+			break;
+		
+		m_openingMoves.append(move);
+		m_board->makeMove(move);
+	}
+	m_board->setBoard(m_fen);
+}
+
+void ChessGame::setBoard()
+{
+	if (m_fen.isEmpty())
+	{
+		m_fen = m_board->variant().startingFen();
+		// The default starting positions, even those generated
+		// for random variants, should never fail.
+		if (!m_board->setBoard(m_fen))
+			qFatal("Invalid FEN: %s", qPrintable(m_fen));
+	}
 }
 
 void ChessGame::start()
@@ -218,32 +245,26 @@ void ChessGame::start()
 		}	
 	}
 	
-	if (m_fen.isEmpty())
-	{
-		m_fen = m_board->variant().startingFen();
-		// The default starting positions, even those generated
-		// for random variants, should never fail.
-		if (!m_board->setBoard(m_fen))
-			qFatal("Invalid FEN: %s", qPrintable(m_fen));
-	}
-	
+	setBoard();
 	for (int i = 0; i < 2; i++)
 		m_player[i]->newGame((Chess::Side)i, m_player[!i]);
 	
 	m_gameInProgress = true;
 	
-	// Play the opening book moves first
-	Chess::Move move;
-	while (m_board->isLegalMove(move = bookMove())
-	   &&  !m_board->isRepeatMove(move)
-	   &&  m_moveCount < 30)
+	// Play the forced opening moves first
+	int count = m_maxOpeningMoveCount;
+	if (m_openingMoves.size() < count)
+		count = m_openingMoves.size();
+	for (int i = 0; i < count; i++)
 	{
-		playerToMove()->makeBookMove(move);
+		const Chess::Move& move = m_openingMoves[i];
+		if (!m_board->isLegalMove(move))
+			break;
 		
+		playerToMove()->makeBookMove(move);
 		playerToWait()->makeMove(move);
 		m_board->makeMove(move, true);
 		
-		Q_ASSERT(m_board->result().isNone());
 		emit moveMade(move);
 	}
 	

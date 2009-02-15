@@ -19,9 +19,11 @@
 #define CHESSGAME_H
 
 #include <QObject>
+#include <QVector>
 #include "chessboard/chess.h"
 #include "chessboard/result.h"
 #include "chessboard/variant.h"
+#include "chessboard/chessmove.h"
 
 class ChessPlayer;
 class OpeningBook;
@@ -32,13 +34,14 @@ class LIB_EXPORT ChessGame : public QObject
 
 	public:
 		explicit ChessGame(Chess::Variant variant, QObject* parent = 0);
-		~ChessGame();
 		
 		Chess::Board* board() const;
 		ChessPlayer* player(Chess::Side) const;
 		void setPlayer(Chess::Side, ChessPlayer* player);
 		bool setFenString(const QString& fen);
-		void setOpeningBook(OpeningBook* book);
+		void setMaxOpeningMoveCount(int count);
+		void setOpeningMoves(const QVector<Chess::Move>& moves);
+		void setOpeningMoves(const OpeningBook* book);
 		Chess::Result result() const;
 
 	public slots:
@@ -52,17 +55,18 @@ class LIB_EXPORT ChessGame : public QObject
 		void gameEnded();
 
 	private:
-		Chess::Move bookMove();
+		Chess::Move bookMove(const OpeningBook* book);
 		void endGame();
 		ChessPlayer* playerToMove();
 		ChessPlayer* playerToWait();
+		void setBoard();
 		
 		Chess::Board* m_board;
 		QString m_fen;
+		int m_maxOpeningMoveCount;
+		QVector<Chess::Move> m_openingMoves;
 		ChessPlayer* m_player[2];
-		OpeningBook* m_book;
 		bool m_gameInProgress;
-		int m_moveCount;
 		Chess::Result m_result;
 };
 
