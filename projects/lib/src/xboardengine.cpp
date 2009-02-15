@@ -44,6 +44,7 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
 	: ChessEngine(ioDevice, chessboard, parent),
 	  m_forceMode(true),
 	  m_drawOnNextMove(false),
+	  m_ftName(false),
 	  m_ftPing(false),
 	  m_ftSetboard(false),
 	  m_ftTime(true),
@@ -133,6 +134,13 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 		command += QString(" ") + msToXboardTime(m_timeControl.timePerTc());
 		command += QString(" ") + QString::number(m_timeControl.timeIncrement() / 1000);
 		write(command);
+	}
+	
+	if (m_ftName)
+	{
+		if (!m_opponent->isHuman())
+			write("computer");
+		write(QString("name ") + m_opponent->name());
 	}
 }
 
@@ -240,6 +248,11 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 			if (!v.isNone())
 				m_variants.append(v);
 		}
+	}
+	else if (name == "name")
+	{
+		if (val == "1")
+			m_ftName = true;
 	}
 	else if (name == "done")
 	{

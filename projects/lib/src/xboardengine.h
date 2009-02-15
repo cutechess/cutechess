@@ -61,6 +61,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		bool m_drawOnNextMove;
 		
 		// Engine features
+		bool m_ftName;
 		bool m_ftPing;
 		bool m_ftSetboard;
 		bool m_ftTime;
