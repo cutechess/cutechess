@@ -207,8 +207,8 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 		// set the board when we get the first move
 		if (m_fen.isEmpty())
 		{
-			board->setBoard();
-			m_fen = board->startingFen();
+			m_fen = board->variant().startingFen();
+			board->setBoard(m_fen);
 		}
 		
 		Chess::Move move = board->moveFromString(str);
@@ -308,3 +308,12 @@ bool PgnGame::isEmpty() const
 	return m_moves.isEmpty();
 }
 
+QString PgnGame::startingFen() const
+{
+	return m_fen;
+}
+
+const QVector<Chess::Move>& PgnGame::moves() const
+{
+	return m_moves;
+}

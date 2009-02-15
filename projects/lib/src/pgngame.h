@@ -26,8 +26,6 @@ class PgnFile;
 class LIB_EXPORT PgnGame
 {
 	public:
-		friend class OpeningBook;
-		
 		/*! Constructs a PgnGame from a ChessGame object. */
 		explicit PgnGame(const ChessGame* game);
 		
@@ -39,7 +37,7 @@ class LIB_EXPORT PgnGame
 		 * \note Even if the stream contains multiple games,
 		 * only one will be read.
 		 */
-		PgnGame(PgnFile& in, int maxMoves = 1000);
+		explicit PgnGame(PgnFile& in, int maxMoves = 1000);
 		
 		/*!
 		 * Write the game to a file.
@@ -50,6 +48,12 @@ class LIB_EXPORT PgnGame
 		
 		/*! Returns true if the game doesn't contain any moves. */
 		bool isEmpty() const;
+		
+		/*! Returns the starting position's FEN string. */
+		QString startingFen() const;
+		
+		/*! Returns the moves that were played in the game. */
+		const QVector<Chess::Move>& moves() const;
 	
 	private:
 		enum PgnItem

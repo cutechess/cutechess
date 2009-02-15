@@ -96,8 +96,9 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 		if (game.isEmpty())
 			break;
 		
-		board->setBoard(game.m_fen);
-		foreach (const Move& srcMove, game.m_moves)
+		board->setBoard(game.startingFen());
+		const QVector<Chess::Move>& moves = game.moves();
+		foreach (const Move& srcMove, moves)
 		{
 			Square src = board->chessSquare(srcMove.sourceSquare());
 			Square trg = board->chessSquare(srcMove.targetSquare());
@@ -106,7 +107,7 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 			addEntry(BookMove(src, trg, prom), board->key());
 			board->makeMove(srcMove);
 		}
-		moveCount += game.m_moves.size();
+		moveCount += moves.size();
 		gameCount++;
 	}
 	qDebug("Imported %d moves from %d games", moveCount, gameCount);
