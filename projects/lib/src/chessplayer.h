@@ -58,7 +58,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void endGame(Chess::Result result);
 		
 		/*! Tells the player to start thinking and make its move. */
-		virtual void go();
+		virtual void go() = 0;
 
 		/*! Returns the player's time control. */
 		TimeControl* timeControl();
@@ -120,13 +120,16 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		/*! The player has run out of thinking time. */
 		void timeout() const;
-	
+
 	protected:
 		/*!
 		 * Emits the player's move, and a timeout signal if the
 		 * move came too late.
 		 */
 		void emitMove(const Chess::Move& move);
+		
+		/*! Starts the player's move timer (chess clock). */
+		void startClock();
 		
 		/*! Is the player ready to play? */
 		bool m_isReady;

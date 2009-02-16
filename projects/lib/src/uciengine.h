@@ -53,7 +53,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		void go();
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
-		void ping();
+		void ping(PingType type);
 		
 		/*!
 		 * Sets \a option to \a value, and sends it to the engine.

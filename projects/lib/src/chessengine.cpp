@@ -31,6 +31,7 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
 	  m_notation(Chess::LongAlgebraic),
 	  m_initialized(false),
 	  m_id(m_count++),
+	  m_pingType(PingUnknown),
 	  m_ioDevice(ioDevice)
 {
 	Q_ASSERT(m_ioDevice != 0);

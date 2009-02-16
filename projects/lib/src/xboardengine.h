@@ -48,7 +48,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void go();
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
-		void ping();
+		void ping(PingType type);
 		
 		void setConcurrency(int limit);
 		void setMemory(int limit);

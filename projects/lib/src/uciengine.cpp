@@ -121,6 +121,11 @@ void UciEngine::makeMove(const Chess::Move& move)
 
 void UciEngine::go()
 {
+	if (m_isReady)
+		ping(PingMove);
+	else
+		startClock();
+	
 	const TimeControl* whiteTc = 0;
 	const TimeControl* blackTc = 0;
 	if (side() == Chess::White)
@@ -151,8 +156,6 @@ void UciEngine::go()
 			command += QString(" movestogo ") + QString::number(m_timeControl.movesLeft());
 	}
 	write(command);
-	
-	ChessPlayer::go();
 }
 
 ChessEngine::Protocol UciEngine::protocol() const
@@ -160,10 +163,11 @@ ChessEngine::Protocol UciEngine::protocol() const
 	return ChessEngine::Uci;
 }
 
-void UciEngine::ping()
+void UciEngine::ping(ChessEngine::PingType type)
 {
 	if (m_isReady)
 	{
+		m_pingType = type;
 		write("isready");
 		m_isReady = false;
 	}
@@ -205,7 +209,7 @@ void UciEngine::parseLine(const QString& line)
 
 			// TODO: Send the engine the "setoption" commands
 
-			ping();
+			ping(PingInit);
 		}
 	}
 	else if (command == "readyok")
@@ -214,6 +218,9 @@ void UciEngine::parseLine(const QString& line)
 		{
 			m_isReady = true;
 			flushWriteBuffer();
+			if (m_pingType == PingMove)
+				startClock();
+			m_pingType = PingUnknown;
 			emit ready();
 		}
 	}

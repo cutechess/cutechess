@@ -35,8 +35,6 @@
 
 - Use ECO codes to determine the opening name for PGN games
 
-- Ping an engine before it starts thinking
-
 - EPD tests for engines
 
 - Command line tool for running engine vs. engine matches and tournaments
@@ -44,3 +42,5 @@
 - Design an XML format for tournaments
 
 - Switch to a QAbstractItemView-based graphical board
+
+- Terminate an engine if it doesn't respond to ping in reasonable time

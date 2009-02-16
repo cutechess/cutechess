@@ -46,6 +46,17 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 			Uci	//!< The Universal Chess Interface (UCI).
 		};
 		
+		/*! Ping or synchronization type. */
+		enum PingType
+		{
+			//! Wait for initialization.
+			PingInit,
+			//! Wait until the engine is ready to think of a move.
+			PingMove,
+			//! Ping the engine for any reason.
+			PingUnknown
+		};
+		
 		/*!
 		 * Creates and initializes a new ChessEngine object.
 		 * \note The engine process (\a ioDevice) must be
@@ -68,7 +79,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * Checks if the engine is still responding, and synchronizes
 		 * it with the GUI.
 		 */
-		virtual void ping() = 0;
+		virtual void ping(PingType type) = 0;
 
 		/*! Writes text data to the chess engine. */
 		void write(const QString& data);
@@ -105,6 +116,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		/*! The number of active chess engines. */
 		static int m_count;
+		
+		/*! The last ping's type. */
+		PingType m_pingType;
 		
 	protected slots:
 		/*! Reads input from the engine. */

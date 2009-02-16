@@ -185,18 +185,20 @@ void XboardEngine::sendTimeLeft()
 
 void XboardEngine::makeMove(const Chess::Move& move)
 {
-	QString moveString = m_chessboard->moveString(move, m_notation);
-	
 	if (!m_forceMode)
+	{
+		if (m_ftPing && m_isReady)
+			ping(PingMove);
+		else
+			startClock();
 		sendTimeLeft();
+	}
 	
+	QString moveString = m_chessboard->moveString(move, m_notation);
 	if (m_ftUsermove)
 		write(QString("usermove ") + moveString);
 	else
 		write(moveString);
-	
-	if (!m_forceMode)
-		ChessPlayer::go();
 }
 
 void XboardEngine::go()
@@ -205,9 +207,12 @@ void XboardEngine::go()
 		return;
 	
 	m_forceMode = false;
+	if (m_ftPing && m_isReady)
+		ping(PingMove);
+	else
+		startClock();
 	sendTimeLeft();
 	write("go");
-	ChessPlayer::go();
 }
 
 ChessEngine::Protocol XboardEngine::protocol() const
@@ -215,12 +220,13 @@ ChessEngine::Protocol XboardEngine::protocol() const
 	return ChessEngine::Xboard;
 }
 
-void XboardEngine::ping()
+void XboardEngine::ping(ChessEngine::PingType type)
 {
 	if (m_ftPing && m_isReady)
 	{
 		// Ping the engine with a random number. The engine should
 		// later send the number back at us.
+		m_pingType = type;
 		m_lastPing = qrand() % 32;
 		write(QString("ping ") + QString::number(m_lastPing));
 		m_isReady = false;
@@ -312,6 +318,9 @@ void XboardEngine::parseLine(const QString& line)
 		{
 			m_isReady = true;
 			flushWriteBuffer();
+			if (m_pingType == PingMove)
+				startClock();
+			m_pingType = PingUnknown;
 			emit ready();
 		}
 	}

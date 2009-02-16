@@ -52,7 +52,7 @@ void ChessPlayer::endGame(Chess::Result result)
 	m_timer.stop();
 }
 
-void ChessPlayer::go()
+void ChessPlayer::startClock()
 {
 	if (m_timeControl.timePerTc() != 0)
 		emit startedThinking(m_timeControl.timeLeft());
