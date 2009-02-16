@@ -230,60 +230,39 @@ void XboardEngine::ping()
 void XboardEngine::setFeature(const QString& name, const QString& val)
 {
 	if (name == "ping")
-	{
-		if (val == "1")
-			m_ftPing = true;
-	}
+		m_ftPing = (val == "1");
 	else if (name == "setboard")
-	{
-		if (val == "1")
-			m_ftSetboard = true;
-	}
+		m_ftSetboard = (val == "1");
 	else if (name == "san")
 	{
 		if (val == "1")
 			m_notation = Chess::StandardAlgebraic;
+		else
+			m_notation = Chess::LongAlgebraic;
 	}
 	else if (name == "usermove")
-	{
-		if (val == "1")
-			m_ftUsermove = true;
-	}
+		m_ftUsermove = (val == "1");
 	else if (name == "time")
-	{
-		if (val == "0")
-			m_ftTime = false;
-	}
+		m_ftTime = (val == "1");
 	else if (name == "myname")
-	{
 		m_name = val;
-	}
 	else if (name == "variants")
 	{
 		m_variants.clear();
 		QStringList variants = val.split(',');
 		foreach (const QString& str, variants)
 		{
-			Chess::Variant v = variantCode(str);
+			Chess::Variant v = variantCode(str.trimmed());
 			if (!v.isNone())
 				m_variants.append(v);
 		}
 	}
 	else if (name == "name")
-	{
-		if (val == "1")
-			m_ftName = true;
-	}
+		m_ftName = (val == "1");
 	else if (name == "memory")
-	{
-		if (val == "1")
-			m_ftMemory = true;
-	}
+		m_ftMemory = (val == "1");
 	else if (name == "smp")
-	{
-		if (val == "1")
-			m_ftSmp = true;
-	}
+		m_ftSmp = (val == "1");
 	else if (name == "done")
 	{
 		write("accepted done");
