@@ -136,7 +136,8 @@ bool EngineConfigurationModel::setData(const QModelIndex& index,
 
 			case 2:
 				config.setWorkingDirectory(value.toString());
-
+			break;
+			
 			case 3:
 				config.setProtocol(ChessEngine::Protocol(value.toInt()));
 			break;
