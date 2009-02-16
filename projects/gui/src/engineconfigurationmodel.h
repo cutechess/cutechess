@@ -126,6 +126,8 @@ class EngineConfigurationModel : public QAbstractListModel
 		 * This method is provided for convenience.
 		*/
 		void addConfiguration(const EngineConfiguration& configuration);
+		/*! Returns the configuration in \a index. */
+		EngineConfiguration configuration(const QModelIndex& index) const;
 		/*!
 		 * Returns all chess engine configurations in this model.
 		*/

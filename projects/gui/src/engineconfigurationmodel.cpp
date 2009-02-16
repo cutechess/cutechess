@@ -162,6 +162,13 @@ void EngineConfigurationModel::addConfiguration(const EngineConfiguration& confi
 	endInsertRows();
 }
 
+EngineConfiguration EngineConfigurationModel::configuration(const QModelIndex& index) const
+{
+	if (!index.isValid())
+		return EngineConfiguration();
+	return m_configurations.at(index.row());
+}
+
 QList<EngineConfiguration> EngineConfigurationModel::configurations() const
 {
 	return m_configurations;

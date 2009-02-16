@@ -16,6 +16,7 @@
 */
 
 #include <QAbstractItemView>
+#include <QSortFilterProxyModel>
 
 #include "newgamedlg.h"
 #include "engineconfigurationmodel.h"
@@ -39,8 +40,13 @@ NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,
 	connect(m_configureBlackEngineButton, SIGNAL(clicked(bool)), this,
 		SLOT(configureBlackEngine()));
 
-	m_whiteEngineComboBox->setModel(m_engines);
-	m_blackEngineComboBox->setModel(m_engines);
+	m_proxyModel = new QSortFilterProxyModel(this);
+	m_proxyModel->setSourceModel(m_engines);
+	m_proxyModel->sort(0);
+	m_proxyModel->setDynamicSortFilter(true);
+	
+	m_whiteEngineComboBox->setModel(m_proxyModel);
+	m_blackEngineComboBox->setModel(m_proxyModel);
 
 	if (m_engines->rowCount() > 0)
 	{
@@ -60,41 +66,42 @@ NewGameDialog::PlayerType NewGameDialog::blackPlayerType() const
 	return (m_blackPlayerHumanRadio->isChecked()) ? Human : CPU;
 }
 
-int NewGameDialog::selectedWhiteEngine() const
+QModelIndex NewGameDialog::selectedWhiteEngine() const
 {
-	return m_whiteEngineComboBox->currentIndex();
+	int index = m_whiteEngineComboBox->currentIndex();
+	QModelIndex modelIndex = m_proxyModel->index(index, 0);
+	return m_proxyModel->mapToSource(modelIndex);
 }
 
-int NewGameDialog::selectedBlackEngine() const
+QModelIndex NewGameDialog::selectedBlackEngine() const
 {
-	return m_blackEngineComboBox->currentIndex();
+	int index = m_blackEngineComboBox->currentIndex();
+	QModelIndex modelIndex = m_proxyModel->index(index, 0);
+	return m_proxyModel->mapToSource(modelIndex);
 }
 
 void NewGameDialog::configureWhiteEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
-	int selected = m_whiteEngineComboBox->currentIndex();
-
-	dlg.applyEngineInformation(m_engines->configurations().at(selected));
+	
+	QModelIndex index = selectedWhiteEngine();
+	dlg.applyEngineInformation(m_engines->configuration(index));
 
 	if (dlg.exec() == QDialog::Accepted)
 	{
-		m_engines->setConfiguration(m_engines->index(selected, 0),
-			dlg.engineConfiguration());
+		m_engines->setConfiguration(index, dlg.engineConfiguration());
 	}
 }
 
 void NewGameDialog::configureBlackEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
-	int selected  = m_blackEngineComboBox->currentIndex();
-
-	dlg.applyEngineInformation(m_engines->configurations().at(selected));
+	
+	QModelIndex index = selectedBlackEngine();
+	dlg.applyEngineInformation(m_engines->configuration(index));
 
 	if (dlg.exec() == QDialog::Accepted)
 	{
-		m_engines->setConfiguration(m_engines->index(selected, 0),
-			dlg.engineConfiguration());
+		m_engines->setConfiguration(index, dlg.engineConfiguration());
 	}
 }
-

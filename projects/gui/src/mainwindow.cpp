@@ -199,8 +199,8 @@ void MainWindow::newGame()
 
 	const EngineConfiguration engineConfig[2] =
 	{
-		m_engineConfigurations->configurations().at(dlg.selectedWhiteEngine()),
-		m_engineConfigurations->configurations().at(dlg.selectedBlackEngine())
+		m_engineConfigurations->configuration(dlg.selectedWhiteEngine()),
+		m_engineConfigurations->configuration(dlg.selectedBlackEngine())
 	};
 	
 	QProcess* engineProcess[2] = { new QProcess(this), new QProcess(this) };

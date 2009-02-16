@@ -23,6 +23,7 @@
 #include "ui_newgamedlg.h"
 
 class EngineConfigurationModel;
+class QSortFilterProxyModel;
 
 /*!
  * \brief The NewGameDialog class provides a dialog for creating a new game.
@@ -58,13 +59,13 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 		 *
 		 * The return value is an index to the engine configurations model.
 		*/
-		int selectedWhiteEngine() const;
+		QModelIndex selectedWhiteEngine() const;
 		/*!
 		 * Returns the user selected chess engine for black.
 		 *
 		 * The return value is an index to the engine configurations model.
 		*/
-		int selectedBlackEngine() const;
+		QModelIndex selectedBlackEngine() const;
 
 	private slots:
 		void configureWhiteEngine();
@@ -72,6 +73,7 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 
 	private:
 		EngineConfigurationModel* m_engines;
+		QSortFilterProxyModel* m_proxyModel;
 
 };
 
