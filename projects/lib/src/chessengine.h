@@ -84,15 +84,21 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Writes text data to the chess engine. */
 		void write(const QString& data);
 		
-		/*! Tells the engine to use a maximum of \a limit MB of RAM. */
-		virtual void setMemory(int limit) = 0;
-		
 		/*!
 		 * Tells the engine to use a maximum of \a limit
 		 * threads or processes for searching.
 		 */
 		virtual void setConcurrency(int limit) = 0;
-
+		
+		/*! Sets the path to endgame bitbases (eg. Scorpio's). */
+		virtual void setEgbbPath(const QString& path) = 0;
+		
+		/*! Sets the path to Nalimov endgame table bases. */
+		virtual void setEgtbPath(const QString& path) = 0;
+		
+		/*! Tells the engine to use a maximum of \a limit MB of RAM. */
+		virtual void setMemory(int limit) = 0;
+		
 	protected:
 		/*! Parses a line of input from the engine. */
 		virtual void parseLine(const QString& line) = 0;

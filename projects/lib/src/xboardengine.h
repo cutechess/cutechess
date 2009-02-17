@@ -51,6 +51,8 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void ping(PingType type);
 		
 		void setConcurrency(int limit);
+		void setEgbbPath(const QString& path);
+		void setEgtbPath(const QString& path);
 		void setMemory(int limit);
 
 	protected:
@@ -68,6 +70,8 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		bool m_drawOnNextMove;
 		
 		// Engine features
+		bool m_ftEgbb;
+		bool m_ftEgtb;
 		bool m_ftSmp;
 		bool m_ftMemory;
 		bool m_ftName;

@@ -44,6 +44,8 @@ XboardEngine::XboardEngine(QIODevice* ioDevice,
 	: ChessEngine(ioDevice, chessboard, parent),
 	  m_forceMode(true),
 	  m_drawOnNextMove(false),
+	  m_ftEgbb(false),
+	  m_ftEgtb(false),
 	  m_ftSmp(false),
 	  m_ftMemory(false),
 	  m_ftName(false),
@@ -269,6 +271,18 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 		m_ftMemory = (val == "1");
 	else if (name == "smp")
 		m_ftSmp = (val == "1");
+	else if (name == "egt")
+	{
+		QStringList list = val.split(',');
+		foreach (const QString& str, list)
+		{
+			QString egtType = str.trimmed();
+			if (egtType == "scorpio")
+				m_ftEgbb = true;
+			else if (egtType == "nalimov")
+				m_ftEgtb = true;
+		}
+	}
 	else if (name == "done")
 	{
 		write("accepted done");
@@ -371,6 +385,18 @@ void XboardEngine::setConcurrency(int limit)
 {
 	if (m_ftSmp)
 		write(QString("cores ") + QString::number(limit));
+}
+
+void XboardEngine::setEgbbPath(const QString& path)
+{
+	if (m_ftEgbb)
+		write(QString("egtpath scorpio ") + path);
+}
+
+void XboardEngine::setEgtbPath(const QString& path)
+{
+	if (m_ftEgtb)
+		write(QString("egtpath nalimov ") + path);
 }
 
 void XboardEngine::setMemory(int limit)

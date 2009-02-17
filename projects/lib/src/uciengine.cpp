@@ -232,6 +232,14 @@ void UciEngine::parseLine(const QString& line)
 		if (tag == "name")
 			m_name = tagVal;
 	}
+	else if (command == "registration")
+	{
+		if (args == "error")
+		{
+			qDebug() << "Failed to register UCI engine" << m_name;
+			write("register later");
+		}
+	}
 	else if (command == "option")
 	{
 		UciOption option(args);
@@ -300,6 +308,22 @@ void UciEngine::setOption(const QString& name, const QVariant& value)
 void UciEngine::setConcurrency(int limit)
 {
 	setOption("Threads", limit);
+}
+
+void UciEngine::setEgbbPath(const QString& path)
+{
+	// Stupid computer chess community and their lack of standards...
+	if (hasOption("Bitbases"))
+		setOption("Bitbases", path);
+	else if (hasOption("Bitbase Path"))
+		setOption("Bitbase Path", path);
+	else if (hasOption("Bitbases Path"))
+		setOption("Bitbases Path", path);
+}
+
+void UciEngine::setEgtbPath(const QString& path)
+{
+	setOption("NalimovPath", path);
 }
 
 void UciEngine::setMemory(int limit)
