@@ -31,3 +31,7 @@ cutechess.kdevelop
 cutechess.kdevelop.pcs
 cutechess.kdevses
 
+# files created by Qt Creator
+cutechess.pro.user
+qtc-gdbmacros/
+
