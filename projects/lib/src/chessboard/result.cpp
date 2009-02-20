@@ -62,11 +62,17 @@ Side Result::winner() const
 {
 	switch (m_code)
 	{
-	case WhiteWins: case WhiteMates:
-	case BlackResigns: case BlackTimeout:
+	case WhiteWins:
+	case WhiteMates:
+	case BlackResigns:
+	case BlackTimeout:
+	case BlackTerminates:
 		return White;
-	case BlackWins: case BlackMates:
-	case WhiteResigns: case WhiteTimeout:
+	case BlackWins:
+	case BlackMates:
+	case WhiteResigns:
+	case WhiteTimeout:
+	case WhiteTerminates:
 		return Black;
 	default:
 		return NoSide;
@@ -144,6 +150,10 @@ QString Result::toString() const
 		return QObject::tr("0-1 {White loses on time}");
 	case BlackTimeout:
 		return QObject::tr("1-0 {Black loses on time}");
+	case WhiteTerminates:
+		return QObject::tr("0-1 {White quits/terminates}");
+	case BlackTerminates:
+		return QObject::tr("1-0 {Black quits/terminates}");
 	case Stalemate:
 		return QObject::tr("1/2-1/2 {Stalemate}");
 	case Draw:

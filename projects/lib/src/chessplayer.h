@@ -120,6 +120,12 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		/*! The player has run out of thinking time. */
 		void timeout() const;
+		
+		/*!
+		 * The player has quit the game, lost connection, or in case
+		 * of a chess engine, the process has terminated.
+		 */
+		void terminated() const;
 
 	protected:
 		/*!

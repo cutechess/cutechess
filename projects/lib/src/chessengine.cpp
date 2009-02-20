@@ -17,6 +17,7 @@
 
 #include <QString>
 #include <QIODevice>
+#include <QtDebug>
 
 #include "chessengine.h"
 #include "chessboard/chess.h"

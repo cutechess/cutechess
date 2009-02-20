@@ -115,21 +115,45 @@ void ChessGame::resign()
 	endGame();
 }
 
+void ChessGame::onTerminated()
+{
+	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
+	Q_ASSERT(sender != 0);
+
+	if (m_result.isNone())
+	{
+		if (sender == m_player[Chess::White])
+		{
+			m_result = Chess::Result::WhiteTerminates;
+			qDebug() << "White terminates";
+		}
+		else if (sender == m_player[Chess::Black])
+		{
+			m_result = Chess::Result::BlackTerminates;
+			qDebug() << "Black terminates";
+		}
+	}
+	endGame();
+}
+
 void ChessGame::onTimeout()
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
 	Q_ASSERT(sender == playerToMove());
 	
-	if (sender == m_player[Chess::White])
+	if (m_result.isNone())
 	{
-		m_result = Chess::Result::WhiteTimeout;
-		qDebug() << "White loses on time";
-	}
-	else if (sender == m_player[Chess::Black])
-	{
-		m_result = Chess::Result::BlackTimeout;
-		qDebug() << "Black loses on time";
+		if (sender == m_player[Chess::White])
+		{
+			m_result = Chess::Result::WhiteTimeout;
+			qDebug() << "White loses on time";
+		}
+		else if (sender == m_player[Chess::Black])
+		{
+			m_result = Chess::Result::BlackTimeout;
+			qDebug() << "Black loses on time";
+		}
 	}
 	endGame();
 }

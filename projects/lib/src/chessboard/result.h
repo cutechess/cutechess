@@ -34,6 +34,10 @@ class LIB_EXPORT Result
 			WhiteTimeout,
 			//! White wins due to black's timeout.
 			BlackTimeout,
+			//! Black wins due to white quitting/terminating.
+			WhiteTerminates,
+			//! White wins due to black quitting/terminating.
+			BlackTerminates,
 			//! Draw by a stalemate.
 			Stalemate,
 			//! Draw by any means
