@@ -27,25 +27,12 @@ class LIB_EXPORT OpeningBook
 		virtual ~OpeningBook() {}
 		
 		/*!
-		 * Loads a book from a binary file.
-		 * \return True if successfull.
-		 */
-		bool load(const QString& filename);
-		
-		
-		/*!
 		 * Imports games in PGN format.
 		 * \param filename The PGN file
 		 * \param maxMoves Store at most this many full moves per game
 		 * \return True if successfull.
 		 */
 		bool pgnImport(const QString& filename, int maxMoves);
-		
-		/*!
-		 * Stores the book to a binary file.
-		 * \return True if successfull.
-		 */
-		bool save(const QString& filename) const;
 		
 		/*!
 		 * Returns a move that can be played in a position where the
@@ -59,8 +46,11 @@ class LIB_EXPORT OpeningBook
 		 * selected than unpopular ones.
 		 */
 		BookMove move(quint64 key) const;
-	
+
 	protected:
+		friend QDataStream& operator>>(QDataStream& in, OpeningBook* book);
+		friend QDataStream& operator<<(QDataStream& out, const OpeningBook* book);
+
 		/*!
 		 * \brief An entry in the opening book.
 		 *
@@ -88,7 +78,7 @@ class LIB_EXPORT OpeningBook
 		virtual Chess::Variant variant() const = 0;
 		
 		/*! Adds a new entry to the book. */
-		void addEntry(const BookMove& move, quint64 key);
+		void addEntry(const Entry& entry, quint64 key);
 		
 		/*! Loads a new book entry from \a in. */
 		virtual void loadEntry(QDataStream& in) = 0;
@@ -100,5 +90,22 @@ class LIB_EXPORT OpeningBook
 		/*! The binary tree. */
 		Map m_map;
 };
+
+/*!
+ * Loads a book from a data stream.
+ *
+ * \note Multiple book files can be appended to a single
+ * OpeningBook object.
+ */
+extern QDataStream& operator>>(QDataStream& in, OpeningBook* book);
+
+/*!
+ * Writes a book to a data stream.
+ *
+ * \warning Do not write multiple OpeningBook objects to a single
+ * data stream, because the books are likely to have duplicate
+ * entries.
+ */
+extern QDataStream& operator<<(QDataStream& out, const OpeningBook* book);
 
 #endif // OPENING_BOOK_H

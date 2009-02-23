@@ -68,7 +68,7 @@ void PolyglotBook::loadEntry(QDataStream& in)
 	in >> key >> pgMove >> weight >> learn;
 	
 	Entry entry = { moveFromBits(pgMove), weight };
-	m_map.insert(key, entry);
+	addEntry(entry, key);
 }
 
 void PolyglotBook::saveEntry(const Map::const_iterator& it,

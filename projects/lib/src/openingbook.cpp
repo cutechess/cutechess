@@ -24,57 +24,38 @@
 #include "pgnfile.h"
 
 
-void OpeningBook::addEntry(const BookMove& move, quint64 key)
+QDataStream& operator>>(QDataStream& in, OpeningBook* book)
+{
+	while (!in.status() != QDataStream::Ok)
+		book->loadEntry(in);
+
+	return in;
+}
+
+QDataStream& operator<<(QDataStream& out, const OpeningBook* book)
+{
+	OpeningBook::Map::const_iterator it;
+	for (it = book->m_map.constBegin(); it != book->m_map.constEnd(); ++it)
+		book->saveEntry(it, out);
+
+	return out;
+}
+
+void OpeningBook::addEntry(const Entry& entry, quint64 key)
 {
 	Map::iterator it = m_map.find(key);
 	while (it != m_map.end() && it.key() == key)
 	{
-		Entry& entry = it.value();
-		if (entry.move == move)
+		Entry& tmp = it.value();
+		if (tmp.move == entry.move)
 		{
-			entry.weight++;
+			tmp.weight += entry.weight;
 			return;
 		}
 		++it;
 	}
 	
-	Entry entry = { move, 1 };
 	m_map.insert(key, entry);
-}
-
-bool OpeningBook::load(const QString& filename)
-{
-	QFile file(filename);
-	if (!file.open(QIODevice::ReadOnly))
-		return false;
-	QDataStream in(&file);
-	
-	m_map.clear();
-	while (!in.atEnd())
-	{
-		loadEntry(in);
-		if (in.status() != QDataStream::Ok)
-		{
-			m_map.clear();
-			return false;
-		}
-	}
-	
-	return true;
-}
-
-bool OpeningBook::save(const QString& filename) const
-{
-	QFile file(filename);
-	if (!file.open(QIODevice::WriteOnly))
-		return false;
-	QDataStream out(&file);
-	
-	Map::const_iterator it;
-	for (it = m_map.constBegin(); it != m_map.constEnd(); ++it)
-		saveEntry(it, out);
-	
-	return true;
 }
 
 bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
@@ -104,7 +85,8 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 			Square trg = board->chessSquare(srcMove.targetSquare());
 			int prom = srcMove.promotion();
 
-			addEntry(BookMove(src, trg, prom), board->key());
+			Entry entry = { BookMove(src, trg, prom), 1 };
+			addEntry(entry, board->key());
 			board->makeMove(srcMove);
 		}
 		moveCount += moves.size();
