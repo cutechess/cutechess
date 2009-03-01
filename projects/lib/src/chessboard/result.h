@@ -18,30 +18,22 @@ class LIB_EXPORT Result
 		/*! Result code. */
 		enum Code
 		{
-			//! White wins by any means
-			WhiteWins,
-			//! Black wins by any means
-			BlackWins,
-			//! White wins by mating the black player.
-			WhiteMates,
-			//! Black wins by mating the white player.
-			BlackMates,
-			//! Black wins when white resigns
-			WhiteResigns,
-			//! White wins when black resigns
-			BlackResigns,
-			//! Black wins due to white's timeout.
-			WhiteTimeout,
-			//! White wins due to black's timeout.
-			BlackTimeout,
-			//! Black wins due to white quitting/terminating.
-			WhiteTerminates,
-			//! White wins due to black quitting/terminating.
-			BlackTerminates,
-			//! Draw by a stalemate.
-			Stalemate,
-			//! Draw by any means
+			//! Win by any means.
+			Win,
+			//! Win by a mate.
+			WinByMate,
+			//! The loser resigns.
+			WinByResignation,
+			//! Timeout (loser's flag fell).
+			WinByTimeout,
+			//! Adjudication by the GUI due to a hopeless position for the loser.
+			WinByAdjudication,
+			//! Loser disconnects, or terminates (if it's an engine).
+			WinByDisconnection,
+			//! Draw by any means.
 			Draw,
+			//! Draw by a stalemate.
+			DrawByStalemate,
 			//! Draw by insufficient mating material on both sides.
 			DrawByMaterial,
 			//! Draw by 3 repetitions of the same position.
@@ -52,25 +44,23 @@ class LIB_EXPORT Result
 			DrawByAgreement,
 			//! One player timeouts, and the other one can't win.
 			DrawByTimeout,
+			//! Adjudication by the GUI due to a drawn position.
+			DrawByAdjudication,
 			//! No result. The game may continue.
 			NoResult,
 			//! Result error, caused by an invalid result string.
 			ResultError
 		};
 		
-		/*! Creates a new result from a result code. */
-		Result(Code code = NoResult);
+		/*! Creates a new result. */
+		explicit Result(Code code = NoResult, Side winner = NoSide);
 		/*! Creates a new result from a string. */
-		Result(const QString& str);
+		explicit Result(const QString& str);
 		
 		/*! Returns true if \a other is the same as this result. */
 		bool operator==(const Result& other) const;
-		/*! Returns true if \a otherCode is the same as this result's code. */
-		bool operator==(Code otherCode) const;
 		/*! Returns true if \a other different from this result. */
 		bool operator!=(const Result& other) const;
-		/*! Returns true if \a otherCode is different from this result's code. */
-		bool operator!=(Code otherCode) const;
 		
 		/*! Returns the winning side, or NoSide if there's no winner. */
 		Side winner() const;
@@ -86,7 +76,7 @@ class LIB_EXPORT Result
 		Code code() const;
 		/*!
 		 * Returns the simple result code.
-		 * Can be WhiteWins, BlackWins, Draw, or NoResult.
+		 * Can be Win, Draw, or NoResult.
 		 */
 		Code simpleCode() const;
 		
@@ -100,6 +90,7 @@ class LIB_EXPORT Result
 	
 	private:
 		Code m_code;
+		Side m_winner;
 };
 
 

@@ -19,69 +19,50 @@
 #include <QObject>
 using namespace Chess;
 
-Result::Result(Code code)
-	: m_code(code)
+Result::Result(Code code, Side winner)
+	: m_code(code),
+	  m_winner(winner)
 {
 }
 
 Result::Result(const QString& str)
+	: m_code(ResultError),
+	  m_winner(NoSide)
 {
 	if (str.startsWith("1-0"))
-		m_code = WhiteWins;
+	{
+		m_code = Win;
+		m_winner = White;
+	}
 	else if (str.startsWith("0-1"))
-		m_code = BlackWins;
+	{
+		m_code = Win;
+		m_winner = Black;
+	}
 	else if (str.startsWith("1/2-1/2"))
 		m_code = Draw;
 	else if (str.startsWith("*"))
 		m_code = NoResult;
-	else
-		m_code = ResultError;
 }
 
 bool Result::operator==(const Result& other) const
 {
-	return (m_code == other.m_code);
-}
-
-bool Result::operator==(Code otherCode) const
-{
-	return (m_code == otherCode);
+	return (m_code == other.m_code && m_winner == other.m_winner);
 }
 
 bool Result::operator!=(const Result& other) const
 {
-	return (m_code != other.m_code);
-}
-
-bool Result::operator!=(Code otherCode) const
-{
-	return (m_code != otherCode);
+	return (m_code != other.m_code || m_winner != other.m_winner);
 }
 
 Side Result::winner() const
 {
-	switch (m_code)
-	{
-	case WhiteWins:
-	case WhiteMates:
-	case BlackResigns:
-	case BlackTimeout:
-	case BlackTerminates:
-		return White;
-	case BlackWins:
-	case BlackMates:
-	case WhiteResigns:
-	case WhiteTimeout:
-	case WhiteTerminates:
-		return Black;
-	default:
-		return NoSide;
-	}
+	return m_winner;
 }
 
 Side Result::loser() const
 {
-	switch (winner())
+	switch (m_winner)
 	{
 	case White:
 		return Black;
@@ -94,20 +75,12 @@ Side Result::loser() const
 
 bool Result::isDraw() const
 {
-	switch (m_code)
-	{
-	case Draw: case DrawByMaterial:
-	case DrawByRepetition: case DrawByFiftyMoves:
-	case DrawByAgreement: case DrawByTimeout:
-		return true;
-	default:
-		return false;
-	}
+	return (m_winner == NoSide && m_code != NoResult && m_code != ResultError);
 }
 
 bool Result::isNone() const
 {
-	return (m_code == NoResult);
+	return (m_code == NoResult || m_code == ResultError);
 }
 
 Result::Code Result::code() const
@@ -117,75 +90,92 @@ Result::Code Result::code() const
 
 Result::Code Result::simpleCode() const
 {
-	switch (winner())
-	{
-	case White:
-		return WhiteWins;
-	case Black:
-		return BlackWins;
-	default:
-		if (isDraw())
-			return Draw;
-		return NoResult;
-	}
+	if (m_code == NoResult || m_code == ResultError)
+		return m_code;
+	if (m_winner != NoSide)
+		return Win;
+	return Draw;
 }
 
 QString Result::toString() const
 {
+	QString str;
+	QString w;
+	QString l;
+
+	if (m_winner == White)
+	{
+		w = QObject::tr("White");
+		l = QObject::tr("Black");
+	}
+	else if (m_winner == Black)
+	{
+		w = QObject::tr("Black");
+		l = QObject::tr("White");
+	}
+
 	switch (m_code)
 	{
-	case WhiteWins:
-		return QObject::tr("1-0 {White wins}");
-	case BlackWins:
-		return QObject::tr("0-1 {Black wins}");
-	case WhiteMates:
-		return QObject::tr("1-0 {White mates}");
-	case BlackMates:
-		return QObject::tr("0-1 {Black mates}");
-	case WhiteResigns:
-		return QObject::tr("0-1 {White resigns}");
-	case BlackResigns:
-		return QObject::tr("1-0 {Black resigns}");
-	case WhiteTimeout:
-		return QObject::tr("0-1 {White loses on time}");
-	case BlackTimeout:
-		return QObject::tr("1-0 {Black loses on time}");
-	case WhiteTerminates:
-		return QObject::tr("0-1 {White quits/terminates}");
-	case BlackTerminates:
-		return QObject::tr("1-0 {Black quits/terminates}");
-	case Stalemate:
-		return QObject::tr("1/2-1/2 {Stalemate}");
+	case Win:
+		str = QObject::tr("%1 wins").arg(w);
+		break;
+	case WinByMate:
+		str = QObject::tr("%1 mates").arg(w);
+		break;
+	case WinByResignation:
+		str = QObject::tr("%1 resigns").arg(l);
+		break;
+	case WinByTimeout:
+		str = QObject::tr("%1 loses on time").arg(l);
+		break;
+	case WinByAdjudication:
+		str = QObject::tr("%1 wins by adjudication").arg(w);
+		break;
+	case WinByDisconnection:
+		str = QObject::tr("%1 disconnects").arg(l);
+		break;
 	case Draw:
-		return QObject::tr("1/2-1/2 {Draw}");
+		str = QObject::tr("Draw");
+		break;
+	case DrawByStalemate:
+		str = QObject::tr("Draw by stalemate");
+		break;
 	case DrawByMaterial:
-		return QObject::tr("1/2-1/2 {Draw by insufficient material}");
+		str = QObject::tr("Draw by insufficient mating material");
+		break;
 	case DrawByRepetition:
-		return QObject::tr("1/2-1/2 {Draw by 3-fold repetition}");
+		str = QObject::tr("Draw by 3-fold repetition");
+		break;
 	case DrawByFiftyMoves:
-		return QObject::tr("1/2-1/2 {Draw by fifty moves rule}");
+		str = QObject::tr("Draw by fifty moves rule");
+		break;
 	case DrawByAgreement:
-		return QObject::tr("1/2-1/2 {Draw by agreement}");
+		str = QObject::tr("Draw by agreement");
+		break;
 	case DrawByTimeout:
-		return QObject::tr("1/2-1/2 {Draw by timeout}");
+		str = QObject::tr("Draw by timeout");
+		break;
+	case DrawByAdjudication:
+		str = QObject::tr("Draw by adjudication");
+		break;
 	case NoResult:
-		return QObject::tr("* {Unfinished}");
+		str = QObject::tr("Unfinished");
+		break;
 	default:
-		return QObject::tr("* {Result error}");
+		str = QObject::tr("Result error");
+		break;
 	}
+
+	return toSimpleString() + QString(" {") + str + "}";
 }
 
 QString Result::toSimpleString() const
 {
-	switch (simpleCode())
-	{
-	case WhiteWins:
-		return "1-0";
-	case BlackWins:
-		return "0-1";
-	case Draw:
-		return "1/2-1/2";
-	default:
+	if (m_code == NoResult || m_code == ResultError)
 		return "*";
-	}
+	if (m_winner == White)
+		return "1-0";
+	if (m_winner == Black)
+		return "0-1";
+	return "1/2-1/2";
 }

@@ -251,10 +251,6 @@ void MainWindow::newGame()
 		player[i]->setTimeControl(tc);
 		chessgame->setPlayer((Chess::Side)i, player[i]);
 		
-		connect(engineProcess[i], SIGNAL(finished(int, QProcess::ExitStatus)),
-		        player[i], SIGNAL(terminated()));
-		connect(player[i], SIGNAL(terminated()),
-		        chessgame, SLOT(onTerminated()));
 		connect(player[i], SIGNAL(startedThinking(int)),
 			m_chessClock[i], SLOT(start(int)));
 		connect(player[i], SIGNAL(moveMade(const Chess::Move&)),

@@ -39,8 +39,8 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
 	Q_ASSERT(m_chessboard != 0);
 	Q_ASSERT(m_ioDevice->isOpen());
 	
-	QObject::connect(m_ioDevice, SIGNAL(readyRead()),
-	                 this, SLOT(on_readyRead()));
+	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(on_readyRead()));
+	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
 }
 
 ChessEngine::~ChessEngine()

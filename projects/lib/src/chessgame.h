@@ -47,13 +47,13 @@ class LIB_EXPORT ChessGame : public QObject
 	public slots:
 		void start();
 		void onMoveMade(const Chess::Move& move);
-		void onTerminated();
-		void onTimeout();
-		void resign();
 
 	signals:
 		void moveMade(const Chess::Move& move);
 		void gameEnded();
+
+	private slots:
+		void onForfeit(Chess::Result result);
 
 	private:
 		Chess::Move bookMove(const OpeningBook* book);

@@ -27,7 +27,7 @@ ChessPlayer::ChessPlayer(QObject* parent)
 	  m_side(Chess::NoSide)
 {
 	m_timer.setSingleShot(true);
-	connect(&m_timer, SIGNAL(timeout()), this, SIGNAL(timeout()));
+	connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 }
 
 bool ChessPlayer::isReady() const
@@ -90,6 +90,15 @@ Chess::Side ChessPlayer::side() const
 	return m_side;
 }
 
+Chess::Side ChessPlayer::otherSide() const
+{
+	if (m_side == Chess::White)
+		return Chess::Black;
+	if (m_side == Chess::Black)
+		return Chess::White;
+	return Chess::NoSide;
+}
+
 QString ChessPlayer::name() const
 {
 	return m_name;
@@ -112,8 +121,19 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 	{
 		m_timer.stop();
 		if (m_timeControl.timeLeft() <= 0)
-			emit timeout();
+			onTimeout();
 	}
 	
 	emit moveMade(move);
+}
+
+void ChessPlayer::onDisconnect()
+{
+	Chess::Result result(Chess::Result::WinByDisconnection, otherSide());
+	emit forfeit(result);
+}
+
+void ChessPlayer::onTimeout()
+{
+	emit forfeit(Chess::Result(Chess::Result::WinByTimeout, otherSide()));
 }

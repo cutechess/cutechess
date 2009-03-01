@@ -171,8 +171,8 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 			m_blackPlayer = param;
 		else if (tag == "Result")
 		{
-			m_result = param;
-			if (m_result == Chess::Result::ResultError)
+			m_result = Chess::Result(param);
+			if (m_result.code() == Chess::Result::ResultError)
 				qDebug() << "Invalid result:" << param;
 		}
 		else if (tag == "Variant")

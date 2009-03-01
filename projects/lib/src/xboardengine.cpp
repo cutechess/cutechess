@@ -321,7 +321,8 @@ void XboardEngine::parseLine(const QString& line)
 			{
 				qDebug("%s forfeits by invalid draw claim",
 				       qPrintable(name()));
-				emit resign();
+				Chess::Result result(Chess::Result::WinByAdjudication, otherSide());
+				emit forfeit(result);
 			}
 		}
 	}
@@ -349,13 +350,20 @@ void XboardEngine::parseLine(const QString& line)
 			return;
 		}
 		
+		Chess::Result result;
 		if ((command == "1-0" && side() == Chess::White)
 		||  (command == "0-1" && side() == Chess::Black))
+		{
 			qDebug("%s forfeits by invalid victory claim",
 			       qPrintable(name()));
+			result = Chess::Result(Chess::Result::WinByAdjudication, otherSide());
+		}
 		else
+		{
 			qDebug("%s resigns", qPrintable(name()));
-		emit resign();
+			result = Chess::Result(Chess::Result::WinByResignation, otherSide());
+		}
+		emit forfeit(result);
 	}
 	else if (command == "feature")
 	{

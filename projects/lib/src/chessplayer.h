@@ -108,24 +108,15 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Signals the player's move. */
 		void moveMade(const Chess::Move& move) const;
 		
-		/*!
-		 * Signals that the player resigns the game.
-		 * Invalid draw or victory claims will also be treated as
-		 * resignations.
-		 */
-		void resign() const;
+		/*! Signals that the player forfeits the game. */
+		void forfeit(Chess::Result result) const;
 
 		/*! Signals a debugging message from the player. */
 		void debugMessage(const QString& data) const;
-		
-		/*! The player has run out of thinking time. */
-		void timeout() const;
-		
-		/*!
-		 * The player has quit the game, lost connection, or in case
-		 * of a chess engine, the process has terminated.
-		 */
-		void terminated() const;
+
+	protected slots:
+		/*! Called when the player disconnects. */
+		void onDisconnect();
 
 	protected:
 		/*!
@@ -136,6 +127,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		/*! Starts the player's move timer (chess clock). */
 		void startClock();
+
+		/*! Returns the opponent's side. */
+		Chess::Side otherSide() const;
 		
 		/*! Is the player ready to play? */
 		bool m_isReady;
@@ -154,6 +148,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		/*! Supported variants. */
 		QVector<Chess::Variant> m_variants;
+
+	private slots:
+		void onTimeout();
 
 	private:
 		Chess::Side m_side;
