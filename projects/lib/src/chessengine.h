@@ -128,7 +128,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		
 	protected slots:
 		/*! Reads input from the engine. */
-		void on_readyRead();
+		void onReadyRead();
 
 		/*!
 		 * Flushes the write buffer.

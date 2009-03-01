@@ -39,7 +39,7 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
 	Q_ASSERT(m_chessboard != 0);
 	Q_ASSERT(m_ioDevice->isOpen());
 	
-	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(on_readyRead()));
+	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
 }
 
@@ -67,7 +67,7 @@ void ChessEngine::write(const QString& data)
 	m_ioDevice->write(data.toAscii() + "\n");
 }
 
-void ChessEngine::on_readyRead()
+void ChessEngine::onReadyRead()
 {
 	while (m_ioDevice->canReadLine())
 	{
