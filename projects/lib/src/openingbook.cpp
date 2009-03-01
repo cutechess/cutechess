@@ -79,14 +79,22 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 		
 		board->setBoard(game.startingFen());
 		const QVector<Chess::Move>& moves = game.moves();
-		foreach (const Move& srcMove, moves)
-		{
-			Square src = board->chessSquare(srcMove.sourceSquare());
-			Square trg = board->chessSquare(srcMove.targetSquare());
-			int prom = srcMove.promotion();
 
-			Entry entry = { BookMove(src, trg, prom), 1 };
-			addEntry(entry, board->key());
+		Chess::Side winner = game.result().winner();
+		int weight = (winner == Chess::NoSide) ? 1 : 2;
+		
+		foreach (const Chess::Move& srcMove, moves)
+		{
+			// Skip the loser's moves
+			if (winner == Chess::NoSide || winner == board->sideToMove())
+			{
+				Square src = board->chessSquare(srcMove.sourceSquare());
+				Square trg = board->chessSquare(srcMove.targetSquare());
+				int prom = srcMove.promotion();
+				Entry entry = { BookMove(src, trg, prom), weight };
+				addEntry(entry, board->key());
+			}
+
 			board->makeMove(srcMove);
 		}
 		moveCount += moves.size();

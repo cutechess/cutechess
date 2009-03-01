@@ -51,6 +51,9 @@ class LIB_EXPORT PgnGame
 		
 		/*! Returns the starting position's FEN string. */
 		QString startingFen() const;
+
+		/*! Returns the game result. */
+		Chess::Result result() const;
 		
 		/*! Returns the moves that were played in the game. */
 		const QVector<Chess::Move>& moves() const;

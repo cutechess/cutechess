@@ -313,6 +313,11 @@ QString PgnGame::startingFen() const
 	return m_fen;
 }
 
+Chess::Result PgnGame::result() const
+{
+	return m_result;
+}
+
 const QVector<Chess::Move>& PgnGame::moves() const
 {
 	return m_moves;
