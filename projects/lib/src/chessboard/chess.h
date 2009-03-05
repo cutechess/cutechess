@@ -38,6 +38,13 @@ enum MoveNotation
 	LongAlgebraic		//!< Long Algebraic/Coordinate notation.
 };
 
+/*! Notation for FEN strings. */
+enum FenNotation
+{
+	XFen,		//!< X-FEN notation
+	ShredderFen	//!< Shredder FEN notation
+};
+
 /*!
 * \brief A generic chess square type consisting of a file and a rank.
 *

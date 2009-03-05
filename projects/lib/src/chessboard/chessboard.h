@@ -77,7 +77,7 @@ class LIB_EXPORT Board : public QObject
 		 * The FEN string is in X-FEN format, which is fully
 		 * compatible with standard FEN.
 		 */
-		QString fenString() const;
+		QString fenString(FenNotation notation = XFen) const;
 		
 		/*! Returns the FEN string of the game's starting position. */
 		QString startingFen() const;
@@ -307,7 +307,7 @@ class LIB_EXPORT Board : public QObject
 		 * Returns the castling rights part of the current position's
 		 * FEN/X-FEN string.
 		 */
-		QString castlingRightsString() const;
+		QString castlingRightsString(FenNotation notation) const;
 		
 		/*! Converts a Move into a string in Long Algebraic notation. */
 		QString longAlgebraicMoveString(const Move& move) const;

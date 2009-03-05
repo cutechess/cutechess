@@ -257,7 +257,7 @@ bool Board::setBoard()
 	return setBoard(m_variant.startingFen());
 }
 
-QString Board::castlingRightsString() const
+QString Board::castlingRightsString(FenNotation notation) const
 {
 	QString str;
 	
@@ -286,7 +286,7 @@ QString Board::castlingRightsString() const
 			QChar c;
 			// If the castling square is ambiguous, then we can't
 			// use 'K' or 'Q'. Instead we'll use the square's file.
-			if (ambiguous)
+			if (ambiguous || notation == ShredderFen)
 				c = QChar('a' + chessSquare(rs).file);
 			else {
 				if (cside == 0)
@@ -305,7 +305,7 @@ QString Board::castlingRightsString() const
 	return str;
 }
 
-QString Board::fenString() const
+QString Board::fenString(FenNotation notation) const
 {
 	QString fen;
 	
@@ -344,7 +344,7 @@ QString Board::fenString() const
 		fen += " b ";
 	
 	// Castling rights
-	fen += castlingRightsString() + ' ';
+	fen += castlingRightsString(notation) + ' ';
 	
 	// En-passant square
 	if (m_enpassantSquare != 0) {
