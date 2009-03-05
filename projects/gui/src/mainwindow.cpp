@@ -241,10 +241,10 @@ void MainWindow::newGame()
 		switch (engineConfig[i].protocol())
 		{
 		case ChessEngine::Uci:
-			player[i] = new UciEngine(engineProcess[i], chessgame->board(), this);
+			player[i] = new UciEngine(engineProcess[i], this);
 			break;
 		default:
-			player[i] = new XboardEngine(engineProcess[i], chessgame->board(), this);
+			player[i] = new XboardEngine(engineProcess[i], this);
 			break;
 		}
 		

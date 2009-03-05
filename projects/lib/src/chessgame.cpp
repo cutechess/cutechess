@@ -62,29 +62,21 @@ void ChessGame::endGame()
 
 	m_player[Chess::White]->endGame(m_result);
 	m_player[Chess::Black]->endGame(m_result);
-	emit gameEnded();
+
+	connect(this, SIGNAL(playersReady()), this, SIGNAL(gameEnded()), Qt::QueuedConnection);
+	syncPlayers(true);
 }
 
 void ChessGame::onMoveMade(const Chess::Move& move)
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
-
-	if (!m_gameInProgress)
-	{
-		qDebug() << sender->name() << "sent a move when no game is in progress";
-		return;
-	}
-
+	
+	Q_ASSERT(m_gameInProgress);
+	Q_ASSERT(m_board->isLegalMove(move));
 	if (sender != playerToMove())
 	{
 		qDebug() << sender->name() << "tried to make a move on the opponent's turn";
-		return;
-	}
-
-	if (!m_board->isLegalMove(move))
-	{
-		qDebug() << sender->name() << "sent an illegal move";
 		return;
 	}
 
@@ -124,6 +116,7 @@ void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
 	Q_ASSERT(player != 0);
 	m_player[side] = player;
 
+	player->setBoard(m_board);
 	connect(player, SIGNAL(moveMade(const Chess::Move&)),
 	        this, SLOT(onMoveMade(const Chess::Move&)));
 	connect(player, SIGNAL(forfeit(Chess::Result)),
@@ -179,9 +172,22 @@ void ChessGame::setBoard()
 	}
 }
 
-void ChessGame::start()
+bool ChessGame::arePlayersReady() const
+{
+	return (m_player[0]->isReady() && m_player[1]->isReady());
+}
+
+void ChessGame::syncPlayers(bool ignoreSender)
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
+
+	if (ignoreSender && sender != 0)
+	{
+		// There should be no sender, but for some reason we've got one
+		disconnect(sender, SIGNAL(ready()), this, SLOT(syncPlayers()));
+		sender = 0;
+	}
+
 	if (!sender)
 	{
 		bool ready = true;
@@ -191,20 +197,31 @@ void ChessGame::start()
 			{
 				ready = false;
 				connect(m_player[i], SIGNAL(ready()),
-				        this, SLOT(start()));
+					this, SLOT(syncPlayers()));
 			}
 		}
-		// Wait for players to get ready
 		if (!ready)
 			return;
 	}
 	else
 	{
-		disconnect(sender, SIGNAL(ready()), this, SLOT(start()));
-		if (!m_player[Chess::White]->isReady()
-		||  !m_player[Chess::Black]->isReady())
+		disconnect(sender, SIGNAL(ready()), this, SLOT(syncPlayers()));
+		if (!arePlayersReady())
 			return;
 	}
+
+	emit playersReady();
+}
+
+void ChessGame::start()
+{
+	if (!arePlayersReady())
+	{
+		connect(this, SIGNAL(playersReady()), this, SLOT(start()));
+		syncPlayers(true);
+		return;
+	}
+	disconnect(this, SIGNAL(playersReady()), this, SLOT(start()));
 	
 	for (int i = 0; i < 2; i++)
 	{

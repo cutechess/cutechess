@@ -24,11 +24,8 @@
 
 int ChessEngine::m_count = 0;
 
-ChessEngine::ChessEngine(QIODevice* ioDevice,
-                         Chess::Board* chessboard,
-                         QObject* parent)
+ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessPlayer(parent),
-	  m_chessboard(chessboard),
 	  m_notation(Chess::LongAlgebraic),
 	  m_initialized(false),
 	  m_id(m_count++),
@@ -36,11 +33,13 @@ ChessEngine::ChessEngine(QIODevice* ioDevice,
 	  m_ioDevice(ioDevice)
 {
 	Q_ASSERT(m_ioDevice != 0);
-	Q_ASSERT(m_chessboard != 0);
 	Q_ASSERT(m_ioDevice->isOpen());
 	
 	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
+
+	m_pingTimer.setSingleShot(true);
+	connect(&m_pingTimer, SIGNAL(timeout()), this, SLOT(onPingTimeout()));
 }
 
 ChessEngine::~ChessEngine()
@@ -51,6 +50,38 @@ ChessEngine::~ChessEngine()
 bool ChessEngine::isHuman() const
 {
 	return false;
+}
+
+void ChessEngine::ping(PingType type)
+{
+	Q_UNUSED(type);
+	m_pingTimer.start(10000);
+}
+
+void ChessEngine::pong()
+{
+	if (m_isReady)
+		return;
+
+	m_pingTimer.stop();
+	m_isReady = true;
+	flushWriteBuffer();
+	if (m_pingType == PingMove)
+		startClock();
+	m_pingType = PingUnknown;
+	emit ready();
+}
+
+void ChessEngine::onPingTimeout()
+{
+	qDebug() << "Engine" << m_name << "failed to respond to ping";
+
+	m_isReady = true;
+	m_writeBuffer.clear();
+	m_pingType = PingUnknown;
+
+	Chess::Result result(Chess::Result::WinByStalledConnection, otherSide());
+	emit forfeit(result);
 }
 
 void ChessEngine::write(const QString& data)
@@ -69,7 +100,7 @@ void ChessEngine::write(const QString& data)
 
 void ChessEngine::onReadyRead()
 {
-	while (m_ioDevice->canReadLine())
+	while (m_ioDevice->isReadable() && m_ioDevice->canReadLine())
 	{
 		QString line = QString(m_ioDevice->readLine()).trimmed();
 		emit debugMessage(QString("<") + name() + "(" + QString::number(m_id) +  "): " + line);
@@ -81,12 +112,17 @@ void ChessEngine::onReadyRead()
 void ChessEngine::flushWriteBuffer()
 {
 	Q_ASSERT(m_isReady);
-	
-	if (m_writeBuffer.isEmpty())
-		return;
 
 	foreach (const QString& line, m_writeBuffer)
 		write(line);
 	m_writeBuffer.clear();
 }
 
+void ChessEngine::quit()
+{
+	if (!m_ioDevice->isOpen())
+		return;
+
+	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
+	write("quit");
+}

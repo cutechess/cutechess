@@ -36,13 +36,9 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		 * Creates a new UciEngine object.
 		 *
 		 * \param ioDevice An open chess engine process or socket.
-		 * \param chessboard A chessboard object for converting between the
-		 * various move formats.
 		 * \param parent The parent object.
 		 */
-		UciEngine(QIODevice* ioDevice,
-		          Chess::Board* chessboard,
-		          QObject* parent = 0);
+		UciEngine(QIODevice* ioDevice, QObject* parent = 0);
 
 		/*! Destroys the engine. */
 		~UciEngine();

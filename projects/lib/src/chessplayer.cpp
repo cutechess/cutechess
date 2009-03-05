@@ -23,7 +23,9 @@
 ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
 	  m_isReady(true),
+	  m_chessboard(0),
 	  m_opponent(0),
+	  m_gameInProgress(false),
 	  m_side(Chess::NoSide)
 {
 	m_timer.setSingleShot(true);
@@ -39,7 +41,9 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	Q_ASSERT(opponent != 0);
 	Q_ASSERT(m_isReady);
+	Q_ASSERT(m_chessboard != 0);
 
+	m_gameInProgress = true;
 	m_opponent = opponent;
 	setSide(side);
 	m_timeControl.setTimeLeft(m_timeControl.timePerTc());
@@ -49,11 +53,17 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent)
 void ChessPlayer::endGame(Chess::Result result)
 {
 	Q_UNUSED(result);
+
+	m_gameInProgress = false;
+	m_chessboard = 0;
 	m_timer.stop();
 }
 
 void ChessPlayer::startClock()
 {
+	if (!m_gameInProgress)
+		return;
+
 	if (m_timeControl.timePerTc() != 0)
 		emit startedThinking(m_timeControl.timeLeft());
 	else if (m_timeControl.timePerMove() != 0)
@@ -107,6 +117,11 @@ QString ChessPlayer::name() const
 void ChessPlayer::setName(const QString& name)
 {
 	m_name = name;
+}
+
+void ChessPlayer::setBoard(Chess::Board* board)
+{
+	m_chessboard = board;
 }
 
 bool ChessPlayer::supportsVariant(Chess::Variant variant) const

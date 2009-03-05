@@ -62,9 +62,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * \note The engine process (\a ioDevice) must be
 		 * already started.
 		 */
-		ChessEngine(QIODevice* ioDevice,
-		            Chess::Board* chessboard,
-		            QObject* parent = 0);
+		ChessEngine(QIODevice* ioDevice, QObject* parent = 0);
 
 		virtual ~ChessEngine();
 		virtual void newGame(Chess::Side side, ChessPlayer* opponent) = 0;
@@ -79,7 +77,10 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * Checks if the engine is still responding, and synchronizes
 		 * it with the GUI.
 		 */
-		virtual void ping(PingType type) = 0;
+		virtual void ping(PingType type);
+
+		/*! Called when the engine responds to ping. */
+		void pong();
 
 		/*! Writes text data to the chess engine. */
 		void write(const QString& data);
@@ -98,14 +99,14 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		
 		/*! Tells the engine to use a maximum of \a limit MB of RAM. */
 		virtual void setMemory(int limit) = 0;
+
+		/*! Tells the engine to terminate. */
+		void quit();
 		
 	protected:
 		/*! Parses a line of input from the engine. */
 		virtual void parseLine(const QString& line) = 0;
 
-
-		/*! The chessboard which the player plays on. */
-		Chess::Board* m_chessboard;
 
 		/*!
 		 * The chess move notation the engine wants to use.
@@ -125,10 +126,16 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		
 		/*! The last ping's type. */
 		PingType m_pingType;
+
+		/*! Timer for detecting an unresponsive engine. */
+		QTimer m_pingTimer;
 		
 	protected slots:
 		/*! Reads input from the engine. */
 		void onReadyRead();
+
+		/*! Called when the engine becomes unresponsive. */
+		void onPingTimeout();
 
 		/*!
 		 * Flushes the write buffer.

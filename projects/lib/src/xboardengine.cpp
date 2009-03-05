@@ -38,10 +38,8 @@ static QString msToXboardTime(int ms)
 }
 
 
-XboardEngine::XboardEngine(QIODevice* ioDevice,
-                         Chess::Board* chessboard,
-                         QObject* parent)
-	: ChessEngine(ioDevice, chessboard, parent),
+XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
+	: ChessEngine(ioDevice, parent),
 	  m_forceMode(true),
 	  m_drawOnNextMove(false),
 	  m_ftEgbb(false),
@@ -130,7 +128,6 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	m_forceMode = true;
 	m_drawOnNextMove = false;
 	write("new");
-	write("force");
 	
 	const Chess::Variant& variant = m_chessboard->variant();
 	
@@ -156,7 +153,13 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 		command += QString(" ") + QString::number(m_timeControl.timeIncrement() / 1000);
 		write(command);
 	}
+
+	// Disable pondering
+	write("easy");
+	// Put the engine in observer mode
+	write("force");
 	
+	// Tell the opponent's type and name to the engine
 	if (m_ftName)
 	{
 		if (!m_opponent->isHuman())
@@ -179,10 +182,13 @@ void XboardEngine::sendTimeLeft()
 	int csLeft = m_timeControl.timeLeft() / 10;
 	int ocsLeft = m_opponent->timeControl()->timeLeft() / 10;
 
-	if (csLeft > 0)
-		write(QString("time ") + QString::number(csLeft));
-	if (ocsLeft > 0)
-		write(QString("otim ") + QString::number(ocsLeft));
+	if (csLeft < 0)
+		csLeft = 0;
+	if (ocsLeft < 0)
+		ocsLeft = 0;
+
+	write(QString("time ") + QString::number(csLeft) +
+	      QString("\notim ") + QString::number(ocsLeft));
 }
 
 void XboardEngine::makeMove(const Chess::Move& move)
@@ -229,9 +235,10 @@ void XboardEngine::ping(ChessEngine::PingType type)
 		// Ping the engine with a random number. The engine should
 		// later send the number back at us.
 		m_pingType = type;
-		m_lastPing = qrand() % 32;
+		m_lastPing = (qrand() % 32) + 1;
 		write(QString("ping ") + QString::number(m_lastPing));
 		m_isReady = false;
+		ChessEngine::ping(type);
 	}
 }
 
@@ -308,40 +315,48 @@ void XboardEngine::parseLine(const QString& line)
 
 	if (command == "move")
 	{
+		if (!m_gameInProgress)
+			return;
+
 		Chess::Move move = m_chessboard->moveFromString(args);
-		emitMove(move);
-		
+		if (!m_chessboard->isLegalMove(move))
+		{
+			m_timer.stop();
+			Chess::Result result(Chess::Result::WinByIllegalMove, otherSide(), args);
+			emit forfeit(result);
+			return;
+		}
+
 		if (m_drawOnNextMove)
 		{
 			m_drawOnNextMove = false;
-			
+			Chess::Result boardResult;
+			m_chessboard->makeMove(move);
+			boardResult = m_chessboard->result();
+			m_chessboard->undoMove();
+
 			// If the engine claimed a draw before this move, the
 			// game must have ended in a draw by now
-			if (!m_chessboard->result().isDraw())
+			if (!boardResult.isDraw())
 			{
 				qDebug("%s forfeits by invalid draw claim",
 				       qPrintable(name()));
 				Chess::Result result(Chess::Result::WinByAdjudication, otherSide());
 				emit forfeit(result);
+				return;
 			}
 		}
+
+		emitMove(move);
 	}
 	else if (command == "pong")
 	{
-		int pong = args.toInt();
-		if (!m_isReady && pong == m_lastPing)
-		{
-			m_isReady = true;
-			flushWriteBuffer();
-			if (m_pingType == PingMove)
-				startClock();
-			m_pingType = PingUnknown;
-			emit ready();
-		}
+		if (args.toInt() == m_lastPing)
+			pong();
 	}
 	else if (command == "1-0" || command == "0-1" || command == "1/2-1/2")
 	{
-		if (!m_chessboard->result().isNone())
+		if (!m_gameInProgress || !m_chessboard->result().isNone())
 			return;
 		if (command == "1/2-1/2")
 		{

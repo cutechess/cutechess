@@ -33,13 +33,9 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		/*!
 		 * Creates a new XboardEngine object.
 		 * \param ioDevice An open chess engine process or socket.
-		 * \param chessboard A chessboard object for converting between the
-		 * various move formats.
 		 * \param parent The parent object.
 		 */
-		XboardEngine(QIODevice* ioDevice,
-		             Chess::Board* chessboard,
-		             QObject* parent = 0);
+		XboardEngine(QIODevice* ioDevice, QObject* parent = 0);
 
 		~XboardEngine();
 

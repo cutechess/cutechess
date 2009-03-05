@@ -87,6 +87,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		/*! Sets the player's name. */
 		void setName(const QString& name);
+
+		/*! Sets the board object. */
+		void setBoard(Chess::Board* board);
 		
 		/*! Returns true if the player can play \a variant. */
 		bool supportsVariant(Chess::Variant variant) const;
@@ -134,6 +137,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Is the player ready to play? */
 		bool m_isReady;
 		
+		/*! The board object. */
+		Chess::Board* m_chessboard;
+
 		/*! The player's name. */
 		QString m_name;
 
@@ -148,6 +154,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		/*! Supported variants. */
 		QVector<Chess::Variant> m_variants;
+
+		/*! Is a game in progress? If not, all moves are rejected. */
+		bool m_gameInProgress;
 
 	private slots:
 		void onTimeout();

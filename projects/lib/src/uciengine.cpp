@@ -25,10 +25,8 @@
 #include "timecontrol.h"
 
 
-UciEngine::UciEngine(QIODevice* ioDevice,
-                     Chess::Board* chessboard,
-                     QObject* parent)
-	: ChessEngine(ioDevice, chessboard, parent)
+UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
+	: ChessEngine(ioDevice, parent)
 {
 	m_variants.append(Chess::Variant::Standard);
 	
@@ -97,7 +95,7 @@ void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	ChessPlayer::newGame(side, opponent);
 	m_moves.clear();
-	m_startFen = m_chessboard->fenString();
+	m_startFen = m_chessboard->fenString(Chess::ShredderFen);
 	
 	const Chess::Variant& variant = m_chessboard->variant();
 	if (variant != Chess::Variant::Standard)
@@ -170,6 +168,7 @@ void UciEngine::ping(ChessEngine::PingType type)
 		m_pingType = type;
 		write("isready");
 		m_isReady = false;
+		ChessEngine::ping(type);
 	}
 }
 
@@ -190,13 +189,24 @@ void UciEngine::parseLine(const QString& line)
 
 	if (command == "bestmove")
 	{
+		if (!m_gameInProgress)
+			return;
+
 		QString moveString = args.section(' ', 0, 0);
 		if (moveString.isEmpty())
 			moveString = args;
 
 		m_moves.append(moveString);
 		Chess::Move move = m_chessboard->moveFromString(moveString);
-		emitMove(move);
+
+		if (m_chessboard->isLegalMove(move))
+			emitMove(move);
+		else
+		{
+			m_timer.stop();
+			Chess::Result result(Chess::Result::WinByIllegalMove, otherSide(), moveString);
+			emit forfeit(result);
+		}
 	}
 	else if (command == "uciok")
 	{
@@ -214,15 +224,7 @@ void UciEngine::parseLine(const QString& line)
 	}
 	else if (command == "readyok")
 	{
-		if (!m_isReady)
-		{
-			m_isReady = true;
-			flushWriteBuffer();
-			if (m_pingType == PingMove)
-				startClock();
-			m_pingType = PingUnknown;
-			emit ready();
-		}
+		pong();
 	}
 	else if (command == "id")
 	{

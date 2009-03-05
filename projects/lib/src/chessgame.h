@@ -51,9 +51,12 @@ class LIB_EXPORT ChessGame : public QObject
 	signals:
 		void moveMade(const Chess::Move& move);
 		void gameEnded();
+		void playersReady();
 
 	private slots:
 		void onForfeit(Chess::Result result);
+		bool arePlayersReady() const;
+		void syncPlayers(bool ignoreSender = false);
 
 	private:
 		Chess::Move bookMove(const OpeningBook* book);
