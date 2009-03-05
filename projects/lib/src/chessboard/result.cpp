@@ -19,9 +19,10 @@
 #include <QObject>
 using namespace Chess;
 
-Result::Result(Code code, Side winner)
+Result::Result(Code code, Side winner, const QString& move)
 	: m_code(code),
-	  m_winner(winner)
+	  m_winner(winner),
+	  m_move(move)
 {
 }
 
@@ -131,8 +132,16 @@ QString Result::toString() const
 	case WinByAdjudication:
 		str = QObject::tr("%1 wins by adjudication").arg(w);
 		break;
+	case WinByIllegalMove:
+		str = QObject::tr("%1 made an illegal move").arg(l);
+		if (!m_move.isEmpty())
+			str += QString(": ") + m_move;
+		break;
 	case WinByDisconnection:
 		str = QObject::tr("%1 disconnects").arg(l);
+		break;
+	case WinByStalledConnection:
+		str = QObject::tr("%1's connection stalled").arg(l);
 		break;
 	case Draw:
 		str = QObject::tr("Draw");

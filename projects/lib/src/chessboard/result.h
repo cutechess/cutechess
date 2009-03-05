@@ -28,8 +28,12 @@ class LIB_EXPORT Result
 			WinByTimeout,
 			//! Adjudication by the GUI due to a hopeless position for the loser.
 			WinByAdjudication,
+			//! Loser tries to make an illegal move.
+			WinByIllegalMove,
 			//! Loser disconnects, or terminates (if it's an engine).
 			WinByDisconnection,
+			//! Loser's connection stalls (doesn't respond to ping).
+			WinByStalledConnection,
 			//! Draw by any means.
 			Draw,
 			//! Draw by a stalemate.
@@ -52,8 +56,16 @@ class LIB_EXPORT Result
 			ResultError
 		};
 		
-		/*! Creates a new result. */
-		explicit Result(Code code = NoResult, Side winner = NoSide);
+		/*!
+		 * Creates a new result.
+		 *
+		 * \param code The result code
+		 * \param winner The winning side (or NoSide in case of a draw)
+		 * \param move The move that caused the result
+		 */
+		explicit Result(Code code = NoResult,
+				Side winner = NoSide,
+				const QString& move = "");
 		/*! Creates a new result from a string. */
 		explicit Result(const QString& str);
 		
@@ -91,6 +103,7 @@ class LIB_EXPORT Result
 	private:
 		Code m_code;
 		Side m_winner;
+		QString m_move;
 };
 
 
