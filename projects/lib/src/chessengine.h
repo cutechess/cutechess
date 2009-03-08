@@ -131,6 +131,8 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		QTimer m_pingTimer;
 		
 	protected slots:
+		void onDisconnect();
+
 		/*! Reads input from the engine. */
 		void onReadyRead();
 

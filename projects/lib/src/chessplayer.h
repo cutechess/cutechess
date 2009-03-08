@@ -119,7 +119,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 
 	protected slots:
 		/*! Called when the player disconnects. */
-		void onDisconnect();
+		virtual void onDisconnect();
 
 	protected:
 		/*!

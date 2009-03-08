@@ -52,6 +52,18 @@ bool ChessEngine::isHuman() const
 	return false;
 }
 
+void ChessEngine::onDisconnect()
+{
+	m_pingTimer.stop();
+	m_timer.stop();
+	m_isReady = true;
+	m_writeBuffer.clear();
+	m_pingType = PingUnknown;
+	emit ready();
+
+	ChessPlayer::onDisconnect();
+}
+
 void ChessEngine::ping(PingType type)
 {
 	Q_UNUSED(type);
