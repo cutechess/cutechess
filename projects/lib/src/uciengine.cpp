@@ -28,6 +28,7 @@
 UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessEngine(ioDevice, parent)
 {
+	m_notation = Chess::UciLongAlgebraic;
 	m_variants.append(Chess::Variant::Standard);
 	
 	setName("UciEngine");

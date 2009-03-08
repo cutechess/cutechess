@@ -35,7 +35,8 @@ enum Side
 enum MoveNotation
 {
 	StandardAlgebraic,	//!< Standard Algebraic notation (SAN).
-	LongAlgebraic		//!< Long Algebraic/Coordinate notation.
+	LongAlgebraic,		//!< Long Algebraic/Coordinate notation.
+	UciLongAlgebraic	//!< Long Algebraic notation used by UCI engines
 };
 
 /*! Notation for FEN strings. */

@@ -23,13 +23,32 @@ using namespace Chess;
 
 QString Board::moveString(const Move& move, MoveNotation notation)
 {
-	// Long Algebraic notation doesn't support castling in random
-	// variants like Fischer Random chess, so we'll use SAN for
-	// castling.
-	if (notation == StandardAlgebraic
-	||  (move.castlingSide() != -1 && m_isRandom))
+	switch (notation)
+	{
+	case StandardAlgebraic:
 		return sanMoveString(move);
-	return longAlgebraicMoveString(move);
+	case LongAlgebraic:
+		// Long Algebraic notation doesn't support castling in random
+		// variants like Fischer Random chess, so we'll use SAN for
+		// castling.
+		if (move.castlingSide() != -1 && m_variant.isRandom())
+			return sanMoveString(move);
+		return longAlgebraicMoveString(move);
+	case UciLongAlgebraic:
+		// UCI Long Algebraic needs the target square to be the
+		// castling rook's square
+		if (move.castlingSide() != -1 && m_variant.isRandom())
+		{
+			int cside = move.castlingSide();
+			int src = move.sourceSquare();
+			int trg = m_castlingRights.rookSquare[m_side][cside];
+			Move tmp(src, trg, 0, cside);
+			return longAlgebraicMoveString(tmp);
+		}
+		return longAlgebraicMoveString(move);
+	default:
+		return QString();
+	}
 }
 
 Move Board::moveFromString(const QString& str)
@@ -157,11 +176,27 @@ Move Board::moveFromLongAlgebraicString(const QString& str) const
 	
 	int castlingSide = -1;
 	if ((m_squares[source] * m_sign) == King) {
-		int diff = target - source;
-		if (diff == -2 || diff == -3)
-			castlingSide = QueenSide;
-		else if (diff == 2 || diff == 3)
-			castlingSide = KingSide;
+		// If the king tries to capture its own rook, it's
+		// a castling move in UciLongAlgebraic format.
+		const int* rs = &m_castlingRights.rookSquare[m_side][0];
+		for (int i = 0; i < 2; i++)
+		{
+			if (target == rs[i])
+			{
+				target = m_castleTarget[m_side][i];
+				castlingSide = i;
+				break;
+			}
+		}
+
+		if (castlingSide == -1)
+		{
+			int diff = target - source;
+			if (diff == -2 || diff == -3)
+				castlingSide = QueenSide;
+			else if (diff == 2 || diff == 3)
+				castlingSide = KingSide;
+		}
 	}
 	
 	return Move(source, target, promotion, castlingSide);

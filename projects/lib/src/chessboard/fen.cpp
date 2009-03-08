@@ -234,7 +234,6 @@ bool Board::setBoard(const QString& fen)
 	m_sign = (m_side == White) ? 1 : -1;
 	m_enpassantSquare = epSq;
 	m_castlingRights = fd.cr;
-	m_isRandom = fd.isRandom;
 	m_kingSquare[White] = fd.kingSquare[White];
 	m_kingSquare[Black] = fd.kingSquare[Black];
 	m_squares = fd.squares;

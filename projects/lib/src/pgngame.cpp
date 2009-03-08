@@ -37,7 +37,6 @@ PgnGame::PgnGame(const ChessGame* game)
 	m_moves = board->moveHistory();
 	m_fen = board->startingFen();
 	m_variant = board->variant();
-	m_isRandomVariant = board->isRandomVariant();
 	m_result = game->result();
 	
 	m_hasTags = true;
@@ -239,7 +238,6 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 
 PgnGame::PgnGame(PgnFile& in, int maxMoves)
 	: m_variant(Chess::Variant::Standard),
-	  m_isRandomVariant(false),
 	  m_hasTags(false),
 	  m_round(0)
 {

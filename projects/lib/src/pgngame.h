@@ -80,7 +80,6 @@ class LIB_EXPORT PgnGame
 		QString m_site;
 		QString m_fen;
 		Chess::Variant m_variant;
-		bool m_isRandomVariant;
 		bool m_hasTags;
 		Chess::Result m_result;
 		int m_round;

@@ -43,7 +43,6 @@ void Board::setVariant(Variant variant)
 	Q_ASSERT(!variant.isNone());
 	
 	m_variant = variant;
-	m_isRandom = false;
 	m_width = variant.boardWidth();
 	m_height = variant.boardHeight();
 	
@@ -128,11 +127,6 @@ quint64 Board::key() const
 QString Board::startingFen() const
 {
 	return m_startFen;
-}
-
-bool Board::isRandomVariant() const
-{
-	return m_isRandom;
 }
 
 int Board::width() const
@@ -326,6 +320,7 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	}
 	
 	bool isReversible = true;
+	bool clearSource = true;
 	if (piece == King) {
 		m_kingSquare[m_side] = target;
 		
@@ -334,6 +329,8 @@ void Board::makeMove(const Move& move, bool sendSignal)
 			int cside = move.castlingSide();
 			rookSource = rookSq[cside];
 			rookTarget = (cside == QueenSide) ? target + 1 : target -1;
+			if (rookTarget == source || target == source)
+				clearSource = false;
 			
 			m_squares[rookSource] = NoPiece;
 			m_squares[rookTarget] = Rook * m_sign;
@@ -400,7 +397,8 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	m_key ^= Zobrist::side();
 	m_key ^= Zobrist::piece(m_side, piece, target);
 	m_squares[target] = piece * m_sign;
-	m_squares[source] = NoPiece;
+	if (clearSource)
+		m_squares[source] = NoPiece;
 	
 	if (isReversible)
 		m_reversibleMoveCount++;
@@ -455,6 +453,9 @@ void Board::undoMove()
 				m_squares[target - 1] = NoPiece;
 			const int* cr = m_castlingRights.rookSquare[m_side];
 			m_squares[cr[cside]] = Rook * m_sign;
+			m_squares[source] = King * m_sign;
+			m_squares[target] = md.capture;
+			return;
 		}
 	} else if (target == m_enpassantSquare) {
 		// Restore the pawn captured by the en-passant move

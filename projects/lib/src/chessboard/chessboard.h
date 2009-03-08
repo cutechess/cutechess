@@ -106,10 +106,6 @@ class LIB_EXPORT Board : public QObject
 		
 		/*!
 		 * Converts a Move into a string.
-		 *
-		 * Supported notations are Long Algebraic notation and
-		 * Standard Algebraic notation (SAN).
-		 *
 		 * \sa moveFromString()
 		 */
 		QString moveString(const Move& move, MoveNotation notation);
@@ -132,9 +128,6 @@ class LIB_EXPORT Board : public QObject
 		
 		/*! Returns the board's chess variant. */
 		Variant variant() const;
-		
-		/*! Returns true if the game type is a "random" variant. */
-		bool isRandomVariant() const;
 		
 		/*! Returns the result of the game. */
 		Result result();
@@ -326,7 +319,6 @@ class LIB_EXPORT Board : public QObject
 
 		
 		Variant m_variant;
-		bool m_isRandom;
 		int m_width;
 		int m_height;
 		int m_arwidth;
