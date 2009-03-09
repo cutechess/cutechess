@@ -16,18 +16,92 @@
 */
 
 #include <QDebug>
+#include <QStringList>
 
 #include "timecontrol.h"
 
 TimeControl::TimeControl()
 {
-	setTimePerTc(60000);
+	setTimePerTc(0);
 	setMovesPerTc(0);
 	setIncrement(0);
 	setTimePerMove(0);
 
 	setTimeLeft(m_timePerTc);
 	setMovesLeft(0);
+}
+
+TimeControl::TimeControl(const QString& str)
+{
+	QStringList list = str.split('+');
+
+	// increment
+	if (list.size() == 2)
+	{
+		int inc = list[1].toInt() * 1000;
+		if (inc >= 0)
+			setIncrement(inc);
+	}
+
+	list = list[0].split('/');
+	QString strTime;
+
+	// moves per tc
+	if (list.size() == 2)
+	{
+		int nmoves = list[0].toInt();
+		if (nmoves >= 0)
+			setMovesPerTc(nmoves);
+		strTime = list[1];
+	}
+	else
+		strTime = list[0];
+
+	// time per tc
+	int ms = 0;
+	list = strTime.split(':');
+	if (list.size() == 2)
+		ms = list[0].toInt() * 60000 + list[1].toInt() * 1000;
+	else
+		ms = list[0].toInt() * 1000;
+
+	if (ms > 0)
+		setTimePerTc(ms);
+}
+
+bool TimeControl::operator==(const TimeControl& other) const
+{
+	if (m_movesPerTc == other.m_movesPerTc
+	&&  m_timePerTc == other.m_timePerTc
+	&&  m_timePerMove == other.m_timePerMove
+	&&  m_increment == other.m_increment)
+		return true;
+	return false;
+}
+
+bool TimeControl::isValid() const
+{
+	if (m_movesPerTc < 0
+	||  m_timePerTc <= 0
+	||  m_timePerMove < 0
+	||  m_increment < 0)
+		return false;
+	return true;
+}
+
+QString TimeControl::toString() const
+{
+	if (!isValid())
+		return "";
+
+	QString str;
+	if (m_movesPerTc > 0)
+		str += QString::number(m_movesPerTc) + "/";
+	str += QString::number(m_timePerTc / 1000);
+
+	if (m_increment > 0)
+		str += QString("+") + QString::number(m_increment / 1000);
+	return str;
 }
 
 int TimeControl::timePerTc() const
@@ -118,14 +192,14 @@ void TimeControl::setMovesLeft(int movesLeft)
 
 void TimeControl::startTimer()
 {
-	m_timer.start();
+	m_time.start();
 }
 
 void TimeControl::update()
 {
 	if (m_timePerMove == 0)
 	{
-		setTimeLeft(m_timeLeft + m_increment - m_timer.elapsed());
+		setTimeLeft(m_timeLeft + m_increment - m_time.elapsed());
 		
 		if (m_movesPerTc > 0)
 		{

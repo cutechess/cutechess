@@ -19,6 +19,7 @@
 #define TIMECONTROL_H
 
 #include <QTime>
+#include <QString>
 
 /*!
  * \brief Time controls of a chess game.
@@ -31,8 +32,42 @@
 class LIB_EXPORT TimeControl
 {
 	public:
-		/*! Creates a new time control with usable default settings. */
+		/*! Creates a new time control with unsable default settings. */
 		TimeControl();
+
+		/*!
+		 * Creates a new time control from a string.
+		 *
+		 * \a str must use this format: movesPerTc/timePerTc+timeIncrement
+		 * - timePerTc is time in seconds if it's a single value.
+		 *   It can also use the form minutes:seconds.
+		 * - if movesPerTc is 0, it should be left out, and the slash
+		 *   character isn't needed.
+		 * - timeIncrement is the time increment per move in seconds.
+		 *   If it's 0, it should be left out along with the plus sign.
+		 *
+		 * Example 1 (40 moves in 120 seconds):
+		 *   TimeControl("40/120");
+		 *
+		 * Example 2 (same as example 1, 40 moves in 2 minutes):
+		 *   TimeControl("40/2:0");
+		 *
+		 * Example 3 (whole game in 2.5 minutes plus 5 sec increment):
+		 *   TimeControl("2:30+5");
+		 */
+		TimeControl(const QString& str);
+
+		/*!
+		 * Returns true if \a other is the same as this time control.
+		 * The timeLeft and movesLeft values are not compared.
+		 */
+		bool operator==(const TimeControl& other) const;
+
+		/*! Returns true if the time control is valid. */
+		bool isValid() const;
+
+		/*! Returns the time control string in PGN format. */
+		QString toString() const;
 
 		/*!
 		 * Returns the time per time control,
@@ -97,7 +132,7 @@ class LIB_EXPORT TimeControl
 		int m_increment;
 		int m_timeLeft;
 		int m_movesLeft;
-		QTime m_timer;
+		QTime m_time;
 
 };
 
