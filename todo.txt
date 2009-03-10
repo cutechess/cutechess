@@ -5,12 +5,7 @@
 
 - Complete Xboard and UCI support (including the analysis feature)
 
-- Allow players to resign on the opponent's turn. This means stopping the
-  other player's thinking.
-
 - More unit tests for the Chess library
-
-- Give better weights (not just popularity) to imported opening book moves
 
 - Better error handling in OpeningBook
 
@@ -43,4 +38,3 @@
 
 - Switch to a QAbstractItemView-based graphical board
 
-- Terminate an engine if it doesn't respond to ping in reasonable time
