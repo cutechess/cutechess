@@ -328,8 +328,3 @@ void UciEngine::setEgtbPath(const QString& path)
 {
 	setOption("NalimovPath", path);
 }
-
-void UciEngine::setMemory(int limit)
-{
-	setOption("Hash", limit);
-}

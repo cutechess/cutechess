@@ -69,7 +69,6 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		void setConcurrency(int limit);
 		void setEgbbPath(const QString& path);
 		void setEgtbPath(const QString& path);
-		void setMemory(int limit);
 
 	protected:
 		void parseLine(const QString& line);

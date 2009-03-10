@@ -97,9 +97,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Sets the path to Nalimov endgame table bases. */
 		virtual void setEgtbPath(const QString& path) = 0;
 		
-		/*! Tells the engine to use a maximum of \a limit MB of RAM. */
-		virtual void setMemory(int limit) = 0;
-
 		/*! Tells the engine to terminate. */
 		void quit();
 		

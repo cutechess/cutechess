@@ -422,9 +422,3 @@ void XboardEngine::setEgtbPath(const QString& path)
 	if (m_ftEgtb)
 		write(QString("egtpath nalimov ") + path);
 }
-
-void XboardEngine::setMemory(int limit)
-{
-	if (m_ftMemory)
-		write(QString("memory ") + QString::number(limit));
-}
