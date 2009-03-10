@@ -21,17 +21,22 @@
 #include "timecontrol.h"
 
 TimeControl::TimeControl()
+	: m_movesPerTc(0),
+	  m_timePerTc(0),
+	  m_timePerMove(0),
+	  m_increment(0),
+	  m_timeLeft(0),
+	  m_movesLeft(0)
 {
-	setTimePerTc(0);
-	setMovesPerTc(0);
-	setIncrement(0);
-	setTimePerMove(0);
-
-	setTimeLeft(m_timePerTc);
-	setMovesLeft(0);
 }
 
 TimeControl::TimeControl(const QString& str)
+	: m_movesPerTc(0),
+	  m_timePerTc(0),
+	  m_timePerMove(0),
+	  m_increment(0),
+	  m_timeLeft(0),
+	  m_movesLeft(0)
 {
 	QStringList list = str.split('+');
 
