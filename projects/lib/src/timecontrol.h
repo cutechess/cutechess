@@ -32,7 +32,7 @@
 class LIB_EXPORT TimeControl
 {
 	public:
-		/*! Creates a new time control with unsable default settings. */
+		/*! Creates a new time control with invalid default settings. */
 		TimeControl();
 
 		/*!
