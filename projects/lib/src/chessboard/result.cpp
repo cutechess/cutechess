@@ -98,7 +98,7 @@ Result::Code Result::simpleCode() const
 	return Draw;
 }
 
-QString Result::toString() const
+QString Result::description() const
 {
 	QString str;
 	QString w;
@@ -175,7 +175,12 @@ QString Result::toString() const
 		break;
 	}
 
-	return toSimpleString() + QString(" {") + str + "}";
+	return str;
+}
+
+QString Result::toString() const
+{
+	return toSimpleString() + QString(" {") + description() + "}";
 }
 
 QString Result::toSimpleString() const

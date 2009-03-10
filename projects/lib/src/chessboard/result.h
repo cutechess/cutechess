@@ -91,15 +91,24 @@ class LIB_EXPORT Result
 		 * Can be Win, Draw, or NoResult.
 		 */
 		Code simpleCode() const;
-		
-		/*! Returns the result string. */
-		QString toString() const;
+
+		/*! Returns the result description. */
+		QString description() const;
+
 		/*!
-		 * Returns the simple result string.
+		 * Returns the result string.
 		 * Can be "1-0", "0-1", "1/2-1/2", or "*".
 		 */
 		QString toSimpleString() const;
-	
+
+		/*!
+		 * Returns a string representation of the result.
+		 *
+		 * Uses the format "simpleResult {description}".
+		 * Eg. "1-0 {White mates}".
+		 */
+		QString toString() const;
+
 	private:
 		Code m_code;
 		Side m_winner;
