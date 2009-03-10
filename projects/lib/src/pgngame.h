@@ -8,6 +8,7 @@
 #include "chessboard/result.h"
 #include "chessboard/variant.h"
 #include "chessboard/chessmove.h"
+#include "timecontrol.h"
 class ChessGame;
 class PgnFile;
 
@@ -57,6 +58,15 @@ class LIB_EXPORT PgnGame
 		
 		/*! Returns the moves that were played in the game. */
 		const QVector<Chess::Move>& moves() const;
+
+		/*! Sets the event (eg. "My tournament"). */
+		void setEvent(const QString& event);
+
+		/*! Sets the site (eg. "My basement"). */
+		void setSite(const QString& site);
+
+		/*! Sets the round number in a match or tournament. */
+		void setRound(int round);
 	
 	private:
 		enum PgnItem
@@ -79,6 +89,8 @@ class LIB_EXPORT PgnGame
 		QString m_event;
 		QString m_site;
 		QString m_fen;
+		TimeControl m_whiteTc;
+		TimeControl m_blackTc;
 		Chess::Variant m_variant;
 		bool m_hasTags;
 		Chess::Result m_result;

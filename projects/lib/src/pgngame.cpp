@@ -27,7 +27,8 @@
 
 
 PgnGame::PgnGame(const ChessGame* game)
-	: m_hasTags(false)
+	: m_hasTags(false),
+	  m_round(0)
 {
 	Q_ASSERT(game != 0);
 	
@@ -38,6 +39,8 @@ PgnGame::PgnGame(const ChessGame* game)
 	m_fen = board->startingFen();
 	m_variant = board->variant();
 	m_result = game->result();
+	m_whiteTc = *game->player(Chess::White)->timeControl();
+	m_blackTc = *game->player(Chess::Black)->timeControl();
 	
 	m_hasTags = true;
 }
@@ -164,7 +167,13 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 		QString tag = str.section(' ', 0, 0);
 		QString param = str.section(' ', 1).replace('\"', "");
 		
-		if (tag == "White")
+		if (tag == "Event")
+			m_event = param;
+		else if (tag == "Site")
+			m_site = param;
+		else if (tag == "Round")
+			m_round = param.toInt();
+		else if (tag == "White")
 			m_whitePlayer = param;
 		else if (tag == "Black")
 			m_blackPlayer = param;
@@ -193,6 +202,15 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 				return PgnError;
 			}
 		}
+		else if (tag == "TimeControl")
+		{
+			m_whiteTc = TimeControl(param);
+			m_blackTc = m_whiteTc;
+		}
+		else if (tag == "WhiteTimeControl")
+			m_whiteTc = TimeControl(param);
+		else if (tag == "BlackTimeControl")
+			m_blackTc = TimeControl(param);
 	}
 	else if (itemType == PgnMove)
 	{
@@ -265,6 +283,14 @@ PgnGame::PgnGame(PgnFile& in, int maxMoves)
 	}
 }
 
+static void writeTag(QTextStream& out, const QString& name, const QString& value)
+{
+	if (!value.isEmpty())
+		out << "[" << name << " \"" << value << "\"]\n";
+	else
+		out << "[" << name << " \"?\"]\n";
+}
+
 void PgnGame::write(const QString& filename) const
 {
 	if (!m_hasTags)
@@ -277,14 +303,37 @@ void PgnGame::write(const QString& filename) const
 	{
 		QTextStream out(&file);
 		
-		out << "[Date \"" << date << "\"]\n";
-		out << "[White \"" << m_whitePlayer << "\"]\n";
-		out << "[Black \"" << m_blackPlayer << "\"]\n";
-		out << "[Result \"" << m_result.toSimpleString() << "\"]\n";
+		// The seven tag roster
+		writeTag(out, "Event", m_event);
+		writeTag(out, "Site", m_site);
+		writeTag(out, "Date", date);
+		if (m_round > 0)
+			writeTag(out, "Round", QString::number(m_round));
+		else
+			writeTag(out, "Round", "?");
+		writeTag(out, "White", m_whitePlayer);
+		writeTag(out, "Black", m_blackPlayer);
+		writeTag(out, "Result", m_result.toSimpleString());
+
+		writeTag(out, "PlyCount", QString::number(m_moves.size()));
+
+		if (m_whiteTc == m_blackTc && m_whiteTc.isValid())
+			writeTag(out, "TimeControl", m_whiteTc.toString());
+		else
+		{
+			if (m_whiteTc.isValid())
+				writeTag(out, "WhiteTimeControl", m_whiteTc.toString());
+			if (m_blackTc.isValid())
+				writeTag(out, "BlackTimeControl", m_blackTc.toString());
+		}
+
 		if (m_variant != Chess::Variant::Standard)
-			out << "[Variant \"" << m_variant.toString() << "\"]\n";
+			writeTag(out, "Variant", m_variant.toString());
 		if (m_variant.isRandom() || m_fen != m_variant.startingFen())
-			out << "[FEN \"" << m_fen << "\"]\n";
+		{
+			writeTag(out, "SetUp", "1");
+			writeTag(out, "FEN", m_fen);
+		}
 		
 		Chess::Board board(m_variant);
 		board.setBoard(m_fen);
@@ -297,7 +346,7 @@ void PgnGame::write(const QString& filename) const
 			out << board.moveString(m_moves[i], Chess::StandardAlgebraic) << " ";
 			board.makeMove(m_moves[i]);
 		}
-		out << m_result.toString() << "\n\n";
+		out << "{" << m_result.description() << "} " << m_result.toSimpleString() << "\n\n";
 	}
 }
 
@@ -319,4 +368,19 @@ Chess::Result PgnGame::result() const
 const QVector<Chess::Move>& PgnGame::moves() const
 {
 	return m_moves;
+}
+
+void PgnGame::setEvent(const QString& event)
+{
+	m_event = event;
+}
+
+void PgnGame::setSite(const QString& site)
+{
+	m_site = site;
+}
+
+void PgnGame::setRound(int round)
+{
+	m_round = round;
 }
