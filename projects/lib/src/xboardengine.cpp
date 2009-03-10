@@ -354,7 +354,8 @@ void XboardEngine::parseLine(const QString& line)
 		if (args.toInt() == m_lastPing)
 			pong();
 	}
-	else if (command == "1-0" || command == "0-1" || command == "1/2-1/2")
+	else if (command == "1-0" || command == "0-1"
+	     ||  command == "1/2-1/2" || command == "resign")
 	{
 		if (!m_gameInProgress || !m_chessboard->result().isNone())
 			return;
