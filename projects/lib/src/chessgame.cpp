@@ -25,8 +25,9 @@
 
 ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 	: QObject(parent),
-	  m_maxOpeningMoveCount(1000),
-	  m_gameInProgress(false)
+	  PgnGame(variant),
+	  m_gameInProgress(false),
+	  m_inOpening(false)
 {
 	m_player[Chess::White] = 0;
 	m_player[Chess::Black] = 0;
@@ -80,6 +81,10 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 		return;
 	}
 
+	// Opening moves are already in the list
+	if (!m_inOpening)
+		m_moves.append(move);
+
 	playerToWait()->makeMove(move);
 	m_board->makeMove(move, true);
 	
@@ -131,30 +136,21 @@ bool ChessGame::setFenString(const QString& fen)
 	return true;
 }
 
-void ChessGame::setMaxOpeningMoveCount(int count)
-{
-	m_maxOpeningMoveCount = count;
-}
-
-void ChessGame::setOpeningMoves(const QVector<Chess::Move>& moves)
-{
-	m_openingMoves = moves;
-}
-
-void ChessGame::setOpeningMoves(const OpeningBook* book)
+void ChessGame::setOpeningMoves(const OpeningBook* book, int maxMoves)
 {
 	Q_ASSERT(book != 0);
+	Q_ASSERT(!m_gameInProgress);
 	
 	setBoard();
-	m_openingMoves.clear();	
-	for (int i = 0; i < m_maxOpeningMoveCount; i++)
+	m_moves.clear();
+	for (int i = 0; i < maxMoves; i++)
 	{
 		Chess::Move move = bookMove(book);
 		if (!m_board->isLegalMove(move)
 		||  m_board->isRepeatMove(move))
 			break;
 		
-		m_openingMoves.append(move);
+		m_moves.append(move);
 		m_board->makeMove(move);
 	}
 	m_board->setBoard(m_fen);
@@ -239,19 +235,20 @@ void ChessGame::start()
 	
 	setBoard();
 	for (int i = 0; i < 2; i++)
+	{
+		setPlayerName((Chess::Side)i, m_player[i]->name());
+		m_timeControl[i] = *m_player[i]->timeControl();
 		m_player[i]->newGame((Chess::Side)i, m_player[!i]);
+	}
 	
 	m_gameInProgress = true;
+	m_hasTags = true;
 	
 	// Play the forced opening moves first
-	int count = m_maxOpeningMoveCount;
-	if (m_openingMoves.size() < count)
-		count = m_openingMoves.size();
-	for (int i = 0; i < count; i++)
+	m_inOpening = true;
+	foreach (const Chess::Move& move, m_moves)
 	{
-		const Chess::Move& move = m_openingMoves[i];
-		if (!m_board->isLegalMove(move))
-			break;
+		Q_ASSERT(m_board->isLegalMove(move));
 		
 		playerToMove()->makeBookMove(move);
 		playerToWait()->makeMove(move);
@@ -259,6 +256,7 @@ void ChessGame::start()
 		
 		emit moveMade(move);
 	}
+	m_inOpening = false;
 	
 	playerToMove()->go();
 }
@@ -267,9 +265,4 @@ ChessPlayer* ChessGame::player(Chess::Side side) const
 {
 	Q_ASSERT(side != Chess::NoSide);
 	return m_player[side];
-}
-
-Chess::Result ChessGame::result() const
-{
-	return m_result;
 }

@@ -9,7 +9,6 @@
 #include "chessboard/variant.h"
 #include "chessboard/chessmove.h"
 #include "timecontrol.h"
-class ChessGame;
 class PgnFile;
 
 
@@ -27,18 +26,18 @@ class PgnFile;
 class LIB_EXPORT PgnGame
 {
 	public:
-		/*! Constructs a PgnGame from a ChessGame object. */
-		explicit PgnGame(const ChessGame* game);
+		/*! Creates a new PgnGame object. */
+		explicit PgnGame(Chess::Variant variant = Chess::Variant::Standard);
 		
 		/*!
-		 * Constructs a PgnGame from a text stream.
+		 * Reads a game from a PGN text stream.
 		 *
 		 * \param in The input PGN file.
 		 * \param maxMoves The maximum number of halfmoves to read.
 		 * \note Even if the stream contains multiple games,
 		 * only one will be read.
 		 */
-		explicit PgnGame(PgnFile& in, int maxMoves = 1000);
+		void load(PgnFile& in, int maxMoves = 1000);
 		
 		/*!
 		 * Write the game to a file.
@@ -50,15 +49,21 @@ class LIB_EXPORT PgnGame
 		/*! Returns true if the game doesn't contain any moves. */
 		bool isEmpty() const;
 		
+		/*! Returns the player's name who plays \a side. */
+		QString playerName(Chess::Side side) const;
+
+		/*! Sets a player's name. */
+		void setPlayerName(Chess::Side side, const QString& name);
+
 		/*! Returns the starting position's FEN string. */
 		QString startingFen() const;
 
 		/*! Returns the game result. */
 		Chess::Result result() const;
-		
+
 		/*! Returns the moves that were played in the game. */
 		const QVector<Chess::Move>& moves() const;
-
+		
 		/*! Sets the event (eg. "My tournament"). */
 		void setEvent(const QString& event);
 
@@ -67,7 +72,15 @@ class LIB_EXPORT PgnGame
 
 		/*! Sets the round number in a match or tournament. */
 		void setRound(int round);
-	
+
+	protected:
+		QString m_fen;
+		QVector<Chess::Move> m_moves;
+		Chess::Result m_result;
+		Chess::Variant m_variant;
+		TimeControl m_timeControl[2];
+		bool m_hasTags;
+
 	private:
 		enum PgnItem
 		{
@@ -83,17 +96,9 @@ class LIB_EXPORT PgnGame
 
 		PgnItem readItem(PgnFile& in);
 		
-		QVector<Chess::Move> m_moves;
-		QString m_whitePlayer;
-		QString m_blackPlayer;
+		QString m_playerName[2];
 		QString m_event;
 		QString m_site;
-		QString m_fen;
-		TimeControl m_whiteTc;
-		TimeControl m_blackTc;
-		Chess::Variant m_variant;
-		bool m_hasTags;
-		Chess::Result m_result;
 		int m_round;
 };
 

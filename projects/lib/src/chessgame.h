@@ -24,11 +24,12 @@
 #include "chessboard/result.h"
 #include "chessboard/variant.h"
 #include "chessboard/chessmove.h"
+#include "pgngame.h"
 
 class ChessPlayer;
 class OpeningBook;
 
-class LIB_EXPORT ChessGame : public QObject
+class LIB_EXPORT ChessGame : public QObject, public PgnGame
 {
 	Q_OBJECT
 
@@ -39,10 +40,7 @@ class LIB_EXPORT ChessGame : public QObject
 		ChessPlayer* player(Chess::Side) const;
 		void setPlayer(Chess::Side, ChessPlayer* player);
 		bool setFenString(const QString& fen);
-		void setMaxOpeningMoveCount(int count);
-		void setOpeningMoves(const QVector<Chess::Move>& moves);
-		void setOpeningMoves(const OpeningBook* book);
-		Chess::Result result() const;
+		void setOpeningMoves(const OpeningBook* book, int maxMoves = 1000);
 
 	public slots:
 		void start();
@@ -66,12 +64,9 @@ class LIB_EXPORT ChessGame : public QObject
 		void setBoard();
 		
 		Chess::Board* m_board;
-		QString m_fen;
-		int m_maxOpeningMoveCount;
-		QVector<Chess::Move> m_openingMoves;
 		ChessPlayer* m_player[2];
 		bool m_gameInProgress;
-		Chess::Result m_result;
+		bool m_inOpening;
 };
 
 #endif // CHESSGAME_H

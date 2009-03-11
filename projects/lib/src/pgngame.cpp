@@ -26,23 +26,11 @@
 #include "pgnfile.h"
 
 
-PgnGame::PgnGame(const ChessGame* game)
-	: m_hasTags(false),
+PgnGame::PgnGame(Chess::Variant variant)
+	: m_variant(variant),
+	  m_hasTags(false),
 	  m_round(0)
 {
-	Q_ASSERT(game != 0);
-	
-	m_whitePlayer = game->player(Chess::White)->name();
-	m_blackPlayer = game->player(Chess::Black)->name();
-	Chess::Board* board = game->board();
-	m_moves = board->moveHistory();
-	m_fen = board->startingFen();
-	m_variant = board->variant();
-	m_result = game->result();
-	m_whiteTc = *game->player(Chess::White)->timeControl();
-	m_blackTc = *game->player(Chess::Black)->timeControl();
-	
-	m_hasTags = true;
 }
 
 PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
@@ -174,9 +162,9 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 		else if (tag == "Round")
 			m_round = param.toInt();
 		else if (tag == "White")
-			m_whitePlayer = param;
+			m_playerName[Chess::White] = param;
 		else if (tag == "Black")
-			m_blackPlayer = param;
+			m_playerName[Chess::Black] = param;
 		else if (tag == "Result")
 		{
 			m_result = Chess::Result(param);
@@ -199,18 +187,19 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 			if (!board->setBoard(m_fen))
 			{
 				qDebug() << "Invalid FEN:" << m_fen;
+				m_fen.clear();
 				return PgnError;
 			}
 		}
 		else if (tag == "TimeControl")
 		{
-			m_whiteTc = TimeControl(param);
-			m_blackTc = m_whiteTc;
+			m_timeControl[0] = TimeControl(param);
+			m_timeControl[1] = m_timeControl[0];
 		}
 		else if (tag == "WhiteTimeControl")
-			m_whiteTc = TimeControl(param);
+			m_timeControl[Chess::White] = TimeControl(param);
 		else if (tag == "BlackTimeControl")
-			m_blackTc = TimeControl(param);
+			m_timeControl[Chess::Black] = TimeControl(param);
 	}
 	else if (itemType == PgnMove)
 	{
@@ -254,11 +243,12 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 	return itemType;
 }
 
-PgnGame::PgnGame(PgnFile& in, int maxMoves)
-	: m_variant(Chess::Variant::Standard),
-	  m_hasTags(false),
-	  m_round(0)
+void PgnGame::load(PgnFile& in, int maxMoves)
 {
+	m_hasTags = false;
+	m_round = 0;
+	m_moves.clear();
+
 	Chess::Board* board = in.board();
 	if (!in.variant().isNone())
 		m_variant = in.variant();
@@ -311,20 +301,22 @@ void PgnGame::write(const QString& filename) const
 			writeTag(out, "Round", QString::number(m_round));
 		else
 			writeTag(out, "Round", "?");
-		writeTag(out, "White", m_whitePlayer);
-		writeTag(out, "Black", m_blackPlayer);
+		writeTag(out, "White", m_playerName[Chess::White]);
+		writeTag(out, "Black", m_playerName[Chess::Black]);
 		writeTag(out, "Result", m_result.toSimpleString());
 
 		writeTag(out, "PlyCount", QString::number(m_moves.size()));
 
-		if (m_whiteTc == m_blackTc && m_whiteTc.isValid())
-			writeTag(out, "TimeControl", m_whiteTc.toString());
+		const TimeControl& wtc = m_timeControl[Chess::White];
+		const TimeControl& btc = m_timeControl[Chess::Black];
+		if (wtc == btc && wtc.isValid())
+			writeTag(out, "TimeControl", wtc.toString());
 		else
 		{
-			if (m_whiteTc.isValid())
-				writeTag(out, "WhiteTimeControl", m_whiteTc.toString());
-			if (m_blackTc.isValid())
-				writeTag(out, "BlackTimeControl", m_blackTc.toString());
+			if (wtc.isValid())
+				writeTag(out, "WhiteTimeControl", wtc.toString());
+			if (btc.isValid())
+				writeTag(out, "BlackTimeControl", btc.toString());
 		}
 
 		if (m_variant != Chess::Variant::Standard)
@@ -368,6 +360,16 @@ Chess::Result PgnGame::result() const
 const QVector<Chess::Move>& PgnGame::moves() const
 {
 	return m_moves;
+}
+
+QString PgnGame::playerName(Chess::Side side) const
+{
+	return m_playerName[side];
+}
+
+void PgnGame::setPlayerName(Chess::Side side, const QString& name)
+{
+	m_playerName[side] = name;
 }
 
 void PgnGame::setEvent(const QString& event)
