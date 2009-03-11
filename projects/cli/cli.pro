@@ -24,6 +24,8 @@ macx-xcode {
     DEFINES += CUTECHESS_CLI_VERSION=\\\"$$CUTECHESS_CLI_VERSION\\\"
 }
 
+QT -= gui
+
 win32 : debug {
     CONFIG += console
 }
