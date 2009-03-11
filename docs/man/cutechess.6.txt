@@ -18,7 +18,19 @@ Description of Cute Chess.
 
 OPTIONS
 -------
-List of available command-line options.
+
+-v::
+--version::
+	Display the version information.
+
+FILES
+-----
+
+~/.config/cutechess/cutechess.ini::
+	User configuration file.
+
+/etc/xdg/cutechess/cutechess.ini::
+	System-wide configuration file.
 
 
 AUTHOR
