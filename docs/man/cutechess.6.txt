@@ -18,7 +18,10 @@ Description of Cute Chess.
 
 OPTIONS
 -------
-List of available command-line options.
+
+-v::
+--version::
+	Display the version information.
 
 FILES
 -----
