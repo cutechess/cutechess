@@ -20,6 +20,15 @@ OPTIONS
 -------
 List of available command-line options.
 
+FILES
+-----
+
+~/.config/cutechess/cutechess.ini::
+	User configuration file.
+
+/etc/xdg/cutechess/cutechess.ini::
+	System-wide configuration file.
+
 
 AUTHOR
 ------
