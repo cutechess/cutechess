@@ -1,0 +1,42 @@
+CUTECHESS-CLI(6)
+================
+
+NAME
+----
+cutechess-cli - A command-line interface for chess engines
+
+
+SYNOPSIS
+--------
+*cutechess-cli* ['OPTIONS']
+
+
+DESCRIPTION
+-----------
+Description of Cute Chess CLI.
+
+
+OPTIONS
+-------
+
+-v::
+--version::
+	Display the version information.
+
+
+AUTHOR
+------
+Written by Ilari Pihlajisto <ilari.pihlajisto@mbnet.fi> and Arto Jonsson
+<ajonsson@kapsi.fi>.
+
+
+RESOURCES
+---------
+repo.or.cz: <http://repo.or.cz/w/sloppygui.git>
+
+
+COPYING
+-------
+Copyright \(C) 2008-2009 Ilari Pihlajisto and Arto Jonsson. Free use of this
+software is granted under the terms of GNU General Public License (GPL).
+
