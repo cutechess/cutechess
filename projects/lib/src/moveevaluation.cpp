@@ -12,7 +12,7 @@ bool MoveEvaluation::isEmpty() const
 {
 	if (m_depth == 0
 	&&  m_score == 0
-	&&  m_time == 0
+	&&  m_time < 500
 	&&  m_nodeCount == 0)
 		return true;
 	return false;
