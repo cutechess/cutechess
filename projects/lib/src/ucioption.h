@@ -43,6 +43,18 @@ class LIB_EXPORT UciOption
 			String,	//!< String (Text Edit)
 			NoType	//!< NoType/Invalid type
 		};
+
+		/*!
+		 * Parses a UCI option or info string.
+		 *
+		 * \a rx should contain the options in \a str.
+		 * eg QRegExp("\\b(name|type|default|min|max|var)\\b")
+		 *
+		 * \return A list of option + value pairs. The stringlist's
+		 * first element is the option name, and the second one
+		 * is the value. Returns an empty vector on parse error.
+		 */
+		static QVector<QStringList> parse(const QString& str, QRegExp rx);
 		
 		/*! Creates a new, empty option of NoType. */
 		UciOption();

@@ -75,6 +75,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		
 	private:
 		void addVariants();
+		void parseInfo(const QString& line);
 		void sendPosition();
 		const UciOption* getOption(const QString& name) const;
 		bool hasOption(const QString& name) const;

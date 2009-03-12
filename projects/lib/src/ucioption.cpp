@@ -48,15 +48,11 @@ UciOption::UciOption(const QString& str)
 	parse(str);
 }
 
-void UciOption::parse(const QString& str)
+QVector<QStringList> UciOption::parse(const QString& str, QRegExp rx)
 {
-	m_type = NoType;
-	m_min = 0;
-	m_max = 0;
 	QVector<QStringList> attrs;
-	
+
 	// Put the attributes' names and values in a vector
-	QRegExp rx("\\b(name|type|default|min|max|var)\\b");
 	QString item;
 	int pos = 0;
 	int prevPos= 0;
@@ -72,13 +68,28 @@ void UciOption::parse(const QString& str)
 		prevPos = pos;
 	}
 	if (prevPos >= str.length() - 1)
-		return; // No value for the last attribute
+	{
+		attrs.clear();
+		return attrs; // No value for the last attribute
+	}
 	// Add the last attribute to the vector
 	if (!item.isEmpty())
 	{
 		QString val = str.right(str.length() - prevPos - 1);
 		attrs.append((QStringList() << item << val.trimmed()));
 	}
+
+	return attrs;
+}
+
+void UciOption::parse(const QString& str)
+{
+	m_type = NoType;
+	m_min = 0;
+	m_max = 0;
+
+	QRegExp rx("\\b(name|type|default|min|max|var)\\b");
+	QVector<QStringList> attrs = parse(str, rx);
 	
 	foreach (const QStringList& attr, attrs)
 	{

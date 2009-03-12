@@ -183,6 +183,59 @@ void UciEngine::addVariants()
 	}
 }
 
+void UciEngine::parseInfo(const QString& line)
+{
+	QRegExp rx("\\b(depth|seldepth|time|nodes|pv|multipv|score|currmove|"
+		   "currmovenumber|hashfull|nps|tbhits|cpuload|string|"
+		   "refutation|currline)\\b");
+	QVector<QStringList> attrs = UciOption::parse(line, rx);
+
+	foreach (const QStringList& attr, attrs)
+	{
+		if (attr[0] == "depth")
+			m_eval.setDepth(attr[1].toInt());
+		else if (attr[0] == "time")
+			m_eval.setTime(attr[1].toInt());
+		else if (attr[0] == "nodes")
+			m_eval.setNodeCount(attr[1].toInt());
+		else if (attr[0] == "pv")
+			m_eval.setPv(attr[1]);
+		else if (attr[0] == "score")
+		{
+			QRegExp rx2("\\b(cp|mate|lowerbound|upperbound)\\b");
+			QVector<QStringList> attrs2 = UciOption::parse(attr[1], rx2);
+			int score = 0;
+			bool hasScore = false;
+
+			foreach (const QStringList& attr2, attrs2)
+			{
+				if (attr2[0] == "cp")
+				{
+					score = attr2[1].toInt();
+					hasScore = true;
+				}
+				else if (attr2[0] == "lowerbound"
+				     ||  attr2[0] == "upperbound")
+				{
+					hasScore = false;
+					break;
+				}
+				else if (attr2[0] == "mate")
+				{
+					score = attr2[1].toInt();
+					if (score > 0)
+						score = 30001 - score * 2;
+					else if (score < 0)
+						score = -30000 - score * 2;
+					hasScore = true;
+				}
+			}
+			if (hasScore)
+				m_eval.setScore(score);
+		}
+	}
+}
+
 void UciEngine::parseLine(const QString& line)
 {
 	QString command = line.section(' ', 0, 0);
@@ -253,6 +306,12 @@ void UciEngine::parseLine(const QString& line)
 			qDebug() << "Invalid UCI option from" << m_name << ":"
 			         << args;
 		}
+	}
+	else if (command == "info")
+	{
+		parseInfo(args);
+		if (!m_eval.isEmpty())
+			emit sendEvaluation(m_eval);
 	}
 }
 
