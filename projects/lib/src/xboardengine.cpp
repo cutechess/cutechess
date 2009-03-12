@@ -377,10 +377,9 @@ void XboardEngine::parseLine(const QString& line)
 			result = Chess::Result(Chess::Result::WinByAdjudication, otherSide());
 		}
 		else
-		{
-			qDebug("%s resigns", qPrintable(name()));
+			// resign
 			result = Chess::Result(Chess::Result::WinByResignation, otherSide());
-		}
+
 		emit forfeit(result);
 	}
 	else if (command == "feature")
