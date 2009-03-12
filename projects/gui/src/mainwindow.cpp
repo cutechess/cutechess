@@ -301,6 +301,10 @@ void MainWindow::manageEngines()
 void MainWindow::openConfigurationFile()
 {
 	QSettings settings;
-	QDesktopServices::openUrl(QUrl("file://" + settings.fileName()));
+
+	if (QFile::exists(settings.fileName()))
+		QDesktopServices::openUrl(QUrl("file://" + settings.fileName()));
+	else
+		qDebug() << "Cannot open configuration file:" << settings.fileName();
 }
 
