@@ -248,6 +248,7 @@ void MainWindow::newGame()
 			break;
 		}
 		
+		player[i]->setName(engineConfig[i].name());
 		player[i]->setTimeControl(tc);
 		chessgame->setPlayer((Chess::Side)i, player[i]);
 		
