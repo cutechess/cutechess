@@ -96,7 +96,10 @@ void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	ChessPlayer::newGame(side, opponent);
 	m_moves.clear();
-	m_startFen = m_chessboard->fenString(Chess::ShredderFen);
+	if (m_chessboard->variant().isRandom())
+		m_startFen = m_chessboard->fenString(Chess::ShredderFen);
+	else
+		m_startFen = m_chessboard->fenString();
 	
 	const Chess::Variant& variant = m_chessboard->variant();
 	if (variant != Chess::Variant::Standard)
