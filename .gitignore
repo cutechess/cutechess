@@ -1,5 +1,6 @@
-# main executable
+# main executables
 cutechess
+cutechess-cli
 
 # libraries
 *.so
