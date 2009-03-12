@@ -34,18 +34,23 @@ class LIB_EXPORT PgnGame
 		 * Reads a game from a PGN text stream.
 		 *
 		 * \param in The input PGN file.
+		 * \param minimal If true, only data required by the PGN
+		 * specification is loaded.
 		 * \param maxMoves The maximum number of halfmoves to read.
 		 * \note Even if the stream contains multiple games,
 		 * only one will be read.
 		 */
-		void load(PgnFile& in, int maxMoves = 1000);
+		void load(PgnFile& in, bool minimal = false, int maxMoves = 1000);
 		
 		/*!
 		 * Write the game to a file.
 		 * If the file already exists, the game will be appended
 		 * to the end of the file.
+		 *
+		 * \param minimal If true, only data required by the PGN
+		 * specification is written.
 		 */
-		void write(const QString& filename) const;
+		void write(const QString& filename, bool minimal = false) const;
 		
 		/*! Returns true if the game doesn't contain any moves. */
 		bool isEmpty() const;
@@ -96,7 +101,7 @@ class LIB_EXPORT PgnGame
 			PgnError
 		};
 
-		PgnItem readItem(PgnFile& in);
+		PgnItem readItem(PgnFile& in, bool minimal);
 		
 		QString m_playerName[2];
 		QString m_event;

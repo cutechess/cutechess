@@ -33,7 +33,7 @@ PgnGame::PgnGame(Chess::Variant variant)
 {
 }
 
-PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
+PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
 {
 	in.skipWhiteSpace();
 	PgnItem itemType = PgnMove;
@@ -191,15 +191,18 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 				return PgnError;
 			}
 		}
-		else if (tag == "TimeControl")
+		else if (!minimal)
 		{
-			m_timeControl[0] = TimeControl(param);
-			m_timeControl[1] = m_timeControl[0];
+			if (tag == "TimeControl")
+			{
+				m_timeControl[0] = TimeControl(param);
+				m_timeControl[1] = m_timeControl[0];
+			}
+			else if (tag == "WhiteTimeControl")
+				m_timeControl[Chess::White] = TimeControl(param);
+			else if (tag == "BlackTimeControl")
+				m_timeControl[Chess::Black] = TimeControl(param);
 		}
-		else if (tag == "WhiteTimeControl")
-			m_timeControl[Chess::White] = TimeControl(param);
-		else if (tag == "BlackTimeControl")
-			m_timeControl[Chess::Black] = TimeControl(param);
 	}
 	else if (itemType == PgnMove)
 	{
@@ -243,7 +246,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in)
 	return itemType;
 }
 
-void PgnGame::load(PgnFile& in, int maxMoves)
+void PgnGame::load(PgnFile& in, bool minimal, int maxMoves)
 {
 	m_hasTags = false;
 	m_round = 0;
@@ -258,7 +261,7 @@ void PgnGame::load(PgnFile& in, int maxMoves)
 	while (in.status() == QTextStream::Ok
 	   &&  m_moves.size() < maxMoves)
 	{
-		PgnItem item = readItem(in);
+		PgnItem item = readItem(in, minimal);
 		if (item == PgnError)
 		{
 			qDebug() << "PGN error on line" << in.lineNumber();
@@ -281,7 +284,7 @@ static void writeTag(QTextStream& out, const QString& name, const QString& value
 		out << "[" << name << " \"?\"]\n";
 }
 
-void PgnGame::write(const QString& filename) const
+void PgnGame::write(const QString& filename, bool minimal) const
 {
 	if (!m_hasTags)
 		return;
@@ -305,18 +308,21 @@ void PgnGame::write(const QString& filename) const
 		writeTag(out, "Black", m_playerName[Chess::Black]);
 		writeTag(out, "Result", m_result.toSimpleString());
 
-		writeTag(out, "PlyCount", QString::number(m_moves.size()));
-
-		const TimeControl& wtc = m_timeControl[Chess::White];
-		const TimeControl& btc = m_timeControl[Chess::Black];
-		if (wtc == btc && wtc.isValid())
-			writeTag(out, "TimeControl", wtc.toString());
-		else
+		if (!minimal)
 		{
-			if (wtc.isValid())
-				writeTag(out, "WhiteTimeControl", wtc.toString());
-			if (btc.isValid())
-				writeTag(out, "BlackTimeControl", btc.toString());
+			writeTag(out, "PlyCount", QString::number(m_moves.size()));
+
+			const TimeControl& wtc = m_timeControl[Chess::White];
+			const TimeControl& btc = m_timeControl[Chess::Black];
+			if (wtc == btc && wtc.isValid())
+				writeTag(out, "TimeControl", wtc.toString());
+			else
+			{
+				if (wtc.isValid())
+					writeTag(out, "WhiteTimeControl", wtc.toString());
+				if (btc.isValid())
+					writeTag(out, "BlackTimeControl", btc.toString());
+			}
 		}
 
 		if (m_variant != Chess::Variant::Standard)
@@ -337,9 +343,9 @@ void PgnGame::write(const QString& filename) const
 			str.clear();
 			if ((i % 2) == 0)
 				str = QString::number(i / 2 + 1) + ". ";
-			str += board.moveString(m_moves[i], Chess::StandardAlgebraic) + ' ';
-			if (i < m_comments.size() && !m_comments[i].isEmpty())
-				str += QString("{%1}").arg(m_comments[i]);
+			str += board.moveString(m_moves[i], Chess::StandardAlgebraic);
+			if (!minimal && i < m_comments.size() && !m_comments[i].isEmpty())
+				str += QString(" {%1}").arg(m_comments[i]);
 
 			// Limit the lines to 80 characters
 			if (lineLength == 0 || lineLength + str.size() >= 80)
