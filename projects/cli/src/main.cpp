@@ -27,22 +27,160 @@
 #include <QTime>
 #include <QSettings>
 #include <QStringList>
+#include "enginematch.h"
 
+
+void msgOutput(QtMsgType type, const char *msg)
+ {
+     switch (type) {
+     case QtDebugMsg:
+	 fprintf(stdout, "%s\n", msg);
+	 break;
+     case QtWarningMsg:
+	 fprintf(stderr, "Warning: %s\n", msg);
+	 break;
+     case QtCriticalMsg:
+	 fprintf(stderr, "Critical: %s\n", msg);
+	 break;
+     case QtFatalMsg:
+	 fprintf(stderr, "Fatal: %s\n", msg);
+	 abort();
+     }
+ }
+
+struct CmdOption
+{
+	QString name;
+	QString value;
+	QStringList args;
+};
+
+static QList<CmdOption> getOptions(const QStringList& args)
+{
+	QList<CmdOption> options;
+
+	QStringList::const_iterator it;
+	for (it = args.constBegin(); it != args.constEnd(); ++it)
+	{
+		CmdOption option;
+		option.name = *it;
+		if (it->startsWith('-'))
+		{
+			for (++it; it != args.constEnd() && !it->startsWith('-'); ++it)
+				option.args.append(*it);
+			--it;
+		}
+		if (option.args.size() == 1)
+			option.value = option.args.at(0);
+		options.append(option);
+	}
+
+	return options;
+}
+
+static void parseEngine(const QStringList& args, EngineConfiguration& config)
+{
+	foreach (const QString& arg, args)
+	{
+		QStringList tmp = arg.split('=', QString::SkipEmptyParts);
+		if (tmp.size() != 2)
+			continue;
+
+		const QString& name = tmp[0];
+		const QString& val = tmp[1];
+
+		if (name == "name")
+			config.setName(val);
+		else if (name == "cmd")
+			config.setCommand(val);
+		else if (name == "dir")
+			config.setWorkingDirectory(val);
+		else if (name == "proto")
+		{
+			if (val == "uci")
+				config.setProtocol(ChessEngine::Uci);
+			else if (val == "xboard")
+				config.setProtocol(ChessEngine::Xboard);
+			else
+				qDebug() << "Unsupported chess protocol:" << val;
+		}
+	}
+}
+
+static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
+{
+	EngineMatch* match = new EngineMatch(parent);
+	QList<CmdOption> options = getOptions(args);
+
+	EngineConfiguration fcp;
+	EngineConfiguration scp;
+
+	foreach (const CmdOption& opt, options)
+	{
+		// First chess program
+		if (opt.name == "-fcp")
+			parseEngine(opt.args, fcp);
+		// Second chess program
+		else if (opt.name == "-scp")
+			parseEngine(opt.args, scp);
+		// The engine options apply to both engines
+		else if (opt.name == "-both")
+		{
+			parseEngine(opt.args, fcp);
+			parseEngine(opt.args, scp);
+		}
+		// Chess variant (default: standard chess)
+		else if (opt.name == "-variant")
+			match->setVariant(Chess::Variant(opt.value));
+		// Time control (moves/time+increment)
+		else if (opt.name == "-tc")
+			match->setTimeControl(TimeControl(opt.value));
+		// Opening book file (must be in Polyglot format)
+		else if (opt.name == "-book")
+			match->setBookFile(opt.value);
+		// Maximum book depth in plies (halfmoves)
+		else if (opt.name == "-bookdepth")
+			match->setBookDepth(opt.value.toInt());
+		// Event name
+		else if (opt.name == "-event")
+			match->setEvent(opt.value);
+		// Number of games to play
+		else if (opt.name == "-games")
+			match->setGameCount(opt.value.toInt());
+		// Debugging mode. Prints all engine input and output.
+		else if (opt.name == "-debug")
+			match->setDebugMode(true);
+		// PGN file where the games should be saved
+		else if (opt.name == "-pgnout")
+			match->setPgnOutput(opt.value);
+		// Site/location name
+		else if (opt.name == "-site")
+			match->setSite(opt.value);
+		else
+			qFatal("Invalid argument: %s", qPrintable(opt.name));
+	}
+
+	match->addEngine(fcp);
+	match->addEngine(scp);
+
+	return match;
+}
 
 int main(int argc, char* argv[])
 {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+	qInstallMsgHandler(msgOutput);
 	
-	QCoreApplication::setOrganizationName("Cute Chess");
+	QCoreApplication::setOrganizationName("cutechess");
 	QCoreApplication::setOrganizationDomain("cutechess.org");
-	QCoreApplication::setApplicationName("Cute Chess");
+	QCoreApplication::setApplicationName("cutechess");
 
 	QCoreApplication app(argc, argv);
 
 	// Use Ini format on all platforms
 	QSettings::setDefaultFormat(QSettings::IniFormat);
 
-	QStringList arguments = app.arguments();
+	QStringList arguments = QCoreApplication::arguments();
 	arguments.takeFirst(); // application name
 
 	// Use trivial command-line parsing for now
@@ -60,12 +198,14 @@ int main(int argc, char* argv[])
 
 			return 0;
 		}
-		else
-		{
-			qWarning() << "Unknown argument:" << arg;
-		}
 	}
+
+	EngineMatch* match = parseMatch(arguments, &app);
+	QObject::connect(match, SIGNAL(finished()), &app, SLOT(quit()));
+
+	if (!match->initialize())
+		return 1;
+	match->start();
 
 	return app.exec();
 }
-

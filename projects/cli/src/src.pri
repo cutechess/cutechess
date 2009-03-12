@@ -1,6 +1,4 @@
 DEPENDPATH += $$PWD
-
-HEADERS += .
-
-SOURCES += main.cpp
-
+HEADERS += enginematch.h
+SOURCES += main.cpp \
+           enginematch.cpp

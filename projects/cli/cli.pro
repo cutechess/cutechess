@@ -26,10 +26,6 @@ macx-xcode {
 
 QT -= gui
 
-win32 : debug {
-    CONFIG += console
-}
-
 # Code
 include(src/src.pri)
 
