@@ -66,7 +66,6 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		Chess::Board* m_board;
 		ChessPlayer* m_player[2];
 		bool m_gameInProgress;
-		bool m_inOpening;
 };
 
 #endif // CHESSGAME_H

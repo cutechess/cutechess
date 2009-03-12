@@ -26,6 +26,7 @@
 #include "chessboard/result.h"
 #include "chessboard/variant.h"
 #include "timecontrol.h"
+#include "moveevaluation.h"
 
 
 /*!
@@ -59,6 +60,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		/*! Tells the player to start thinking and make its move. */
 		virtual void go() = 0;
+
+		/*! Returns the player's evaluation of the current position. */
+		const MoveEvaluation& evaluation() const;
 
 		/*! Returns the player's time control. */
 		TimeControl* timeControl();
@@ -98,6 +102,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual bool isHuman() const = 0;
 
 	signals:
+		/*! Signals the player's evaluation of the position. */
+		void sendEvaluation(const MoveEvaluation& eval) const;
+
 		/*! Signals that the player is ready to play. */
 		void ready() const;
 		
@@ -134,6 +141,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Returns the opponent's side. */
 		Chess::Side otherSide() const;
 		
+		/*! The current evaluation. */
+		MoveEvaluation m_eval;
+
 		/*! Is the player ready to play? */
 		bool m_isReady;
 		

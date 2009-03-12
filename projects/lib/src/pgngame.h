@@ -2,6 +2,7 @@
 #define PGNGAME_H
 
 #include <QString>
+#include <QStringList>
 #include <QVector>
 #include <QDate>
 #include "chessboard/chess.h"
@@ -76,6 +77,7 @@ class LIB_EXPORT PgnGame
 	protected:
 		QString m_fen;
 		QVector<Chess::Move> m_moves;
+		QStringList m_comments;
 		Chess::Result m_result;
 		Chess::Variant m_variant;
 		TimeControl m_timeControl[2];

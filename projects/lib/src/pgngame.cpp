@@ -329,16 +329,37 @@ void PgnGame::write(const QString& filename) const
 		
 		Chess::Board board(m_variant);
 		board.setBoard(m_fen);
+		QString str;
+		int lineLength = 0;
+
 		for (int i = 0; i < m_moves.size(); i++)
 		{
-			if ((i % 8) == 0)
-				out << "\n";
+			str.clear();
 			if ((i % 2) == 0)
-				out << QString::number(i / 2 + 1) << ". ";
-			out << board.moveString(m_moves[i], Chess::StandardAlgebraic) << " ";
+				str = QString::number(i / 2 + 1) + ". ";
+			str += board.moveString(m_moves[i], Chess::StandardAlgebraic) + ' ';
+			if (i < m_comments.size() && !m_comments[i].isEmpty())
+				str += QString("{%1}").arg(m_comments[i]);
+
+			// Limit the lines to 80 characters
+			if (lineLength == 0 || lineLength + str.size() >= 80)
+			{
+				out << "\n" << str;
+				lineLength = str.size();
+			}
+			else
+			{
+				out << " " << str;
+				lineLength += str.size() + 1;
+			}
+
 			board.makeMove(m_moves[i]);
 		}
-		out << "{" << m_result.description() << "} " << m_result.toSimpleString() << "\n\n";
+		str = QString("{%1} %2").arg(m_result.description()).arg(m_result.toSimpleString());
+		if (lineLength + str.size() >= 80)
+			out << "\n" << str << "\n\n";
+		else
+			out << " " << str << "\n\n";
 	}
 }
 

@@ -43,6 +43,7 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent)
 	Q_ASSERT(m_isReady);
 	Q_ASSERT(m_chessboard != 0);
 
+	m_eval.clear();
 	m_gameInProgress = true;
 	m_opponent = opponent;
 	setSide(side);
@@ -59,10 +60,17 @@ void ChessPlayer::endGame(Chess::Result result)
 	m_timer.stop();
 }
 
+const MoveEvaluation& ChessPlayer::evaluation() const
+{
+	return m_eval;
+}
+
 void ChessPlayer::startClock()
 {
 	if (!m_gameInProgress)
 		return;
+
+	m_eval.clear();
 
 	if (m_timeControl.timePerTc() != 0)
 		emit startedThinking(m_timeControl.timeLeft());
@@ -132,6 +140,7 @@ bool ChessPlayer::supportsVariant(Chess::Variant variant) const
 void ChessPlayer::emitMove(const Chess::Move& move)
 {
 	m_timeControl.update();
+	m_eval.setTime(m_timeControl.lastMoveTime());
 	if (m_timer.isActive())
 	{
 		m_timer.stop();

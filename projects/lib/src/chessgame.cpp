@@ -26,8 +26,7 @@
 ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 	: QObject(parent),
 	  PgnGame(variant),
-	  m_gameInProgress(false),
-	  m_inOpening(false)
+	  m_gameInProgress(false)
 {
 	m_player[Chess::White] = 0;
 	m_player[Chess::Black] = 0;
@@ -81,9 +80,27 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 		return;
 	}
 
-	// Opening moves are already in the list
-	if (!m_inOpening)
-		m_moves.append(move);
+	// Save the evaluation as a PGN comment
+	const MoveEvaluation& eval = sender->evaluation();
+	if (eval.isEmpty())
+		m_comments.append(QString());
+	else
+	{
+		QString str;
+
+		if (eval.depth() > 0)
+		{
+			if (eval.score() > 0)
+				str += "+";
+			str += QString::number((double)eval.score() / 100.0, 'f', 2) + '/';
+			str += QString::number(eval.depth()) + ' ';
+		}
+		// Round the time to the nearest second
+		str += QString::number((eval.time() + 500) / 1000) + 's';
+		m_comments.append(str);
+	}
+
+	m_moves.append(move);
 
 	playerToWait()->makeMove(move);
 	m_board->makeMove(move, true);
@@ -245,7 +262,6 @@ void ChessGame::start()
 	m_hasTags = true;
 	
 	// Play the forced opening moves first
-	m_inOpening = true;
 	foreach (const Chess::Move& move, m_moves)
 	{
 		Q_ASSERT(m_board->isLegalMove(move));
@@ -253,10 +269,10 @@ void ChessGame::start()
 		playerToMove()->makeBookMove(move);
 		playerToWait()->makeMove(move);
 		m_board->makeMove(move, true);
+		m_comments.append("book");
 		
 		emit moveMade(move);
 	}
-	m_inOpening = false;
 	
 	playerToMove()->go();
 }

@@ -125,6 +125,9 @@ class LIB_EXPORT TimeControl
 		/*! Update the time control with the elapsed time. */
 		void update();
 
+		/*! Returns the last elapsed move time. */
+		int lastMoveTime() const;
+
 	private:
 		int m_movesPerTc;
 		int m_timePerTc;
@@ -132,6 +135,7 @@ class LIB_EXPORT TimeControl
 		int m_increment;
 		int m_timeLeft;
 		int m_movesLeft;
+		int m_lastMoveTime;
 		QTime m_time;
 
 };

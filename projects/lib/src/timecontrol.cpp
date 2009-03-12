@@ -26,7 +26,8 @@ TimeControl::TimeControl()
 	  m_timePerMove(0),
 	  m_increment(0),
 	  m_timeLeft(0),
-	  m_movesLeft(0)
+	  m_movesLeft(0),
+	  m_lastMoveTime(0)
 {
 }
 
@@ -36,7 +37,8 @@ TimeControl::TimeControl(const QString& str)
 	  m_timePerMove(0),
 	  m_increment(0),
 	  m_timeLeft(0),
-	  m_movesLeft(0)
+	  m_movesLeft(0),
+	  m_lastMoveTime(0)
 {
 	QStringList list = str.split('+');
 
@@ -204,7 +206,8 @@ void TimeControl::update()
 {
 	if (m_timePerMove == 0)
 	{
-		setTimeLeft(m_timeLeft + m_increment - m_time.elapsed());
+		m_lastMoveTime = m_time.elapsed();
+		setTimeLeft(m_timeLeft + m_increment - m_lastMoveTime);
 		
 		if (m_movesPerTc > 0)
 		{
@@ -218,4 +221,11 @@ void TimeControl::update()
 			}
 		}
 	}
+	else
+		m_lastMoveTime = m_timePerMove;
+}
+
+int TimeControl::lastMoveTime() const
+{
+	return m_lastMoveTime;
 }
