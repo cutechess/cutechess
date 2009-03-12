@@ -117,7 +117,7 @@ void ChessEngine::onReadyRead()
 		QString line = QString(m_ioDevice->readLine()).trimmed();
 		emit debugMessage(QString("<") + name() + "(" + QString::number(m_id) +  "): " + line);
 		
-		parseLine(line);
+		parseLine(line.simplified());
 	}
 }
 
