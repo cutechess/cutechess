@@ -13,7 +13,8 @@ HEADERS += chessengine.h \
     timecontrol.h \
     uciengine.h \
     ucioption.h \
-    xboardengine.h
+    xboardengine.h \
+    moveevaluation.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -26,4 +27,5 @@ SOURCES += chessengine.cpp \
     timecontrol.cpp \
     uciengine.cpp \
     ucioption.cpp \
-    xboardengine.cpp
+    xboardengine.cpp \
+    moveevaluation.cpp
