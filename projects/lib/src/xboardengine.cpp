@@ -154,6 +154,8 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 		write(command);
 	}
 
+	// Show thinking
+	write("post");
 	// Disable pondering
 	write("easy");
 	// Put the engine in observer mode
@@ -402,6 +404,28 @@ void XboardEngine::parseLine(const QString& line)
 			setFeature(feature, val);
 			pos += rx.matchedLength();
 		}
+	}
+	else if (command.toInt() > 0)
+	{
+		bool ok = false;
+		m_eval.setDepth(command.toInt());
+
+		int eval = args.section(' ', 0, 0).toInt(&ok);
+		if (ok)
+			m_eval.setScore(eval);
+
+		int ms = args.section(' ', 1, 1).toInt(&ok);
+		if (ok)
+			m_eval.setTime(ms * 10);
+
+		int nodes = args.section(' ', 2, 2).toInt(&ok);
+		if (ok)
+			m_eval.setNodeCount(nodes);
+
+		m_eval.setPv(args.section(' ', 3));
+
+		if (!m_eval.isEmpty())
+			emit sendEvaluation(m_eval);
 	}
 }
 
