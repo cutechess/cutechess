@@ -5,6 +5,7 @@ HEADERS += chessengine.h \
     chessgame.h \
     chessplayer.h \
     engineconfiguration.h \
+    enginefactory.h \
     openingbook.h \
     pgnfile.h \
     pgngame.h \
@@ -19,6 +20,7 @@ SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
     engineconfiguration.cpp \
+    enginefactory.cpp \
     openingbook.cpp \
     pgnfile.cpp \
     pgngame.cpp \
