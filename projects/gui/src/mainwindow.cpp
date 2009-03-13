@@ -19,10 +19,9 @@
 
 #include <chessgame.h>
 #include <chessplayer.h>
-#include <xboardengine.h>
-#include <uciengine.h>
 #include <timecontrol.h>
 #include <engineconfiguration.h>
+#include <enginefactory.h>
 
 #include "mainwindow.h"
 #include "graphicschessboarditem.h"
@@ -238,15 +237,8 @@ void MainWindow::newGame()
 
 	for (int i = 0; i < 2; i++)
 	{
-		switch (engineConfig[i].protocol())
-		{
-		case ChessEngine::Uci:
-			player[i] = new UciEngine(engineProcess[i], this);
-			break;
-		default:
-			player[i] = new XboardEngine(engineProcess[i], this);
-			break;
-		}
+		player[i] = EngineFactory::createEngine(engineConfig[i].protocol(),
+			engineProcess[i], this);
 		
 		player[i]->setName(engineConfig[i].name());
 		player[i]->setTimeControl(tc);

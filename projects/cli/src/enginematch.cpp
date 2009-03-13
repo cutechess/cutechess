@@ -17,9 +17,8 @@
 
 #include "enginematch.h"
 #include <chessgame.h>
-#include <uciengine.h>
-#include <xboardengine.h>
 #include <pgngame.h>
+#include <enginefactory.h>
 #include <polyglotbook.h>
 #include <QProcess>
 #include <QFile>
@@ -172,18 +171,9 @@ bool EngineMatch::initialize()
 			return false;
 		}
 
-		ChessEngine* engine = 0;
-		switch (config.protocol())
-		{
-		case ChessEngine::Uci:
-			engine = new UciEngine(process, this);
-			break;
-		case ChessEngine::Xboard:
-			engine = new XboardEngine(process, this);
-			break;
-		default:
-			return false;
-		}
+		ChessEngine* engine = EngineFactory::createEngine(config.protocol(),
+			process, this);
+
 		if (!config.name().isEmpty())
 			engine->setName(config.name());
 		it->engine = engine;
