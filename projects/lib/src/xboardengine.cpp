@@ -181,8 +181,9 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 
 void XboardEngine::endGame(Chess::Result result)
 {
+	if (m_gameInProgress)
+		write("result " + result.toString());
 	ChessPlayer::endGame(result);
-	write("result " + result.toString());
 }
 
 void XboardEngine::sendTimeLeft()

@@ -236,6 +236,7 @@ void EngineMatch::onGameEnded()
 	       m_engines[0].wins, m_engines[1].wins, m_drawCount);
 
 	if (m_currentGame < m_gameCount
+	&&  result.code() != Chess::Result::ResultError
 	&&  result.code() != Chess::Result::WinByDisconnection)
 		QTimer::singleShot(2000, this, SLOT(start()));
 	else

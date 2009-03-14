@@ -235,6 +235,7 @@ void ChessGame::start()
 	}
 	disconnect(this, SIGNAL(playersReady()), this, SLOT(start()));
 	
+	m_gameInProgress = true;
 	for (int i = 0; i < 2; i++)
 	{
 		ChessPlayer* player = m_player[i];
@@ -243,8 +244,10 @@ void ChessGame::start()
 		
 		if (!player->supportsVariant(m_board->variant()))
 		{
-			qDebug() << player->name() << "doesn't support"
-			         << m_board->variant().toString() << "chess.";
+			qDebug() << player->name() << "doesn't support variant"
+				 << m_board->variant().toString();
+			m_result = Chess::Result(Chess::Result::ResultError);
+			endGame();
 			return;
 		}	
 	}
@@ -257,7 +260,6 @@ void ChessGame::start()
 		m_player[i]->newGame((Chess::Side)i, m_player[!i]);
 	}
 	
-	m_gameInProgress = true;
 	m_hasTags = true;
 	
 	// Play the forced opening moves first
