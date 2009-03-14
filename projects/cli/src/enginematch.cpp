@@ -263,9 +263,6 @@ void EngineMatch::start()
 	if (m_book != 0)
 		game->setOpeningMoves(m_book, m_bookDepth);
 
-	foreach(const EngineData& data, m_engines)
-		data.engine->setTimeControl(data.settings.timeControl());
-
 	connect(game, SIGNAL(gameEnded()), this, SLOT(onGameEnded()));
 	game->start();
 }
