@@ -36,7 +36,7 @@ class EngineMatch : public QObject
 		EngineMatch(QObject* parent = 0);
 		~EngineMatch();
 
-		void addEngine(const EngineConfiguration& engineConfig,
+		void addEngine(const EngineConfiguration& config,
 			       const EngineSettings& settings);
 		void setBookDepth(int bookDepth);
 		void setBookFile(const QString& filename);
@@ -61,7 +61,7 @@ class EngineMatch : public QObject
 	private:
 		struct EngineData
 		{
-			EngineConfiguration engineConfig;
+			EngineConfiguration config;
 			EngineSettings settings;
 			int wins;
 			ChessEngine* engine;

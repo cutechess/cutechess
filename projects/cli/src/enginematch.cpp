@@ -149,7 +149,7 @@ bool EngineMatch::initialize()
 
 		QProcess* process = new QProcess(this);
 		it->process = process;
-		const EngineConfiguration& config = it->engineConfig;
+		const EngineConfiguration& config = it->config;
 		
 		if (config.workingDirectory().isEmpty())
 			process->setWorkingDirectory(QDir::tempPath());
