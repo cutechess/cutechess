@@ -58,7 +58,14 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void initialize();
 
 	private:
+		struct OptionCmd
+		{
+			QString line;
+			bool* feature;
+		};
+
 		void setFeature(const QString& name, const QString& val);
+		void setOption(const QString& line, bool* feature);
 		void sendTimeLeft();
 		
 		bool m_forceMode;
@@ -77,6 +84,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		
 		int m_lastPing;
 		QTimer m_initTimer;
+		QVector<OptionCmd> m_optionBuffer;
 };
 
 #endif // XBOARDENGINE_H

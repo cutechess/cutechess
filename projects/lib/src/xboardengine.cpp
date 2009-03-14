@@ -83,6 +83,15 @@ void XboardEngine::initialize()
 		m_isReady = true;
 		
 		flushWriteBuffer();
+		
+		// Send engine options
+		foreach(const OptionCmd& cmd, m_optionBuffer)
+		{
+			if (*cmd.feature)
+				write(cmd.line);
+		}
+		m_optionBuffer.clear();
+		
 		emit ready();
 	}
 }
@@ -428,20 +437,30 @@ void XboardEngine::parseLine(const QString& line)
 	}
 }
 
+void XboardEngine::setOption(const QString& line, bool* feature)
+{
+	if (!m_initialized)
+	{
+		OptionCmd cmd = { line, feature };
+		m_optionBuffer.append(cmd);
+		return;
+	}
+
+	if (*feature)
+		write(line);
+}
+
 void XboardEngine::setConcurrency(int limit)
 {
-	if (m_ftSmp)
-		write(QString("cores ") + QString::number(limit));
+	setOption(QString("cores %1").arg(limit), &m_ftSmp);
 }
 
 void XboardEngine::setEgbbPath(const QString& path)
 {
-	if (m_ftEgbb)
-		write(QString("egtpath scorpio ") + path);
+	setOption(QString("egtpath scorpio %1").arg(path), &m_ftEgbb);
 }
 
 void XboardEngine::setEgtbPath(const QString& path)
 {
-	if (m_ftEgtb)
-		write(QString("egtpath nalimov ") + path);
+	setOption(QString("egtpath nalimov %1").arg(path), &m_ftEgtb);
 }

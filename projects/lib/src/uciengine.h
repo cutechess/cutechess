@@ -74,6 +74,12 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		void parseLine(const QString& line);
 		
 	private:
+		struct OptionCmd
+		{
+			QString name;
+			QVariant value;
+		};
+
 		void addVariants();
 		void parseInfo(const QString& line);
 		void sendPosition();
@@ -83,6 +89,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		QString m_startFen;
 		QStringList m_moves;
 		QVector<UciOption> m_options;
+		QVector<OptionCmd> m_optionBuffer;
 };
 
 #endif // UCIENGINE_H

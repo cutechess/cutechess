@@ -274,7 +274,13 @@ void UciEngine::parseLine(const QString& line)
 			m_initialized = true;
 			m_isReady = true;
 
-			// TODO: Send the engine the "setoption" commands
+			// Send engine options
+			foreach (const OptionCmd& cmd, m_optionBuffer)
+			{
+				if (hasOption(cmd.name))
+					this->setOption(cmd.name, cmd.value);
+			}
+			m_optionBuffer.clear();
 
 			ping(PingInit);
 		}
@@ -360,6 +366,13 @@ void UciEngine::setOption(const UciOption* option, const QVariant& value)
 
 void UciEngine::setOption(const QString& name, const QVariant& value)
 {
+	if (!m_initialized)
+	{
+		OptionCmd cmd = { name, value };
+		m_optionBuffer.append(cmd);
+		return;
+	}
+
 	const UciOption* option = getOption(name);
 	if (!option)
 	{
@@ -378,12 +391,8 @@ void UciEngine::setConcurrency(int limit)
 void UciEngine::setEgbbPath(const QString& path)
 {
 	// Stupid computer chess community and their lack of standards...
-	if (hasOption("Bitbases"))
-		setOption("Bitbases", path);
-	else if (hasOption("Bitbase Path"))
-		setOption("Bitbase Path", path);
-	else if (hasOption("Bitbases Path"))
-		setOption("Bitbases Path", path);
+	setOption("Bitbase Path", path);
+	setOption("Bitbases Path", path);
 }
 
 void UciEngine::setEgtbPath(const QString& path)
