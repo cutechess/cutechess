@@ -226,6 +226,38 @@ int main(int argc, char* argv[])
 
 			return 0;
 		}
+		else if (arg == "--help")
+		{
+			out << "Usage: cutechess-cli -fcp [eng_options] -scp [eng_options] [options]\n"
+			       "Options:\n"
+			       "  -fcp <options>	Apply <options> to the first engine\n"
+			       "  -scp <options>	Apply <options> to the second engine\n"
+			       "  -both <options>	Apply <options> to both engines\n"
+			       "  -variant <arg>	Set chess variant to <arg>. Must be Standard,\n"
+			       "			Fischerandom, Capablanca, Gothic or Caparandom\n"
+			       "  -book <file>		Use <file> (Polyglot book file) as the opening book\n"
+			       "  -bookdepth <n>	Set the maximum book depth (in plies) to <n>\n"
+			       "  -event <arg>		Set the event name to <arg>\n"
+			       "  -games <n>		Play <n> games\n"
+			       "  -debug		Display all engine input and output\n"
+			       "  -pgnout <file>	Save the games to <file> in PGN format\n"
+			       "  -site <arg>		Set the site/location to <arg>\n\n"
+			       "Engine options:\n"
+			       "  name=<arg>		Set the name to <arg>\n"
+			       "  cmd=<arg>		Set the command to <arg>\n"
+			       "  dir=<arg>		Set the working directory to <arg>\n"
+			       "  proto=<arg>		Set the chess protocol to <arg>. Must be xboard or uci\n"
+			       "  tc=<arg>		Set the time control to <arg>. The format is\n"
+			       "			moves/time+increment, where 'moves' is the number of\n"
+			       "			moves per tc, 'time' is time per tc (either seconds or\n"
+			       "			minutes:seconds), and 'increment' is time increment\n"
+			       "			per move in seconds\n"
+			       "  cpus=<n>		Tell the engine to use a maximum of <n> cpus\n"
+			       "  egbbpath=<dir>	Set the path to endgame bitbases to <dir>\n"
+			       "  egtbpath=<dir>	Set the path to endgame tablebases to <dir>\n"
+			       "  uci/<name> <arg>	Set UCI option <name> to value <arg>\n";
+			return 0;
+		}
 	}
 
 	EngineMatch* match = parseMatch(arguments, &app);
