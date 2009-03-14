@@ -23,6 +23,7 @@
 #include "chessboard/chessboard.h"
 #include "chessboard/chessmove.h"
 #include "timecontrol.h"
+#include "enginesettings.h"
 
 
 UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
@@ -90,6 +91,13 @@ static QString variantString(Chess::Variant variant)
 	default:
 		return QString();
 	}
+}
+
+void UciEngine::applySettings(const EngineSettings& settings)
+{
+	ChessEngine::applySettings(settings);
+	foreach(const EngineSettings::UciSetting& setting, settings.uciSettings())
+		setOption(setting.name, setting.value);
 }
 
 void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)

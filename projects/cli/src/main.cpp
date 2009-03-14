@@ -78,7 +78,13 @@ static QList<CmdOption> getOptions(const QStringList& args)
 	return options;
 }
 
-static void parseEngine(const QStringList& args, EngineConfiguration& config)
+struct EngineData
+{
+	EngineConfiguration config;
+	EngineSettings settings;
+};
+
+static void parseEngine(const QStringList& args, EngineData& data)
 {
 	foreach (const QString& arg, args)
 	{
@@ -90,20 +96,45 @@ static void parseEngine(const QStringList& args, EngineConfiguration& config)
 		const QString& val = tmp[1];
 
 		if (name == "name")
-			config.setName(val);
+			data.config.setName(val);
 		else if (name == "cmd")
-			config.setCommand(val);
+			data.config.setCommand(val);
 		else if (name == "dir")
-			config.setWorkingDirectory(val);
+			data.config.setWorkingDirectory(val);
 		else if (name == "proto")
 		{
 			if (val == "uci")
-				config.setProtocol(ChessEngine::Uci);
+				data.config.setProtocol(ChessEngine::Uci);
 			else if (val == "xboard")
-				config.setProtocol(ChessEngine::Xboard);
+				data.config.setProtocol(ChessEngine::Xboard);
 			else
-				qDebug() << "Unsupported chess protocol:" << val;
+				qFatal("Usupported chess protocol: %s", qPrintable(val));
 		}
+
+		// Time control (moves/time+increment)
+		else if (name == "tc")
+		{
+			TimeControl tc(val);
+			if (!tc.isValid())
+				qFatal("Invalid time control: %s", qPrintable(val));
+			data.settings.setTimeControl(tc);
+		}
+		// Max. number of cpus the engine can use
+		else if (name == "cpus")
+		{
+			if (val.toInt() <= 0)
+				qFatal("Invalid cpu count: %s", qPrintable(val));
+			data.settings.setConcurrency(val.toInt());
+		}
+		// Path to endgame bitbases
+		else if (name == "egbbpath")
+			data.settings.setEgbbPath(val);
+		// Path to endgame tablebases
+		else if (name == "egtbpath")
+			data.settings.setEgtbPath(val);
+		// Custom UCI option
+		else if (name.startsWith("uci/"))
+			data.settings.addUciSetting(name.section('/', 1), val);
 	}
 }
 
@@ -112,8 +143,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	EngineMatch* match = new EngineMatch(parent);
 	QList<CmdOption> options = getOptions(args);
 
-	EngineConfiguration fcp;
-	EngineConfiguration scp;
+	EngineData fcp;
+	EngineData scp;
 
 	foreach (const CmdOption& opt, options)
 	{
@@ -132,9 +163,6 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Chess variant (default: standard chess)
 		else if (opt.name == "-variant")
 			match->setVariant(Chess::Variant(opt.value));
-		// Time control (moves/time+increment)
-		else if (opt.name == "-tc")
-			match->setTimeControl(TimeControl(opt.value));
 		// Opening book file (must be in Polyglot format)
 		else if (opt.name == "-book")
 			match->setBookFile(opt.value);
@@ -160,8 +188,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			qFatal("Invalid argument: %s", qPrintable(opt.name));
 	}
 
-	match->addEngine(fcp);
-	match->addEngine(scp);
+	match->addEngine(fcp.config, fcp.settings);
+	match->addEngine(scp.config, scp.settings);
 
 	return match;
 }

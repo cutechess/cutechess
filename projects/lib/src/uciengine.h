@@ -44,6 +44,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		~UciEngine();
 
 		// Inherited methods
+		void applySettings(const EngineSettings& settings);
 		void newGame(Chess::Side side, ChessPlayer* opponent);
 		void endGame(Chess::Result result);
 		void go();

@@ -21,6 +21,7 @@
 
 #include "chessengine.h"
 #include "chessboard/chess.h"
+#include "enginesettings.h"
 
 int ChessEngine::m_count = 0;
 
@@ -45,6 +46,18 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 ChessEngine::~ChessEngine()
 {
 	--m_count;
+}
+
+void ChessEngine::applySettings(const EngineSettings& settings)
+{
+	if (settings.concurrency() > 0)
+		setConcurrency(settings.concurrency());
+	if (!settings.egbbPath().isEmpty())
+		setEgbbPath(settings.egbbPath());
+	if (!settings.egtbPath().isEmpty())
+		setEgbbPath(settings.egtbPath());
+	if (settings.timeControl().isValid())
+		setTimeControl(settings.timeControl());
 }
 
 bool ChessEngine::isHuman() const

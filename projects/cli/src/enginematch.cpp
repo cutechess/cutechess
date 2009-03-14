@@ -38,7 +38,6 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_black(0),
 	  m_book(0),
 	  m_debug(false),
-	  m_pondering(false),
 	  m_variant(Chess::Variant::Standard)
 {
 }
@@ -49,7 +48,8 @@ EngineMatch::~EngineMatch()
 		delete m_book;
 }
 
-void EngineMatch::addEngine(const EngineConfiguration& engineConfig)
+void EngineMatch::addEngine(const EngineConfiguration& engineConfig,
+			    const EngineSettings& settings)
 {
 	// We don't allow more than 2 engines at this point
 	if (m_engines.size() >= 2)
@@ -59,7 +59,7 @@ void EngineMatch::addEngine(const EngineConfiguration& engineConfig)
 	}
 	if (engineConfig.command().isEmpty())
 		return;
-	EngineData data = { engineConfig, 0, 0, 0 };
+	EngineData data = { engineConfig, settings, 0, 0, 0 };
 	m_engines.append(data);
 }
 
@@ -113,11 +113,6 @@ void EngineMatch::setPgnOutput(const QString& filename)
 	m_pgnOutput = filename;
 }
 
-void EngineMatch::setPondering(bool pondering)
-{
-	m_pondering = pondering;
-}
-
 void EngineMatch::setSite(const QString& site)
 {
 	m_site = site;
@@ -128,11 +123,6 @@ void EngineMatch::setVariant(Chess::Variant variant)
 	m_variant = variant;
 }
 
-void EngineMatch::setTimeControl(const TimeControl& timeControl)
-{
-	m_timeControl = timeControl;
-}
-
 bool EngineMatch::initialize()
 {
 	if (m_engines.size() < 2)
@@ -140,11 +130,7 @@ bool EngineMatch::initialize()
 		qWarning() << "Two engines are needed";
 		return false;
 	}
-	if (!m_timeControl.isValid())
-	{
-		qWarning() << "Invalid or non-existant time control";
-		return false;
-	}
+
 	m_currentGame = 0;
 	m_drawCount = 0;
 	m_white = 0;
@@ -153,6 +139,12 @@ bool EngineMatch::initialize()
 	QVector<EngineData>::iterator it;
 	for (it = m_engines.begin(); it != m_engines.end(); ++it)
 	{
+		if (!it->settings.timeControl().isValid())
+		{
+			qWarning() << "Invalid or missing time control";
+			return false;
+		}
+
 		it->wins = 0;
 
 		QProcess* process = new QProcess(this);
@@ -176,6 +168,7 @@ bool EngineMatch::initialize()
 
 		if (!config.name().isEmpty())
 			engine->setName(config.name());
+		engine->applySettings(it->settings);
 		it->engine = engine;
 
 		if (m_debug)
@@ -271,7 +264,7 @@ void EngineMatch::start()
 		game->setOpeningMoves(m_book, m_bookDepth);
 
 	foreach(const EngineData& data, m_engines)
-		data.engine->setTimeControl(m_timeControl);
+		data.engine->setTimeControl(data.settings.timeControl());
 
 	connect(game, SIGNAL(gameEnded()), this, SLOT(onGameEnded()));
 	game->start();

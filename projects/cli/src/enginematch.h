@@ -23,7 +23,7 @@
 #include <QString>
 #include <chessboard/variant.h>
 #include <engineconfiguration.h>
-#include <timecontrol.h>
+#include <enginesettings.h>
 
 class QProcess;
 class OpeningBook;
@@ -36,17 +36,16 @@ class EngineMatch : public QObject
 		EngineMatch(QObject* parent = 0);
 		~EngineMatch();
 
-		void addEngine(const EngineConfiguration& engineConfig);
+		void addEngine(const EngineConfiguration& engineConfig,
+			       const EngineSettings& settings);
 		void setBookDepth(int bookDepth);
 		void setBookFile(const QString& filename);
 		void setDebugMode(bool debug);
 		void setEvent(const QString& event);
 		void setGameCount(int gameCount);
 		void setPgnOutput(const QString& filename);
-		void setPondering(bool pondering);
 		void setSite(const QString& site);
 		void setVariant(Chess::Variant variant);
-		void setTimeControl(const TimeControl& timeControl);
 		bool initialize();
 
 	public slots:
@@ -63,6 +62,7 @@ class EngineMatch : public QObject
 		struct EngineData
 		{
 			EngineConfiguration engineConfig;
+			EngineSettings settings;
 			int wins;
 			ChessEngine* engine;
 			QProcess* process;
@@ -78,9 +78,7 @@ class EngineMatch : public QObject
 		EngineData* m_black;
 		OpeningBook* m_book;
 		bool m_debug;
-		bool m_pondering;
 		Chess::Variant m_variant;
-		TimeControl m_timeControl;
 		QVector<EngineData> m_engines;
 		QString m_event;
 		QString m_site;

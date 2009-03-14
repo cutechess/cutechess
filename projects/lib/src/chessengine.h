@@ -23,6 +23,7 @@
 
 class QString;
 class QIODevice;
+class EngineSettings;
 
 /*!
  * \brief An artificial intelligence chess player.
@@ -69,6 +70,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		virtual void go() = 0;
 		virtual void makeMove(const Chess::Move& move) = 0;
 		bool isHuman() const;
+
+		/*! Applies \a settings on the engine. */
+		virtual void applySettings(const EngineSettings& settings);
 		
 		/*! Returns the engine's chess protocol. */
 		virtual Protocol protocol() const = 0;
