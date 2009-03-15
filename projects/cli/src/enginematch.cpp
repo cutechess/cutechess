@@ -136,6 +136,8 @@ bool EngineMatch::initialize()
 	m_white = 0;
 	m_black = 0;
 
+	QString path(QDir::currentPath());
+
 	QVector<EngineData>::iterator it;
 	for (it = m_engines.begin(); it != m_engines.end(); ++it)
 	{
@@ -151,13 +153,23 @@ bool EngineMatch::initialize()
 		it->process = process;
 		const EngineConfiguration& config = it->config;
 		
-		if (config.workingDirectory().isEmpty())
+		QString workDir = config.workingDirectory();
+		if (workDir.isEmpty())
 			process->setWorkingDirectory(QDir::tempPath());
 		else
-			process->setWorkingDirectory(config.workingDirectory());
+		{
+			// Make sure the path to the executable is resolved
+			// in the engine's working directory
+			QDir::setCurrent(workDir);
+			process->setWorkingDirectory(workDir);
+		}
 
 		process->start(config.command());
-		if (!process->waitForStarted())
+		bool ok = process->waitForStarted();
+
+		if (!workDir.isEmpty())
+			QDir::setCurrent(path);
+		if (!ok)
 		{
 			qWarning() << "Cannot start engine" << config.command();
 			return false;
