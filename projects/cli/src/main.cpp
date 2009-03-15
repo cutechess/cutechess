@@ -184,6 +184,9 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// PGN file where the games should be saved
 		else if (opt.name == "-pgnout")
 			match->setPgnOutput(opt.value);
+		// Play every opening twice, just switch the players' sides
+		else if (opt.name == "-repeat")
+			match->setRepeatOpening(true);
 		// Site/location name
 		else if (opt.name == "-site")
 			match->setSite(opt.value);
@@ -245,6 +248,8 @@ int main(int argc, char* argv[])
 			       "  -debug		Display all engine input and output\n"
 			       "  -pgnin <file>		Use <file> as the opening book in PGN format\n"
 			       "  -pgnout <file>	Save the games to <file> in PGN format\n"
+			       "  -repeat		Play each opening twice so that both players get\n"
+			       "			to play it on both sides\n"
 			       "  -site <arg>		Set the site/location to <arg>\n\n"
 			       "Engine options:\n"
 			       "  name=<arg>		Set the name to <arg>\n"

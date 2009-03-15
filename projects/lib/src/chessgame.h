@@ -40,7 +40,8 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		ChessPlayer* player(Chess::Side) const;
 		void setPlayer(Chess::Side, ChessPlayer* player);
 		bool setFenString(const QString& fen);
-		void setOpeningMoves(const OpeningBook* book, int maxMoves = 1000);
+		void setOpeningBook(const OpeningBook* book, int maxMoves = 1000);
+		void setOpeningMoves(const QVector<Chess::Move>& moves);
 
 	public slots:
 		void start();

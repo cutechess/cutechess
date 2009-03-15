@@ -152,7 +152,7 @@ bool ChessGame::setFenString(const QString& fen)
 	return true;
 }
 
-void ChessGame::setOpeningMoves(const OpeningBook* book, int maxMoves)
+void ChessGame::setOpeningBook(const OpeningBook* book, int maxMoves)
 {
 	Q_ASSERT(book != 0);
 	Q_ASSERT(!m_gameInProgress);
@@ -169,6 +169,12 @@ void ChessGame::setOpeningMoves(const OpeningBook* book, int maxMoves)
 		m_moves.append(move);
 		m_board->makeMove(move);
 	}
+}
+
+void ChessGame::setOpeningMoves(const QVector<Chess::Move>& moves)
+{
+	Q_ASSERT(!m_gameInProgress);
+	m_moves = moves;
 }
 
 void ChessGame::setBoard()

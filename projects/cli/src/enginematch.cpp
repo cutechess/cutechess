@@ -39,6 +39,7 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_black(0),
 	  m_book(0),
 	  m_debug(false),
+	  m_repeatOpening(false),
 	  m_variant(Chess::Variant::Standard)
 {
 }
@@ -118,6 +119,11 @@ void EngineMatch::setPgnInput(const QString& filename)
 void EngineMatch::setPgnOutput(const QString& filename)
 {
 	m_pgnOutput = filename;
+}
+
+void EngineMatch::setRepeatOpening(bool repeatOpening)
+{
+	m_repeatOpening = repeatOpening;
 }
 
 void EngineMatch::setSite(const QString& site)
@@ -280,8 +286,23 @@ void EngineMatch::start()
 	game->setPlayer(Chess::White, m_white->engine);
 	game->setPlayer(Chess::Black, m_black->engine);
 
-	if (m_book != 0)
-		game->setOpeningMoves(m_book, m_bookDepth);
+	if (!m_fen.isEmpty() || !m_openingMoves.isEmpty())
+	{
+		if (!m_fen.isEmpty())
+		{
+			game->setFenString(m_fen);
+			m_fen.clear();
+		}
+		if (!m_openingMoves.isEmpty())
+		{
+			game->setOpeningMoves(m_openingMoves);
+			m_openingMoves.clear();
+		}
+	}
+	else if (m_book != 0)
+	{
+		game->setOpeningBook(m_book, m_bookDepth);
+	}
 	else if (m_pgnInput.isOpen())
 	{
 		bool ok = game->load(m_pgnInput, true, m_bookDepth);
@@ -295,6 +316,12 @@ void EngineMatch::start()
 			Q_ASSERT(ok);
 			m_pgnGamesRead++;
 		}
+	}
+
+	if (m_repeatOpening && (m_currentGame % 2) == 0)
+	{
+		m_fen = game->startingFen();
+		m_openingMoves = game->moves();
 	}
 
 	connect(game, SIGNAL(gameEnded()), this, SLOT(onGameEnded()));

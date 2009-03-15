@@ -46,6 +46,7 @@ class EngineMatch : public QObject
 		void setGameCount(int gameCount);
 		void setPgnInput(const QString& filename);
 		void setPgnOutput(const QString& filename);
+		void setRepeatOpening(bool repeatOpening);
 		void setSite(const QString& site);
 		void setVariant(Chess::Variant variant);
 		bool initialize();
@@ -81,8 +82,11 @@ class EngineMatch : public QObject
 		EngineData* m_black;
 		OpeningBook* m_book;
 		bool m_debug;
+		bool m_repeatOpening;
 		Chess::Variant m_variant;
 		QVector<EngineData> m_engines;
+		QVector<Chess::Move> m_openingMoves;
+		QString m_fen;
 		QString m_event;
 		QString m_site;
 		PgnFile m_pgnInput;
