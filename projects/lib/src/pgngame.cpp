@@ -246,10 +246,11 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
 	return itemType;
 }
 
-void PgnGame::load(PgnFile& in, bool minimal, int maxMoves)
+bool PgnGame::load(PgnFile& in, bool minimal, int maxMoves)
 {
 	m_hasTags = false;
 	m_round = 0;
+	m_fen.clear();
 	m_moves.clear();
 
 	Chess::Board* board = in.board();
@@ -274,6 +275,8 @@ void PgnGame::load(PgnFile& in, bool minimal, int maxMoves)
 		else if (item == PgnEmpty)
 			break;
 	}
+
+	return !m_fen.isEmpty();
 }
 
 static void writeTag(QTextStream& out, const QString& name, const QString& value)
@@ -337,12 +340,14 @@ void PgnGame::write(const QString& filename, bool minimal) const
 		board.setBoard(m_fen);
 		QString str;
 		int lineLength = 0;
+		int movenum = 0;
 
 		for (int i = 0; i < m_moves.size(); i++)
 		{
 			str.clear();
-			if ((i % 2) == 0)
-				str = QString::number(i / 2 + 1) + ". ";
+			if (board.sideToMove() == Chess::White || i == 0)
+				str = QString::number(++movenum) + ". ";
+			
 			str += board.moveString(m_moves[i], Chess::StandardAlgebraic);
 			if (!minimal && i < m_comments.size() && !m_comments[i].isEmpty())
 				str += QString(" {%1}").arg(m_comments[i]);

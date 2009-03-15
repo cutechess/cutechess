@@ -39,8 +39,10 @@ class LIB_EXPORT PgnGame
 		 * \param maxMoves The maximum number of halfmoves to read.
 		 * \note Even if the stream contains multiple games,
 		 * only one will be read.
+		 *
+		 * \return True, if a FEN tag or moves were read.
 		 */
-		void load(PgnFile& in, bool minimal = false, int maxMoves = 1000);
+		bool load(PgnFile& in, bool minimal = false, int maxMoves = 1000);
 		
 		/*!
 		 * Write the game to a file.
