@@ -178,6 +178,9 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Debugging mode. Prints all engine input and output.
 		else if (opt.name == "-debug")
 			match->setDebugMode(true);
+		// Use a PGN file as the opening book
+		else if (opt.name == "-pgnin")
+			match->setPgnInput(opt.value);
 		// PGN file where the games should be saved
 		else if (opt.name == "-pgnout")
 			match->setPgnOutput(opt.value);
@@ -240,6 +243,7 @@ int main(int argc, char* argv[])
 			       "  -event <arg>		Set the event name to <arg>\n"
 			       "  -games <n>		Play <n> games\n"
 			       "  -debug		Display all engine input and output\n"
+			       "  -pgnin <file>		Use <file> as the opening book in PGN format\n"
 			       "  -pgnout <file>	Save the games to <file> in PGN format\n"
 			       "  -site <arg>		Set the site/location to <arg>\n\n"
 			       "Engine options:\n"

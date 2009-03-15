@@ -169,19 +169,15 @@ void ChessGame::setOpeningMoves(const OpeningBook* book, int maxMoves)
 		m_moves.append(move);
 		m_board->makeMove(move);
 	}
-	m_board->setBoard(m_fen);
 }
 
 void ChessGame::setBoard()
 {
 	if (m_fen.isEmpty())
-	{
 		m_fen = m_board->variant().startingFen();
-		// The default starting positions, even those generated
-		// for random variants, should never fail.
-		if (!m_board->setBoard(m_fen))
-			qFatal("Invalid FEN: %s", qPrintable(m_fen));
-	}
+
+	if (!m_board->setBoard(m_fen))
+		qFatal("Invalid FEN: %s", qPrintable(m_fen));
 }
 
 bool ChessGame::arePlayersReady() const
@@ -227,6 +223,8 @@ void ChessGame::syncPlayers(bool ignoreSender)
 
 void ChessGame::start()
 {
+	m_result = Chess::Result();
+
 	if (!arePlayersReady())
 	{
 		connect(this, SIGNAL(playersReady()), this, SLOT(start()));

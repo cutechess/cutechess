@@ -34,6 +34,7 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_gameCount(1),
 	  m_drawCount(0),
 	  m_currentGame(0),
+	  m_pgnGamesRead(0),
 	  m_white(0),
 	  m_black(0),
 	  m_book(0),
@@ -106,6 +107,12 @@ void EngineMatch::setEvent(const QString& event)
 void EngineMatch::setGameCount(int gameCount)
 {
 	m_gameCount = gameCount;
+}
+
+void EngineMatch::setPgnInput(const QString& filename)
+{
+	if (!m_pgnInput.open(filename))
+		qWarning() << "Can't open PGN file:" << filename;
 }
 
 void EngineMatch::setPgnOutput(const QString& filename)
@@ -187,6 +194,7 @@ bool EngineMatch::initialize()
 			connect(engine, SIGNAL(debugMessage(const QString&)),
 				this, SLOT(print(const QString&)));
 	}
+	m_pgnInput.setVariant(m_variant);
 
 	return true;
 }
@@ -274,6 +282,20 @@ void EngineMatch::start()
 
 	if (m_book != 0)
 		game->setOpeningMoves(m_book, m_bookDepth);
+	else if (m_pgnInput.isOpen())
+	{
+		bool ok = game->load(m_pgnInput, true, m_bookDepth);
+		if (ok)
+			m_pgnGamesRead++;
+		// Rewind the PGN input file
+		else if (m_pgnGamesRead > 0)
+		{
+			m_pgnInput.rewind();
+			ok = game->load(m_pgnInput, true, m_bookDepth);
+			Q_ASSERT(ok);
+			m_pgnGamesRead++;
+		}
+	}
 
 	connect(game, SIGNAL(gameEnded()), this, SLOT(onGameEnded()));
 	game->start();

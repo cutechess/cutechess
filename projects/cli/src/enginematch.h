@@ -24,6 +24,7 @@
 #include <chessboard/variant.h>
 #include <engineconfiguration.h>
 #include <enginesettings.h>
+#include <pgnfile.h>
 
 class QProcess;
 class OpeningBook;
@@ -43,6 +44,7 @@ class EngineMatch : public QObject
 		void setDebugMode(bool debug);
 		void setEvent(const QString& event);
 		void setGameCount(int gameCount);
+		void setPgnInput(const QString& filename);
 		void setPgnOutput(const QString& filename);
 		void setSite(const QString& site);
 		void setVariant(Chess::Variant variant);
@@ -74,6 +76,7 @@ class EngineMatch : public QObject
 		int m_gameCount;
 		int m_drawCount;
 		int m_currentGame;
+		int m_pgnGamesRead;
 		EngineData* m_white;
 		EngineData* m_black;
 		OpeningBook* m_book;
@@ -82,6 +85,7 @@ class EngineMatch : public QObject
 		QVector<EngineData> m_engines;
 		QString m_event;
 		QString m_site;
+		PgnFile m_pgnInput;
 		QString m_pgnOutput;
 };
 
