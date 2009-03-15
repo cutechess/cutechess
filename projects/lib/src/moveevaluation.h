@@ -13,7 +13,7 @@
  *
  * From human players we can only get the move time.
  */
-class MoveEvaluation
+class LIB_EXPORT MoveEvaluation
 {
 	public:
 		MoveEvaluation();

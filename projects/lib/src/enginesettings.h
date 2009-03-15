@@ -33,7 +33,7 @@
  * \sa ChessEngine
  * \sa EngineConfiguration
  */
-class EngineSettings
+class LIB_EXPORT EngineSettings
 {
 	public:
 		/*!

@@ -97,7 +97,7 @@ class LIB_EXPORT OpeningBook
  * \note Multiple book files can be appended to a single
  * OpeningBook object.
  */
-extern QDataStream& operator>>(QDataStream& in, OpeningBook* book);
+extern LIB_EXPORT QDataStream& operator>>(QDataStream& in, OpeningBook* book);
 
 /*!
  * Writes a book to a data stream.
@@ -106,6 +106,6 @@ extern QDataStream& operator>>(QDataStream& in, OpeningBook* book);
  * data stream, because the books are likely to have duplicate
  * entries.
  */
-extern QDataStream& operator<<(QDataStream& out, const OpeningBook* book);
+extern LIB_EXPORT QDataStream& operator<<(QDataStream& out, const OpeningBook* book);
 
 #endif // OPENING_BOOK_H
