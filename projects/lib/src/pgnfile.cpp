@@ -19,18 +19,17 @@
 #include <QFile>
 
 
-PgnFile::PgnFile(const QString& filename, Chess::Variant variant)
-	: m_variant(variant),
+PgnFile::PgnFile()
+	: m_variant(Chess::Variant::NoVariant),
 	  m_lineNumber(1),
 	  m_rewind(false)
 {
-	m_file.setFileName(filename);
-	if (!m_file.open(QIODevice::ReadOnly))
-		return;
-	
-	m_in.setDevice(&m_file);
-	if (!m_variant.isNone())
-		m_board.setVariant(m_variant);
+}
+
+PgnFile::PgnFile(const QString& filename, Chess::Variant variant)
+{
+	setVariant(variant);
+	open(filename);
 }
 
 Chess::Board* PgnFile::board()
@@ -41,6 +40,19 @@ Chess::Board* PgnFile::board()
 bool PgnFile::isOpen() const
 {
 	return (m_in.device() && m_in.device()->isOpen());
+}
+
+bool PgnFile::open(const QString& filename)
+{
+	m_lineNumber = 1;
+	m_rewind = false;
+
+	m_file.setFileName(filename);
+	if (!m_file.open(QIODevice::ReadOnly))
+		return false;
+
+	m_in.setDevice(&m_file);
+	return true;
 }
 
 qint64 PgnFile::lineNumber() const
@@ -69,6 +81,14 @@ QString PgnFile::readLine()
 	return m_in.readLine();
 }
 
+void PgnFile::rewind()
+{
+	m_in.resetStatus();
+	m_lineNumber = 1;
+	m_rewind = false;
+	m_in.seek(0);
+}
+
 void PgnFile::rewindChar()
 {
 	m_rewind = true;
@@ -92,4 +112,11 @@ QTextStream::Status PgnFile::status() const
 Chess::Variant PgnFile::variant() const
 {
 	return m_variant;
+}
+
+void PgnFile::setVariant(Chess::Variant variant)
+{
+	m_variant = variant;
+	if (!m_variant.isNone())
+		m_board.setVariant(m_variant);
 }

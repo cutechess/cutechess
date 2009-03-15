@@ -40,6 +40,9 @@
 class LIB_EXPORT PgnFile
 {
 	public:
+		/*! Creates a new empty PgnFile. */
+		PgnFile();
+
 		/*!
 		 * Creates a new PgnFile and opens the file in ReadOnly mode.
 		 * If the opening fails, isOpen() will return false.
@@ -60,6 +63,12 @@ class LIB_EXPORT PgnFile
 		
 		/*! Returns true if the file is open. */
 		bool isOpen() const;
+
+		/*!
+		 * Opens a PGN file.
+		 * Returns true if successfull.
+		 */
+		bool open(const QString& filename);
 		
 		/*! Returns the current line number. */
 		qint64 lineNumber() const;
@@ -70,6 +79,9 @@ class LIB_EXPORT PgnFile
 		/*! Reads one line of text and returns it. */
 		QString readLine();
 		
+		/*! Rewinds back to the start of input. */
+		void rewind();
+
 		/*!
 		 * Rewinds the file position by one character, which means that
 		 * the next time readChar() is called, nothing is read and the
@@ -92,6 +104,9 @@ class LIB_EXPORT PgnFile
 		
 		/*! Returns the chess variant of the PGN game/collection. */
 		Chess::Variant variant() const;
+
+		/*! Sets the chess variant to \a variant. */
+		void setVariant(Chess::Variant variant);
 		
 	private:
 		QFile m_file;
