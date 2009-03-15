@@ -549,16 +549,15 @@ Result Board::result()
 int Board::repeatCount() const
 {
 	int repeatCount = 0;
-
-	Q_ASSERT(m_history.size() >= m_reversibleMoveCount);
+	int n = qMin(m_history.size(), m_reversibleMoveCount);
 
 	// If the num. of reversible moves in a row is less than 4, then
 	// there's no way we could already have a repetition.
-	if (m_reversibleMoveCount < 4)
+	if (n < 4)
 		return 0;
 
 	int firstIndex = m_history.size() - 1;
-	int lastIndex = firstIndex - m_reversibleMoveCount;
+	int lastIndex = firstIndex - n;
 	for (int i = firstIndex; i > lastIndex; i--)
 	{
 		if (m_history[i].key == m_key)
