@@ -28,6 +28,10 @@ win32 : debug {
     CONFIG += console
 }
 
+mac {
+    CONFIG -= app_bundle
+}
+
 QT -= gui
 
 # Code
