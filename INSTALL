@@ -27,6 +27,8 @@ And to build the source:
 
     $ nmake (Visual C++)
 
+To build on a Macintosh, add "-spec macx-g++" to the qmake command.
+
 Manual page is available but you have to built it separately. Building it
 requires asciidoc (http://www.methods.co.nz/asciidoc/).
 
