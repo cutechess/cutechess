@@ -17,7 +17,7 @@ To build the Makefile in release mode (default):
 
     or in debug mode:
 
-    $ qmake "CONFIG += debug"
+    $ qmake -config debug
 
 And to build the source:
 
