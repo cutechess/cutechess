@@ -84,7 +84,7 @@ struct EngineData
 	EngineSettings settings;
 };
 
-static void parseEngine(const QStringList& args, EngineData& data)
+static bool parseEngine(const QStringList& args, EngineData& data)
 {
 	foreach (const QString& arg, args)
 	{
@@ -108,7 +108,10 @@ static void parseEngine(const QStringList& args, EngineData& data)
 			else if (val == "xboard")
 				data.config.setProtocol(ChessEngine::Xboard);
 			else
-				qFatal("Usupported chess protocol: %s", qPrintable(val));
+			{
+				qWarning()<< "Usupported chess protocol:" << val;
+				return false;
+			}
 		}
 
 		// Time control (moves/time+increment)
@@ -116,14 +119,20 @@ static void parseEngine(const QStringList& args, EngineData& data)
 		{
 			TimeControl tc(val);
 			if (!tc.isValid())
-				qFatal("Invalid time control: %s", qPrintable(val));
+			{
+				qWarning() << "Invalid time control:" << val;
+				return false;
+			}
 			data.settings.setTimeControl(tc);
 		}
 		// Max. number of cpus the engine can use
 		else if (name == "cpus")
 		{
 			if (val.toInt() <= 0)
-				qFatal("Invalid cpu count: %s", qPrintable(val));
+			{
+				qWarning() << "Invalid cpu count:" << val;
+				return false;
+			}
 			data.settings.setConcurrency(val.toInt());
 		}
 		// Path to endgame bitbases
@@ -136,6 +145,8 @@ static void parseEngine(const QStringList& args, EngineData& data)
 		else if (name.startsWith("uci/"))
 			data.settings.addUciSetting(name.section('/', 1), val);
 	}
+
+	return true;
 }
 
 static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
@@ -145,20 +156,21 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 	EngineData fcp;
 	EngineData scp;
+	bool ok = false;
 
 	foreach (const CmdOption& opt, options)
 	{
 		// First chess program
 		if (opt.name == "-fcp")
-			parseEngine(opt.args, fcp);
+			ok = parseEngine(opt.args, fcp);
 		// Second chess program
 		else if (opt.name == "-scp")
-			parseEngine(opt.args, scp);
+			ok = parseEngine(opt.args, scp);
 		// The engine options apply to both engines
 		else if (opt.name == "-both")
 		{
-			parseEngine(opt.args, fcp);
-			parseEngine(opt.args, scp);
+			ok = (parseEngine(opt.args, fcp) &&
+			      parseEngine(opt.args, scp));
 		}
 		// Chess variant (default: standard chess)
 		else if (opt.name == "-variant")
@@ -191,7 +203,17 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		else if (opt.name == "-site")
 			match->setSite(opt.value);
 		else
-			qFatal("Invalid argument: %s", qPrintable(opt.name));
+		{
+			qWarning() << "Invalid argument:" << opt.name;
+			ok = false;
+			break;
+		}
+	}
+
+	if (!ok)
+	{
+		delete match;
+		return 0;
 	}
 
 	match->addEngine(fcp.config, fcp.settings);
@@ -270,6 +292,8 @@ int main(int argc, char* argv[])
 	}
 
 	EngineMatch* match = parseMatch(arguments, &app);
+	if (match == 0)
+		return 1;
 	QObject::connect(match, SIGNAL(finished()), &app, SLOT(quit()));
 
 	if (!match->initialize())
