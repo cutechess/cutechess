@@ -68,12 +68,6 @@ MainWindow::MainWindow()
 	readSettings();
 }
 
-void MainWindow::closeEvent(QCloseEvent* event)
-{
-	writeSettings();
-	event->accept();
-}
-
 void MainWindow::createActions()
 {
 	m_newGameAct = new QAction(tr("&New game..."), this);
@@ -142,24 +136,6 @@ void MainWindow::createDockWindows()
 	engineDebugDock->setWidget(m_engineDebugTextEdit);
 
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
-}
-
-void MainWindow::writeSettings()
-{
-	QSettings settings;
-
-	const QList<EngineConfiguration> engines = m_engineConfigurations->configurations();
-
-	settings.beginWriteArray("engines");
-	for (int i = 0; i < engines.size(); i++)
-	{
-		settings.setArrayIndex(i);
-		settings.setValue("name", engines.at(i).name());
-		settings.setValue("command", engines.at(i).command());
-		settings.setValue("working_directory", engines.at(i).workingDirectory());
-		settings.setValue("protocol", engines.at(i).protocol());
-	}
-	settings.endArray();
 }
 
 void MainWindow::readSettings()
@@ -281,7 +257,28 @@ void MainWindow::manageEngines()
 		m_engineConfigurations->configurations();
 
 	EngineManagementDialog dlg(m_engineConfigurations, this);
-	if (dlg.exec() != QDialog::Accepted)
+
+	if (dlg.exec() == QDialog::Accepted)
+	{
+		QSettings settings;
+
+		const QList<EngineConfiguration> engines = m_engineConfigurations->configurations();
+
+		settings.beginWriteArray("engines");
+		for (int i = 0; i < engines.size(); i++)
+		{
+			settings.setArrayIndex(i);
+			settings.setValue("name", engines.at(i).name());
+			settings.setValue("command", engines.at(i).command());
+			settings.setValue("working_directory", engines.at(i).workingDirectory());
+			settings.setValue("protocol", engines.at(i).protocol());
+		}
+		settings.endArray();
+
+		// Make sure that the settings are flushed to disk now
+		settings.sync();
+	}
+	else
 	{
 		// Release the engine configurations model and use
 		// the old configurations as base for the new model
