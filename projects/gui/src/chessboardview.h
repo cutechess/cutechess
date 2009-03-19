@@ -18,38 +18,44 @@
 #ifndef CHESSBOARDVIEW_H
 #define CHESSBOARDVIEW_H
 
-#include <QGraphicsView>
+#include <QAbstractItemView>
+class QSvgRenderer;
 
-class QResizeEvent;
-
-/*!
- * \brief The ChessboardView class provides correct resizing of the visual
- * chessboard.
- *
- * %ChessboardView doesn't add any extra funtionality compared to
- * \e QGraphicsView except correct resizing. Correct resizing meaning:
- *
- * - The visual chessboard is fit in to the view and scaled correctly when
- *   the view resizes.
- *
- * - The visual chessboard is scaled correctly when expanding or shrinking
- *   a dock widget.
-*/
-class ChessboardView : public QGraphicsView
+class ChessboardView : public QAbstractItemView
 {
+	Q_OBJECT
+
 	public:
-		/*!
-		 * Constructs a ChessboardView.
-		*/
 		ChessboardView(QWidget* parent = 0);
+		QModelIndex indexAt(const QPoint& point) const;
+		void scrollTo(const QModelIndex& index, ScrollHint hint = EnsureVisible);
+		QRect visualRect(const QModelIndex& index) const;
+
+		void setLightSquareColor(const QColor& color);
+		void setDarkSquareColor(const QColor& color);
+
+		QColor lightSquareColor() const;
+		QColor darkSquareColor() const;
 
 	protected:
-		/*!
-		 * Fired after viewport has been given a new geometry.
-		*/
+		bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event);
+		void paintEvent(QPaintEvent* event);
+		bool isIndexHidden(const QModelIndex& index) const;
+		int horizontalOffset() const;
+		int verticalOffset() const;
+		QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers);
+		void setSelection(const QRect& rect, QItemSelectionModel::SelectionFlags flags);
+		QRegion visualRegionForSelection(const QItemSelection& selection) const;
 		void resizeEvent(QResizeEvent* event);
 
+	private:
+		int m_squareSize;
+		int m_horizontalPadding;
+		int m_verticalPadding;
+		QColor m_lightSquareColor;
+		QColor m_darkSquareColor;
+		QRect m_squaresRect;
+		QSvgRenderer* m_pieceRenderer;
 };
 
 #endif // CHESSBOARDVIEW_H
-

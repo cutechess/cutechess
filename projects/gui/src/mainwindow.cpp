@@ -24,8 +24,8 @@
 #include <enginefactory.h>
 
 #include "mainwindow.h"
-#include "graphicschessboarditem.h"
 #include "chessboardview.h"
+#include "chessboardmodel.h"
 #include "newgamedlg.h"
 #include "chessclock.h"
 #include "engineconfigurationmodel.h"
@@ -40,17 +40,13 @@ MainWindow::MainWindow()
 		clockLayout->addWidget(m_chessClock[i]);
 	}
 
-	m_chessboardView = new ChessboardView;
-	m_chessboardScene = new QGraphicsScene(m_chessboardView);
-	m_chessboardView->setScene(m_chessboardScene);
-	m_chessboardView->setMinimumSize(400, 400);
+	m_boardModel = new ChessboardModel(this);
+	m_chessboardView = new ChessboardView(this);
+	m_chessboardView->setModel(m_boardModel);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
 	mainLayout->addWidget(m_chessboardView);
-
-	m_visualChessboard = new GraphicsChessboardItem();
-	m_chessboardScene->addItem(m_visualChessboard);
 
 	QWidget* mainWidget = new QWidget(this);
 	mainWidget->setLayout(mainLayout);
@@ -202,9 +198,6 @@ void MainWindow::newGame()
 
 	ChessGame* chessgame = new ChessGame(Chess::Variant::Standard, this);
 
-	connect(chessgame, SIGNAL(moveMade(const Chess::Move&)),
-	        m_visualChessboard, SLOT(makeMove(const Chess::Move&)));
-
 	ChessPlayer* player[2] = { 0, 0 };
 
 	TimeControl tc;
@@ -230,6 +223,7 @@ void MainWindow::newGame()
 			m_engineDebugTextEdit, SLOT(append(const QString&)));
 	}
 
+	m_boardModel->setBoard(chessgame->board());
 	chessgame->start();
 }
 

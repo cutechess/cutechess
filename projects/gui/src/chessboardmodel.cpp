@@ -29,7 +29,10 @@ void ChessboardModel::setBoard(Chess::Board* board)
 	Q_ASSERT(board != 0);
 
 	if (m_board != 0)
+	{
 		disconnect(m_board);
+		m_board->disconnect(this);
+	}
 
 	m_board = board;
 	connect(m_board, SIGNAL(boardReset()), this, SLOT(boardReset()));
@@ -72,13 +75,44 @@ QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 		Chess::Square sq = { file, rank };
 		int piece = m_board->pieceAt(sq);
 
-		if (piece == Chess::NoPiece)
-			return QString();
-
-		if (piece == Chess::InvalidPiece)
+		if (piece == Chess::NoPiece || piece == Chess::InvalidPiece)
 			return QVariant();
 
-		return piece;
+		QString str;
+		if (piece > 0)
+			str = "w";
+		else
+			str = "b";
+		switch (qAbs(piece))
+		{
+		case Chess::Pawn:
+			str += "pawn";
+			break;
+		case Chess::Knight:
+			str += "knight";
+			break;
+		case Chess::Bishop:
+			str += "bishop";
+			break;
+		case Chess::Rook:
+			str += "rook";
+			break;
+		case Chess::Queen:
+			str += "queen";
+			break;
+		case Chess::King:
+			str += "king";
+			break;
+		case Chess::Archbishop:
+			str += "archbishop";
+			break;
+		case Chess::Chancellor:
+			str += "chancellor";
+			break;
+		default:
+			return QVariant();
+		}
+		return str;
 	}
 
 	return QVariant();

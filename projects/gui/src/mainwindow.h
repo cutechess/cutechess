@@ -24,8 +24,7 @@ class QMenu;
 class QAction;
 class QTextEdit;
 class ChessboardView;
-class QGraphicsScene;
-class GraphicsChessboardItem;
+class ChessboardModel;
 class QProcess;
 class EngineConfigurationModel;
 class ChessClock;
@@ -60,8 +59,7 @@ class MainWindow : public QMainWindow
 		QMenu* m_debugMenu;
 
 		ChessboardView* m_chessboardView;
-		QGraphicsScene* m_chessboardScene;
-		GraphicsChessboardItem* m_visualChessboard;
+		ChessboardModel* m_boardModel;
 		ChessClock* m_chessClock[2];
 
 		EngineConfigurationModel* m_engineConfigurations;
@@ -77,4 +75,3 @@ class MainWindow : public QMainWindow
 };
 
 #endif // MAINWINDOW_H
-
