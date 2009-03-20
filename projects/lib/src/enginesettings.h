@@ -19,6 +19,7 @@
 #define ENGINESETTINGS_H
 
 #include <QString>
+#include <QStringList>
 #include <QVariant>
 #include <QVector>
 #include "timecontrol.h"
@@ -52,6 +53,8 @@ class LIB_EXPORT EngineSettings
 		 */
 		EngineSettings();
 
+		/*! Command line arguments. */
+		const QStringList& arguments() const;
 		/*! The number of cpus the engine should use. */
 		int concurrency() const;
 		/*! Path to endgame bitbases (eg. Scorpio format). */
@@ -66,6 +69,8 @@ class LIB_EXPORT EngineSettings
 		 */
 		const QVector<UciSetting>& uciSettings() const;
 
+		/*! Adds a new command line argument. */
+		void addArgument(const QString& argument);
 		/*! Sets the number of cpus to use. */
 		void setConcurrency(int concurrency);
 		/*! Sets the path to endgame bitbases. */
@@ -80,6 +85,7 @@ class LIB_EXPORT EngineSettings
 	private:
 		TimeControl m_timeControl;
 		int m_concurrency;
+		QStringList m_arguments;
 		QString m_egbbPath;
 		QString m_egtbPath;
 		QVector<UciSetting> m_uciSettings;

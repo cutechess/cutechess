@@ -88,12 +88,10 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 {
 	foreach (const QString& arg, args)
 	{
-		QStringList tmp = arg.split('=', QString::SkipEmptyParts);
-		if (tmp.size() != 2)
+		QString name = arg.section('=', 0, 0);
+		QString val = arg.section('=', 1);
+		if (name.isEmpty() || val.isEmpty())
 			continue;
-
-		const QString& name = tmp[0];
-		const QString& val = tmp[1];
 
 		if (name == "name")
 			data.config.setName(val);
@@ -101,6 +99,8 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 			data.config.setCommand(val);
 		else if (name == "dir")
 			data.config.setWorkingDirectory(val);
+		else if (name == "arg")
+			data.settings.addArgument(val);
 		else if (name == "proto")
 		{
 			if (val == "uci")
@@ -144,6 +144,11 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 		// Custom UCI option
 		else if (name.startsWith("uci/"))
 			data.settings.addUciSetting(name.section('/', 1), val);
+		else
+		{
+			qWarning() << "Invalid engine option:" << name;
+			return false;
+		}
 	}
 
 	return true;
@@ -160,17 +165,19 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 	foreach (const CmdOption& opt, options)
 	{
+		bool optOk = true;
+
 		// First chess program
 		if (opt.name == "-fcp")
-			ok = parseEngine(opt.args, fcp);
+			optOk = ok = parseEngine(opt.args, fcp);
 		// Second chess program
 		else if (opt.name == "-scp")
-			ok = parseEngine(opt.args, scp);
+			optOk = ok = parseEngine(opt.args, scp);
 		// The engine options apply to both engines
 		else if (opt.name == "-both")
 		{
-			ok = (parseEngine(opt.args, fcp) &&
-			      parseEngine(opt.args, scp));
+			optOk = ok = (parseEngine(opt.args, fcp) &&
+				      parseEngine(opt.args, scp));
 		}
 		// Chess variant (default: standard chess)
 		else if (opt.name == "-variant")
@@ -205,9 +212,11 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		else
 		{
 			qWarning() << "Invalid argument:" << opt.name;
-			ok = false;
-			break;
+			optOk = ok = false;
 		}
+
+		if (!optOk)
+			break;
 	}
 
 	if (!ok)
@@ -277,6 +286,7 @@ int main(int argc, char* argv[])
 			       "  name=<arg>		Set the name to <arg>\n"
 			       "  cmd=<arg>		Set the command to <arg>\n"
 			       "  dir=<arg>		Set the working directory to <arg>\n"
+			       "  arg=<arg>		Pass <arg> to the engine as a command line argument\n"
 			       "  proto=<arg>		Set the chess protocol to <arg>. Must be xboard or uci\n"
 			       "  tc=<arg>		Set the time control to <arg>. The format is\n"
 			       "			moves/time+increment, where 'moves' is the number of\n"

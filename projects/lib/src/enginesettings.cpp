@@ -22,6 +22,10 @@ EngineSettings::EngineSettings()
 {
 }
 
+const QStringList& EngineSettings::arguments() const
+{
+	return m_arguments;
+}
 
 int EngineSettings::concurrency() const
 {
@@ -46,6 +50,12 @@ TimeControl EngineSettings::timeControl() const
 const QVector<EngineSettings::UciSetting>& EngineSettings::uciSettings() const
 {
 	return m_uciSettings;
+}
+
+
+void EngineSettings::addArgument(const QString& argument)
+{
+	m_arguments.append(argument);
 }
 
 void EngineSettings::setConcurrency(int concurrency)

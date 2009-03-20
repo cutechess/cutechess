@@ -177,7 +177,7 @@ bool EngineMatch::initialize()
 			process->setWorkingDirectory(workDir);
 		}
 
-		process->start(config.command());
+		process->start(config.command(), it->settings.arguments());
 		bool ok = process->waitForStarted();
 
 		if (!workDir.isEmpty())
