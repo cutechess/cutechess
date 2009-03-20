@@ -71,15 +71,15 @@ void ChessboardView::paintEvent(QPaintEvent* event)
 
 	QPainter painter(viewport());
 
-	int columnCount = model()->columnCount(rootIndex());
-	int rowCount = model()->rowCount(rootIndex());
+	int columnCount = model()->columnCount();
+	int rowCount = model()->rowCount();
 
 	for (int row = 0; row < rowCount; row++)
 	{
 		for (int column = 0; column < columnCount; column++)
 		{
 			QBrush squareBrush;
-			QModelIndex index = model()->index(row, column, rootIndex());
+			QModelIndex index = model()->index(row, column);
 
 			if (selectionModel()->isSelected(index))
 				squareBrush.setStyle(Qt::Dense3Pattern);
@@ -163,30 +163,35 @@ QRegion ChessboardView::visualRegionForSelection(const QItemSelection& selection
 	return QRegion();
 }
 
-void ChessboardView::resizeEvent(QResizeEvent* event)
+void ChessboardView::resizeBoard(const QSize& size)
 {
-	QAbstractItemView::resizeEvent(event);
 	if (!model())
 		return;
 
-	int evWidth = event->size().width();
-	int evHeight = event->size().height();
-	int columnCount = model()->columnCount(rootIndex());
-	int rowCount = model()->rowCount(rootIndex());
-	m_squareSize = qMin(evWidth / columnCount, evHeight / rowCount);
+	int width = size.width();
+	int height = size.height();
+	int columnCount = model()->columnCount();
+	int rowCount = model()->rowCount();
+	m_squareSize = qMin(width / columnCount, height / rowCount);
 
 	m_squaresRect.setWidth(columnCount * m_squareSize);
 	m_squaresRect.setHeight(rowCount * m_squareSize);
 
-	if (evWidth > m_squaresRect.width())
-		m_squaresRect.setX((evWidth - m_squaresRect.width()) / 2);
+	if (width > m_squaresRect.width())
+		m_squaresRect.setX((width - m_squaresRect.width()) / 2);
 	else
 		m_squaresRect.setX(0);
 
-	if (evHeight > m_squaresRect.height())
-		m_squaresRect.setY((evHeight - m_squaresRect.height()) / 2);
+	if (height > m_squaresRect.height())
+		m_squaresRect.setY((height - m_squaresRect.height()) / 2);
 	else
 		m_squaresRect.setY(0);
+}
+
+void ChessboardView::resizeEvent(QResizeEvent* event)
+{
+	QAbstractItemView::resizeEvent(event);
+	resizeBoard(event->size());
 }
 
 void ChessboardView::setLightSquareColor(const QColor& color)
@@ -207,4 +212,10 @@ QColor ChessboardView::lightSquareColor() const
 QColor ChessboardView::darkSquareColor() const
 {
 	return m_darkSquareColor;
+}
+
+void ChessboardView::reset()
+{
+	resizeBoard(size());
+	QAbstractItemView::reset();
 }

@@ -37,6 +37,9 @@ class ChessboardView : public QAbstractItemView
 		QColor lightSquareColor() const;
 		QColor darkSquareColor() const;
 
+	public slots:
+		void reset();
+
 	protected:
 		bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event);
 		void paintEvent(QPaintEvent* event);
@@ -49,6 +52,8 @@ class ChessboardView : public QAbstractItemView
 		void resizeEvent(QResizeEvent* event);
 
 	private:
+		void resizeBoard(const QSize& size);
+
 		int m_squareSize;
 		int m_horizontalPadding;
 		int m_verticalPadding;

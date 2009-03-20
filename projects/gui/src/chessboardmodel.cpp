@@ -38,6 +38,8 @@ void ChessboardModel::setBoard(Chess::Board* board)
 	connect(m_board, SIGNAL(boardReset()), this, SLOT(boardReset()));
 	connect(m_board, SIGNAL(squareChanged(const Chess::Square&)),
 	        this, SLOT(squareChanged(const Chess::Square&)));
+
+	reset();
 }
 
 int ChessboardModel::rowCount(const QModelIndex& parent) const
