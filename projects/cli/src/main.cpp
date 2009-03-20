@@ -96,7 +96,14 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 		if (name == "name")
 			data.config.setName(val);
 		else if (name == "cmd")
+		{
+			if (val.contains(' '))
+			{
+				val.push_front('\"');
+				val.push_back('\"');
+			}
 			data.config.setCommand(val);
+		}
 		else if (name == "dir")
 			data.config.setWorkingDirectory(val);
 		else if (name == "arg")
