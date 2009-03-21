@@ -62,7 +62,9 @@ class LIB_EXPORT EngineSettings
 		/*! Path to endgame tablebases (eg. Nalimov format). */
 		QString egtbPath() const;
 		/*! The engine's time control. */
-		TimeControl timeControl() const;
+		const TimeControl& timeControl() const;
+		/*! The engine's time control. */
+		TimeControl& timeControl();
 		/*
 		 * A list of UCI settings.
 		 * \note Only settings supported by the engine are sent.

@@ -42,7 +42,12 @@ QString EngineSettings::egtbPath() const
 	return m_egtbPath;
 }
 
-TimeControl EngineSettings::timeControl() const
+const TimeControl& EngineSettings::timeControl() const
+{
+	return m_timeControl;
+}
+
+TimeControl& EngineSettings::timeControl()
 {
 	return m_timeControl;
 }

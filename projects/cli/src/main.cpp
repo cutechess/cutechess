@@ -130,7 +130,27 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				qWarning() << "Invalid time control:" << val;
 				return false;
 			}
+			tc.setMaxDepth(data.settings.timeControl().maxDepth());
+			tc.setNodeLimit(data.settings.timeControl().nodeLimit());
 			data.settings.setTimeControl(tc);
+		}
+		else if (name == "depth")
+		{
+			if (val.toInt() <= 0)
+			{
+				qWarning() << "Invalid depth limit:" << val;
+				return false;
+			}
+			data.settings.timeControl().setMaxDepth(val.toInt());
+		}
+		else if (name == "nodes")
+		{
+			if (val.toInt() <= 0)
+			{
+				qWarning() << "Invalid node limit:" << val;
+				return false;
+			}
+			data.settings.timeControl().setNodeLimit(val.toInt());
 		}
 		// Max. number of cpus the engine can use
 		else if (name == "cpus")
@@ -300,6 +320,8 @@ int main(int argc, char* argv[])
 			       "			moves per tc, 'time' is time per tc (either seconds or\n"
 			       "			minutes:seconds), and 'increment' is time increment\n"
 			       "			per move in seconds\n"
+			       "  depth=<arg>		Set the search depth limit to <arg>\n"
+			       "  nodes=<arg>		Set the node count limit to <arg>\n"
 			       "  cpus=<n>		Tell the engine to use a maximum of <n> cpus\n"
 			       "  egbbpath=<dir>	Set the path to endgame bitbases to <dir>\n"
 			       "  egtbpath=<dir>	Set the path to endgame tablebases to <dir>\n"
