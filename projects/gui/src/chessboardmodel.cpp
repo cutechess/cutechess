@@ -38,6 +38,8 @@ void ChessboardModel::setBoard(Chess::Board* board)
 	connect(m_board, SIGNAL(boardReset()), this, SLOT(boardReset()));
 	connect(m_board, SIGNAL(squareChanged(const Chess::Square&)),
 	        this, SLOT(squareChanged(const Chess::Square&)));
+	connect(m_board, SIGNAL(moveMade(const Chess::Square&, const Chess::Square&)),
+		this, SLOT(onMoveMade(const Chess::Square&, const Chess::Square&)));
 
 	reset();
 }
@@ -140,12 +142,21 @@ QVariant ChessboardModel::headerData(int section,
 	return QVariant();
 }
 
-void ChessboardModel::squareChanged(const Chess::Square& square)
+QModelIndex ChessboardModel::squareToIndex(const Chess::Square& square) const
 {
 	int row = (rowCount(QModelIndex()) - 1) - square.rank;
 	int column = square.file;
-	QModelIndex index = createIndex(row, column);
+	return createIndex(row, column);
+}
 
+void ChessboardModel::onMoveMade(const Chess::Square& source, const Chess::Square& target) const
+{
+	emit moveMade(squareToIndex(source), squareToIndex(target));
+}
+
+void ChessboardModel::squareChanged(const Chess::Square& square)
+{
+	QModelIndex index = squareToIndex(square);
 	emit dataChanged(index, index);
 }
 
@@ -153,4 +164,3 @@ void ChessboardModel::boardReset()
 {
 	reset();
 }
-

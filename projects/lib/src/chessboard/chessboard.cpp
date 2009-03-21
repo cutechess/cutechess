@@ -411,8 +411,12 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	
 	if (sendSignal)
 	{
-		emit squareChanged(chessSquare(source));
-		emit squareChanged(chessSquare(target));
+		Chess::Square sourceSq = chessSquare(source);
+		Chess::Square targetSq = chessSquare(target);
+		emit moveMade(sourceSq, targetSq);
+
+		emit squareChanged(sourceSq);
+		emit squareChanged(targetSq);
 		if (epTarget != 0)
 			emit squareChanged(chessSquare(epTarget));
 		if (rookSource != 0)

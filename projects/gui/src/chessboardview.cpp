@@ -16,6 +16,7 @@ ChessboardView::ChessboardView(QWidget* parent)
 
 	m_lightSquareColor = QColor("#ffce9e");
 	m_darkSquareColor = QColor("#d18b47");
+	m_moveColor = QColor(255, 255, 0, 127);
 
 	m_pieceRenderer = new QSvgRenderer(QString(":/default.svg"), this);
 }
@@ -95,6 +96,9 @@ void ChessboardView::paintEvent(QPaintEvent* event)
 
 			// Render the square
 			painter.fillRect(sqBounds, squareBrush);
+
+			if (index == m_sourceSquare || index == m_targetSquare)
+				painter.fillRect(sqBounds, m_moveColor);
 
 			QVariant data = model()->data(index);
 			if (data.isNull())
@@ -194,6 +198,18 @@ void ChessboardView::resizeEvent(QResizeEvent* event)
 	resizeBoard(event->size());
 }
 
+void ChessboardView::onMoveMade(const QModelIndex& source, const QModelIndex& target)
+{
+	QModelIndex oldSource = m_sourceSquare;
+	QModelIndex oldTarget = m_targetSquare;
+
+	m_sourceSquare = source;
+	m_targetSquare = target;
+
+	update(oldSource);
+	update(oldTarget);
+}
+
 void ChessboardView::setLightSquareColor(const QColor& color)
 {
 	m_lightSquareColor = color;
@@ -216,6 +232,8 @@ QColor ChessboardView::darkSquareColor() const
 
 void ChessboardView::reset()
 {
+	m_sourceSquare = QModelIndex();
+	m_targetSquare = QModelIndex();
 	resizeBoard(size());
 	QAbstractItemView::reset();
 }

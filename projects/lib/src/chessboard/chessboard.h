@@ -154,6 +154,8 @@ class LIB_EXPORT Board : public QObject
 		QVector<Move> legalMoves();
 	
 	signals:
+		void moveMade(const Chess::Square& source,
+			      const Chess::Square& target);
 		void squareChanged(const Chess::Square& square);
 		void boardReset();
 		

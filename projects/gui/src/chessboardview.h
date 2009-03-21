@@ -38,6 +38,7 @@ class ChessboardView : public QAbstractItemView
 		QColor darkSquareColor() const;
 
 	public slots:
+		void onMoveMade(const QModelIndex& source, const QModelIndex& target);
 		void reset();
 
 	protected:
@@ -59,8 +60,11 @@ class ChessboardView : public QAbstractItemView
 		int m_verticalPadding;
 		QColor m_lightSquareColor;
 		QColor m_darkSquareColor;
+		QColor m_moveColor;
 		QRect m_squaresRect;
 		QSvgRenderer* m_pieceRenderer;
+		QModelIndex m_sourceSquare;
+		QModelIndex m_targetSquare;
 };
 
 #endif // CHESSBOARDVIEW_H

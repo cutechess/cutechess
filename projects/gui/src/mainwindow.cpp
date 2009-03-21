@@ -43,6 +43,8 @@ MainWindow::MainWindow()
 	m_boardModel = new ChessboardModel(this);
 	m_chessboardView = new ChessboardView(this);
 	m_chessboardView->setModel(m_boardModel);
+	connect(m_boardModel, SIGNAL(moveMade(const QModelIndex&, const QModelIndex&)),
+		m_chessboardView, SLOT(onMoveMade(const QModelIndex&, const QModelIndex&)));
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);

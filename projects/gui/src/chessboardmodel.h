@@ -36,11 +36,19 @@ class ChessboardModel : public QAbstractTableModel
 		QVariant headerData(int section, Qt::Orientation orientation,
 		                    int role = Qt::DisplayRole) const;
 
+	signals:
+		void moveMade(const QModelIndex& source, const QModelIndex& target) const;
+
 	public slots:
 		void squareChanged(const Chess::Square& square);
 		void boardReset();
 
+	private slots:
+		void onMoveMade(const Chess::Square& source, const Chess::Square& target) const;
+
 	private:
+		QModelIndex squareToIndex(const Chess::Square& square) const;
+
 		Chess::Board* m_board;
 };
 
