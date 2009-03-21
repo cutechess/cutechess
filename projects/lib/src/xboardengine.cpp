@@ -162,6 +162,8 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 		command += QString(" ") + QString::number(m_timeControl.timeIncrement() / 1000);
 		write(command);
 	}
+	if (m_timeControl.maxDepth() > 0)
+		write(QString("sd ") + QString::number(m_timeControl.maxDepth()));
 
 	// Show thinking
 	write("post");

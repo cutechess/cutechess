@@ -101,6 +101,13 @@ class LIB_EXPORT TimeControl
 		 */
 		int movesLeft() const;
 
+		/*! Returns the maximum search depth. */
+		int maxDepth() const;
+
+		/*! Returns the node limit for each move. */
+		int nodeLimit() const;
+
+
 		/*! Sets the time per time control. */
 		void setTimePerTc(int timePerTc);
 
@@ -118,6 +125,13 @@ class LIB_EXPORT TimeControl
 		
 		/*! Sets the number of full moves left in the time control. */
 		void setMovesLeft(int movesLeft);
+
+		/*! Sets the maximum search depth. */
+		void setMaxDepth(int maxDepth);
+
+		/*! Sets the node limit. */
+		void setNodeLimit(int limit);
+
 		
 		/*! Start the timer. */
 		void startTimer();
@@ -135,6 +149,8 @@ class LIB_EXPORT TimeControl
 		int m_increment;
 		int m_timeLeft;
 		int m_movesLeft;
+		int m_maxDepth;
+		int m_nodeLimit;
 		int m_lastMoveTime;
 		QTime m_time;
 

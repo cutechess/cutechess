@@ -164,6 +164,10 @@ void UciEngine::go()
 			command += QString(" binc ") + QString::number(blackTc->timeIncrement());
 		if (m_timeControl.movesLeft() > 0)
 			command += QString(" movestogo ") + QString::number(m_timeControl.movesLeft());
+		if (m_timeControl.maxDepth() > 0)
+			command += QString(" depth ") + QString::number(m_timeControl.maxDepth());
+		if (m_timeControl.nodeLimit() > 0)
+			command += QString(" nodes ") + QString::number(m_timeControl.nodeLimit());
 	}
 	write(command);
 }
