@@ -37,8 +37,6 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		 */
 		XboardEngine(QIODevice* ioDevice, QObject* parent = 0);
 
-		~XboardEngine();
-
 		void newGame(Chess::Side side, ChessPlayer* opponent);
 		void endGame(Chess::Result result);
 		void go();
@@ -67,6 +65,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void setFeature(const QString& name, const QString& val);
 		void setOption(const QString& line, bool* feature);
 		void sendTimeLeft();
+		void finishGame();
 		
 		bool m_forceMode;
 		bool m_drawOnNextMove;
@@ -82,6 +81,8 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		bool m_ftTime;
 		bool m_ftUsermove;
 		
+		bool m_gotResult;
+		bool m_waitForMove;
 		int m_lastPing;
 		QTimer m_initTimer;
 		QVector<OptionCmd> m_optionBuffer;

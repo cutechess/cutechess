@@ -41,11 +41,6 @@ UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
 	m_isReady = false;
 }
 
-UciEngine::~UciEngine()
-{
-	//write("quit");
-}
-
 void UciEngine::sendPosition()
 {
 	QString str("position");
@@ -120,7 +115,7 @@ void UciEngine::endGame(Chess::Result result)
 {
 	if (m_timer.isActive())
 		write("stop");
-	ChessPlayer::endGame(result);
+	ChessEngine::endGame(result);
 }
 
 void UciEngine::makeMove(const Chess::Move& move)

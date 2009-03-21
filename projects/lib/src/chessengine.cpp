@@ -29,6 +29,7 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessPlayer(parent),
 	  m_notation(Chess::LongAlgebraic),
 	  m_initialized(false),
+	  m_finishingGame(false),
 	  m_id(m_count++),
 	  m_pingType(PingUnknown),
 	  m_ioDevice(ioDevice)
@@ -60,6 +61,15 @@ void ChessEngine::applySettings(const EngineSettings& settings)
 		setTimeControl(settings.timeControl());
 }
 
+void ChessEngine::endGame(Chess::Result result)
+{
+	ChessPlayer::endGame(result);
+
+	m_finishingGame = true;
+	if (m_isReady)
+		ping(PingUnknown);
+}
+
 bool ChessEngine::isHuman() const
 {
 	return false;
@@ -80,6 +90,7 @@ void ChessEngine::onDisconnect()
 void ChessEngine::ping(PingType type)
 {
 	Q_UNUSED(type);
+	m_finishingGame = false;
 	m_pingTimer.start(10000);
 }
 
@@ -94,7 +105,11 @@ void ChessEngine::pong()
 	if (m_pingType == PingMove)
 		startClock();
 	m_pingType = PingUnknown;
-	emit ready();
+
+	if (m_finishingGame)
+		ping(PingUnknown);
+	else
+		emit ready();
 }
 
 void ChessEngine::onPingTimeout()

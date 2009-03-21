@@ -67,6 +67,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		virtual ~ChessEngine();
 		virtual void newGame(Chess::Side side, ChessPlayer* opponent) = 0;
+		virtual void endGame(Chess::Result result);
 		virtual void go() = 0;
 		virtual void makeMove(const Chess::Move& move) = 0;
 		bool isHuman() const;
@@ -76,15 +77,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		
 		/*! Returns the engine's chess protocol. */
 		virtual Protocol protocol() const = 0;
-
-		/*!
-		 * Checks if the engine is still responding, and synchronizes
-		 * it with the GUI.
-		 */
-		virtual void ping(PingType type);
-
-		/*! Called when the engine responds to ping. */
-		void pong();
 
 		/*! Writes text data to the chess engine. */
 		void write(const QString& data);
@@ -108,6 +100,11 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Parses a line of input from the engine. */
 		virtual void parseLine(const QString& line) = 0;
 
+		/*!
+		 * Checks if the engine is still responding, and synchronizes
+		 * it with the GUI.
+		 */
+		virtual void ping(PingType type = PingUnknown);
 
 		/*!
 		 * The chess move notation the engine wants to use.
@@ -119,12 +116,15 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Is the engine initialized? */
 		bool m_initialized;
 
+		/*! Is the engine finishing a game? */
+		bool m_finishingGame;
+
 		/*! The ID number of the chess engine. */
 		int m_id;
 
 		/*! The number of active chess engines. */
 		static int m_count;
-		
+
 		/*! The last ping's type. */
 		PingType m_pingType;
 
@@ -132,6 +132,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		QTimer m_pingTimer;
 		
 	protected slots:
+		// Inherited from ChessPlayer
 		void onDisconnect();
 
 		/*! Reads input from the engine. */
@@ -139,6 +140,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		/*! Called when the engine becomes unresponsive. */
 		void onPingTimeout();
+
+		/*! Called when the engine responds to ping. */
+		void pong();
 
 		/*!
 		 * Flushes the write buffer.
@@ -150,7 +154,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 	private:
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
-
 };
 
 #endif // CHESSENGINE_H
