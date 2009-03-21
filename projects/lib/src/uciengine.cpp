@@ -153,21 +153,21 @@ void UciEngine::go()
 	
 	QString command = "go";
 	if (m_timeControl.timePerMove() > 0)
-		command += QString(" movetime ") + QString::number(m_timeControl.timePerMove());
+		command += QString(" movetime %1").arg(m_timeControl.timePerMove());
 	else
 	{
-		command += QString(" wtime ") + QString::number(whiteTc->timeLeft());
-		command += QString(" btime ") + QString::number(blackTc->timeLeft());
+		command += QString(" wtime %1").arg(whiteTc->timeLeft());
+		command += QString(" btime %1").arg(blackTc->timeLeft());
 		if (whiteTc->timeIncrement() > 0)
-			command += QString(" winc ") + QString::number(whiteTc->timeIncrement());
+			command += QString(" winc %1").arg(whiteTc->timeIncrement());
 		if (blackTc->timeIncrement() > 0)
-			command += QString(" binc ") + QString::number(blackTc->timeIncrement());
+			command += QString(" binc %1").arg(blackTc->timeIncrement());
 		if (m_timeControl.movesLeft() > 0)
-			command += QString(" movestogo ") + QString::number(m_timeControl.movesLeft());
+			command += QString(" movestogo %1").arg(m_timeControl.movesLeft());
 		if (m_timeControl.maxDepth() > 0)
-			command += QString(" depth ") + QString::number(m_timeControl.maxDepth());
+			command += QString(" depth %1").arg(m_timeControl.maxDepth());
 		if (m_timeControl.nodeLimit() > 0)
-			command += QString(" nodes ") + QString::number(m_timeControl.nodeLimit());
+			command += QString(" nodes %1").arg(m_timeControl.nodeLimit());
 	}
 	write(command);
 }
@@ -372,8 +372,9 @@ void UciEngine::setOption(const UciOption* option, const QVariant& value)
 		return;
 	}
 	
-	write(QString("setoption name ") + option->name() +
-	      QString(" value ") + value.toString());
+	write(QString("setoption name %1 value %2")
+	      .arg(option->name())
+	      .arg(value.toString()));
 }
 
 void UciEngine::setOption(const QString& name, const QVariant& value)

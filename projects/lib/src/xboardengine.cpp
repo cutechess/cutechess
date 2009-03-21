@@ -32,7 +32,7 @@ static QString msToXboardTime(int ms)
 
 	QString number = QString::number(sec / 60);
 	if (sec % 60 != 0)
-		number += QString(":") + QString::number(sec % 60);
+		number += QString(":%1").arg(sec % 60);
 	
 	return number;
 }
@@ -153,17 +153,15 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	
 	// Send the time controls
 	if (m_timeControl.timePerMove() > 0)
-		write(QString("st ") + QString::number(m_timeControl.timePerMove() / 1000));
+		write(QString("st %1").arg(m_timeControl.timePerMove() / 1000));
 	else
-	{
-		QString command = "level";
-		command += QString(" ") + QString::number(m_timeControl.movesPerTc());
-		command += QString(" ") + msToXboardTime(m_timeControl.timePerTc());
-		command += QString(" ") + QString::number(m_timeControl.timeIncrement() / 1000);
-		write(command);
-	}
+		write(QString("level %1 %2 %3")
+		      .arg(m_timeControl.movesPerTc())
+		      .arg(msToXboardTime(m_timeControl.timePerTc()))
+		      .arg(m_timeControl.timeIncrement() / 1000));
+
 	if (m_timeControl.maxDepth() > 0)
-		write(QString("sd ") + QString::number(m_timeControl.maxDepth()));
+		write(QString("sd %1").arg(m_timeControl.maxDepth()));
 
 	// Show thinking
 	write("post");
@@ -177,7 +175,7 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	{
 		if (!m_opponent->isHuman())
 			write("computer");
-		write(QString("name ") + m_opponent->name());
+		write("name " + m_opponent->name());
 	}
 }
 
@@ -201,8 +199,7 @@ void XboardEngine::sendTimeLeft()
 	if (ocsLeft < 0)
 		ocsLeft = 0;
 
-	write(QString("time ") + QString::number(csLeft) +
-	      QString("\notim ") + QString::number(ocsLeft));
+	write(QString("time %1\notim %2").arg(csLeft).arg(ocsLeft));
 }
 
 void XboardEngine::makeMove(const Chess::Move& move)
@@ -218,7 +215,7 @@ void XboardEngine::makeMove(const Chess::Move& move)
 	
 	QString moveString = m_chessboard->moveString(move, m_notation);
 	if (m_ftUsermove)
-		write(QString("usermove ") + moveString);
+		write("usermove " + moveString);
 	else
 		write(moveString);
 }
@@ -250,7 +247,7 @@ void XboardEngine::ping(ChessEngine::PingType type)
 		// later send the number back at us.
 		m_pingType = type;
 		m_lastPing = (qrand() % 32) + 1;
-		write(QString("ping ") + QString::number(m_lastPing));
+		write(QString("ping %1").arg(m_lastPing));
 		m_isReady = false;
 		ChessEngine::ping(type);
 	}
@@ -315,11 +312,11 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	}
 	else
 	{
-		write(QString("rejected ") + name);
+		write("rejected " + name);
 		return;
 	}
 	
-	write(QString("accepted ") + name);
+	write("accepted " + name);
 }
 
 void XboardEngine::parseLine(const QString& line)
