@@ -222,6 +222,8 @@ void UciEngine::parseInfo(const QString& line)
 				if (attr2[0] == "cp")
 				{
 					score = attr2[1].toInt();
+					if (m_whiteEvalPov && side() == Chess::Black)
+						score = -score;
 					hasScore = true;
 				}
 				else if (attr2[0] == "lowerbound"

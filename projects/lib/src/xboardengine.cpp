@@ -464,7 +464,11 @@ void XboardEngine::parseLine(const QString& line)
 
 		int eval = args.section(' ', 0, 0).toInt(&ok);
 		if (ok)
+		{
+			if (m_whiteEvalPov && side() == Chess::Black)
+				eval = -eval;
 			m_eval.setScore(eval);
+		}
 
 		int ms = args.section(' ', 1, 1).toInt(&ok);
 		if (ok)

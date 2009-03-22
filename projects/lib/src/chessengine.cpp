@@ -30,6 +30,7 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	  m_notation(Chess::LongAlgebraic),
 	  m_initialized(false),
 	  m_finishingGame(false),
+	  m_whiteEvalPov(false),
 	  m_id(m_count++),
 	  m_pingType(PingUnknown),
 	  m_ioDevice(ioDevice)
@@ -59,6 +60,7 @@ void ChessEngine::applySettings(const EngineSettings& settings)
 		setEgbbPath(settings.egtbPath());
 	if (settings.timeControl().isValid())
 		setTimeControl(settings.timeControl());
+	m_whiteEvalPov = settings.whiteEvalPov();
 }
 
 void ChessEngine::endGame(Chess::Result result)

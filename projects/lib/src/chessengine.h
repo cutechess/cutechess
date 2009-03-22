@@ -119,6 +119,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Is the engine finishing a game? */
 		bool m_finishingGame;
 
+		/*! Are evaluation scores from white's point of view? */
+		bool m_whiteEvalPov;
+
 		/*! The ID number of the chess engine. */
 		int m_id;
 

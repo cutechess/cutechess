@@ -90,7 +90,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 	{
 		QString name = arg.section('=', 0, 0);
 		QString val = arg.section('=', 1);
-		if (name.isEmpty() || val.isEmpty())
+		if (name.isEmpty())
 			continue;
 
 		if (name == "name")
@@ -133,6 +133,10 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 			tc.setMaxDepth(data.settings.timeControl().maxDepth());
 			tc.setNodeLimit(data.settings.timeControl().nodeLimit());
 			data.settings.setTimeControl(tc);
+		}
+		else if (name == "invertscores")
+		{
+			data.settings.setWhiteEvalPov(true);
 		}
 		else if (name == "depth")
 		{
@@ -320,6 +324,7 @@ int main(int argc, char* argv[])
 			       "			moves per tc, 'time' is time per tc (either seconds or\n"
 			       "			minutes:seconds), and 'increment' is time increment\n"
 			       "			per move in seconds\n"
+			       "  invertscores		Inverts the engine's scores when it plays black\n"
 			       "  depth=<arg>		Set the search depth limit to <arg>\n"
 			       "  nodes=<arg>		Set the node count limit to <arg>\n"
 			       "  cpus=<n>		Tell the engine to use a maximum of <n> cpus\n"

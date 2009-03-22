@@ -18,7 +18,8 @@
 #include "enginesettings.h"
 
 EngineSettings::EngineSettings()
-	: m_concurrency(0)
+	: m_concurrency(0),
+	  m_whiteEvalPov(false)
 {
 }
 
@@ -57,10 +58,21 @@ const QVector<EngineSettings::UciSetting>& EngineSettings::uciSettings() const
 	return m_uciSettings;
 }
 
+bool EngineSettings::whiteEvalPov() const
+{
+	return m_whiteEvalPov;
+}
+
 
 void EngineSettings::addArgument(const QString& argument)
 {
 	m_arguments.append(argument);
+}
+
+void EngineSettings::addUciSetting(const QString& name, const QVariant& value)
+{
+	UciSetting setting = {name, value};
+	m_uciSettings.append(setting);
 }
 
 void EngineSettings::setConcurrency(int concurrency)
@@ -84,8 +96,7 @@ void EngineSettings::setTimeControl(const TimeControl& timeControl)
 	m_timeControl = timeControl;
 }
 
-void EngineSettings::addUciSetting(const QString& name, const QVariant& value)
+void EngineSettings::setWhiteEvalPov(bool whiteEvalPov)
 {
-	UciSetting setting = {name, value};
-	m_uciSettings.append(setting);
+	m_whiteEvalPov = whiteEvalPov;
 }

@@ -70,9 +70,13 @@ class LIB_EXPORT EngineSettings
 		 * \note Only settings supported by the engine are sent.
 		 */
 		const QVector<UciSetting>& uciSettings() const;
+		/*! Returns true if evaluation is from white's perspective. */
+		bool whiteEvalPov() const;
 
 		/*! Adds a new command line argument. */
 		void addArgument(const QString& argument);
+		/*! Adds a new UCI setting. */
+		void addUciSetting(const QString& name, const QVariant& value);
 		/*! Sets the number of cpus to use. */
 		void setConcurrency(int concurrency);
 		/*! Sets the path to endgame bitbases. */
@@ -81,8 +85,8 @@ class LIB_EXPORT EngineSettings
 		void setEgtbPath(const QString& path);
 		/*! Sets the time control. */
 		void setTimeControl(const TimeControl& timeControl);
-		/*! Adds a new UCI setting. */
-		void addUciSetting(const QString& name, const QVariant& value);
+		/*! Sets white evaluation point of view. */
+		void setWhiteEvalPov(bool whiteEvalPov);
 
 	private:
 		TimeControl m_timeControl;
@@ -91,6 +95,7 @@ class LIB_EXPORT EngineSettings
 		QString m_egbbPath;
 		QString m_egtbPath;
 		QVector<UciSetting> m_uciSettings;
+		bool m_whiteEvalPov;
 };
 
 #endif // ENGINESETTINGS_H
