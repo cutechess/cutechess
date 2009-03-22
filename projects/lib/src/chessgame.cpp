@@ -26,8 +26,16 @@
 ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 	: QObject(parent),
 	  PgnGame(variant),
-	  m_gameInProgress(false)
+	  m_gameInProgress(false),
+	  m_drawMoveNum(0),
+	  m_drawScore(0),
+	  m_drawScoreCount(0),
+	  m_resignMoveCount(0),
+	  m_resignScore(0)
 {
+	m_resignScoreCount[Chess::White] = 0;
+	m_resignScoreCount[Chess::Black] = 0;
+
 	m_player[Chess::White] = 0;
 	m_player[Chess::Black] = 0;
 	m_board = new Chess::Board(variant, this);
@@ -64,6 +72,45 @@ void ChessGame::endGame()
 
 	connect(this, SIGNAL(playersReady()), this, SIGNAL(gameEnded()), Qt::QueuedConnection);
 	syncPlayers(true);
+}
+
+void ChessGame::adjudication(const MoveEvaluation& eval)
+{
+	int side = !((int)m_board->sideToMove());
+	if (eval.depth() <= 0)
+	{
+		m_drawScoreCount = 0;
+		m_resignScoreCount[side] = 0;
+		return;
+	}
+
+	// Draw adjudication
+	if (m_drawMoveNum > 0)
+	{
+		if (qAbs(eval.score()) <= m_drawScore)
+			m_drawScoreCount++;
+		else
+			m_drawScoreCount = 0;
+		if (m_moves.size() / 2 >= m_drawMoveNum
+		&&  m_drawScoreCount >= 2)
+		{
+			m_result = Chess::Result(Chess::Result::DrawByAdjudication);
+			return;
+		}
+	}
+
+	// Resign adjudication
+	if (m_resignMoveCount > 0)
+	{
+		int& count = m_resignScoreCount[side];
+		if (eval.score() <= m_resignScore)
+			count++;
+		else
+			count = 0;
+		if (count >= m_resignMoveCount)
+			m_result = Chess::Result(Chess::Result::WinByAdjudication,
+						 (Chess::Side)!side);
+	}
 }
 
 void ChessGame::onMoveMade(const Chess::Move& move)
@@ -105,6 +152,9 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	m_board->makeMove(move, true);
 	
 	m_result = m_board->result();
+	if (m_result.isNone())
+		adjudication(eval);
+
 	if (m_result.isNone())
 		playerToMove()->go();
 	else
@@ -175,6 +225,18 @@ void ChessGame::setOpeningMoves(const QVector<Chess::Move>& moves)
 {
 	Q_ASSERT(!m_gameInProgress);
 	m_moves = moves;
+}
+
+void ChessGame::setDrawThreshold(int moveNumber, int score)
+{
+	m_drawMoveNum = moveNumber;
+	m_drawScore = score;
+}
+
+void ChessGame::setResignThreshold(int moveCount, int score)
+{
+	m_resignMoveCount = moveCount;
+	m_resignScore = score;
 }
 
 void ChessGame::setBoard()

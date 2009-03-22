@@ -42,11 +42,13 @@ class EngineMatch : public QObject
 		void setBookDepth(int bookDepth);
 		void setBookFile(const QString& filename);
 		void setDebugMode(bool debug);
+		void setDrawThreshold(int moveNumber, int score);
 		void setEvent(const QString& event);
 		void setGameCount(int gameCount);
 		void setPgnInput(const QString& filename);
 		void setPgnOutput(const QString& filename);
 		void setRepeatOpening(bool repeatOpening);
+		void setResignThreshold(int moveCount, int score);
 		void setSite(const QString& site);
 		void setVariant(Chess::Variant variant);
 		bool initialize();
@@ -78,6 +80,10 @@ class EngineMatch : public QObject
 		int m_drawCount;
 		int m_currentGame;
 		int m_pgnGamesRead;
+		int m_drawMoveNum;
+		int m_drawScore;
+		int m_resignMoveCount;
+		int m_resignScore;
 		EngineData* m_white;
 		EngineData* m_black;
 		OpeningBook* m_book;

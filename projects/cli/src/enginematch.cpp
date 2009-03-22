@@ -34,6 +34,10 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_drawCount(0),
 	  m_currentGame(0),
 	  m_pgnGamesRead(0),
+	  m_drawMoveNum(0),
+	  m_drawScore(0),
+	  m_resignMoveCount(0),
+	  m_resignScore(0),
 	  m_white(0),
 	  m_black(0),
 	  m_book(0),
@@ -99,6 +103,12 @@ void EngineMatch::setDebugMode(bool debug)
 	m_debug = debug;
 }
 
+void EngineMatch::setDrawThreshold(int moveNumber, int score)
+{
+	m_drawMoveNum = moveNumber;
+	m_drawScore = score;
+}
+
 void EngineMatch::setEvent(const QString& event)
 {
 	m_event = event;
@@ -123,6 +133,12 @@ void EngineMatch::setPgnOutput(const QString& filename)
 void EngineMatch::setRepeatOpening(bool repeatOpening)
 {
 	m_repeatOpening = repeatOpening;
+}
+
+void EngineMatch::setResignThreshold(int moveCount, int score)
+{
+	m_resignMoveCount = moveCount;
+	m_resignScore = score;
 }
 
 void EngineMatch::setSite(const QString& site)
@@ -284,6 +300,9 @@ void EngineMatch::start()
 	}
 	game->setPlayer(Chess::White, m_white->engine);
 	game->setPlayer(Chess::Black, m_black->engine);
+
+	game->setDrawThreshold(m_drawMoveNum, m_drawScore);
+	game->setResignThreshold(m_resignMoveCount, m_resignScore);
 
 	if (!m_fen.isEmpty() || !m_openingMoves.isEmpty())
 	{

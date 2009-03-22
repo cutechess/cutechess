@@ -28,6 +28,7 @@
 
 class ChessPlayer;
 class OpeningBook;
+class MoveEvaluation;
 
 class LIB_EXPORT ChessGame : public QObject, public PgnGame
 {
@@ -42,6 +43,8 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		bool setFenString(const QString& fen);
 		void setOpeningBook(const OpeningBook* book, int maxMoves = 1000);
 		void setOpeningMoves(const QVector<Chess::Move>& moves);
+		void setDrawThreshold(int moveNumber, int score);
+		void setResignThreshold(int moveCount, int score);
 
 	public slots:
 		void start();
@@ -58,6 +61,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		void syncPlayers(bool ignoreSender = false);
 
 	private:
+		void adjudication(const MoveEvaluation& eval);
 		Chess::Move bookMove(const OpeningBook* book);
 		void endGame();
 		ChessPlayer* playerToMove();
@@ -67,6 +71,12 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		Chess::Board* m_board;
 		ChessPlayer* m_player[2];
 		bool m_gameInProgress;
+		int m_drawMoveNum;
+		int m_drawScore;
+		int m_drawScoreCount;
+		int m_resignMoveCount;
+		int m_resignScore;
+		int m_resignScoreCount[2];
 };
 
 #endif // CHESSGAME_H

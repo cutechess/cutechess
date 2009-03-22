@@ -219,6 +219,32 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Maximum book depth in plies (halfmoves)
 		else if (opt.name == "-bookdepth")
 			match->setBookDepth(opt.value.toInt());
+		// Threshold for draw adjudication
+		else if (opt.name == "-draw")
+		{
+			if (opt.args.size() != 2)
+			{
+				qWarning() << "-draw needs two arguments";
+				ok = false;
+				break;
+			}
+			int moveNumber = opt.args[0].toInt();
+			int score = opt.args[1].toInt();
+			match->setDrawThreshold(moveNumber, score);
+		}
+		// Threshold for resign adjudication
+		else if (opt.name == "-resign")
+		{
+			if (opt.args.size() != 2)
+			{
+				qWarning() << "-resign needs two arguments";
+				ok = false;
+				break;
+			}
+			int moveCount = opt.args[0].toInt();
+			int score = opt.args[1].toInt();
+			match->setResignThreshold(moveCount, -score);
+		}
 		// Event name
 		else if (opt.name == "-event")
 			match->setEvent(opt.value);
@@ -305,6 +331,11 @@ int main(int argc, char* argv[])
 			       "			Fischerandom, Capablanca, Gothic or Caparandom\n"
 			       "  -book <file>		Use <file> (Polyglot book file) as the opening book\n"
 			       "  -bookdepth <n>	Set the maximum book depth (in plies) to <n>\n"
+			       "  -draw <n> <score>	Adjudicate the game as a draw if the score of both\n"
+			       "			engines is within <score> centipawns from zero after\n"
+			       "			<n> full moves have been played\n"
+			       "  -resign <n> <score>	Adjudicate the game as a loss if an engine's score is\n"
+			       "			at least <score> centipawns below zero\n"
 			       "  -event <arg>		Set the event name to <arg>\n"
 			       "  -games <n>		Play <n> games\n"
 			       "  -debug		Display all engine input and output\n"
