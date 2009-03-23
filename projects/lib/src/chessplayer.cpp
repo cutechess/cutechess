@@ -145,7 +145,10 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 	{
 		m_timer.stop();
 		if (m_timeControl.timeLeft() <= 0)
+		{
 			onTimeout();
+			return;
+		}
 	}
 	
 	emit moveMade(move);

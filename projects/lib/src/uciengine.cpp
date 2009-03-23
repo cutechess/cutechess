@@ -256,7 +256,10 @@ void UciEngine::parseLine(const QString& line)
 	if (command == "bestmove")
 	{
 		if (!m_gameInProgress)
+		{
+			pong();
 			return;
+		}
 
 		QString moveString = args.section(' ', 0, 0);
 		if (moveString.isEmpty())
