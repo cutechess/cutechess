@@ -71,6 +71,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		virtual void go() = 0;
 		virtual void makeMove(const Chess::Move& move) = 0;
 		bool isHuman() const;
+		bool supportsVariant(Chess::Variant variant) const;
 
 		/*! Applies \a settings on the engine. */
 		virtual void applySettings(const EngineSettings& settings);
@@ -133,6 +134,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		/*! Timer for detecting an unresponsive engine. */
 		QTimer m_pingTimer;
+
+		/*! Supported variants. */
+		QVector<Chess::Variant> m_variants;
 		
 	protected slots:
 		// Inherited from ChessPlayer

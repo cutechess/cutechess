@@ -132,11 +132,6 @@ void ChessPlayer::setBoard(Chess::Board* board)
 	m_chessboard = board;
 }
 
-bool ChessPlayer::supportsVariant(Chess::Variant variant) const
-{
-	return m_variants.contains(variant);
-}
-
 void ChessPlayer::emitMove(const Chess::Move& move)
 {
 	m_timeControl.update();

@@ -96,7 +96,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		void setBoard(Chess::Board* board);
 		
 		/*! Returns true if the player can play \a variant. */
-		bool supportsVariant(Chess::Variant variant) const;
+		virtual bool supportsVariant(Chess::Variant variant) const = 0;
 
 		/*! Returns true if the player is human. */
 		virtual bool isHuman() const = 0;
@@ -162,9 +162,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Timer for detecting when the player's time is up. */
 		QTimer m_timer;
 		
-		/*! Supported variants. */
-		QVector<Chess::Variant> m_variants;
-
 		/*! Is a game in progress? If not, all moves are rejected. */
 		bool m_gameInProgress;
 

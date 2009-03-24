@@ -77,6 +77,11 @@ bool ChessEngine::isHuman() const
 	return false;
 }
 
+bool ChessEngine::supportsVariant(Chess::Variant variant) const
+{
+	return m_variants.contains(variant);
+}
+
 void ChessEngine::onDisconnect()
 {
 	m_pingTimer.stop();
