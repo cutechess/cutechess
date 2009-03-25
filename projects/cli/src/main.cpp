@@ -70,7 +70,7 @@ static QList<CmdOption> getOptions(const QStringList& args)
 				option.args.append(*it);
 			--it;
 		}
-		if (option.args.size() == 1)
+		if (option.args.size() > 0)
 			option.value = option.args.at(0);
 		options.append(option);
 	}
@@ -259,7 +259,12 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			match->setPgnInput(opt.value);
 		// PGN file where the games should be saved
 		else if (opt.name == "-pgnout")
-			match->setPgnOutput(opt.value);
+		{
+			bool minimal = false;
+			if (opt.args.size() > 1 && opt.args[1] == "min")
+				minimal = true;
+			match->setPgnOutput(opt.value, minimal);
+		}
 		// Play every opening twice, just switch the players' sides
 		else if (opt.name == "-repeat")
 			match->setRepeatOpening(true);
@@ -340,7 +345,8 @@ int main(int argc, char* argv[])
 			       "  -games <n>		Play <n> games\n"
 			       "  -debug		Display all engine input and output\n"
 			       "  -pgnin <file>		Use <file> as the opening book in PGN format\n"
-			       "  -pgnout <file>	Save the games to <file> in PGN format\n"
+			       "  -pgnout <file> [min]	Save the games to <file> in PGN format. Use the 'min'\n"
+			       "			argument to save in a minimal PGN format.\n"
 			       "  -repeat		Play each opening twice so that both players get\n"
 			       "			to play it on both sides\n"
 			       "  -site <arg>		Set the site/location to <arg>\n\n"

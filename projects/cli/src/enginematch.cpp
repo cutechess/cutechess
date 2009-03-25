@@ -42,6 +42,7 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_black(0),
 	  m_book(0),
 	  m_debug(false),
+	  m_minimalPgnOut(false),
 	  m_repeatOpening(false),
 	  m_variant(Chess::Variant::Standard)
 {
@@ -125,9 +126,10 @@ void EngineMatch::setPgnInput(const QString& filename)
 		qWarning() << "Can't open PGN file:" << filename;
 }
 
-void EngineMatch::setPgnOutput(const QString& filename)
+void EngineMatch::setPgnOutput(const QString& filename, bool minimal)
 {
 	m_pgnOutput = filename;
+	m_minimalPgnOut = minimal;
 }
 
 void EngineMatch::setRepeatOpening(bool repeatOpening)
@@ -258,7 +260,7 @@ void EngineMatch::onGameEnded()
 		game->setEvent(m_event);
 		game->setSite(m_site);
 		game->setRound(m_currentGame + 1);
-		game->write(m_pgnOutput);
+		game->write(m_pgnOutput, m_minimalPgnOut);
 	}
 
 	delete game;
