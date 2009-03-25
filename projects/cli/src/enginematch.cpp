@@ -29,7 +29,7 @@
 
 EngineMatch::EngineMatch(QObject* parent)
 	: QObject(parent),
-	  m_bookDepth(30),
+	  m_bookDepth(1000),
 	  m_gameCount(1),
 	  m_drawCount(0),
 	  m_currentGame(0),
