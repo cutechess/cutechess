@@ -60,7 +60,7 @@ ChessPlayer* ChessGame::playerToWait()
 	return m_player[!((int)m_board->sideToMove())];
 }
 
-void ChessGame::endGame()
+void ChessGame::stop()
 {
 	if (!m_gameInProgress)
 		return;
@@ -158,7 +158,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	if (m_result.isNone())
 		playerToMove()->go();
 	else
-		endGame();
+		stop();
 	
 	emit moveMade(move);
 }
@@ -169,7 +169,7 @@ void ChessGame::onForfeit(Chess::Result result)
 		return;
 
 	m_result = result;
-	endGame();
+	stop();
 }
 
 Chess::Move ChessGame::bookMove(const OpeningBook* book)
@@ -313,7 +313,7 @@ void ChessGame::start()
 			qDebug() << player->name() << "doesn't support variant"
 				 << m_board->variant().toString();
 			m_result = Chess::Result(Chess::Result::ResultError);
-			endGame();
+			stop();
 			return;
 		}	
 	}

@@ -48,6 +48,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 
 	public slots:
 		void start();
+		void stop();
 		void onMoveMade(const Chess::Move& move);
 
 	signals:
@@ -63,7 +64,6 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 	private:
 		void adjudication(const MoveEvaluation& eval);
 		Chess::Move bookMove(const OpeningBook* book);
-		void endGame();
 		ChessPlayer* playerToMove();
 		ChessPlayer* playerToWait();
 		void setBoard();
