@@ -32,7 +32,7 @@ static QString msToXboardTime(int ms)
 
 	QString number = QString::number(sec / 60);
 	if (sec % 60 != 0)
-		number += QString(":%1").arg(sec % 60);
+		number += QString(":%1").arg(sec % 60, 2, 10, QChar('0'));
 	
 	return number;
 }
