@@ -300,7 +300,10 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	else if (name == "time")
 		m_ftTime = (val == "1");
 	else if (name == "myname")
-		m_name = val;
+	{
+		if (m_name == "XboardEngine")
+			m_name = val;
+	}
 	else if (name == "variants")
 	{
 		m_variants.clear();

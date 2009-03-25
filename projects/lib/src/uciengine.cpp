@@ -306,7 +306,7 @@ void UciEngine::parseLine(const QString& line)
 		QString tag = args.section(' ', 0, 0);
 		QString tagVal = args.section(' ', 1);
 		
-		if (tag == "name")
+		if (tag == "name" && m_name == "UciEngine")
 			m_name = tagVal;
 	}
 	else if (command == "registration")
