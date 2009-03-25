@@ -306,8 +306,6 @@ int main(int argc, char* argv[])
 {
 	signal(SIGTERM, sigintHandler);
 	signal(SIGINT, sigintHandler);
-	signal(SIGQUIT, sigintHandler);
-	signal(SIGHUP, sigintHandler);
 
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 	qInstallMsgHandler(msgOutput);
