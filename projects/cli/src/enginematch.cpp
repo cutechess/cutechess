@@ -44,6 +44,7 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_debug(false),
 	  m_minimalPgnOut(false),
 	  m_repeatOpening(false),
+	  m_game(0),
 	  m_variant(Chess::Variant::Standard)
 {
 }
@@ -52,6 +53,12 @@ EngineMatch::~EngineMatch()
 {
 	if (m_book != 0)
 		delete m_book;
+}
+
+void EngineMatch::stop()
+{
+	if (m_game != 0)
+		m_game->stop();
 }
 
 void EngineMatch::addEngine(const EngineConfiguration& engineConfig,
@@ -233,10 +240,7 @@ void EngineMatch::killEngines()
 
 void EngineMatch::onGameEnded()
 {
-	ChessGame* game = qobject_cast<ChessGame*>(QObject::sender());
-	Q_ASSERT(game != 0);
-
-	Chess::Result result = game->result();
+	Chess::Result result = m_game->result();
 	qDebug("Game %d ended: %s", m_currentGame + 1, qPrintable(result.toString()));
 	if (result.isDraw())
 		m_drawCount++;
@@ -257,13 +261,14 @@ void EngineMatch::onGameEnded()
 	}
 	if (!m_pgnOutput.isEmpty())
 	{
-		game->setEvent(m_event);
-		game->setSite(m_site);
-		game->setRound(m_currentGame + 1);
-		game->write(m_pgnOutput, m_minimalPgnOut);
+		m_game->setEvent(m_event);
+		m_game->setSite(m_site);
+		m_game->setRound(m_currentGame + 1);
+		m_game->write(m_pgnOutput, m_minimalPgnOut);
 	}
 
-	delete game;
+	delete m_game;
+	m_game = 0;
 
 	m_currentGame++;
 	qDebug("Score of %s vs %s: %d - %d - %d",
@@ -273,6 +278,7 @@ void EngineMatch::onGameEnded()
 
 	if (m_currentGame < m_gameCount
 	&&  result.code() != Chess::Result::ResultError
+	&&  result.code() != Chess::Result::NoResult
 	&&  result.code() != Chess::Result::WinByDisconnection)
 		start();
 	else
@@ -288,7 +294,7 @@ void EngineMatch::start()
 {
 	qDebug() << "Started game" << m_currentGame + 1 << "of" << m_gameCount;
 
-	ChessGame* game = new ChessGame(m_variant, this);
+	m_game = new ChessGame(m_variant, this);
 
 	if ((m_currentGame % 2) == 0)
 	{
@@ -300,39 +306,39 @@ void EngineMatch::start()
 		m_white = &m_engines[1];
 		m_black = &m_engines[0];
 	}
-	game->setPlayer(Chess::White, m_white->engine);
-	game->setPlayer(Chess::Black, m_black->engine);
+	m_game->setPlayer(Chess::White, m_white->engine);
+	m_game->setPlayer(Chess::Black, m_black->engine);
 
-	game->setDrawThreshold(m_drawMoveNum, m_drawScore);
-	game->setResignThreshold(m_resignMoveCount, m_resignScore);
+	m_game->setDrawThreshold(m_drawMoveNum, m_drawScore);
+	m_game->setResignThreshold(m_resignMoveCount, m_resignScore);
 
 	if (!m_fen.isEmpty() || !m_openingMoves.isEmpty())
 	{
 		if (!m_fen.isEmpty())
 		{
-			game->setFenString(m_fen);
+			m_game->setFenString(m_fen);
 			m_fen.clear();
 		}
 		if (!m_openingMoves.isEmpty())
 		{
-			game->setOpeningMoves(m_openingMoves);
+			m_game->setOpeningMoves(m_openingMoves);
 			m_openingMoves.clear();
 		}
 	}
 	else if (m_book != 0)
 	{
-		game->setOpeningBook(m_book, m_bookDepth);
+		m_game->setOpeningBook(m_book, m_bookDepth);
 	}
 	else if (m_pgnInput.isOpen())
 	{
-		bool ok = game->load(m_pgnInput, true, m_bookDepth);
+		bool ok = m_game->load(m_pgnInput, true, m_bookDepth);
 		if (ok)
 			m_pgnGamesRead++;
 		// Rewind the PGN input file
 		else if (m_pgnGamesRead > 0)
 		{
 			m_pgnInput.rewind();
-			ok = game->load(m_pgnInput, true, m_bookDepth);
+			ok = m_game->load(m_pgnInput, true, m_bookDepth);
 			Q_ASSERT(ok);
 			m_pgnGamesRead++;
 		}
@@ -340,12 +346,12 @@ void EngineMatch::start()
 
 	if (m_repeatOpening && (m_currentGame % 2) == 0)
 	{
-		m_fen = game->startingFen();
-		m_openingMoves = game->moves();
+		m_fen = m_game->startingFen();
+		m_openingMoves = m_game->moves();
 	}
 
-	connect(game, SIGNAL(gameEnded()), this, SLOT(onGameEnded()));
-	game->start();
+	connect(m_game, SIGNAL(gameEnded()), this, SLOT(onGameEnded()));
+	m_game->start();
 }
 
 void EngineMatch::print(const QString& msg)

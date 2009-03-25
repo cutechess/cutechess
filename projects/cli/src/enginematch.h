@@ -27,6 +27,7 @@
 #include <pgnfile.h>
 
 class QProcess;
+class ChessGame;
 class OpeningBook;
 
 class EngineMatch : public QObject
@@ -55,6 +56,7 @@ class EngineMatch : public QObject
 
 	public slots:
 		void start();
+		void stop();
 
 	signals:
 		void finished();
@@ -90,6 +92,7 @@ class EngineMatch : public QObject
 		bool m_debug;
 		bool m_minimalPgnOut;
 		bool m_repeatOpening;
+		ChessGame* m_game;
 		Chess::Variant m_variant;
 		QVector<EngineData> m_engines;
 		QVector<Chess::Move> m_openingMoves;

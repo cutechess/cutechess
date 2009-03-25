@@ -27,8 +27,10 @@
 #include <QTime>
 #include <QSettings>
 #include <QStringList>
+#include <csignal>
 #include "enginematch.h"
 
+static EngineMatch* match = 0;
 
 void msgOutput(QtMsgType type, const char *msg)
  {
@@ -47,6 +49,13 @@ void msgOutput(QtMsgType type, const char *msg)
 	 abort();
      }
  }
+
+void sigintHandler(int param)
+{
+	Q_UNUSED(param);
+	if (match != 0)
+		match->stop();
+}
 
 struct CmdOption
 {
@@ -295,6 +304,11 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 int main(int argc, char* argv[])
 {
+	signal(SIGTERM, sigintHandler);
+	signal(SIGINT, sigintHandler);
+	signal(SIGQUIT, sigintHandler);
+	signal(SIGHUP, sigintHandler);
+
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 	qInstallMsgHandler(msgOutput);
 	
@@ -372,7 +386,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	EngineMatch* match = parseMatch(arguments, &app);
+	match = parseMatch(arguments, &app);
 	if (match == 0)
 		return 1;
 	QObject::connect(match, SIGNAL(finished()), &app, SLOT(quit()));
