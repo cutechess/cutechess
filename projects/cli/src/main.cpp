@@ -379,7 +379,7 @@ int main(int argc, char* argv[])
 			       "  cpus=<n>		Tell the engine to use a maximum of <n> cpus\n"
 			       "  egbbpath=<dir>	Set the path to endgame bitbases to <dir>\n"
 			       "  egtbpath=<dir>	Set the path to endgame tablebases to <dir>\n"
-			       "  uci/<name> <arg>	Set UCI option <name> to value <arg>\n";
+			       "  uci/<name>=<arg>	Set UCI option <name> to value <arg>\n";
 			return 0;
 		}
 	}
