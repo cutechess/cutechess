@@ -240,8 +240,6 @@ bool UciOption::isValueOk(const QVariant& value) const
 			return false;
 		return true;
 	case String:
-		if (value.toString().isEmpty())
-			return false;
 		if (m_min != 0 || m_max != 0)
 			return false;
 		if (!m_var.isEmpty())
