@@ -60,6 +60,7 @@ class EngineMatch : public QObject
 
 	signals:
 		void finished();
+		void stopGame();
 
 	private slots:
 		void onGameEnded();

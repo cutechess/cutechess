@@ -57,8 +57,7 @@ EngineMatch::~EngineMatch()
 
 void EngineMatch::stop()
 {
-	if (m_game != 0)
-		m_game->stop();
+	emit stopGame();
 }
 
 void EngineMatch::addEngine(const EngineConfiguration& engineConfig,
@@ -295,6 +294,7 @@ void EngineMatch::start()
 	qDebug() << "Started game" << m_currentGame + 1 << "of" << m_gameCount;
 
 	m_game = new ChessGame(m_variant, this);
+	connect(this, SIGNAL(stopGame()), m_game, SLOT(stop()));
 
 	if ((m_currentGame % 2) == 0)
 	{
