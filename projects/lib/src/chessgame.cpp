@@ -26,6 +26,7 @@
 ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 	: QObject(parent),
 	  PgnGame(variant),
+	  m_gameEnded(false),
 	  m_gameInProgress(false),
 	  m_drawMoveNum(0),
 	  m_drawScore(0),
@@ -62,13 +63,24 @@ ChessPlayer* ChessGame::playerToWait()
 
 void ChessGame::stop()
 {
-	if (!m_gameInProgress)
+	if (m_gameEnded)
 		return;
+
+	m_gameEnded = true;
+	if (!m_gameInProgress)
+	{
+		m_result = Chess::Result();
+		emit gameEnded();
+		return;
+	}
 	
 	m_gameInProgress = false;
 
-	m_player[Chess::White]->endGame(m_result);
-	m_player[Chess::Black]->endGame(m_result);
+	for (int i = 0; i < 2; i++)
+	{
+		if (m_player[i]->isConnected())
+			m_player[i]->endGame(m_result);
+	}
 
 	connect(this, SIGNAL(playersReady()), this, SIGNAL(gameEnded()), Qt::QueuedConnection);
 	syncPlayers(true);
@@ -165,7 +177,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 
 void ChessGame::onForfeit(Chess::Result result)
 {
-	if (!m_gameInProgress)
+	if (m_gameEnded)
 		return;
 
 	m_result = result;
@@ -282,7 +294,7 @@ void ChessGame::syncPlayers(bool ignoreSender)
 	else
 	{
 		disconnect(sender, SIGNAL(ready()), this, SLOT(syncPlayers()));
-		if (!arePlayersReady())
+		if (!arePlayersReady() || !sender->isConnected())
 			return;
 	}
 
@@ -300,6 +312,8 @@ void ChessGame::start()
 		return;
 	}
 	disconnect(this, SIGNAL(playersReady()), this, SLOT(start()));
+	if (m_gameEnded)
+		return;
 	
 	m_gameInProgress = true;
 	for (int i = 0; i < 2; i++)

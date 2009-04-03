@@ -167,7 +167,7 @@ void ChessEngine::flushWriteBuffer()
 
 void ChessEngine::quit()
 {
-	if (!m_ioDevice->isOpen())
+	if (!m_ioDevice->isOpen() || !isConnected())
 		return;
 
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));

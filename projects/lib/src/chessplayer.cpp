@@ -26,10 +26,16 @@ ChessPlayer::ChessPlayer(QObject* parent)
 	  m_chessboard(0),
 	  m_opponent(0),
 	  m_gameInProgress(false),
+	  m_connected(true),
 	  m_side(Chess::NoSide)
 {
 	m_timer.setSingleShot(true);
 	connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
+}
+
+bool ChessPlayer::isConnected() const
+{
+	return m_connected;
 }
 
 bool ChessPlayer::isReady() const
@@ -151,6 +157,7 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 
 void ChessPlayer::onDisconnect()
 {
+	m_connected = false;
 	Chess::Result result(Chess::Result::WinByDisconnection, otherSide());
 	emit forfeit(result);
 }

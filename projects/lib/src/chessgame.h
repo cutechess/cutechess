@@ -70,6 +70,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		
 		Chess::Board* m_board;
 		ChessPlayer* m_player[2];
+		bool m_gameEnded;
 		bool m_gameInProgress;
 		int m_drawMoveNum;
 		int m_drawScore;

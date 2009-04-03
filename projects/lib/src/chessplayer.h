@@ -44,6 +44,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		virtual ~ChessPlayer() { }
 		
+		/*! Returns true if the player is connected. */
+		bool isConnected() const;
+
 		/*! Returns true if the player is ready to play. */
 		bool isReady() const;
 
@@ -169,6 +172,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		void onTimeout();
 
 	private:
+		bool m_connected;
 		Chess::Side m_side;
 };
 
