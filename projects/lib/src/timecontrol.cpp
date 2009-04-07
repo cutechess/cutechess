@@ -49,7 +49,7 @@ TimeControl::TimeControl(const QString& str)
 	// increment
 	if (list.size() == 2)
 	{
-		int inc = list[1].toInt() * 1000;
+		int inc = (int)(list[1].toDouble() * 1000);
 		if (inc >= 0)
 			setIncrement(inc);
 	}
@@ -72,9 +72,9 @@ TimeControl::TimeControl(const QString& str)
 	int ms = 0;
 	list = strTime.split(':');
 	if (list.size() == 2)
-		ms = list[0].toInt() * 60000 + list[1].toInt() * 1000;
+		ms = (int)(list[0].toDouble() * 60000 + list[1].toDouble() * 1000);
 	else
-		ms = list[0].toInt() * 1000;
+		ms = (int)(list[0].toDouble() * 1000);
 
 	if (ms > 0)
 		setTimePerTc(ms);
