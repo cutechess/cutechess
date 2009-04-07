@@ -196,8 +196,13 @@ bool EngineMatch::initialize()
 		{
 			// Make sure the path to the executable is resolved
 			// in the engine's working directory
-			QDir::setCurrent(workDir);
-			process->setWorkingDirectory(workDir);
+			if (!QDir::setCurrent(workDir))
+			{
+				qWarning() << "Invalid working directory:"
+					   << workDir;
+				return false;
+			}
+			process->setWorkingDirectory(QDir::currentPath());
 		}
 
 		process->start(config.command(), it->settings.arguments());
