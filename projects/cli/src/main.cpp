@@ -93,6 +93,44 @@ struct EngineData
 	EngineSettings settings;
 };
 
+static void listEngines()
+{
+	qDebug() << "Configured chess engines:";
+	QSettings settings;
+
+	int size = settings.beginReadArray("engines");
+	for (int i = 0; i < size; i++)
+	{
+		settings.setArrayIndex(i);
+		qDebug("  %s", qPrintable(settings.value("name").toString()));
+	}
+}
+
+static bool readEngineConfig(const QString& name, EngineConfiguration& config)
+{
+	QSettings settings;
+
+	int size = settings.beginReadArray("engines");
+	for (int i = 0; i < size; i++)
+	{
+		settings.setArrayIndex(i);
+
+		if (settings.value("name").toString() == name)
+		{
+			config.setName(settings.value("name").toString());
+			config.setCommand(settings.value("command").toString());
+			config.setWorkingDirectory(
+				settings.value("working_directory").toString());
+			config.setProtocol(ChessEngine::Protocol(
+				settings.value("protocol").toInt()));
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
 static bool parseEngine(const QStringList& args, EngineData& data)
 {
 	foreach (const QString& arg, args)
@@ -102,7 +140,15 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 		if (name.isEmpty())
 			continue;
 
-		if (name == "name")
+		if (name == "conf")
+		{
+			if (!readEngineConfig(val, data.config))
+			{
+				qWarning() << "Unknown engine configuration:" << val;
+				return false;
+			}
+		}
+		else if (name == "name")
 			data.config.setName(val);
 		else if (name == "cmd")
 		{
@@ -337,10 +383,18 @@ int main(int argc, char* argv[])
 
 			return 0;
 		}
+		else if (arg == "--engines")
+		{
+			listEngines();			
+			return 0;
+		}
 		else if (arg == "--help")
 		{
 			out << "Usage: cutechess-cli -fcp [eng_options] -scp [eng_options] [options]\n"
 			       "Options:\n"
+			       "  --help		Display this information\n"
+			       "  --version		Display the version number\n"
+			       "  --engines		Display a list of configured engines\n\n"
 			       "  -fcp <options>	Apply <options> to the first engine\n"
 			       "  -scp <options>	Apply <options> to the second engine\n"
 			       "  -both <options>	Apply <options> to both engines\n"
@@ -363,6 +417,8 @@ int main(int argc, char* argv[])
 			       "			to play it on both sides\n"
 			       "  -site <arg>		Set the site/location to <arg>\n\n"
 			       "Engine options:\n"
+			       "  conf=<arg>		Use an engine with the name <arg> from Cute Chess'\n"
+			       "			configuration file.\n"
 			       "  name=<arg>		Set the name to <arg>\n"
 			       "  cmd=<arg>		Set the command to <arg>\n"
 			       "  dir=<arg>		Set the working directory to <arg>\n"

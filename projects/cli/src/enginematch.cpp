@@ -205,7 +205,10 @@ bool EngineMatch::initialize()
 			process->setWorkingDirectory(QDir::currentPath());
 		}
 
-		process->start(config.command(), it->settings.arguments());
+		if (!it->settings.arguments().isEmpty())
+			process->start(config.command(), it->settings.arguments());
+		else
+			process->start(config.command());
 		bool ok = process->waitForStarted();
 
 		if (!workDir.isEmpty())
