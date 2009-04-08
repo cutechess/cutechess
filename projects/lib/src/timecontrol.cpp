@@ -112,10 +112,10 @@ QString TimeControl::toString() const
 	QString str;
 	if (m_movesPerTc > 0)
 		str += QString::number(m_movesPerTc) + "/";
-	str += QString::number(m_timePerTc / 1000);
+	str += QString::number((double)m_timePerTc / 1000);
 
 	if (m_increment > 0)
-		str += QString("+") + QString::number(m_increment / 1000);
+		str += QString("+") + QString::number((double)m_increment / 1000);
 	return str;
 }
 
