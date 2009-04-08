@@ -111,7 +111,7 @@ BookMove OpeningBook::move(quint64 key) const
 	BookMove move;
 	
 	// There can be multiple entries/moves with the same key.
-	// We need to find the all to choose the best one
+	// We need to find them all to choose the best one
 	QList<Entry> entries = m_map.values(key);
 	if (entries.size() == 0)
 		return move;
@@ -120,6 +120,8 @@ BookMove OpeningBook::move(quint64 key) const
 	int totalWeight = 0;
 	foreach (const Entry& entry, entries)
 		totalWeight += entry.weight;
+	if (totalWeight <= 0)
+		return move;
 	
 	// Pick a move randomly, with the highest-weighted move having
 	// the highest probability of getting being picked.
