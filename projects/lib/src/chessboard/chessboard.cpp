@@ -215,11 +215,16 @@ Move Board::moveFromBook(const BookMove& bookMove) const
 	int castlingSide = -1;
 	if ((m_squares[source] * m_sign) == King)
 	{
-		int diff = target - source;
-		if (diff == -2 || diff == -3)
-			castlingSide = QueenSide;
-		else if (diff == 2 || diff == 3)
-			castlingSide = KingSide;
+		for (int i = 0; i < 2; i++)
+		{
+			if ((target == m_castleTarget[m_side][i] && qAbs(target - source) != 1)
+			||  target == m_castlingRights.rookSquare[m_side][i])
+			{
+				target = m_castleTarget[m_side][i];
+				castlingSide = i;
+				break;
+			}
+		}
 	}
 	
 	return Move(source, target, bookMove.promotion(), castlingSide);
