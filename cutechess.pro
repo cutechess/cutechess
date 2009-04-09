@@ -9,3 +9,8 @@ QMAKE_EXTRA_TARGETS += doc-api
 unix:doc-man.commands += a2x -f manpage docs/cutechess.txt;
 unix:doc-man.commands += a2x -f manpage docs/cutechess-cli.txt
 unix:QMAKE_EXTRA_TARGETS += doc-man
+
+# html documentation
+unix:doc-html.commands += a2x -f xhtml docs/cutechess.txt;
+unix:doc-html.commands += a2x -f xhtml docs/cutechess-cli.txt
+unix:QMAKE_EXTRA_TARGETS += doc-html
