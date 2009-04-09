@@ -138,7 +138,7 @@ EXAMPLES
 control of 40 moves in 60 seconds.
 
 -----------
-$ cutechess-cli -both cmd=sloppy -tc 40/60 -games 10
+$ cutechess-cli -both cmd=sloppy tc=40/60 -games 10
 -----------
 
 * Use the 'name=Atak' parameter because it's a Xboard
