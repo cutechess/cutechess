@@ -122,9 +122,9 @@ BookMove OpeningBook::move(quint64 key) const
 		totalWeight += entry.weight;
 	if (totalWeight <= 0)
 		return move;
-	
+
 	// Pick a move randomly, with the highest-weighted move having
-	// the highest probability of getting being picked.
+	// the highest probability of getting picked.
 	int pick = qrand() % totalWeight;
 	int currentWeight = 0;
 	foreach (const Entry& entry, entries)
