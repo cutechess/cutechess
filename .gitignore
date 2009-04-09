@@ -10,8 +10,9 @@ cutechess-cli
 Makefile
 
 # asciidoc generated man page and xml document
-docs/man/cutechess*.6
-docs/man/cutechess*.6.xml
+docs/cutechess*.6
+docs/cutechess*.xml
+docs/cutechess*.html
 
 # doxygen generated api documents
 docs/api/html/
