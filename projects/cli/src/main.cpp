@@ -96,14 +96,19 @@ struct EngineData
 static void listEngines()
 {
 	qDebug() << "Configured chess engines:";
+	QStringList list;
 	QSettings settings;
 
 	int size = settings.beginReadArray("engines");
 	for (int i = 0; i < size; i++)
 	{
 		settings.setArrayIndex(i);
-		qDebug("  %s", qPrintable(settings.value("name").toString()));
+		list.append(settings.value("name").toString());
 	}
+
+	list.sort();
+	foreach (const QString& str, list)
+		qDebug("  %s", qPrintable(str));
 }
 
 static bool readEngineConfig(const QString& name, EngineConfiguration& config)
