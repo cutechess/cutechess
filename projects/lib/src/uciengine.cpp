@@ -290,7 +290,7 @@ void UciEngine::parseLine(const QString& line)
 			foreach (const OptionCmd& cmd, m_optionBuffer)
 			{
 				if (hasOption(cmd.name))
-					this->setOption(cmd.name, cmd.value);
+					setOption(cmd.name, cmd.value);
 			}
 			m_optionBuffer.clear();
 
