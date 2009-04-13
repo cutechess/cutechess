@@ -68,10 +68,8 @@ QVector<QStringList> UciOption::parse(const QString& str, QRegExp rx)
 		prevPos = pos;
 	}
 	if (prevPos >= str.length() - 1)
-	{
-		attrs.clear();
 		return attrs; // No value for the last attribute
-	}
+
 	// Add the last attribute to the vector
 	if (!item.isEmpty())
 	{
