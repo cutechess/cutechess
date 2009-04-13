@@ -399,6 +399,9 @@ void UciEngine::setOption(const QString& name, const QVariant& value)
 void UciEngine::setConcurrency(int limit)
 {
 	setOption("Threads", limit);
+	setOption("MaxThreads", limit);
+	setOption("Core Threads", limit);
+	setOption("Max CPUs", limit);
 }
 
 void UciEngine::setEgbbPath(const QString& path)
