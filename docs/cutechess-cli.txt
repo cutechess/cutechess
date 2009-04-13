@@ -127,7 +127,7 @@ egbbpath=<dir>::
 egtbpath=<dir>::
 	Set the path to endgame tablebases to <dir>.
 
-uci/<name>=<arg>::
+uci.<name>=<arg>::
 	Set UCI option <name> to value <arg>.
 
 
