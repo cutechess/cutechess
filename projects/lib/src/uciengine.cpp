@@ -108,6 +108,10 @@ void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	if (variant != Chess::Variant::Standard)
 		setOption(variantString(variant), "true");
 	write("ucinewgame");
+
+	if (hasOption("UCI_Opponent"))
+		setOption("UCI_Opponent", m_opponent->name());
+
 	sendPosition();
 }
 
