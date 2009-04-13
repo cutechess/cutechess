@@ -156,7 +156,8 @@ QString Board::sanMoveString(const Move& move)
 
 Move Board::moveFromLongAlgebraicString(const QString& str) const
 {
-	if (str.length() < 4)
+	int len = str.length();
+	if (len < 4)
 		return Move(0, 0);
 	
 	Square sourceSq = Notation::square(str.mid(0, 2));
@@ -165,8 +166,8 @@ Move Board::moveFromLongAlgebraicString(const QString& str) const
 		return Move(0, 0);
 	
 	int promotion = NoPiece;
-	if (str.length() > 4) {
-		promotion = Notation::pieceCode(str[4].toUpper());
+	if (len > 4) {
+		promotion = Notation::pieceCode(str[len - 1].toUpper());
 		if (promotion == NoPiece)
 			return Move(0, 0);
 	}
