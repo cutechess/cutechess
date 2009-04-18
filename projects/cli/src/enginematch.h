@@ -24,9 +24,9 @@
 #include <chessboard/variant.h>
 #include <engineconfiguration.h>
 #include <enginesettings.h>
+#include <engineprocess.h>
 #include <pgnfile.h>
 
-class QProcess;
 class ChessGame;
 class OpeningBook;
 
@@ -73,7 +73,7 @@ class EngineMatch : public QObject
 			EngineSettings settings;
 			int wins;
 			ChessEngine* engine;
-			QProcess* process;
+			EngineProcess* process;
 		};
 
 		void killEngines();

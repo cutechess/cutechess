@@ -20,7 +20,6 @@
 #include <pgngame.h>
 #include <enginefactory.h>
 #include <polyglotbook.h>
-#include <QProcess>
 #include <QFile>
 #include <QDataStream>
 #include <QDir>
@@ -185,7 +184,7 @@ bool EngineMatch::initialize()
 
 		it->wins = 0;
 
-		QProcess* process = new QProcess(this);
+		EngineProcess* process = new EngineProcess(this);
 		it->process = process;
 		const EngineConfiguration& config = it->config;
 		

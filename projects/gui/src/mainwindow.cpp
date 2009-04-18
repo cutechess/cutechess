@@ -22,6 +22,7 @@
 #include <timecontrol.h>
 #include <engineconfiguration.h>
 #include <enginefactory.h>
+#include <engineprocess.h>
 
 #include "mainwindow.h"
 #include "chessboardview.h"
@@ -176,13 +177,13 @@ void MainWindow::newGame()
 		m_engineConfigurations->configuration(dlg.selectedBlackEngine())
 	};
 	
-	QProcess* engineProcess[2] = { new QProcess(this), new QProcess(this) };
+	EngineProcess* engineProcess[2] = { new EngineProcess(this), new EngineProcess(this) };
 
 	// Set up working directories for the engines:
 	// If user hasn't set any directory, use temp
 	for (int i = 0; i < 2; i++)
 	{
-		QProcess* engine = engineProcess[i];
+		EngineProcess* engine = engineProcess[i];
 		const EngineConfiguration& config = engineConfig[i];
 
 		if (config.workingDirectory().isEmpty())

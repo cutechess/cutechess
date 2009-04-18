@@ -130,6 +130,9 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
 	
+	if (!m_gameInProgress)
+		return;
+
 	Q_ASSERT(m_gameInProgress);
 	Q_ASSERT(m_board->isLegalMove(move));
 	if (sender != playerToMove())

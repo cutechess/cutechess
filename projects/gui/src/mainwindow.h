@@ -25,7 +25,7 @@ class QAction;
 class QTextEdit;
 class ChessboardView;
 class ChessboardModel;
-class QProcess;
+class EngineProcess;
 class EngineConfigurationModel;
 class ChessClock;
 

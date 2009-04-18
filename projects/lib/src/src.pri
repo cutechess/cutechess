@@ -16,7 +16,8 @@ HEADERS += chessengine.h \
     ucioption.h \
     xboardengine.h \
     moveevaluation.h \
-    enginesettings.h
+    enginesettings.h \
+    engineprocess.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -33,3 +34,8 @@ SOURCES += chessengine.cpp \
     xboardengine.cpp \
     moveevaluation.cpp \
     enginesettings.cpp
+
+win32 {
+    HEADERS += pipereader.h
+    SOURCES += engineprocess.cpp pipereader.cpp
+}
