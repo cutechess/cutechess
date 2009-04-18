@@ -41,6 +41,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		UciEngine(QIODevice* ioDevice, QObject* parent = 0);
 
 		// Inherited methods
+		void start();
 		void applySettings(const EngineSettings& settings);
 		void newGame(Chess::Side side, ChessPlayer* opponent);
 		void endGame(Chess::Result result);

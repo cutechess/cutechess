@@ -221,14 +221,16 @@ bool EngineMatch::initialize()
 		ChessEngine* engine = EngineFactory::createEngine(config.protocol(),
 			process, this);
 
+		if (m_debug)
+			connect(engine, SIGNAL(debugMessage(const QString&)),
+				this, SLOT(print(const QString&)));
+
 		if (!config.name().isEmpty())
 			engine->setName(config.name());
 		engine->applySettings(it->settings);
 		it->engine = engine;
 
-		if (m_debug)
-			connect(engine, SIGNAL(debugMessage(const QString&)),
-				this, SLOT(print(const QString&)));
+		engine->start();
 	}
 	m_pgnInput.setVariant(m_variant);
 

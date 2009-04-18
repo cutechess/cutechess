@@ -37,6 +37,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		 */
 		XboardEngine(QIODevice* ioDevice, QObject* parent = 0);
 
+		void start();
 		void newGame(Chess::Side side, ChessPlayer* opponent);
 		void endGame(Chess::Result result);
 		void go();

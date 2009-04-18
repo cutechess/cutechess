@@ -73,6 +73,12 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		bool isHuman() const;
 		bool supportsVariant(Chess::Variant variant) const;
 
+		/*!
+		 * Starts the engine.
+		 * The engine process must already be started.
+		 */
+		virtual void start() = 0;
+
 		/*! Applies \a settings on the engine. */
 		virtual void applySettings(const EngineSettings& settings);
 		

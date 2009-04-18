@@ -22,7 +22,7 @@
 
 ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
-	  m_isReady(true),
+	  m_isReady(false),
 	  m_chessboard(0),
 	  m_opponent(0),
 	  m_gameInProgress(false),

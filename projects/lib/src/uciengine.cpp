@@ -33,11 +33,13 @@ UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
 	m_variants.append(Chess::Variant::Standard);
 	
 	setName("UciEngine");
-	
-	// Tell the engine to turn on Uci mode
-	write("uci");
+}
 
-	// Don't send any commands to the engine until it's initialized.
+void UciEngine::start()
+{
+	// Tell the engine to turn on Uci mode
+	m_isReady = true;
+	write("uci");
 	m_isReady = false;
 }
 

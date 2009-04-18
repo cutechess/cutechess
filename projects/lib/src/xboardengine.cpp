@@ -56,16 +56,20 @@ XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
 	  m_lastPing(0)
 {
 	m_variants.append(Chess::Variant::Standard);
-	
 	setName("XboardEngine");
+}
+
+void XboardEngine::start()
+{
+	m_isReady = true;
 	// Tell the engine to turn on xboard mode
 	write("xboard");
 	// Tell the engine that we're using Xboard protocol 2
 	write("protover 2");
-	
+	m_isReady = false;
+
 	// Give the engine 2 seconds to reply to the protover command.
 	// This is how Xboard deals with protocol 1 engines.
-	m_isReady = false;
 	m_initTimer.setSingleShot(true);
 	connect(&m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
 	m_initTimer.start(2000);

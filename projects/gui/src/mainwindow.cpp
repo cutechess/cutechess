@@ -209,9 +209,13 @@ void MainWindow::newGame()
 
 	for (int i = 0; i < 2; i++)
 	{
-		player[i] = EngineFactory::createEngine(engineConfig[i].protocol(),
+		ChessEngine* engine = EngineFactory::createEngine(engineConfig[i].protocol(),
 			engineProcess[i], this);
+		connect(engine, SIGNAL(debugMessage(const QString&)),
+			m_engineDebugTextEdit, SLOT(append(const QString&)));
+		engine->start();
 		
+		player[i] = engine;
 		player[i]->setName(engineConfig[i].name());
 		player[i]->setTimeControl(tc);
 		chessgame->setPlayer((Chess::Side)i, player[i]);
@@ -222,8 +226,6 @@ void MainWindow::newGame()
 			m_chessClock[i], SLOT(stop()));
 		connect(chessgame, SIGNAL(gameEnded()),
 		        m_chessClock[i], SLOT(stop()));
-		connect(player[i], SIGNAL(debugMessage(const QString&)),
-			m_engineDebugTextEdit, SLOT(append(const QString&)));
 	}
 
 	m_boardModel->setBoard(chessgame->board());
