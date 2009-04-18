@@ -55,6 +55,8 @@ class LIB_EXPORT EngineSettings
 
 		/*! Command line arguments. */
 		const QStringList& arguments() const;
+		/*! Initialization strings. */
+		const QStringList& initStrings() const;
 		/*! The number of cpus the engine should use. */
 		int concurrency() const;
 		/*! Path to endgame bitbases (eg. Scorpio format). */
@@ -75,6 +77,8 @@ class LIB_EXPORT EngineSettings
 
 		/*! Adds a new command line argument. */
 		void addArgument(const QString& argument);
+		/*! Adds a new initialization string. */
+		void addInitString(const QString& str);
 		/*! Adds a new UCI setting. */
 		void addUciSetting(const QString& name, const QVariant& value);
 		/*! Sets the number of cpus to use. */
@@ -92,6 +96,7 @@ class LIB_EXPORT EngineSettings
 		TimeControl m_timeControl;
 		int m_concurrency;
 		QStringList m_arguments;
+		QStringList m_initStrings;
 		QString m_egbbPath;
 		QString m_egtbPath;
 		QVector<UciSetting> m_uciSettings;

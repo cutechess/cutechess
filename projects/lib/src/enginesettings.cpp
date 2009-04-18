@@ -28,6 +28,11 @@ const QStringList& EngineSettings::arguments() const
 	return m_arguments;
 }
 
+const QStringList& EngineSettings::initStrings() const
+{
+	return m_initStrings;
+}
+
 int EngineSettings::concurrency() const
 {
 	return m_concurrency;
@@ -67,6 +72,11 @@ bool EngineSettings::whiteEvalPov() const
 void EngineSettings::addArgument(const QString& argument)
 {
 	m_arguments.append(argument);
+}
+
+void EngineSettings::addInitString(const QString& str)
+{
+	m_initStrings.append(str);
 }
 
 void EngineSettings::addUciSetting(const QString& name, const QVariant& value)

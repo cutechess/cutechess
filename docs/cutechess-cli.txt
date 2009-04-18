@@ -99,6 +99,9 @@ dir=<arg>::
 arg=<arg>::
 	Pass <arg> to the engine as a command line argument.
 
+initstr=<arg>::
+	Send <arg> to the engine's standard input at startup.
+
 proto=<arg>::
 	Set the chess protocol to <arg>. Must be 'xboard' or 'uci'.
 

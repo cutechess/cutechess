@@ -52,6 +52,12 @@ ChessEngine::~ChessEngine()
 
 void ChessEngine::applySettings(const EngineSettings& settings)
 {
+	bool tmpReady = m_isReady;
+	m_isReady = true;
+	foreach (const QString& str, settings.initStrings())
+		write(str);
+	m_isReady = tmpReady;
+
 	if (settings.concurrency() > 0)
 		setConcurrency(settings.concurrency());
 	if (!settings.egbbPath().isEmpty())

@@ -179,6 +179,8 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				return false;
 			}
 		}
+		else if (name == "initstr")
+			data.settings.addInitString(val);
 
 		// Time control (moves/time+increment)
 		else if (name == "tc")
@@ -427,6 +429,7 @@ int main(int argc, char* argv[])
 			       "  cmd=<arg>		Set the command to <arg>\n"
 			       "  dir=<arg>		Set the working directory to <arg>\n"
 			       "  arg=<arg>		Pass <arg> to the engine as a command line argument\n"
+			       "  initstr=<arg>		Send <arg> to the engine's standard input at startup\n"
 			       "  proto=<arg>		Set the chess protocol to <arg>. Must be xboard or uci\n"
 			       "  tc=<arg>		Set the time control to <arg>. The format is\n"
 			       "			moves/time+increment, where 'moves' is the number of\n"
