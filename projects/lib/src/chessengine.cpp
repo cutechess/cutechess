@@ -143,8 +143,6 @@ void ChessEngine::write(const QString& data)
 	emit debugMessage(QString(">") + name() + "(" + QString::number(m_id) +  "): " + data);
 
 	m_ioDevice->write(data.toAscii() + "\n");
-	if (m_ioDevice->bytesToWrite() > 0)
-		m_ioDevice->waitForBytesWritten(20);
 }
 
 void ChessEngine::onReadyRead()
