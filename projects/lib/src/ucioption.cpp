@@ -217,7 +217,7 @@ bool UciOption::isValueOk(const QVariant& value) const
 			return false;
 		return true;
 	case Spin:
-		if (m_min >= m_max)
+		if (m_min > m_max)
 			return false;
 		val = value.toInt(&ok);
 		if (!ok || val < m_min || val > m_max)
