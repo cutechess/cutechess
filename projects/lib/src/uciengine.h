@@ -71,6 +71,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 
 	protected:
 		void parseLine(const QString& line);
+		void stopThinking();
 		
 	private:
 		struct OptionCmd

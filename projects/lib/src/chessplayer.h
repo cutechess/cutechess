@@ -131,7 +131,13 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Called when the player disconnects. */
 		virtual void onDisconnect();
 
+		/*! Called when the player's flag falls. */
+		virtual void onTimeout();
+
 	protected:
+		/*! Emits the forfeit() signal. */
+		void emitForfeit(Chess::Result::Code code, const QString& arg = "");
+
 		/*!
 		 * Emits the player's move, and a timeout signal if the
 		 * move came too late.
@@ -168,11 +174,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Is a game in progress? If not, all moves are rejected. */
 		bool m_gameInProgress;
 
-	private slots:
-		void onTimeout();
-
 	private:
 		bool m_connected;
+		bool m_forfeited;
 		Chess::Side m_side;
 };
 

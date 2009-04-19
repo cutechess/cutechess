@@ -267,6 +267,12 @@ void XboardEngine::go()
 	write("go");
 }
 
+void XboardEngine::stopThinking()
+{
+	if (m_isReady && m_waitForMove)
+		write("?");
+}
+
 ChessEngine::Protocol XboardEngine::protocol() const
 {
 	return ChessEngine::Xboard;
@@ -373,8 +379,7 @@ void XboardEngine::parseLine(const QString& line)
 		if (!m_chessboard->isLegalMove(move))
 		{
 			m_timer.stop();
-			Chess::Result result(Chess::Result::WinByIllegalMove, otherSide(), args);
-			emit forfeit(result);
+			emitForfeit(Chess::Result::WinByIllegalMove, args);
 			return;
 		}
 
@@ -392,8 +397,7 @@ void XboardEngine::parseLine(const QString& line)
 			{
 				qDebug("%s forfeits by invalid draw claim",
 				       qPrintable(name()));
-				Chess::Result result(Chess::Result::WinByAdjudication, otherSide());
-				emit forfeit(result);
+				emitForfeit(Chess::Result::WinByAdjudication);
 				return;
 			}
 		}
@@ -421,19 +425,19 @@ void XboardEngine::parseLine(const QString& line)
 			return;
 		}
 		
-		Chess::Result result;
+		Chess::Result::Code resultCode;
 		if ((command == "1-0" && side() == Chess::White)
 		||  (command == "0-1" && side() == Chess::Black))
 		{
 			qDebug("%s forfeits by invalid victory claim",
 			       qPrintable(name()));
-			result = Chess::Result(Chess::Result::WinByAdjudication, otherSide());
+			resultCode = Chess::Result::WinByAdjudication;
 		}
 		else
 			// resign
-			result = Chess::Result(Chess::Result::WinByResignation, otherSide());
+			resultCode = Chess::Result::WinByResignation;
 
-		emit forfeit(result);
+		emitForfeit(resultCode);
 	}
 	else if (command == "feature")
 	{

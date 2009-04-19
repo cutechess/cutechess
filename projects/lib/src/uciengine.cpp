@@ -173,6 +173,12 @@ void UciEngine::go()
 	write(command);
 }
 
+void UciEngine::stopThinking()
+{
+	if (m_isReady)
+		write("stop");
+}
+
 ChessEngine::Protocol UciEngine::protocol() const
 {
 	return ChessEngine::Uci;
@@ -279,8 +285,7 @@ void UciEngine::parseLine(const QString& line)
 		else
 		{
 			m_timer.stop();
-			Chess::Result result(Chess::Result::WinByIllegalMove, otherSide(), moveString);
-			emit forfeit(result);
+			emitForfeit(Chess::Result::WinByIllegalMove, moveString);
 		}
 	}
 	else if (command == "uciok")

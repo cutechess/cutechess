@@ -100,6 +100,11 @@ void ChessEngine::onDisconnect()
 	ChessPlayer::onDisconnect();
 }
 
+void ChessEngine::onTimeout()
+{
+	stopThinking();
+}
+
 void ChessEngine::ping(PingType type)
 {
 	Q_UNUSED(type);
@@ -133,8 +138,7 @@ void ChessEngine::onPingTimeout()
 	m_writeBuffer.clear();
 	m_pingType = PingUnknown;
 
-	Chess::Result result(Chess::Result::WinByStalledConnection, otherSide());
-	emit forfeit(result);
+	emitForfeit(Chess::Result::WinByStalledConnection);
 }
 
 void ChessEngine::write(const QString& data)

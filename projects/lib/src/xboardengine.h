@@ -51,6 +51,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 
 	protected:
 		void parseLine(const QString& line);
+		void stopThinking();
 	
 	private slots:
 		/*! Initializes the engine, and emits the 'ready' signal. */

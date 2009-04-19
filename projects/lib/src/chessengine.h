@@ -113,6 +113,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 */
 		virtual void ping(PingType type = PingUnknown);
 
+		/*! Tells the engine to stop thinking and move now. */
+		virtual void stopThinking() = 0;
+
 		/*!
 		 * The chess move notation the engine wants to use.
 		 * All moves which are sent to and received from the engine must
@@ -147,6 +150,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 	protected slots:
 		// Inherited from ChessPlayer
 		void onDisconnect();
+		void onTimeout();
 
 		/*! Reads input from the engine. */
 		void onReadyRead();
