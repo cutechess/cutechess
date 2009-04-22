@@ -228,8 +228,10 @@ void ChessGame::setOpeningBook(const OpeningBook* book, int maxMoves)
 		||  m_board->isRepeatMove(move))
 			break;
 		
-		m_moves.append(move);
 		m_board->makeMove(move);
+		if (!m_board->result().isNone())
+			break;
+		m_moves.append(move);
 	}
 }
 
@@ -353,6 +355,14 @@ void ChessGame::start()
 		m_comments.append("book");
 		
 		emit moveMade(move);
+
+		if (!m_board->result().isNone())
+		{
+			qDebug() << "Every move was played from the book";
+			m_result = m_board->result();
+			stop();
+			return;
+		}
 	}
 	
 	playerToMove()->go();
