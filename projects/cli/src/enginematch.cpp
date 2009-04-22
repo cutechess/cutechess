@@ -287,7 +287,8 @@ void EngineMatch::onGameEnded()
 	if (m_currentGame < m_gameCount
 	&&  result.code() != Chess::Result::ResultError
 	&&  result.code() != Chess::Result::NoResult
-	&&  result.code() != Chess::Result::WinByDisconnection)
+	&&  result.code() != Chess::Result::WinByDisconnection
+	&&  result.code() != Chess::Result::WinByStalledConnection)
 		start();
 	else
 	{
