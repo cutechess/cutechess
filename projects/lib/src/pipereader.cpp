@@ -109,6 +109,8 @@ void PipeReader::run()
 
 	forever
 	{
+		QMutexLocker locker(&m_mutex);
+
 		// Use a chunk size as large as possible, but still limited
 		// to half of the buffer.
 		if (m_end >= m_start)
@@ -120,11 +122,9 @@ void PipeReader::run()
 
 		// Wait until more than half of the buffer is free
 		if (m_bytesLeft >= BufSize / 2)
-		{
-			QMutexLocker locker(&m_mutex);
 			m_cond.wait(&m_mutex);
-		}
 
+		locker.unlock();
 		BOOL ok = ReadFile(m_pipe, m_end, chunkSize, &dwRead, 0);
 		if (!ok || dwRead == 0)
 		{
@@ -135,17 +135,15 @@ void PipeReader::run()
 			return;
 		}
 
-		bool sendReady = false;
-		{
-			QMutexLocker locker(&m_mutex);
+		locker.relock();
+		m_bytesLeft += dwRead;
+		Q_ASSERT(m_bytesLeft <= BufSize);
+		m_end += dwRead;
+		bool sendReady = findLastNewline(m_end - 1, dwRead);
+		if (m_end >= bufEnd)
+			m_end = m_data;
 
-			m_bytesLeft += dwRead;
-			Q_ASSERT(m_bytesLeft <= BufSize);
-			m_end += dwRead;
-			sendReady = findLastNewline(m_end - 1, dwRead);
-			if (m_end >= bufEnd)
-				m_end = m_data;
-		}
+		locker.unlock();
 		// To avoid signal spam, send the 'readyRead' signal only
 		// if we have a whole line of new data
 		if (sendReady)
