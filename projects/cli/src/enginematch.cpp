@@ -242,7 +242,8 @@ void EngineMatch::killEngines()
 	foreach(const EngineData& data, m_engines)
 	{
 		data.engine->quit();
-		data.process->waitForFinished();
+		if (!data.process->waitForFinished(2000))
+			data.process->close();
 	}
 }
 
