@@ -104,6 +104,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void quit();
 		
 	protected:
+		// Inherited from ChessPlayer
+		void closeConnection();
+
 		/*! Parses a line of input from the engine. */
 		virtual void parseLine(const QString& line) = 0;
 

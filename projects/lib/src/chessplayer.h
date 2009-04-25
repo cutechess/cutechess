@@ -135,6 +135,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void onTimeout();
 
 	protected:
+		/*! Closes the player's connection to the operator. */
+		virtual void closeConnection();
+
 		/*! Emits the forfeit() signal. */
 		void emitForfeit(Chess::Result::Code code, const QString& arg = "");
 

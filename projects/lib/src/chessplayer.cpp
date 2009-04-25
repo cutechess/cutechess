@@ -163,6 +163,11 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 	emit moveMade(move);
 }
 
+void ChessPlayer::closeConnection()
+{
+	m_connected = false;
+}
+
 void ChessPlayer::onDisconnect()
 {
 	m_connected = false;

@@ -88,6 +88,14 @@ bool ChessEngine::supportsVariant(Chess::Variant variant) const
 	return m_variants.contains(variant);
 }
 
+void ChessEngine::closeConnection()
+{
+	disconnect(m_ioDevice, SIGNAL(readChannelFinished()),
+		   this, SLOT(onDisconnect()));
+	ChessPlayer::closeConnection();
+	m_ioDevice->close();
+}
+
 void ChessEngine::onDisconnect()
 {
 	m_pingTimer.stop();
@@ -137,6 +145,7 @@ void ChessEngine::onPingTimeout()
 	m_isReady = true;
 	m_writeBuffer.clear();
 	m_pingType = PingUnknown;
+	closeConnection();
 
 	emitForfeit(Chess::Result::WinByStalledConnection);
 }
