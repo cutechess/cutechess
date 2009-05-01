@@ -10,7 +10,7 @@
  * be in this format. Later it can be converted to a Chess::Move by a
  * Chess::Board object.
  */
-class BookMove
+class LIB_EXPORT BookMove
 {
 	public:
 		/*! Constructs a new empty book move. */
