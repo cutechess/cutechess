@@ -1,15 +1,20 @@
 #include "chessboardview.h"
+#include <chessboard/chess.h>
+#include <chessboard/bookmove.h>
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QResizeEvent>
+#include <QApplication>
 #include <QtDebug>
 
 
 ChessboardView::ChessboardView(QWidget* parent)
 	: QAbstractItemView(parent),
+	  m_dragging(false),
 	  m_squareSize(40),
 	  m_needsUpdate(true)
 {
+	setEnabled(false);
 	m_squaresRect = QRect(0, 0, 0, 0);
 
 	setSelectionMode(QAbstractItemView::SingleSelection);
@@ -22,6 +27,99 @@ ChessboardView::ChessboardView(QWidget* parent)
 	m_pieceRenderer = new QSvgRenderer(QString(":/default.svg"), this);
 	m_resizeTimer.setSingleShot(true);
 	connect(&m_resizeTimer, SIGNAL(timeout()), this, SLOT(onResizeTimeout()));
+}
+
+void ChessboardView::mousePressEvent(QMouseEvent *event)
+{
+	Q_ASSERT(event != 0);
+
+	m_dragging = false;
+	m_dragStartPos = QPoint();
+
+	m_dragSquare = indexAt(event->pos());
+	if ((m_dragSquare.flags() & Qt::ItemIsSelectable)
+	&&  event->button() == Qt::LeftButton)
+		m_dragStartPos = event->pos();
+
+	QAbstractItemView::mousePressEvent(event);
+}
+
+void ChessboardView::mouseMoveEvent(QMouseEvent *event)
+{
+	Q_ASSERT(event != 0);
+
+	if (m_dragging)
+	{
+		m_dragUpdateRegion = m_dragRect;
+
+		QPoint pos(event->pos() + m_dragOffset);
+		m_dragRect = QRect(pos, m_dragPixmap.size());
+		m_dragUpdateRegion += m_dragRect;
+		viewport()->update(m_dragUpdateRegion);
+	}
+	else if ((event->buttons() & Qt::LeftButton) && !m_dragStartPos.isNull())
+	{
+		int distance = (event->pos() - m_dragStartPos).manhattanLength();
+		if (distance >= QApplication::startDragDistance())
+		    startDrag();
+	}
+
+	QAbstractItemView::mouseMoveEvent(event);
+}
+
+void ChessboardView::mouseReleaseEvent(QMouseEvent* event)
+{
+	Q_ASSERT(event != 0);
+
+	if (m_dragging)
+	{
+		m_dragging = false;
+		Chess::Square src;
+		src.file = m_dragSquare.column();
+		src.rank = model()->rowCount() - m_dragSquare.row() - 1;
+
+		QModelIndex dragTarget = indexAt(event->pos());
+		Chess::Square trg;
+		trg.file = dragTarget.column();
+		trg.rank = model()->rowCount() - dragTarget.row() - 1;
+
+		BookMove bookMove(src, trg, Chess::NoPiece);
+		emit humanMove(bookMove);
+
+		m_dragUpdateRegion = m_dragRect;
+		m_dragUpdateRegion += visualRect(m_dragSquare);
+
+		QPainter painter(&m_background);
+		renderSquare(m_dragSquare, painter);
+		viewport()->update(m_dragUpdateRegion);
+	}
+
+	QAbstractItemView::mouseReleaseEvent(event);
+}
+
+void ChessboardView::startDrag()
+{
+	Q_ASSERT(m_dragSquare.isValid());
+
+	QPainter painter;
+	QRect rect = visualRect(m_dragSquare);
+
+	m_dragOffset = rect.topLeft() - m_dragStartPos;
+
+	m_dragPixmap = QPixmap(m_squareSize, m_squareSize);
+	m_dragPixmap.fill(Qt::transparent);
+
+	painter.begin(&m_dragPixmap);
+	renderPiece(m_dragSquare, painter, painter.viewport());
+	painter.end();
+
+	m_dragRect = rect;
+	m_dragUpdateRegion = QRegion();
+	m_dragging = true;
+
+	painter.begin(&m_background);
+	renderSquare(m_dragSquare, painter);
+	viewport()->update(rect);
 }
 
 bool ChessboardView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* event)
@@ -107,7 +205,8 @@ void ChessboardView::renderSquare(const QModelIndex& index, QPainter& painter)
 	if (index == m_sourceSquare || index == m_targetSquare)
 		painter.fillRect(sqBounds, m_moveColor);
 
-	renderPiece(index, painter, sqBounds);
+	if (!m_dragging || index != m_dragSquare)
+		renderPiece(index, painter, sqBounds);
 }
 
 void ChessboardView::paintEvent(QPaintEvent* event)
@@ -117,11 +216,15 @@ void ChessboardView::paintEvent(QPaintEvent* event)
 		return;
 
 	QPainter painter(viewport());
-	painter.setBackgroundMode(Qt::OpaqueMode);
 
 	if (!m_needsUpdate)
 	{
 		painter.drawPixmap(m_squaresRect, m_background);
+		if (m_dragging && m_dragRect.isValid())
+		{
+			Q_ASSERT(!m_dragPixmap.isNull());
+			painter.drawPixmap(m_dragRect, m_dragPixmap);
+		}
 		return;
 	}
 	m_needsUpdate = false;
@@ -129,7 +232,6 @@ void ChessboardView::paintEvent(QPaintEvent* event)
 	if (m_background.size() != m_squaresRect.size())
 		m_background = QPixmap(m_squaresRect.size());
 	QPainter bgPainter(&m_background);
-	bgPainter.setBackgroundMode(Qt::OpaqueMode);
 
 	int columnCount = model()->columnCount();
 	int rowCount = model()->rowCount();

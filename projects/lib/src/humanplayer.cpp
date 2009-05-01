@@ -21,6 +21,7 @@
 HumanPlayer::HumanPlayer(QObject* parent)
 	: ChessPlayer(parent)
 {
+	m_isReady = true;
 }
 
 void HumanPlayer::go()

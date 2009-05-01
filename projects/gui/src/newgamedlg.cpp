@@ -23,7 +23,7 @@
 #include "engineconfigurationdlg.h"
 
 NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,
-                             QWidget* parent)
+			     QWidget* parent)
 	: QDialog(parent),
 	  m_engines(engineConfigurations)
 {
@@ -44,7 +44,7 @@ NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,
 	m_proxyModel->setSourceModel(m_engines);
 	m_proxyModel->sort(0);
 	m_proxyModel->setDynamicSortFilter(true);
-	
+
 	m_whiteEngineComboBox->setModel(m_proxyModel);
 	m_blackEngineComboBox->setModel(m_proxyModel);
 
@@ -56,26 +56,26 @@ NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,
 	}
 }
 
-NewGameDialog::PlayerType NewGameDialog::whitePlayerType() const
+NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
 {
-	return (m_whitePlayerHumanRadio->isChecked()) ? Human : CPU;
+	Q_ASSERT(side != Chess::NoSide);
+
+	if (side == Chess::White)
+		return (m_whitePlayerHumanRadio->isChecked()) ? Human : CPU;
+	else
+		return (m_blackPlayerHumanRadio->isChecked()) ? Human : CPU;
 }
 
-NewGameDialog::PlayerType NewGameDialog::blackPlayerType() const
+QModelIndex NewGameDialog::selectedEngine(Chess::Side side) const
 {
-	return (m_blackPlayerHumanRadio->isChecked()) ? Human : CPU;
-}
+	Q_ASSERT(side != Chess::NoSide);
 
-QModelIndex NewGameDialog::selectedWhiteEngine() const
-{
-	int index = m_whiteEngineComboBox->currentIndex();
-	QModelIndex modelIndex = m_proxyModel->index(index, 0);
-	return m_proxyModel->mapToSource(modelIndex);
-}
+	int index;
+	if (side == Chess::White)
+		index = m_whiteEngineComboBox->currentIndex();
+	else
+		index = m_blackEngineComboBox->currentIndex();
 
-QModelIndex NewGameDialog::selectedBlackEngine() const
-{
-	int index = m_blackEngineComboBox->currentIndex();
 	QModelIndex modelIndex = m_proxyModel->index(index, 0);
 	return m_proxyModel->mapToSource(modelIndex);
 }
@@ -83,8 +83,8 @@ QModelIndex NewGameDialog::selectedBlackEngine() const
 void NewGameDialog::configureWhiteEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
-	
-	QModelIndex index = selectedWhiteEngine();
+
+	QModelIndex index = selectedEngine(Chess::White);
 	dlg.applyEngineInformation(m_engines->configuration(index));
 
 	if (dlg.exec() == QDialog::Accepted)
@@ -96,8 +96,8 @@ void NewGameDialog::configureWhiteEngine()
 void NewGameDialog::configureBlackEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
-	
-	QModelIndex index = selectedBlackEngine();
+
+	QModelIndex index = selectedEngine(Chess::Black);
 	dlg.applyEngineInformation(m_engines->configuration(index));
 
 	if (dlg.exec() == QDialog::Accepted)

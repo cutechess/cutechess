@@ -21,6 +21,7 @@
 #include <QDialog>
 
 #include "ui_newgamedlg.h"
+#include <chessboard/chess.h>
 
 class EngineConfigurationModel;
 class QSortFilterProxyModel;
@@ -47,25 +48,17 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 		 * list of chess engines and given \a parent.
 		*/
 		NewGameDialog(EngineConfigurationModel* engineConfigurations,
-		              QWidget* parent = 0);
+			      QWidget* parent = 0);
 
-		/*! Returns the user selected player type for white. */
-		PlayerType whitePlayerType() const;
-		/*! Returns the user selected player type for black. */
-		PlayerType blackPlayerType() const;
+		/*! Returns the user selected player type for \a side. */
+		PlayerType playerType(Chess::Side side) const;
 
 		/*!
-		 * Returns the user selected chess engine for white.
+		 * Returns the user selected chess engine for \a side.
 		 *
 		 * The return value is an index to the engine configurations model.
 		*/
-		QModelIndex selectedWhiteEngine() const;
-		/*!
-		 * Returns the user selected chess engine for black.
-		 *
-		 * The return value is an index to the engine configurations model.
-		*/
-		QModelIndex selectedBlackEngine() const;
+		QModelIndex selectedEngine(Chess::Side side) const;
 
 	private slots:
 		void configureWhiteEngine();
@@ -78,4 +71,3 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 };
 
 #endif // NEWGAMEDIALOG_H
-

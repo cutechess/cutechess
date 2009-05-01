@@ -23,6 +23,7 @@
 #include <engineconfiguration.h>
 #include <enginefactory.h>
 #include <engineprocess.h>
+#include <humanplayer.h>
 
 #include "mainwindow.h"
 #include "chessboardview.h"
@@ -164,44 +165,8 @@ void MainWindow::newGame()
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
-	if (dlg.whitePlayerType() == NewGameDialog::Human ||
-	    dlg.blackPlayerType() == NewGameDialog::Human)
-	{
-		qDebug() << "Human players are not currently supported.";
-		return;
-	}
-
-	const EngineConfiguration engineConfig[2] =
-	{
-		m_engineConfigurations->configuration(dlg.selectedWhiteEngine()),
-		m_engineConfigurations->configuration(dlg.selectedBlackEngine())
-	};
-	
-	EngineProcess* engineProcess[2] = { new EngineProcess(this), new EngineProcess(this) };
-
-	// Set up working directories for the engines:
-	// If user hasn't set any directory, use temp
-	for (int i = 0; i < 2; i++)
-	{
-		EngineProcess* engine = engineProcess[i];
-		const EngineConfiguration& config = engineConfig[i];
-
-		if (config.workingDirectory().isEmpty())
-			engine->setWorkingDirectory(QDir::tempPath());
-		else
-			engine->setWorkingDirectory(config.workingDirectory());
-		
-		engine->start(config.command());
-		if (!engine->waitForStarted())
-		{
-			qDebug() << "Cannot start the engine process:" << config.command();
-			return;
-		}
-	}
-
-	ChessGame* chessgame = new ChessGame(Chess::Variant::Standard, this);
-
 	ChessPlayer* player[2] = { 0, 0 };
+	ChessGame* chessgame = new ChessGame(Chess::Variant::Standard, this);
 
 	TimeControl tc;
 	tc.setTimePerTc(180000);
@@ -209,23 +174,49 @@ void MainWindow::newGame()
 
 	for (int i = 0; i < 2; i++)
 	{
-		ChessEngine* engine = EngineFactory::createEngine(engineConfig[i].protocol(),
-			engineProcess[i], this);
-		connect(engine, SIGNAL(debugMessage(const QString&)),
-			m_engineDebugTextEdit, SLOT(append(const QString&)));
-		engine->start();
-		
-		player[i] = engine;
-		player[i]->setName(engineConfig[i].name());
+		Chess::Side side = (Chess::Side)i;
+		if (dlg.playerType(side) == NewGameDialog::CPU)
+		{
+			EngineConfiguration config = m_engineConfigurations->configuration(dlg.selectedEngine(side));
+
+			QProcess* process = new QProcess(this);
+
+			if (config.workingDirectory().isEmpty())
+				process->setWorkingDirectory(QDir::tempPath());
+			else
+				process->setWorkingDirectory(config.workingDirectory());
+
+			process->start(config.command());
+			if (!process->waitForStarted())
+			{
+				qDebug() << "Cannot start the engine process:" << config.command();
+				return;
+			}
+			ChessEngine* engine = EngineFactory::createEngine(config.protocol(), process, this);
+			engine->start();
+			engine->setName(config.name());
+			player[i] = engine;
+		}
+		else
+		{
+			player[i] = new HumanPlayer(this);
+			connect(m_chessboardView, SIGNAL(humanMove(const BookMove&)),
+				player[i], SLOT(onHumanMove(const BookMove&)));
+		}
+
 		player[i]->setTimeControl(tc);
-		chessgame->setPlayer((Chess::Side)i, player[i]);
+		chessgame->setPlayer(side, player[i]);
 		
 		connect(player[i], SIGNAL(startedThinking(int)),
 			m_chessClock[i], SLOT(start(int)));
 		connect(player[i], SIGNAL(moveMade(const Chess::Move&)),
 			m_chessClock[i], SLOT(stop()));
+		connect(player[i], SIGNAL(humanTurn(bool)),
+			m_chessboardView, SLOT(setEnabled(bool)));
 		connect(chessgame, SIGNAL(gameEnded()),
 		        m_chessClock[i], SLOT(stop()));
+		connect(player[i], SIGNAL(debugMessage(const QString&)),
+			m_engineDebugTextEdit, SLOT(append(const QString&)));
 	}
 
 	m_boardModel->setBoard(chessgame->board());

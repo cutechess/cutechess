@@ -30,6 +30,9 @@ class ChessboardModel : public QAbstractTableModel
 
 		ChessboardModel(QObject* parent = 0);
 		void setBoard(Chess::Board* board);
+
+		// Inherited from QAbstractTableModel
+		Qt::ItemFlags flags(const QModelIndex& index) const;
 		int rowCount(const QModelIndex& parent) const;
 		int columnCount(const QModelIndex& parent) const;
 		QVariant data(const QModelIndex& parent, int role) const;
@@ -37,19 +40,21 @@ class ChessboardModel : public QAbstractTableModel
 		                    int role = Qt::DisplayRole) const;
 
 	signals:
-		void moveMade(const QModelIndex& source, const QModelIndex& target) const;
+		void moveMade(const QModelIndex& source, const QModelIndex& target);
 
 	public slots:
 		void squareChanged(const Chess::Square& square);
 		void boardReset();
 
 	private slots:
-		void onMoveMade(const Chess::Square& source, const Chess::Square& target) const;
+		void onMoveMade(const Chess::Square& source, const Chess::Square& target);
 
 	private:
 		QModelIndex squareToIndex(const Chess::Square& square) const;
+		void updateSelectable();
 
 		Chess::Board* m_board;
+		QModelIndexList m_selectable;
 };
 
 #endif // CHESSBOARD_MODEL_H

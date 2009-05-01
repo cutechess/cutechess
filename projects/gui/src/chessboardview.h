@@ -21,6 +21,7 @@
 #include <QAbstractItemView>
 #include <QTimer>
 class QSvgRenderer;
+class BookMove;
 
 class ChessboardView : public QAbstractItemView
 {
@@ -38,19 +39,26 @@ class ChessboardView : public QAbstractItemView
 		QColor lightSquareColor() const;
 		QColor darkSquareColor() const;
 
+	signals:
+		void humanMove(const BookMove& bookMove) const;
+
 	public slots:
 		void onMoveMade(const QModelIndex& source, const QModelIndex& target);
 		void reset();
 
 	protected:
 		bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event);
-		void paintEvent(QPaintEvent* event);
 		bool isIndexHidden(const QModelIndex& index) const;
 		int horizontalOffset() const;
 		int verticalOffset() const;
 		QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers);
 		void setSelection(const QRect& rect, QItemSelectionModel::SelectionFlags flags);
 		QRegion visualRegionForSelection(const QItemSelection& selection) const;
+
+		void mouseMoveEvent(QMouseEvent* event);
+		void mousePressEvent(QMouseEvent* event);
+		void mouseReleaseEvent(QMouseEvent* event);
+		void paintEvent(QPaintEvent* event);
 		void resizeEvent(QResizeEvent* event);
 
 	protected slots:
@@ -63,6 +71,15 @@ class ChessboardView : public QAbstractItemView
 		void renderPiece(const QModelIndex& index, QPainter& painter, QRectF bounds);
 		void renderSquare(const QModelIndex& index, QPainter& painter);
 		void resizeBoard(const QSize& size);
+		void startDrag();
+
+		bool m_dragging;
+		QPoint m_dragStartPos;
+		QPoint m_dragOffset;
+		QModelIndex m_dragSquare;
+		QPixmap m_dragPixmap;
+		QRect m_dragRect;
+		QRegion m_dragUpdateRegion;
 
 		int m_squareSize;
 		bool m_needsUpdate;

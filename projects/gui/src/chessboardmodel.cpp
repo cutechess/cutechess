@@ -24,6 +24,14 @@ ChessboardModel::ChessboardModel(QObject* parent)
 {
 }
 
+Qt::ItemFlags ChessboardModel::flags(const QModelIndex& index) const
+{
+	if (m_selectable.contains(index))
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+	return Qt::NoItemFlags;
+}
+
 void ChessboardModel::setBoard(Chess::Board* board)
 {
 	Q_ASSERT(board != 0);
@@ -149,9 +157,28 @@ QModelIndex ChessboardModel::squareToIndex(const Chess::Square& square) const
 	return createIndex(row, column);
 }
 
-void ChessboardModel::onMoveMade(const Chess::Square& source, const Chess::Square& target) const
+void ChessboardModel::updateSelectable()
+{
+	m_selectable.clear();
+
+	QVector<Chess::Move> moves(m_board->legalMoves());
+	foreach (const Chess::Move& move, moves)
+	{
+		Chess::Square sq = m_board->chessSquare(move.sourceSquare());
+		QModelIndex index = squareToIndex(sq);
+
+		if (!m_selectable.contains(index))
+		{
+			m_selectable.append(index);
+			emit dataChanged(index, index);
+		}
+	}
+}
+
+void ChessboardModel::onMoveMade(const Chess::Square& source, const Chess::Square& target)
 {
 	emit moveMade(squareToIndex(source), squareToIndex(target));
+	updateSelectable();
 }
 
 void ChessboardModel::squareChanged(const Chess::Square& square)
@@ -162,5 +189,6 @@ void ChessboardModel::squareChanged(const Chess::Square& square)
 
 void ChessboardModel::boardReset()
 {
+	updateSelectable();
 	reset();
 }

@@ -105,6 +105,12 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual bool isHuman() const = 0;
 
 	signals:
+		/*!
+		 * Emitted when the player gets the turn.
+		 * \a isHumanTurn is true if the player is human.
+		 */
+		void humanTurn(bool isHumanTurn);
+
 		/*! Signals the player's evaluation of the position. */
 		void sendEvaluation(const MoveEvaluation& eval) const;
 
