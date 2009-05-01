@@ -19,6 +19,7 @@
 #define CHESSBOARDVIEW_H
 
 #include <QAbstractItemView>
+#include <QTimer>
 class QSvgRenderer;
 
 class ChessboardView : public QAbstractItemView
@@ -52,16 +53,25 @@ class ChessboardView : public QAbstractItemView
 		QRegion visualRegionForSelection(const QItemSelection& selection) const;
 		void resizeEvent(QResizeEvent* event);
 
+	protected slots:
+		void dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
+
+	private slots:
+		void onResizeTimeout();
+
 	private:
+		void renderPiece(const QModelIndex& index, QPainter& painter, QRectF bounds);
+		void renderSquare(const QModelIndex& index, QPainter& painter);
 		void resizeBoard(const QSize& size);
 
 		int m_squareSize;
-		int m_horizontalPadding;
-		int m_verticalPadding;
+		bool m_needsUpdate;
+		QTimer m_resizeTimer;
 		QColor m_lightSquareColor;
 		QColor m_darkSquareColor;
 		QColor m_moveColor;
 		QRect m_squaresRect;
+		QPixmap m_background;
 		QSvgRenderer* m_pieceRenderer;
 		QModelIndex m_sourceSquare;
 		QModelIndex m_targetSquare;

@@ -7,7 +7,8 @@
 
 ChessboardView::ChessboardView(QWidget* parent)
 	: QAbstractItemView(parent),
-	  m_squareSize(40)
+	  m_squareSize(40),
+	  m_needsUpdate(true)
 {
 	m_squaresRect = QRect(0, 0, 0, 0);
 
@@ -19,6 +20,8 @@ ChessboardView::ChessboardView(QWidget* parent)
 	m_moveColor = QColor(255, 255, 0, 127);
 
 	m_pieceRenderer = new QSvgRenderer(QString(":/default.svg"), this);
+	m_resizeTimer.setSingleShot(true);
+	connect(&m_resizeTimer, SIGNAL(timeout()), this, SLOT(onResizeTimeout()));
 }
 
 bool ChessboardView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* event)
@@ -33,17 +36,13 @@ bool ChessboardView::edit(const QModelIndex& index, EditTrigger trigger, QEvent*
 
 QModelIndex ChessboardView::indexAt(const QPoint& point) const
 {
-	if (model())
+	if (model() != 0 && m_squaresRect.contains(point))
 	{
-		if (point.x() >= m_squaresRect.x() &&
-			point.x() <= (m_squaresRect.x() + m_squaresRect.width()) &&
-			point.y() >= m_squaresRect.y() &&
-			point.y() <= (m_squaresRect.y() + m_squaresRect.height()))
-		{
-			return model()->index((point.y() - m_squaresRect.y()) / m_squareSize,
-				(point.x() - m_squaresRect.x()) / m_squareSize);
-		}
+		int row = (point.y() - m_squaresRect.y()) / m_squareSize;
+		int column = (point.x() - m_squaresRect.x()) / m_squareSize;
+		return model()->index(row, column);
 	}
+
 	return QModelIndex();
 }
 
@@ -65,12 +64,72 @@ QRect ChessboardView::visualRect(const QModelIndex& index) const
 	return QRect();
 }
 
+void ChessboardView::renderPiece(const QModelIndex& index, QPainter& painter, QRectF bounds)
+{
+	QVariant data = model()->data(index);
+	if (data.isNull())
+		return;
+
+	QString id = data.toString();
+	QRectF pieceBounds(m_pieceRenderer->boundsOnElement(id));
+
+	qreal aspect = pieceBounds.width() / pieceBounds.height();
+	if (aspect > 1.0)
+	{
+		qreal height = bounds.height() / aspect;
+		qreal adjust = (bounds.height() - height) / 2;
+		bounds.adjust(0, adjust, 0, -adjust);
+	}
+	else if (aspect < 1.0)
+	{
+		qreal width = bounds.width() * aspect;
+		qreal adjust = (bounds.width() - width) / 2;
+		bounds.adjust(adjust, 0, -adjust, 0);
+	}
+	qreal a = bounds.width() / 10;
+	bounds.adjust(a, a, -a, -a);
+
+	m_pieceRenderer->render(&painter, id, bounds);
+}
+
+void ChessboardView::renderSquare(const QModelIndex& index, QPainter& painter)
+{
+	int row = index.row();
+	int column = index.column();
+	QRectF sqBounds(column * m_squareSize, row * m_squareSize,
+			m_squareSize, m_squareSize);
+
+	if ((row % 2) == (column % 2))
+		painter.fillRect(sqBounds, m_lightSquareColor);
+	else
+		painter.fillRect(sqBounds, m_darkSquareColor);
+
+	if (index == m_sourceSquare || index == m_targetSquare)
+		painter.fillRect(sqBounds, m_moveColor);
+
+	renderPiece(index, painter, sqBounds);
+}
+
 void ChessboardView::paintEvent(QPaintEvent* event)
 {
+	Q_UNUSED(event);
 	if (!model())
 		return;
 
 	QPainter painter(viewport());
+	painter.setBackgroundMode(Qt::OpaqueMode);
+
+	if (!m_needsUpdate)
+	{
+		painter.drawPixmap(m_squaresRect, m_background);
+		return;
+	}
+	m_needsUpdate = false;
+
+	if (m_background.size() != m_squaresRect.size())
+		m_background = QPixmap(m_squaresRect.size());
+	QPainter bgPainter(&m_background);
+	bgPainter.setBackgroundMode(Qt::OpaqueMode);
 
 	int columnCount = model()->columnCount();
 	int rowCount = model()->rowCount();
@@ -79,54 +138,12 @@ void ChessboardView::paintEvent(QPaintEvent* event)
 	{
 		for (int column = 0; column < columnCount; column++)
 		{
-			QBrush squareBrush;
 			QModelIndex index = model()->index(row, column);
-
-			if (selectionModel()->isSelected(index))
-				squareBrush.setStyle(Qt::Dense3Pattern);
-			else
-				squareBrush.setStyle(Qt::SolidPattern);
-
-			if ((row % 2) == (column % 2))
-				squareBrush.setColor(m_lightSquareColor);
-			else
-				squareBrush.setColor(m_darkSquareColor);
-
-			QRectF sqBounds(visualRect(index));
-
-			// Render the square
-			painter.fillRect(sqBounds, squareBrush);
-
-			if (index == m_sourceSquare || index == m_targetSquare)
-				painter.fillRect(sqBounds, m_moveColor);
-
-			QVariant data = model()->data(index);
-			if (data.isNull())
-				continue;
-
-			// Render the piece
-			QString id = data.toString();
-			QRectF pieceBounds(m_pieceRenderer->boundsOnElement(id));
-
-			qreal aspect = pieceBounds.width() / pieceBounds.height();
-			if (aspect > 1.0)
-			{
-				qreal height = sqBounds.height() / aspect;
-				qreal adjust = (sqBounds.height() - height) / 2;
-				sqBounds.adjust(0, adjust, 0, -adjust);
-			}
-			else if (aspect < 1.0)
-			{
-				qreal width = sqBounds.width() * aspect;
-				qreal adjust = (sqBounds.width() - width) / 2;
-				sqBounds.adjust(adjust, 0, -adjust, 0);
-			}
-			qreal a = sqBounds.width() / 10;
-			sqBounds.adjust(a, a, -a, -a);
-
-			m_pieceRenderer->render(&painter, id, sqBounds);
+			renderSquare(index, bgPainter);
 		}
 	}
+
+	painter.drawPixmap(m_squaresRect, m_background);
 }
 
 bool ChessboardView::isIndexHidden(const QModelIndex& index) const
@@ -148,6 +165,8 @@ int ChessboardView::verticalOffset() const
 QModelIndex ChessboardView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
 {
 	// TODO
+	Q_UNUSED(cursorAction);
+	Q_UNUSED(modifiers);
 	return QModelIndex();
 }
 
@@ -167,6 +186,23 @@ QRegion ChessboardView::visualRegionForSelection(const QItemSelection& selection
 	return QRegion();
 }
 
+void ChessboardView::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight)
+{
+	QPainter painter(&m_background);
+	painter.setBackgroundMode(Qt::OpaqueMode);
+
+	m_needsUpdate = true;
+	for (int row = topLeft.row(); row <= bottomRight.row(); row++)
+	{
+		for (int column = topLeft.column(); column <= bottomRight.column(); column++)
+		{
+			QModelIndex index = model()->index(row, column);
+			renderSquare(index, painter);
+		}
+	}
+	QAbstractItemView::dataChanged(topLeft, bottomRight);
+}
+
 void ChessboardView::resizeBoard(const QSize& size)
 {
 	if (!model())
@@ -180,22 +216,20 @@ void ChessboardView::resizeBoard(const QSize& size)
 
 	m_squaresRect.setWidth(columnCount * m_squareSize);
 	m_squaresRect.setHeight(rowCount * m_squareSize);
+	m_squaresRect.moveCenter(viewport()->rect().center());
+}
 
-	if (width > m_squaresRect.width())
-		m_squaresRect.setX((width - m_squaresRect.width()) / 2);
-	else
-		m_squaresRect.setX(0);
-
-	if (height > m_squaresRect.height())
-		m_squaresRect.setY((height - m_squaresRect.height()) / 2);
-	else
-		m_squaresRect.setY(0);
+void ChessboardView::onResizeTimeout()
+{
+	m_needsUpdate = true;
+	viewport()->update();
 }
 
 void ChessboardView::resizeEvent(QResizeEvent* event)
 {
 	QAbstractItemView::resizeEvent(event);
 	resizeBoard(event->size());
+	m_resizeTimer.start(100);
 }
 
 void ChessboardView::onMoveMade(const QModelIndex& source, const QModelIndex& target)
@@ -235,5 +269,6 @@ void ChessboardView::reset()
 	m_sourceSquare = QModelIndex();
 	m_targetSquare = QModelIndex();
 	resizeBoard(size());
+	m_needsUpdate = true;
 	QAbstractItemView::reset();
 }
