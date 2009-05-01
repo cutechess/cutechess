@@ -86,6 +86,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		const UciOption* getOption(const QString& name) const;
 		bool hasOption(const QString& name) const;
 		
+		bool m_isThinking;
 		QString m_startFen;
 		QStringList m_moves;
 		QVector<UciOption> m_options;

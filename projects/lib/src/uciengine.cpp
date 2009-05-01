@@ -27,7 +27,8 @@
 
 
 UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
-	: ChessEngine(ioDevice, parent)
+	: ChessEngine(ioDevice, parent),
+	  m_isThinking(false)
 {
 	m_notation = Chess::UciLongAlgebraic;
 	m_variants.append(Chess::Variant::Standard);
@@ -99,6 +100,8 @@ void UciEngine::applySettings(const EngineSettings& settings)
 
 void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 {
+	m_isThinking = false;
+
 	ChessPlayer::newGame(side, opponent);
 	m_moves.clear();
 	if (m_chessboard->variant().isRandom())
@@ -119,8 +122,7 @@ void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 
 void UciEngine::endGame(Chess::Result result)
 {
-	if (m_timer.isActive())
-		write("stop");
+	stopThinking();
 	ChessEngine::endGame(result);
 }
 
@@ -132,6 +134,7 @@ void UciEngine::makeMove(const Chess::Move& move)
 
 void UciEngine::go()
 {
+	m_isThinking = true;
 	if (m_isReady)
 		ping(PingMove);
 	else
@@ -175,7 +178,7 @@ void UciEngine::go()
 
 void UciEngine::stopThinking()
 {
-	if (m_isReady)
+	if (m_isThinking)
 		write("stop");
 }
 
@@ -267,6 +270,7 @@ void UciEngine::parseLine(const QString& line)
 
 	if (command == "bestmove")
 	{
+		m_isThinking = false;
 		if (!m_gameInProgress)
 		{
 			pong();

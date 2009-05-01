@@ -189,6 +189,7 @@ void XboardEngine::endGame(Chess::Result result)
 		if (!m_waitForMove)
 			m_gotResult = true;
 
+		stopThinking();
 		write("result " + result.toString());
 		write("force");
 		m_forceMode = true;
@@ -269,7 +270,7 @@ void XboardEngine::go()
 
 void XboardEngine::stopThinking()
 {
-	if (m_isReady && m_waitForMove)
+	if (m_waitForMove)
 		write("?");
 }
 
