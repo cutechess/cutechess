@@ -36,7 +36,7 @@ SOURCES += chessengine.cpp \
     enginesettings.cpp \
     humanplayer.cpp
 win32 { 
-    HEADERS += engineprocess.cpp \
+    HEADERS += engineprocess.h \
         pipereader.h
     SOURCES += engineprocess.cpp \
         pipereader.cpp
