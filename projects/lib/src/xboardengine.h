@@ -44,6 +44,8 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
 		void ping(PingType type);
+		bool inObserverMode() const;
+		void setObserverMode(bool enabled);
 		
 		void setConcurrency(int limit);
 		void setEgbbPath(const QString& path);

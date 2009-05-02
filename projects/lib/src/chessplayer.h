@@ -80,6 +80,22 @@ class LIB_EXPORT ChessPlayer : public QObject
 		void setSide(Chess::Side side);
 
 		/*!
+		 * Returns true if the player is in observer mode.
+		 * In this mode, the player doesn't start thinking and
+		 * doesn't make any moves unless excplicitly told so.
+		 *
+		 * \sa go()
+		 */
+		virtual bool inObserverMode() const;
+
+		/*!
+		 * Sets the observer mode to \a enabled.
+		 * \note Some player types are always in observer mode, in
+		 * which case this method does nothing.
+		 */
+		virtual void setObserverMode(bool enabled);
+
+		/*!
 		 * Sends the next move to the player.
 		 * If the player is in force/observer mode, the move wasn't
 		 * necessarily made by the opponent.

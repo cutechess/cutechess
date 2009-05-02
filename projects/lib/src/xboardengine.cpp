@@ -135,7 +135,6 @@ static QString variantString(Chess::Variant variant)
 void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 {
 	ChessPlayer::newGame(side, opponent);
-	m_forceMode = true;
 	m_drawOnNextMove = false;
 	m_gotResult = false;
 	m_waitForMove = false;
@@ -170,8 +169,7 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	write("post");
 	// Disable pondering
 	write("easy");
-	// Put the engine in observer mode
-	write("force");
+	setObserverMode(true);
 	
 	// Tell the opponent's type and name to the engine
 	if (m_ftName)
@@ -191,8 +189,7 @@ void XboardEngine::endGame(Chess::Result result)
 
 		stopThinking();
 		write("result " + result.toString());
-		write("force");
-		m_forceMode = true;
+		setObserverMode(true);
 	}
 	ChessEngine::endGame(result);
 
@@ -234,6 +231,18 @@ void XboardEngine::sendTimeLeft()
 	write(QString("time %1\notim %2").arg(csLeft).arg(ocsLeft));
 }
 
+bool XboardEngine::inObserverMode() const
+{
+	return m_forceMode;
+}
+
+void XboardEngine::setObserverMode(bool enabled)
+{
+	if (enabled)
+		write("force");
+	m_forceMode = enabled;
+}
+
 void XboardEngine::makeMove(const Chess::Move& move)
 {
 	if (!m_forceMode)
@@ -259,7 +268,7 @@ void XboardEngine::go()
 		return;
 	
 	m_waitForMove = true;
-	m_forceMode = false;
+	setObserverMode(false);
 	if (m_ftPing && m_isReady)
 		ping(PingMove);
 	else

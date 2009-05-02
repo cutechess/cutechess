@@ -160,15 +160,21 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 
 	m_moves.append(move);
 
-	playerToWait()->makeMove(move);
+	// Get the result before sending the move to the opponent
 	m_board->makeMove(move, true);
-	
 	m_result = m_board->result();
 	if (m_result.isNone())
 		adjudication(eval);
+	m_board->undoMove();
 
+	ChessPlayer* player = playerToWait();
+	if (!m_result.isNone())
+		player->setObserverMode(true);
+	player->makeMove(move);
+	m_board->makeMove(move, true);
+	
 	if (m_result.isNone())
-		playerToMove()->go();
+		player->go();
 	else
 		stop();
 	

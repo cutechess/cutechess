@@ -117,6 +117,16 @@ Chess::Side ChessPlayer::side() const
 	return m_side;
 }
 
+bool ChessPlayer::inObserverMode() const
+{
+	return true;
+}
+
+void ChessPlayer::setObserverMode(bool enabled)
+{
+	Q_UNUSED(enabled);
+}
+
 Chess::Side ChessPlayer::otherSide() const
 {
 	if (m_side == Chess::White)
