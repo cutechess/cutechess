@@ -332,6 +332,9 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Site/location name
 		else if (opt.name == "-site")
 			match->setSite(opt.value);
+		// Delay between games
+		else if (opt.name == "-wait")
+			match->setWait(opt.value.toInt());
 		else
 		{
 			qWarning() << "Invalid argument:" << opt.name;
@@ -422,7 +425,8 @@ int main(int argc, char* argv[])
 			       "			argument to save in a minimal PGN format.\n"
 			       "  -repeat		Play each opening twice so that both players get\n"
 			       "			to play it on both sides\n"
-			       "  -site <arg>		Set the site/location to <arg>\n\n"
+			       "  -site <arg>		Set the site/location to <arg>\n"
+			       "  -wait <n>		Wait <n> milliseconds between games. The default is 0.\n\n"
 			       "Engine options:\n"
 			       "  conf=<arg>		Use an engine with the name <arg> from Cute Chess'\n"
 			       "			configuration file.\n"

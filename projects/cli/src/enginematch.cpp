@@ -23,6 +23,7 @@
 #include <QFile>
 #include <QDataStream>
 #include <QDir>
+#include <QTimer>
 #include <QtDebug>
 
 
@@ -37,6 +38,7 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_drawScore(0),
 	  m_resignMoveCount(0),
 	  m_resignScore(0),
+	  m_wait(0),
 	  m_white(0),
 	  m_black(0),
 	  m_book(0),
@@ -156,6 +158,11 @@ void EngineMatch::setSite(const QString& site)
 void EngineMatch::setVariant(Chess::Variant variant)
 {
 	m_variant = variant;
+}
+
+void EngineMatch::setWait(int msecs)
+{
+	m_wait = msecs;
 }
 
 bool EngineMatch::initialize()
@@ -290,7 +297,12 @@ void EngineMatch::onGameEnded()
 	&&  result.code() != Chess::Result::NoResult
 	&&  result.code() != Chess::Result::WinByDisconnection
 	&&  result.code() != Chess::Result::WinByStalledConnection)
-		start();
+	{
+		if (m_wait <= 0)
+			start();
+		else
+			QTimer::singleShot(m_wait, this, SLOT(start()));
+	}
 	else
 	{
 		killEngines();

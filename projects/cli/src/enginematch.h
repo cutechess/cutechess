@@ -52,6 +52,7 @@ class EngineMatch : public QObject
 		void setResignThreshold(int moveCount, int score);
 		void setSite(const QString& site);
 		void setVariant(Chess::Variant variant);
+		void setWait(int msecs);
 		bool initialize();
 
 	public slots:
@@ -87,6 +88,7 @@ class EngineMatch : public QObject
 		int m_drawScore;
 		int m_resignMoveCount;
 		int m_resignScore;
+		int m_wait;
 		EngineData* m_white;
 		EngineData* m_black;
 		OpeningBook* m_book;
