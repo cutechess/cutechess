@@ -161,7 +161,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	m_moves.append(move);
 
 	// Get the result before sending the move to the opponent
-	m_board->makeMove(move, true);
+	m_board->makeMove(move, false);
 	m_result = m_board->result();
 	if (m_result.isNone())
 		adjudication(eval);
