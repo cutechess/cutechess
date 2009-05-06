@@ -54,7 +54,7 @@ OPTIONS
 
 -resign <n> <score>::
 	Adjudicate the game as a loss if an engine's score is at least
-	<score> centipawns below zero.
+	<score> centipawns below zero for at least <n> consecutive moves.
 
 -event <arg>::
 	Set the event name to <arg>.
