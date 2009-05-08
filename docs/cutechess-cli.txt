@@ -10,6 +10,7 @@ SYNOPSIS
 --------
 *cutechess-cli* -fcp ['ENGINE OPTIONS'] -scp ['ENGINE OPTIONS'] ['OPTIONS']
 
+*cutechess-cli* -both ['ENGINE OPTIONS'] ['OPTIONS']
 
 DESCRIPTION
 -----------
