@@ -40,7 +40,7 @@ OPTIONS
 
 -variant <arg>::
 	Set chess variant to <arg>. Must be 'Standard', 'Fischerandom',
-	'Capablanca', 'Gothic' or 'Caprandom'.
+	'Capablanca', 'Gothic' or 'Caparandom'.
 
 -book <file>::
 	Use <file> (Polyglot book file) as the opening book.
