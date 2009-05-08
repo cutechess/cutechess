@@ -403,7 +403,7 @@ int main(int argc, char* argv[])
 			       "Options:\n"
 			       "  --help		Display this information\n"
 			       "  --version		Display the version number\n"
-			       "  --engines		Display a list of configured engines\n\n"
+			       "  --engines		Display the list of configured engines and exit\n\n"
 			       "  -fcp <options>	Apply <options> to the first engine\n"
 			       "  -scp <options>	Apply <options> to the second engine\n"
 			       "  -both <options>	Apply <options> to both engines\n"

@@ -27,7 +27,7 @@ OPTIONS
 	Display help information.
 
 --engines::
-	Display a list of configured engines.
+	Display the list of configured engines and exit.
 
 -fcp <options>::
 	Apply <options> to the first engine.
