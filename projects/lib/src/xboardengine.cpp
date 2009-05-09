@@ -430,8 +430,15 @@ void XboardEngine::parseLine(const QString& line)
 
 		if (command == "1/2-1/2")
 		{
-			// The engine claims that its next move will draw the game
-			m_drawOnNextMove = true;
+			if (m_waitForMove)
+				// The engine claims that its next move will draw the game
+				m_drawOnNextMove = true;
+			else
+			{
+				qDebug("%s forfeits by invalid draw claim",
+				       qPrintable(name()));
+				emitForfeit(Chess::Result::WinByAdjudication);
+			}
 			return;
 		}
 		
