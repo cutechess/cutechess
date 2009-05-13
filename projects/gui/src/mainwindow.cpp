@@ -35,6 +35,8 @@
 
 MainWindow::MainWindow()
 {
+	setWindowTitle("Cute Chess");
+
 	QHBoxLayout* clockLayout = new QHBoxLayout();
 	for (int i = 0; i < 2; i++)
 	{
