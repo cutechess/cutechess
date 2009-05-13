@@ -43,6 +43,7 @@ class EngineManagementDialog : public QDialog, private Ui::EngineManagementDialo
 	
 	private slots:
 		void updateUi();
+		void updateSearch(const QString& terms);
 		void addEngine();
 		void configureEngine();
 		void removeEngine();

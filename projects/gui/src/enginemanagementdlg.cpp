@@ -35,8 +35,8 @@ EngineManagementDialog::EngineManagementDialog(
 
 	m_enginesList->setModel(m_filteredModel);
 
-	connect(m_filterEnginesEdit, SIGNAL(textChanged(const QString&)),
-		m_filteredModel, SLOT(setFilterWildcard(const QString&)));
+	connect(m_searchEngineEdit, SIGNAL(textChanged(const QString&)),
+		this, SLOT(updateSearch(const QString&)));
 	
 	// Signals for updating the UI
 	connect(m_enginesList->selectionModel(),
@@ -62,6 +62,12 @@ void EngineManagementDialog::updateUi()
 
 	m_removeBtn->setEnabled(
 		m_enginesList->selectionModel()->hasSelection());
+}
+
+void EngineManagementDialog::updateSearch(const QString& terms)
+{
+	m_filteredModel->setFilterWildcard(terms);
+	m_clearBtn->setEnabled(!terms.isEmpty());
 }
 
 void EngineManagementDialog::addEngine()
