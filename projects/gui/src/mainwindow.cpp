@@ -54,6 +54,11 @@ MainWindow::MainWindow()
 	mainLayout->addLayout(clockLayout);
 	mainLayout->addWidget(m_chessboardView);
 
+	// The content margins look stupid when used with dock widgets. Drop the
+	// margins except from the top so that the chess clocks have spacing
+	mainLayout->setContentsMargins(0,
+		style()->pixelMetric(QStyle::PM_LayoutTopMargin), 0, 0);
+
 	QWidget* mainWidget = new QWidget(this);
 	mainWidget->setLayout(mainLayout);
 	setCentralWidget(mainWidget);
