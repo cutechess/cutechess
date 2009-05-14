@@ -32,6 +32,7 @@
 #include "chessclock.h"
 #include "engineconfigurationmodel.h"
 #include "enginemanagementdlg.h"
+#include "plaintextlog.h"
 
 MainWindow::MainWindow()
 {
@@ -130,9 +131,10 @@ void MainWindow::createDockWindows()
 {
 	// Engine debug
 	QDockWidget* engineDebugDock = new QDockWidget(tr("Engine Debug"), this);
-	m_engineDebugTextEdit = new QTextEdit(engineDebugDock);
-	m_engineDebugTextEdit->setReadOnly(true);
-	engineDebugDock->setWidget(m_engineDebugTextEdit);
+	m_engineDebugLog = new PlainTextLog(engineDebugDock);
+	connect(m_engineDebugLog, SIGNAL(saveLogToFileRequest()), this,
+		SLOT(saveLogToFile()));
+	engineDebugDock->setWidget(m_engineDebugLog);
 
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
 }
@@ -215,7 +217,7 @@ void MainWindow::newGame()
 		connect(chessgame, SIGNAL(gameEnded()),
 		        m_chessClock[i], SLOT(stop()));
 		connect(player[i], SIGNAL(debugMessage(const QString&)),
-			m_engineDebugTextEdit, SLOT(append(const QString&)));
+			m_engineDebugLog, SLOT(append(const QString&)));
 	}
 
 	m_boardModel->setBoard(chessgame->board());
@@ -286,3 +288,57 @@ void MainWindow::openConfigurationFile()
 		qDebug() << "Cannot open configuration file:" << settings.fileName();
 }
 
+void MainWindow::saveLogToFile()
+{
+	PlainTextLog* log = qobject_cast<PlainTextLog*>(QObject::sender());
+	Q_ASSERT(log != 0);
+
+	QString fileName = QFileDialog::getSaveFileName(this, tr("Save Log"));
+	if (fileName.isEmpty())
+		return;
+
+	QFile file(fileName);
+	if (!file.open(QFile::WriteOnly | QFile::Text))
+	{
+		QFileInfo fileInfo(file);
+		QString completeBaseName = fileInfo.completeBaseName();
+
+		QMessageBox msgBox;
+		msgBox.setIcon(QMessageBox::Warning);
+		msgBox.setWindowTitle("Cute Chess");
+
+		switch (file.error())
+		{
+			case QFile::PermissionsError:
+				msgBox.setText(tr("The file \"%1\" could not be saved because \
+					of insufficient permissions.")
+					.arg(completeBaseName));
+
+				msgBox.setInformativeText(tr("Try selecting a location where you have \
+					the permissions to create files."));
+			break;
+
+			case QFile::TimeOutError:
+				msgBox.setText(tr("The file \"%1\" could not be saved because \
+					the operation timed out.")
+					.arg(completeBaseName));
+
+				msgBox.setInformativeText(tr("Try saving the file to a local or another \
+					network disk."));
+			break;
+
+			default:
+				msgBox.setText(tr("The file \"%1\" could not be saved.")
+					.arg(completeBaseName));
+
+				msgBox.setInformativeText(file.errorString());
+			break;
+		}
+		msgBox.exec();
+
+		return;
+	}
+
+	QTextStream out(&file);
+	out << log->toPlainText();
+}

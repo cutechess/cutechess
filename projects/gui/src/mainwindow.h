@@ -28,6 +28,7 @@ class ChessboardModel;
 class EngineProcess;
 class EngineConfigurationModel;
 class ChessClock;
+class PlainTextLog;
 
 /**
  * MainWindow
@@ -44,6 +45,7 @@ class MainWindow : public QMainWindow
 		void printGame();
 		void manageEngines();
 		void openConfigurationFile();
+		void saveLogToFile();
 
 	private:
 		void createActions();
@@ -70,7 +72,7 @@ class MainWindow : public QMainWindow
 		QAction* m_manageEnginesAct;
 		QAction* m_openConfigurationFileAct;
 
-		QTextEdit* m_engineDebugTextEdit;
+		PlainTextLog* m_engineDebugLog;
 
 };
 
