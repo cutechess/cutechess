@@ -5,6 +5,7 @@ HEADERS += chessboardview.h \
     engineconfigurationdlg.h \
     enginemanagementdlg.h \
     mainwindow.h \
+    plaintextlog.h \
     newgamedlg.h \
     promotiondlg.h \
     chessboardmodel.h
@@ -15,6 +16,7 @@ SOURCES += main.cpp \
     engineconfigurationdlg.cpp \
     enginemanagementdlg.cpp \
     mainwindow.cpp \
+    plaintextlog.cpp \
     newgamedlg.cpp \
     promotiondlg.cpp \
     chessboardmodel.cpp
