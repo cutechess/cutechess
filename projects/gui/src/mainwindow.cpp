@@ -217,7 +217,7 @@ void MainWindow::newGame()
 		connect(chessgame, SIGNAL(gameEnded()),
 		        m_chessClock[i], SLOT(stop()));
 		connect(player[i], SIGNAL(debugMessage(const QString&)),
-			m_engineDebugLog, SLOT(append(const QString&)));
+			m_engineDebugLog, SLOT(appendPlainText(const QString&)));
 	}
 
 	m_boardModel->setBoard(chessgame->board());
