@@ -128,14 +128,6 @@ void MainWindow::createToolBars()
 
 void MainWindow::createDockWindows()
 {
-	// Log
-	QDockWidget* logDock = new QDockWidget(tr("Log"), this);
-	QTextEdit* logTextEdit = new QTextEdit(logDock);
-	logTextEdit->setReadOnly(true);
-	logDock->setWidget(logTextEdit);
-
-	addDockWidget(Qt::BottomDockWidgetArea, logDock);
-
 	// Engine debug
 	QDockWidget* engineDebugDock = new QDockWidget(tr("Engine Debug"), this);
 	m_engineDebugTextEdit = new QTextEdit(engineDebugDock);
