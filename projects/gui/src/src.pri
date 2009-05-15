@@ -8,7 +8,8 @@ HEADERS += chessboardview.h \
     plaintextlog.h \
     newgamedlg.h \
     promotiondlg.h \
-    chessboardmodel.h
+    chessboardmodel.h \
+    movelistmodel.h
 SOURCES += main.cpp \
     chessboardview.cpp \
     chessclock.cpp \
@@ -19,4 +20,5 @@ SOURCES += main.cpp \
     plaintextlog.cpp \
     newgamedlg.cpp \
     promotiondlg.cpp \
-    chessboardmodel.cpp
+    chessboardmodel.cpp \
+    movelistmodel.cpp

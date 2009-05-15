@@ -25,6 +25,7 @@ class QAction;
 class QTextEdit;
 class ChessboardView;
 class ChessboardModel;
+class MoveListModel;
 class EngineProcess;
 class EngineConfigurationModel;
 class ChessClock;
@@ -62,6 +63,7 @@ class MainWindow : public QMainWindow
 
 		ChessboardView* m_chessboardView;
 		ChessboardModel* m_boardModel;
+		MoveListModel* m_moveListModel;
 		ChessClock* m_chessClock[2];
 
 		EngineConfigurationModel* m_engineConfigurations;

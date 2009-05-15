@@ -28,6 +28,7 @@
 #include "mainwindow.h"
 #include "chessboardview.h"
 #include "chessboardmodel.h"
+#include "movelistmodel.h"
 #include "newgamedlg.h"
 #include "chessclock.h"
 #include "engineconfigurationmodel.h"
@@ -48,6 +49,7 @@ MainWindow::MainWindow()
 	m_boardModel = new ChessboardModel(this);
 	m_chessboardView = new ChessboardView(this);
 	m_chessboardView->setModel(m_boardModel);
+	m_moveListModel = new MoveListModel(this);
 	connect(m_boardModel, SIGNAL(moveMade(const QModelIndex&, const QModelIndex&)),
 		m_chessboardView, SLOT(onMoveMade(const QModelIndex&, const QModelIndex&)));
 
@@ -137,6 +139,15 @@ void MainWindow::createDockWindows()
 	engineDebugDock->setWidget(m_engineDebugLog);
 
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
+
+	// Move list
+	QDockWidget* moveListDock = new QDockWidget(tr("Move List"), this);
+	QTreeView* moveListView = new QTreeView(moveListDock);
+	moveListView->setModel(m_moveListModel);
+	moveListView->setAlternatingRowColors(true);
+	moveListDock->setWidget(moveListView);
+
+	addDockWidget(Qt::RightDockWidgetArea, moveListDock);
 }
 
 void MainWindow::readSettings()
@@ -219,6 +230,7 @@ void MainWindow::newGame()
 		connect(player[i], SIGNAL(debugMessage(const QString&)),
 			m_engineDebugLog, SLOT(appendPlainText(const QString&)));
 	}
+	m_moveListModel->setGame(chessgame);
 
 	m_boardModel->setBoard(chessgame->board());
 	chessgame->start();
