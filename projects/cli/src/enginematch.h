@@ -26,6 +26,7 @@
 #include <enginesettings.h>
 #include <engineprocess.h>
 #include <pgnfile.h>
+#include <pgngame.h>
 
 class ChessGame;
 class OpeningBook;
@@ -98,7 +99,7 @@ class EngineMatch : public QObject
 		ChessGame* m_game;
 		Chess::Variant m_variant;
 		QVector<EngineData> m_engines;
-		QVector<Chess::Move> m_openingMoves;
+		QVector<PgnGame::MoveData> m_openingMoves;
 		QString m_fen;
 		QString m_event;
 		QString m_site;

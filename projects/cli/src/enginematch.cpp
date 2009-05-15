@@ -17,7 +17,6 @@
 
 #include "enginematch.h"
 #include <chessgame.h>
-#include <pgngame.h>
 #include <enginefactory.h>
 #include <polyglotbook.h>
 #include <QFile>

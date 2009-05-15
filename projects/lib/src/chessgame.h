@@ -42,7 +42,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		void setPlayer(Chess::Side, ChessPlayer* player);
 		bool setFenString(const QString& fen);
 		void setOpeningBook(const OpeningBook* book, int maxMoves = 1000);
-		void setOpeningMoves(const QVector<Chess::Move>& moves);
+		void setOpeningMoves(const QVector<PgnGame::MoveData>& moves);
 		void setDrawThreshold(int moveNumber, int score);
 		void setResignThreshold(int moveCount, int score);
 

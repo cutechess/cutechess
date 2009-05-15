@@ -29,8 +29,44 @@
 PgnGame::PgnGame(Chess::Variant variant)
 	: m_variant(variant),
 	  m_hasTags(false),
+	  m_startingSide(Chess::White),
 	  m_round(0)
 {
+}
+
+bool PgnGame::addMove(const Chess::Move& move,
+		      Chess::Board* board,
+		      const QString& comment)
+{
+	Q_ASSERT(board != 0);
+	if (!board->isLegalMove(move))
+		return false;
+
+	MoveData md;
+	md.move = move;
+	md.sanMove = board->moveString(move, Chess::StandardAlgebraic);
+	md.comment = comment;
+
+	m_moves.append(md);
+	return true;
+}
+
+bool PgnGame::addMove(const QString& moveString,
+		      Chess::Board* board,
+		      const QString& comment)
+{
+	Q_ASSERT(board != 0);
+
+	MoveData md;
+	md.move = board->moveFromString(moveString);
+	if (!board->isLegalMove(md.move))
+		return false;
+
+	md.sanMove = moveString;
+	md.comment = comment;
+
+	m_moves.append(md);
+	return true;
 }
 
 PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
@@ -188,8 +224,10 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
 			{
 				qDebug() << "Invalid FEN:" << m_fen;
 				m_fen.clear();
+				m_startingSide = Chess::White;
 				return PgnError;
 			}
+			m_startingSide = board->sideToMove();
 		}
 		else if (!minimal)
 		{
@@ -220,12 +258,8 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
 			board->setBoard(m_fen);
 		}
 		
-		Chess::Move move = board->moveFromString(str);
-		if (board->isLegalMove(move))
-		{
-			m_moves.append(move);
-			board->makeMove(move);
-		}
+		if (addMove(str, board))
+			board->makeMove(m_moves.last().move);
 		else
 		{
 			qDebug() << "Illegal move:" << str;
@@ -336,21 +370,22 @@ void PgnGame::write(const QString& filename, bool minimal) const
 			writeTag(out, "FEN", m_fen);
 		}
 		
-		Chess::Board board(m_variant);
-		board.setBoard(m_fen);
 		QString str;
 		int lineLength = 0;
 		int movenum = 0;
+		int side = m_startingSide;
 
 		for (int i = 0; i < m_moves.size(); i++)
 		{
+			const MoveData& md = m_moves.at(i);
+
 			str.clear();
-			if (board.sideToMove() == Chess::White || i == 0)
+			if (side == Chess::White || i == 0)
 				str = QString::number(++movenum) + ". ";
 			
-			str += board.moveString(m_moves[i], Chess::StandardAlgebraic);
-			if (!minimal && i < m_comments.size() && !m_comments[i].isEmpty())
-				str += QString(" {%1}").arg(m_comments[i]);
+			str += md.sanMove;
+			if (!minimal && !md.comment.isEmpty())
+				str += QString(" {%1}").arg(md.comment);
 
 			// Limit the lines to 80 characters
 			if (lineLength == 0 || lineLength + str.size() >= 80)
@@ -364,7 +399,7 @@ void PgnGame::write(const QString& filename, bool minimal) const
 				lineLength += str.size() + 1;
 			}
 
-			board.makeMove(m_moves[i]);
+			side = !side;
 		}
 		str = QString("{%1} %2").arg(m_result.description()).arg(m_result.toSimpleString());
 		if (lineLength + str.size() >= 80)
@@ -389,7 +424,7 @@ Chess::Result PgnGame::result() const
 	return m_result;
 }
 
-const QVector<Chess::Move>& PgnGame::moves() const
+const QVector<PgnGame::MoveData>& PgnGame::moves() const
 {
 	return m_moves;
 }

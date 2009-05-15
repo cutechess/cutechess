@@ -27,6 +27,17 @@ class PgnFile;
 class LIB_EXPORT PgnGame
 {
 	public:
+		/*! A struct for storing the game's move history. */
+		struct MoveData
+		{
+			/*! The move in the internal format. */
+			Chess::Move move;
+			/*! The move in Standard Algebraic notation. */
+			QString sanMove;
+			/*! A comment or annotation for the move. */
+			QString comment;
+		};
+
 		/*! Creates a new PgnGame object. */
 		explicit PgnGame(Chess::Variant variant = Chess::Variant::Standard);
 		
@@ -70,8 +81,8 @@ class LIB_EXPORT PgnGame
 		Chess::Result result() const;
 
 		/*! Returns the moves that were played in the game. */
-		const QVector<Chess::Move>& moves() const;
-		
+		const QVector<MoveData>& moves() const;
+
 		/*! Sets the event (eg. "My tournament"). */
 		void setEvent(const QString& event);
 
@@ -82,13 +93,41 @@ class LIB_EXPORT PgnGame
 		void setRound(int round);
 
 	protected:
+		/*!
+		 * Adds a new move to the game.
+		 *
+		 * \param move The move in the internal format.
+		 * \param board The board object that is used to convert the
+		 * move to SAN.
+		 * \param comment A comment/annotation for the move.
+		 *
+		 * \return True if the move is legal.
+		 */
+		bool addMove(const Chess::Move& move,
+			     Chess::Board* board,
+			     const QString& comment = QString());
+
+		/*!
+		 * Adds a new move to the game.
+		 *
+		 * \param moveString The move in Standard Algebraic notation.
+		 * \param board The board object that is used to convert the
+		 * move to the internal format.
+		 * \param comment A comment/annotation for the move.
+		 *
+		 * \return True if the move is legal.
+		 */
+		bool addMove(const QString& moveString,
+			     Chess::Board* board,
+			     const QString& comment = QString());
+		
 		QString m_fen;
-		QVector<Chess::Move> m_moves;
-		QStringList m_comments;
+		QVector<MoveData> m_moves;
 		Chess::Result m_result;
 		Chess::Variant m_variant;
 		TimeControl m_timeControl[2];
 		bool m_hasTags;
+		Chess::Side m_startingSide;
 
 	private:
 		enum PgnItem
@@ -112,4 +151,3 @@ class LIB_EXPORT PgnGame
 };
 
 #endif // PGNGAME_H
-

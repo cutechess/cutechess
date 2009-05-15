@@ -138,27 +138,24 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 		return;
 	}
 
+	QString comment;
+
 	// Save the evaluation as a PGN comment
 	const MoveEvaluation& eval = sender->evaluation();
-	if (eval.isEmpty())
-		m_comments.append(QString());
-	else
+	if (!eval.isEmpty())
 	{
-		QString str;
-
 		if (eval.depth() > 0)
 		{
 			if (eval.score() > 0)
-				str += "+";
-			str += QString::number((double)eval.score() / 100.0, 'f', 2) + '/';
-			str += QString::number(eval.depth()) + ' ';
+				comment += "+";
+			comment += QString::number((double)eval.score() / 100.0, 'f', 2) + '/';
+			comment += QString::number(eval.depth()) + ' ';
 		}
 		// Round the time to the nearest second
-		str += QString::number((eval.time() + 500) / 1000) + 's';
-		m_comments.append(str);
+		comment += QString::number((eval.time() + 500) / 1000) + 's';
 	}
 
-	m_moves.append(move);
+	addMove(move, m_board, comment);
 
 	// Get the result before sending the move to the opponent
 	m_board->makeMove(move, false);
@@ -216,6 +213,7 @@ bool ChessGame::setFenString(const QString& fen)
 {
 	if (!m_board->setBoard(fen))
 		return false;
+	m_startingSide = m_board->sideToMove();
 	m_fen = fen;
 	return true;
 }
@@ -234,14 +232,18 @@ void ChessGame::setOpeningBook(const OpeningBook* book, int maxMoves)
 		||  m_board->isRepeatMove(move))
 			break;
 		
+		addMove(move, m_board, "book");
+
 		m_board->makeMove(move);
 		if (!m_board->result().isNone())
+		{
+			m_moves.pop_back();
 			break;
-		m_moves.append(move);
+		}
 	}
 }
 
-void ChessGame::setOpeningMoves(const QVector<Chess::Move>& moves)
+void ChessGame::setOpeningMoves(const QVector<PgnGame::MoveData>& moves)
 {
 	Q_ASSERT(!m_gameInProgress);
 	m_moves = moves;
@@ -351,14 +353,14 @@ void ChessGame::start()
 	m_hasTags = true;
 	
 	// Play the forced opening moves first
-	foreach (const Chess::Move& move, m_moves)
+	foreach (const PgnGame::MoveData& md, m_moves)
 	{
+		Chess::Move move = md.move;
 		Q_ASSERT(m_board->isLegalMove(move));
 		
 		playerToMove()->makeBookMove(move);
 		playerToWait()->makeMove(move);
 		m_board->makeMove(move, true);
-		m_comments.append("book");
 		
 		emit moveMade(move);
 
