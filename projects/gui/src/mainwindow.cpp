@@ -327,7 +327,7 @@ void MainWindow::saveLogToFile()
 			case QFile::PermissionsError:
 				msgBox.setText(
 					tr("The file \"%1\" could not be saved because "
-					   "of insufficient permissions.")
+					   "of insufficient privileges.")
 					.arg(completeBaseName));
 
 				msgBox.setInformativeText(
