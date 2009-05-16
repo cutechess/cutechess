@@ -308,7 +308,9 @@ void MainWindow::saveLogToFile()
 	PlainTextLog* log = qobject_cast<PlainTextLog*>(QObject::sender());
 	Q_ASSERT(log != 0);
 
-	QString fileName = QFileDialog::getSaveFileName(this, tr("Save Log"));
+	QString fileName = QFileDialog::getSaveFileName(this, tr("Save Log"),
+		QString(), tr("Text Files (*.txt);;All Files (*.*)"));
+
 	if (fileName.isEmpty())
 		return;
 
