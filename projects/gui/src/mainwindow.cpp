@@ -324,6 +324,7 @@ void MainWindow::saveLogToFile()
 
 		switch (file.error())
 		{
+			case QFile::OpenError:
 			case QFile::PermissionsError:
 				msgBox.setText(
 					tr("The file \"%1\" could not be saved because "
