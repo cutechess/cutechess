@@ -325,21 +325,25 @@ void MainWindow::saveLogToFile()
 		switch (file.error())
 		{
 			case QFile::PermissionsError:
-				msgBox.setText(tr("The file \"%1\" could not be saved because \
-					of insufficient permissions.")
+				msgBox.setText(
+					tr("The file \"%1\" could not be saved because "
+					   "of insufficient permissions.")
 					.arg(completeBaseName));
 
-				msgBox.setInformativeText(tr("Try selecting a location where you have \
-					the permissions to create files."));
+				msgBox.setInformativeText(
+					tr("Try selecting a location where you have "
+					   "the permissions to create files."));
 			break;
 
 			case QFile::TimeOutError:
-				msgBox.setText(tr("The file \"%1\" could not be saved because \
-					the operation timed out.")
+				msgBox.setText(
+					tr("The file \"%1\" could not be saved because "
+					   "the operation timed out.")
 					.arg(completeBaseName));
 
-				msgBox.setInformativeText(tr("Try saving the file to a local or another \
-					network disk."));
+				msgBox.setInformativeText(
+					tr("Try saving the file to a local or another "
+					   "network disk."));
 			break;
 
 			default:
