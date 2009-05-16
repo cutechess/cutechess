@@ -316,7 +316,6 @@ void MainWindow::saveLogToFile()
 	if (!file.open(QFile::WriteOnly | QFile::Text))
 	{
 		QFileInfo fileInfo(file);
-		QString completeBaseName = fileInfo.completeBaseName();
 
 		QMessageBox msgBox;
 		msgBox.setIcon(QMessageBox::Warning);
@@ -329,7 +328,7 @@ void MainWindow::saveLogToFile()
 				msgBox.setText(
 					tr("The file \"%1\" could not be saved because "
 					   "of insufficient privileges.")
-					.arg(completeBaseName));
+					.arg(fileInfo.fileName()));
 
 				msgBox.setInformativeText(
 					tr("Try selecting a location where you have "
@@ -340,7 +339,7 @@ void MainWindow::saveLogToFile()
 				msgBox.setText(
 					tr("The file \"%1\" could not be saved because "
 					   "the operation timed out.")
-					.arg(completeBaseName));
+					.arg(fileInfo.fileName()));
 
 				msgBox.setInformativeText(
 					tr("Try saving the file to a local or another "
@@ -349,7 +348,7 @@ void MainWindow::saveLogToFile()
 
 			default:
 				msgBox.setText(tr("The file \"%1\" could not be saved.")
-					.arg(completeBaseName));
+					.arg(fileInfo.fileName()));
 
 				msgBox.setInformativeText(file.errorString());
 			break;
