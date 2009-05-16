@@ -87,8 +87,11 @@ class LIB_EXPORT Board : public QObject
 		
 		/*!
 		 * Makes a chess move on the board.
-		 * \param sendSignal If True, the squareChanged signal is sent
-		 * for every square that changes.
+		 * \param sendSignal If true, the \a moveMade signal is emitted
+		 * once, and the \a squareChanged signal for every changed square.
+		 *
+		 * \sa moveMade()
+		 * \sa squareChanged()
 		 */
 		void makeMove(const Move& move, bool sendSignal = false);
 		
@@ -106,6 +109,8 @@ class LIB_EXPORT Board : public QObject
 		
 		/*!
 		 * Converts a Move into a string.
+		 *
+		 * \note The board must be in a position where \a move can be made.
 		 * \sa moveFromString()
 		 */
 		QString moveString(const Move& move, MoveNotation notation);
@@ -116,6 +121,7 @@ class LIB_EXPORT Board : public QObject
 		 * The notation is automatically detected, and can be either
 		 * Long Algebraic notation or Standard Algebraic notation (SAN).
 		 *
+		 * \note The board must be in a position where the move can be made.
 		 * \sa moveString()
 		 */
 		Move moveFromString(const QString& str);
@@ -154,9 +160,22 @@ class LIB_EXPORT Board : public QObject
 		QVector<Move> legalMoves();
 	
 	signals:
+		/*!
+		 * This signal is emitted when a move is made on the board.
+		 * \sa makeMove()
+		 */
 		void moveMade(const Chess::Square& source,
 			      const Chess::Square& target);
+		/*!
+		 * This signal is emitted for every changed square when
+		 * a move is made on the board.
+		 * \sa makeMove()
+		 */
 		void squareChanged(const Chess::Square& square);
+		/*!
+		 * This signal is emitted when the board's contents are reset.
+		 * \sa setBoard()
+		 */
 		void boardReset();
 		
 	private:
