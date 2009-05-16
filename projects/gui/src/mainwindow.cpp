@@ -147,6 +147,9 @@ void MainWindow::createDockWindows()
 	moveListView->setAlternatingRowColors(true);
 	moveListDock->setWidget(moveListView);
 
+	connect(m_moveListModel, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+		moveListView, SLOT(scrollToBottom()));
+
 	addDockWidget(Qt::RightDockWidgetArea, moveListDock);
 }
 
