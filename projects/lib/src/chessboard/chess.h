@@ -31,23 +31,9 @@ enum FenNotation
 	ShredderFen	//!< Shredder FEN notation
 };
 
-/*!
-* \brief A generic chess square type consisting of a file and a rank.
-*
-* Square is mainly used as a middle-layer between the Board
-* class (which uses integers for squares) and the various string
-* conversion (notation) functions.
-*/
-struct Square
-{
-	//! Zero-based file of the square. 0 is the 'a' file.
-	int file;
-	//! Zero-based rank of the square. 0 is white's first rank
-	int rank;
-};
-
 class Variant;
 class Result;
+class Square;
 class Board;
 class Piece;
 class Move;

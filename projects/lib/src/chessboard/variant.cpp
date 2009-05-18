@@ -19,7 +19,6 @@
 #include <QtGlobal>
 #include <QVector>
 #include "chess.h"
-#include "notation.h"
 #include "piece.h"
 using namespace Chess;
 

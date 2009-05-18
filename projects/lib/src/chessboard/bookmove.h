@@ -2,6 +2,7 @@
 #define BOOKMOVE_H
 
 #include "chess.h"
+#include "square.h"
 
 /*!
  * \brief A variant and book-independent opening book move.

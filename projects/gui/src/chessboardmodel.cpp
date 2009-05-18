@@ -84,7 +84,7 @@ QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 	{
 		int file = index.column();
 		int rank = (rowCount(QModelIndex()) - 1) - index.row();
-		Chess::Square sq = { file, rank };
+		Chess::Square sq(file, rank);
 		Chess::Piece piece = m_board->pieceAt(sq);
 
 		if (!piece.isValid())
@@ -117,8 +117,8 @@ QVariant ChessboardModel::headerData(int section,
 
 QModelIndex ChessboardModel::squareToIndex(const Chess::Square& square) const
 {
-	int row = (rowCount(QModelIndex()) - 1) - square.rank;
-	int column = square.file;
+	int row = (rowCount(QModelIndex()) - 1) - square.rank();
+	int column = square.file();
 	return createIndex(row, column);
 }
 

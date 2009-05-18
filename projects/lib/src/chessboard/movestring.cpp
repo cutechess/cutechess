@@ -16,7 +16,6 @@
 */
 
 #include "chessboard.h"
-#include "notation.h"
 
 using namespace Chess;
 
@@ -65,8 +64,7 @@ QString Board::longAlgebraicMoveString(const Move& move) const
 	Square source = chessSquare(move.sourceSquare());
 	Square target = chessSquare(move.targetSquare());
 	
-	QString str = Notation::squareString(source) +
-	              Notation::squareString(target);
+	QString str = source.toString() + target.toString();
 	
 	if (move.promotion() != Piece::NoPiece)
 		str += Piece(Black, move.promotion()).toChar();
@@ -126,22 +124,22 @@ QString Board::sanMoveString(const Move& move)
 				continue;
 			if (move2.targetSquare() == target) {
 				Square square2 = chessSquare(source2);
-				if (square2.file != square.file)
+				if (square2.file() != square.file())
 					needFile = true;
-				else if (square2.rank != square.rank)
+				else if (square2.rank() != square.rank())
 					needRank = true;
 			}
 		}
 	}
 	if (needFile)
-		str += 'a' + square.file;
+		str += 'a' + square.file();
 	if (needRank)
-		str += '1' + square.rank;
+		str += '1' + square.rank();
 
 	if (capture.isValid())
 		str += 'x';
 	
-	str += Notation::squareString(chessSquare(target));
+	str += chessSquare(target).toString();
 
 	if (move.promotion()) {
 		str += '=';
@@ -160,8 +158,8 @@ Move Board::moveFromLongAlgebraicString(const QString& str) const
 	if (len < 4)
 		return Move(0, 0);
 	
-	Square sourceSq = Notation::square(str.mid(0, 2));
-	Square targetSq = Notation::square(str.mid(2, 2));
+	Square sourceSq(str.mid(0, 2));
+	Square targetSq(str.mid(2, 2));
 	if (!isValidSquare(sourceSq) || !isValidSquare(targetSq))
 		return Move(0, 0);
 	
@@ -234,8 +232,8 @@ Move Board::moveFromSanString(const QString& str)
 		return Move(source, target, Piece::NoPiece, cside);
 	}
 	
-	Square sourceSq = { -1, -1 };
-	Square targetSq = { -1, -1 };
+	Square sourceSq;
+	Square targetSq;
 	QString::const_iterator it = mstr.begin();
 	
 	// A SAN move can't start with the capture mark, and
@@ -251,7 +249,7 @@ Move Board::moveFromSanString(const QString& str)
 		piece.setSide(m_side);
 	if (piece.isEmpty()) {
 		piece = Piece(m_side, Piece::Pawn);
-		targetSq = Notation::square(mstr.mid(0, 2));
+		targetSq = mstr.mid(0, 2);
 		if (isValidSquare(targetSq))
 			it += 2;
 	} else
@@ -261,16 +259,16 @@ Move Board::moveFromSanString(const QString& str)
 	
 	if (!isValidSquare(targetSq)) {
 		// Source square's file
-		sourceSq.file = it->toAscii() - 'a';
-		if (sourceSq.file < 0 || sourceSq.file >= m_width)
-			sourceSq.file = -1;
+		sourceSq.setFile(it->toAscii() - 'a');
+		if (sourceSq.file() < 0 || sourceSq.file() >= m_width)
+			sourceSq.setFile(-1);
 		else if (++it == mstr.end())
 			return Move(0, 0);
 
 		// Source square's rank
 		if (it->isDigit()) {
-			sourceSq.rank = it->toAscii() - '1';
-			if (sourceSq.rank < 0 || sourceSq.rank >= m_height)
+			sourceSq.setRank(it->toAscii() - '1');
+			if (sourceSq.rank() < 0 || sourceSq.rank() >= m_height)
 				return Move(0, 0);
 			++it;
 		}
@@ -279,8 +277,8 @@ Move Board::moveFromSanString(const QString& str)
 			// actually the target square.
 			if (isValidSquare(sourceSq)) {
 				targetSq = sourceSq;
-				sourceSq.rank = -1;
-				sourceSq.file = -1;
+				sourceSq.setRank(-1);
+				sourceSq.setFile(-1);
 			} else
 				return Move(0, 0);
 		}
@@ -295,7 +293,7 @@ Move Board::moveFromSanString(const QString& str)
 		if (!isValidSquare(targetSq)) {
 			if (it + 1 == mstr.end())
 				return Move(0, 0);
-			targetSq = Notation::square(mstr.mid(it - mstr.begin(), 2));
+			targetSq = mstr.mid(it - mstr.begin(), 2);
 			it += 2;
 		}
 	}
@@ -337,9 +335,9 @@ Move Board::moveFromSanString(const QString& str)
 		if (move.targetSquare() != target)
 			continue;
 		Square sourceSq2 = chessSquare(move.sourceSquare());
-		if (sourceSq.rank != -1 && sourceSq2.rank != sourceSq.rank)
+		if (sourceSq.rank() != -1 && sourceSq2.rank() != sourceSq.rank())
 			continue;
-		if (sourceSq.file != -1 && sourceSq2.file != sourceSq.file)
+		if (sourceSq.file() != -1 && sourceSq2.file() != sourceSq.file())
 			continue;
 		// Castling moves were handled earlier
 		if (move.castlingSide() != -1)

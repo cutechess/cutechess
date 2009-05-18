@@ -16,7 +16,6 @@
 */
 
 #include "chessboard.h"
-#include "notation.h"
 #include "zobrist.h"
 #include "bookmove.h"
 
@@ -181,25 +180,22 @@ Square Board::chessSquare(int index) const
 {
 	int file = (index % m_arwidth) - 1;
 	int rank = (m_height - 1) - ((index / m_arwidth) - 2);
-	Square square = { file, rank };
-	
-	return square;
+	return Square(file, rank);
 }
 
 int Board::squareIndex(const Square& square) const
 {
-	if (square.file < 0 || square.file >= m_width
-	||  square.rank < 0 || square.rank >= m_height)
+	if (!isValidSquare(square))
 		return 0;
 	
-	int rank = (m_height - 1) - square.rank;
-	return (rank + 2) * m_arwidth + 1 + square.file;
+	int rank = (m_height - 1) - square.rank();
+	return (rank + 2) * m_arwidth + 1 + square.file();
 }
 
 bool Board::isValidSquare(const Chess::Square& square) const
 {
-	if (square.file < 0 || square.file >= m_width
-	||  square.rank < 0 || square.rank >= m_height)
+	if (!square.isValid()
+	||  square.file() >= m_width || square.rank() >= m_height)
 		return false;
 	return true;
 }

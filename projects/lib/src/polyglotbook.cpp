@@ -23,10 +23,10 @@ static BookMove moveFromBits(quint16 pgMove)
 {
 	using Chess::Square;
 	
-	Square target = { (quint16)(pgMove << 13) >> 13,
-	                  (quint16)(pgMove << 10) >> 13 };
-	Square source = { (quint16)(pgMove << 7) >> 13,
-	                  (quint16)(pgMove << 4) >> 13 };
+	Square target((quint16)(pgMove << 13) >> 13,
+		      (quint16)(pgMove << 10) >> 13);
+	Square source((quint16)(pgMove << 7) >> 13,
+		      (quint16)(pgMove << 4) >> 13);
 	int promotion = (quint16)(pgMove << 1) >> 13;
 	if (promotion > 0)
 		promotion++;
@@ -41,8 +41,8 @@ static quint16 moveToBits(const BookMove& move)
 	const Square& src = move.sourceSquare();
 	const Square& trg = move.targetSquare();
 	
-	quint16 target = trg.file | (trg.rank << 3);
-	quint16 source = (src.file << 6) | (src.rank << 9);
+	quint16 target = trg.file() | (trg.rank() << 3);
+	quint16 source = (src.file() << 6) | (src.rank() << 9);
 	quint16 promotion = 0;
 	if (move.promotion() > 0)
 		promotion = (move.promotion() - 1) << 12;

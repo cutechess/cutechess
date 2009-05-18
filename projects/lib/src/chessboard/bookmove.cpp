@@ -19,12 +19,8 @@
 
 
 BookMove::BookMove()
+	: m_promotion(0)
 {
-	m_sourceSquare.file = -1;
-	m_sourceSquare.rank = -1;
-	m_targetSquare.file = -1;
-	m_targetSquare.rank = -1;
-	m_promotion = 0;
 }
 
 BookMove::BookMove(const Chess::Square& sourceSquare,
@@ -39,11 +35,9 @@ BookMove::BookMove(const Chess::Square& sourceSquare,
 
 bool BookMove::operator==(const BookMove& move) const
 {
-	if (m_sourceSquare.file == move.sourceSquare().file
-	&&  m_sourceSquare.rank == move.sourceSquare().rank
-	&&  m_targetSquare.file == move.targetSquare().file
-	&&  m_targetSquare.rank == move.targetSquare().rank
-	&&  m_promotion == move.promotion())
+	if (m_sourceSquare == move.m_sourceSquare
+	&&  m_targetSquare == move.m_targetSquare
+	&&  m_promotion == move.m_promotion)
 		return true;
 	return false;
 }

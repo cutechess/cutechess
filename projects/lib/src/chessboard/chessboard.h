@@ -8,6 +8,7 @@
 #include <QStringList>
 #include "chess.h"
 #include "piece.h"
+#include "square.h"
 #include "result.h"
 #include "variant.h"
 #include "chessmove.h"

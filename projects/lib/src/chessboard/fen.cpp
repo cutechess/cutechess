@@ -17,7 +17,6 @@
 
 #include <QStringList>
 #include "chessboard.h"
-#include "notation.h"
 
 using namespace Chess;
 
@@ -201,7 +200,7 @@ bool Board::setBoard(const QString& fen)
 	++token;
 	int epSq = 0;
 	if (*token != "-") {
-		epSq = squareIndex(Notation::square(*token));
+		epSq = squareIndex(*token);
 		if (epSq == 0)
 			return false;
 		
@@ -283,7 +282,7 @@ QString Board::castlingRightsString(FenNotation notation) const
 			// If the castling square is ambiguous, then we can't
 			// use 'K' or 'Q'. Instead we'll use the square's file.
 			if (ambiguous || notation == ShredderFen)
-				c = QChar('a' + chessSquare(rs).file);
+				c = QChar('a' + chessSquare(rs).file());
 			else {
 				if (cside == 0)
 					c = 'q';
@@ -343,10 +342,9 @@ QString Board::fenString(FenNotation notation) const
 	fen += castlingRightsString(notation) + ' ';
 	
 	// En-passant square
-	if (m_enpassantSquare != 0) {
-		Square tmp = chessSquare(m_enpassantSquare);
-		fen += Notation::squareString(tmp);
-	} else
+	if (m_enpassantSquare != 0)
+		fen += chessSquare(m_enpassantSquare).toString();
+	else
 		fen += '-';
 	
 	// Reversible halfmove count

@@ -76,13 +76,13 @@ void ChessboardView::mouseReleaseEvent(QMouseEvent* event)
 	{
 		m_dragging = false;
 		Chess::Square src;
-		src.file = m_dragSquare.column();
-		src.rank = model()->rowCount() - m_dragSquare.row() - 1;
+		src.setFile(m_dragSquare.column());
+		src.setRank(model()->rowCount() - m_dragSquare.row() - 1);
 
 		QModelIndex dragTarget = indexAt(event->pos());
 		Chess::Square trg;
-		trg.file = dragTarget.column();
-		trg.rank = model()->rowCount() - dragTarget.row() - 1;
+		trg.setFile(dragTarget.column());
+		trg.setRank(model()->rowCount() - dragTarget.row() - 1);
 
 		BookMove bookMove(src, trg, Chess::Piece::NoPiece);
 		emit humanMove(bookMove);
