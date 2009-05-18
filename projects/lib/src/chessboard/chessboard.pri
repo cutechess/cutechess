@@ -7,7 +7,8 @@ HEADERS += bookmove.h \
     result.h \
     variant.h \
     zobrist.h \
-    piece.h
+    piece.h \
+    square.h
 SOURCES += bookmove.cpp \
     chessboard.cpp \
     chessmove.cpp \
@@ -18,4 +19,5 @@ SOURCES += bookmove.cpp \
     result.cpp \
     variant.cpp \
     zobrist.cpp \
-    piece.cpp
+    piece.cpp \
+    square.cpp
