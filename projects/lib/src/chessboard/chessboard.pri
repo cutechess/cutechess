@@ -1,5 +1,5 @@
 DEPENDPATH += $$PWD
-HEADERS += bookmove.h \
+HEADERS += genericmove.h \
     chessboard.h \
     chess.h \
     chessmove.h \
@@ -8,7 +8,7 @@ HEADERS += bookmove.h \
     zobrist.h \
     piece.h \
     square.h
-SOURCES += bookmove.cpp \
+SOURCES += genericmove.cpp \
     chessboard.cpp \
     chessmove.cpp \
     fen.cpp \

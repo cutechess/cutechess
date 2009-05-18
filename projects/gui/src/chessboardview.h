@@ -21,7 +21,7 @@
 #include <QAbstractItemView>
 #include <QTimer>
 class QSvgRenderer;
-class BookMove;
+class GenericMove;
 
 class ChessboardView : public QAbstractItemView
 {
@@ -40,7 +40,7 @@ class ChessboardView : public QAbstractItemView
 		QColor darkSquareColor() const;
 
 	signals:
-		void humanMove(const BookMove& bookMove) const;
+		void humanMove(const GenericMove& move) const;
 
 	public slots:
 		void onMoveMade(const QModelIndex& source, const QModelIndex& target);

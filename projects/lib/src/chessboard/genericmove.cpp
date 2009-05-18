@@ -15,44 +15,43 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "bookmove.h"
+#include "genericmove.h"
 
 
-BookMove::BookMove()
+GenericMove::GenericMove()
 	: m_promotion(0)
 {
 }
 
-BookMove::BookMove(const Chess::Square& sourceSquare,
-                   const Chess::Square& targetSquare,
-                   int promotion)
+GenericMove::GenericMove(const Chess::Square& sourceSquare,
+			 const Chess::Square& targetSquare,
+			 int promotion)
 	: m_sourceSquare(sourceSquare),
 	  m_targetSquare(targetSquare),
 	  m_promotion(promotion)
 {
-
 }
 
-bool BookMove::operator==(const BookMove& move) const
+bool GenericMove::operator==(const GenericMove& other) const
 {
-	if (m_sourceSquare == move.m_sourceSquare
-	&&  m_targetSquare == move.m_targetSquare
-	&&  m_promotion == move.m_promotion)
+	if (m_sourceSquare == other.m_sourceSquare
+	&&  m_targetSquare == other.m_targetSquare
+	&&  m_promotion == other.m_promotion)
 		return true;
 	return false;
 }
 
-const Chess::Square& BookMove::sourceSquare() const
+const Chess::Square& GenericMove::sourceSquare() const
 {
 	return m_sourceSquare;
 }
 
-const Chess::Square& BookMove::targetSquare() const
+const Chess::Square& GenericMove::targetSquare() const
 {
 	return m_targetSquare;
 }
 
-int BookMove::promotion() const
+int GenericMove::promotion() const
 {
 	return m_promotion;
 }

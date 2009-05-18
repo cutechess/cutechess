@@ -45,12 +45,12 @@ bool HumanPlayer::isHuman() const
 	return true;
 }
 
-void HumanPlayer::onHumanMove(const BookMove& bookMove)
+void HumanPlayer::onHumanMove(const GenericMove& move)
 {
 	if (!m_timer.isActive())
 		return;
 
-	Chess::Move move = m_chessboard->moveFromBook(bookMove);
-	if (m_chessboard->isLegalMove(move))
-		emitMove(move);
+	Chess::Move boardMove = m_chessboard->moveFromBook(move);
+	if (m_chessboard->isLegalMove(boardMove))
+		emitMove(boardMove);
 }

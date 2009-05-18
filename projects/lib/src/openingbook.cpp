@@ -94,7 +94,7 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 				Square src = board->chessSquare(srcMove.sourceSquare());
 				Square trg = board->chessSquare(srcMove.targetSquare());
 				int prom = srcMove.promotion();
-				Entry entry = { BookMove(src, trg, prom), weight };
+				Entry entry = { GenericMove(src, trg, prom), weight };
 				addEntry(entry, board->key());
 			}
 
@@ -108,9 +108,9 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 	return true;
 }
 
-BookMove OpeningBook::move(quint64 key) const
+GenericMove OpeningBook::move(quint64 key) const
 {
-	BookMove move;
+	GenericMove move;
 	
 	// There can be multiple entries/moves with the same key.
 	// We need to find them all to choose the best one

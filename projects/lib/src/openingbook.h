@@ -4,7 +4,7 @@
 #include <QtGlobal>
 #include <QMultiMap>
 #include "chessboard/variant.h"
-#include "chessboard/bookmove.h"
+#include "chessboard/genericmove.h"
 
 class QString;
 class QDataStream;
@@ -45,7 +45,7 @@ class LIB_EXPORT OpeningBook
 		 * returned. Popular moves have a higher probablity of being
 		 * selected than unpopular ones.
 		 */
-		BookMove move(quint64 key) const;
+		GenericMove move(quint64 key) const;
 
 	protected:
 		friend QDataStream& operator>>(QDataStream& in, OpeningBook* book);
@@ -61,7 +61,7 @@ class LIB_EXPORT OpeningBook
 		struct Entry
 		{
 			/*! A book move. */
-			BookMove move;
+			GenericMove move;
 			/*!
 			 * A weight or score, usually based on popularity
 			 * of the move. The higher the weight, the more

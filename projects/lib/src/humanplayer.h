@@ -19,7 +19,7 @@
 #define HUMANPLAYER_H
 
 #include "chessplayer.h"
-class BookMove;
+class GenericMove;
 
 class LIB_EXPORT HumanPlayer : public ChessPlayer
 {
@@ -35,7 +35,7 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		bool isHuman() const;
 
 	public slots:
-		void onHumanMove(const BookMove& bookMove);
+		void onHumanMove(const GenericMove& move);
 };
 
 #endif // HUMANPLAYER_H

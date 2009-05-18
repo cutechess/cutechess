@@ -13,7 +13,7 @@
 #include "variant.h"
 #include "chessmove.h"
 
-struct BookMove;
+class GenericMove;
 namespace Chess {
 
 /*!
@@ -129,7 +129,7 @@ class LIB_EXPORT Board : public QObject
 		Move moveFromString(const QString& str);
 		
 		/*! Converts an opening book move into a Move. */
-		Move moveFromBook(const BookMove& bookMove) const;
+		Move moveFromBook(const GenericMove& bookMove) const;
 		
 		/*! Returns a vector of played moves. */
 		QVector<Move> moveHistory() const;

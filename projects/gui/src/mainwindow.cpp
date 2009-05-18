@@ -215,8 +215,8 @@ void MainWindow::newGame()
 		else
 		{
 			player[i] = new HumanPlayer(this);
-			connect(m_chessboardView, SIGNAL(humanMove(const BookMove&)),
-				player[i], SLOT(onHumanMove(const BookMove&)));
+			connect(m_chessboardView, SIGNAL(humanMove(const GenericMove&)),
+				player[i], SLOT(onHumanMove(const GenericMove&)));
 		}
 
 		player[i]->setTimeControl(tc);

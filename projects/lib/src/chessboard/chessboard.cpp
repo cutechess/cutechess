@@ -17,7 +17,7 @@
 
 #include "chessboard.h"
 #include "zobrist.h"
-#include "bookmove.h"
+#include "genericmove.h"
 
 using namespace Chess;
 
@@ -200,7 +200,7 @@ bool Board::isValidSquare(const Chess::Square& square) const
 	return true;
 }
 
-Move Board::moveFromBook(const BookMove& bookMove) const
+Move Board::moveFromBook(const GenericMove& bookMove) const
 {
 	int source = squareIndex(bookMove.sourceSquare());
 	int target = squareIndex(bookMove.targetSquare());

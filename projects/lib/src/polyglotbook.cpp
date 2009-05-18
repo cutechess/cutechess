@@ -19,7 +19,7 @@
 #include "polyglotbook.h"
 
 
-static BookMove moveFromBits(quint16 pgMove)
+static GenericMove moveFromBits(quint16 pgMove)
 {
 	using Chess::Square;
 	
@@ -31,10 +31,10 @@ static BookMove moveFromBits(quint16 pgMove)
 	if (promotion > 0)
 		promotion++;
 	
-	return BookMove(source, target, promotion);
+	return GenericMove(source, target, promotion);
 }
 
-static quint16 moveToBits(const BookMove& move)
+static quint16 moveToBits(const GenericMove& move)
 {
 	using Chess::Square;
 	

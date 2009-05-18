@@ -192,7 +192,7 @@ Chess::Move ChessGame::bookMove(const OpeningBook* book)
 	if (book == 0)
 		return Chess::Move(0, 0);
 	
-	BookMove bookMove = book->move(m_board->key());
+	GenericMove bookMove = book->move(m_board->key());
 	return m_board->moveFromBook(bookMove);
 }
 
