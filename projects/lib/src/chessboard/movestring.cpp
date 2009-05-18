@@ -83,7 +83,8 @@ QString Board::sanMoveString(const Move& move)
 	
 	char checkOrMate = 0;
 	makeMove(move);
-	if (inCheck(m_side)) {
+	if (inCheck(m_side))
+	{
 		if (legalMoves().empty())
 			checkOrMate = '#';
 		else
@@ -94,14 +95,18 @@ QString Board::sanMoveString(const Move& move)
 	bool needRank = false;
 	bool needFile = false;
 	
-	if (piece.type() == Piece::Pawn) {
+	if (piece.type() == Piece::Pawn)
+	{
 		if (target == m_enpassantSquare)
 			capture = Piece(!m_side, Piece::Pawn);
 		if (capture.isValid())
 			needFile = true;
-	} else if (piece.type() == Piece::King) {
+	}
+	else if (piece.type() == Piece::King)
+	{
 		int cside = move.castlingSide();
-		if (cside != -1) {
+		if (cside != -1)
+		{
 			if (cside == QueenSide)
 				str = "O-O-O";
 			else
@@ -109,9 +114,12 @@ QString Board::sanMoveString(const Move& move)
 			if (checkOrMate != 0)
 				str += checkOrMate;
 			return str;
-		} else
+		}
+		else
 			str += piece.toChar().toUpper();
-	} else {
+	}
+	else	// not king or pawn
+	{
 		str += piece.toChar().toUpper();
 		QVector<Move> moves = legalMoves();
 		
@@ -122,7 +130,8 @@ QString Board::sanMoveString(const Move& move)
 				continue;
 			if (m_squares[source2] != piece)
 				continue;
-			if (move2.targetSquare() == target) {
+			if (move2.targetSquare() == target)
+			{
 				Square square2 = chessSquare(source2);
 				if (square2.file() != square.file())
 					needFile = true;
@@ -141,7 +150,8 @@ QString Board::sanMoveString(const Move& move)
 	
 	str += chessSquare(target).toString();
 
-	if (move.promotion()) {
+	if (move.promotion())
+	{
 		str += '=';
 		str += Piece(White, move.promotion()).toChar();
 	}
@@ -164,7 +174,8 @@ Move Board::moveFromLongAlgebraicString(const QString& str) const
 		return Move(0, 0);
 	
 	int promotion = Piece::NoPiece;
-	if (len > 4) {
+	if (len > 4)
+	{
 		promotion = Piece(str[len - 1]).type();
 		if (promotion == Piece::NoPiece)
 			return Move(0, 0);
@@ -174,7 +185,8 @@ Move Board::moveFromLongAlgebraicString(const QString& str) const
 	int target = squareIndex(targetSq);
 	
 	int castlingSide = -1;
-	if (m_squares[source] == Piece(m_side, Piece::King)) {
+	if (m_squares[source] == Piece(m_side, Piece::King))
+	{
 		// If the king tries to capture its own rook, it's
 		// a castling move in UciLongAlgebraic format.
 		const int* rs = &m_castlingRights.rookSquare[m_side][0];
@@ -210,7 +222,8 @@ Move Board::moveFromSanString(const QString& str)
 	
 	// Ignore check/mate/strong move/blunder notation
 	while (mstr.endsWith('+') || mstr.endsWith('#')
-	||     mstr.endsWith('!') || mstr.endsWith('?')) {
+	||     mstr.endsWith('!') || mstr.endsWith('?'))
+	{
 		mstr.chop(1);
 	}
 	
@@ -218,7 +231,8 @@ Move Board::moveFromSanString(const QString& str)
 		return Move(0, 0);
 
 	// Castling
-	if (mstr.startsWith("O-O")) {
+	if (mstr.startsWith("O-O"))
+	{
 		int cside;
 		if (mstr == "O-O")
 			cside = KingSide;
@@ -247,17 +261,20 @@ Move Board::moveFromSanString(const QString& str)
 		piece = Piece::NoPiece;
 	else
 		piece.setSide(m_side);
-	if (piece.isEmpty()) {
+	if (piece.isEmpty())
+	{
 		piece = Piece(m_side, Piece::Pawn);
 		targetSq = mstr.mid(0, 2);
 		if (isValidSquare(targetSq))
 			it += 2;
-	} else
+	}
+	else
 		++it;
 	
 	bool stringIsCapture = false;
 	
-	if (!isValidSquare(targetSq)) {
+	if (!isValidSquare(targetSq))
+	{
 		// Source square's file
 		sourceSq.setFile(it->toAscii() - 'a');
 		if (sourceSq.file() < 0 || sourceSq.file() >= m_width)
@@ -266,31 +283,37 @@ Move Board::moveFromSanString(const QString& str)
 			return Move(0, 0);
 
 		// Source square's rank
-		if (it->isDigit()) {
+		if (it->isDigit())
+		{
 			sourceSq.setRank(it->toAscii() - '1');
 			if (sourceSq.rank() < 0 || sourceSq.rank() >= m_height)
 				return Move(0, 0);
 			++it;
 		}
-		if (it == mstr.end()) {
+		if (it == mstr.end())
+		{
 			// What we thought was the source square, was
 			// actually the target square.
-			if (isValidSquare(sourceSq)) {
+			if (isValidSquare(sourceSq))
+			{
 				targetSq = sourceSq;
 				sourceSq.setRank(-1);
 				sourceSq.setFile(-1);
-			} else
+			}
+			else
 				return Move(0, 0);
 		}
 		// Capture
-		else if (*it == 'x') {
+		else if (*it == 'x')
+		{
 			if(++it == mstr.end())
 				return Move(0, 0);
 			stringIsCapture = true;
 		}
 		
 		// Target square
-		if (!isValidSquare(targetSq)) {
+		if (!isValidSquare(targetSq))
+		{
 			if (it + 1 == mstr.end())
 				return Move(0, 0);
 			targetSq = mstr.mid(it - mstr.begin(), 2);

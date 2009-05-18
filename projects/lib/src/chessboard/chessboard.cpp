@@ -85,7 +85,8 @@ void Board::initZobristKey()
 {
 	m_key = 0;
 	
-	for (int side = White; side <= Black; side++) {
+	for (int side = White; side <= Black; side++)
+	{
 		const int* rookSq = m_castlingRights.rookSquare[side];
 		if (rookSq[QueenSide] != 0)
 			m_key ^= Zobrist::castling(side, rookSq[QueenSide]);
@@ -93,7 +94,8 @@ void Board::initZobristKey()
 			m_key ^= Zobrist::castling(side, rookSq[KingSide]);
 	}
 
-	for (int sq = 0; sq < m_squares.size(); sq++) {
+	for (int sq = 0; sq < m_squares.size(); sq++)
+	{
 		Piece piece = m_squares[sq];
 		if (piece.isValid())
 			m_key ^= Zobrist::piece(piece, sq);
@@ -156,10 +158,12 @@ QVector<Move> Board::moveHistory() const
 void Board::print() const
 {
 	int i = m_arwidth * 2;
-	for (int y = 0; y < m_height; y++) {
+	for (int y = 0; y < m_height; y++)
+	{
 		i++;
 		QString file;
-		for (int x = 0; x < m_width; x++) {
+		for (int x = 0; x < m_width; x++)
+		{
 			Piece pc = m_squares[i];
 			QChar c = '.';
 			
@@ -246,7 +250,8 @@ bool Board::inCheck(int side, int square) const
 	foreach (int i, m_knightOffsets)
 	{
 		attacker = m_squares[square + i].code();
-		switch (attacker * sign) {
+		switch (attacker * sign)
+		{
 		case -Piece::Knight:
 		case -Piece::Archbishop:
 		case -Piece::Chancellor:
@@ -261,8 +266,10 @@ bool Board::inCheck(int side, int square) const
 		if (targetSquare == m_kingSquare[!side])
 			return true;
 		while ((attacker = m_squares[targetSquare].code()) != Piece::WallPiece
-		&&      attacker * sign <= 0) {
-			switch (attacker * sign) {
+		&&      attacker * sign <= 0)
+		{
+			switch (attacker * sign)
+			{
 			case -Piece::Bishop:
 			case -Piece::Queen:
 			case -Piece::Archbishop:
@@ -281,8 +288,10 @@ bool Board::inCheck(int side, int square) const
 		if (targetSquare == m_kingSquare[!side])
 			return true;
 		while ((attacker = m_squares[targetSquare].code()) != Piece::WallPiece
-		&&      attacker * sign <= 0) {
-			switch (attacker * sign) {
+		&&      attacker * sign <= 0)
+		{
+			switch (attacker * sign)
+			{
 			case -Piece::Rook:
 			case -Piece::Queen:
 			case -Piece::Chancellor:
@@ -318,18 +327,21 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	
 	m_key ^= Zobrist::piece(m_squares[source], source);
 	
-	if (epSq != 0) {
+	if (epSq != 0)
+	{
 		m_key ^= Zobrist::enpassant(epSq);
 		m_enpassantSquare = 0;
 	}
 	
 	bool isReversible = true;
 	bool clearSource = true;
-	if (piece == Piece::King) {
+	if (piece == Piece::King)
+	{
 		m_kingSquare[m_side] = target;
 		
 		// In case of a castling move, make the rook's move
-		if (move.castlingSide() != -1) {
+		if (move.castlingSide() != -1)
+		{
 			int cside = move.castlingSide();
 			rookSource = rookSq[cside];
 			rookTarget = (cside == QueenSide) ? target + 1 : target -1;
@@ -344,36 +356,49 @@ void Board::makeMove(const Move& move, bool sendSignal)
 			isReversible = false;
 		}
 		// Any king move removes all castling rights
-		for (int i = QueenSide; i <= KingSide; i++) {
+		for (int i = QueenSide; i <= KingSide; i++)
+		{
 			int& rs = rookSq[i];
-			if (rs != 0) {
+			if (rs != 0)
+			{
 				m_key ^= Zobrist::castling(m_side, rs);
 				rs = 0;
 			}
 		}
-	} else if (piece == Piece::Pawn) {
+	}
+	else if (piece == Piece::Pawn)
+	{
 		isReversible = false;
 		Piece opPawn(!m_side, Piece::Pawn);
 		
 		// Make an en-passant capture
-		if (target == epSq) {
+		if (target == epSq)
+		{
 			epTarget = target + m_arwidth * m_sign;
 			m_key ^= Zobrist::piece(opPawn, epTarget);
 			m_squares[epTarget] = Piece::NoPiece;
+		}
 		// Push a pawn two squares ahead, creating an en-passant
 		// opportunity for the opponent.
-		} else if ((source - target) * m_sign == m_arwidth * 2) {
+		else if ((source - target) * m_sign == m_arwidth * 2)
+		{
 			if (m_squares[target - 1] == opPawn
-			||  m_squares[target + 1] == opPawn) {
+			||  m_squares[target + 1] == opPawn)
+			{
 				m_enpassantSquare = source - m_arwidth * m_sign;
 				m_key ^= Zobrist::enpassant(m_enpassantSquare);
 			}
-		} else if (promotion != Piece::NoPiece)
+		}
+		else if (promotion != Piece::NoPiece)
 			piece = promotion;
-	} else if (piece == Piece::Rook) {
+	}
+	else if (piece == Piece::Rook)
+	{
 		// Remove castling rights from the rook's square
-		for (int i = QueenSide; i <= KingSide; i++) {
-			if (source == rookSq[i]) {
+		for (int i = QueenSide; i <= KingSide; i++)
+		{
+			if (source == rookSq[i])
+			{
 				m_key ^= Zobrist::castling(m_side, source);
 				rookSq[i] = 0;
 				isReversible = false;
@@ -384,18 +409,23 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	
 	// If the move captures opponent's castling rook, remove
 	// his castling rights from that side.
-	if (capture == Piece(!m_side, Piece::Rook)) {
+	if (capture == Piece(!m_side, Piece::Rook))
+	{
 		int* opCr = m_castlingRights.rookSquare[!m_side];
-		if (target == opCr[QueenSide]) {
+		if (target == opCr[QueenSide])
+		{
 			m_key ^= Zobrist::castling(!m_side, target);
 			opCr[QueenSide] = 0;
-		} else if (target == opCr[KingSide]) {
+		}
+		else if (target == opCr[KingSide])
+		{
 			m_key ^= Zobrist::castling(!m_side, target);
 			opCr[KingSide] = 0;
 		}
 	}
 	
-	if (capture.side() == !m_side) {
+	if (capture.side() == !m_side)
+	{
 		isReversible = false;
 		m_key ^= Zobrist::piece(capture, target);
 	}
@@ -450,11 +480,13 @@ void Board::undoMove()
 	m_key = md.key;
 	m_reversibleMoveCount = md.reversibleMoveCount;
 	
-	if (target == m_kingSquare[m_side]) {
+	if (target == m_kingSquare[m_side])
+	{
 		m_kingSquare[m_side] = source;
 		
 		int cside = move.castlingSide();
-		if (cside != -1) {
+		if (cside != -1)
+		{
 			// Move the rook back after castling
 			if (cside == QueenSide)
 				m_squares[target + 1] = Piece::NoPiece;
@@ -466,7 +498,9 @@ void Board::undoMove()
 			m_squares[target] = md.capture;
 			return;
 		}
-	} else if (target == m_enpassantSquare) {
+	}
+	else if (target == m_enpassantSquare)
+	{
 		// Restore the pawn captured by the en-passant move
 		int epTarget = target + m_arwidth * m_sign;
 		m_squares[epTarget] = Piece(!m_side, Piece::Pawn);
@@ -494,11 +528,13 @@ bool Board::isLegalPosition() const
 	// Make sure that no square between the king's initial and final
 	// squares (including the initial and final squares) are under
 	// attack (in check) by the opponent.
-	if (move.castlingSide() != -1) {
+	if (move.castlingSide() != -1)
+	{
 		int source = move.sourceSquare();
 		int target = move.targetSquare();
 		int offset = (target >= source) ? 1 : -1;
-		for (int i = source; i != target; i += offset) {
+		for (int i = source; i != target; i += offset)
+		{
 			if (inCheck(!m_side, i))
 				return false;
 		}

@@ -497,13 +497,14 @@ void Zobrist::initialize()
 	if (m_isInitialized)
 		return;
 	
-	for (int side = Chess::White; side <= Chess::Black; side++) {
-		for (int square = 0; square < MaxSquares; square++) {
+	for (int side = Chess::White; side <= Chess::Black; side++)
+	{
+		for (int square = 0; square < MaxSquares; square++)
+		{
 			m_castling[side][square] = random64();
 			
-			for (int piece = 0; piece < MaxPieceTypes; piece++) {
+			for (int piece = 0; piece < MaxPieceTypes; piece++)
 				m_piece[side][piece][square] = random64();
-			}
 		}
 	}
 	for (int square = 0; square < MaxSquares; square++)
@@ -512,10 +513,14 @@ void Zobrist::initialize()
 	// Polyglot compatibility
 	
 	int i = 0;
-	for (int piece = Chess::Piece::Pawn; piece <= Chess::Piece::King; piece++) {
-		for (int side = Chess::Black; side >= Chess::White; side--) {
-			for (int rank = 0; rank < 8; rank++) {
-				for (int file = 0; file < 8; file++) {
+	for (int piece = Chess::Piece::Pawn; piece <= Chess::Piece::King; piece++)
+	{
+		for (int side = Chess::Black; side >= Chess::White; side--)
+		{
+			for (int rank = 0; rank < 8; rank++)
+			{
+				for (int file = 0; file < 8; file++)
+				{
 					int r = 7 - rank;
 					int sq = (r + 2) * 10 + 1 + file;
 					m_piece[side][piece][sq] = randomTable[i++];
@@ -529,7 +534,8 @@ void Zobrist::initialize()
 	m_castling[Chess::Black][28] = randomTable[i++];
 	m_castling[Chess::Black][21] = randomTable[i++];
 	
-	for (int square = 41; square < 49; square++) {
+	for (int square = 41; square < 49; square++)
+	{
 		m_enpassant[square] = randomTable[i];
 		m_enpassant[square + 30] = randomTable[i++];
 	}

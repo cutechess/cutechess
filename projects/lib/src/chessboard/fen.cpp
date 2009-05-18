@@ -39,28 +39,34 @@ bool Board::parseCastlingRights(FenData& fd, QChar c) const
 	int side = (c.isUpper()) ? White : Black;
 	c = c.toLower();
 	
-	if (c == 'q') {
+	if (c == 'q')
+	{
 		cside = QueenSide;
 		offset = -1;
-	} else if (c == 'k') {
+	}
+	else if (c == 'k')
+	{
 		cside = KingSide;
 		offset = 1;
 	}
 	
 	int kingSq = fd.kingSquare[side];
 	
-	if (offset != 0) {
+	if (offset != 0)
+	{
 		Piece piece;
 		int i = kingSq + offset;
 		int rookSq = 0;
 		
 		// Locate the outernmost rook on the castling side
-		while (!(piece = fd.squares[i]).isWall()) {
+		while (!(piece = fd.squares[i]).isWall())
+		{
 			if (piece == Piece(side, Piece::Rook))
 				rookSq = i;
 			i += offset;
 		}
-		if (rookSq != 0) {
+		if (rookSq != 0)
+		{
 			fd.cr.rookSquare[side][cside] = rookSq;
 			// If the rook is not in the corner, we've got
 			// a random chess variant like Chess960.
@@ -68,7 +74,9 @@ bool Board::parseCastlingRights(FenData& fd, QChar c) const
 				fd.isRandom = true;
 			return true;
 		}
-	} else { // Shredder FEN or X-FEN
+	}
+	else	// Shredder FEN or X-FEN
+	{
 		fd.isRandom = true;
 		
 		int file = c.toAscii() - 'a';
@@ -87,7 +95,8 @@ bool Board::parseCastlingRights(FenData& fd, QChar c) const
 			return false;
 		
 		// Update castling rights in the FenData object
-		if (fd.squares[rookSq] == Piece(side, Piece::Rook)) {
+		if (fd.squares[rookSq] == Piece(side, Piece::Rook))
+		{
 			cside = (rookSq > kingSq);
 			fd.cr.rookSquare[side][cside] = rookSq;
 			return true;
@@ -117,11 +126,13 @@ bool Board::setBoard(const QString& fen)
 	fd.squares = QVector<Piece>(m_squares.size(), Piece::WallPiece);
 	
 	// Get the board contents (squares)
-	for (int i = 0; i < token->length(); i++) {
+	for (int i = 0; i < token->length(); i++)
+	{
 		QChar c = token->at(i);
 		
 		// Move to the next rank
-		if (c == '/') {
+		if (c == '/')
+		{
 			// Reject the FEN string if the rank didn't
 			// have exactly 'm_width' squares.
 			if (square - rankEndSquare != m_width)
@@ -131,18 +142,22 @@ bool Board::setBoard(const QString& fen)
 			continue;
 		}
 		// Add empty squares
-		if (c.isDigit()) {
+		if (c.isDigit())
+		{
 			int j;
 			int nempty;
-			if (i < (token->length() - 1) && token->at(i + 1).isDigit()) {
+			if (i < (token->length() - 1) && token->at(i + 1).isDigit())
+			{
 				nempty = token->mid(i, 2).toInt();
 				i++;
-			} else
+			}
+			else
 				nempty = c.digitValue();
 			
 			if (nempty > m_width || square + nempty > boardSize)
 				return false;
-			for (j = 0; j < nempty; j++) {
+			for (j = 0; j < nempty; j++)
+			{
 				square++;
 				fd.squares[k++] = Piece::NoPiece;
 			}
@@ -156,7 +171,8 @@ bool Board::setBoard(const QString& fen)
 		if (!piece.isValid())
 			return false;
 
-		if (piece.type() == Piece::King) {
+		if (piece.type() == Piece::King)
+		{
 			// Make sure 'side' has exactly one king
 			if (fd.kingSquare[piece.side()] != 0)
 				return false;
@@ -188,9 +204,11 @@ bool Board::setBoard(const QString& fen)
 	
 	// Castling rights
 	++token;
-	if (*token != "-") {
+	if (*token != "-")
+	{
 		QString::const_iterator c;
-		for (c = token->begin(); c != token->end(); ++c) {
+		for (c = token->begin(); c != token->end(); ++c)
+		{
 			if (!parseCastlingRights(fd, *c))
 				return false;
 		}
@@ -199,7 +217,8 @@ bool Board::setBoard(const QString& fen)
 	// En-passant square
 	++token;
 	int epSq = 0;
-	if (*token != "-") {
+	if (*token != "-")
+	{
 		epSq = squareIndex(*token);
 		if (epSq == 0)
 			return false;
@@ -215,13 +234,15 @@ bool Board::setBoard(const QString& fen)
 	
 	// Reversible halfmove count
 	++token;
-	if (token != strList.end()) {
+	if (token != strList.end())
+	{
 		bool ok;
 		int tmp = token->toInt(&ok);
 		if (!ok || tmp < 0)
 			return false;
 		m_reversibleMoveCount = tmp;
-	} else
+	}
+	else
 		m_reversibleMoveCount = 0;
 	
 	// The full move number is ignored. It's rarely useful
@@ -257,8 +278,10 @@ QString Board::castlingRightsString(FenNotation notation) const
 {
 	QString str;
 	
-	for (int side = White; side <= Black; side++) {
-		for (int cside = KingSide; cside >= QueenSide; cside--) {
+	for (int side = White; side <= Black; side++)
+	{
+		for (int cside = KingSide; cside >= QueenSide; cside--)
+		{
 			int rs = m_castlingRights.rookSquare[side][cside];
 			if (rs == 0)
 				continue;
@@ -270,8 +293,10 @@ QString Board::castlingRightsString(FenNotation notation) const
 			
 			// If the castling rook is not the outernmost rook,
 			// the castling square is ambiguous
-			while (!(piece = m_squares[i]).isWall()) {
-				if (piece == Piece(side, Piece::Rook)) {
+			while (!(piece = m_squares[i]).isWall())
+			{
+				if (piece == Piece(side, Piece::Rook))
+				{
 					ambiguous = true;
 					break;
 				}
@@ -283,7 +308,8 @@ QString Board::castlingRightsString(FenNotation notation) const
 			// use 'K' or 'Q'. Instead we'll use the square's file.
 			if (ambiguous || notation == ShredderFen)
 				c = QChar('a' + chessSquare(rs).file());
-			else {
+			else
+			{
 				if (cside == 0)
 					c = 'q';
 				else
@@ -306,12 +332,14 @@ QString Board::fenString(FenNotation notation) const
 	
 	// Squares
 	int i = m_arwidth * 2;
-	for (int y = 0; y < m_height; y++) {
+	for (int y = 0; y < m_height; y++)
+	{
 		int nempty = 0;
 		i++;
 		if (y > 0)
 			fen += '/';
-		for (int x = 0; x < m_width; x++) {
+		for (int x = 0; x < m_width; x++)
+		{
 			Piece pc = m_squares[i];
 			
 			if (pc.isEmpty())
@@ -320,7 +348,8 @@ QString Board::fenString(FenNotation notation) const
 			// Add the number of empty successive squares
 			// to the FEN string.
 			if (nempty > 0
-			&&  (!pc.isEmpty() || x == m_width - 1)) {
+			&&  (!pc.isEmpty() || x == m_width - 1))
+			{
 				fen += QString::number(nempty);
 				nempty = 0;
 			}
