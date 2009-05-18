@@ -30,40 +30,42 @@ void Board::generateMoves(QVector<Chess::Move>& moves) const
 	moves.clear();
 	
 	for (unsigned sq = begin; sq < end; sq++) {
-		int piece = m_squares[sq];
-		if ((piece * m_sign) <= 0 || piece == InvalidPiece)
+		Piece piece = m_squares[sq];
+		if (piece.side() != m_side)
 			continue;
 		
-		switch (piece * m_sign) {
-		case Pawn:
+		switch (piece.type()) {
+		case Piece::Pawn:
 			generatePawnMoves(sq, moves);
 			break;
-		case Knight:
+		case Piece::Knight:
 			generateHoppingMoves(sq, m_knightOffsets, moves);
 			break;
-		case Bishop:
+		case Piece::Bishop:
 			generateSlidingMoves(sq, m_bishopOffsets, moves);
 			break;
-		case Rook:
+		case Piece::Rook:
 			generateSlidingMoves(sq, m_rookOffsets, moves);
 			break;
-		case Queen:
+		case Piece::Queen:
 			generateSlidingMoves(sq, m_bishopOffsets, moves);
 			generateSlidingMoves(sq, m_rookOffsets, moves);
 			break;
-		case Archbishop:
+		case Piece::Archbishop:
 			generateSlidingMoves(sq, m_bishopOffsets, moves);
 			generateHoppingMoves(sq, m_knightOffsets, moves);
 			break;
-		case Chancellor:
+		case Piece::Chancellor:
 			generateSlidingMoves(sq, m_rookOffsets, moves);
 			generateHoppingMoves(sq, m_knightOffsets, moves);
 			break;
-		case King:
+		case Piece::King:
 			generateHoppingMoves(sq, m_bishopOffsets, moves);
 			generateHoppingMoves(sq, m_rookOffsets, moves);
 			generateCastlingMoves(moves);
 			break;
+		default:
+			qFatal("Board::generateMoves(): invalid piece type");
 		}
 	}
 }
@@ -89,14 +91,14 @@ void Board::addPromotions(int sourceSquare,
                           int targetSquare,
                           QVector<Chess::Move>& moves) const
 {
-	moves.push_back(Move(sourceSquare, targetSquare, Knight));
-	moves.push_back(Move(sourceSquare, targetSquare, Bishop));
-	moves.push_back(Move(sourceSquare, targetSquare, Rook));
-	moves.push_back(Move(sourceSquare, targetSquare, Queen));
+	moves.push_back(Move(sourceSquare, targetSquare, Piece::Knight));
+	moves.push_back(Move(sourceSquare, targetSquare, Piece::Bishop));
+	moves.push_back(Move(sourceSquare, targetSquare, Piece::Rook));
+	moves.push_back(Move(sourceSquare, targetSquare, Piece::Queen));
 	
 	if (m_variant.isCapablanca()) {
-		moves.push_back(Move(sourceSquare, targetSquare, Archbishop));
-		moves.push_back(Move(sourceSquare, targetSquare, Chancellor));
+		moves.push_back(Move(sourceSquare, targetSquare, Piece::Archbishop));
+		moves.push_back(Move(sourceSquare, targetSquare, Piece::Chancellor));
 	}
 }
 
@@ -104,25 +106,24 @@ void Board::generatePawnMoves(int sourceSquare,
                               QVector<Chess::Move>& moves) const
 {
 	int targetSquare;
-	int capture;
+	Piece capture;
 	int step = m_sign * m_arwidth;
-	bool isPromotion = (m_squares[sourceSquare - step * 2] == InvalidPiece);
+	bool isPromotion = m_squares[sourceSquare - step * 2].isWall();
 	
 	// One square ahead
 	targetSquare = sourceSquare - step;
 	capture = m_squares[targetSquare];
-	if (capture == NoPiece) {
+	if (capture.isEmpty()) {
 		if (isPromotion)
 			addPromotions(sourceSquare, targetSquare, moves);
 		else {
 			moves.push_back(Move(sourceSquare, targetSquare));
 			
 			// Two squares ahead
-			int wall = m_squares[sourceSquare + step * 2];
-			if (wall == InvalidPiece) {
+			if (m_squares[sourceSquare + step * 2].isWall()) {
 				targetSquare -= step;
 				capture = m_squares[targetSquare];
-				if (capture == NoPiece)
+				if (capture.isEmpty())
 					moves.push_back(Move(sourceSquare, targetSquare));
 			}
 		}
@@ -132,7 +133,7 @@ void Board::generatePawnMoves(int sourceSquare,
 	for (int i = -1; i <= 1; i += 2) {
 		targetSquare = sourceSquare - step + i;
 		capture = m_squares[targetSquare];
-		if ((capture != InvalidPiece && capture * m_sign < 0)
+		if (capture.side() == !m_side
 		||  targetSquare == m_enpassantSquare) {
 			if (isPromotion)
 				addPromotions(sourceSquare, targetSquare, moves);
@@ -185,7 +186,7 @@ bool Board::canCastle(int castlingSide) const
 	// the castling rook, and their destination squares contains no pieces
 	// other than the king and the castling rook.
 	for (int i = left; i <= right; i++) {
-		if (i != kingSq && i != rookSq && m_squares[i] != NoPiece)
+		if (i != kingSq && i != rookSq && !m_squares[i].isEmpty())
 			return false;
 	}
 
@@ -198,7 +199,7 @@ void Board::generateCastlingMoves(QVector<Chess::Move>& moves) const
 	for (int i = QueenSide; i <= KingSide; i++) {
 		if (canCastle(i)) {
 			int target = m_castleTarget[m_side][i];
-			moves.push_back(Move(source, target, NoPiece, i));
+			moves.push_back(Move(source, target, Piece::NoPiece, i));
 		}
 	}
 }
@@ -210,10 +211,9 @@ void Board::generateHoppingMoves(int sourceSquare,
 	foreach (int i, offsets)
 	{
 		int targetSquare = sourceSquare + i;
-		int capture = m_squares[targetSquare];
-		if (capture == InvalidPiece || capture * m_sign > 0)
-			continue;
-		moves.push_back(Move(sourceSquare, targetSquare));
+		Piece capture = m_squares[targetSquare];
+		if (capture.isEmpty() || capture.side() == !m_side)
+			moves.push_back(Move(sourceSquare, targetSquare));
 	}
 }
 
@@ -224,11 +224,11 @@ void Board::generateSlidingMoves(int sourceSquare,
 	foreach (int i, offsets)
 	{
 		int targetSquare = sourceSquare + i;
-		int capture;
-		while ((capture = m_squares[targetSquare]) != InvalidPiece
-		&&      capture * m_sign <= 0) {
+		Piece capture;
+		while (!(capture = m_squares[targetSquare]).isWall()
+		&&      capture.side() != m_side) {
 			moves.push_back(Move(sourceSquare, targetSquare));
-			if (capture != NoPiece)
+			if (!capture.isEmpty())
 				break;
 			targetSquare += i;
 		}

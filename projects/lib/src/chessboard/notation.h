@@ -14,12 +14,6 @@ namespace Chess { struct Square; }
  */
 namespace Notation {
 
-/*! Converts a chess piece from an integer (Chess::Piece) to a character. */
-QChar pieceChar(int pieceCode);
-
-/*! Converts a chess piece from a character to an integer (Chess::Piece). */
-int pieceCode(const QChar& pieceChar);
-
 /*! Converts a Chess::Square object to a string. */
 QString squareString(const Chess::Square& square);
 

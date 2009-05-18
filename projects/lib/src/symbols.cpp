@@ -16,6 +16,7 @@
 */
 
 #include "symbols.h"
+#include "chessboard/piece.h"
 
 const QString Symbols::BlackPawn = QString::fromUtf8("\342\231\237");
 const QString Symbols::BlackRook = QString::fromUtf8("\342\231\234");
@@ -31,37 +32,37 @@ const QString Symbols::WhiteBishop = QString::fromUtf8("\342\231\227");
 const QString Symbols::WhiteQueen = QString::fromUtf8("\342\231\225");
 const QString Symbols::WhiteKing = QString::fromUtf8("\342\231\224");
 
-QString Symbols::symbolOf(Chess::Side side, Chess::Piece piece)
+QString Symbols::symbolOf(const Chess::Piece& piece)
 {
 	QString symbol;
 
-	switch (side)
+	switch (piece.side())
 	{
 		case Chess::White:
 		
-			switch (piece)
+			switch (piece.type())
 			{
-				case Chess::Pawn:
+				case Chess::Piece::Pawn:
 					symbol = Symbols::WhitePawn;
 				break;
 
-				case Chess::Rook:
+				case Chess::Piece::Rook:
 					symbol = Symbols::WhiteRook;
 				break;
 
-				case Chess::Knight:
+				case Chess::Piece::Knight:
 					symbol = Symbols::WhiteKnight;
 				break;
 
-				case Chess::Bishop:
+				case Chess::Piece::Bishop:
 					symbol = Symbols::WhiteBishop;
 				break;
 
-				case Chess::Queen:
+				case Chess::Piece::Queen:
 					symbol = Symbols::WhiteQueen;
 				break;
 
-				case Chess::King:
+				case Chess::Piece::King:
 					symbol = Symbols::WhiteKing;
 				break;
 				
@@ -73,29 +74,29 @@ QString Symbols::symbolOf(Chess::Side side, Chess::Piece piece)
 
 		case Chess::Black:
 			
-			switch (piece)
+			switch (piece.type())
 			{
-				case Chess::Pawn:
+				case Chess::Piece::Pawn:
 					symbol = Symbols::BlackPawn;
 				break;
 
-				case Chess::Rook:
+				case Chess::Piece::Rook:
 					symbol = Symbols::BlackRook;
 				break;
 
-				case Chess::Knight:
+				case Chess::Piece::Knight:
 					symbol = Symbols::BlackKnight;
 				break;
 
-				case Chess::Bishop:
+				case Chess::Piece::Bishop:
 					symbol = Symbols::BlackBishop;
 				break;
 
-				case Chess::Queen:
+				case Chess::Piece::Queen:
 					symbol = Symbols::BlackQueen;
 				break;
 
-				case Chess::King:
+				case Chess::Piece::King:
 					symbol = Symbols::BlackKing;
 				break;
 				

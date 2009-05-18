@@ -7,6 +7,7 @@
 #include <QString>
 #include <QStringList>
 #include "chess.h"
+#include "piece.h"
 #include "result.h"
 #include "variant.h"
 #include "chessmove.h"
@@ -145,7 +146,7 @@ class LIB_EXPORT Board : public QObject
 		int height() const;
 		
 		/*! Returns the chess piece at \a square. */
-		int pieceAt(const Square& square) const;
+		Piece pieceAt(const Square& square) const;
 		
 		/*! Prints an ASCII version of the board. */
 		void print() const;
@@ -215,8 +216,8 @@ class LIB_EXPORT Board : public QObject
 		{
 			//! A chess move.
 			Move move;
-			//! Piece type of the captured piece.
-			int capture;
+			//! The captured piece.
+			Piece capture;
 			//! Target square of an en-passant capture before the move.
 			int enpassantSquare;
 			//! Castling rights before the move.
@@ -244,7 +245,7 @@ class LIB_EXPORT Board : public QObject
 				//! Castling rights.
 				CastlingRights cr;
 				//! The contents of the board.
-				QVector<int> squares;
+				QVector<Piece> squares;
 				//! Square indexes for the king on both sides.
 				int kingSquare[2];
 				//! Is support for random starting positions required?
@@ -348,7 +349,7 @@ class LIB_EXPORT Board : public QObject
 		int m_kingSquare[2];
 		int m_enpassantSquare;
 		int m_reversibleMoveCount;
-		QVector<int> m_squares;
+		QVector<Piece> m_squares;
 		QVector<MoveData> m_history;
 		CastlingRights m_castlingRights;
 		int m_castleTarget[2][2];

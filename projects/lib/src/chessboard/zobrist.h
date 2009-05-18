@@ -2,6 +2,7 @@
 #define ZOBRIST_H
 
 #include <QtGlobal>
+namespace Chess { class Piece; }
 
 /*!
  * \brief Unsigned 64-bit values for generating zobrist position keys.
@@ -43,7 +44,7 @@ class LIB_EXPORT Zobrist
 		 * Returns the zobrist value for player \a side's
 		 * \a type piece at \a square.
 		 */
-		static quint64 piece(int side, int type, int square);
+		static quint64 piece(const Chess::Piece& pc, int square);
 		
 	private:
 		friend class ZobristInitializer;

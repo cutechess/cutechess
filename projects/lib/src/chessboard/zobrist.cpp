@@ -17,6 +17,7 @@
 
 #include "zobrist.h"
 #include "chess.h"
+#include "piece.h"
 
 int Zobrist::m_randomSeed = 1;
 bool Zobrist::m_isInitialized = false;
@@ -483,13 +484,12 @@ quint64 Zobrist::castling(int side, int square)
 	return m_castling[side][square];
 }
 
-quint64 Zobrist::piece(int side, int type, int square)
+quint64 Zobrist::piece(const Chess::Piece& pc, int square)
 {
-	Q_ASSERT(side != -1);
-	Q_ASSERT(type > 0);
+	Q_ASSERT(pc.isValid());
 	Q_ASSERT(square >= 0 && square < MaxSquares);
 	
-	return m_piece[side][type][square];
+	return m_piece[pc.side()][pc.type()][square];
 }
 
 void Zobrist::initialize()
@@ -512,7 +512,7 @@ void Zobrist::initialize()
 	// Polyglot compatibility
 	
 	int i = 0;
-	for (int piece = Chess::Pawn; piece <= Chess::King; piece++) {
+	for (int piece = Chess::Piece::Pawn; piece <= Chess::Piece::King; piece++) {
 		for (int side = Chess::Black; side >= Chess::White; side--) {
 			for (int rank = 0; rank < 8; rank++) {
 				for (int file = 0; file < 8; file++) {

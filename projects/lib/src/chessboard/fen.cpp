@@ -38,7 +38,6 @@ bool Board::parseCastlingRights(FenData& fd, QChar c) const
 	int offset = 0;
 	int cside = -1;
 	int side = (c.isUpper()) ? White : Black;
-	int sign = (side == White) ? 1 : -1;
 	c = c.toLower();
 	
 	if (c == 'q') {
@@ -52,13 +51,13 @@ bool Board::parseCastlingRights(FenData& fd, QChar c) const
 	int kingSq = fd.kingSquare[side];
 	
 	if (offset != 0) {
-		int piece;
+		Piece piece;
 		int i = kingSq + offset;
 		int rookSq = 0;
 		
 		// Locate the outernmost rook on the castling side
-		while ((piece = fd.squares[i]) != InvalidPiece) {
-			if ((piece * sign) == Rook)
+		while (!(piece = fd.squares[i]).isWall()) {
+			if (piece == Piece(side, Piece::Rook))
 				rookSq = i;
 			i += offset;
 		}
@@ -89,7 +88,7 @@ bool Board::parseCastlingRights(FenData& fd, QChar c) const
 			return false;
 		
 		// Update castling rights in the FenData object
-		if ((fd.squares[rookSq] * sign) == Rook) {
+		if (fd.squares[rookSq] == Piece(side, Piece::Rook)) {
 			cside = (rookSq > kingSq);
 			fd.cr.rookSquare[side][cside] = rookSq;
 			return true;
@@ -116,7 +115,7 @@ bool Board::setBoard(const QString& fen)
 	int k = m_arwidth * 2 + 1;
 	
 	FenData fd;
-	fd.squares = QVector<int>(m_squares.size(), InvalidPiece);
+	fd.squares = QVector<Piece>(m_squares.size(), Piece::WallPiece);
 	
 	// Get the board contents (squares)
 	for (int i = 0; i < token->length(); i++) {
@@ -146,7 +145,7 @@ bool Board::setBoard(const QString& fen)
 				return false;
 			for (j = 0; j < nempty; j++) {
 				square++;
-				fd.squares[k++] = NoPiece;
+				fd.squares[k++] = Piece::NoPiece;
 			}
 			continue;
 		}
@@ -154,16 +153,15 @@ bool Board::setBoard(const QString& fen)
 		if (square >= boardSize)
 			return false;
 		
-		int piece = Notation::pieceCode(c);
-		if (piece == NoPiece)
+		Piece piece(c);
+		if (!piece.isValid())
 			return false;
-		int side = (piece > 0) ? White : Black;
-		int sign = (side == White) ? 1 : -1;
-		if ((piece * sign) == King) {
+
+		if (piece.type() == Piece::King) {
 			// Make sure 'side' has exactly one king
-			if (fd.kingSquare[side] != 0)
+			if (fd.kingSquare[piece.side()] != 0)
 				return false;
-			fd.kingSquare[side] = k;
+			fd.kingSquare[piece.side()] = k;
 		}
 		
 		square++;
@@ -211,8 +209,8 @@ bool Board::setBoard(const QString& fen)
 		// capture isn't possible.
 		int sign = (side == White) ? 1 : -1;
 		int pawnSq = epSq + m_arwidth * sign;
-		if ((fd.squares[pawnSq - 1] * sign) != Pawn
-		&&  (fd.squares[pawnSq + 1] * sign) != Pawn)
+		if ((fd.squares[pawnSq - 1].code() * sign) != Piece::Pawn
+		&&  (fd.squares[pawnSq + 1].code() * sign) != Piece::Pawn)
 			epSq = 0;
 	}
 	
@@ -261,21 +259,20 @@ QString Board::castlingRightsString(FenNotation notation) const
 	QString str;
 	
 	for (int side = White; side <= Black; side++) {
-		int sign = (side == White) ? 1 : -1;
 		for (int cside = KingSide; cside >= QueenSide; cside--) {
 			int rs = m_castlingRights.rookSquare[side][cside];
 			if (rs == 0)
 				continue;
 			
 			int offset = (cside == QueenSide) ? -1: 1;
-			int piece;
+			Piece piece;
 			int i = rs + offset;
 			bool ambiguous = false;
 			
 			// If the castling rook is not the outernmost rook,
 			// the castling square is ambiguous
-			while ((piece = m_squares[i]) != InvalidPiece) {
-				if ((piece * sign) == Rook) {
+			while (!(piece = m_squares[i]).isWall()) {
+				if (piece == Piece(side, Piece::Rook)) {
 					ambiguous = true;
 					break;
 				}
@@ -316,21 +313,21 @@ QString Board::fenString(FenNotation notation) const
 		if (y > 0)
 			fen += '/';
 		for (int x = 0; x < m_width; x++) {
-			int pc = m_squares[i];
+			Piece pc = m_squares[i];
 			
-			if (pc == NoPiece)
+			if (pc.isEmpty())
 				nempty++;
 			
 			// Add the number of empty successive squares
 			// to the FEN string.
 			if (nempty > 0
-			&&  (pc != NoPiece || x == m_width - 1)) {
+			&&  (!pc.isEmpty() || x == m_width - 1)) {
 				fen += QString::number(nempty);
 				nempty = 0;
 			}
 			
-			if (pc != NoPiece)
-				fen += Notation::pieceChar(pc);
+			if (pc.isValid())
+				fen += pc.toChar();
 			i++;
 		}
 		i++;

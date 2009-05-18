@@ -20,6 +20,7 @@
 #include <QVector>
 #include "chess.h"
 #include "notation.h"
+#include "piece.h"
 using namespace Chess;
 
 
@@ -186,14 +187,14 @@ static QVector<int> fischerandomVector()
 {
 	QVector<int> pieces(8, 0);
 	
-	addPiece(pieces, Chess::Bishop, qrand() % 4, 0, 2);
-	addPiece(pieces, Chess::Bishop, qrand() % 4, 1, 2);
-	addPiece(pieces, Chess::Queen, qrand() % 6);
-	addPiece(pieces, Chess::Knight, qrand() % 5);
-	addPiece(pieces, Chess::Knight, qrand() % 4);
-	addPiece(pieces, Chess::Rook, 0);
-	addPiece(pieces, Chess::King, 0);
-	addPiece(pieces, Chess::Rook, 0);
+	addPiece(pieces, Piece::Bishop, qrand() % 4, 0, 2);
+	addPiece(pieces, Piece::Bishop, qrand() % 4, 1, 2);
+	addPiece(pieces, Piece::Queen, qrand() % 6);
+	addPiece(pieces, Piece::Knight, qrand() % 5);
+	addPiece(pieces, Piece::Knight, qrand() % 4);
+	addPiece(pieces, Piece::Rook, 0);
+	addPiece(pieces, Piece::King, 0);
+	addPiece(pieces, Piece::Rook, 0);
 	
 	return pieces;
 }
@@ -212,9 +213,9 @@ static bool safePawns(const QVector<int>& pieces)
 			if (j < 0 || j >= len)
 				continue;
 			p = pieces[j];
-			if (p == Chess::Knight
-			||  p == Chess::Archbishop
-			||  p == Chess::Chancellor)
+			if (p == Piece::Knight
+			||  p == Piece::Archbishop
+			||  p == Piece::Chancellor)
 				safe = true;
 		}
 		for (int j = i - 1; j <= i + 1; j += 2)
@@ -222,17 +223,17 @@ static bool safePawns(const QVector<int>& pieces)
 			if (j < 0 || j >= len)
 				continue;
 			p = pieces[j];
-			if (p == Chess::Bishop
-			||  p == Chess::Queen
-			||  p == Chess::Archbishop
-			||  p == Chess::King)
+			if (p == Piece::Bishop
+			||  p == Piece::Queen
+			||  p == Piece::Archbishop
+			||  p == Piece::King)
 				safe = true;
 		}
 		p = pieces[i];
-		if (p == Chess::Rook
-		||  p == Chess::Queen
-		||  p == Chess::Chancellor
-		||  p == Chess::King)
+		if (p == Piece::Rook
+		||  p == Piece::Queen
+		||  p == Piece::Chancellor
+		||  p == Piece::King)
 			safe = true;
 		
 		if (!safe)
@@ -253,22 +254,22 @@ static QVector<int> caparandomVector()
 		pieces.fill(0);
 		if ((qrand() % 2) == 0)
 		{
-			addPiece(pieces, Chess::Queen, qrand() % 5, 0, 2);
-			addPiece(pieces, Chess::Archbishop, qrand() % 5, 1, 2);
+			addPiece(pieces, Piece::Queen, qrand() % 5, 0, 2);
+			addPiece(pieces, Piece::Archbishop, qrand() % 5, 1, 2);
 		}
 		else
 		{
-			addPiece(pieces, Chess::Archbishop, qrand() % 5, 0, 2);
-			addPiece(pieces, Chess::Queen, qrand() % 5, 1, 2);
+			addPiece(pieces, Piece::Archbishop, qrand() % 5, 0, 2);
+			addPiece(pieces, Piece::Queen, qrand() % 5, 1, 2);
 		}
-		addPiece(pieces, Chess::Bishop, qrand() % 4, 0, 2);
-		addPiece(pieces, Chess::Bishop, qrand() % 4, 1, 2);
-		addPiece(pieces, Chess::Chancellor, qrand() % 6);
-		addPiece(pieces, Chess::Knight, qrand() % 5);
-		addPiece(pieces, Chess::Knight, qrand() % 4);
-		addPiece(pieces, Chess::Rook, 0);
-		addPiece(pieces, Chess::King, 0);
-		addPiece(pieces, Chess::Rook, 0);
+		addPiece(pieces, Piece::Bishop, qrand() % 4, 0, 2);
+		addPiece(pieces, Piece::Bishop, qrand() % 4, 1, 2);
+		addPiece(pieces, Piece::Chancellor, qrand() % 6);
+		addPiece(pieces, Piece::Knight, qrand() % 5);
+		addPiece(pieces, Piece::Knight, qrand() % 4);
+		addPiece(pieces, Piece::Rook, 0);
+		addPiece(pieces, Piece::King, 0);
+		addPiece(pieces, Piece::Rook, 0);
 	}
 	while (!safePawns(pieces));
 
@@ -281,10 +282,10 @@ static QString randomFen(const QVector<int>& pieces)
 	
 	// Black pieces
 	foreach (int piece, pieces)
-		fen += Notation::pieceChar(-piece);
+		fen += Piece(Black, piece).toChar();
 	fen += '/';
 	// Black pawns
-	fen += QString(pieces.size(), Notation::pieceChar(-Chess::Pawn));
+	fen += QString(pieces.size(), Piece(Black, Piece::Pawn).toChar());
 	fen += '/';
 	
 	// Empty squares
@@ -292,11 +293,11 @@ static QString randomFen(const QVector<int>& pieces)
 		fen += QString::number(pieces.size()) + '/';
 	
 	// White pawns
-	fen += QString(pieces.size(), Notation::pieceChar(Chess::Pawn));
+	fen += QString(pieces.size(), Piece(White, Piece::Pawn).toChar());
 	fen += '/';
 	// White pieces
 	foreach (int piece, pieces)
-		fen += Notation::pieceChar(piece);
+		fen += Piece(White, piece).toChar();
 
 	// Side to move, castling rights, enpassant square, etc.
 	fen += " w KQkq - 0 1";

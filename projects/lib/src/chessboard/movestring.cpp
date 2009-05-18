@@ -68,8 +68,8 @@ QString Board::longAlgebraicMoveString(const Move& move) const
 	QString str = Notation::squareString(source) +
 	              Notation::squareString(target);
 	
-	if (move.promotion() != NoPiece)
-		str += Notation::pieceChar(move.promotion()).toLower();
+	if (move.promotion() != Piece::NoPiece)
+		str += Piece(Black, move.promotion()).toChar();
 	
 	return str;
 }
@@ -79,8 +79,8 @@ QString Board::sanMoveString(const Move& move)
 	QString str;
 	int source = move.sourceSquare();
 	int target = move.targetSquare();
-	int piece = m_squares[source] * m_sign;
-	int capture = m_squares[target];
+	Piece piece = m_squares[source];
+	Piece capture = m_squares[target];
 	Square square = chessSquare(source);
 	
 	char checkOrMate = 0;
@@ -96,12 +96,12 @@ QString Board::sanMoveString(const Move& move)
 	bool needRank = false;
 	bool needFile = false;
 	
-	if (piece == Pawn) {
+	if (piece.type() == Piece::Pawn) {
 		if (target == m_enpassantSquare)
-			capture = -Pawn * m_sign;
-		if (capture != NoPiece)
+			capture = Piece(!m_side, Piece::Pawn);
+		if (capture.isValid())
 			needFile = true;
-	} else if (piece == King) {
+	} else if (piece.type() == Piece::King) {
 		int cside = move.castlingSide();
 		if (cside != -1) {
 			if (cside == QueenSide)
@@ -112,9 +112,9 @@ QString Board::sanMoveString(const Move& move)
 				str += checkOrMate;
 			return str;
 		} else
-			str += Notation::pieceChar(piece);
+			str += piece.toChar().toUpper();
 	} else {
-		str += Notation::pieceChar(piece);
+		str += piece.toChar().toUpper();
 		QVector<Move> moves = legalMoves();
 		
 		foreach (const Move& move2, moves)
@@ -122,7 +122,7 @@ QString Board::sanMoveString(const Move& move)
 			int source2 = move2.sourceSquare();
 			if (source2 == source)
 				continue;
-			if ((m_squares[source2] * m_sign) != piece)
+			if (m_squares[source2] != piece)
 				continue;
 			if (move2.targetSquare() == target) {
 				Square square2 = chessSquare(source2);
@@ -138,14 +138,14 @@ QString Board::sanMoveString(const Move& move)
 	if (needRank)
 		str += '1' + square.rank;
 
-	if (capture != NoPiece)
+	if (capture.isValid())
 		str += 'x';
 	
 	str += Notation::squareString(chessSquare(target));
 
 	if (move.promotion()) {
 		str += '=';
-		str += Notation::pieceChar(move.promotion());
+		str += Piece(White, move.promotion()).toChar();
 	}
 
 	if (checkOrMate != 0)
@@ -165,10 +165,10 @@ Move Board::moveFromLongAlgebraicString(const QString& str) const
 	if (!isValidSquare(sourceSq) || !isValidSquare(targetSq))
 		return Move(0, 0);
 	
-	int promotion = NoPiece;
+	int promotion = Piece::NoPiece;
 	if (len > 4) {
-		promotion = Notation::pieceCode(str[len - 1].toUpper());
-		if (promotion == NoPiece)
+		promotion = Piece(str[len - 1]).type();
+		if (promotion == Piece::NoPiece)
 			return Move(0, 0);
 	}
 	
@@ -176,7 +176,7 @@ Move Board::moveFromLongAlgebraicString(const QString& str) const
 	int target = squareIndex(targetSq);
 	
 	int castlingSide = -1;
-	if ((m_squares[source] * m_sign) == King) {
+	if (m_squares[source] == Piece(m_side, Piece::King)) {
 		// If the king tries to capture its own rook, it's
 		// a castling move in UciLongAlgebraic format.
 		const int* rs = &m_castlingRights.rookSquare[m_side][0];
@@ -231,7 +231,7 @@ Move Board::moveFromSanString(const QString& str)
 		
 		int source = m_kingSquare[m_side];
 		int target = m_castleTarget[m_side][cside];
-		return Move(source, target, NoPiece, cside);
+		return Move(source, target, Piece::NoPiece, cside);
 	}
 	
 	Square sourceSq = { -1, -1 };
@@ -244,11 +244,13 @@ Move Board::moveFromSanString(const QString& str)
 		return Move(0, 0);
 	
 	// Piece type
-	int piece = Notation::pieceCode(*it);
-	if (piece < 0)
-		piece = NoPiece;
-	if (piece == NoPiece) {
-		piece = Pawn;
+	Piece piece = Piece(*it);
+	if (piece.side() != White)
+		piece = Piece::NoPiece;
+	else
+		piece.setSide(m_side);
+	if (piece.isEmpty()) {
+		piece = Piece(m_side, Piece::Pawn);
 		targetSq = Notation::square(mstr.mid(0, 2));
 		if (isValidSquare(targetSq))
 			it += 2;
@@ -304,21 +306,21 @@ Move Board::moveFromSanString(const QString& str)
 	// Make sure that the move string is right about whether
 	// or not the move is a capture.
 	bool isCapture = false;
-	if ((m_squares[target] * m_sign) < 0
-	||  (target == m_enpassantSquare && piece == Pawn))
+	if (m_squares[target].side() == !m_side
+	||  (target == m_enpassantSquare && piece == Piece::Pawn))
 		isCapture = true;
 	if (isCapture != stringIsCapture)
 		return Move(0, 0);
 	
 	// Promotion
-	int promotion = NoPiece;
+	int promotion = Piece::NoPiece;
 	if (it != mstr.end())
 	{
 		if ((*it == '=' || *it == '(') && ++it == mstr.end())
 			return Move(0, 0);
 		
-		promotion = Notation::pieceCode(*it);
-		if (promotion == NoPiece)
+		promotion = Piece(*it).type();
+		if (promotion == Piece::NoPiece)
 			return Move(0, 0);
 	}
 	
@@ -329,7 +331,7 @@ Move Board::moveFromSanString(const QString& str)
 	// the data we got from the move string.
 	foreach (const Move& move, moves)
 	{
-		int piece2 = m_squares[move.sourceSquare()] * m_sign;
+		Piece piece2 = m_squares[move.sourceSquare()];
 		if (piece2 != piece)
 			continue;
 		if (move.targetSquare() != target)

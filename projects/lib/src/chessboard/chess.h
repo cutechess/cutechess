@@ -8,21 +8,6 @@
  */
 namespace Chess {
 
-/*! Chess piece types for all supported variants. */
-enum Piece
-{
-	NoPiece,	//!< No piece. Used for empty squares.
-	Pawn,		//!< Pawn
-	Knight,		//!< Knight
-	Bishop,		//!< Bishop
-	Rook,		//!< Rook
-	Queen,		//!< Queen
-	King,		//!< King
-	Archbishop,	//!< Archbishop. Only for Capablanca variants.
-	Chancellor,	//!< Chancellor. Only for Capablanca variants.
-	InvalidPiece	//!< Invalid piece, for wall squares outside of board.
-};
-
 /*! The side or color of a chess player. */
 enum Side
 {
@@ -64,6 +49,7 @@ struct Square
 class Variant;
 class Result;
 class Board;
+class Piece;
 class Move;
 
 } // namespace Chess

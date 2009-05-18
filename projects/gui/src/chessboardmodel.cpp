@@ -85,46 +85,11 @@ QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 		int file = index.column();
 		int rank = (rowCount(QModelIndex()) - 1) - index.row();
 		Chess::Square sq = { file, rank };
-		int piece = m_board->pieceAt(sq);
+		Chess::Piece piece = m_board->pieceAt(sq);
 
-		if (piece == Chess::NoPiece || piece == Chess::InvalidPiece)
+		if (!piece.isValid())
 			return QVariant();
-
-		QString str;
-		if (piece > 0)
-			str = "w";
-		else
-			str = "b";
-		switch (qAbs(piece))
-		{
-		case Chess::Pawn:
-			str += "pawn";
-			break;
-		case Chess::Knight:
-			str += "knight";
-			break;
-		case Chess::Bishop:
-			str += "bishop";
-			break;
-		case Chess::Rook:
-			str += "rook";
-			break;
-		case Chess::Queen:
-			str += "queen";
-			break;
-		case Chess::King:
-			str += "king";
-			break;
-		case Chess::Archbishop:
-			str += "archbishop";
-			break;
-		case Chess::Chancellor:
-			str += "chancellor";
-			break;
-		default:
-			return QVariant();
-		}
-		return str;
+		return piece.internalName();
 	}
 
 	return QVariant();

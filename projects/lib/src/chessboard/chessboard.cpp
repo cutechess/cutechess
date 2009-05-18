@@ -49,7 +49,7 @@ void Board::setVariant(Variant variant)
 	// Allocate the squares, with one 'wall' file on both sides,
 	// and two 'wall' ranks at the top and bottom.
 	m_arwidth = m_width + 2;
-	m_squares.fill(InvalidPiece, m_arwidth * (m_height + 4));
+	m_squares.fill(Piece::WallPiece, m_arwidth * (m_height + 4));
 	
 	
 	// Initialize the move offsets
@@ -92,15 +92,12 @@ void Board::initZobristKey()
 			m_key ^= Zobrist::castling(side, rookSq[QueenSide]);
 		if (rookSq[KingSide] != 0)
 			m_key ^= Zobrist::castling(side, rookSq[KingSide]);
-		
-		int sign = (side == White) ? 1 : -1;
-		for (int sq = 0; sq < m_squares.size(); sq++) {
-			int piece = m_squares[sq];
-			if (piece == InvalidPiece || piece * sign <= 0)
-				continue;
-			
-			m_key ^= Zobrist::piece(side, piece * sign, sq);
-		}
+	}
+
+	for (int sq = 0; sq < m_squares.size(); sq++) {
+		Piece piece = m_squares[sq];
+		if (piece.isValid())
+			m_key ^= Zobrist::piece(piece, sq);
 	}
 	
 	if (m_enpassantSquare != 0)
@@ -139,10 +136,10 @@ int Board::height() const
 	return m_height;
 }
 
-int Board::pieceAt(const Square& square) const
+Piece Board::pieceAt(const Square& square) const
 {
 	if (!isValidSquare(square))
-		return InvalidPiece;
+		return Piece::WallPiece;
 	
 	return m_squares.at(squareIndex(square));
 }
@@ -164,11 +161,11 @@ void Board::print() const
 		i++;
 		QString file;
 		for (int x = 0; x < m_width; x++) {
-			int pc = m_squares[i];
+			Piece pc = m_squares[i];
 			QChar c = '.';
 			
-			if (pc != NoPiece)
-				c = Notation::pieceChar(pc);
+			if (pc.isValid())
+				c = pc.toChar();
 			file += c;
 			file += ' ';
 			
@@ -213,7 +210,7 @@ Move Board::moveFromBook(const BookMove& bookMove) const
 	int target = squareIndex(bookMove.targetSquare());
 
 	int castlingSide = -1;
-	if ((m_squares[source] * m_sign) == King)
+	if (m_squares[source].side() == m_side)
 	{
 		for (int i = 0; i < 2; i++)
 		{
@@ -241,20 +238,22 @@ bool Board::inCheck(int side, int square) const
 	// Pawn attacks
 	int step = -sign * m_arwidth;
 	// Left side
-	attacker  = m_squares[square + step - 1];
-	if ((attacker * sign) == -Pawn)
+	attacker  = m_squares[square + step - 1].code();
+	if ((attacker * sign) == -Piece::Pawn)
 		return true;
 	// Right side
-	attacker = m_squares[square + step + 1];
-	if ((attacker * sign) == -Pawn)
+	attacker = m_squares[square + step + 1].code();
+	if ((attacker * sign) == -Piece::Pawn)
 		return true;
 	
 	// Knight, archbishop, chancellor attacks
 	foreach (int i, m_knightOffsets)
 	{
-		attacker = m_squares[square + i];
+		attacker = m_squares[square + i].code();
 		switch (attacker * sign) {
-		case -Knight: case -Archbishop: case -Chancellor:
+		case -Piece::Knight:
+		case -Piece::Archbishop:
+		case -Piece::Chancellor:
 			return true;
 		}
 	}
@@ -265,13 +264,15 @@ bool Board::inCheck(int side, int square) const
 		int targetSquare = square + i;
 		if (targetSquare == m_kingSquare[!side])
 			return true;
-		while ((attacker = m_squares[targetSquare]) != InvalidPiece
+		while ((attacker = m_squares[targetSquare].code()) != Piece::WallPiece
 		&&      attacker * sign <= 0) {
 			switch (attacker * sign) {
-			case -Bishop: case -Queen: case -Archbishop:
+			case -Piece::Bishop:
+			case -Piece::Queen:
+			case -Piece::Archbishop:
 				return true;
 			}
-			if (attacker != NoPiece)
+			if (attacker != Piece::NoPiece)
 				break;
 			targetSquare += i;
 		}
@@ -283,13 +284,15 @@ bool Board::inCheck(int side, int square) const
 		int targetSquare = square + i;
 		if (targetSquare == m_kingSquare[!side])
 			return true;
-		while ((attacker = m_squares[targetSquare]) != InvalidPiece
+		while ((attacker = m_squares[targetSquare].code()) != Piece::WallPiece
 		&&      attacker * sign <= 0) {
 			switch (attacker * sign) {
-			case -Rook: case -Queen: case -Chancellor:
+			case -Piece::Rook:
+			case -Piece::Queen:
+			case -Piece::Chancellor:
 				return true;
 			}
-			if (attacker != NoPiece)
+			if (attacker != Piece::NoPiece)
 				break;
 			targetSquare += i;
 		}
@@ -303,8 +306,8 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	int source = move.sourceSquare();
 	int target = move.targetSquare();
 	int promotion = move.promotion();
-	int piece = m_squares[source] * m_sign;
-	int capture = m_squares[target];
+	int piece = m_squares[source].type();
+	Piece capture = m_squares[target];
 	int epSq = m_enpassantSquare;
 	int* rookSq = m_castlingRights.rookSquare[m_side];
 	int rookSource = 0;
@@ -317,7 +320,7 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	MoveData md = { move, capture, epSq, m_castlingRights,
 	                m_key, m_reversibleMoveCount };
 	
-	m_key ^= Zobrist::piece(m_side, piece, source);
+	m_key ^= Zobrist::piece(m_squares[source], source);
 	
 	if (epSq != 0) {
 		m_key ^= Zobrist::enpassant(epSq);
@@ -326,7 +329,7 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	
 	bool isReversible = true;
 	bool clearSource = true;
-	if (piece == King) {
+	if (piece == Piece::King) {
 		m_kingSquare[m_side] = target;
 		
 		// In case of a castling move, make the rook's move
@@ -337,10 +340,11 @@ void Board::makeMove(const Move& move, bool sendSignal)
 			if (rookTarget == source || target == source)
 				clearSource = false;
 			
-			m_squares[rookSource] = NoPiece;
-			m_squares[rookTarget] = Rook * m_sign;
-			m_key ^= Zobrist::piece(m_side, Rook, rookSource);
-			m_key ^= Zobrist::piece(m_side, Rook, rookTarget);
+			Piece rook = Piece(m_side, Piece::Rook);
+			m_squares[rookSource] = Piece::NoPiece;
+			m_squares[rookTarget] = rook;
+			m_key ^= Zobrist::piece(rook, rookSource);
+			m_key ^= Zobrist::piece(rook, rookTarget);
 			isReversible = false;
 		}
 		// Any king move removes all castling rights
@@ -351,25 +355,26 @@ void Board::makeMove(const Move& move, bool sendSignal)
 				rs = 0;
 			}
 		}
-	} else if (piece == Pawn) {
+	} else if (piece == Piece::Pawn) {
 		isReversible = false;
+		Piece opPawn(!m_side, Piece::Pawn);
 		
 		// Make an en-passant capture
 		if (target == epSq) {
 			epTarget = target + m_arwidth * m_sign;
-			m_squares[epTarget] = NoPiece;
-			m_key ^= Zobrist::piece(!m_side, Pawn, epTarget);
+			m_key ^= Zobrist::piece(opPawn, epTarget);
+			m_squares[epTarget] = Piece::NoPiece;
 		// Push a pawn two squares ahead, creating an en-passant
 		// opportunity for the opponent.
 		} else if ((source - target) * m_sign == m_arwidth * 2) {
-			if ((m_squares[target - 1] * m_sign) == -Pawn
-			||  (m_squares[target + 1] * m_sign) == -Pawn) {
+			if (m_squares[target - 1] == opPawn
+			||  m_squares[target + 1] == opPawn) {
 				m_enpassantSquare = source - m_arwidth * m_sign;
 				m_key ^= Zobrist::enpassant(m_enpassantSquare);
 			}
-		} else if (promotion != NoPiece)
+		} else if (promotion != Piece::NoPiece)
 			piece = promotion;
-	} else if (piece == Rook) {
+	} else if (piece == Piece::Rook) {
 		// Remove castling rights from the rook's square
 		for (int i = QueenSide; i <= KingSide; i++) {
 			if (source == rookSq[i]) {
@@ -381,10 +386,9 @@ void Board::makeMove(const Move& move, bool sendSignal)
 		}
 	}
 	
-	capture *= m_sign;
 	// If the move captures opponent's castling rook, remove
 	// his castling rights from that side.
-	if (capture == -Rook) {
+	if (capture == Piece(!m_side, Piece::Rook)) {
 		int* opCr = m_castlingRights.rookSquare[!m_side];
 		if (target == opCr[QueenSide]) {
 			m_key ^= Zobrist::castling(!m_side, target);
@@ -395,15 +399,15 @@ void Board::makeMove(const Move& move, bool sendSignal)
 		}
 	}
 	
-	if (capture < 0) {
+	if (capture.side() == !m_side) {
 		isReversible = false;
-		m_key ^= Zobrist::piece(!m_side, -capture, target);
+		m_key ^= Zobrist::piece(capture, target);
 	}
-	m_key ^= Zobrist::side();
-	m_key ^= Zobrist::piece(m_side, piece, target);
-	m_squares[target] = piece * m_sign;
+	m_squares[target] = Piece(m_side, piece);
 	if (clearSource)
-		m_squares[source] = NoPiece;
+		m_squares[source] = Piece::NoPiece;
+	m_key ^= Zobrist::side();
+	m_key ^= Zobrist::piece(m_squares[target], target);
 	
 	if (isReversible)
 		m_reversibleMoveCount++;
@@ -457,23 +461,23 @@ void Board::undoMove()
 		if (cside != -1) {
 			// Move the rook back after castling
 			if (cside == QueenSide)
-				m_squares[target + 1] = NoPiece;
+				m_squares[target + 1] = Piece::NoPiece;
 			else
-				m_squares[target - 1] = NoPiece;
+				m_squares[target - 1] = Piece::NoPiece;
 			const int* cr = m_castlingRights.rookSquare[m_side];
-			m_squares[cr[cside]] = Rook * m_sign;
-			m_squares[source] = King * m_sign;
+			m_squares[cr[cside]] = Piece(m_side, Piece::Rook);
+			m_squares[source] = Piece(m_side, Piece::King);
 			m_squares[target] = md.capture;
 			return;
 		}
 	} else if (target == m_enpassantSquare) {
 		// Restore the pawn captured by the en-passant move
 		int epTarget = target + m_arwidth * m_sign;
-		m_squares[epTarget] = -Pawn * m_sign;
+		m_squares[epTarget] = Piece(!m_side, Piece::Pawn);
 	}
 	
-	if (move.promotion() != NoPiece)
-		m_squares[source] = Pawn * m_sign;
+	if (move.promotion() != Piece::NoPiece)
+		m_squares[source] = Piece(m_side, Piece::Pawn);
 	else
 		m_squares[source] = m_squares[target];
 	
@@ -525,23 +529,15 @@ Result Board::result()
 	}
 	
 	int material[2] = { 0, 0 };
-	foreach (int piece, m_squares)
+	foreach (const Piece& piece, m_squares)
 	{
-		if (piece == NoPiece || piece == InvalidPiece)
+		if (!piece.isValid())
 			continue;
-		int side;
-		if (piece > 0)
-			side = White;
+
+		if (piece.type() == Piece::Knight || piece.type() == Piece::Bishop)
+			material[piece.side()] += 1;
 		else
-		{
-			side = Black;
-			piece *= -1;
-		}
-		
-		if (piece == Knight || piece == Bishop)
-			material[side] += 1;
-		else
-			material[side] += 2;
+			material[piece.side()] += 2;
 	}
 	if (material[White] <= 3 && material[Black] <= 3)
 		return Result(Result::DrawByMaterial);

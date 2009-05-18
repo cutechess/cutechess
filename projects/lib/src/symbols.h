@@ -59,7 +59,7 @@ class LIB_EXPORT Symbols
 		 *
 		 * If the given values are invalid an empty string is returned.
 		 */
-		static QString symbolOf(Chess::Side side, Chess::Piece piece);
+		static QString symbolOf(const Chess::Piece& piece);
 
 		/*!
 		 * Returns a symbol of given side and piece type.

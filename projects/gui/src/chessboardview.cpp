@@ -1,5 +1,6 @@
 #include "chessboardview.h"
 #include <chessboard/chess.h>
+#include <chessboard/piece.h>
 #include <chessboard/bookmove.h>
 #include <QPainter>
 #include <QSvgRenderer>
@@ -83,7 +84,7 @@ void ChessboardView::mouseReleaseEvent(QMouseEvent* event)
 		trg.file = dragTarget.column();
 		trg.rank = model()->rowCount() - dragTarget.row() - 1;
 
-		BookMove bookMove(src, trg, Chess::NoPiece);
+		BookMove bookMove(src, trg, Chess::Piece::NoPiece);
 		emit humanMove(bookMove);
 
 		m_dragUpdateRegion = m_dragRect;
