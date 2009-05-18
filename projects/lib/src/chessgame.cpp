@@ -232,7 +232,7 @@ void ChessGame::setOpeningBook(const OpeningBook* book, int maxMoves)
 		||  m_board->isRepeatMove(move))
 			break;
 		
-		addMove(move, m_board, "book");
+		addMove(move, m_board);
 
 		m_board->makeMove(move);
 		if (!m_board->result().isNone())
@@ -353,11 +353,13 @@ void ChessGame::start()
 	m_hasTags = true;
 	
 	// Play the forced opening moves first
-	foreach (const PgnGame::MoveData& md, m_moves)
+	QVector<PgnGame::MoveData>::iterator it;
+	for (it = m_moves.begin(); it != m_moves.end(); ++it)
 	{
-		Chess::Move move = md.move;
+		const Chess::Move& move = it->move;
 		Q_ASSERT(m_board->isLegalMove(move));
 		
+		it->comment = "book";
 		playerToMove()->makeBookMove(move);
 		playerToWait()->makeMove(move);
 		m_board->makeMove(move, true);
