@@ -115,7 +115,7 @@ void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	write("ucinewgame");
 
 	if (hasOption("UCI_Opponent"))
-		setOption("UCI_Opponent", m_opponent->name());
+		setOption("UCI_Opponent", this->opponent()->name());
 
 	sendPosition();
 }
@@ -146,11 +146,11 @@ void UciEngine::go()
 	if (side() == Chess::White)
 	{
 		whiteTc = myTc;
-		blackTc = m_opponent->timeControl();
+		blackTc = opponent()->timeControl();
 	}
 	else if (side() == Chess::Black)
 	{
-		whiteTc = m_opponent->timeControl();
+		whiteTc = opponent()->timeControl();
 		blackTc = myTc;
 	}
 	else

@@ -175,9 +175,9 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 	// Tell the opponent's type and name to the engine
 	if (m_ftName)
 	{
-		if (!m_opponent->isHuman())
+		if (!this->opponent()->isHuman())
 			write("computer");
-		write("name " + m_opponent->name());
+		write("name " + this->opponent()->name());
 	}
 }
 
@@ -222,7 +222,7 @@ void XboardEngine::sendTimeLeft()
 		return;
 	
 	int csLeft = timeControl()->timeLeft() / 10;
-	int ocsLeft = m_opponent->timeControl()->timeLeft() / 10;
+	int ocsLeft = opponent()->timeControl()->timeLeft() / 10;
 
 	if (csLeft < 0)
 		csLeft = 0;

@@ -174,6 +174,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 
 		/*! Returns the opponent's side. */
 		Chess::Side otherSide() const;
+
+		/*! Returns the opposing player. */
+		const ChessPlayer* opponent() const;
 		
 		/*! The current evaluation. */
 		MoveEvaluation m_eval;
@@ -184,9 +187,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! The board object. */
 		Chess::Board* m_chessboard;
 
-		/*! The opposing player. */
-		ChessPlayer* m_opponent;
-		
 		/*! Timer for detecting when the player's time is up. */
 		QTimer m_timer;
 		
@@ -199,6 +199,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		bool m_connected;
 		bool m_forfeited;
 		Chess::Side m_side;
+		ChessPlayer* m_opponent;
 };
 
 #endif // CHESSPLAYER_H

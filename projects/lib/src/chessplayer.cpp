@@ -24,11 +24,11 @@ ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
 	  m_isReady(false),
 	  m_chessboard(0),
-	  m_opponent(0),
 	  m_gameInProgress(false),
 	  m_connected(true),
 	  m_forfeited(false),
-	  m_side(Chess::NoSide)
+	  m_side(Chess::NoSide),
+	  m_opponent(0)
 {
 	m_timer.setSingleShot(true);
 	connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
@@ -134,6 +134,11 @@ Chess::Side ChessPlayer::otherSide() const
 	if (m_side == Chess::Black)
 		return Chess::White;
 	return Chess::NoSide;
+}
+
+const ChessPlayer* ChessPlayer::opponent() const
+{
+	return m_opponent;
 }
 
 QString ChessPlayer::name() const
