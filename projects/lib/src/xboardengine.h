@@ -38,7 +38,6 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		XboardEngine(QIODevice* ioDevice, QObject* parent = 0);
 
 		void start();
-		void startGame();
 		void endGame(Chess::Result result);
 		void go();
 		void makeMove(const Chess::Move& move);
@@ -52,6 +51,8 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void setEgtbPath(const QString& path);
 
 	protected:
+		// Inherited from ChessEngine
+		void startGame();
 		void parseLine(const QString& line);
 		void stopThinking();
 	

@@ -43,7 +43,6 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		// Inherited methods
 		void start();
 		void applySettings(const EngineSettings& settings);
-		void startGame();
 		void endGame(Chess::Result result);
 		void go();
 		void makeMove(const Chess::Move& move);
@@ -70,6 +69,8 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		void setEgtbPath(const QString& path);
 
 	protected:
+		// Inherited from ChessEngine
+		void startGame();
 		void parseLine(const QString& line);
 		void stopThinking();
 		

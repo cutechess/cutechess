@@ -66,7 +66,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		ChessEngine(QIODevice* ioDevice, QObject* parent = 0);
 
 		virtual ~ChessEngine();
-		virtual void startGame() = 0;
 		virtual void endGame(Chess::Result result);
 		virtual void go() = 0;
 		virtual void makeMove(const Chess::Move& move) = 0;
@@ -105,6 +104,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		
 	protected:
 		// Inherited from ChessPlayer
+		virtual void startGame() = 0;
 		void closeConnection();
 
 		/*! Parses a line of input from the engine. */
