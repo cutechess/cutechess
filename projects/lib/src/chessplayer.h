@@ -68,7 +68,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		const MoveEvaluation& evaluation() const;
 
 		/*! Returns the player's time control. */
-		TimeControl* timeControl();
+		const TimeControl* timeControl() const;
 
 		/*! Sets the time control for the player. */
 		void setTimeControl(const TimeControl& timeControl);

@@ -97,7 +97,7 @@ void ChessPlayer::makeBookMove(const Chess::Move& move)
 	m_timeControl.update();
 }
 
-TimeControl* ChessPlayer::timeControl()
+const TimeControl* ChessPlayer::timeControl() const
 {
 	return &m_timeControl;
 }
