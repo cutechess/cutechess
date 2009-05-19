@@ -142,22 +142,23 @@ void UciEngine::go()
 	
 	const TimeControl* whiteTc = 0;
 	const TimeControl* blackTc = 0;
+	const TimeControl* myTc = timeControl();
 	if (side() == Chess::White)
 	{
-		whiteTc = timeControl();
+		whiteTc = myTc;
 		blackTc = m_opponent->timeControl();
 	}
 	else if (side() == Chess::Black)
 	{
 		whiteTc = m_opponent->timeControl();
-		blackTc = timeControl();
+		blackTc = myTc;
 	}
 	else
-		qFatal("Player %s doesn't have a side", qPrintable(m_name));
+		qFatal("Player %s doesn't have a side", qPrintable(name()));
 	
 	QString command = "go";
-	if (m_timeControl.timePerMove() > 0)
-		command += QString(" movetime %1").arg(m_timeControl.timePerMove());
+	if (myTc->timePerMove() > 0)
+		command += QString(" movetime %1").arg(myTc->timePerMove());
 	else
 	{
 		command += QString(" wtime %1").arg(whiteTc->timeLeft());
@@ -166,12 +167,12 @@ void UciEngine::go()
 			command += QString(" winc %1").arg(whiteTc->timeIncrement());
 		if (blackTc->timeIncrement() > 0)
 			command += QString(" binc %1").arg(blackTc->timeIncrement());
-		if (m_timeControl.movesLeft() > 0)
-			command += QString(" movestogo %1").arg(m_timeControl.movesLeft());
-		if (m_timeControl.maxDepth() > 0)
-			command += QString(" depth %1").arg(m_timeControl.maxDepth());
-		if (m_timeControl.nodeLimit() > 0)
-			command += QString(" nodes %1").arg(m_timeControl.nodeLimit());
+		if (myTc->movesLeft() > 0)
+			command += QString(" movestogo %1").arg(myTc->movesLeft());
+		if (myTc->maxDepth() > 0)
+			command += QString(" depth %1").arg(myTc->maxDepth());
+		if (myTc->nodeLimit() > 0)
+			command += QString(" nodes %1").arg(myTc->nodeLimit());
 	}
 	write(command);
 }
@@ -321,14 +322,14 @@ void UciEngine::parseLine(const QString& line)
 		QString tag = args.section(' ', 0, 0);
 		QString tagVal = args.section(' ', 1);
 		
-		if (tag == "name" && m_name == "UciEngine")
-			m_name = tagVal;
+		if (tag == "name" && name() == "UciEngine")
+			setName(tagVal);
 	}
 	else if (command == "registration")
 	{
 		if (args == "error")
 		{
-			qDebug() << "Failed to register UCI engine" << m_name;
+			qDebug() << "Failed to register UCI engine" << name();
 			write("register later");
 		}
 	}
@@ -339,7 +340,7 @@ void UciEngine::parseLine(const QString& line)
 			m_options.append(option);
 		else
 		{
-			qDebug() << "Invalid UCI option from" << m_name << ":"
+			qDebug() << "Invalid UCI option from" << name() << ":"
 			         << args;
 		}
 	}
@@ -377,7 +378,7 @@ void UciEngine::setOption(const UciOption* option, const QVariant& value)
 	Q_ASSERT(option != 0);
 	if (!option->isOk())
 	{
-		qDebug() << "Trying to pass an invalid option to" << m_name;
+		qDebug() << "Trying to pass an invalid option to" << name();
 		return;
 	}
 	if (!option->isValueOk(value))
@@ -404,7 +405,7 @@ void UciEngine::setOption(const QString& name, const QVariant& value)
 	const UciOption* option = getOption(name);
 	if (!option)
 	{
-		qDebug() << m_name << "doesn't have UCI option" << name;
+		qDebug() << this->name() << "doesn't have UCI option" << name;
 		return;
 	}
 	

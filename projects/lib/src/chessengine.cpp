@@ -140,7 +140,7 @@ void ChessEngine::pong()
 
 void ChessEngine::onPingTimeout()
 {
-	qDebug() << "Engine" << m_name << "failed to respond to ping";
+	qDebug() << "Engine" << name() << "failed to respond to ping";
 
 	m_isReady = true;
 	m_writeBuffer.clear();

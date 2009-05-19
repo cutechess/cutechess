@@ -184,12 +184,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! The board object. */
 		Chess::Board* m_chessboard;
 
-		/*! The player's name. */
-		QString m_name;
-
-		/*! Time control for the player's moves. */
-		TimeControl m_timeControl;
-
 		/*! The opposing player. */
 		ChessPlayer* m_opponent;
 		
@@ -200,6 +194,8 @@ class LIB_EXPORT ChessPlayer : public QObject
 		bool m_gameInProgress;
 
 	private:
+		QString m_name;
+		TimeControl m_timeControl;
 		bool m_connected;
 		bool m_forfeited;
 		Chess::Side m_side;

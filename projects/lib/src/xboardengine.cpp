@@ -150,20 +150,21 @@ void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
 		if (m_ftSetboard)
 			write("setboard " + m_chessboard->fenString());
 		else
-			qDebug() << m_name << "doesn't support the setboard command.";
+			qDebug() << name() << "doesn't support the setboard command.";
 	}
 	
 	// Send the time controls
-	if (m_timeControl.timePerMove() > 0)
-		write(QString("st %1").arg(m_timeControl.timePerMove() / 1000));
+	const TimeControl* myTc = timeControl();
+	if (myTc->timePerMove() > 0)
+		write(QString("st %1").arg(myTc->timePerMove() / 1000));
 	else
 		write(QString("level %1 %2 %3")
-		      .arg(m_timeControl.movesPerTc())
-		      .arg(msToXboardTime(m_timeControl.timePerTc()))
-		      .arg(m_timeControl.timeIncrement() / 1000));
+		      .arg(myTc->movesPerTc())
+		      .arg(msToXboardTime(myTc->timePerTc()))
+		      .arg(myTc->timeIncrement() / 1000));
 
-	if (m_timeControl.maxDepth() > 0)
-		write(QString("sd %1").arg(m_timeControl.maxDepth()));
+	if (myTc->maxDepth() > 0)
+		write(QString("sd %1").arg(myTc->maxDepth()));
 
 	// Show thinking
 	write("post");
@@ -220,7 +221,7 @@ void XboardEngine::sendTimeLeft()
 	if (!m_ftTime)
 		return;
 	
-	int csLeft = m_timeControl.timeLeft() / 10;
+	int csLeft = timeControl()->timeLeft() / 10;
 	int ocsLeft = m_opponent->timeControl()->timeLeft() / 10;
 
 	if (csLeft < 0)
@@ -321,8 +322,8 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 		m_ftTime = (val == "1");
 	else if (name == "myname")
 	{
-		if (m_name == "XboardEngine")
-			m_name = val;
+		if (this->name() == "XboardEngine")
+			setName(val);
 	}
 	else if (name == "variants")
 	{
