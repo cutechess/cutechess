@@ -161,6 +161,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void onTimeout();
 
 	protected:
+		/*! Returns the chessboard on which the player is playing. */
+		Chess::Board* board();
+
 		/*! Starts the chess game set up by newGame(). */
 		virtual void startGame() = 0;
 
@@ -191,9 +194,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Is the player ready to play? */
 		bool m_isReady;
 		
-		/*! The board object. */
-		Chess::Board* m_chessboard;
-
 		/*! Timer for detecting when the player's time is up. */
 		QTimer m_timer;
 		
@@ -206,6 +206,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		bool m_connected;
 		bool m_forfeited;
 		Chess::Side m_side;
+		Chess::Board* m_board;
 		ChessPlayer* m_opponent;
 };
 

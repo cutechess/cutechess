@@ -23,11 +23,11 @@
 ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
 	  m_isReady(false),
-	  m_chessboard(0),
 	  m_gameInProgress(false),
 	  m_connected(true),
 	  m_forfeited(false),
 	  m_side(Chess::NoSide),
+	  m_board(0),
 	  m_opponent(0)
 {
 	m_timer.setSingleShot(true);
@@ -54,7 +54,7 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board*
 	m_eval.clear();
 	m_gameInProgress = true;
 	m_opponent = opponent;
-	m_chessboard = board;
+	m_board = board;
 	setSide(side);
 	m_timeControl.setTimeLeft(m_timeControl.timePerTc());
 	m_timeControl.setMovesLeft(m_timeControl.movesPerTc());
@@ -67,7 +67,7 @@ void ChessPlayer::endGame(Chess::Result result)
 	Q_UNUSED(result);
 
 	m_gameInProgress = false;
-	m_chessboard = 0;
+	m_board = 0;
 	m_timer.stop();
 }
 
@@ -128,6 +128,11 @@ bool ChessPlayer::inObserverMode() const
 void ChessPlayer::setObserverMode(bool enabled)
 {
 	Q_UNUSED(enabled);
+}
+
+Chess::Board* ChessPlayer::board()
+{
+	return m_board;
 }
 
 Chess::Side ChessPlayer::otherSide() const

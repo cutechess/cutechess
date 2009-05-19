@@ -139,15 +139,15 @@ void XboardEngine::startGame()
 	m_waitForMove = false;
 	write("new");
 	
-	const Chess::Variant& variant = m_chessboard->variant();
+	const Chess::Variant& variant = board()->variant();
 	
 	if (variant != Chess::Variant::Standard)
 		write("variant " + variantString(variant));
 	
-	if (variant.isRandom() || m_chessboard->fenString() != variant.startingFen())
+	if (variant.isRandom() || board()->fenString() != variant.startingFen())
 	{
 		if (m_ftSetboard)
-			write("setboard " + m_chessboard->fenString());
+			write("setboard " + board()->fenString());
 		else
 			qDebug() << name() << "doesn't support the setboard command.";
 	}
@@ -255,7 +255,7 @@ void XboardEngine::makeMove(const Chess::Move& move)
 		sendTimeLeft();
 	}
 	
-	QString moveString = m_chessboard->moveString(move, m_notation);
+	QString moveString = board()->moveString(move, m_notation);
 	if (m_ftUsermove)
 		write("usermove " + moveString);
 	else
@@ -385,8 +385,8 @@ void XboardEngine::parseLine(const QString& line)
 			return;
 		}
 
-		Chess::Move move = m_chessboard->moveFromString(args);
-		if (!m_chessboard->isLegalMove(move))
+		Chess::Move move = board()->moveFromString(args);
+		if (!board()->isLegalMove(move))
 		{
 			m_timer.stop();
 			emitForfeit(Chess::Result::WinByIllegalMove, args);
@@ -397,9 +397,9 @@ void XboardEngine::parseLine(const QString& line)
 		{
 			m_drawOnNextMove = false;
 			Chess::Result boardResult;
-			m_chessboard->makeMove(move);
-			boardResult = m_chessboard->result();
-			m_chessboard->undoMove();
+			board()->makeMove(move);
+			boardResult = board()->result();
+			board()->undoMove();
 
 			// If the engine claimed a draw before this move, the
 			// game must have ended in a draw by now
@@ -422,7 +422,7 @@ void XboardEngine::parseLine(const QString& line)
 	else if (command == "1-0" || command == "0-1"
 	     ||  command == "1/2-1/2" || command == "resign")
 	{
-		if (!m_gameInProgress || !m_chessboard->result().isNone())
+		if (!m_gameInProgress || !board()->result().isNone())
 		{
 			finishGame();
 			return;

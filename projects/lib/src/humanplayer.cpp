@@ -54,7 +54,7 @@ void HumanPlayer::onHumanMove(const GenericMove& move)
 	if (!m_timer.isActive())
 		return;
 
-	Chess::Move boardMove = m_chessboard->moveFromBook(move);
-	if (m_chessboard->isLegalMove(boardMove))
+	Chess::Move boardMove = board()->moveFromBook(move);
+	if (board()->isLegalMove(boardMove))
 		emitMove(boardMove);
 }

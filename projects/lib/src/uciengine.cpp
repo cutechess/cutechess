@@ -48,7 +48,7 @@ void UciEngine::sendPosition()
 {
 	QString str("position");
 	
-	const Chess::Variant& variant = m_chessboard->variant();
+	const Chess::Variant& variant = board()->variant();
 	if (variant.isRandom() || m_startFen != variant.startingFen())
 		str += QString(" fen ") + m_startFen;
 	else
@@ -100,14 +100,16 @@ void UciEngine::applySettings(const EngineSettings& settings)
 
 void UciEngine::startGame()
 {
+	const Chess::Variant& variant = board()->variant();
+
 	m_isThinking = false;
 	m_moves.clear();
-	if (m_chessboard->variant().isRandom())
-		m_startFen = m_chessboard->fenString(Chess::ShredderFen);
+
+	if (variant.isRandom())
+		m_startFen = board()->fenString(Chess::ShredderFen);
 	else
-		m_startFen = m_chessboard->fenString();
+		m_startFen = board()->fenString();
 	
-	const Chess::Variant& variant = m_chessboard->variant();
 	if (variant != Chess::Variant::Standard)
 		setOption(variantString(variant), "true");
 	write("ucinewgame");
@@ -126,7 +128,7 @@ void UciEngine::endGame(Chess::Result result)
 
 void UciEngine::makeMove(const Chess::Move& move)
 {
-	m_moves.append(m_chessboard->moveString(move, m_notation));
+	m_moves.append(board()->moveString(move, m_notation));
 	sendPosition();
 }
 
@@ -281,9 +283,9 @@ void UciEngine::parseLine(const QString& line)
 			moveString = args;
 
 		m_moves.append(moveString);
-		Chess::Move move = m_chessboard->moveFromString(moveString);
+		Chess::Move move = board()->moveFromString(moveString);
 
-		if (m_chessboard->isLegalMove(move))
+		if (board()->isLegalMove(move))
 			emitMove(move);
 		else
 		{
