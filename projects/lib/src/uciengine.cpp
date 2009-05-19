@@ -98,11 +98,9 @@ void UciEngine::applySettings(const EngineSettings& settings)
 		setOption(setting.name, setting.value);
 }
 
-void UciEngine::newGame(Chess::Side side, ChessPlayer* opponent)
+void UciEngine::startGame()
 {
 	m_isThinking = false;
-
-	ChessPlayer::newGame(side, opponent);
 	m_moves.clear();
 	if (m_chessboard->variant().isRandom())
 		m_startFen = m_chessboard->fenString(Chess::ShredderFen);

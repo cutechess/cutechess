@@ -44,19 +44,22 @@ bool ChessPlayer::isReady() const
 	return m_isReady;
 }
 
-void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent)
+void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board* board)
 {
 	Q_ASSERT(opponent != 0);
+	Q_ASSERT(board != 0);
 	Q_ASSERT(m_isReady);
-	Q_ASSERT(m_chessboard != 0);
 
 	m_forfeited = false;
 	m_eval.clear();
 	m_gameInProgress = true;
 	m_opponent = opponent;
+	m_chessboard = board;
 	setSide(side);
 	m_timeControl.setTimeLeft(m_timeControl.timePerTc());
 	m_timeControl.setMovesLeft(m_timeControl.movesPerTc());
+
+	startGame();
 }
 
 void ChessPlayer::endGame(Chess::Result result)
@@ -149,11 +152,6 @@ QString ChessPlayer::name() const
 void ChessPlayer::setName(const QString& name)
 {
 	m_name = name;
-}
-
-void ChessPlayer::setBoard(Chess::Board* board)
-{
-	m_chessboard = board;
 }
 
 void ChessPlayer::emitForfeit(Chess::Result::Code code, const QString& arg)

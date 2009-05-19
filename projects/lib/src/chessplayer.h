@@ -51,12 +51,19 @@ class LIB_EXPORT ChessPlayer : public QObject
 		bool isReady() const;
 
 		/*!
-		 * Starts a new chess game.
+		 * Prepares the player for a new chess game, and then calls
+		 * startGame() to start the game.
+		 *
 		 * \param side The side (color) the player should play as. It
 		 * can be NoSide if the player is in force/observer mode.
 		 * \param opponent The opposing player.
+		 * \param board The chessboard on which the game is played.
+		 *
+		 * \sa startGame()
 		 */
-		virtual void newGame(Chess::Side side, ChessPlayer* opponent);
+		void newGame(Chess::Side side,
+			     ChessPlayer* opponent,
+			     Chess::Board* board);
 		
 		/*! Tells the player that the game ended by \a result. */
 		virtual void endGame(Chess::Result result);
@@ -111,9 +118,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Sets the player's name. */
 		void setName(const QString& name);
 
-		/*! Sets the board object. */
-		void setBoard(Chess::Board* board);
-		
 		/*! Returns true if the player can play \a variant. */
 		virtual bool supportsVariant(Chess::Variant variant) const = 0;
 
@@ -157,6 +161,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void onTimeout();
 
 	protected:
+		/*! Starts the chess game set up by newGame(). */
+		virtual void startGame() = 0;
+
 		/*! Closes the player's connection to the operator. */
 		virtual void closeConnection();
 

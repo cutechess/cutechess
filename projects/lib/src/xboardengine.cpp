@@ -132,9 +132,8 @@ static QString variantString(Chess::Variant variant)
 	}
 }
 
-void XboardEngine::newGame(Chess::Side side, ChessPlayer* opponent)
+void XboardEngine::startGame()
 {
-	ChessPlayer::newGame(side, opponent);
 	m_drawOnNextMove = false;
 	m_gotResult = false;
 	m_waitForMove = false;

@@ -202,7 +202,6 @@ void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
 	Q_ASSERT(player != 0);
 	m_player[side] = player;
 
-	player->setBoard(m_board);
 	connect(player, SIGNAL(moveMade(const Chess::Move&)),
 	        this, SLOT(onMoveMade(const Chess::Move&)));
 	connect(player, SIGNAL(forfeit(Chess::Result)),
@@ -347,7 +346,7 @@ void ChessGame::start()
 	{
 		setPlayerName((Chess::Side)i, m_player[i]->name());
 		m_timeControl[i] = *m_player[i]->timeControl();
-		m_player[i]->newGame((Chess::Side)i, m_player[!i]);
+		m_player[i]->newGame((Chess::Side)i, m_player[!i], m_board);
 	}
 	
 	m_hasTags = true;

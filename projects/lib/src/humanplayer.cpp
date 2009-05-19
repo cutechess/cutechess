@@ -24,6 +24,10 @@ HumanPlayer::HumanPlayer(QObject* parent)
 	m_isReady = true;
 }
 
+void HumanPlayer::startGame()
+{
+}
+
 void HumanPlayer::go()
 {
 	startClock();
