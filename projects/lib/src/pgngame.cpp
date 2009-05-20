@@ -27,10 +27,10 @@
 
 
 PgnGame::PgnGame(Chess::Variant variant)
-	: m_variant(variant),
-	  m_hasTags(false),
+	: m_hasTags(false),
+	  m_round(0),
 	  m_startingSide(Chess::White),
-	  m_round(0)
+	  m_variant(variant)
 {
 }
 
@@ -424,6 +424,12 @@ Chess::Result PgnGame::result() const
 	return m_result;
 }
 
+const TimeControl& PgnGame::timeControl(Chess::Side side) const
+{
+	Q_ASSERT(side != Chess::NoSide);
+	return m_timeControl[side];
+}
+
 const QVector<PgnGame::MoveData>& PgnGame::moves() const
 {
 	return m_moves;
@@ -437,6 +443,7 @@ QString PgnGame::playerName(Chess::Side side) const
 void PgnGame::setPlayerName(Chess::Side side, const QString& name)
 {
 	m_playerName[side] = name;
+	m_hasTags = true;
 }
 
 void PgnGame::setEvent(const QString& event)
@@ -452,4 +459,26 @@ void PgnGame::setSite(const QString& site)
 void PgnGame::setRound(int round)
 {
 	m_round = round;
+}
+
+void PgnGame::setResult(const Chess::Result& result)
+{
+	m_result = result;
+}
+
+void PgnGame::setStartingFen(const QString& fen)
+{
+	m_fen = fen;
+	// TODO: Parse starting side
+}
+
+void PgnGame::setTimeControl(const TimeControl& timeControl, Chess::Side side)
+{
+	if (side != Chess::NoSide)
+		m_timeControl[side] = timeControl;
+	else
+	{
+		m_timeControl[Chess::White] = timeControl;
+		m_timeControl[Chess::Black] = timeControl;
+	}
 }

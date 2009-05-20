@@ -69,7 +69,7 @@ void ChessGame::stop()
 	m_gameEnded = true;
 	if (!m_gameInProgress)
 	{
-		m_result = Chess::Result();
+		setResult(Chess::Result());
 		emit gameEnded();
 		return;
 	}
@@ -79,7 +79,7 @@ void ChessGame::stop()
 	for (int i = 0; i < 2; i++)
 	{
 		if (m_player[i]->isConnected())
-			m_player[i]->endGame(m_result);
+			m_player[i]->endGame(result());
 	}
 
 	connect(this, SIGNAL(playersReady()), this, SIGNAL(gameEnded()), Qt::QueuedConnection);
@@ -103,10 +103,10 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 			m_drawScoreCount++;
 		else
 			m_drawScoreCount = 0;
-		if (m_moves.size() / 2 >= m_drawMoveNum
+		if (moves().size() / 2 >= m_drawMoveNum
 		&&  m_drawScoreCount >= 2)
 		{
-			m_result = Chess::Result(Chess::Result::DrawByAdjudication);
+			setResult(Chess::Result(Chess::Result::DrawByAdjudication));
 			return;
 		}
 	}
@@ -120,8 +120,11 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 		else
 			count = 0;
 		if (count >= m_resignMoveCount)
-			m_result = Chess::Result(Chess::Result::WinByAdjudication,
-						 (Chess::Side)!side);
+		{
+			Chess::Result::Code code = Chess::Result::WinByAdjudication;
+			Chess::Side winner = Chess::Side(!side);
+			setResult(Chess::Result(code, winner));
+		}
 	}
 }
 
@@ -159,18 +162,18 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 
 	// Get the result before sending the move to the opponent
 	m_board->makeMove(move, false);
-	m_result = m_board->result();
-	if (m_result.isNone())
+	setResult(m_board->result());
+	if (result().isNone())
 		adjudication(eval);
 	m_board->undoMove();
 
 	ChessPlayer* player = playerToWait();
-	if (!m_result.isNone())
+	if (!result().isNone())
 		player->setObserverMode(true);
 	player->makeMove(move);
 	m_board->makeMove(move, true);
 	
-	if (m_result.isNone())
+	if (result().isNone())
 		player->go();
 	else
 		stop();
@@ -183,7 +186,7 @@ void ChessGame::onForfeit(Chess::Result result)
 	if (m_gameEnded)
 		return;
 
-	m_result = result;
+	setResult(result);
 	stop();
 }
 
@@ -212,8 +215,7 @@ bool ChessGame::setFenString(const QString& fen)
 {
 	if (!m_board->setBoard(fen))
 		return false;
-	m_startingSide = m_board->sideToMove();
-	m_fen = fen;
+	setStartingFen(fen);
 	return true;
 }
 
@@ -262,11 +264,15 @@ void ChessGame::setResignThreshold(int moveCount, int score)
 
 void ChessGame::setBoard()
 {
-	if (m_fen.isEmpty())
-		m_fen = m_board->variant().startingFen();
+	QString fen = startingFen();
+	if (fen.isEmpty())
+	{
+		fen = m_board->variant().startingFen();
+		setStartingFen(fen);
+	}
 
-	if (!m_board->setBoard(m_fen))
-		qFatal("Invalid FEN: %s", qPrintable(m_fen));
+	if (!m_board->setBoard(fen))
+		qFatal("Invalid FEN: %s", qPrintable(fen));
 }
 
 bool ChessGame::arePlayersReady() const
@@ -312,7 +318,7 @@ void ChessGame::syncPlayers(bool ignoreSender)
 
 void ChessGame::start()
 {
-	m_result = Chess::Result();
+	setResult(Chess::Result());
 
 	if (!arePlayersReady())
 	{
@@ -335,7 +341,7 @@ void ChessGame::start()
 		{
 			qDebug() << player->name() << "doesn't support variant"
 				 << m_board->variant().toString();
-			m_result = Chess::Result(Chess::Result::ResultError);
+			setResult(Chess::Result(Chess::Result::ResultError));
 			stop();
 			return;
 		}	
@@ -344,12 +350,11 @@ void ChessGame::start()
 	setBoard();
 	for (int i = 0; i < 2; i++)
 	{
-		setPlayerName((Chess::Side)i, m_player[i]->name());
-		m_timeControl[i] = *m_player[i]->timeControl();
-		m_player[i]->newGame((Chess::Side)i, m_player[!i], m_board);
+		Chess::Side side = Chess::Side(i);
+		setPlayerName(side, m_player[i]->name());
+		setTimeControl(*m_player[i]->timeControl(), side);
+		m_player[i]->newGame(side, m_player[!i], m_board);
 	}
-	
-	m_hasTags = true;
 	
 	// Play the forced opening moves first
 	QVector<PgnGame::MoveData>::iterator it;
@@ -368,7 +373,7 @@ void ChessGame::start()
 		if (!m_board->result().isNone())
 		{
 			qDebug() << "Every move was played from the book";
-			m_result = m_board->result();
+			setResult(m_board->result());
 			stop();
 			return;
 		}

@@ -79,6 +79,14 @@ class LIB_EXPORT PgnGame
 		/*! Returns the game result. */
 		Chess::Result result() const;
 
+		/*!
+		 * Returns the time control for \a side.
+		 *
+		 * \note Usually both players have the same time control, in which
+		 * case the default value for \side works fine.
+		 */
+		const TimeControl& timeControl(Chess::Side side = Chess::White) const;
+
 		/*! Returns the moves that were played in the game. */
 		const QVector<MoveData>& moves() const;
 
@@ -90,6 +98,21 @@ class LIB_EXPORT PgnGame
 
 		/*! Sets the round number in a match or tournament. */
 		void setRound(int round);
+
+		/*! Sets the game result. */
+		void setResult(const Chess::Result& result);
+
+		/*! Sets the starting position's FEN string to \ə fen. */
+		void setStartingFen(const QString& fen);
+
+		/*!
+		 * Sets the time control for \a side to \a timeControl.
+		 *
+		 * \note If \a side is Chess::NoSide (the default), the same
+		 * time control will be used for both players.
+		 */
+		void setTimeControl(const TimeControl& timeControl,
+				    Chess::Side side = Chess::NoSide);
 
 	protected:
 		/*!
@@ -119,15 +142,10 @@ class LIB_EXPORT PgnGame
 		bool addMove(const QString& moveString,
 			     Chess::Board* board,
 			     const QString& comment = QString());
-		
-		QString m_fen;
-		QVector<MoveData> m_moves;
-		Chess::Result m_result;
-		Chess::Variant m_variant;
-		TimeControl m_timeControl[2];
-		bool m_hasTags;
-		Chess::Side m_startingSide;
 
+		/*! The game's moves. */
+		QVector<MoveData> m_moves;
+		
 	private:
 		enum PgnItem
 		{
@@ -143,10 +161,16 @@ class LIB_EXPORT PgnGame
 
 		PgnItem readItem(PgnFile& in, bool minimal);
 		
-		QString m_playerName[2];
+		bool m_hasTags;
+		int m_round;
 		QString m_event;
 		QString m_site;
-		int m_round;
+		QString m_fen;
+		QString m_playerName[2];
+		Chess::Side m_startingSide;
+		Chess::Result m_result;
+		Chess::Variant m_variant;
+		TimeControl m_timeControl[2];
 };
 
 #endif // PGNGAME_H
