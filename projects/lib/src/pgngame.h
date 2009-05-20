@@ -19,10 +19,8 @@ class PgnFile;
  * PGN (Portable game notation) is a text format for chess games of any
  * variants: http://en.wikipedia.org/wiki/Portable_Game_Notation
  *
- * The PgnGame class has a method for reading games, which can then be
- * viewed on the graphical board, analyzed by chess engines, added to
- * an opening book, etc.
- * PgnGame can also take a ChessGame object and convert it into PGN format.
+ * \sa PgnFile
+ * \sa ChessGame
  */
 class LIB_EXPORT PgnGame
 {
@@ -48,6 +46,7 @@ class LIB_EXPORT PgnGame
 		 * \param minimal If true, only data required by the PGN
 		 * specification is loaded.
 		 * \param maxMoves The maximum number of halfmoves to read.
+		 *
 		 * \note Even if the stream contains multiple games,
 		 * only one will be read.
 		 *
