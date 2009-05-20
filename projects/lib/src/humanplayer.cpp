@@ -22,6 +22,7 @@ HumanPlayer::HumanPlayer(QObject* parent)
 	: ChessPlayer(parent)
 {
 	m_isReady = true;
+	setName("HumanPlayer");
 }
 
 void HumanPlayer::startGame()
