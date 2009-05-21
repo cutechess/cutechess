@@ -35,7 +35,7 @@ PlainTextLog::PlainTextLog(const QString& text, QWidget* parent)
 
 void PlainTextLog::saveLogToFile()
 {
-	emit(saveLogToFileRequest());
+	emit saveLogToFileRequest();
 }
 
 void PlainTextLog::contextMenuEvent(QContextMenuEvent* event)

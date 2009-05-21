@@ -147,7 +147,7 @@ bool EngineConfigurationModel::setData(const QModelIndex& index,
 		}
 
 		m_configurations[index.row()] = config;
-		emit(dataChanged(index, index));
+		emit dataChanged(index, index);
 
 		return true;
 	}
@@ -181,7 +181,7 @@ bool EngineConfigurationModel::setConfiguration(const QModelIndex& index,
 	if (index.isValid())
 	{
 		m_configurations[index.row()] = configuration;
-		emit(dataChanged(index, index));
+		emit dataChanged(index, index);
 		return true;
 	}
 	return false;

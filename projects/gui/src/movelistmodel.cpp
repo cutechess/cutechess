@@ -139,7 +139,7 @@ void MoveListModel::onMoveMade()
 	if (movesCount % 2 == 0)
 	{
 		QModelIndex indexToUpdate = index(movesCount / 2, 1);
-		emit(dataChanged(indexToUpdate, indexToUpdate));
+		emit dataChanged(indexToUpdate, indexToUpdate);
 	}
 	else
 	{
