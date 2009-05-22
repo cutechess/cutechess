@@ -15,7 +15,7 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "pipereader.h"
+#include "pipereader_win.h"
 
 
 PipeReader::PipeReader(HANDLE pipe, QObject* parent)

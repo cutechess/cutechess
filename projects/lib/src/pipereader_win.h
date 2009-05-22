@@ -15,8 +15,8 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PIPEREADER_H
-#define PIPEREADER_H
+#ifndef PIPEREADER_WIN_H
+#define PIPEREADER_WIN_H
 
 #include <QThread>
 #include <QMutex>
@@ -79,4 +79,4 @@ class LIB_EXPORT PipeReader : public QThread
 		int m_lastLineBreak;
 };
 
-#endif // PIPEREADER_H
+#endif // PIPEREADER_WIN_H

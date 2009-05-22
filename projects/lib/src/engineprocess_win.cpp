@@ -15,9 +15,8 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "engineprocess.h"
-
-#include "pipereader.h"
+#include "engineprocess_win.h"
+#include "pipereader_win.h"
 #include <QDir>
 #include <QTimerEvent>
 #include <QtDebug>
