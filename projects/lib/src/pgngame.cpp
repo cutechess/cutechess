@@ -219,15 +219,12 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
 		}
 		else if (tag == "FEN")
 		{
-			m_fen = param;
-			if (!board->setBoard(m_fen))
+			if (!board->setBoard(param))
 			{
-				qDebug() << "Invalid FEN:" << m_fen;
-				m_fen.clear();
-				m_startingSide = Chess::White;
+				qDebug() << "Invalid FEN:" << param;
 				return PgnError;
 			}
-			m_startingSide = board->sideToMove();
+			setStartingFen(param);
 		}
 		else if (!minimal)
 		{
@@ -254,7 +251,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
 		// set the board when we get the first move
 		if (m_fen.isEmpty())
 		{
-			m_fen = board->variant().startingFen();
+			setStartingFen(board->variant().startingFen());
 			board->setBoard(m_fen);
 		}
 		
@@ -284,7 +281,7 @@ bool PgnGame::load(PgnFile& in, bool minimal, int maxMoves)
 {
 	m_hasTags = false;
 	m_round = 0;
-	m_fen.clear();
+	setStartingFen(QString());
 	m_moves.clear();
 
 	Chess::Board* board = in.board();
@@ -364,7 +361,8 @@ void PgnGame::write(const QString& filename, bool minimal) const
 
 		if (m_variant != Chess::Variant::Standard)
 			writeTag(out, "Variant", m_variant.toString());
-		if (m_variant.isRandom() || m_fen != m_variant.startingFen())
+		if (!m_fen.isEmpty()
+		&&  (m_variant.isRandom() || m_fen != m_variant.startingFen()))
 		{
 			writeTag(out, "SetUp", "1");
 			writeTag(out, "FEN", m_fen);
@@ -468,8 +466,20 @@ void PgnGame::setResult(const Chess::Result& result)
 
 void PgnGame::setStartingFen(const QString& fen)
 {
+	if (!fen.isEmpty())
+	{
+		QString sideStr = fen.section(' ', 1, 1);
+		Q_ASSERT(sideStr == "w" || sideStr == "b");
+
+		if (sideStr == "b")
+			m_startingSide = Chess::Black;
+		else
+			m_startingSide = Chess::White;
+	}
+	else
+		m_startingSide = Chess::White;
+
 	m_fen = fen;
-	// TODO: Parse starting side
 }
 
 void PgnGame::setTimeControl(const TimeControl& timeControl, Chess::Side side)
