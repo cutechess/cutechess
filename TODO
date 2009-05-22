@@ -1,8 +1,6 @@
 - Add more stuff to the Chess namespace (Game, Player, etc.)
   chess.h should probably be in lib/src, not lib/src/chessboard
 
-- Human player
-
 - Complete Xboard and UCI support (including the analysis feature)
 
 - More unit tests for the Chess library
@@ -26,15 +24,9 @@
   - negative minimum search depth
   - test the ping time
 
-- Include annotations (eval + search depth + move time) in saved PGN files
-
 - Use ECO codes to determine the opening name for PGN games
 
 - EPD tests for engines
 
-- Command line tool for running engine vs. engine matches and tournaments
-
 - Design an XML format for tournaments
-
-- Switch to a QAbstractItemView-based graphical board
 
