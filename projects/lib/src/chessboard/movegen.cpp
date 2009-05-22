@@ -20,7 +20,7 @@
 using namespace Chess;
 
 
-void Board::generateMoves(QVector<Chess::Move>& moves) const
+void Board::generateMoves(QVector<Chess::Move>& moves, Piece::Type type) const
 {
 	// Cut the wall squares (the ones with a value of InvalidPiece) off
 	// from the squares to iterate over. It bumps the speed up a bit.
@@ -32,7 +32,8 @@ void Board::generateMoves(QVector<Chess::Move>& moves) const
 	for (unsigned sq = begin; sq < end; sq++)
 	{
 		Piece piece = m_squares[sq];
-		if (piece.side() != m_side)
+		if (piece.side() != m_side
+		||  (type != Piece::NoPiece && piece.type() != type))
 			continue;
 		
 		switch (piece.type())

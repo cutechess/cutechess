@@ -345,16 +345,14 @@ Move Board::moveFromSanString(const QString& str)
 			return Move(0, 0);
 	}
 	
-	QVector<Move> moves = legalMoves();
+	QVector<Move> moves;
+	generateMoves(moves, piece.type());
 	const Move* match = 0;
 	
 	// Loop through all legal moves to find a move that matches
 	// the data we got from the move string.
 	foreach (const Move& move, moves)
 	{
-		Piece piece2 = m_squares[move.sourceSquare()];
-		if (piece2 != piece)
-			continue;
 		if (move.targetSquare() != target)
 			continue;
 		Square sourceSq2 = chessSquare(move.sourceSquare());
@@ -366,6 +364,12 @@ Move Board::moveFromSanString(const QString& str)
 		if (move.castlingSide() != -1)
 			continue;
 		if (move.promotion() != promotion)
+			continue;
+
+		makeMove(move);
+		bool isLegal = isLegalPosition();
+		undoMove();
+		if (!isLegal)
 			continue;
 		
 		// Return an empty move if there are multiple moves that

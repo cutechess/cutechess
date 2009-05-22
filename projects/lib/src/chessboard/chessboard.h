@@ -278,10 +278,14 @@ class LIB_EXPORT Board : public QObject
 		                       QVector<Move>& moves) const;
 		
 		/*!
-		 * Generates pseudo-legal moves.
+		 * Generates pseudo-legal moves for pieces of \a type.
+		 *
+		 * \note If type is NoPiece (default), moves are generated
+		 * for every piece type.
 		 * \sa legalMoves()
 		 */
-		void generateMoves(QVector<Move>& moves) const;
+		void generateMoves(QVector<Move>& moves,
+				   Piece::Type type = Piece::NoPiece) const;
 		
 		/*!
 		 * Adds pawn promotions (from \a sourceSquare to \a targetSquare)
