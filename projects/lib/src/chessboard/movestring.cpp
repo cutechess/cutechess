@@ -328,7 +328,7 @@ Move Board::moveFromSanString(const QString& str)
 	// or not the move is a capture.
 	bool isCapture = false;
 	if (m_squares[target].side() == !m_side
-	||  (target == m_enpassantSquare && piece == Piece::Pawn))
+	||  (target == m_enpassantSquare && piece.type() == Piece::Pawn))
 		isCapture = true;
 	if (isCapture != stringIsCapture)
 		return Move(0, 0);
