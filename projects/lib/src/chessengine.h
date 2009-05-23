@@ -60,8 +60,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		
 		/*! Creates and initializes a new ChessEngine. */
 		ChessEngine(QIODevice* ioDevice, QObject* parent = 0);
-
 		virtual ~ChessEngine();
+
+		// Inherited from ChessPlayer
 		virtual void endGame(Chess::Result result);
 		virtual void go() = 0;
 		virtual void makeMove(const Chess::Move& move) = 0;

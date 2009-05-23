@@ -30,13 +30,10 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 	Q_OBJECT
 
 	public:
-		/*!
-		 * Creates a new XboardEngine object.
-		 * \param ioDevice An open chess engine process or socket.
-		 * \param parent The parent object.
-		 */
+		/*! Creates a new XboardEngine. */
 		XboardEngine(QIODevice* ioDevice, QObject* parent = 0);
 
+		// Inherited from ChessEngine
 		void start();
 		void endGame(Chess::Result result);
 		void go();
@@ -45,7 +42,6 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void ping(PingType type);
 		bool inObserverMode() const;
 		void setObserverMode(bool enabled);
-		
 		void setConcurrency(int limit);
 		void setEgbbPath(const QString& path);
 		void setEgtbPath(const QString& path);

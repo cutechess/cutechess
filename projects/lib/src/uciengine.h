@@ -32,15 +32,10 @@ class LIB_EXPORT UciEngine : public ChessEngine
 	Q_OBJECT
 
 	public:
-		/*!
-		 * Creates a new UciEngine object.
-		 *
-		 * \param ioDevice An open chess engine process or socket.
-		 * \param parent The parent object.
-		 */
+		/*! Creates a new UciEngine. */
 		UciEngine(QIODevice* ioDevice, QObject* parent = 0);
 
-		// Inherited methods
+		// Inherited from ChessEngine
 		void start();
 		void applySettings(const EngineSettings& settings);
 		void endGame(Chess::Result result);
@@ -48,6 +43,9 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
 		void ping(PingType type);
+		void setConcurrency(int limit);
+		void setEgbbPath(const QString& path);
+		void setEgtbPath(const QString& path);
 		
 		/*!
 		 * Sets \a option to \a value, and sends it to the engine.
@@ -64,10 +62,6 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		 */
 		void setOption(const QString& name, const QVariant& value);
 		
-		void setConcurrency(int limit);
-		void setEgbbPath(const QString& path);
-		void setEgtbPath(const QString& path);
-
 	protected:
 		// Inherited from ChessEngine
 		void startGame();
