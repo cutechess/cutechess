@@ -116,13 +116,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Tells the engine to stop thinking and move now. */
 		virtual void stopThinking() = 0;
 
-		/*!
-		 * The chess move notation the engine wants to use.
-		 * All moves which are sent to and received from the engine must
-		 * be in this format.
-		 */
-		Chess::MoveNotation m_notation;
-
 		/*! Is the engine initialized? */
 		bool m_initialized;
 

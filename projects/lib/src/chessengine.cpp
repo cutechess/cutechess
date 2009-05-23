@@ -27,7 +27,6 @@ int ChessEngine::m_count = 0;
 
 ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessPlayer(parent),
-	  m_notation(Chess::LongAlgebraic),
 	  m_initialized(false),
 	  m_finishingGame(false),
 	  m_whiteEvalPov(false),

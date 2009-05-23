@@ -53,7 +53,8 @@ XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
 	  m_ftUsermove(false),
 	  m_gotResult(false),
 	  m_waitForMove(false),
-	  m_lastPing(0)
+	  m_lastPing(0),
+	  m_notation(Chess::LongAlgebraic)
 {
 	m_variants.append(Chess::Variant::Standard);
 	setName("XboardEngine");

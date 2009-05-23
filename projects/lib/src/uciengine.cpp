@@ -30,7 +30,6 @@ UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessEngine(ioDevice, parent),
 	  m_isThinking(false)
 {
-	m_notation = Chess::UciLongAlgebraic;
 	m_variants.append(Chess::Variant::Standard);
 	
 	setName("UciEngine");
@@ -128,7 +127,7 @@ void UciEngine::endGame(Chess::Result result)
 
 void UciEngine::makeMove(const Chess::Move& move)
 {
-	m_moves.append(board()->moveString(move, m_notation));
+	m_moves.append(board()->moveString(move, Chess::UciLongAlgebraic));
 	sendPosition();
 }
 
