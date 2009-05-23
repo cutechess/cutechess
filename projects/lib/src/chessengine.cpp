@@ -157,7 +157,10 @@ void ChessEngine::write(const QString& data)
 	}
 
 	Q_ASSERT(m_ioDevice->isWritable());
-	emit debugMessage(QString(">") + name() + "(" + QString::number(m_id) +  "): " + data);
+	emit debugMessage(QString(">%1(%2): %3")
+			  .arg(name())
+			  .arg(m_id)
+			  .arg(data));
 
 	m_ioDevice->write(data.toAscii() + "\n");
 }
@@ -166,10 +169,12 @@ void ChessEngine::onReadyRead()
 {
 	while (m_ioDevice->isReadable() && m_ioDevice->canReadLine())
 	{
-		QString line = QString(m_ioDevice->readLine()).trimmed();
-		emit debugMessage(QString("<") + name() + "(" + QString::number(m_id) +  "): " + line);
-		
-		parseLine(line.simplified());
+		QString line = QString(m_ioDevice->readLine()).simplified();
+		emit debugMessage(QString("<%1(%2): %3")
+				  .arg(name())
+				  .arg(m_id)
+				  .arg(line));
+		parseLine(line);
 	}
 }
 
