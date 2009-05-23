@@ -41,6 +41,31 @@ QDataStream& operator<<(QDataStream& out, const OpeningBook* book)
 	return out;
 }
 
+bool OpeningBook::read(const QString& filename)
+{
+	QFile file(filename);
+	if (!file.open(QIODevice::ReadOnly))
+		return false;
+
+	m_map.clear();
+	QDataStream in(&file);
+	in >> this;
+
+	return !m_map.isEmpty();
+}
+
+bool OpeningBook::write(const QString& filename) const
+{
+	QFile file(filename);
+	if (!file.open(QIODevice::WriteOnly))
+		return false;
+
+	QDataStream out(&file);
+	out << this;
+
+	return true;
+}
+
 void OpeningBook::addEntry(const Entry& entry, quint64 key)
 {
 	Map::iterator it = m_map.find(key);

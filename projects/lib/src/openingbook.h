@@ -47,6 +47,19 @@ class LIB_EXPORT OpeningBook
 		 */
 		GenericMove move(quint64 key) const;
 
+		/*!
+		 * Reads a book from \ə filename.
+		 * Returns true if successfull.
+		 */
+		bool read(const QString& filename);
+
+		/*!
+		 * Writes the book to \a filename.
+		 * Returns true if successfull.
+		 */
+		bool write(const QString& filename) const;
+
+
 	protected:
 		friend QDataStream& operator>>(QDataStream& in, OpeningBook* book);
 		friend QDataStream& operator<<(QDataStream& out, const OpeningBook* book);
