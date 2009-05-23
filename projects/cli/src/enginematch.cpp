@@ -20,7 +20,6 @@
 #include <enginefactory.h>
 #include <polyglotbook.h>
 #include <QFile>
-#include <QDataStream>
 #include <QDir>
 #include <QTimer>
 #include <QtDebug>
@@ -93,16 +92,12 @@ void EngineMatch::setBookFile(const QString& filename)
 		m_book = 0;
 	}
 
-	QFile file(filename);
-	if (!file.open(QIODevice::ReadOnly))
+	m_book = new PolyglotBook;
+	if (!m_book->read(filename))
 	{
 		qWarning() << "Can't open book file" << filename;
 		return;
 	}
-
-	m_book = new PolyglotBook;
-	QDataStream in(&file);
-	in >> m_book;
 }
 
 void EngineMatch::setDebugMode(bool debug)
