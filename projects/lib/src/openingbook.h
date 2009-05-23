@@ -29,7 +29,7 @@ class LIB_EXPORT OpeningBook
 		/*!
 		 * Imports games in PGN format.
 		 * \param filename The PGN file
-		 * \param maxMoves Store at most this many full moves per game
+		 * \param maxMoves Store at most this many halfmoves per game
 		 * \return True if successfull.
 		 */
 		bool pgnImport(const QString& filename, int maxMoves);
