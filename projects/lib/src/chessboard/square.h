@@ -29,7 +29,7 @@ namespace Chess {
 * class (which uses integers for squares) and more generic, high-level
 * classes.
 */
-class Square
+class LIB_EXPORT Square
 {
 	public:
 		/*! Creates a new square with invalid defaults. */

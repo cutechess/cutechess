@@ -34,7 +34,7 @@ namespace Chess {
  * For performance reasons the class is just a wrapper for integer, and it
  * has a constructor for implicitly converting integers to Piece objects.
  */
-class Piece
+class LIB_EXPORT Piece
 {
 	public:
 		/*! Piece types for all supported chess variants. */
