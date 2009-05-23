@@ -318,93 +318,97 @@ static void writeTag(QTextStream& out, const QString& name, const QString& value
 		out << "[" << name << " \"?\"]\n";
 }
 
-void PgnGame::write(const QString& filename, bool minimal) const
+bool PgnGame::write(const QString& filename, bool minimal) const
 {
 	if (!m_hasTags)
-		return;
+		return false;
 	
 	QString date = QDate::currentDate().toString("yyyy.MM.dd");
 	
 	QFile file(filename);
-	if (file.open(QIODevice::Append))
+	if (!file.open(QIODevice::Append))
+		return false;
+
+	QTextStream out(&file);
+
+	// The seven tag roster
+	writeTag(out, "Event", m_event);
+	writeTag(out, "Site", m_site);
+	writeTag(out, "Date", date);
+	if (m_round > 0)
+		writeTag(out, "Round", QString::number(m_round));
+	else
+		writeTag(out, "Round", "?");
+	writeTag(out, "White", m_playerName[Chess::White]);
+	writeTag(out, "Black", m_playerName[Chess::Black]);
+	writeTag(out, "Result", m_result.toSimpleString());
+
+	if (!minimal)
 	{
-		QTextStream out(&file);
-		
-		// The seven tag roster
-		writeTag(out, "Event", m_event);
-		writeTag(out, "Site", m_site);
-		writeTag(out, "Date", date);
-		if (m_round > 0)
-			writeTag(out, "Round", QString::number(m_round));
+		writeTag(out, "PlyCount", QString::number(m_moves.size()));
+
+		const TimeControl& wtc = m_timeControl[Chess::White];
+		const TimeControl& btc = m_timeControl[Chess::Black];
+		if (wtc == btc && wtc.isValid())
+			writeTag(out, "TimeControl", wtc.toString());
 		else
-			writeTag(out, "Round", "?");
-		writeTag(out, "White", m_playerName[Chess::White]);
-		writeTag(out, "Black", m_playerName[Chess::Black]);
-		writeTag(out, "Result", m_result.toSimpleString());
-
-		if (!minimal)
 		{
-			writeTag(out, "PlyCount", QString::number(m_moves.size()));
-
-			const TimeControl& wtc = m_timeControl[Chess::White];
-			const TimeControl& btc = m_timeControl[Chess::Black];
-			if (wtc == btc && wtc.isValid())
-				writeTag(out, "TimeControl", wtc.toString());
-			else
-			{
-				if (wtc.isValid())
-					writeTag(out, "WhiteTimeControl", wtc.toString());
-				if (btc.isValid())
-					writeTag(out, "BlackTimeControl", btc.toString());
-			}
+			if (wtc.isValid())
+				writeTag(out, "WhiteTimeControl", wtc.toString());
+			if (btc.isValid())
+				writeTag(out, "BlackTimeControl", btc.toString());
 		}
-
-		if (m_variant != Chess::Variant::Standard)
-			writeTag(out, "Variant", m_variant.toString());
-		if (!m_fen.isEmpty()
-		&&  (m_variant.isRandom() || m_fen != m_variant.startingFen()))
-		{
-			writeTag(out, "SetUp", "1");
-			writeTag(out, "FEN", m_fen);
-		}
-		
-		QString str;
-		int lineLength = 0;
-		int movenum = 0;
-		int side = m_startingSide;
-
-		for (int i = 0; i < m_moves.size(); i++)
-		{
-			const MoveData& md = m_moves.at(i);
-
-			str.clear();
-			if (side == Chess::White || i == 0)
-				str = QString::number(++movenum) + ". ";
-			
-			str += md.sanMove;
-			if (!minimal && !md.comment.isEmpty())
-				str += QString(" {%1}").arg(md.comment);
-
-			// Limit the lines to 80 characters
-			if (lineLength == 0 || lineLength + str.size() >= 80)
-			{
-				out << "\n" << str;
-				lineLength = str.size();
-			}
-			else
-			{
-				out << " " << str;
-				lineLength += str.size() + 1;
-			}
-
-			side = !side;
-		}
-		str = QString("{%1} %2").arg(m_result.description()).arg(m_result.toSimpleString());
-		if (lineLength + str.size() >= 80)
-			out << "\n" << str << "\n\n";
-		else
-			out << " " << str << "\n\n";
 	}
+
+	if (m_variant != Chess::Variant::Standard)
+		writeTag(out, "Variant", m_variant.toString());
+	if (!m_fen.isEmpty()
+	&&  (m_variant.isRandom() || m_fen != m_variant.startingFen()))
+	{
+		writeTag(out, "SetUp", "1");
+		writeTag(out, "FEN", m_fen);
+	}
+
+	QString str;
+	int lineLength = 0;
+	int movenum = 0;
+	int side = m_startingSide;
+
+	for (int i = 0; i < m_moves.size(); i++)
+	{
+		const MoveData& md = m_moves.at(i);
+
+		str.clear();
+		if (side == Chess::White || i == 0)
+			str = QString::number(++movenum) + ". ";
+
+		str += md.sanMove;
+		if (!minimal && !md.comment.isEmpty())
+			str += QString(" {%1}").arg(md.comment);
+
+		// Limit the lines to 80 characters
+		if (lineLength == 0 || lineLength + str.size() >= 80)
+		{
+			out << "\n" << str;
+			lineLength = str.size();
+		}
+		else
+		{
+			out << " " << str;
+			lineLength += str.size() + 1;
+		}
+
+		side = !side;
+	}
+	str = QString("{%1} %2")
+	      .arg(m_result.description())
+	      .arg(m_result.toSimpleString());
+	if (lineLength + str.size() >= 80)
+		out << "\n" << str << "\n\n";
+	else
+		out << " " << str << "\n\n";
+
+	return true;
 }
 
 bool PgnGame::isEmpty() const

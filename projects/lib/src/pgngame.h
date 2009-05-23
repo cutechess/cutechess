@@ -61,8 +61,10 @@ class LIB_EXPORT PgnGame
 		 *
 		 * \param minimal If true, only data required by the PGN
 		 * specification is written.
+		 *
+		 * \return True if successfull
 		 */
-		void write(const QString& filename, bool minimal = false) const;
+		bool write(const QString& filename, bool minimal = false) const;
 		
 		/*! Returns true if the game doesn't contain any moves. */
 		bool isEmpty() const;
