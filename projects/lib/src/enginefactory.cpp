@@ -22,6 +22,8 @@
 ChessEngine* EngineFactory::createEngine(ChessEngine::Protocol protocol,
                                          QIODevice* ioDevice, QObject* parent)
 {
+	Q_ASSERT(ioDevice != 0);
+
 	switch (protocol)
 	{
 		case ChessEngine::Xboard:
@@ -37,4 +39,3 @@ ChessEngine* EngineFactory::createEngine(ChessEngine::Protocol protocol,
 		break;
 	}
 }
-

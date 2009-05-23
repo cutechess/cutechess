@@ -30,11 +30,7 @@
 class LIB_EXPORT EngineFactory
 {
 	public:
-		/*!
-		 * Creates a chess engine based on \a protocol.
-		 * \note The engine process (\a ioDevice) must be already
-		 * started.
-		 */
+		/*! Creates a chess engine based on \a protocol. */
 		static ChessEngine* createEngine(ChessEngine::Protocol protocol,
 		                                 QIODevice* ioDevice,
 		                                 QObject* parent = 0);
@@ -45,4 +41,3 @@ class LIB_EXPORT EngineFactory
 };
 
 #endif // ENGINE_FACTORY_H
-

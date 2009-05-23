@@ -58,11 +58,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 			PingUnknown
 		};
 		
-		/*!
-		 * Creates and initializes a new ChessEngine object.
-		 * \note The engine process (\a ioDevice) must be
-		 * already started.
-		 */
+		/*! Creates and initializes a new ChessEngine. */
 		ChessEngine(QIODevice* ioDevice, QObject* parent = 0);
 
 		virtual ~ChessEngine();
