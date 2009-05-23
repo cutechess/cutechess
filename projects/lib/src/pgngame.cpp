@@ -277,7 +277,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
 	return itemType;
 }
 
-bool PgnGame::load(PgnFile& in, bool minimal, int maxMoves)
+bool PgnGame::read(PgnFile& in, bool minimal, int maxMoves)
 {
 	m_hasTags = false;
 	m_round = 0;

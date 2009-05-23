@@ -52,7 +52,7 @@ class LIB_EXPORT PgnGame
 		 *
 		 * \return True, if a FEN tag or moves were read.
 		 */
-		bool load(PgnFile& in, bool minimal = false, int maxMoves = 1000);
+		bool read(PgnFile& in, bool minimal = false, int maxMoves = 1000);
 		
 		/*!
 		 * Write the game to a file.

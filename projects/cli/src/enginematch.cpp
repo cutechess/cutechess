@@ -353,14 +353,14 @@ void EngineMatch::start()
 	}
 	else if (m_pgnInput.isOpen())
 	{
-		bool ok = m_game->load(m_pgnInput, true, m_bookDepth);
+		bool ok = m_game->read(m_pgnInput, true, m_bookDepth);
 		if (ok)
 			m_pgnGamesRead++;
 		// Rewind the PGN input file
 		else if (m_pgnGamesRead > 0)
 		{
 			m_pgnInput.rewind();
-			ok = m_game->load(m_pgnInput, true, m_bookDepth);
+			ok = m_game->read(m_pgnInput, true, m_bookDepth);
 			Q_ASSERT(ok);
 			m_pgnGamesRead++;
 		}
