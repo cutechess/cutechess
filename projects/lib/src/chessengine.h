@@ -125,12 +125,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Are evaluation scores from white's point of view? */
 		bool m_whiteEvalPov;
 
-		/*! The ID number of the chess engine. */
-		int m_id;
-
-		/*! The number of active chess engines. */
-		static int m_count;
-
 		/*! The last ping's type. */
 		PingType m_pingType;
 
@@ -162,6 +156,8 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void flushWriteBuffer();
 
 	private:
+		static int m_count;
+		int m_id;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
 };

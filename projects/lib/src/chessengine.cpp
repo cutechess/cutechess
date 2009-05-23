@@ -30,8 +30,8 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	  m_initialized(false),
 	  m_finishingGame(false),
 	  m_whiteEvalPov(false),
-	  m_id(m_count++),
 	  m_pingType(PingUnknown),
+	  m_id(m_count++),
 	  m_ioDevice(ioDevice)
 {
 	Q_ASSERT(m_ioDevice != 0);
