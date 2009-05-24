@@ -160,6 +160,15 @@ class LIB_EXPORT Board : public QObject
 		
 		/*! Returns a vector of legal chess moves. */
 		QVector<Move> legalMoves();
+
+
+		/*!
+		 * Returns a Unicode version of a SAN move string.
+		 *
+		 * \param side The side that makes the move
+		 * \param sanMove The move string in Standard Algebraic Notation
+		 */
+		static QString unicodeSanMove(Side side, const QString& sanMove);
 	
 	signals:
 		/*!

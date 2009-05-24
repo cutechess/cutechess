@@ -20,6 +20,38 @@
 using namespace Chess;
 
 
+QString Board::unicodeSanMove(Side side, const QString& sanMove)
+{
+	if (side == NoSide || sanMove.size() < 2)
+		return sanMove;
+
+	QChar c = sanMove.at(0);
+	// Don't use piece symbols for pawn moves
+	if (c.isLower())
+		return sanMove;
+
+	Piece piece(c);
+	if (!piece.isValid())
+		return sanMove;
+
+	piece.setSide(side);
+	QString str = piece.symbol() + sanMove.right(sanMove.size() - 1);
+
+	// promotion
+	c = str.at(str.size() - 1);
+	if (c.isUpper())
+	{
+		Piece promotion(c);
+		if (promotion.isValid())
+		{
+			promotion.setSide(side);
+			str.replace(str.size() - 1, 1, promotion.symbol());
+		}
+	}
+
+	return str;
+}
+
 QString Board::moveString(const Move& move, MoveNotation notation)
 {
 	switch (notation)
