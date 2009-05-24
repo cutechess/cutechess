@@ -21,34 +21,15 @@
   #error "Qt version 4.4.0 or later is required"
 #endif
 
-#include <QCoreApplication>
 #include <QDebug>
 #include <QTextStream>
-#include <QTime>
 #include <QSettings>
 #include <QStringList>
 #include <csignal>
 #include "enginematch.h"
+#include "cutechesscoreapp.h"
 
 static EngineMatch* match = 0;
-
-void msgOutput(QtMsgType type, const char *msg)
- {
-     switch (type) {
-     case QtDebugMsg:
-	 fprintf(stdout, "%s\n", msg);
-	 break;
-     case QtWarningMsg:
-	 fprintf(stderr, "Warning: %s\n", msg);
-	 break;
-     case QtCriticalMsg:
-	 fprintf(stderr, "Critical: %s\n", msg);
-	 break;
-     case QtFatalMsg:
-	 fprintf(stderr, "Fatal: %s\n", msg);
-	 abort();
-     }
- }
 
 void sigintHandler(int param)
 {
@@ -362,19 +343,9 @@ int main(int argc, char* argv[])
 	signal(SIGTERM, sigintHandler);
 	signal(SIGINT, sigintHandler);
 
-	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-	qInstallMsgHandler(msgOutput);
-	
-	QCoreApplication::setOrganizationName("cutechess");
-	QCoreApplication::setOrganizationDomain("cutechess.org");
-	QCoreApplication::setApplicationName("cutechess");
+	CuteChessCoreApplication app(argc, argv);
 
-	QCoreApplication app(argc, argv);
-
-	// Use Ini format on all platforms
-	QSettings::setDefaultFormat(QSettings::IniFormat);
-
-	QStringList arguments = QCoreApplication::arguments();
+	QStringList arguments = CuteChessCoreApplication::arguments();
 	arguments.takeFirst(); // application name
 
 	// Use trivial command-line parsing for now
