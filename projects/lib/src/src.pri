@@ -10,7 +10,6 @@ HEADERS += chessengine.h \
     pgnfile.h \
     pgngame.h \
     polyglotbook.h \
-    symbols.h \
     timecontrol.h \
     uciengine.h \
     ucioption.h \
@@ -27,7 +26,6 @@ SOURCES += chessengine.cpp \
     pgnfile.cpp \
     pgngame.cpp \
     polyglotbook.cpp \
-    symbols.cpp \
     timecontrol.cpp \
     uciengine.cpp \
     ucioption.cpp \

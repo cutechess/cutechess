@@ -81,6 +81,8 @@ class LIB_EXPORT Piece
 		QChar toChar() const;
 		/*! Returns the internal non-internationalized name of the piece. */
 		QString internalName() const;
+		/*! Returns the piece's Unicode symbol. */
+		QString symbol() const;
 
 		/*! Sets the side to \a side. */
 		void setSide(int side);

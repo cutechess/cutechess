@@ -193,6 +193,60 @@ QString Piece::internalName() const
 	}
 }
 
+QString Piece::symbol() const
+{
+	if (side() == White)
+	{
+		switch (type())
+		{
+		case Pawn:
+			return QString::fromUtf8("\u2659");
+		case Knight:
+			return QString::fromUtf8("\u2658");
+		case Bishop:
+			return QString::fromUtf8("\u2657");
+		case Rook:
+			return QString::fromUtf8("\u2656");
+		case Queen:
+			return QString::fromUtf8("\u2655");
+		case King:
+			return QString::fromUtf8("\u2654");
+		case Archbishop:
+			return "A";
+		case Chancellor:
+			return "C";
+		default:
+			return QString();
+		}
+	}
+	else if (side() == Black)
+	{
+		switch (type())
+		{
+		case Pawn:
+			return QString::fromUtf8("\u265f");
+		case Knight:
+			return QString::fromUtf8("\u265e");
+		case Bishop:
+			return QString::fromUtf8("\u265d");
+		case Rook:
+			return QString::fromUtf8("\u265c");
+		case Queen:
+			return QString::fromUtf8("\u265b");
+		case King:
+			return QString::fromUtf8("\u265a");
+		case Archbishop:
+			return "A";
+		case Chancellor:
+			return "C";
+		default:
+			return QString();
+		}
+	}
+
+	return QString();
+}
+
 void Piece::setSide(int side)
 {
 	if (side == NoSide)

@@ -15,10 +15,9 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui>
-#include <symbols.h>
-
 #include "promotiondlg.h"
+#include <QtGui>
+#include <chessboard/piece.h>
 
 PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 	: QDialog(parent, f)
@@ -37,11 +36,14 @@ PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 
 	QLabel* promoteToLabel = new QLabel(tr("Promote to:"));
 
+	// TODO: Capablanca pieces (archbishop and chancellor) don't have
+	// Unicode symbols, so use SVGs instead.
+	
 	// Labels that will show the Unicode chess symbol graphics
-	QLabel* queenLabel = new QLabel(Symbols::BlackQueen);
-	QLabel* knightLabel = new QLabel(Symbols::BlackKnight);
-	QLabel* rookLabel = new QLabel(Symbols::BlackRook);
-	QLabel* bishopLabel = new QLabel(Symbols::BlackBishop);
+	QLabel* queenLabel = new QLabel(Chess::Piece(Chess::Black, Chess::Piece::Queen).symbol());
+	QLabel* knightLabel = new QLabel(Chess::Piece(Chess::Black, Chess::Piece::Knight).symbol());
+	QLabel* rookLabel = new QLabel(Chess::Piece(Chess::Black, Chess::Piece::Rook).symbol());
+	QLabel* bishopLabel = new QLabel(Chess::Piece(Chess::Black, Chess::Piece::Bishop).symbol());
 
 	// Double the original point size of the symbol labels
 	// so that they're more visible
