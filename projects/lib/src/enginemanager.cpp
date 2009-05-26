@@ -15,6 +15,8 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QSettings>
+
 #include "enginemanager.h"
 
 EngineManager::EngineManager(QObject* parent)
@@ -57,4 +59,26 @@ void EngineManager::setEngines(const QList<EngineConfiguration>& engines)
 	m_engines = engines;
 
 	emit enginesReset();
+}
+
+void EngineManager::loadEngines()
+{
+	QSettings settings;
+
+	int size = settings.beginReadArray("engines");
+	for (int i = 0; i < size; i++)
+	{
+		settings.setArrayIndex(i);
+
+		EngineConfiguration config;
+		config.setName(settings.value("name").toString());
+		config.setCommand(settings.value("command").toString());
+		config.setWorkingDirectory(
+			settings.value("working_directory").toString());
+		config.setProtocol(ChessEngine::Protocol(
+			settings.value("protocol").toInt()));
+
+		addEngine(config);
+	}
+	settings.endArray();
 }
