@@ -19,7 +19,11 @@
 #include <QTime>
 #include <cstdlib>
 
+#include <enginemanager.h>
+
 #include "cutechesscoreapp.h"
+
+EngineManager* CuteChessCoreApplication::s_engineManager = 0;
 
 CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 	: QCoreApplication(argc, argv)
@@ -38,6 +42,8 @@ CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 
 CuteChessCoreApplication::~CuteChessCoreApplication()
 {
+	delete s_engineManager;
+	s_engineManager = 0;
 }
 
 void CuteChessCoreApplication::messageHandler(QtMsgType type,
@@ -63,3 +69,10 @@ void CuteChessCoreApplication::messageHandler(QtMsgType type,
 	}
 }
 
+EngineManager* CuteChessCoreApplication::engineManager()
+{
+	if (s_engineManager == 0)
+		s_engineManager = new EngineManager(0);
+
+	return s_engineManager;
+}

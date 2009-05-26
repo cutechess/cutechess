@@ -20,6 +20,8 @@
 
 #include <QCoreApplication>
 
+class EngineManager;
+
 class CuteChessCoreApplication : public QCoreApplication
 {
 	Q_OBJECT
@@ -28,7 +30,11 @@ class CuteChessCoreApplication : public QCoreApplication
 		CuteChessCoreApplication(int& argc, char* argv[]);
 		~CuteChessCoreApplication();
 
+		static EngineManager* engineManager();
+
 		static void messageHandler(QtMsgType type, const char* message);
+	private:
+		static EngineManager* s_engineManager;
 
 };
 
