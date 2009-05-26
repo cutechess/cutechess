@@ -17,6 +17,7 @@
 
 #include <QSettings>
 #include <QTime>
+#include <cstdlib>
 
 #include "cutechesscoreapp.h"
 
