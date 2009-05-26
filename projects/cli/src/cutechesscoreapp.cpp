@@ -72,7 +72,7 @@ void CuteChessCoreApplication::messageHandler(QtMsgType type,
 EngineManager* CuteChessCoreApplication::engineManager()
 {
 	if (s_engineManager == 0)
-		s_engineManager = new EngineManager(0);
+		s_engineManager = new EngineManager();
 
 	return s_engineManager;
 }

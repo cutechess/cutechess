@@ -31,7 +31,7 @@ class LIB_EXPORT EngineManager : public QObject
 
 	public:
 		/*! Creates a new EngineManager. */
-		EngineManager(QObject* parent);
+		EngineManager(QObject* parent = 0);
 		~EngineManager();
 
 		/*! Adds \a engine to the list of available engines. */
