@@ -23,7 +23,6 @@
 
 #include <QDebug>
 #include <QTextStream>
-#include <QSettings>
 #include <QStringList>
 #include <csignal>
 #include <enginemanager.h>
