@@ -26,6 +26,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <csignal>
+#include <enginemanager.h>
 #include "enginematch.h"
 #include "cutechesscoreapp.h"
 
@@ -76,43 +77,34 @@ struct EngineData
 
 static void listEngines()
 {
-	QStringList list;
-	QSettings settings;
+	const QList<EngineConfiguration> engines =
+		CuteChessCoreApplication::engineManager()->engines();
 
-	int size = settings.beginReadArray("engines");
-	for (int i = 0; i < size; i++)
+	QStringList engineNames;
+
+	foreach (const EngineConfiguration& engine, engines)
 	{
-		settings.setArrayIndex(i);
-		list.append(settings.value("name").toString());
+		engineNames << engine.name();
 	}
 
-	list.sort();
-	foreach (const QString& str, list)
-		qDebug("%s", qPrintable(str));
+	engineNames.sort();
+	foreach (const QString& name, engineNames)
+		qDebug("%s", qPrintable(name));
 }
 
 static bool readEngineConfig(const QString& name, EngineConfiguration& config)
 {
-	QSettings settings;
+	const QList<EngineConfiguration> engines =
+		CuteChessCoreApplication::engineManager()->engines();
 
-	int size = settings.beginReadArray("engines");
-	for (int i = 0; i < size; i++)
+	foreach (const EngineConfiguration& engine, engines)
 	{
-		settings.setArrayIndex(i);
-
-		if (settings.value("name").toString() == name)
+		if (engine.name() == name)
 		{
-			config.setName(settings.value("name").toString());
-			config.setCommand(settings.value("command").toString());
-			config.setWorkingDirectory(
-				settings.value("working_directory").toString());
-			config.setProtocol(ChessEngine::Protocol(
-				settings.value("protocol").toInt()));
-
+			config = engine;
 			return true;
 		}
 	}
-
 	return false;
 }
 
@@ -344,6 +336,9 @@ int main(int argc, char* argv[])
 	signal(SIGINT, sigintHandler);
 
 	CuteChessCoreApplication app(argc, argv);
+
+	// Load the engines
+	CuteChessCoreApplication::engineManager()->loadEngines();
 
 	QStringList arguments = CuteChessCoreApplication::arguments();
 	arguments.takeFirst(); // application name
