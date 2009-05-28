@@ -40,7 +40,7 @@ static QString msToXboardTime(int ms)
 
 XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessEngine(ioDevice, parent),
-	  m_forceMode(true),
+	  m_forceMode(false),
 	  m_drawOnNextMove(false),
 	  m_ftEgbb(false),
 	  m_ftEgtb(false),
@@ -138,6 +138,7 @@ void XboardEngine::startGame()
 	m_drawOnNextMove = false;
 	m_gotResult = false;
 	m_waitForMove = false;
+	m_forceMode = false;
 	write("new");
 	
 	const Chess::Variant& variant = board()->variant();
@@ -170,7 +171,7 @@ void XboardEngine::startGame()
 	write("post");
 	// Disable pondering
 	write("easy");
-	setObserverMode(true);
+	setForceMode(true);
 	
 	// Tell the opponent's type and name to the engine
 	if (m_ftName)
@@ -190,7 +191,7 @@ void XboardEngine::endGame(Chess::Result result)
 
 		stopThinking();
 		write("result " + result.toString());
-		setObserverMode(true);
+		setForceMode(true);
 	}
 	ChessEngine::endGame(result);
 
@@ -232,30 +233,18 @@ void XboardEngine::sendTimeLeft()
 	write(QString("time %1\notim %2").arg(csLeft).arg(ocsLeft));
 }
 
-bool XboardEngine::inObserverMode() const
+void XboardEngine::setForceMode(bool enable)
 {
-	return m_forceMode;
-}
-
-void XboardEngine::setObserverMode(bool enabled)
-{
-	if (enabled)
+	if (enable && !m_forceMode)
 		write("force");
-	m_forceMode = enabled;
+	m_forceMode = enable;
 }
 
 void XboardEngine::makeMove(const Chess::Move& move)
 {
-	if (!m_forceMode)
-	{
-		m_waitForMove = true;
-		if (m_ftPing && m_isReady)
-			ping(PingMove);
-		else
-			startClock();
-		sendTimeLeft();
-	}
-	
+	Q_ASSERT(!move.isNull());
+	setForceMode(true);
+
 	QString moveString = board()->moveString(move, m_notation);
 	if (m_ftUsermove)
 		write("usermove " + moveString);
@@ -263,19 +252,25 @@ void XboardEngine::makeMove(const Chess::Move& move)
 		write(moveString);
 }
 
-void XboardEngine::go()
+void XboardEngine::go(const Chess::Move& move)
 {
-	if (!m_forceMode)
-		return;
-	
+	bool sendGo = m_forceMode;
 	m_waitForMove = true;
-	setObserverMode(false);
 	if (m_ftPing && m_isReady)
 		ping(PingMove);
 	else
 		startClock();
 	sendTimeLeft();
-	write("go");
+
+	if (!move.isNull())
+	{
+		m_forceMode = true;
+		makeMove(move);
+	}
+
+	setForceMode(false);
+	if (sendGo)
+		write("go");
 }
 
 void XboardEngine::stopThinking()

@@ -29,8 +29,9 @@ void HumanPlayer::startGame()
 {
 }
 
-void HumanPlayer::go()
+void HumanPlayer::go(const Chess::Move& move)
 {
+	Q_UNUSED(move);
 	startClock();
 }
 

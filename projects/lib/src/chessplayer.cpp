@@ -120,16 +120,6 @@ Chess::Side ChessPlayer::side() const
 	return m_side;
 }
 
-bool ChessPlayer::inObserverMode() const
-{
-	return true;
-}
-
-void ChessPlayer::setObserverMode(bool enabled)
-{
-	Q_UNUSED(enabled);
-}
-
 Chess::Board* ChessPlayer::board()
 {
 	return m_board;

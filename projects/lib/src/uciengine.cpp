@@ -131,8 +131,11 @@ void UciEngine::makeMove(const Chess::Move& move)
 	sendPosition();
 }
 
-void UciEngine::go()
+void UciEngine::go(const Chess::Move& move)
 {
+	if (!move.isNull())
+		makeMove(move);
+
 	m_isThinking = true;
 	if (m_isReady)
 		ping(PingMove);

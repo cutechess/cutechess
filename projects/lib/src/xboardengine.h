@@ -36,12 +36,10 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		// Inherited from ChessEngine
 		void start();
 		void endGame(Chess::Result result);
-		void go();
+		void go(const Chess::Move& move);
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
 		void ping(PingType type);
-		bool inObserverMode() const;
-		void setObserverMode(bool enabled);
 		void setConcurrency(int limit);
 		void setEgbbPath(const QString& path);
 		void setEgtbPath(const QString& path);
@@ -64,6 +62,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		};
 
 		void setFeature(const QString& name, const QString& val);
+		void setForceMode(bool enable);
 		void setOption(const QString& line, bool* feature);
 		void sendTimeLeft();
 		void finishGame();

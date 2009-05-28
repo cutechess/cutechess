@@ -39,7 +39,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		void start();
 		void applySettings(const EngineSettings& settings);
 		void endGame(Chess::Result result);
-		void go();
+		void go(const Chess::Move& move);
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
 		void ping(PingType type);

@@ -25,6 +25,7 @@
 #include "chessboard/chess.h"
 #include "chessboard/result.h"
 #include "chessboard/variant.h"
+#include "chessboard/chessmove.h"
 #include "timecontrol.h"
 #include "moveevaluation.h"
 
@@ -68,8 +69,16 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Tells the player that the game ended by \a result. */
 		virtual void endGame(Chess::Result result);
 		
-		/*! Tells the player to start thinking and make its move. */
-		virtual void go() = 0;
+		/*!
+		 * Tells the player to start thinking and make their move.
+		 *
+		 * \param move The opponent's move before this player's move.
+		 * If it's null, then the player shoud make their move in the
+		 * current position.
+		 *
+		 * \sa makeMove()
+		 */
+		virtual void go(const Chess::Move& move = Chess::Move()) = 0;
 
 		/*! Returns the player's evaluation of the current position. */
 		const MoveEvaluation& evaluation() const;
@@ -85,22 +94,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 
 		/*! Sets the player to play on a specific side. */
 		void setSide(Chess::Side side);
-
-		/*!
-		 * Returns true if the player is in observer mode.
-		 * In this mode, the player doesn't start thinking and
-		 * doesn't make any moves unless excplicitly told so.
-		 *
-		 * \sa go()
-		 */
-		virtual bool inObserverMode() const;
-
-		/*!
-		 * Sets the observer mode to \a enabled.
-		 * \note Some player types are always in observer mode, in
-		 * which case this method does nothing.
-		 */
-		virtual void setObserverMode(bool enabled);
 
 		/*!
 		 * Sends the next move to the player.
