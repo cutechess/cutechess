@@ -76,6 +76,10 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 * If it's null, then the player shoud make their move in the
 		 * current position.
 		 *
+		 * \note Calling \a go(move) is the same as calling \a makeMove(move)
+		 * followed by \a go(), except that the chess protocol may be
+		 * able to optimize \a go(move) into a single operation.
+		 *
 		 * \sa makeMove()
 		 */
 		virtual void go(const Chess::Move& move = Chess::Move()) = 0;
