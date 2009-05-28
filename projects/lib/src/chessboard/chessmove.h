@@ -35,6 +35,9 @@ class LIB_EXPORT Move
 		
 		/*! Returns true if move \a other is equal to this move. */
 		bool operator==(const Move &other) const;
+
+		/*! Returns true if this is a null move. */
+		bool isNull() const;
 		
 		/*! The source square. */
 		int sourceSquare() const;

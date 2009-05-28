@@ -48,6 +48,11 @@ bool Move::operator==(const Move &other) const
 	        other.castlingSide() == m_castlingSide);
 }
 
+bool Move::isNull() const
+{
+	return (m_sourceSquare == 0 || m_targetSquare == 0);
+}
+
 int Move::sourceSquare() const
 {
 	return m_sourceSquare;
