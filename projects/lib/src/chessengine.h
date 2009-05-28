@@ -64,8 +64,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		// Inherited from ChessPlayer
 		virtual void endGame(Chess::Result result);
-		virtual void go(const Chess::Move& move) = 0;
-		virtual void makeMove(const Chess::Move& move) = 0;
 		bool isHuman() const;
 		bool supportsVariant(Chess::Variant variant) const;
 
