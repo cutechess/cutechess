@@ -83,7 +83,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		
 		bool m_isThinking;
 		QString m_startFen;
-		QStringList m_moves;
+		QString m_moveStrings;
 		QVector<UciOption> m_options;
 		QVector<OptionCmd> m_optionBuffer;
 };

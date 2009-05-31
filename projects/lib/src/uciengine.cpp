@@ -53,8 +53,8 @@ void UciEngine::sendPosition()
 	else
 		str += " startpos";
 	
-	if (m_moves.count() > 0)
-		str += QString(" moves ") + m_moves.join(" ");
+	if (!m_moveStrings.isEmpty())
+		str += QString(" moves") + m_moveStrings;
 	
 	write(str);
 }
@@ -102,7 +102,7 @@ void UciEngine::startGame()
 	const Chess::Variant& variant = board()->variant();
 
 	m_isThinking = false;
-	m_moves.clear();
+	m_moveStrings.clear();
 
 	if (variant.isRandom())
 		m_startFen = board()->fenString(Chess::ShredderFen);
@@ -127,7 +127,7 @@ void UciEngine::endGame(Chess::Result result)
 
 void UciEngine::makeMove(const Chess::Move& move)
 {
-	m_moves.append(board()->moveString(move, Chess::UciLongAlgebraic));
+	m_moveStrings += " " + board()->moveString(move, Chess::UciLongAlgebraic);
 	sendPosition();
 }
 
@@ -284,7 +284,7 @@ void UciEngine::parseLine(const QString& line)
 		if (moveString.isEmpty())
 			moveString = args;
 
-		m_moves.append(moveString);
+		m_moveStrings += " " + moveString;
 		Chess::Move move = board()->moveFromString(moveString);
 
 		if (board()->isLegalMove(move))
