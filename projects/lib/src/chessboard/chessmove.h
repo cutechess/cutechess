@@ -1,6 +1,8 @@
 #ifndef CHESSMOVE_H
 #define CHESSMOVE_H
 
+#include "piece.h"
+
 namespace Chess {
 
 /**
@@ -30,7 +32,7 @@ class LIB_EXPORT Move
 		 */
 		Move(int sourceSquare,
 		     int targetSquare,
-		     int promotion = 0,
+		     Piece::Type promotion = Piece::NoPiece,
 		     int castlingSide = -1);
 		
 		/*! Returns true if move \a other is equal to this move. */
@@ -45,11 +47,8 @@ class LIB_EXPORT Move
 		/*! The target square. */
 		int targetSquare() const;
 		
-		/*!
-		 * Type of the promotion piece.
-		 * \sa Chess::Piece
-		 */
-		int promotion() const;
+		/*! Type of the promotion piece. */
+		Piece::Type promotion() const;
 		
 		/*! Castling side, or -1 if the move is not a castling move. */
 		int castlingSide() const;
@@ -57,7 +56,7 @@ class LIB_EXPORT Move
 	private:
 		int m_sourceSquare;
 		int m_targetSquare;
-		int m_promotion;
+		Piece::Type m_promotion;
 		int m_castlingSide;
 };
 

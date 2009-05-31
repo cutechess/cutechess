@@ -73,7 +73,7 @@ QString Board::moveString(const Move& move, MoveNotation notation)
 			int cside = move.castlingSide();
 			int src = move.sourceSquare();
 			int trg = m_castlingRights.rookSquare[m_side][cside];
-			Move tmp(src, trg, 0, cside);
+			Move tmp(src, trg, Piece::NoPiece, cside);
 			return longAlgebraicMoveString(tmp);
 		}
 		return longAlgebraicMoveString(move);
@@ -130,7 +130,7 @@ QString Board::sanMoveString(const Move& move)
 	if (piece.type() == Piece::Pawn)
 	{
 		if (target == m_enpassantSquare)
-			capture = Piece(!m_side, Piece::Pawn);
+			capture = Piece(Side(!m_side), Piece::Pawn);
 		if (capture.isValid())
 			needFile = true;
 	}
@@ -205,7 +205,7 @@ Move Board::moveFromLongAlgebraicString(const QString& str) const
 	if (!isValidSquare(sourceSq) || !isValidSquare(targetSq))
 		return Move(0, 0);
 	
-	int promotion = Piece::NoPiece;
+	Piece::Type promotion = Piece::NoPiece;
 	if (len > 4)
 	{
 		promotion = Piece(str[len - 1]).type();

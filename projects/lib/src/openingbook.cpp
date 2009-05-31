@@ -118,7 +118,7 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 			{
 				Square src = board->chessSquare(srcMove.sourceSquare());
 				Square trg = board->chessSquare(srcMove.targetSquare());
-				int prom = srcMove.promotion();
+				Chess::Piece::Type prom = srcMove.promotion();
 				Entry entry = { GenericMove(src, trg, prom), weight };
 				addEntry(entry, board->key());
 			}

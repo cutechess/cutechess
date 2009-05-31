@@ -310,8 +310,8 @@ void Board::makeMove(const Move& move, bool sendSignal)
 {
 	int source = move.sourceSquare();
 	int target = move.targetSquare();
-	int promotion = move.promotion();
-	int piece = m_squares[source].type();
+	Piece::Type promotion = move.promotion();
+	Piece::Type piece = m_squares[source].type();
 	Piece capture = m_squares[target];
 	int epSq = m_enpassantSquare;
 	int* rookSq = m_castlingRights.rookSquare[m_side];
@@ -369,7 +369,7 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	else if (piece == Piece::Pawn)
 	{
 		isReversible = false;
-		Piece opPawn(!m_side, Piece::Pawn);
+		Piece opPawn(Side(!m_side), Piece::Pawn);
 		
 		// Make an en-passant capture
 		if (target == epSq)
@@ -409,7 +409,7 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	
 	// If the move captures opponent's castling rook, remove
 	// his castling rights from that side.
-	if (capture == Piece(!m_side, Piece::Rook))
+	if (capture == Piece(Side(!m_side), Piece::Rook))
 	{
 		int* opCr = m_castlingRights.rookSquare[!m_side];
 		if (target == opCr[QueenSide])
@@ -442,7 +442,7 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	
 	m_history.push_back(md);
 	m_sign *= -1;
-	m_side = !m_side;
+	m_side = Side(!m_side);
 	
 	if (sendSignal)
 	{
@@ -473,7 +473,7 @@ void Board::undoMove()
 	
 	m_history.pop_back();
 	m_sign *= -1;
-	m_side = !m_side;
+	m_side = Side(!m_side);
 	
 	m_enpassantSquare = md.enpassantSquare;
 	m_castlingRights = md.castlingRights;
@@ -503,7 +503,7 @@ void Board::undoMove()
 	{
 		// Restore the pawn captured by the en-passant move
 		int epTarget = target + m_arwidth * m_sign;
-		m_squares[epTarget] = Piece(!m_side, Piece::Pawn);
+		m_squares[epTarget] = Piece(Side(!m_side), Piece::Pawn);
 	}
 	
 	if (move.promotion() != Piece::NoPiece)

@@ -25,7 +25,7 @@ Piece::Piece(int code)
 {
 }
 
-Piece::Piece(int side, int type)
+Piece::Piece(Side side, Type type)
 {
 	Q_ASSERT(side != NoSide);
 	Q_ASSERT(type != WallPiece);
@@ -247,7 +247,7 @@ QString Piece::symbol() const
 	return QString();
 }
 
-void Piece::setSide(int side)
+void Piece::setSide(Side side)
 {
 	if (side == NoSide)
 		m_code = NoPiece;
@@ -257,7 +257,7 @@ void Piece::setSide(int side)
 		m_code = -type();
 }
 
-void Piece::setType(int type)
+void Piece::setType(Type type)
 {
 	if (type == NoPiece || type == WallPiece || side() != Black)
 		m_code = type;

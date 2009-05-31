@@ -31,7 +31,7 @@ static GenericMove moveFromBits(quint16 pgMove)
 	if (promotion > 0)
 		promotion++;
 	
-	return GenericMove(source, target, promotion);
+	return GenericMove(source, target, Chess::Piece::Type(promotion));
 }
 
 static quint16 moveToBits(const GenericMove& move)

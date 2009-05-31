@@ -358,7 +358,7 @@ class LIB_EXPORT Board : public QObject
 		int m_width;
 		int m_height;
 		int m_arwidth;
-		int m_side;
+		Side m_side;
 		int m_sign;
 		int m_kingSquare[2];
 		int m_enpassantSquare;

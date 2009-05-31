@@ -162,8 +162,8 @@ QString Variant::toString() const
 	}
 }
 
-static void addPiece(QVector<int>& pieces,
-                     int piece,
+static void addPiece(QVector<Piece::Type>& pieces,
+		     Piece::Type piece,
                      int pos,
                      int start = 0,
                      int step = 1)
@@ -171,7 +171,7 @@ static void addPiece(QVector<int>& pieces,
 	int i = 0;
 	for (int j = start; j < pieces.size(); j += step)
 	{
-		if (pieces[j] != 0)
+		if (pieces[j] != Piece::NoPiece)
 			continue;
 		if (i == pos)
 		{
@@ -182,9 +182,9 @@ static void addPiece(QVector<int>& pieces,
 	}
 }
 
-static QVector<int> fischerandomVector()
+static QVector<Piece::Type> fischerandomVector()
 {
-	QVector<int> pieces(8, 0);
+	QVector<Piece::Type> pieces(8, Piece::NoPiece);
 	
 	addPiece(pieces, Piece::Bishop, qrand() % 4, 0, 2);
 	addPiece(pieces, Piece::Bishop, qrand() % 4, 1, 2);
@@ -198,13 +198,13 @@ static QVector<int> fischerandomVector()
 	return pieces;
 }
 
-static bool safePawns(const QVector<int>& pieces)
+static bool safePawns(const QVector<Piece::Type>& pieces)
 {
 	int len = pieces.size();
 	
 	for (int i = 0; i < len; i++)
 	{
-		int p;
+		Piece::Type p;
 		bool safe = false;
 		
 		for (int j = i - 2; j <= i + 2; j += 4)
@@ -242,15 +242,15 @@ static bool safePawns(const QVector<int>& pieces)
 	return true;
 }
 
-static QVector<int> caparandomVector()
+static QVector<Piece::Type> caparandomVector()
 {
-	QVector<int> pieces(10);
+	QVector<Piece::Type> pieces(10);
 	
 	// Generate positions until we get one where all the pawns are
 	// protected. This usually takes a handful of tries.
 	do
 	{
-		pieces.fill(0);
+		pieces.fill(Piece::NoPiece);
 		if ((qrand() % 2) == 0)
 		{
 			addPiece(pieces, Piece::Queen, qrand() % 5, 0, 2);
@@ -275,12 +275,12 @@ static QVector<int> caparandomVector()
 	return pieces;
 }
 
-static QString randomFen(const QVector<int>& pieces)
+static QString randomFen(const QVector<Piece::Type>& pieces)
 {
 	QString fen;
 	
 	// Black pieces
-	foreach (int piece, pieces)
+	foreach (Piece::Type piece, pieces)
 		fen += Piece(Black, piece).toChar();
 	fen += '/';
 	// Black pawns
@@ -295,7 +295,7 @@ static QString randomFen(const QVector<int>& pieces)
 	fen += QString(pieces.size(), Piece(White, Piece::Pawn).toChar());
 	fen += '/';
 	// White pieces
-	foreach (int piece, pieces)
+	foreach (Piece::Type piece, pieces)
 		fen += Piece(White, piece).toChar();
 
 	// Side to move, castling rights, enpassant square, etc.

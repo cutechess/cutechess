@@ -19,13 +19,13 @@
 
 
 GenericMove::GenericMove()
-	: m_promotion(0)
+	: m_promotion(Chess::Piece::NoPiece)
 {
 }
 
 GenericMove::GenericMove(const Chess::Square& sourceSquare,
 			 const Chess::Square& targetSquare,
-			 int promotion)
+			 Chess::Piece::Type promotion)
 	: m_sourceSquare(sourceSquare),
 	  m_targetSquare(targetSquare),
 	  m_promotion(promotion)
@@ -51,7 +51,7 @@ const Chess::Square& GenericMove::targetSquare() const
 	return m_targetSquare;
 }
 
-int GenericMove::promotion() const
+Chess::Piece::Type GenericMove::promotion() const
 {
 	return m_promotion;
 }

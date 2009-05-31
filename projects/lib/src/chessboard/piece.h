@@ -55,7 +55,7 @@ class LIB_EXPORT Piece
 		/*! Creates a new piece with piece code \a code. */
 		Piece(int code = NoPiece);
 		/*! Creates a new piece of type \a type for \a side. */
-		Piece(int side, int type);
+		Piece(Side side, Type type);
 		/*! Creates a new piece from piece character \a c. */
 		Piece(const QChar& c);
 
@@ -85,9 +85,9 @@ class LIB_EXPORT Piece
 		QString symbol() const;
 
 		/*! Sets the side to \a side. */
-		void setSide(int side);
+		void setSide(Side side);
 		/*! Sets the type to type. */
-		void setType(int type);
+		void setType(Type type);
 
 	private:
 		int m_code;

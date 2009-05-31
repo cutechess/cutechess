@@ -36,7 +36,7 @@ bool Board::parseCastlingRights(FenData& fd, QChar c) const
 {
 	int offset = 0;
 	int cside = -1;
-	int side = (c.isUpper()) ? White : Black;
+	Side side = (c.isUpper()) ? White : Black;
 	c = c.toLower();
 	
 	if (c == 'q')
@@ -194,7 +194,7 @@ bool Board::setBoard(const QString& fen)
 	
 	// Side to move
 	++token;
-	int side;
+	Side side;
 	if (*token == "w")
 		side = White;
 	else if (*token == "b")
@@ -295,7 +295,7 @@ QString Board::castlingRightsString(FenNotation notation) const
 			// the castling square is ambiguous
 			while (!(piece = m_squares[i]).isWall())
 			{
-				if (piece == Piece(side, Piece::Rook))
+				if (piece == Piece(Side(side), Piece::Rook))
 				{
 					ambiguous = true;
 					break;

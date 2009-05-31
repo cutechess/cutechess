@@ -17,12 +17,12 @@
 
 #include "chessmove.h"
 
-using Chess::Move;
+using namespace Chess;
 
 Move::Move()
 	: m_sourceSquare(0),
 	  m_targetSquare(0),
-	  m_promotion(0),
+	  m_promotion(Piece::NoPiece),
 	  m_castlingSide(-1)
 {
 
@@ -30,7 +30,7 @@ Move::Move()
 
 Move::Move(int sourceSquare,
            int targetSquare,
-           int promotion,
+	   Piece::Type promotion,
            int castlingSide)
 	: m_sourceSquare(sourceSquare),
 	  m_targetSquare(targetSquare),
@@ -63,7 +63,7 @@ int Move::targetSquare() const
 	return m_targetSquare;
 }
 
-int Move::promotion() const
+Piece::Type Move::promotion() const
 {
 	return m_promotion;
 }

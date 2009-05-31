@@ -3,6 +3,7 @@
 
 #include "chess.h"
 #include "square.h"
+#include "piece.h"
 
 /*!
  * \brief A chess move independent of chess variant or opening book format
@@ -20,7 +21,7 @@ class LIB_EXPORT GenericMove
 		/*! Constructs and initializes a new move. */
 		GenericMove(const Chess::Square& sourceSquare,
 			    const Chess::Square& targetSquare,
-			    int promotion);
+			    Chess::Piece::Type promotion);
 		
 		/*! Returns true if \a other is the same as this move. */
 		bool operator==(const GenericMove& other) const;
@@ -31,13 +32,13 @@ class LIB_EXPORT GenericMove
 		/*! The target square. */
 		const Chess::Square& targetSquare() const;
 		
-		/*! The promotion piece. */
-		int promotion() const;
+		/*! Type of the promotion piece. */
+		Chess::Piece::Type promotion() const;
 
 	private:	
 		Chess::Square m_sourceSquare;
 		Chess::Square m_targetSquare;
-		int m_promotion;
+		Chess::Piece::Type m_promotion;
 };
 
 #endif // GENERICMOVE_H
