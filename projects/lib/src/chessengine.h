@@ -65,6 +65,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		// Inherited from ChessPlayer
 		virtual void endGame(Chess::Result result);
 		bool isHuman() const;
+		bool isReady() const;
 		bool supportsVariant(Chess::Variant variant) const;
 
 		/*!
@@ -113,6 +114,8 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		/*! Tells the engine to stop thinking and move now. */
 		virtual void stopThinking() = 0;
+
+		bool m_isReady;
 
 		/*! Is the engine initialized? */
 		bool m_initialized;

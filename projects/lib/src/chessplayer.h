@@ -49,7 +49,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		bool isConnected() const;
 
 		/*! Returns true if the player is ready to play. */
-		bool isReady() const;
+		virtual bool isReady() const = 0;
 
 		/*!
 		 * Prepares the player for a new chess game, and then calls
@@ -188,9 +188,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! The current evaluation. */
 		MoveEvaluation m_eval;
 
-		/*! Is the player ready to play? */
-		bool m_isReady;
-		
 		/*! Timer for detecting when the player's time is up. */
 		QTimer m_timer;
 		

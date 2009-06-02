@@ -27,6 +27,7 @@ int ChessEngine::m_count = 0;
 
 ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessPlayer(parent),
+	  m_isReady(false),
 	  m_initialized(false),
 	  m_finishingGame(false),
 	  m_whiteEvalPov(false),
@@ -79,6 +80,11 @@ void ChessEngine::endGame(Chess::Result result)
 bool ChessEngine::isHuman() const
 {
 	return false;
+}
+
+bool ChessEngine::isReady() const
+{
+	return m_isReady;
 }
 
 bool ChessEngine::supportsVariant(Chess::Variant variant) const

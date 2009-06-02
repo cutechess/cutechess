@@ -22,7 +22,6 @@
 
 ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
-	  m_isReady(false),
 	  m_gameInProgress(false),
 	  m_connected(true),
 	  m_forfeited(false),
@@ -39,16 +38,11 @@ bool ChessPlayer::isConnected() const
 	return m_connected;
 }
 
-bool ChessPlayer::isReady() const
-{
-	return m_isReady;
-}
-
 void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board* board)
 {
 	Q_ASSERT(opponent != 0);
 	Q_ASSERT(board != 0);
-	Q_ASSERT(m_isReady);
+	Q_ASSERT(isReady());
 
 	m_forfeited = false;
 	m_eval.clear();

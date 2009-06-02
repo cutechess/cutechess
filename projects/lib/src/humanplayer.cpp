@@ -21,7 +21,6 @@
 HumanPlayer::HumanPlayer(QObject* parent)
 	: ChessPlayer(parent)
 {
-	m_isReady = true;
 	setName("HumanPlayer");
 }
 
@@ -47,6 +46,11 @@ bool HumanPlayer::supportsVariant(Chess::Variant variant) const
 }
 
 bool HumanPlayer::isHuman() const
+{
+	return true;
+}
+
+bool HumanPlayer::isReady() const
 {
 	return true;
 }
