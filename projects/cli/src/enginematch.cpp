@@ -311,7 +311,7 @@ void EngineMatch::start()
 	qDebug() << "Started game" << m_currentGame + 1 << "of" << m_gameCount;
 
 	m_game = new ChessGame(m_variant, this);
-	connect(this, SIGNAL(stopGame()), m_game, SLOT(stop()));
+	connect(this, SIGNAL(stopGame()), m_game, SLOT(kill()));
 
 	if ((m_currentGame % 2) == 0)
 	{

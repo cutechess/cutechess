@@ -49,6 +49,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 	public slots:
 		void start();
 		void stop();
+		void kill();
 		void onMoveMade(const Chess::Move& move);
 
 	signals:

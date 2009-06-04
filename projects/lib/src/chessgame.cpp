@@ -86,6 +86,16 @@ void ChessGame::stop()
 	syncPlayers(true);
 }
 
+void ChessGame::kill()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		if (m_player[i]->isConnected())
+			m_player[i]->closeConnection();
+	}
+	stop();
+}
+
 void ChessGame::adjudication(const MoveEvaluation& eval)
 {
 	int side = !((int)m_board->sideToMove());
