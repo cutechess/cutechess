@@ -41,6 +41,20 @@ bool GenericMove::operator==(const GenericMove& other) const
 	return false;
 }
 
+bool GenericMove::operator!=(const GenericMove& other) const
+{
+	if (m_sourceSquare != other.m_sourceSquare
+	||  m_targetSquare != other.m_targetSquare
+	||  m_promotion != other.m_promotion)
+		return true;
+	return false;
+}
+
+bool GenericMove::isNull() const
+{
+	return !(m_sourceSquare.isValid() && m_targetSquare.isValid());
+}
+
 const Chess::Square& GenericMove::sourceSquare() const
 {
 	return m_sourceSquare;

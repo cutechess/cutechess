@@ -26,6 +26,12 @@ class LIB_EXPORT GenericMove
 		/*! Returns true if \a other is the same as this move. */
 		bool operator==(const GenericMove& other) const;
 		
+		/*! Returns true if \a other is different from this move. */
+		bool operator!=(const GenericMove& other) const;
+
+		/*! Returns true if this is a null move. */
+		bool isNull() const;
+
 		/*! The source square. */
 		const Chess::Square& sourceSquare() const;
 		
