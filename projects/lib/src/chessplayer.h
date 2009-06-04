@@ -69,7 +69,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*!
 		 * Returns true if the player is ready for input.
 		 *
-		 * \note When the player's state is \ə Disconnected, this
+		 * \note When the player's state is \a Disconnected, this
 		 * function still returns true if all the cleanup following
 		 * the disconnection is done.
 		 */
