@@ -103,6 +103,9 @@ void EngineProcess::cleanup()
 
 void EngineProcess::close()
 {
+	if (!m_started)
+		return;
+
 	emit aboutToClose();
 	kill();
 	waitForFinished(-1);
