@@ -44,6 +44,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 	protected:
 		// Inherited from ChessEngine
 		bool sendPing();
+		void sendQuit();
 		void startProtocol();
 		void startGame();
 		void startThinking();

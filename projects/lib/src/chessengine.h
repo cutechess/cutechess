@@ -96,7 +96,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Sets the path to Nalimov endgame table bases. */
 		virtual void setEgtbPath(const QString& path) = 0;
 		
-		/*! Tells the engine to terminate. */
+		/*! Terminates the engine non-violently. */
 		void quit();
 
 	public slots:
@@ -121,6 +121,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * \return True if successfull
 		 */
 		virtual bool sendPing() = 0;
+
+		/*! Sends the quit command to the engine. */
+		virtual void sendQuit() = 0;
 
 		/*! Tells the engine to stop thinking and move now. */
 		virtual void stopThinking() = 0;

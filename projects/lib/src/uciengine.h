@@ -62,6 +62,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 	protected:
 		// Inherited from ChessEngine
 		bool sendPing();
+		void sendQuit();
 		void startProtocol();
 		void startGame();
 		void startThinking();

@@ -306,6 +306,11 @@ bool XboardEngine::sendPing()
 	return true;
 }
 
+void XboardEngine::sendQuit()
+{
+	write("quit");
+}
+
 void XboardEngine::setFeature(const QString& name, const QString& val)
 {
 	if (name == "ping")

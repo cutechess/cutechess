@@ -182,6 +182,11 @@ bool UciEngine::sendPing()
 	return true;
 }
 
+void UciEngine::sendQuit()
+{
+	write("quit");
+}
+
 void UciEngine::addVariants()
 {
 	foreach (const UciOption& option, m_options)

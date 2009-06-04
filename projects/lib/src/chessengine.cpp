@@ -230,6 +230,6 @@ void ChessEngine::quit()
 		return;
 
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
-	write("quit");
+	sendQuit();
 	setState(Disconnected);
 }
