@@ -24,7 +24,6 @@ ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
 	  m_gameInProgress(false),
 	  m_state(NotStarted),
-	  m_connected(true),
 	  m_forfeited(false),
 	  m_side(Chess::NoSide),
 	  m_board(0),
@@ -40,7 +39,7 @@ ChessPlayer::~ChessPlayer()
 
 bool ChessPlayer::isConnected() const
 {
-	return m_connected;
+	return (m_state != Disconnected);
 }
 
 bool ChessPlayer::isReady() const
@@ -221,7 +220,6 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 void ChessPlayer::closeConnection()
 {
 	m_state = Disconnected;
-	m_connected = false;
 }
 
 void ChessPlayer::onDisconnect()

@@ -237,7 +237,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		State m_state;
 		TimeControl m_timeControl;
 		QTimer m_timer;
-		bool m_connected;
 		bool m_forfeited;
 		Chess::Side m_side;
 		Chess::Board* m_board;
