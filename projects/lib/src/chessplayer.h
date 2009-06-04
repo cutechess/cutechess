@@ -55,13 +55,24 @@ class LIB_EXPORT ChessPlayer : public QObject
 		ChessPlayer(QObject* parent = 0);
 		virtual ~ChessPlayer();
 		
-		/*! Closes the player's connection to the operator. */
+		/*!
+		 * Closes the player's connection to the operator.
+		 *
+		 * \note Subclasses that reimplement this function must call
+		 * the base implementation.
+		 */
 		virtual void closeConnection();
 
 		/*! Returns true if the player is connected. */
 		bool isConnected() const;
 
-		/*! Returns true if the player is ready to play. */
+		/*!
+		 * Returns true if the player is ready for input.
+		 *
+		 * \note When the player's state is \ə Disconnected, this
+		 * function still returns true if all the cleanup following
+		 * the disconnection is done.
+		 */
 		virtual bool isReady() const;
 
 		/*! Returns the player's state. */
@@ -82,7 +93,12 @@ class LIB_EXPORT ChessPlayer : public QObject
 			     ChessPlayer* opponent,
 			     Chess::Board* board);
 		
-		/*! Tells the player that the game ended by \a result. */
+		/*!
+		 * Tells the player that the game ended by \a result.
+		 *
+		 * \note Subclasses that reimplement this function must call
+		 * the base implementation.
+		 */
 		virtual void endGame(Chess::Result result);
 		
 		/*! Returns the player's evaluation of the current position. */
@@ -128,8 +144,8 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 * starts the chess clock, and tells the player to start thinking
 		 * of the next move.
 		 *
-		 * Subclasses that reimplement this function must call the base
-		 * implementation.
+		 * \note Subclasses that reimplement this function must call
+		 * the base implementation.
 		 */
 		virtual void go();
 
@@ -163,10 +179,16 @@ class LIB_EXPORT ChessPlayer : public QObject
 		void debugMessage(const QString& data) const;
 
 	protected slots:
-		/*! Called when the player disconnects. */
+		/*!
+		 * Called when the player disconnects.
+		 * Sets the state to \a Disconnected and forfeits the game.
+		 */
 		virtual void onDisconnect();
 
-		/*! Called when the player's flag falls. */
+		/*!
+		 * Called when the player's flag falls.
+		 * Forfeits the game.
+		 */
 		virtual void onTimeout();
 
 	protected:
