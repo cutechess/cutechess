@@ -35,8 +35,11 @@ class LIB_EXPORT Move
 		     Piece::Type promotion = Piece::NoPiece,
 		     int castlingSide = -1);
 		
-		/*! Returns true if move \a other is equal to this move. */
-		bool operator==(const Move &other) const;
+		/*! Returns true if \a other is equal to this move. */
+		bool operator==(const Move& other) const;
+
+		/*! Returns true if \a other is different from this move. */
+		bool operator!=(const Move& other) const;
 
 		/*! Returns true if this is a null move. */
 		bool isNull() const;
