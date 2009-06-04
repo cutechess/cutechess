@@ -58,11 +58,11 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 
 	private slots:
 		void onForfeit(Chess::Result result);
-		bool arePlayersReady() const;
 		void syncPlayers(bool ignoreSender = false);
 
 	private:
 		void adjudication(const MoveEvaluation& eval);
+		bool arePlayersReady() const;
 		Chess::Move bookMove(const OpeningBook* book);
 		ChessPlayer* playerToMove();
 		ChessPlayer* playerToWait();
