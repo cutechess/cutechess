@@ -44,7 +44,7 @@ class LIB_EXPORT Square
 		/*! Returns true if \a other is different from this square. */
 		bool operator!=(const Square& other) const;
 
-		/*! Returns true if both file and rank have positive values. */
+		/*! Returns true if both file and rank have non-negative values. */
 		bool isValid() const;
 
 		/*! Zero-based file of the square. 0 is the 'a' file. */
