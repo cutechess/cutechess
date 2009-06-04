@@ -40,16 +40,32 @@ class LIB_EXPORT ChessPlayer : public QObject
 	Q_OBJECT
 
 	public:
+		/*! The different states of ChessPlayer. */
+		enum State
+		{
+			NotStarted,	//!< Not started or uninitialized
+			Starting,	//!< Starting or initializing
+			Idle,		//!< Idle and ready to play
+			Thinking,	//!< Thinking of the next move
+			FinishingGame,	//!< Finishing or cleaning up after a game
+			Disconnected	//!< Disconnected or terminated
+		};
+
 		/*! Creates and initializes a new ChessPlayer object. */
 		ChessPlayer(QObject* parent = 0);
+		virtual ~ChessPlayer();
 		
-		virtual ~ChessPlayer() { }
-		
+		/*! Closes the player's connection to the operator. */
+		virtual void closeConnection();
+
 		/*! Returns true if the player is connected. */
 		bool isConnected() const;
 
 		/*! Returns true if the player is ready to play. */
-		virtual bool isReady() const = 0;
+		virtual bool isReady() const;
+
+		/*! Returns the player's state. */
+		State state() const;
 
 		/*!
 		 * Prepares the player for a new chess game, and then calls
@@ -69,21 +85,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Tells the player that the game ended by \a result. */
 		virtual void endGame(Chess::Result result);
 		
-		/*!
-		 * Tells the player to start thinking and make their move.
-		 *
-		 * \param move The opponent's move before this player's move.
-		 * If it's null, then the player shoud make their move in the
-		 * current position.
-		 *
-		 * \note Calling \a go(move) is the same as calling \a makeMove(move)
-		 * followed by \a go(), except that the chess protocol may be
-		 * able to optimize \a go(move) into a single operation.
-		 *
-		 * \sa makeMove()
-		 */
-		virtual void go(const Chess::Move& move = Chess::Move()) = 0;
-
 		/*! Returns the player's evaluation of the current position. */
 		const MoveEvaluation& evaluation() const;
 
@@ -100,7 +101,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		void setSide(Chess::Side side);
 
 		/*!
-		 * Sends the next move to the player.
+		 * Sends the next move of an ongoing game to the player.
 		 * If the player is in force/observer mode, the move wasn't
 		 * necessarily made by the opponent.
 		 */
@@ -121,6 +122,17 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Returns true if the player is human. */
 		virtual bool isHuman() const = 0;
 
+	public slots:
+		/*!
+		 * Waits (without blocking) until the player is ready,
+		 * starts the chess clock, and tells the player to start thinking
+		 * of the next move.
+		 *
+		 * Subclasses that reimplement this function must call the base
+		 * implementation.
+		 */
+		virtual void go();
+
 	signals:
 		/*!
 		 * Emitted when the player gets the turn.
@@ -131,7 +143,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Signals the player's evaluation of the position. */
 		void sendEvaluation(const MoveEvaluation& eval) const;
 
-		/*! Signals that the player is ready to play. */
+		/*! Signals that the player is ready for input. */
 		void ready() const;
 		
 		/*!
@@ -164,8 +176,13 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Starts the chess game set up by newGame(). */
 		virtual void startGame() = 0;
 
-		/*! Closes the player's connection to the operator. */
-		virtual void closeConnection();
+		/*!
+		 * Tells the player to start thinking of the next move.
+		 *
+		 * The player is guaranteed to be ready to move when this
+		 * function is called by go().
+		 */
+		virtual void startThinking() = 0;
 
 		/*! Emits the forfeit() signal. */
 		void emitForfeit(Chess::Result::Code code, const QString& arg = "");
@@ -176,27 +193,28 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		void emitMove(const Chess::Move& move);
 		
-		/*! Starts the player's move timer (chess clock). */
-		void startClock();
-
 		/*! Returns the opponent's side. */
 		Chess::Side otherSide() const;
 
 		/*! Returns the opposing player. */
 		const ChessPlayer* opponent() const;
+
+		/*! Sets the player's state to \a state. */
+		void setState(State state);
 		
 		/*! The current evaluation. */
 		MoveEvaluation m_eval;
 
-		/*! Timer for detecting when the player's time is up. */
-		QTimer m_timer;
-		
 		/*! Is a game in progress? If not, all moves are rejected. */
 		bool m_gameInProgress;
 
 	private:
+		void startClock();
+
 		QString m_name;
+		State m_state;
 		TimeControl m_timeControl;
+		QTimer m_timer;
 		bool m_connected;
 		bool m_forfeited;
 		Chess::Side m_side;

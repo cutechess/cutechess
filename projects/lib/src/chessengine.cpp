@@ -27,12 +27,10 @@ int ChessEngine::m_count = 0;
 
 ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessPlayer(parent),
-	  m_isReady(false),
-	  m_initialized(false),
-	  m_finishingGame(false),
 	  m_whiteEvalPov(false),
-	  m_pingType(PingUnknown),
 	  m_id(m_count++),
+	  m_pingState(NotStarted),
+	  m_pinging(false),
 	  m_ioDevice(ioDevice)
 {
 	Q_ASSERT(m_ioDevice != 0);
@@ -51,11 +49,8 @@ ChessEngine::~ChessEngine()
 
 void ChessEngine::applySettings(const EngineSettings& settings)
 {
-	bool tmpReady = m_isReady;
-	m_isReady = true;
 	foreach (const QString& str, settings.initStrings())
 		write(str);
-	m_isReady = tmpReady;
 
 	if (settings.concurrency() > 0)
 		setConcurrency(settings.concurrency());
@@ -68,13 +63,38 @@ void ChessEngine::applySettings(const EngineSettings& settings)
 	m_whiteEvalPov = settings.whiteEvalPov();
 }
 
+void ChessEngine::start()
+{
+	if (state() != NotStarted)
+		return;
+	
+	m_pinging = false;
+	setState(Starting);
+
+	flushWriteBuffer();
+	
+	startProtocol();
+	m_pinging = true;
+}
+
+void ChessEngine::onProtocolStart()
+{
+	m_pinging = false;
+	setState(Idle);
+	Q_ASSERT(isReady());
+}
+
+void ChessEngine::go()
+{
+	if (state() == Idle)
+		ping();
+	ChessPlayer::go();
+}
+
 void ChessEngine::endGame(Chess::Result result)
 {
 	ChessPlayer::endGame(result);
-
-	m_finishingGame = true;
-	if (m_isReady)
-		ping(PingUnknown);
+	ping();
 }
 
 bool ChessEngine::isHuman() const
@@ -84,7 +104,9 @@ bool ChessEngine::isHuman() const
 
 bool ChessEngine::isReady() const
 {
-	return m_isReady;
+	if (m_pinging)
+		return false;
+	return ChessPlayer::isReady();
 }
 
 bool ChessEngine::supportsVariant(Chess::Variant variant) const
@@ -94,22 +116,16 @@ bool ChessEngine::supportsVariant(Chess::Variant variant) const
 
 void ChessEngine::closeConnection()
 {
-	disconnect(m_ioDevice, SIGNAL(readChannelFinished()),
-		   this, SLOT(onDisconnect()));
 	ChessPlayer::closeConnection();
-	m_ioDevice->close();
-}
 
-void ChessEngine::onDisconnect()
-{
+	m_pinging = false;
 	m_pingTimer.stop();
-	m_timer.stop();
-	m_isReady = true;
 	m_writeBuffer.clear();
-	m_pingType = PingUnknown;
 	emit ready();
 
-	ChessPlayer::onDisconnect();
+	disconnect(m_ioDevice, SIGNAL(readChannelFinished()),
+		   this, SLOT(onDisconnect()));
+	m_ioDevice->close();
 }
 
 void ChessEngine::onTimeout()
@@ -117,38 +133,50 @@ void ChessEngine::onTimeout()
 	stopThinking();
 }
 
-void ChessEngine::ping(PingType type)
+void ChessEngine::ping()
 {
-	Q_UNUSED(type);
-	m_finishingGame = false;
+	if (m_pinging || state() == NotStarted || !sendPing())
+		return;
+
+	m_pinging = true;
+	m_pingState = state();
 	m_pingTimer.start(10000);
 }
 
 void ChessEngine::pong()
 {
-	if (m_isReady)
+	if (!m_pinging)
 		return;
 
 	m_pingTimer.stop();
-	m_isReady = true;
+	m_pinging = false;
 	flushWriteBuffer();
-	if (m_pingType == PingMove)
-		startClock();
-	m_pingType = PingUnknown;
 
-	if (m_finishingGame)
-		ping(PingUnknown);
-	else
-		emit ready();
+	if (state() == FinishingGame)
+	{
+		if (m_pingState == FinishingGame)
+		{
+			setState(Idle);
+			m_pingState = Idle;
+		}
+		// If the status changed while waiting for a ping response, then
+		// ping again to make sure that we can move on to the next game.
+		else
+		{
+			ping();
+			return;
+		}
+	}
+
+	emit ready();
 }
 
 void ChessEngine::onPingTimeout()
 {
 	qDebug() << "Engine" << name() << "failed to respond to ping";
 
-	m_isReady = true;
+	m_pinging = false;
 	m_writeBuffer.clear();
-	m_pingType = PingUnknown;
 	closeConnection();
 
 	emitForfeit(Chess::Result::WinByStalledConnection);
@@ -156,7 +184,9 @@ void ChessEngine::onPingTimeout()
 
 void ChessEngine::write(const QString& data)
 {
-	if (!m_isReady)
+	if (state() == Disconnected)
+		return;
+	if (state() == NotStarted || m_pinging)
 	{
 		m_writeBuffer.append(data);
 		return;
@@ -186,7 +216,8 @@ void ChessEngine::onReadyRead()
 
 void ChessEngine::flushWriteBuffer()
 {
-	Q_ASSERT(m_isReady);
+	if (m_pinging || state() == NotStarted)
+		return;
 
 	foreach (const QString& line, m_writeBuffer)
 		write(line);
@@ -200,4 +231,5 @@ void ChessEngine::quit()
 
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
 	write("quit");
+	setState(Disconnected);
 }

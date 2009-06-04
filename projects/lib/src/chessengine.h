@@ -46,36 +46,37 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 			Xboard,	//!< The Xboard/Winboard chess protocol.
 			Uci	//!< The Universal Chess Interface (UCI).
 		};
-		
-		/*! Ping or synchronization type. */
-		enum PingType
-		{
-			//! Wait for initialization.
-			PingInit,
-			//! Wait until the engine is ready to think of a move.
-			PingMove,
-			//! Ping the engine for any reason.
-			PingUnknown
-		};
-		
+
 		/*! Creates and initializes a new ChessEngine. */
 		ChessEngine(QIODevice* ioDevice, QObject* parent = 0);
 		virtual ~ChessEngine();
 
 		// Inherited from ChessPlayer
+		void closeConnection();
 		virtual void endGame(Chess::Result result);
 		bool isHuman() const;
 		bool isReady() const;
 		bool supportsVariant(Chess::Variant variant) const;
 
 		/*!
-		 * Starts the engine.
-		 * The engine process must already be started.
+		 * Starts communicating with the engine.
+		 * \note The engine device must already be started.
 		 */
-		virtual void start() = 0;
+		void start();
 
 		/*! Applies \a settings on the engine. */
 		virtual void applySettings(const EngineSettings& settings);
+
+		/*!
+		 * Sends a ping message (an echo request) to the engine to
+		 * check if it's still responding to input, and to synchronize
+		 * it with the game operator. If the engine doesn't respond in
+		 * reasonable time, it will be terminated.
+		 *
+		 * \note All input to the engine will be delayed until we
+		 * get a response to the ping.
+		 */
+		void ping();
 		
 		/*! Returns the engine's chess protocol. */
 		virtual Protocol protocol() const = 0;
@@ -97,47 +98,41 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		
 		/*! Tells the engine to terminate. */
 		void quit();
+
+	public slots:
+		// Inherited from ChessPlayer
+		void go();
 		
 	protected:
 		// Inherited from ChessPlayer
 		virtual void startGame() = 0;
-		void closeConnection();
+
+		/*!
+		 * Puts the engine in the correct mode to start communicating
+		 * with it, using the chosen chess protocol.
+		 */
+		virtual void startProtocol() = 0;
 
 		/*! Parses a line of input from the engine. */
 		virtual void parseLine(const QString& line) = 0;
 
 		/*!
-		 * Checks if the engine is still responding, and synchronizes
-		 * it with the GUI.
+		 * Sends a ping command to the engine.
+		 * \return True if successfull
 		 */
-		virtual void ping(PingType type = PingUnknown);
+		virtual bool sendPing() = 0;
 
 		/*! Tells the engine to stop thinking and move now. */
 		virtual void stopThinking() = 0;
 
-		bool m_isReady;
-
-		/*! Is the engine initialized? */
-		bool m_initialized;
-
-		/*! Is the engine finishing a game? */
-		bool m_finishingGame;
-
 		/*! Are evaluation scores from white's point of view? */
 		bool m_whiteEvalPov;
-
-		/*! The last ping's type. */
-		PingType m_pingType;
-
-		/*! Timer for detecting an unresponsive engine. */
-		QTimer m_pingTimer;
 
 		/*! Supported variants. */
 		QVector<Chess::Variant> m_variants;
 		
 	protected slots:
 		// Inherited from ChessPlayer
-		void onDisconnect();
 		void onTimeout();
 
 		/*! Reads input from the engine. */
@@ -150,6 +145,12 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void pong();
 
 		/*!
+		 * Called when the engine has started the chess protocol and
+		 * is ready to start a game.
+		 */
+		void onProtocolStart();
+
+		/*!
 		 * Flushes the write buffer.
 		 * If there are any commands in the buffer, they will be sent
 		 * to the engine.
@@ -159,6 +160,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 	private:
 		static int m_count;
 		int m_id;
+		State m_pingState;
+		bool m_pinging;
+		QTimer m_pingTimer;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
 };

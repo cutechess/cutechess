@@ -34,19 +34,19 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		XboardEngine(QIODevice* ioDevice, QObject* parent = 0);
 
 		// Inherited from ChessEngine
-		void start();
 		void endGame(Chess::Result result);
-		void go(const Chess::Move& move);
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
-		void ping(PingType type);
 		void setConcurrency(int limit);
 		void setEgbbPath(const QString& path);
 		void setEgtbPath(const QString& path);
 
 	protected:
 		// Inherited from ChessEngine
+		bool sendPing();
+		void startProtocol();
 		void startGame();
+		void startThinking();
 		void parseLine(const QString& line);
 		void stopThinking();
 	
@@ -82,8 +82,8 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		bool m_ftUsermove;
 		
 		bool m_gotResult;
-		bool m_waitForMove;
 		int m_lastPing;
+		Chess::Move m_nextMove;
 		Chess::MoveNotation m_notation;
 		QTimer m_initTimer;
 		QVector<OptionCmd> m_optionBuffer;

@@ -27,20 +27,17 @@
 
 
 UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
-	: ChessEngine(ioDevice, parent),
-	  m_isThinking(false)
+	: ChessEngine(ioDevice, parent)
 {
 	m_variants.append(Chess::Variant::Standard);
 	
 	setName("UciEngine");
 }
 
-void UciEngine::start()
+void UciEngine::startProtocol()
 {
-	// Tell the engine to turn on Uci mode
-	m_isReady = true;
+	// Tell the engine to turn on UCI mode
 	write("uci");
-	m_isReady = false;
 }
 
 void UciEngine::sendPosition()
@@ -99,11 +96,9 @@ void UciEngine::applySettings(const EngineSettings& settings)
 
 void UciEngine::startGame()
 {
-	const Chess::Variant& variant = board()->variant();
-
-	m_isThinking = false;
 	m_moveStrings.clear();
 
+	const Chess::Variant& variant = board()->variant();
 	if (variant.isRandom())
 		m_startFen = board()->fenString(Chess::ShredderFen);
 	else
@@ -131,17 +126,8 @@ void UciEngine::makeMove(const Chess::Move& move)
 	sendPosition();
 }
 
-void UciEngine::go(const Chess::Move& move)
+void UciEngine::startThinking()
 {
-	if (!move.isNull())
-		makeMove(move);
-
-	m_isThinking = true;
-	if (m_isReady)
-		ping(PingMove);
-	else
-		startClock();
-	
 	const TimeControl* whiteTc = 0;
 	const TimeControl* blackTc = 0;
 	const TimeControl* myTc = timeControl();
@@ -181,7 +167,7 @@ void UciEngine::go(const Chess::Move& move)
 
 void UciEngine::stopThinking()
 {
-	if (m_isThinking)
+	if (state() == Thinking)
 		write("stop");
 }
 
@@ -190,15 +176,10 @@ ChessEngine::Protocol UciEngine::protocol() const
 	return ChessEngine::Uci;
 }
 
-void UciEngine::ping(ChessEngine::PingType type)
+bool UciEngine::sendPing()
 {
-	if (m_isReady)
-	{
-		m_pingType = type;
-		write("isready");
-		m_isReady = false;
-		ChessEngine::ping(type);
-	}
+	write("isready");
+	return true;
 }
 
 void UciEngine::addVariants()
@@ -273,7 +254,6 @@ void UciEngine::parseLine(const QString& line)
 
 	if (command == "bestmove")
 	{
-		m_isThinking = false;
 		if (!m_gameInProgress)
 		{
 			pong();
@@ -290,19 +270,14 @@ void UciEngine::parseLine(const QString& line)
 		if (board()->isLegalMove(move))
 			emitMove(move);
 		else
-		{
-			m_timer.stop();
 			emitForfeit(Chess::Result::WinByIllegalMove, moveString);
-		}
 	}
 	else if (command == "uciok")
 	{
-		if (!m_initialized)
+		if (state() == Starting)
 		{
-			Q_ASSERT(!m_isReady);
+			onProtocolStart();
 			addVariants();
-			m_initialized = true;
-			m_isReady = true;
 
 			// Send engine options
 			foreach (const OptionCmd& cmd, m_optionBuffer)
@@ -312,7 +287,7 @@ void UciEngine::parseLine(const QString& line)
 			}
 			m_optionBuffer.clear();
 
-			ping(PingInit);
+			ping();
 		}
 	}
 	else if (command == "readyok")
@@ -397,7 +372,7 @@ void UciEngine::setOption(const UciOption* option, const QVariant& value)
 
 void UciEngine::setOption(const QString& name, const QVariant& value)
 {
-	if (!m_initialized)
+	if (state() == Starting || state() == NotStarted)
 	{
 		OptionCmd cmd = { name, value };
 		m_optionBuffer.append(cmd);

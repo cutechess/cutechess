@@ -168,15 +168,14 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	m_board->undoMove();
 
 	ChessPlayer* player = playerToWait();
+	player->makeMove(move);
+
 	if (result().isNone())
-		player->go(move);
+		player->go();
 	else
-	{
-		player->makeMove(move);
 		stop();
-	}
+
 	m_board->makeMove(move, true);
-	
 	emit moveMade(move);
 }
 

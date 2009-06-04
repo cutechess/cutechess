@@ -52,7 +52,6 @@ XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
 	  m_ftTime(true),
 	  m_ftUsermove(false),
 	  m_gotResult(false),
-	  m_waitForMove(false),
 	  m_lastPing(0),
 	  m_notation(Chess::LongAlgebraic)
 {
@@ -60,14 +59,12 @@ XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
 	setName("XboardEngine");
 }
 
-void XboardEngine::start()
+void XboardEngine::startProtocol()
 {
-	m_isReady = true;
 	// Tell the engine to turn on xboard mode
 	write("xboard");
 	// Tell the engine that we're using Xboard protocol 2
 	write("protover 2");
-	m_isReady = false;
 
 	// Give the engine 2 seconds to reply to the protover command.
 	// This is how Xboard deals with protocol 1 engines.
@@ -78,12 +75,9 @@ void XboardEngine::start()
 
 void XboardEngine::initialize()
 {
-	if (!m_initialized)
+	if (state() == Starting)
 	{
-		Q_ASSERT(!m_isReady);
-		m_initialized = true;
-		m_isReady = true;
-		
+		onProtocolStart();
 		flushWriteBuffer();
 		
 		// Send engine options
@@ -137,8 +131,8 @@ void XboardEngine::startGame()
 {
 	m_drawOnNextMove = false;
 	m_gotResult = false;
-	m_waitForMove = false;
 	m_forceMode = false;
+	m_nextMove = Chess::Move();
 	write("new");
 	
 	const Chess::Variant& variant = board()->variant();
@@ -186,12 +180,12 @@ void XboardEngine::endGame(Chess::Result result)
 {
 	if (m_gameInProgress)
 	{
-		if (!m_waitForMove)
+		if (state() != Thinking)
 			m_gotResult = true;
 
 		stopThinking();
-		write("result " + result.toString());
 		setForceMode(true);
+		write("result " + result.toString());
 	}
 	ChessEngine::endGame(result);
 
@@ -201,7 +195,6 @@ void XboardEngine::endGame(Chess::Result result)
 	// developer who fails to support the ping command.
 	if (!m_ftPing)
 	{
-		m_isReady = false;
 		if (m_gotResult)
 			finishGame();
 	}
@@ -209,11 +202,12 @@ void XboardEngine::endGame(Chess::Result result)
 
 void XboardEngine::finishGame()
 {
-	if (!m_ftPing && m_finishingGame)
+	if (!m_ftPing && state() == FinishingGame)
 	{
-		m_finishingGame = false;
+		// Give the engine enough time to send all pending
+		// output relating to the current game
 		m_gotResult = true;
-		QTimer::singleShot(100, this, SLOT(pong()));
+		QTimer::singleShot(200, this, SLOT(pong()));
 	}
 }
 
@@ -236,46 +230,58 @@ void XboardEngine::sendTimeLeft()
 void XboardEngine::setForceMode(bool enable)
 {
 	if (enable && !m_forceMode)
+	{
+		m_forceMode = true;
 		write("force");
+
+		// If there's a move pending, and we didn't get the
+		// 'go' command, we'll send the move in force mode.
+		if (!m_nextMove.isNull())
+			makeMove(m_nextMove);
+	}
 	m_forceMode = enable;
 }
 
 void XboardEngine::makeMove(const Chess::Move& move)
 {
 	Q_ASSERT(!move.isNull());
-	setForceMode(true);
+
+	// If we're not in force mode, we'll have to wait for the
+	// 'go' command until the move can be sent to the engine.
+	if (!m_forceMode)
+	{
+		if (m_nextMove.isNull())
+		{
+			m_nextMove = move;
+			return;
+		}
+		else if (move != m_nextMove)
+			setForceMode(true);
+	}
 
 	QString moveString = board()->moveString(move, m_notation);
 	if (m_ftUsermove)
 		write("usermove " + moveString);
 	else
 		write(moveString);
+
+	m_nextMove = Chess::Move();
 }
 
-void XboardEngine::go(const Chess::Move& move)
+void XboardEngine::startThinking()
 {
-	bool sendGo = m_forceMode;
-	m_waitForMove = true;
-	if (m_ftPing && m_isReady)
-		ping(PingMove);
-	else
-		startClock();
+	setForceMode(false);
 	sendTimeLeft();
 
-	if (!move.isNull())
-	{
-		m_forceMode = true;
-		makeMove(move);
-	}
-
-	setForceMode(false);
-	if (sendGo)
+	if (m_nextMove.isNull())
 		write("go");
+	else
+		makeMove(m_nextMove);
 }
 
 void XboardEngine::stopThinking()
 {
-	if (m_waitForMove)
+	if (state() == Thinking)
 		write("?");
 }
 
@@ -284,18 +290,20 @@ ChessEngine::Protocol XboardEngine::protocol() const
 	return ChessEngine::Xboard;
 }
 
-void XboardEngine::ping(ChessEngine::PingType type)
+bool XboardEngine::sendPing()
 {
-	if (m_ftPing && m_isReady)
+	if (!m_ftPing)
 	{
-		// Ping the engine with a random number. The engine should
-		// later send the number back at us.
-		m_pingType = type;
-		m_lastPing = (qrand() % 32) + 1;
-		write(QString("ping %1").arg(m_lastPing));
-		m_isReady = false;
-		ChessEngine::ping(type);
+		if (state() == FinishingGame)
+			return true;
+		return false;
 	}
+
+	// Ping the engine with a random number. The engine should
+	// later send the number back at us.
+	m_lastPing = (qrand() % 32) + 1;
+	write(QString("ping %1").arg(m_lastPing));
+	return true;
 }
 
 void XboardEngine::setFeature(const QString& name, const QString& val)
@@ -374,7 +382,6 @@ void XboardEngine::parseLine(const QString& line)
 
 	if (command == "move")
 	{
-		m_waitForMove = false;
 		if (!m_gameInProgress || m_forceMode)
 		{
 			finishGame();
@@ -384,7 +391,6 @@ void XboardEngine::parseLine(const QString& line)
 		Chess::Move move = board()->moveFromString(args);
 		if (!board()->isLegalMove(move))
 		{
-			m_timer.stop();
 			emitForfeit(Chess::Result::WinByIllegalMove, args);
 			return;
 		}
@@ -426,7 +432,7 @@ void XboardEngine::parseLine(const QString& line)
 
 		if (command == "1/2-1/2")
 		{
-			if (m_waitForMove)
+			if (state() == Thinking)
 				// The engine claims that its next move will draw the game
 				m_drawOnNextMove = true;
 			else
@@ -511,7 +517,7 @@ void XboardEngine::parseLine(const QString& line)
 
 void XboardEngine::setOption(const QString& line, bool* feature)
 {
-	if (!m_initialized)
+	if (state() == Starting || state() == NotStarted)
 	{
 		OptionCmd cmd = { line, feature };
 		m_optionBuffer.append(cmd);

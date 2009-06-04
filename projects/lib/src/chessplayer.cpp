@@ -23,6 +23,7 @@
 ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
 	  m_gameInProgress(false),
+	  m_state(NotStarted),
 	  m_connected(true),
 	  m_forfeited(false),
 	  m_side(Chess::NoSide),
@@ -33,9 +34,26 @@ ChessPlayer::ChessPlayer(QObject* parent)
 	connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 }
 
+ChessPlayer::~ChessPlayer()
+{
+}
+
 bool ChessPlayer::isConnected() const
 {
 	return m_connected;
+}
+
+bool ChessPlayer::isReady() const
+{
+	switch (m_state)
+	{
+	case Idle:
+	case Thinking:
+	case Disconnected:
+		return true;
+	default:
+		return false;
+	}
 }
 
 void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board* board)
@@ -53,6 +71,7 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board*
 	m_timeControl.setTimeLeft(m_timeControl.timePerTc());
 	m_timeControl.setMovesLeft(m_timeControl.movesPerTc());
 
+	m_state = Idle;
 	startGame();
 }
 
@@ -60,9 +79,25 @@ void ChessPlayer::endGame(Chess::Result result)
 {
 	Q_UNUSED(result);
 
+	m_state = FinishingGame;
 	m_gameInProgress = false;
 	m_board = 0;
 	m_timer.stop();
+}
+
+void ChessPlayer::go()
+{
+	m_state = Thinking;
+
+	disconnect(this, SIGNAL(ready()), this, SLOT(go()));
+	if (!isReady())
+	{
+		connect(this, SIGNAL(ready()), this, SLOT(go()));
+		return;
+	}
+
+	startClock();
+	startThinking();
 }
 
 const MoveEvaluation& ChessPlayer::evaluation() const
@@ -133,6 +168,16 @@ const ChessPlayer* ChessPlayer::opponent() const
 	return m_opponent;
 }
 
+ChessPlayer::State ChessPlayer::state() const
+{
+	return m_state;
+}
+
+void ChessPlayer::setState(State state)
+{
+	m_state = state;
+}
+
 QString ChessPlayer::name() const
 {
 	return m_name;
@@ -147,12 +192,19 @@ void ChessPlayer::emitForfeit(Chess::Result::Code code, const QString& arg)
 {
 	if (m_forfeited)
 		return;
+
+	m_timer.stop();
+	if (m_state == Thinking)
+		m_state = Idle;
 	m_forfeited = true;
 	emit forfeit(Chess::Result(code, otherSide(), arg));
 }
 
 void ChessPlayer::emitMove(const Chess::Move& move)
 {
+	if (m_state == Thinking)
+		m_state = Idle;
+
 	m_timeControl.update();
 	m_eval.setTime(m_timeControl.lastMoveTime());
 
@@ -168,12 +220,13 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 
 void ChessPlayer::closeConnection()
 {
+	m_state = Disconnected;
 	m_connected = false;
 }
 
 void ChessPlayer::onDisconnect()
 {
-	m_connected = false;
+	closeConnection();
 	emitForfeit(Chess::Result::WinByDisconnection);
 }
 

@@ -36,13 +36,10 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		UciEngine(QIODevice* ioDevice, QObject* parent = 0);
 
 		// Inherited from ChessEngine
-		void start();
 		void applySettings(const EngineSettings& settings);
 		void endGame(Chess::Result result);
-		void go(const Chess::Move& move);
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
-		void ping(PingType type);
 		void setConcurrency(int limit);
 		void setEgbbPath(const QString& path);
 		void setEgtbPath(const QString& path);
@@ -64,7 +61,10 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		
 	protected:
 		// Inherited from ChessEngine
+		bool sendPing();
+		void startProtocol();
 		void startGame();
+		void startThinking();
 		void parseLine(const QString& line);
 		void stopThinking();
 		
@@ -81,7 +81,6 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		const UciOption* getOption(const QString& name) const;
 		bool hasOption(const QString& name) const;
 		
-		bool m_isThinking;
 		QString m_startFen;
 		QString m_moveStrings;
 		QVector<UciOption> m_options;

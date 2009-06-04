@@ -21,6 +21,7 @@
 HumanPlayer::HumanPlayer(QObject* parent)
 	: ChessPlayer(parent)
 {
+	setState(Idle);
 	setName("HumanPlayer");
 }
 
@@ -28,10 +29,8 @@ void HumanPlayer::startGame()
 {
 }
 
-void HumanPlayer::go(const Chess::Move& move)
+void HumanPlayer::startThinking()
 {
-	Q_UNUSED(move);
-	startClock();
 }
 
 void HumanPlayer::makeMove(const Chess::Move& move)
@@ -50,14 +49,9 @@ bool HumanPlayer::isHuman() const
 	return true;
 }
 
-bool HumanPlayer::isReady() const
-{
-	return true;
-}
-
 void HumanPlayer::onHumanMove(const GenericMove& move)
 {
-	if (!m_timer.isActive())
+	if (state() != Thinking)
 		return;
 
 	Chess::Move boardMove = board()->moveFromBook(move);
