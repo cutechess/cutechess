@@ -493,12 +493,13 @@ void XboardEngine::parseLine(const QString& line)
 	}
 	else if (command == "Error")
 	{
+		// If the engine complains about an unknown result command,
+		// we can assume that it's safe to finish the game.
 		QString str = args.section(':', 1).trimmed();
-
 		if (str.startsWith("result"))
 			finishGame();
 	}
-	else if (command.toInt() > 0)
+	else if (command.toInt() > 0) // principal variation
 	{
 		bool ok = false;
 		m_eval.setDepth(command.toInt());
