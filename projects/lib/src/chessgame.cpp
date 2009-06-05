@@ -323,13 +323,13 @@ void ChessGame::start()
 {
 	setResult(Chess::Result());
 
+	disconnect(this, SIGNAL(playersReady()), this, SLOT(start()));
 	if (!arePlayersReady())
 	{
 		connect(this, SIGNAL(playersReady()), this, SLOT(start()));
 		syncPlayers(true);
 		return;
 	}
-	disconnect(this, SIGNAL(playersReady()), this, SLOT(start()));
 	if (m_gameEnded)
 		return;
 	
