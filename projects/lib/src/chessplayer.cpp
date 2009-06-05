@@ -36,11 +36,6 @@ ChessPlayer::~ChessPlayer()
 {
 }
 
-bool ChessPlayer::isConnected() const
-{
-	return (m_state != Disconnected);
-}
-
 bool ChessPlayer::isReady() const
 {
 	switch (m_state)

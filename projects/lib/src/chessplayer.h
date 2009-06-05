@@ -64,9 +64,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		virtual void closeConnection();
 
-		/*! Returns true if the player is connected. */
-		bool isConnected() const;
-
 		/*!
 		 * Returns true if the player is ready for input.
 		 *

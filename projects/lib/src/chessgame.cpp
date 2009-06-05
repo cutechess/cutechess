@@ -76,11 +76,8 @@ void ChessGame::stop()
 	
 	m_gameInProgress = false;
 
-	for (int i = 0; i < 2; i++)
-	{
-		if (m_player[i]->isConnected())
-			m_player[i]->endGame(result());
-	}
+	m_player[Chess::White]->endGame(result());
+	m_player[Chess::Black]->endGame(result());
 
 	connect(this, SIGNAL(playersReady()), this, SIGNAL(gameEnded()), Qt::QueuedConnection);
 	syncPlayers(true);
@@ -88,11 +85,9 @@ void ChessGame::stop()
 
 void ChessGame::kill()
 {
-	for (int i = 0; i < 2; i++)
-	{
-		if (m_player[i]->isConnected())
-			m_player[i]->closeConnection();
-	}
+	m_player[Chess::White]->closeConnection();
+	m_player[Chess::Black]->closeConnection();
+
 	stop();
 }
 
@@ -317,7 +312,7 @@ void ChessGame::syncPlayers(bool ignoreSender)
 	else
 	{
 		disconnect(sender, SIGNAL(ready()), this, SLOT(syncPlayers()));
-		if (!arePlayersReady() || !sender->isConnected())
+		if (!arePlayersReady() || sender->state() == ChessPlayer::Disconnected)
 			return;
 	}
 
