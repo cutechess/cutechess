@@ -137,7 +137,10 @@ void ChessEngine::onTimeout()
 
 void ChessEngine::ping()
 {
-	if (m_pinging || state() == NotStarted || !sendPing())
+	if (m_pinging
+	||  state() == NotStarted
+	||  state() == Disconnected
+	||  !sendPing())
 		return;
 
 	m_pinging = true;

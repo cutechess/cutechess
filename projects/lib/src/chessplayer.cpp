@@ -76,6 +76,8 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board*
 void ChessPlayer::endGame(Chess::Result result)
 {
 	Q_UNUSED(result);
+	if (m_state != Observing && m_state != Thinking)
+		return;
 
 	m_state = FinishingGame;
 	m_board = 0;
