@@ -157,9 +157,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		void humanTurn(bool isHumanTurn);
 
-		/*! Signals the player's evaluation of the position. */
-		void sendEvaluation(const MoveEvaluation& eval) const;
-
 		/*! Signals that the player is ready for input. */
 		void ready() const;
 		

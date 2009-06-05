@@ -332,8 +332,6 @@ void UciEngine::parseLine(const QString& line)
 	else if (command == "info")
 	{
 		parseInfo(args);
-		if (!m_eval.isEmpty())
-			emit sendEvaluation(m_eval);
 	}
 }
 

@@ -521,9 +521,6 @@ void XboardEngine::parseLine(const QString& line)
 			m_eval.setNodeCount(nodes);
 
 		m_eval.setPv(args.section(' ', 3));
-
-		if (!m_eval.isEmpty())
-			emit sendEvaluation(m_eval);
 	}
 }
 
