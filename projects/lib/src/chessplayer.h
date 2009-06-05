@@ -45,7 +45,8 @@ class LIB_EXPORT ChessPlayer : public QObject
 		{
 			NotStarted,	//!< Not started or uninitialized
 			Starting,	//!< Starting or initializing
-			Idle,		//!< Idle and ready to play
+			Idle,		//!< Idle and ready to start a game
+			Observing,	//!< Observing a game, or waiting for turn
 			Thinking,	//!< Thinking of the next move
 			FinishingGame,	//!< Finishing or cleaning up after a game
 			Disconnected	//!< Disconnected or terminated
@@ -226,9 +227,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		
 		/*! The current evaluation. */
 		MoveEvaluation m_eval;
-
-		/*! Is a game in progress? If not, all moves are rejected. */
-		bool m_gameInProgress;
 
 	private:
 		void startClock();

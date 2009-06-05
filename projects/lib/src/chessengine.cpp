@@ -86,7 +86,7 @@ void ChessEngine::onProtocolStart()
 
 void ChessEngine::go()
 {
-	if (state() == Idle)
+	if (state() == Observing)
 		ping();
 	ChessPlayer::go();
 }

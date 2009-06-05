@@ -178,15 +178,17 @@ void XboardEngine::startGame()
 
 void XboardEngine::endGame(Chess::Result result)
 {
-	if (m_gameInProgress)
-	{
-		if (state() != Thinking)
-			m_gotResult = true;
+	State s = state();
+	if (s != Thinking && s != Observing)
+		return;
 
-		stopThinking();
-		setForceMode(true);
-		write("result " + result.toString());
-	}
+	if (s != Thinking)
+		m_gotResult = true;
+
+	stopThinking();
+	setForceMode(true);
+	write("result " + result.toString());
+
 	ChessEngine::endGame(result);
 
 	// If the engine can't be pinged, we may have to wait for
@@ -387,9 +389,12 @@ void XboardEngine::parseLine(const QString& line)
 
 	if (command == "move")
 	{
-		if (!m_gameInProgress || m_forceMode)
+		if (state() != Thinking)
 		{
-			finishGame();
+			if (state() == FinishingGame)
+				finishGame();
+			else
+				qDebug() << "Unexpected move from" << name();
 			return;
 		}
 
@@ -429,7 +434,8 @@ void XboardEngine::parseLine(const QString& line)
 	else if (command == "1-0" || command == "0-1"
 	     ||  command == "1/2-1/2" || command == "resign")
 	{
-		if (!m_gameInProgress || !board()->result().isNone())
+		if ((state() != Thinking && state() != Observing)
+		||  !board()->result().isNone())
 		{
 			finishGame();
 			return;
@@ -489,7 +495,7 @@ void XboardEngine::parseLine(const QString& line)
 	{
 		QString str = args.section(':', 1).trimmed();
 
-		if (!m_gameInProgress && str.startsWith("result"))
+		if (str.startsWith("result"))
 			finishGame();
 	}
 	else if (command.toInt() > 0)

@@ -259,9 +259,12 @@ void UciEngine::parseLine(const QString& line)
 
 	if (command == "bestmove")
 	{
-		if (!m_gameInProgress)
+		if (state() != Thinking)
 		{
-			pong();
+			if (state() == FinishingGame)
+				pong();
+			else
+				qDebug() << "Unexpected move from" << name();
 			return;
 		}
 
