@@ -116,6 +116,8 @@ bool ChessEngine::supportsVariant(Chess::Variant variant) const
 
 void ChessEngine::closeConnection()
 {
+	if (state() == Disconnected)
+		return;
 	ChessPlayer::closeConnection();
 
 	m_pinging = false;
