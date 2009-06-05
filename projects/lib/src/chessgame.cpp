@@ -159,8 +159,16 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 			comment += QString::number((double)eval.score() / 100.0, 'f', 2) + '/';
 			comment += QString::number(eval.depth()) + ' ';
 		}
-		// Round the time to the nearest second
-		comment += QString::number((eval.time() + 500) / 1000) + 's';
+
+		int precision = 0;
+		int t = eval.time();
+		if (t < 100)
+			precision = 3;
+		else if (t < 1000)
+			precision = 2;
+		else if (t < 10000)
+			precision = 1;
+		comment += QString::number(double(t / 1000.0), 'f', precision) + 's';
 	}
 
 	addMove(move, m_board, comment);
