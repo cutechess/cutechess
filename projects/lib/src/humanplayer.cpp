@@ -33,6 +33,12 @@ void HumanPlayer::startThinking()
 {
 }
 
+void HumanPlayer::endGame(Chess::Result result)
+{
+	ChessPlayer::endGame(result);
+	setState(Idle);
+}
+
 void HumanPlayer::makeMove(const Chess::Move& move)
 {
 	Q_UNUSED(move);
