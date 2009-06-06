@@ -18,6 +18,7 @@
 #include <QSettings>
 #include <QTime>
 #include <cstdlib>
+#include <cstdio>
 
 #include <enginemanager.h>
 
