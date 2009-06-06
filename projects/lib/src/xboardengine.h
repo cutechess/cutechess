@@ -85,6 +85,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		bool m_gotResult;
 		int m_lastPing;
 		Chess::Move m_nextMove;
+		QString m_nextMoveString;
 		Chess::MoveNotation m_notation;
 		QTimer m_initTimer;
 		QVector<OptionCmd> m_optionBuffer;

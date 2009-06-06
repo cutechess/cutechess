@@ -248,6 +248,12 @@ void XboardEngine::makeMove(const Chess::Move& move)
 {
 	Q_ASSERT(!move.isNull());
 
+	QString moveString;
+	if (move == m_nextMove)
+		moveString = m_nextMoveString;
+	else
+		moveString = board()->moveString(move, m_notation);
+
 	// If we're not in force mode, we'll have to wait for the
 	// 'go' command until the move can be sent to the engine.
 	if (!m_forceMode)
@@ -255,13 +261,13 @@ void XboardEngine::makeMove(const Chess::Move& move)
 		if (m_nextMove.isNull())
 		{
 			m_nextMove = move;
+			m_nextMoveString = moveString;
 			return;
 		}
 		else if (move != m_nextMove)
 			setForceMode(true);
 	}
 
-	QString moveString = board()->moveString(move, m_notation);
 	if (m_ftUsermove)
 		write("usermove " + moveString);
 	else
