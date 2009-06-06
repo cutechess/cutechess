@@ -399,7 +399,7 @@ void XboardEngine::parseLine(const QString& line)
 		}
 
 		Chess::Move move = board()->moveFromString(args);
-		if (!board()->isLegalMove(move))
+		if (move.isNull())
 		{
 			emitForfeit(Chess::Result::WinByIllegalMove, args);
 			return;

@@ -86,7 +86,11 @@ Move Board::moveFromString(const QString& str)
 {
 	Move move = moveFromSanString(str);
 	if (move.isNull())
+	{
 		move = moveFromLongAlgebraicString(str);
+		if (!isLegalMove(move))
+			return Move();
+	}
 	return move;
 }
 
@@ -274,7 +278,12 @@ Move Board::moveFromSanString(const QString& str)
 		
 		int source = m_kingSquare[m_side];
 		int target = m_castleTarget[m_side][cside];
-		return Move(source, target, Piece::NoPiece, cside);
+
+		Move move(source, target, Piece::NoPiece, cside);
+		if (isLegalMove(move))
+			return move;
+		else
+			return Move();
 	}
 	
 	Square sourceSq;

@@ -275,7 +275,7 @@ void UciEngine::parseLine(const QString& line)
 		m_moveStrings += " " + moveString;
 		Chess::Move move = board()->moveFromString(moveString);
 
-		if (board()->isLegalMove(move))
+		if (!move.isNull())
 			emitMove(move);
 		else
 			emitForfeit(Chess::Result::WinByIllegalMove, moveString);

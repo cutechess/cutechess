@@ -119,9 +119,10 @@ class LIB_EXPORT Board : public QObject
 		
 		/*!
 		 * Converts a move string into a Move.
+		 * Returns a null move if the move is illegal.
 		 *
-		 * The notation is automatically detected, and can be either
-		 * Long Algebraic notation or Standard Algebraic notation (SAN).
+		 * The notation is automatically detected, and can be anything
+		 * that's specified in Chess::MoveNotation.
 		 *
 		 * \note The board must be in a position where the move can be made.
 		 * \sa moveString()

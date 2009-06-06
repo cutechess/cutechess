@@ -59,9 +59,10 @@ bool PgnGame::addMove(const QString& moveString,
 
 	MoveData md;
 	md.move = board->moveFromString(moveString);
-	if (!board->isLegalMove(md.move))
+	if (md.move.isNull())
 		return false;
 
+	Q_ASSERT(board->isLegalMove(md.move));
 	md.sanMove = moveString;
 	md.comment = comment;
 
