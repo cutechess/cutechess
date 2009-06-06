@@ -198,19 +198,19 @@ Move Board::moveFromLongAlgebraicString(const QString& str) const
 {
 	int len = str.length();
 	if (len < 4)
-		return Move(0, 0);
+		return Move();
 	
 	Square sourceSq(str.mid(0, 2));
 	Square targetSq(str.mid(2, 2));
 	if (!isValidSquare(sourceSq) || !isValidSquare(targetSq))
-		return Move(0, 0);
+		return Move();
 	
 	Piece::Type promotion = Piece::NoPiece;
 	if (len > 4)
 	{
 		promotion = Piece(str[len - 1]).type();
 		if (promotion == Piece::NoPiece)
-			return Move(0, 0);
+			return Move();
 	}
 	
 	int source = squareIndex(sourceSq);
@@ -248,7 +248,7 @@ Move Board::moveFromLongAlgebraicString(const QString& str) const
 Move Board::moveFromSanString(const QString& str)
 {
 	if (str.length() < 2)
-		return Move(0, 0);
+		return Move();
 	
 	QString mstr = str;
 	
@@ -260,7 +260,7 @@ Move Board::moveFromSanString(const QString& str)
 	}
 	
 	if (mstr.length() < 2)
-		return Move(0, 0);
+		return Move();
 
 	// Castling
 	if (mstr.startsWith("O-O"))
@@ -271,7 +271,7 @@ Move Board::moveFromSanString(const QString& str)
 		else if (mstr == "O-O-O")
 			cside = QueenSide;
 		else
-			return Move(0, 0);
+			return Move();
 		
 		int source = m_kingSquare[m_side];
 		int target = m_castleTarget[m_side][cside];
@@ -285,7 +285,7 @@ Move Board::moveFromSanString(const QString& str)
 	// A SAN move can't start with the capture mark, and
 	// a pawn move must not specify the piece type
 	if (*it == 'x' || *it == 'P')
-		return Move(0, 0);
+		return Move();
 	
 	// Piece type
 	Piece piece = Piece(*it);
@@ -312,14 +312,14 @@ Move Board::moveFromSanString(const QString& str)
 		if (sourceSq.file() < 0 || sourceSq.file() >= m_width)
 			sourceSq.setFile(-1);
 		else if (++it == mstr.end())
-			return Move(0, 0);
+			return Move();
 
 		// Source square's rank
 		if (it->isDigit())
 		{
 			sourceSq.setRank(it->toAscii() - '1');
 			if (sourceSq.rank() < 0 || sourceSq.rank() >= m_height)
-				return Move(0, 0);
+				return Move();
 			++it;
 		}
 		if (it == mstr.end())
@@ -333,13 +333,13 @@ Move Board::moveFromSanString(const QString& str)
 				sourceSq.setFile(-1);
 			}
 			else
-				return Move(0, 0);
+				return Move();
 		}
 		// Capture
 		else if (*it == 'x')
 		{
 			if(++it == mstr.end())
-				return Move(0, 0);
+				return Move();
 			stringIsCapture = true;
 		}
 		
@@ -347,13 +347,13 @@ Move Board::moveFromSanString(const QString& str)
 		if (!isValidSquare(targetSq))
 		{
 			if (it + 1 == mstr.end())
-				return Move(0, 0);
+				return Move();
 			targetSq = mstr.mid(it - mstr.begin(), 2);
 			it += 2;
 		}
 	}
 	if (!isValidSquare(targetSq))
-		return Move(0, 0);
+		return Move();
 	int target = squareIndex(targetSq);
 	
 	// Make sure that the move string is right about whether
@@ -363,18 +363,18 @@ Move Board::moveFromSanString(const QString& str)
 	||  (target == m_enpassantSquare && piece.type() == Piece::Pawn))
 		isCapture = true;
 	if (isCapture != stringIsCapture)
-		return Move(0, 0);
+		return Move();
 	
 	// Promotion
 	int promotion = Piece::NoPiece;
 	if (it != mstr.end())
 	{
 		if ((*it == '=' || *it == '(') && ++it == mstr.end())
-			return Move(0, 0);
+			return Move();
 		
 		promotion = Piece(*it).type();
 		if (promotion == Piece::NoPiece)
-			return Move(0, 0);
+			return Move();
 	}
 	
 	QVector<Move> moves;
@@ -407,12 +407,12 @@ Move Board::moveFromSanString(const QString& str)
 		// Return an empty move if there are multiple moves that
 		// match the move string.
 		if (match != 0)
-			return Move(0, 0);
+			return Move();
 		match = &move;
 	}
 	
 	if (match != 0)
 		return *match;
 	
-	return Move(0, 0);
+	return Move();
 }
