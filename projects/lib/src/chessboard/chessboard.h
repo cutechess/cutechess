@@ -295,6 +295,9 @@ class LIB_EXPORT Board : public QObject
 		 */
 		void generateMoves(QVector<Move>& moves,
 				   Piece::Type type = Piece::NoPiece) const;
+
+		/*! Generates pseudo-legal moves for the piece at \a square. */
+		void generateMovesForSquare(QVector<Move>& moves, int square) const;
 		
 		/*!
 		 * Adds pawn promotions (from \a sourceSquare to \a targetSquare)

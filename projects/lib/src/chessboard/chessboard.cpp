@@ -545,7 +545,19 @@ bool Board::isLegalPosition() const
 
 bool Board::isLegalMove(const Chess::Move& move)
 {
-	return legalMoves().contains(move);
+	if (move.isNull())
+		return false;
+
+	QVector<Move> moves;
+	generateMovesForSquare(moves, move.sourceSquare());
+	if (!moves.contains(move))
+		return false;
+
+	makeMove(move);
+	bool isLegal = isLegalPosition();
+	undoMove();
+
+	return isLegal;
 }
 
 Result Board::result()

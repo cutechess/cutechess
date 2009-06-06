@@ -20,6 +20,48 @@
 using namespace Chess;
 
 
+void Board::generateMovesForSquare(QVector<Chess::Move>& moves, int square) const
+{
+	Piece piece = m_squares[square];
+	if (piece.side() != m_side)
+		return;
+
+	switch (piece.type())
+	{
+	case Piece::Pawn:
+		generatePawnMoves(square, moves);
+		break;
+	case Piece::Knight:
+		generateHoppingMoves(square, m_knightOffsets, moves);
+		break;
+	case Piece::Bishop:
+		generateSlidingMoves(square, m_bishopOffsets, moves);
+		break;
+	case Piece::Rook:
+		generateSlidingMoves(square, m_rookOffsets, moves);
+		break;
+	case Piece::Queen:
+		generateSlidingMoves(square, m_bishopOffsets, moves);
+		generateSlidingMoves(square, m_rookOffsets, moves);
+		break;
+	case Piece::Archbishop:
+		generateSlidingMoves(square, m_bishopOffsets, moves);
+		generateHoppingMoves(square, m_knightOffsets, moves);
+		break;
+	case Piece::Chancellor:
+		generateSlidingMoves(square, m_rookOffsets, moves);
+		generateHoppingMoves(square, m_knightOffsets, moves);
+		break;
+	case Piece::King:
+		generateHoppingMoves(square, m_bishopOffsets, moves);
+		generateHoppingMoves(square, m_rookOffsets, moves);
+		generateCastlingMoves(moves);
+		break;
+	default:
+		qFatal("Board::generateMoves(): invalid piece type");
+	}
+}
+
 void Board::generateMoves(QVector<Chess::Move>& moves, Piece::Type type) const
 {
 	// Cut the wall squares (the ones with a value of InvalidPiece) off
@@ -31,45 +73,9 @@ void Board::generateMoves(QVector<Chess::Move>& moves, Piece::Type type) const
 	
 	for (unsigned sq = begin; sq < end; sq++)
 	{
-		Piece piece = m_squares[sq];
-		if (piece.side() != m_side
-		||  (type != Piece::NoPiece && piece.type() != type))
+		if (type != Piece::NoPiece && m_squares[sq].type() != type)
 			continue;
-		
-		switch (piece.type())
-		{
-		case Piece::Pawn:
-			generatePawnMoves(sq, moves);
-			break;
-		case Piece::Knight:
-			generateHoppingMoves(sq, m_knightOffsets, moves);
-			break;
-		case Piece::Bishop:
-			generateSlidingMoves(sq, m_bishopOffsets, moves);
-			break;
-		case Piece::Rook:
-			generateSlidingMoves(sq, m_rookOffsets, moves);
-			break;
-		case Piece::Queen:
-			generateSlidingMoves(sq, m_bishopOffsets, moves);
-			generateSlidingMoves(sq, m_rookOffsets, moves);
-			break;
-		case Piece::Archbishop:
-			generateSlidingMoves(sq, m_bishopOffsets, moves);
-			generateHoppingMoves(sq, m_knightOffsets, moves);
-			break;
-		case Piece::Chancellor:
-			generateSlidingMoves(sq, m_rookOffsets, moves);
-			generateHoppingMoves(sq, m_knightOffsets, moves);
-			break;
-		case Piece::King:
-			generateHoppingMoves(sq, m_bishopOffsets, moves);
-			generateHoppingMoves(sq, m_rookOffsets, moves);
-			generateCastlingMoves(moves);
-			break;
-		default:
-			qFatal("Board::generateMoves(): invalid piece type");
-		}
+		generateMovesForSquare(moves, sq);
 	}
 }
 
