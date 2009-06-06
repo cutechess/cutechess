@@ -85,11 +85,10 @@ QString Board::moveString(const Move& move, MoveNotation notation)
 Move Board::moveFromString(const QString& str)
 {
 	Move move = moveFromSanString(str);
-	if (move.sourceSquare() == 0 || move.targetSquare() == 0)
+	if (move.isNull())
 		move = moveFromLongAlgebraicString(str);
 	return move;
 }
-
 
 QString Board::longAlgebraicMoveString(const Move& move) const
 {
