@@ -145,16 +145,6 @@ Piece Board::pieceAt(const Square& square) const
 	return m_squares.at(squareIndex(square));
 }
 
-QVector<Move> Board::moveHistory() const
-{
-	QVector<Move> moves;
-	
-	foreach (const MoveData& md, m_history)
-		moves.append(md.move);
-	
-	return moves;
-}
-
 void Board::print() const
 {
 	int i = m_arwidth * 2;

@@ -132,9 +132,6 @@ class LIB_EXPORT Board : public QObject
 		/*! Converts an opening book move into a Move. */
 		Move moveFromBook(const GenericMove& bookMove) const;
 		
-		/*! Returns a vector of played moves. */
-		QVector<Move> moveHistory() const;
-		
 		/*! Returns the board's chess variant. */
 		Variant variant() const;
 		
