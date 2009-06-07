@@ -219,11 +219,17 @@ Move Board::moveFromGenericMove(const GenericMove& move) const
 
 GenericMove Board::genericMove(const Move& move) const
 {
-	Square source = chessSquare(move.sourceSquare());
-	Square target = chessSquare(move.targetSquare());
-	Piece::Type promotion = move.promotion();
+	int source = move.sourceSquare();
+	int target = move.targetSquare();
+	int cside = move.castlingSide();
 
-	return GenericMove(source, target, promotion);
+	// Use the "king captures friendly rook" castling method
+	if (cside != -1)
+		target = m_castlingRights.rookSquare[m_side][cside];
+
+	return GenericMove(chessSquare(source),
+			   chessSquare(target),
+			   move.promotion());
 }
 
 bool Board::inCheck(int side, int square) const
