@@ -129,8 +129,8 @@ class LIB_EXPORT Board : public QObject
 		 */
 		Move moveFromString(const QString& str);
 		
-		/*! Converts an opening book move into a Move. */
-		Move moveFromBook(const GenericMove& bookMove) const;
+		/*! Converts a GenericMove into a Move. */
+		Move moveFromGenericMove(const GenericMove& move) const;
 
 		/*! Converts a Move into a GenericMove. */
 		GenericMove genericMove(const Move& move) const;

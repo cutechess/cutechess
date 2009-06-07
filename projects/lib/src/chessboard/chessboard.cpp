@@ -194,13 +194,13 @@ bool Board::isValidSquare(const Chess::Square& square) const
 	return true;
 }
 
-Move Board::moveFromBook(const GenericMove& bookMove) const
+Move Board::moveFromGenericMove(const GenericMove& move) const
 {
-	int source = squareIndex(bookMove.sourceSquare());
-	int target = squareIndex(bookMove.targetSquare());
+	int source = squareIndex(move.sourceSquare());
+	int target = squareIndex(move.targetSquare());
 
 	int castlingSide = -1;
-	if (m_squares[source].side() == m_side)
+	if (source == m_kingSquare[m_side])
 	{
 		for (int i = 0; i < 2; i++)
 		{
@@ -214,7 +214,7 @@ Move Board::moveFromBook(const GenericMove& bookMove) const
 		}
 	}
 	
-	return Move(source, target, bookMove.promotion(), castlingSide);
+	return Move(source, target, move.promotion(), castlingSide);
 }
 
 GenericMove Board::genericMove(const Move& move) const

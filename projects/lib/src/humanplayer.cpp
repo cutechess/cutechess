@@ -60,7 +60,7 @@ void HumanPlayer::onHumanMove(const GenericMove& move)
 	if (state() != Thinking)
 		return;
 
-	Chess::Move boardMove = board()->moveFromBook(move);
+	Chess::Move boardMove = board()->moveFromGenericMove(move);
 	if (board()->isLegalMove(boardMove))
 		emitMove(boardMove);
 }

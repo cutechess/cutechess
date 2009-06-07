@@ -207,7 +207,7 @@ Chess::Move ChessGame::bookMove(const OpeningBook* book)
 		return Chess::Move(0, 0);
 	
 	GenericMove bookMove = book->move(m_board->key());
-	return m_board->moveFromBook(bookMove);
+	return m_board->moveFromGenericMove(bookMove);
 }
 
 void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
