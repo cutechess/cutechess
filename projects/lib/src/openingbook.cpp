@@ -111,19 +111,14 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 		
 		foreach (const PgnGame::MoveData& md, moves)
 		{
-			Chess::Move srcMove = md.move;
-
 			// Skip the loser's moves
 			if (winner == Chess::NoSide || winner == board->sideToMove())
 			{
-				Square src = board->chessSquare(srcMove.sourceSquare());
-				Square trg = board->chessSquare(srcMove.targetSquare());
-				Chess::Piece::Type prom = srcMove.promotion();
-				Entry entry = { GenericMove(src, trg, prom), weight };
+				Entry entry = { board->genericMove(md.move), weight };
 				addEntry(entry, board->key());
 			}
 
-			board->makeMove(srcMove);
+			board->makeMove(md.move);
 		}
 		moveCount += moves.size();
 		gameCount++;

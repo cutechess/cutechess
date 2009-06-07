@@ -156,9 +156,6 @@ class LIB_EXPORT Board : public QObject
 		/*! Returns the Zobrist key. */
 		quint64 key() const;
 		
-		/*! Converts a square index into a Square object. */
-		Square chessSquare(int index) const;
-		
 		/*! Returns a vector of legal chess moves. */
 		QVector<Move> legalMoves();
 
@@ -262,7 +259,9 @@ class LIB_EXPORT Board : public QObject
 				//! Is support for random starting positions required?
 				bool isRandom;
 		};
-		
+
+		/*! Converts a square index into a Square object. */
+		Square chessSquare(int index) const;
 		
 		/*! Converts a Square object into a square index. */
 		int squareIndex(const Square& square) const;

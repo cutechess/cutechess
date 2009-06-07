@@ -129,8 +129,8 @@ void ChessboardModel::updateSelectable()
 	QVector<Chess::Move> moves(m_board->legalMoves());
 	foreach (const Chess::Move& move, moves)
 	{
-		Chess::Square sq = m_board->chessSquare(move.sourceSquare());
-		QModelIndex index = squareToIndex(sq);
+		GenericMove tmp(m_board->genericMove(move));
+		QModelIndex index = squareToIndex(tmp.sourceSquare());
 
 		if (!m_selectable.contains(index))
 		{
