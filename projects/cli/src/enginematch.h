@@ -48,7 +48,8 @@ class EngineMatch : public QObject
 		void setEvent(const QString& event);
 		void setGameCount(int gameCount);
 		void setPgnInput(const QString& filename);
-		void setPgnOutput(const QString& filename, bool minimal);
+		void setPgnOutput(const QString& filename,
+				  PgnGame::PgnMode mode);
 		void setRepeatOpening(bool repeatOpening);
 		void setResignThreshold(int moveCount, int score);
 		void setSite(const QString& site);
@@ -94,7 +95,7 @@ class EngineMatch : public QObject
 		EngineData* m_black;
 		OpeningBook* m_book;
 		bool m_debug;
-		bool m_minimalPgnOut;
+		PgnGame::PgnMode m_pgnMode;
 		bool m_repeatOpening;
 		ChessGame* m_game;
 		Chess::Variant m_variant;

@@ -41,7 +41,7 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_black(0),
 	  m_book(0),
 	  m_debug(false),
-	  m_minimalPgnOut(false),
+	  m_pgnMode(PgnGame::Verbose),
 	  m_repeatOpening(false),
 	  m_game(0),
 	  m_variant(Chess::Variant::Standard)
@@ -127,10 +127,11 @@ void EngineMatch::setPgnInput(const QString& filename)
 		qWarning() << "Can't open PGN file:" << filename;
 }
 
-void EngineMatch::setPgnOutput(const QString& filename, bool minimal)
+void EngineMatch::setPgnOutput(const QString& filename,
+			       PgnGame::PgnMode mode)
 {
 	m_pgnOutput = filename;
-	m_minimalPgnOut = minimal;
+	m_pgnMode = mode;
 }
 
 void EngineMatch::setRepeatOpening(bool repeatOpening)
@@ -274,7 +275,7 @@ void EngineMatch::onGameEnded()
 		m_game->setEvent(m_event);
 		m_game->setSite(m_site);
 		m_game->setRound(m_currentGame + 1);
-		m_game->write(m_pgnOutput, m_minimalPgnOut);
+		m_game->write(m_pgnOutput, m_pgnMode);
 	}
 
 	delete m_game;
@@ -348,14 +349,14 @@ void EngineMatch::start()
 	}
 	else if (m_pgnInput.isOpen())
 	{
-		bool ok = m_game->read(m_pgnInput, true, m_bookDepth);
+		bool ok = m_game->read(m_pgnInput, PgnGame::Minimal, m_bookDepth);
 		if (ok)
 			m_pgnGamesRead++;
 		// Rewind the PGN input file
 		else if (m_pgnGamesRead > 0)
 		{
 			m_pgnInput.rewind();
-			ok = m_game->read(m_pgnInput, true, m_bookDepth);
+			ok = m_game->read(m_pgnInput, PgnGame::Minimal, m_bookDepth);
 			Q_ASSERT(ok);
 			m_pgnGamesRead++;
 		}

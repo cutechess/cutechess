@@ -293,10 +293,10 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// PGN file where the games should be saved
 		else if (opt.name == "-pgnout")
 		{
-			bool minimal = false;
+			PgnGame::PgnMode mode = PgnGame::Verbose;
 			if (opt.args.size() > 1 && opt.args[1] == "min")
-				minimal = true;
-			match->setPgnOutput(opt.value, minimal);
+				mode = PgnGame::Minimal;
+			match->setPgnOutput(opt.value, mode);
 		}
 		// Play every opening twice, just switch the players' sides
 		else if (opt.name == "-repeat")

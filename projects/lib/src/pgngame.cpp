@@ -70,7 +70,7 @@ bool PgnGame::addMove(const QString& moveString,
 	return true;
 }
 
-PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
+PgnGame::PgnItem PgnGame::readItem(PgnFile& in, PgnMode mode)
 {
 	in.skipWhiteSpace();
 	PgnItem itemType = PgnMove;
@@ -227,7 +227,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
 			}
 			setStartingFen(param);
 		}
-		else if (!minimal)
+		else if (mode == Verbose)
 		{
 			if (tag == "TimeControl")
 			{
@@ -278,7 +278,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, bool minimal)
 	return itemType;
 }
 
-bool PgnGame::read(PgnFile& in, bool minimal, int maxMoves)
+bool PgnGame::read(PgnFile& in, PgnMode mode, int maxMoves)
 {
 	m_hasTags = false;
 	m_round = 0;
@@ -294,7 +294,7 @@ bool PgnGame::read(PgnFile& in, bool minimal, int maxMoves)
 	while (in.status() == QTextStream::Ok
 	   &&  m_moves.size() < maxMoves)
 	{
-		PgnItem item = readItem(in, minimal);
+		PgnItem item = readItem(in, mode);
 		if (item == PgnError)
 		{
 			qDebug() << "PGN error on line" << in.lineNumber();
@@ -319,7 +319,7 @@ static void writeTag(QTextStream& out, const QString& name, const QString& value
 		out << "[" << name << " \"?\"]\n";
 }
 
-bool PgnGame::write(const QString& filename, bool minimal) const
+bool PgnGame::write(const QString& filename, PgnMode mode) const
 {
 	if (!m_hasTags)
 		return false;
@@ -344,7 +344,7 @@ bool PgnGame::write(const QString& filename, bool minimal) const
 	writeTag(out, "Black", m_playerName[Chess::Black]);
 	writeTag(out, "Result", m_result.toSimpleString());
 
-	if (!minimal)
+	if (mode == Verbose)
 	{
 		writeTag(out, "PlyCount", QString::number(m_moves.size()));
 
@@ -384,7 +384,7 @@ bool PgnGame::write(const QString& filename, bool minimal) const
 			str = QString::number(++movenum) + ". ";
 
 		str += md.sanMove;
-		if (!minimal && !md.comment.isEmpty())
+		if (mode == Verbose && !md.comment.isEmpty())
 			str += QString(" {%1}").arg(md.comment);
 
 		// Limit the lines to 80 characters

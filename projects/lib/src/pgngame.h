@@ -25,6 +25,15 @@ class PgnFile;
 class LIB_EXPORT PgnGame
 {
 	public:
+		/*! The mode for reading and writing PGN games. */
+		enum PgnMode
+		{
+			//! Only use data which is required by the PGN standard
+			Minimal,
+			//! Use additional data like extra tags and comments
+			Verbose
+		};
+
 		/*! A struct for storing the game's move history. */
 		struct MoveData
 		{
@@ -43,8 +52,7 @@ class LIB_EXPORT PgnGame
 		 * Reads a game from a PGN text stream.
 		 *
 		 * \param in The input PGN file.
-		 * \param minimal If true, only data required by the PGN
-		 * specification is loaded.
+		 * \param mode The PGN mode for reading the game.
 		 * \param maxMoves The maximum number of halfmoves to read.
 		 *
 		 * \note Even if the stream contains multiple games,
@@ -52,19 +60,16 @@ class LIB_EXPORT PgnGame
 		 *
 		 * \return True, if a FEN tag or moves were read.
 		 */
-		bool read(PgnFile& in, bool minimal = false, int maxMoves = 1000);
+		bool read(PgnFile& in, PgnMode mode = Verbose, int maxMoves = 1000);
 		
 		/*!
 		 * Write the game to a file.
 		 * If the file already exists, the game will be appended
 		 * to the end of the file.
 		 *
-		 * \param minimal If true, only data required by the PGN
-		 * specification is written.
-		 *
 		 * \return True if successfull
 		 */
-		bool write(const QString& filename, bool minimal = false) const;
+		bool write(const QString& filename, PgnMode mode = Verbose) const;
 		
 		/*! Returns true if the game doesn't contain any moves. */
 		bool isEmpty() const;
@@ -161,7 +166,7 @@ class LIB_EXPORT PgnGame
 			PgnError
 		};
 
-		PgnItem readItem(PgnFile& in, bool minimal);
+		PgnItem readItem(PgnFile& in, PgnMode mode);
 		
 		bool m_hasTags;
 		int m_round;
