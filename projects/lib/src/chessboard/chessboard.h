@@ -12,8 +12,8 @@
 #include "result.h"
 #include "variant.h"
 #include "chessmove.h"
+#include "genericmove.h"
 
-class GenericMove;
 namespace Chess {
 
 /*!
@@ -131,6 +131,9 @@ class LIB_EXPORT Board : public QObject
 		
 		/*! Converts an opening book move into a Move. */
 		Move moveFromBook(const GenericMove& bookMove) const;
+
+		/*! Converts a Move into a GenericMove. */
+		GenericMove genericMove(const Move& move) const;
 		
 		/*! Returns the board's chess variant. */
 		Variant variant() const;

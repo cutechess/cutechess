@@ -217,6 +217,15 @@ Move Board::moveFromBook(const GenericMove& bookMove) const
 	return Move(source, target, bookMove.promotion(), castlingSide);
 }
 
+GenericMove Board::genericMove(const Move& move) const
+{
+	Square source = chessSquare(move.sourceSquare());
+	Square target = chessSquare(move.targetSquare());
+	Piece::Type promotion = move.promotion();
+
+	return GenericMove(source, target, promotion);
+}
+
 bool Board::inCheck(int side, int square) const
 {
 	if (square == 0)
