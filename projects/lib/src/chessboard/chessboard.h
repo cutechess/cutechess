@@ -129,10 +129,20 @@ class LIB_EXPORT Board : public QObject
 		 */
 		Move moveFromString(const QString& str);
 		
-		/*! Converts a GenericMove into a Move. */
+		/*!
+		 * Converts a GenericMove into a Move.
+		 *
+		 * \note The board must be in a position where \a move can be made.
+		 * \sa genericMove()
+		 */
 		Move moveFromGenericMove(const GenericMove& move) const;
 
-		/*! Converts a Move into a GenericMove. */
+		/*!
+		 * Converts a Move into a GenericMove.
+		 *
+		 * \note The board must be in a position where \a move can be made.
+		 * \sa moveFromGenericMove()
+		 */
 		GenericMove genericMove(const Move& move) const;
 		
 		/*! Returns the board's chess variant. */
