@@ -40,9 +40,6 @@ class LIB_EXPORT Board : public QObject
 		explicit Board(Variant variant = Variant::Standard,
 		               QObject* parent = 0);
 		
-		/*! The copy constructor. */
-		explicit Board(const Board& other);
-		
 		/*!
 		 * Sets the chess variant to \a variant.
 		 *

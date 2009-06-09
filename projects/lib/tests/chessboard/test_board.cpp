@@ -38,21 +38,26 @@ static quint64 perftVal(Chess::Board& board, int depth)
 	return nodeCount;
 }
 
+static quint64 perftRoot(const Chess::Board* board,
+			 const Chess::Move& move,
+			 int depth)
+{
+	Chess::Board tmp(board->variant());
+	tmp.setBoard(board->fenString());
+	tmp.makeMove(move);
+	return perftVal(tmp, depth - 1);
+}
+
 static quint64 smpPerft(Chess::Board& board, int depth)
 {
 	QVector<Chess::Move> moves(board.legalMoves());
 	if (depth <= 1)
 		return moves.size();
 	
-	QVector< QFuture<quint64> > futures(moves.size());
-	
-	for (int i = 0; i < moves.size(); i++)
-	{
-		board.makeMove(moves[i]);
-		futures[i] = QtConcurrent::run(perftVal, board, depth - 1);
-		board.undoMove();
-	}
-	
+	QVector< QFuture<quint64> > futures;
+	foreach (const Chess::Move& move, moves)
+		futures << QtConcurrent::run(perftRoot, &board, move, depth);
+
 	quint64 nodeCount = 0;
 	foreach (const QFuture<quint64>& future, futures)
 		nodeCount += future.result();
