@@ -20,11 +20,6 @@
 using namespace Chess;
 
 
-Piece::Piece(int code)
-	: m_code(code)
-{
-}
-
 Piece::Piece(Side side, Type type)
 {
 	Q_ASSERT(side != NoSide);
@@ -74,51 +69,6 @@ Piece::Piece(const QChar& c)
 
 	if (c.isLower())
 		m_code = -m_code;
-}
-
-bool Piece::operator==(const Piece& other) const
-{
-	return m_code == other.m_code;
-}
-
-bool Piece::operator!=(const Piece& other) const
-{
-	return m_code != other.m_code;
-}
-
-bool Piece::isEmpty() const
-{
-	return m_code == NoPiece;
-}
-
-bool Piece::isValid() const
-{
-	return m_code != WallPiece && m_code != NoPiece;
-}
-
-bool Piece::isWall() const
-{
-	return m_code == WallPiece;
-}
-
-int Piece::code() const
-{
-	return m_code;
-}
-
-Side Piece::side() const
-{
-	if (!isValid())
-		return NoSide;
-
-	if (m_code > 0)
-		return White;
-	return Black;
-}
-
-Piece::Type Piece::type() const
-{
-	return (Type)qAbs(m_code);
 }
 
 QChar Piece::toChar() const

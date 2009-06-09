@@ -93,5 +93,57 @@ class LIB_EXPORT Piece
 		int m_code;
 };
 
+
+inline Piece::Piece(int code)
+	: m_code(code)
+{
+}
+
+inline bool Piece::operator==(const Piece& other) const
+{
+	return m_code == other.m_code;
+}
+
+inline bool Piece::operator!=(const Piece& other) const
+{
+	return m_code != other.m_code;
+}
+
+inline bool Piece::isEmpty() const
+{
+	return m_code == NoPiece;
+}
+
+inline bool Piece::isValid() const
+{
+	return m_code != WallPiece && m_code != NoPiece;
+}
+
+inline bool Piece::isWall() const
+{
+	return m_code == WallPiece;
+}
+
+inline int Piece::code() const
+{
+	return m_code;
+}
+
+inline Side Piece::side() const
+{
+	if (!isValid())
+		return NoSide;
+
+	if (m_code > 0)
+		return White;
+	return Black;
+}
+
+inline Piece::Type Piece::type() const
+{
+	return (Type)qAbs(m_code);
+}
+
+
 } // namespace Chess
 #endif // PIECE_H
