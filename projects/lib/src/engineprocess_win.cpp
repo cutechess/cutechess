@@ -146,8 +146,8 @@ static QString commandLine(const QString& prog, const QStringList& args)
 }
 
 void EngineProcess::start(const QString& program,
-			 const QStringList& arguments,
-			 QIODevice::OpenMode mode)
+			  const QStringList& arguments,
+			  OpenMode mode)
 {
 	if (m_started)
 		close();
@@ -248,7 +248,7 @@ void EngineProcess::start(const QString& program,
 }
 
 void EngineProcess::start(const QString& program,
-			 QIODevice::OpenMode mode)
+			  OpenMode mode)
 {
 	start(program, QStringList(), mode);
 }

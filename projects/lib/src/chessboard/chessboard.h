@@ -86,7 +86,8 @@ class LIB_EXPORT Board : public QObject
 		
 		/*!
 		 * Makes a chess move on the board.
-		 * \param sendSignal If true, the \a moveMade signal is emitted
+		 *
+		 * If \a sendSignal is true, the \a moveMade signal is emitted
 		 * once, and the \a squareChanged signal for every changed square.
 		 *
 		 * \sa moveMade()

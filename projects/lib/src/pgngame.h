@@ -90,7 +90,7 @@ class LIB_EXPORT PgnGame
 		 * Returns the time control for \a side.
 		 *
 		 * \note Usually both players have the same time control, in which
-		 * case the default value for \side works fine.
+		 * case the default value for \a side should be used.
 		 */
 		const TimeControl& timeControl(Chess::Side side = Chess::White) const;
 
@@ -109,7 +109,7 @@ class LIB_EXPORT PgnGame
 		/*! Sets the game result. */
 		void setResult(const Chess::Result& result);
 
-		/*! Sets the starting position's FEN string to \ə fen. */
+		/*! Sets the starting position's FEN string to \a fen. */
 		void setStartingFen(const QString& fen);
 
 		/*!
