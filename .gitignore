@@ -2,6 +2,9 @@
 cutechess
 cutechess-cli
 
+# test executables
+test_board
+
 # libraries
 *.so
 *.so.*
