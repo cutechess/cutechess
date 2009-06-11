@@ -611,7 +611,10 @@ EXCLUDE_PATTERNS       = */.obj/* \
                          */.moc/* \
                          */.rcc/* \
                          */tests/* \
-                         */ui_*
+                         */ui_* \
+                         */*_p.* \
+                         */*_win.* \
+                         */*_unix.*
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names 
 # (namespaces, classes, functions, etc.) that should be excluded from the 
