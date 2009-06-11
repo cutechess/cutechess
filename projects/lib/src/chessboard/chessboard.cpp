@@ -560,9 +560,7 @@ bool Board::isLegalMove(const Chess::Move& move)
 
 Result Board::result()
 {
-	QVector<Move> moves(legalMoves());
-	
-	if (moves.size() == 0)
+	if (!canMove())
 	{
 		if (inCheck(m_side))
 			return Result(Result::WinByMate, (Side)!m_side);

@@ -120,10 +120,10 @@ QString Board::sanMoveString(const Move& move)
 	makeMove(move);
 	if (inCheck(m_side))
 	{
-		if (legalMoves().empty())
-			checkOrMate = '#';
-		else
+		if (canMove())
 			checkOrMate = '+';
+		else
+			checkOrMate = '#';
 	}
 	undoMove();
 	
@@ -156,23 +156,26 @@ QString Board::sanMoveString(const Move& move)
 	else	// not king or pawn
 	{
 		str += piece.toChar().toUpper();
-		QVector<Move> moves = legalMoves();
+		QVector<Move> moves;
+		generateMoves(moves, piece.type());
 		
 		foreach (const Move& move2, moves)
 		{
-			int source2 = move2.sourceSquare();
-			if (source2 == source)
+			if (move2.sourceSquare() == source
+			||  move2.targetSquare() != target)
 				continue;
-			if (m_squares[source2] != piece)
+			
+			makeMove(move2);
+			bool isLegal = isLegalPosition();
+			undoMove();
+			if (!isLegal)
 				continue;
-			if (move2.targetSquare() == target)
-			{
-				Square square2 = chessSquare(source2);
-				if (square2.file() != square.file())
-					needFile = true;
-				else if (square2.rank() != square.rank())
-					needRank = true;
-			}
+			
+			Square square2(chessSquare(move2.sourceSquare()));
+			if (square2.file() != square.file())
+				needFile = true;
+			else if (square2.rank() != square.rank())
+				needRank = true;
 		}
 	}
 	if (needFile)

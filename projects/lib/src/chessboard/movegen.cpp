@@ -79,6 +79,24 @@ void Board::generateMoves(QVector<Chess::Move>& moves, Piece::Type type) const
 	}
 }
 
+bool Board::canMove()
+{
+	QVector<Move> moves;
+	generateMoves(moves);
+
+	foreach (const Move& move, moves)
+	{
+		makeMove(move);
+		bool isLegal = isLegalPosition();
+		undoMove();
+
+		if (isLegal)
+			return true;
+	}
+
+	return false;
+}
+
 QVector<Move> Board::legalMoves()
 {
 	QVector<Move> moves;

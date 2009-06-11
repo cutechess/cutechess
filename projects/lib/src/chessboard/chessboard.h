@@ -317,6 +317,9 @@ class LIB_EXPORT Board : public QObject
 		
 		/*! Returns true if side to move can castle to \a castlingSide. */
 		bool canCastle(int castlingSide) const;
+
+		/*! Returns true if the side to move has legal moves. */
+		bool canMove();
 		
 		/*!
 		 * Returns true if player \a side is under attack in \a square.
