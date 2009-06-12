@@ -16,6 +16,7 @@
 */
 
 #include "chessplayer.h"
+#include "chessboard/chessboard.h"
 #include <QString>
 #include <QTimer>
 
@@ -60,7 +61,7 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board*
 	m_eval.clear();
 	m_opponent = opponent;
 	m_board = board;
-	setSide(side);
+	m_side = side;
 	m_timeControl.setTimeLeft(m_timeControl.timePerTc());
 	m_timeControl.setMovesLeft(m_timeControl.movesPerTc());
 
@@ -90,6 +91,9 @@ void ChessPlayer::go()
 		return;
 	}
 
+	Q_ASSERT(m_board != 0);
+	m_side = m_board->sideToMove();
+	
 	startClock();
 	startThinking();
 }
@@ -130,11 +134,6 @@ const TimeControl* ChessPlayer::timeControl() const
 void ChessPlayer::setTimeControl(const TimeControl& timeControl)
 {
 	m_timeControl = timeControl;
-}
-
-void ChessPlayer::setSide(Chess::Side side)
-{
-	m_side = side;
 }
 
 Chess::Side ChessPlayer::side() const

@@ -111,9 +111,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Returns the side of the player. */
 		Chess::Side side() const;
 
-		/*! Sets the player to play on a specific side. */
-		void setSide(Chess::Side side);
-
 		/*!
 		 * Sends the next move of an ongoing game to the player.
 		 * If the player is in force/observer mode, the move wasn't
