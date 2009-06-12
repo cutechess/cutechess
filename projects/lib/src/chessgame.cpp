@@ -136,6 +136,51 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 	}
 }
 
+static QString evalString(const MoveEvaluation& eval)
+{
+	if (eval.isEmpty())
+		return QString();
+
+	QString str;
+	if (eval.depth() > 0)
+	{
+		int score = eval.score();
+		int absScore = qAbs(score);
+		if (score > 0)
+			str += "+";
+
+		// Detect mate-in-n scores
+		bool isMateScore = false;
+		if (absScore > 9900)
+		{
+			absScore = 1000 - (absScore % 1000);
+			if (absScore < 100)
+			{
+				isMateScore = true;
+				if (score < 0)
+					str += "-";
+				str += "M" + QString::number(absScore);
+			}
+		}
+		if (!isMateScore)
+			str += QString::number(double(score) / 100.0, 'f', 2);
+
+		str += "/" + QString::number(eval.depth()) + " ";
+	}
+
+	int precision = 0;
+	int t = eval.time();
+	if (t < 100)
+		precision = 3;
+	else if (t < 1000)
+		precision = 2;
+	else if (t < 10000)
+		precision = 1;
+	str += QString::number(double(t / 1000.0), 'f', precision) + 's';
+
+	return str;
+}
+
 void ChessGame::onMoveMade(const Chess::Move& move)
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
@@ -149,38 +194,13 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 		return;
 	}
 
-	QString comment;
-
-	// Save the evaluation as a PGN comment
-	const MoveEvaluation& eval = sender->evaluation();
-	if (!eval.isEmpty())
-	{
-		if (eval.depth() > 0)
-		{
-			if (eval.score() > 0)
-				comment += "+";
-			comment += QString::number((double)eval.score() / 100.0, 'f', 2) + '/';
-			comment += QString::number(eval.depth()) + ' ';
-		}
-
-		int precision = 0;
-		int t = eval.time();
-		if (t < 100)
-			precision = 3;
-		else if (t < 1000)
-			precision = 2;
-		else if (t < 10000)
-			precision = 1;
-		comment += QString::number(double(t / 1000.0), 'f', precision) + 's';
-	}
-
-	addMove(move, m_board, comment);
+	addMove(move, m_board, evalString(sender->evaluation()));
 
 	// Get the result before sending the move to the opponent
 	m_board->makeMove(move, false);
 	setResult(m_board->result());
 	if (result().isNone())
-		adjudication(eval);
+		adjudication(sender->evaluation());
 	m_board->undoMove();
 
 	ChessPlayer* player = playerToWait();
