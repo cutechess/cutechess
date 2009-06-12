@@ -25,6 +25,7 @@
 #include <QTextStream>
 #include <QStringList>
 #include <csignal>
+#include <cstdlib>
 #include <enginemanager.h>
 #include "enginematch.h"
 #include "cutechesscoreapp.h"
@@ -36,6 +37,8 @@ void sigintHandler(int param)
 	Q_UNUSED(param);
 	if (match != 0)
 		match->stop();
+	else
+		abort();
 }
 
 struct CmdOption
