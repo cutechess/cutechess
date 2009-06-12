@@ -40,6 +40,8 @@ ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 	m_player[Chess::White] = 0;
 	m_player[Chess::Black] = 0;
 	m_board = new Chess::Board(variant, this);
+
+	emit humanEnabled(false);
 }
 
 Chess::Board* ChessGame::board() const
@@ -67,6 +69,7 @@ void ChessGame::stop()
 		return;
 
 	m_gameEnded = true;
+	emit humanEnabled(false);
 	if (!m_gameInProgress)
 	{
 		setResult(Chess::Result());
@@ -184,7 +187,10 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	player->makeMove(move);
 
 	if (result().isNone())
+	{
 		player->go();
+		emit humanEnabled(player->isHuman());
+	}
 	else
 		stop();
 
@@ -330,6 +336,7 @@ void ChessGame::syncPlayers(bool ignoreSender)
 void ChessGame::start()
 {
 	setResult(Chess::Result());
+	emit humanEnabled(false);
 
 	disconnect(this, SIGNAL(playersReady()), this, SLOT(start()));
 	if (!arePlayersReady())
@@ -391,6 +398,7 @@ void ChessGame::start()
 	}
 	
 	playerToMove()->go();
+	emit humanEnabled(playerToMove()->isHuman());
 }
 
 ChessPlayer* ChessGame::player(Chess::Side side) const

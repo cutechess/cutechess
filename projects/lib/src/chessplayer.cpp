@@ -106,7 +106,6 @@ void ChessPlayer::startClock()
 
 	m_eval.clear();
 
-	emit humanTurn(isHuman());
 	if (m_timeControl.timePerTc() != 0)
 		emit startedThinking(m_timeControl.timeLeft());
 	else if (m_timeControl.timePerMove() != 0)

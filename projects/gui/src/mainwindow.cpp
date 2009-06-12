@@ -182,6 +182,8 @@ void MainWindow::newGame()
 
 	ChessPlayer* player[2] = { 0, 0 };
 	ChessGame* chessgame = new ChessGame(Chess::Variant::Standard, this);
+	connect(chessgame, SIGNAL(humanEnabled(bool)),
+		m_chessboardView, SLOT(setEnabled(bool)));
 
 	TimeControl tc;
 	tc.setTimePerTc(180000);
@@ -226,8 +228,6 @@ void MainWindow::newGame()
 			m_chessClock[i], SLOT(start(int)));
 		connect(player[i], SIGNAL(moveMade(const Chess::Move&)),
 			m_chessClock[i], SLOT(stop()));
-		connect(player[i], SIGNAL(humanTurn(bool)),
-			m_chessboardView, SLOT(setEnabled(bool)));
 		connect(chessgame, SIGNAL(gameEnded()),
 		        m_chessClock[i], SLOT(stop()));
 		connect(player[i], SIGNAL(debugMessage(const QString&)),

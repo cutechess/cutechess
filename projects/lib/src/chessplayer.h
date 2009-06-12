@@ -148,12 +148,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void go();
 
 	signals:
-		/*!
-		 * Emitted when the player gets the turn.
-		 * \a isHumanTurn is true if the player is human.
-		 */
-		void humanTurn(bool isHumanTurn);
-
 		/*! Signals that the player is ready for input. */
 		void ready() const;
 		

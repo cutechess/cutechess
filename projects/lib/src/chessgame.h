@@ -53,6 +53,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		void onMoveMade(const Chess::Move& move);
 
 	signals:
+		void humanEnabled(bool);
 		void moveMade(const Chess::Move& move);
 		void gameEnded();
 		void playersReady();
