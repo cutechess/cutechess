@@ -391,6 +391,9 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 void XboardEngine::parseLine(const QString& line)
 {
 	QString command = line.section(' ', 0, 0);
+	if (command.isEmpty())
+		return;
+
 	QString args = line.right(line.length() - command.length() - 1);
 
 	if (command == "move")
@@ -505,10 +508,19 @@ void XboardEngine::parseLine(const QString& line)
 		if (str.startsWith("result"))
 			finishGame();
 	}
-	else if (command.toInt() > 0) // principal variation
+	else if (command.at(0).isDigit()) // principal variation
 	{
 		bool ok = false;
-		m_eval.setDepth(command.toInt());
+
+		QString depthStr;
+		foreach (const QChar& c, command)
+		{
+			if (c.isDigit())
+				depthStr += c;
+			else
+				break;
+		}
+		m_eval.setDepth(depthStr.toInt());
 
 		int eval = args.section(' ', 0, 0).toInt(&ok);
 		if (ok)
