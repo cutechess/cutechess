@@ -220,7 +220,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, PgnMode mode)
 		}
 		else if (tag == "FEN")
 		{
-			if (!board->setBoard(param))
+			if (!board->setFenString(param))
 			{
 				qDebug() << "Invalid FEN:" << param;
 				return PgnError;
@@ -253,7 +253,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, PgnMode mode)
 		if (m_fen.isEmpty())
 		{
 			setStartingFen(board->variant().startingFen());
-			board->setBoard(m_fen);
+			board->setFenString(m_fen);
 		}
 		
 		if (addMove(str, board))

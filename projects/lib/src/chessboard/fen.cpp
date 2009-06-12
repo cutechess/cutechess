@@ -106,7 +106,7 @@ bool Board::parseCastlingRights(FenData& fd, QChar c) const
 	return false;
 }
 
-bool Board::setBoard(const QString& fen)
+bool Board::setFenString(const QString& fen)
 {
 	QStringList strList = fen.split(' ');
 	if (strList.size() < 4 || strList.size() > 6)
@@ -269,9 +269,9 @@ bool Board::setBoard(const QString& fen)
 	return true;
 }
 
-bool Board::setBoard()
+bool Board::reset()
 {
-	return setBoard(m_variant.startingFen());
+	return setFenString(m_variant.startingFen());
 }
 
 QString Board::castlingRightsString(FenNotation notation) const

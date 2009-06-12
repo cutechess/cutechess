@@ -103,7 +103,7 @@ bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
 		if (game.isEmpty())
 			break;
 		
-		board->setBoard(game.startingFen());
+		board->setFenString(game.startingFen());
 		const QVector<PgnGame::MoveData>& moves = game.moves();
 
 		Chess::Side winner = game.result().winner();

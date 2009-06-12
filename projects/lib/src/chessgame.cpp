@@ -230,7 +230,7 @@ void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
 
 bool ChessGame::setFenString(const QString& fen)
 {
-	if (!m_board->setBoard(fen))
+	if (!m_board->setFenString(fen))
 		return false;
 	setStartingFen(fen);
 	return true;
@@ -288,7 +288,7 @@ void ChessGame::setBoard()
 		setStartingFen(fen);
 	}
 
-	if (!m_board->setBoard(fen))
+	if (!m_board->setFenString(fen))
 		qFatal("Invalid FEN: %s", qPrintable(fen));
 }
 

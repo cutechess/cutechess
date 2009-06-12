@@ -41,14 +41,21 @@ class LIB_EXPORT Board : public QObject
 		               QObject* parent = 0);
 		
 		/*!
-		 * Sets the chess variant to \a variant.
+		 * Sets the board position to the default starting position
+		 * of the current chess variant.
 		 *
-		 * The board's contents will be reset to an unusable state,
-		 * so a call to setBoard() is needed after the variant has
-		 * been changed.
+		 * Returns true if successfull.
 		 */
-		void setVariant(Variant variant);
+		bool reset();
 		
+		/*!
+		 * Returns the FEN string of the current board position.
+		 *
+		 * The FEN string is in X-FEN format, which is fully
+		 * compatible with standard FEN.
+		 */
+		QString fenString(FenNotation notation = XFen) const;
+
 		/*!
 		 * Sets the board position according to a FEN string.
 		 *
@@ -60,23 +67,7 @@ class LIB_EXPORT Board : public QObject
 		 *
 		 * Returns true if successfull.
 		 */
-		bool setBoard(const QString& fen);
-		
-		/*!
-		 * Sets the board position to the default starting position
-		 * of the current chess variant.
-		 *
-		 * Returns true if successfull.
-		 */
-		bool setBoard();
-		
-		/*!
-		 * Returns the FEN string of the current board position.
-		 *
-		 * The FEN string is in X-FEN format, which is fully
-		 * compatible with standard FEN.
-		 */
-		QString fenString(FenNotation notation = XFen) const;
+		bool setFenString(const QString& fen);
 		
 		/*! Returns the FEN string of the game's starting position. */
 		QString startingFen() const;
@@ -145,6 +136,15 @@ class LIB_EXPORT Board : public QObject
 		
 		/*! Returns the board's chess variant. */
 		Variant variant() const;
+
+		/*!
+		 * Sets the chess variant to \a variant.
+		 *
+		 * The board's contents will be reset to an unusable state,
+		 * so a call to setBoard() is needed after the variant has
+		 * been changed.
+		 */
+		void setVariant(Variant variant);
 		
 		/*! Returns the result of the game. */
 		Result result();

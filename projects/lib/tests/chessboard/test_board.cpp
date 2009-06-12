@@ -43,7 +43,7 @@ static quint64 perftRoot(const Chess::Board* board,
 			 int depth)
 {
 	Chess::Board tmp(board->variant());
-	tmp.setBoard(board->fenString());
+	tmp.setFenString(board->fenString());
 	tmp.makeMove(move);
 	return perftVal(tmp, depth - 1);
 }
@@ -119,7 +119,7 @@ void TestBoard::zobristKeys()
 	QFETCH(quint64, key);
 
 	m_board.setVariant((Chess::Variant::Code)variant);
-	QVERIFY(m_board.setBoard(fen));
+	QVERIFY(m_board.setFenString(fen));
 	QCOMPARE(m_board.key(), key);
 }
 
@@ -155,7 +155,7 @@ void TestBoard::moveStrings()
 	QFETCH(QString, endfen);
 
 	m_board.setVariant((Chess::Variant::Code)variant);
-	QVERIFY(m_board.setBoard(startfen));
+	QVERIFY(m_board.setFenString(startfen));
 
 	foreach (const QString& moveStr, moves.split(' '))
 	{
@@ -224,10 +224,9 @@ void TestBoard::perft()
 	QFETCH(quint64, nodecount);
 
 	m_board.setVariant((Chess::Variant::Code)variant);
-	QVERIFY(m_board.setBoard(fen));
+	QVERIFY(m_board.setFenString(fen));
 	QCOMPARE(smpPerft(m_board, depth), nodecount);
 }
 
 QTEST_MAIN(TestBoard)
 #include "test_board.moc"
-
