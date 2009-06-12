@@ -147,15 +147,6 @@ Chess::Board* ChessPlayer::board()
 	return m_board;
 }
 
-Chess::Side ChessPlayer::otherSide() const
-{
-	if (m_side == Chess::White)
-		return Chess::Black;
-	if (m_side == Chess::Black)
-		return Chess::White;
-	return Chess::NoSide;
-}
-
 const ChessPlayer* ChessPlayer::opponent() const
 {
 	return m_opponent;
@@ -190,7 +181,9 @@ void ChessPlayer::emitForfeit(Chess::Result::Code code, const QString& arg)
 	if (m_state == Thinking)
 		m_state = Observing;
 	m_forfeited = true;
-	emit forfeit(Chess::Result(code, otherSide(), arg));
+
+	Q_ASSERT(m_side != Chess::NoSide);
+	emit forfeit(Chess::Result(code, Chess::Side(!m_side), arg));
 }
 
 void ChessPlayer::emitMove(const Chess::Move& move)

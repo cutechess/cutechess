@@ -204,9 +204,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		void emitMove(const Chess::Move& move);
 		
-		/*! Returns the opponent's side. */
-		Chess::Side otherSide() const;
-
 		/*! Returns the opposing player. */
 		const ChessPlayer* opponent() const;
 
