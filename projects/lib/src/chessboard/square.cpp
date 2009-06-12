@@ -18,29 +18,26 @@
 #include "square.h"
 using namespace Chess;
 
-namespace {
 
-QChar fileChar(int file)
+static QChar fileChar(int file)
 {
 	return QChar('a' + file);
 }
 
-QChar rankChar(int rank)
+static QChar rankChar(int rank)
 {
 	return QChar('1' + rank);
 }
 
-int fileInt(const QChar& c)
+static int fileInt(const QChar& c)
 {
 	return c.toAscii() - 'a';
 }
 
-int rankInt(const QChar& c)
+static int rankInt(const QChar& c)
 {
 	return c.toAscii() - '1';
 }
-
-} // unnamed namespace
 
 
 Square::Square()
