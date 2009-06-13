@@ -145,6 +145,7 @@ void MainWindow::createDockWindows()
 	QTreeView* moveListView = new QTreeView(moveListDock);
 	moveListView->setModel(m_moveListModel);
 	moveListView->setAlternatingRowColors(true);
+	moveListView->setRootIsDecorated(false);
 	moveListDock->setWidget(moveListView);
 
 	connect(m_moveListModel, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
