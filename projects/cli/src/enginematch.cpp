@@ -46,6 +46,7 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_game(0),
 	  m_variant(Chess::Variant::Standard)
 {
+	m_startTime.start();
 }
 
 EngineMatch::~EngineMatch()
@@ -374,5 +375,5 @@ void EngineMatch::start()
 
 void EngineMatch::print(const QString& msg)
 {
-	qDebug("%s", qPrintable(msg));
+	qDebug("%d %s", m_startTime.elapsed(), qPrintable(msg));
 }

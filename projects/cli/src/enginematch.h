@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QVector>
 #include <QString>
+#include <QTime>
 #include <chessboard/variant.h>
 #include <engineconfiguration.h>
 #include <enginesettings.h>
@@ -106,6 +107,7 @@ class EngineMatch : public QObject
 		QString m_site;
 		PgnFile m_pgnInput;
 		QString m_pgnOutput;
+		QTime m_startTime;
 };
 
 #endif // ENGINEMATCH_H
