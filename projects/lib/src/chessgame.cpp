@@ -150,19 +150,14 @@ static QString evalString(const MoveEvaluation& eval)
 			str += "+";
 
 		// Detect mate-in-n scores
-		bool isMateScore = false;
-		if (absScore > 9900)
+		if (absScore > 9900
+		&&  (absScore = 1000 - (absScore % 1000)) < 100)
 		{
-			absScore = 1000 - (absScore % 1000);
-			if (absScore < 100)
-			{
-				isMateScore = true;
-				if (score < 0)
-					str += "-";
-				str += "M" + QString::number(absScore);
-			}
+			if (score < 0)
+				str += "-";
+			str += "M" + QString::number(absScore);
 		}
-		if (!isMateScore)
+		else
 			str += QString::number(double(score) / 100.0, 'f', 2);
 
 		str += "/" + QString::number(eval.depth()) + " ";
