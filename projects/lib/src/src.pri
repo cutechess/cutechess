@@ -12,12 +12,17 @@ HEADERS += chessengine.h \
     polyglotbook.h \
     timecontrol.h \
     uciengine.h \
-    ucioption.h \
     xboardengine.h \
     moveevaluation.h \
     enginesettings.h \
     enginemanager.h \
-    humanplayer.h
+    humanplayer.h \
+    engineoption.h \
+    enginespinoption.h \
+    enginecombooption.h \
+    enginecheckoption.h \
+    enginetextoption.h \
+    enginebuttonoption.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -29,12 +34,17 @@ SOURCES += chessengine.cpp \
     polyglotbook.cpp \
     timecontrol.cpp \
     uciengine.cpp \
-    ucioption.cpp \
     xboardengine.cpp \
     moveevaluation.cpp \
     enginesettings.cpp \
     enginemanager.cpp \
-    humanplayer.cpp
+    humanplayer.cpp \
+    engineoption.cpp \
+    enginespinoption.cpp \
+    enginecombooption.cpp \
+    enginecheckoption.cpp \
+    enginetextoption.cpp \
+    enginebuttonoption.cpp
 win32 { 
     HEADERS += engineprocess_win.h \
         pipereader_win.h

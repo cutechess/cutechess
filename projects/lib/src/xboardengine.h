@@ -37,9 +37,6 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void endGame(Chess::Result result);
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
-		void setConcurrency(int limit);
-		void setEgbbPath(const QString& path);
-		void setEgtbPath(const QString& path);
 
 	protected:
 		// Inherited from ChessEngine
@@ -50,7 +47,8 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void startThinking();
 		void parseLine(const QString& line);
 		void stopThinking();
-	
+		void sendOption(const QString& name, const QString& value);
+
 	private slots:
 		/*! Initializes the engine, and emits the 'ready' signal. */
 		void initialize();
@@ -64,7 +62,6 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 
 		void setFeature(const QString& name, const QString& val);
 		void setForceMode(bool enable);
-		void setOption(const QString& line, bool* feature);
 		void sendTimeLeft();
 		void finishGame();
 		
@@ -72,10 +69,6 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		bool m_drawOnNextMove;
 		
 		// Engine features
-		bool m_ftEgbb;
-		bool m_ftEgtb;
-		bool m_ftSmp;
-		bool m_ftMemory;
 		bool m_ftName;
 		bool m_ftPing;
 		bool m_ftSetboard;

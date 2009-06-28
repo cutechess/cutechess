@@ -17,6 +17,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <QRegExp>
 #include <QDebug>
 
 #include "uciengine.h"
@@ -24,6 +25,12 @@
 #include "chessboard/chessmove.h"
 #include "timecontrol.h"
 #include "enginesettings.h"
+
+#include "enginebuttonoption.h"
+#include "enginecheckoption.h"
+#include "enginecombooption.h"
+#include "enginespinoption.h"
+#include "enginetextoption.h"
 
 
 UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
@@ -87,18 +94,13 @@ static QString variantString(Chess::Variant variant)
 	}
 }
 
-void UciEngine::applySettings(const EngineSettings& settings)
-{
-	ChessEngine::applySettings(settings);
-	foreach(const EngineSettings::UciSetting& setting, settings.uciSettings())
-		setOption(setting.name, setting.value);
-}
-
 void UciEngine::startGame()
 {
 	m_moveStrings.clear();
 
 	const Chess::Variant& variant = board()->variant();
+	Q_ASSERT(supportsVariant(variant));
+
 	if (variant.isRandom())
 		m_startFen = board()->fenString(Chess::ShredderFen);
 	else
@@ -108,8 +110,8 @@ void UciEngine::startGame()
 		setOption(variantString(variant), "true");
 	write("ucinewgame");
 
-	if (hasOption("UCI_Opponent"))
-		setOption("UCI_Opponent", this->opponent()->name());
+	if (getOption("UCI_Opponent") != 0)
+		setOption("UCI_Opponent", opponent()->name());
 
 	sendPosition();
 }
@@ -189,12 +191,44 @@ void UciEngine::sendQuit()
 
 void UciEngine::addVariants()
 {
-	foreach (const UciOption& option, m_options)
+	foreach (const EngineOption* option, m_options)
 	{
-		Chess::Variant v = variantCode(option.name());
+		Chess::Variant v(variantCode(option->name()));
 		if (!v.isNone())
 			m_variants.append(v);
 	}
+}
+
+static QVector<QStringList> parseCommand(const QString& str, const QRegExp& rx)
+{
+	QVector<QStringList> attrs;
+
+	// Put the attributes' names and values in a vector
+	QString item;
+	int pos = 0;
+	int prevPos= 0;
+	while ((pos = rx.indexIn(str, pos)) != -1)
+	{
+		if (!item.isEmpty())
+		{
+			QString val = str.mid(prevPos + 1, pos - prevPos - 2);
+			attrs.append((QStringList() << item << val.trimmed()));
+		}
+		item = rx.cap();
+		pos += rx.matchedLength();
+		prevPos = pos;
+	}
+	if (prevPos >= str.length() - 1)
+		return attrs; // No value for the last attribute
+
+	// Add the last attribute to the vector
+	if (!item.isEmpty())
+	{
+		QString val = str.right(str.length() - prevPos - 1);
+		attrs.append((QStringList() << item << val.trimmed()));
+	}
+
+	return attrs;
 }
 
 void UciEngine::parseInfo(const QString& line)
@@ -202,7 +236,7 @@ void UciEngine::parseInfo(const QString& line)
 	QRegExp rx("\\b(depth|seldepth|time|nodes|pv|multipv|score|currmove|"
 		   "currmovenumber|hashfull|nps|tbhits|cpuload|string|"
 		   "refutation|currline)\\b");
-	QVector<QStringList> attrs = UciOption::parse(line, rx);
+	QVector<QStringList> attrs = parseCommand(line, rx);
 
 	foreach (const QStringList& attr, attrs)
 	{
@@ -217,7 +251,7 @@ void UciEngine::parseInfo(const QString& line)
 		else if (attr[0] == "score")
 		{
 			QRegExp rx2("\\b(cp|mate|lowerbound|upperbound)\\b");
-			QVector<QStringList> attrs2 = UciOption::parse(attr[1], rx2);
+			QVector<QStringList> attrs2 = parseCommand(attr[1], rx2);
 			int score = 0;
 			bool hasScore = false;
 
@@ -250,6 +284,53 @@ void UciEngine::parseInfo(const QString& line)
 				m_eval.setScore(score);
 		}
 	}
+}
+
+EngineOption* UciEngine::parseOption(const QString& str)
+{
+	QString name;
+	QString type;
+	QString value;
+	QStringList choices;
+	int min = 0;
+	int max = 0;
+
+	QRegExp rx("\\b(name|type|default|min|max|var)\\b");
+	QVector<QStringList> attrs = parseCommand(str, rx);
+
+	foreach (const QStringList& attr, attrs)
+	{
+		if (attr.size() < 2)
+			continue;
+
+		if (attr[0] == "name")
+			name = attr[1];
+		else if (attr[0] == "type")
+			type = attr[1];
+		else if (attr[0] == "default")
+			value = attr[1];
+		else if (attr[0] == "min")
+			min = attr[1].toInt();
+		else if (attr[0] == "max")
+			max = attr[1].toInt();
+		else if (attr[0] == "var")
+			choices << attr[1];
+	}
+	if (name.isEmpty())
+		return 0;
+
+	if (type == "button")
+		return new EngineButtonOption(name);
+	else if (type == "check")
+		return new EngineCheckOption(name, value, value);
+	else if (type == "combo")
+		return new EngineComboOption(name, value, value, choices);
+	else if (type == "spin")
+		return new EngineSpinOption(name, value, value, min, max);
+	else if (type == "string")
+		return new EngineTextOption(name, value, value);
+
+	return 0;
 }
 
 void UciEngine::parseLine(const QString& line)
@@ -286,15 +367,6 @@ void UciEngine::parseLine(const QString& line)
 		{
 			onProtocolStart();
 			addVariants();
-
-			// Send engine options
-			foreach (const OptionCmd& cmd, m_optionBuffer)
-			{
-				if (hasOption(cmd.name))
-					setOption(cmd.name, cmd.value);
-			}
-			m_optionBuffer.clear();
-
 			ping();
 		}
 	}
@@ -320,14 +392,13 @@ void UciEngine::parseLine(const QString& line)
 	}
 	else if (command == "option")
 	{
-		UciOption option(args);
-		if (option.isOk())
-			m_options.append(option);
-		else
-		{
+		EngineOption* option = parseOption(args);
+
+		if (option == 0 || !option->isValid())
 			qDebug() << "Invalid UCI option from" << name() << ":"
-			         << args;
-		}
+				 << args;
+		else
+			m_options.append(option);
 	}
 	else if (command == "info")
 	{
@@ -335,82 +406,7 @@ void UciEngine::parseLine(const QString& line)
 	}
 }
 
-const UciOption* UciEngine::getOption(const QString& name) const
+void UciEngine::sendOption(const QString& name, const QString& value)
 {
-	for (int i = 0; i < m_options.size(); i++)
-	{
-		if (m_options[i].name() == name)
-			return &m_options[i];
-	}
-	
-	return 0;
-}
-
-bool UciEngine::hasOption(const QString& name) const
-{
-	foreach (const UciOption& option, m_options)
-	{
-		if (option.name() == name)
-			return true;
-	}
-	return false;
-}
-
-void UciEngine::setOption(const UciOption* option, const QVariant& value)
-{
-	Q_ASSERT(option != 0);
-	if (!option->isOk())
-	{
-		qDebug() << "Trying to pass an invalid option to" << name();
-		return;
-	}
-	if (!option->isValueOk(value))
-	{
-		qDebug() << "Can't set option" << option->name()
-		         << "to" << value.toString();
-		return;
-	}
-	
-	write(QString("setoption name %1 value %2")
-	      .arg(option->name())
-	      .arg(value.toString()));
-}
-
-void UciEngine::setOption(const QString& name, const QVariant& value)
-{
-	if (state() == Starting || state() == NotStarted)
-	{
-		OptionCmd cmd = { name, value };
-		m_optionBuffer.append(cmd);
-		return;
-	}
-
-	const UciOption* option = getOption(name);
-	if (!option)
-	{
-		qDebug() << this->name() << "doesn't have UCI option" << name;
-		return;
-	}
-	
-	setOption(option, value);
-}
-
-void UciEngine::setConcurrency(int limit)
-{
-	setOption("Threads", limit);
-	setOption("MaxThreads", limit);
-	setOption("Core Threads", limit);
-	setOption("Max CPUs", limit);
-}
-
-void UciEngine::setEgbbPath(const QString& path)
-{
-	// Stupid computer chess community and their lack of standards...
-	setOption("Bitbase Path", path);
-	setOption("Bitbases Path", path);
-}
-
-void UciEngine::setEgtbPath(const QString& path)
-{
-	setOption("NalimovPath", path);
+	write(QString("setoption name %1 value %2").arg(name).arg(value));
 }

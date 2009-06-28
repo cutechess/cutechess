@@ -192,25 +192,9 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 			}
 			data.settings.timeControl().setNodeLimit(val.toInt());
 		}
-		// Max. number of cpus the engine can use
-		else if (name == "cpus")
-		{
-			if (val.toInt() <= 0)
-			{
-				qWarning() << "Invalid cpu count:" << val;
-				return false;
-			}
-			data.settings.setConcurrency(val.toInt());
-		}
-		// Path to endgame bitbases
-		else if (name == "egbbpath")
-			data.settings.setEgbbPath(val);
-		// Path to endgame tablebases
-		else if (name == "egtbpath")
-			data.settings.setEgtbPath(val);
-		// Custom UCI option
-		else if (name.startsWith("uci."))
-			data.settings.addUciSetting(name.section('.', 1), val);
+		// Custom engine option
+		else if (name.startsWith("option."))
+			data.settings.addCustomSetting(name.section('.', 1), val);
 		else
 		{
 			qWarning() << "Invalid engine option:" << name;
@@ -412,10 +396,7 @@ int main(int argc, char* argv[])
 			       "  invertscores		Inverts the engine's scores when it plays black\n"
 			       "  depth=<arg>		Set the search depth limit to <arg>\n"
 			       "  nodes=<arg>		Set the node count limit to <arg>\n"
-			       "  cpus=<n>		Tell the engine to use a maximum of <n> cpus\n"
-			       "  egbbpath=<dir>	Set the path to endgame bitbases to <dir>\n"
-			       "  egtbpath=<dir>	Set the path to endgame tablebases to <dir>\n"
-			       "  uci.<name>=<arg>	Set UCI option <name> to value <arg>\n";
+			       "  option.<name>=<arg>	Set custom option <name> to value <arg>\n";
 			return 0;
 		}
 	}

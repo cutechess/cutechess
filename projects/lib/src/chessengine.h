@@ -18,12 +18,14 @@
 #ifndef CHESSENGINE_H
 #define CHESSENGINE_H
 
+#include <QVariant>
 #include <QStringList>
 #include "chessplayer.h"
+#include "enginesettings.h"
 
-class QString;
 class QIODevice;
-class EngineSettings;
+class EngineOption;
+
 
 /*!
  * \brief An artificial intelligence chess player.
@@ -65,7 +67,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void start();
 
 		/*! Applies \a settings on the engine. */
-		virtual void applySettings(const EngineSettings& settings);
+		void applySettings(const EngineSettings& settings);
 
 		/*!
 		 * Sends a ping message (an echo request) to the engine to
@@ -83,18 +85,14 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		/*! Writes text data to the chess engine. */
 		void write(const QString& data);
-		
+
 		/*!
-		 * Tells the engine to use a maximum of \a limit
-		 * threads or processes for searching.
+		 * Sets an option with the name \a name to \a value.
+		 *
+		 * \note If the engine doesn't have an option called \a name,
+		 * nothing happens.
 		 */
-		virtual void setConcurrency(int limit) = 0;
-		
-		/*! Sets the path to endgame bitbases (eg. Scorpio's). */
-		virtual void setEgbbPath(const QString& path) = 0;
-		
-		/*! Sets the path to Nalimov endgame table bases. */
-		virtual void setEgtbPath(const QString& path) = 0;
+		void setOption(const QString& name, const QVariant& value);
 		
 		/*! Terminates the engine non-violently. */
 		void quit();
@@ -128,11 +126,17 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Tells the engine to stop thinking and move now. */
 		virtual void stopThinking() = 0;
 
+		EngineOption* getOption(const QString& name) const;
+
+		virtual void sendOption(const QString& name, const QString& value) = 0;
+
 		/*! Are evaluation scores from white's point of view? */
 		bool m_whiteEvalPov;
 
 		/*! Supported variants. */
 		QVector<Chess::Variant> m_variants;
+
+		QVector<EngineOption*> m_options;
 		
 	protected slots:
 		// Inherited from ChessPlayer
@@ -168,6 +172,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		QTimer m_pingTimer;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
+		QVector<EngineSettings::CustomSetting> m_optionBuffer;
 };
 
 #endif // CHESSENGINE_H

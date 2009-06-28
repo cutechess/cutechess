@@ -15,12 +15,14 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QString>
+#include <QVariant>
 #include <QIODevice>
 #include <QtDebug>
+#include <QtAlgorithms>
 
 #include "chessengine.h"
 #include "chessboard/chess.h"
+#include "engineoption.h"
 #include "enginesettings.h"
 
 int ChessEngine::m_count = 0;
@@ -44,6 +46,7 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 
 ChessEngine::~ChessEngine()
 {
+	qDeleteAll(m_options);
 	--m_count;
 }
 
@@ -52,15 +55,53 @@ void ChessEngine::applySettings(const EngineSettings& settings)
 	foreach (const QString& str, settings.initStrings())
 		write(str);
 
-	if (settings.concurrency() > 0)
-		setConcurrency(settings.concurrency());
-	if (!settings.egbbPath().isEmpty())
-		setEgbbPath(settings.egbbPath());
-	if (!settings.egtbPath().isEmpty())
-		setEgbbPath(settings.egtbPath());
+	foreach (const EngineSettings::CustomSetting& setting,
+		 settings.customSettings())
+	{
+		setOption(setting.name, setting.value);
+	}
+
 	if (settings.timeControl().isValid())
 		setTimeControl(settings.timeControl());
 	m_whiteEvalPov = settings.whiteEvalPov();
+}
+
+EngineOption* ChessEngine::getOption(const QString& name) const
+{
+	foreach (EngineOption* option, m_options)
+	{
+		if (option->name() == name)
+			return option;
+	}
+
+	return 0;
+}
+
+void ChessEngine::setOption(const QString& name, const QVariant& value)
+{
+	if (state() == Starting || state() == NotStarted)
+	{
+		EngineSettings::CustomSetting setting = { name, value };
+		m_optionBuffer.append(setting);
+		return;
+	}
+
+	EngineOption* option = getOption(name);
+	if (option == 0)
+	{
+		qDebug() << this->name() << "doesn't have option" << name;
+		return;
+	}
+
+	if (!option->isValid(value))
+	{
+		qDebug() << "Invalid value for option" << name
+			 << ":" << value.toString();
+		return;
+	}
+
+	option->setValue(value);
+	sendOption(name, value.toString());
 }
 
 void ChessEngine::start()
@@ -82,6 +123,15 @@ void ChessEngine::onProtocolStart()
 	m_pinging = false;
 	setState(Idle);
 	Q_ASSERT(isReady());
+
+	flushWriteBuffer();
+
+	foreach (const EngineSettings::CustomSetting& setting,
+		 m_optionBuffer)
+	{
+		setOption(setting.name, setting.value);
+	}
+	m_optionBuffer.clear();
 }
 
 void ChessEngine::go()

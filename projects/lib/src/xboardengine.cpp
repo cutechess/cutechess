@@ -24,6 +24,8 @@
 #include "chessboard/chessboard.h"
 #include "chessboard/chessmove.h"
 #include "timecontrol.h"
+#include "enginespinoption.h"
+#include "enginetextoption.h"
 
 
 static QString msToXboardTime(int ms)
@@ -42,10 +44,6 @@ XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessEngine(ioDevice, parent),
 	  m_forceMode(false),
 	  m_drawOnNextMove(false),
-	  m_ftEgbb(false),
-	  m_ftEgtb(false),
-	  m_ftSmp(false),
-	  m_ftMemory(false),
 	  m_ftName(false),
 	  m_ftPing(false),
 	  m_ftSetboard(false),
@@ -78,16 +76,6 @@ void XboardEngine::initialize()
 	if (state() == Starting)
 	{
 		onProtocolStart();
-		flushWriteBuffer();
-		
-		// Send engine options
-		foreach(const OptionCmd& cmd, m_optionBuffer)
-		{
-			if (*cmd.feature)
-				write(cmd.line);
-		}
-		m_optionBuffer.clear();
-		
 		emit ready();
 	}
 }
@@ -355,19 +343,22 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	else if (name == "name")
 		m_ftName = (val == "1");
 	else if (name == "memory")
-		m_ftMemory = (val == "1");
+	{
+		if (val == "1")
+			m_options.append(new EngineSpinOption("memory"));
+	}
 	else if (name == "smp")
-		m_ftSmp = (val == "1");
+	{
+		if (val == "1")
+			m_options.append(new EngineSpinOption("cores"));
+	}
 	else if (name == "egt")
 	{
 		QStringList list = val.split(',');
 		foreach (const QString& str, list)
 		{
-			QString egtType = str.trimmed();
-			if (egtType == "scorpio")
-				m_ftEgbb = true;
-			else if (egtType == "nalimov")
-				m_ftEgtb = true;
+			QString egtType = QString("egtpath %1").arg(str.trimmed());
+			m_options.append(new EngineTextOption(egtType));
 		}
 	}
 	else if (name == "done")
@@ -542,30 +533,7 @@ void XboardEngine::parseLine(const QString& line)
 	}
 }
 
-void XboardEngine::setOption(const QString& line, bool* feature)
+void XboardEngine::sendOption(const QString& name, const QString& value)
 {
-	if (state() == Starting || state() == NotStarted)
-	{
-		OptionCmd cmd = { line, feature };
-		m_optionBuffer.append(cmd);
-		return;
-	}
-
-	if (*feature)
-		write(line);
-}
-
-void XboardEngine::setConcurrency(int limit)
-{
-	setOption(QString("cores %1").arg(limit), &m_ftSmp);
-}
-
-void XboardEngine::setEgbbPath(const QString& path)
-{
-	setOption(QString("egtpath scorpio %1").arg(path), &m_ftEgbb);
-}
-
-void XboardEngine::setEgtbPath(const QString& path)
-{
-	setOption(QString("egtpath nalimov %1").arg(path), &m_ftEgtb);
+	write(name + " " + value);
 }

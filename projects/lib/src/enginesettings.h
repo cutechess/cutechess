@@ -37,14 +37,11 @@
 class LIB_EXPORT EngineSettings
 {
 	public:
-		/*!
-		 * \brief A setting that will only be sent to UCI
-		 * engines.
-		 */
-		struct UciSetting
+		/*! \brief A custom setting. */
+		struct CustomSetting
 		{
-			QString name;	//!< ucioption name
-			QVariant value;	//!< ucioption value
+			QString name;	//!< Setting name
+			QVariant value;	//!< Setting value
 		};
 
 		/*!
@@ -57,21 +54,15 @@ class LIB_EXPORT EngineSettings
 		const QStringList& arguments() const;
 		/*! Initialization strings. */
 		const QStringList& initStrings() const;
-		/*! The number of cpus the engine should use. */
-		int concurrency() const;
-		/*! Path to endgame bitbases (eg. Scorpio format). */
-		QString egbbPath() const;
-		/*! Path to endgame tablebases (eg. Nalimov format). */
-		QString egtbPath() const;
 		/*! The engine's time control. */
 		const TimeControl& timeControl() const;
 		/*! The engine's time control. */
 		TimeControl& timeControl();
 		/*
-		 * A list of UCI settings.
+		 * A list of custom settings.
 		 * \note Only settings supported by the engine are sent.
 		 */
-		const QVector<UciSetting>& uciSettings() const;
+		const QVector<CustomSetting>& customSettings() const;
 		/*! Returns true if evaluation is from white's perspective. */
 		bool whiteEvalPov() const;
 
@@ -79,14 +70,8 @@ class LIB_EXPORT EngineSettings
 		void addArgument(const QString& argument);
 		/*! Adds a new initialization string. */
 		void addInitString(const QString& str);
-		/*! Adds a new UCI setting. */
-		void addUciSetting(const QString& name, const QVariant& value);
-		/*! Sets the number of cpus to use. */
-		void setConcurrency(int concurrency);
-		/*! Sets the path to endgame bitbases. */
-		void setEgbbPath(const QString& path);
-		/*! Sets the path to endgame tablebases. */
-		void setEgtbPath(const QString& path);
+		/*! Adds a new custom setting. */
+		void addCustomSetting(const QString& name, const QVariant& value);
 		/*! Sets the time control. */
 		void setTimeControl(const TimeControl& timeControl);
 		/*! Sets white evaluation point of view. */
@@ -94,12 +79,9 @@ class LIB_EXPORT EngineSettings
 
 	private:
 		TimeControl m_timeControl;
-		int m_concurrency;
 		QStringList m_arguments;
 		QStringList m_initStrings;
-		QString m_egbbPath;
-		QString m_egtbPath;
-		QVector<UciSetting> m_uciSettings;
+		QVector<CustomSetting> m_customSettings;
 		bool m_whiteEvalPov;
 };
 

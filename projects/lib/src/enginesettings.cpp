@@ -18,8 +18,7 @@
 #include "enginesettings.h"
 
 EngineSettings::EngineSettings()
-	: m_concurrency(0),
-	  m_whiteEvalPov(false)
+	: m_whiteEvalPov(false)
 {
 }
 
@@ -33,21 +32,6 @@ const QStringList& EngineSettings::initStrings() const
 	return m_initStrings;
 }
 
-int EngineSettings::concurrency() const
-{
-	return m_concurrency;
-}
-
-QString EngineSettings::egbbPath() const
-{
-	return m_egbbPath;
-}
-
-QString EngineSettings::egtbPath() const
-{
-	return m_egtbPath;
-}
-
 const TimeControl& EngineSettings::timeControl() const
 {
 	return m_timeControl;
@@ -58,9 +42,9 @@ TimeControl& EngineSettings::timeControl()
 	return m_timeControl;
 }
 
-const QVector<EngineSettings::UciSetting>& EngineSettings::uciSettings() const
+const QVector<EngineSettings::CustomSetting>& EngineSettings::customSettings() const
 {
-	return m_uciSettings;
+	return m_customSettings;
 }
 
 bool EngineSettings::whiteEvalPov() const
@@ -79,26 +63,10 @@ void EngineSettings::addInitString(const QString& str)
 	m_initStrings.append(str);
 }
 
-void EngineSettings::addUciSetting(const QString& name, const QVariant& value)
+void EngineSettings::addCustomSetting(const QString& name, const QVariant& value)
 {
-	UciSetting setting = {name, value};
-	m_uciSettings.append(setting);
-}
-
-void EngineSettings::setConcurrency(int concurrency)
-{
-	Q_ASSERT(concurrency >= 0);
-	m_concurrency = concurrency;
-}
-
-void EngineSettings::setEgbbPath(const QString& path)
-{
-	m_egbbPath = path;
-}
-
-void EngineSettings::setEgtbPath(const QString& path)
-{
-	m_egtbPath = path;
+	CustomSetting setting = {name, value};
+	m_customSettings.append(setting);
 }
 
 void EngineSettings::setTimeControl(const TimeControl& timeControl)

@@ -20,7 +20,7 @@
 
 #include <QString>
 #include "chessengine.h"
-#include "ucioption.h"
+
 
 /*!
  * \brief A chess engine which uses the UCI chess interface.
@@ -36,29 +36,10 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		UciEngine(QIODevice* ioDevice, QObject* parent = 0);
 
 		// Inherited from ChessEngine
-		void applySettings(const EngineSettings& settings);
 		void endGame(Chess::Result result);
 		void makeMove(const Chess::Move& move);
 		Protocol protocol() const;
-		void setConcurrency(int limit);
-		void setEgbbPath(const QString& path);
-		void setEgtbPath(const QString& path);
-		
-		/*!
-		 * Sets \a option to \a value, and sends it to the engine.
-		 *
-		 * \note If the option is invalid, or the engine doesn't
-		 * have the option, nothing happens.
-		 */
-		void setOption(const UciOption* option, const QVariant& value);
-		/*!
-		 * Sets an option with the name \a name to \a value.
-		 *
-		 * \note If the engine doesn't have an option called \a name,
-		 * nothing happens.
-		 */
-		void setOption(const QString& name, const QVariant& value);
-		
+
 	protected:
 		// Inherited from ChessEngine
 		bool sendPing();
@@ -68,24 +49,16 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		void startThinking();
 		void parseLine(const QString& line);
 		void stopThinking();
+		void sendOption(const QString& name, const QString& value);
 		
 	private:
-		struct OptionCmd
-		{
-			QString name;
-			QVariant value;
-		};
-
 		void addVariants();
 		void parseInfo(const QString& line);
+		EngineOption* parseOption(const QString& line);
 		void sendPosition();
-		const UciOption* getOption(const QString& name) const;
-		bool hasOption(const QString& name) const;
 		
 		QString m_startFen;
 		QString m_moveStrings;
-		QVector<UciOption> m_options;
-		QVector<OptionCmd> m_optionBuffer;
 };
 
 #endif // UCIENGINE_H
