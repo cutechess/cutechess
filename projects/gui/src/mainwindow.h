@@ -26,7 +26,6 @@ class QTextEdit;
 class ChessboardView;
 class ChessboardModel;
 class MoveListModel;
-class EngineProcess;
 class EngineConfigurationModel;
 class ChessClock;
 class PlainTextLog;

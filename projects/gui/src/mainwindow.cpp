@@ -197,7 +197,7 @@ void MainWindow::newGame()
 		{
 			EngineConfiguration config = m_engineConfigurations->configuration(dlg.selectedEngine(side));
 
-			QProcess* process = new QProcess(this);
+			EngineProcess* process = new EngineProcess(this);
 
 			if (config.workingDirectory().isEmpty())
 				process->setWorkingDirectory(QDir::tempPath());
