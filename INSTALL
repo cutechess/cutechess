@@ -36,7 +36,7 @@ the documentation in either format requires asciidoc
     $ make doc-man     (documentation as Unix manual pages)
     $ make doc-html    (documentation in HTML format)
 
-The documentation is built to the "doc" directory.
+The documentation is built to the "docs" directory.
 
 If you want to have an overview of Cute Chess's source you can build the API
 documentation:
