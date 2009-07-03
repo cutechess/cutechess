@@ -46,10 +46,9 @@ int main(int argc, char* argv[])
 	arguments.takeFirst(); // application name
 
 	// Use trivial command-line parsing for now
+	QTextStream out(stdout);
 	while (!arguments.empty())
 	{
-		QTextStream out(stdout);
-
 		if (arguments.first() == QLatin1String("-v") ||
 			arguments.first() == QLatin1String("--version"))
 		{
