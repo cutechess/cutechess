@@ -55,6 +55,7 @@ class ChessboardModel : public QAbstractTableModel
 
 		Chess::Board* m_board;
 		QModelIndexList m_selectable;
+		static const QString m_files;
 };
 
 #endif // CHESSBOARD_MODEL_H

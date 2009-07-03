@@ -18,6 +18,8 @@
 #include "chessboardmodel.h"
 #include <chessboard/chessboard.h>
 
+const QString ChessboardModel::m_files = QLatin1String("abcdefghij");
+
 ChessboardModel::ChessboardModel(QObject* parent)
 	: QAbstractTableModel(parent),
 	  m_board(0)
@@ -107,8 +109,7 @@ QVariant ChessboardModel::headerData(int section,
 		}
 		else
 		{
-			QString files = "abcdefghij";
-			return files.at(section);
+			return m_files.at(section);
 		}
 	}
 
