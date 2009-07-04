@@ -22,12 +22,17 @@
 
 class ChessGame;
 
+/*!
+ * \brief Supplies chess move information to views.
+ */
 class MoveListModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
 	public:
+		/*! Constructs a move list movel with the given \a parent. */
 		MoveListModel(QObject* parent = 0);
+		/*! Associates \a game with this model. */
 		void setGame(ChessGame* game);
 
 		// Inherited from QAbstractItemModel
