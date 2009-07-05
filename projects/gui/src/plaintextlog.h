@@ -23,15 +23,27 @@
 class QContextMenuEvent;
 class QAction;
 
+/*!
+ * \brief Widget that is used to display log messages in plain text.
+ */
 class PlainTextLog : public QPlainTextEdit
 {
 	Q_OBJECT
 
 	public:
+		/*! Constructs a new plain text log with the given \a parent. */
 		PlainTextLog(QWidget* parent = 0);
+		/*!
+		 * Constructs a new plain text log with the initial text \a text and
+		 * given \a parent.
+		 */
 		PlainTextLog(const QString& text, QWidget* parent = 0);
 
 	signals:
+		/*!
+		 * Signals that the user has requested the log to be saved to a
+		 * file.
+		 */
 		void saveLogToFileRequest();
 
 	protected:
