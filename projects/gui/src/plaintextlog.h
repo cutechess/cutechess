@@ -49,7 +49,7 @@ class PlainTextLog : public QPlainTextEdit
 	protected:
 		virtual void contextMenuEvent(QContextMenuEvent* event);
 
-	protected slots:
+	private slots:
 		void saveLogToFile();
 
 };
