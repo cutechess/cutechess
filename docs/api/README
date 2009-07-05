@@ -1,4 +1,4 @@
-Cute Chess's API documentation will be placed here. You can build it with the
+Cute Chess' API documentation will be placed here. You can build it with the
 "doc-api" target:
 
     $ make doc-api

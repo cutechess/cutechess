@@ -38,7 +38,7 @@ the documentation in either format requires asciidoc
 
 The documentation is built to the "docs" directory.
 
-If you want to have an overview of Cute Chess's source you can build the API
+If you want to have an overview of Cute Chess' source you can build the API
 documentation:
 
     $ make doc-api
