@@ -47,6 +47,7 @@ class PlainTextLog : public QPlainTextEdit
 		void saveLogToFileRequest();
 
 	protected:
+		// Inherited from QPlainTextEdit
 		virtual void contextMenuEvent(QContextMenuEvent* event);
 
 	private slots:
