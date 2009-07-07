@@ -11,7 +11,8 @@ HEADERS += chessboardview.h \
     chessboardmodel.h \
     movelistmodel.h \
     gamedatabasemodel.h \
-    cutechessapp.h
+    cutechessapp.h \
+    gamepropertiesdlg.h
 SOURCES += main.cpp \
     chessboardview.cpp \
     chessclock.cpp \
@@ -25,4 +26,5 @@ SOURCES += main.cpp \
     chessboardmodel.cpp \
     movelistmodel.cpp \
     gamedatabasemodel.cpp \
-    cutechessapp.cpp
+    cutechessapp.cpp \
+    gamepropertiesdlg.cpp
