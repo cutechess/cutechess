@@ -54,12 +54,6 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void initialize();
 
 	private:
-		struct OptionCmd
-		{
-			QString line;
-			bool* feature;
-		};
-
 		void setFeature(const QString& name, const QString& val);
 		void setForceMode(bool enable);
 		void sendTimeLeft();
@@ -81,7 +75,6 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		QString m_nextMoveString;
 		Chess::MoveNotation m_notation;
 		QTimer m_initTimer;
-		QVector<OptionCmd> m_optionBuffer;
 };
 
 #endif // XBOARDENGINE_H
