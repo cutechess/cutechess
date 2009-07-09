@@ -417,6 +417,21 @@ bool PgnGame::isEmpty() const
 	return m_moves.isEmpty();
 }
 
+QString PgnGame::event() const
+{
+	return m_event;
+}
+
+QString PgnGame::site() const
+{
+	return m_site;
+}
+
+int PgnGame::round() const
+{
+	return m_round;
+}
+
 QString PgnGame::startingFen() const
 {
 	return m_fen;

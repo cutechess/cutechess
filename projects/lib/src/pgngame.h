@@ -74,6 +74,15 @@ class LIB_EXPORT PgnGame
 		/*! Returns true if the game doesn't contain any moves. */
 		bool isEmpty() const;
 		
+		/*! Returns the event/tournament name. */
+		QString event() const;
+
+		/*! Returns the site/location where the game was played. */
+		QString site() const;
+
+		/*! Returns the round number of a match or tournament. */
+		int round() const;
+
 		/*! Returns the player's name who plays \a side. */
 		QString playerName(Chess::Side side) const;
 
