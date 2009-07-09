@@ -131,8 +131,8 @@ egbbpath=<dir>::
 egtbpath=<dir>::
 	Set the path to endgame tablebases to <dir>.
 
-uci.<name>=<arg>::
-	Set UCI option <name> to value <arg>.
+option.<name>=<arg>::
+	Set custom engine option <name> to value <arg>.
 
 
 EXAMPLES
