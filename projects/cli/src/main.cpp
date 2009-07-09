@@ -235,10 +235,10 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			match->setVariant(Chess::Variant(opt.value));
 		// Opening book file (must be in Polyglot format)
 		else if (opt.name == "-book")
-			match->setBookFile(opt.value);
+			optOk = ok = match->setBookFile(opt.value);
 		// Maximum book depth in plies (halfmoves)
 		else if (opt.name == "-bookdepth")
-			match->setBookDepth(opt.value.toInt());
+			optOk = ok = match->setBookDepth(opt.value.toInt());
 		// Threshold for draw adjudication
 		else if (opt.name == "-draw")
 		{
@@ -276,7 +276,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			match->setDebugMode(true);
 		// Use a PGN file as the opening book
 		else if (opt.name == "-pgnin")
-			match->setPgnInput(opt.value);
+			optOk = ok = match->setPgnInput(opt.value);
 		// PGN file where the games should be saved
 		else if (opt.name == "-pgnout")
 		{

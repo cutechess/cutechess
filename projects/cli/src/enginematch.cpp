@@ -75,17 +75,19 @@ void EngineMatch::addEngine(const EngineConfiguration& engineConfig,
 	m_engines.append(data);
 }
 
-void EngineMatch::setBookDepth(int bookDepth)
+bool EngineMatch::setBookDepth(int bookDepth)
 {
 	if (bookDepth <= 0)
 	{
 		qWarning() << "Book depth must be bigger than zero";
-		return;
+		return false;
 	}
 	m_bookDepth = bookDepth;
+
+	return true;
 }
 
-void EngineMatch::setBookFile(const QString& filename)
+bool EngineMatch::setBookFile(const QString& filename)
 {
 	if (m_book != 0)
 	{
@@ -96,9 +98,13 @@ void EngineMatch::setBookFile(const QString& filename)
 	m_book = new PolyglotBook;
 	if (!m_book->read(filename))
 	{
+		delete m_book;
+		m_book = 0;
 		qWarning() << "Can't open book file" << filename;
-		return;
+		return false;
 	}
+
+	return true;
 }
 
 void EngineMatch::setDebugMode(bool debug)
@@ -122,10 +128,15 @@ void EngineMatch::setGameCount(int gameCount)
 	m_gameCount = gameCount;
 }
 
-void EngineMatch::setPgnInput(const QString& filename)
+bool EngineMatch::setPgnInput(const QString& filename)
 {
 	if (!m_pgnInput.open(filename))
+	{
 		qWarning() << "Can't open PGN file:" << filename;
+		return false;
+	}
+
+	return true;
 }
 
 void EngineMatch::setPgnOutput(const QString& filename,

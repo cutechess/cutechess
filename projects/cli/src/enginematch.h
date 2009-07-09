@@ -42,13 +42,13 @@ class EngineMatch : public QObject
 
 		void addEngine(const EngineConfiguration& config,
 			       const EngineSettings& settings);
-		void setBookDepth(int bookDepth);
-		void setBookFile(const QString& filename);
+		bool setBookDepth(int bookDepth);
+		bool setBookFile(const QString& filename);
 		void setDebugMode(bool debug);
 		void setDrawThreshold(int moveNumber, int score);
 		void setEvent(const QString& event);
 		void setGameCount(int gameCount);
-		void setPgnInput(const QString& filename);
+		bool setPgnInput(const QString& filename);
 		void setPgnOutput(const QString& filename,
 				  PgnGame::PgnMode mode);
 		void setRepeatOpening(bool repeatOpening);
