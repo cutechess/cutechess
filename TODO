@@ -37,3 +37,5 @@
   This could be expanded further to kill the underlying chess engine process
   instead of using the library procedures to simulate how the gui reacts to
   program crashes
+
+- Verify Qt version requirement before release
