@@ -31,3 +31,9 @@
 - Design an XML format for tournaments
 
 - Provide code examples in documentation
+
+- Add proper player killswitches for debugging purposes (GUI)
+
+  This could be expanded further to kill the underlying chess engine process
+  instead of using the library procedures to simulate how the gui reacts to
+  program crashes
