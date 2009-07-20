@@ -298,10 +298,15 @@ void MainWindow::openConfigurationFile()
 {
 	QSettings settings;
 
-	if (QFile::exists(settings.fileName()))
-		QDesktopServices::openUrl(QUrl::fromLocalFile(settings.fileName()));
-	else
-		qDebug() << "Cannot open configuration file:" << settings.fileName();
+	if (!QFile::exists(settings.fileName()))
+	{
+		QFile settingsFile(settings.fileName());
+
+		if (settingsFile.open(QIODevice::WriteOnly))
+			settingsFile.close();
+	}
+
+	QDesktopServices::openUrl(QUrl::fromLocalFile(settings.fileName()));
 }
 
 void MainWindow::saveLogToFile()
