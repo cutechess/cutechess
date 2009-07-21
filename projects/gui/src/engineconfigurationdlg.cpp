@@ -81,11 +81,10 @@ void EngineConfigurationDialog::browseCommand()
 	if (fileName.isEmpty())
 		return;
 
-	fileName = QDir::toNativeSeparators(fileName);
-
 	if (m_workingDirEdit->text().isEmpty())
 	{
-		m_workingDirEdit->setText(QFileInfo(fileName).absolutePath());
+		m_workingDirEdit->setText(QDir::toNativeSeparators(
+			QFileInfo(fileName).absolutePath()));
 	}
 
 	if (m_nameEdit->text().isEmpty())
@@ -99,7 +98,7 @@ void EngineConfigurationDialog::browseCommand()
 		fileName.push_front('\"');
 		fileName.push_back('\"');
 	}
-	m_commandEdit->setText(fileName);
+	m_commandEdit->setText(QDir::toNativeSeparators(fileName));
 }
 
 void EngineConfigurationDialog::browseWorkingDir()
