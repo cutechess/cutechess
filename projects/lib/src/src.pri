@@ -7,7 +7,7 @@ HEADERS += chessengine.h \
     engineconfiguration.h \
     enginefactory.h \
     openingbook.h \
-    pgnfile.h \
+    pgnstream.h \
     pgngame.h \
     polyglotbook.h \
     timecontrol.h \
@@ -29,7 +29,7 @@ SOURCES += chessengine.cpp \
     engineconfiguration.cpp \
     enginefactory.cpp \
     openingbook.cpp \
-    pgnfile.cpp \
+    pgnstream.cpp \
     pgngame.cpp \
     polyglotbook.cpp \
     timecontrol.cpp \

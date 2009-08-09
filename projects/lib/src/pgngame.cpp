@@ -23,7 +23,7 @@
 #include "chessgame.h"
 #include "chessboard/chessboard.h"
 #include "chessplayer.h"
-#include "pgnfile.h"
+#include "pgnstream.h"
 
 
 PgnGame::PgnGame(Chess::Variant variant)
@@ -70,7 +70,7 @@ bool PgnGame::addMove(const QString& moveString,
 	return true;
 }
 
-PgnGame::PgnItem PgnGame::readItem(PgnFile& in, PgnMode mode)
+PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
 {
 	in.skipWhiteSpace();
 	PgnItem itemType = PgnMove;
@@ -278,7 +278,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnFile& in, PgnMode mode)
 	return itemType;
 }
 
-bool PgnGame::read(PgnFile& in, PgnMode mode, int maxMoves)
+bool PgnGame::read(PgnStream& in, PgnMode mode, int maxMoves)
 {
 	m_hasTags = false;
 	m_round = 0;

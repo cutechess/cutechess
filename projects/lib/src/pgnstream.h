@@ -15,36 +15,44 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PGNFILE_H
-#define PGNFILE_H
+#ifndef PGNSTREAM_H
+#define PGNSTREAM_H
 
 #include <QtGlobal>
 #include <QString>
-#include <QFile>
 #include <QTextStream>
 #include "chessboard/chessboard.h"
+class QIODevice;
 
 
 /*!
- * \brief A file consisting of one or more chess games in PGN format
+ * \brief A class for reading games in PGN format from a text stream.
  *
- * PgnFile is used for reading games from a PGN file. It has its own
- * input methods, and keeps track of the current line number which can
- * be used to report errors in the file. PgnFile also has its own
- * Chess::Board object, so that the same board can be easily used with
- * all the games in the file.
+ * PgnStream is used for reading PGN games from a QIODevice or a string.
+ * It has its own input methods, and keeps track of the current line
+ * number which can be used to report errors in the games. PgnStream
+ * also has its own Chess::Board object, so that the same board can be
+ * easily used with all the games in the stream.
  *
  * \sa PgnGame
  * \sa OpeningBook
  */
-class LIB_EXPORT PgnFile
+class LIB_EXPORT PgnStream
 {
 	public:
-		/*! Creates a new empty PgnFile. */
-		PgnFile();
+		/*!
+		 * Creates a new PgnStream.
+		 * A device or a string must be set before the stream
+		 * can be used.
+		 */
+		PgnStream();
+		/*! Creates a PgnStream that operates on \a device. */
+		explicit PgnStream(QIODevice* device);
+		/*! Creates a PgnStream that operates on \a string. */
+		explicit PgnStream(QString* string);
 
 		/*!
-		 * Creates a new PgnFile and opens the file in ReadOnly mode.
+		 * Creates a new PgnStream and opens the file in ReadOnly mode.
 		 * If the opening fails, isOpen() will return false.
 		 *
 		 * \param filename The name of the file which holds the PGN game(s)
@@ -53,24 +61,26 @@ class LIB_EXPORT PgnFile
 		 * found to be illegal.
 		 * Use \a Chess::NoVariant (the default) to allow multiple variants.
 		 */
-		explicit PgnFile(const QString& filename,
-		                 Chess::Variant variant = Chess::Variant::NoVariant);
 		
 		/*!
 		 * Returns the Board object which is used to verify the moves
 		 * and FEN strings in the file.
 		 */
 		Chess::Board* board();
+
+		/*! Returns the assigned device, or 0 if no device is in use. */
+		QIODevice* device() const;
+		/*! Sets the current device to \ə device. */
+		void setDevice(QIODevice* device);
+
+		/*! Returns the assigned string, or 0 if no string is in use. */
+		QString* string() const;
+		/*! Sets the current string to \a string. */
+		void setString(QString* string);
 		
-		/*! Returns true if the file is open. */
+		/*! Returns true if the stream is open. */
 		bool isOpen() const;
 
-		/*!
-		 * Opens a PGN file.
-		 * Returns true if successfull.
-		 */
-		bool open(const QString& filename);
-		
 		/*! Returns the current line number. */
 		qint64 lineNumber() const;
 		
@@ -82,9 +92,8 @@ class LIB_EXPORT PgnFile
 		
 		/*! Rewinds back to the start of input. */
 		void rewind();
-
 		/*!
-		 * Rewinds the file position by one character, which means that
+		 * Rewinds the stream position by one character, which means that
 		 * the next time readChar() is called, nothing is read and the
 		 * buffer character is returned.
 		 *
@@ -93,24 +102,25 @@ class LIB_EXPORT PgnFile
 		 * calling it just once.
 		 */
 		void rewindChar();
-		
 		/*!
 		 * Reads and discards whitespace from the stream until either
 		 * a non-space character is read, or EOF is reached.
 		 */
 		void skipWhiteSpace();
 		
-		/*! Returns the status of the text stream. */
+		/*! Returns the status of the stream. */
 		QTextStream::Status status() const;
 		
-		/*! Returns the chess variant of the PGN game/collection. */
+		/*!
+		 * Returns the chess variant of the PGN game/collection.
+		 * \note The value Chess::NoVariant means that no specific
+		 * variant is expected, but games may still be read.
+		 */
 		Chess::Variant variant() const;
-
-		/*! Sets the chess variant to \a variant. */
+		/*! Sets the expected chess variant to \a variant. */
 		void setVariant(Chess::Variant variant);
 		
 	private:
-		QFile m_file;
 		QTextStream m_in;
 		Chess::Variant m_variant;
 		Chess::Board m_board;
@@ -119,4 +129,4 @@ class LIB_EXPORT PgnFile
 		bool m_rewind;
 };
 
-#endif // PGNFILE_H
+#endif // PGNSTREAM_H

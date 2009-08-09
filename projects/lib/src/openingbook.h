@@ -8,6 +8,7 @@
 
 class QString;
 class QDataStream;
+class PgnStream;
 
 
 /*!
@@ -28,11 +29,11 @@ class LIB_EXPORT OpeningBook
 		
 		/*!
 		 * Imports games in PGN format.
-		 * \param filename The PGN file
-		 * \param maxMoves Store at most this many halfmoves per game
-		 * \return True if successfull.
+		 * \param in The PGN stream.
+		 * \param maxMoves Store at most this many halfmoves per game.
+		 * Returns true if successfull.
 		 */
-		bool pgnImport(const QString& filename, int maxMoves);
+		bool pgnImport(PgnStream& in, int maxMoves);
 		
 		/*!
 		 * Returns a move that can be played in a position where the

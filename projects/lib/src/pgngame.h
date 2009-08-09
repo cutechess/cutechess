@@ -10,7 +10,7 @@
 #include "chessboard/variant.h"
 #include "chessboard/chessmove.h"
 #include "timecontrol.h"
-class PgnFile;
+class PgnStream;
 
 
 /*!
@@ -19,7 +19,7 @@ class PgnFile;
  * PGN (Portable game notation) is a text format for chess games of any
  * variants: http://en.wikipedia.org/wiki/Portable_Game_Notation
  *
- * \sa PgnFile
+ * \sa PgnStream
  * \sa ChessGame
  */
 class LIB_EXPORT PgnGame
@@ -60,7 +60,7 @@ class LIB_EXPORT PgnGame
 		 *
 		 * \return True, if a FEN tag or moves were read.
 		 */
-		bool read(PgnFile& in, PgnMode mode = Verbose, int maxMoves = 1000);
+		bool read(PgnStream& in, PgnMode mode = Verbose, int maxMoves = 1000);
 		
 		/*!
 		 * Write the game to a file.
@@ -175,7 +175,7 @@ class LIB_EXPORT PgnGame
 			PgnError
 		};
 
-		PgnItem readItem(PgnFile& in, PgnMode mode);
+		PgnItem readItem(PgnStream& in, PgnMode mode);
 		
 		bool m_hasTags;
 		int m_round;

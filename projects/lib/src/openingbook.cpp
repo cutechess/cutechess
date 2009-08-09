@@ -21,7 +21,7 @@
 #include <QDataStream>
 #include "chessboard/chessboard.h"
 #include "pgngame.h"
-#include "pgnfile.h"
+#include "pgnstream.h"
 
 
 QDataStream& operator>>(QDataStream& in, OpeningBook* book)
@@ -83,13 +83,12 @@ void OpeningBook::addEntry(const Entry& entry, quint64 key)
 	m_map.insert(key, entry);
 }
 
-bool OpeningBook::pgnImport(const QString& filename, int maxMoves)
+bool OpeningBook::pgnImport(PgnStream& in, int maxMoves)
 {
 	using namespace Chess;
 	
 	Q_ASSERT(maxMoves > 0);
 	
-	PgnFile in(filename, variant());
 	if (!in.isOpen())
 		return false;
 	Chess::Board* board = in.board();

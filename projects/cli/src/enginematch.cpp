@@ -19,7 +19,6 @@
 #include <chessgame.h>
 #include <enginefactory.h>
 #include <polyglotbook.h>
-#include <QFile>
 #include <QDir>
 #include <QTimer>
 #include <QtDebug>
@@ -130,12 +129,14 @@ void EngineMatch::setGameCount(int gameCount)
 
 bool EngineMatch::setPgnInput(const QString& filename)
 {
-	if (!m_pgnInput.open(filename))
+	m_pgnInputFile.setFileName(filename);
+	if (!m_pgnInputFile.open(QIODevice::ReadOnly))
 	{
 		qWarning() << "Can't open PGN file:" << filename;
 		return false;
 	}
 
+	m_pgnInputStream.setDevice(&m_pgnInputFile);
 	return true;
 }
 
@@ -246,7 +247,7 @@ bool EngineMatch::initialize()
 
 		engine->start();
 	}
-	m_pgnInput.setVariant(m_variant);
+	m_pgnInputStream.setVariant(m_variant);
 
 	return true;
 }
@@ -359,16 +360,16 @@ void EngineMatch::start()
 	{
 		m_game->setOpeningBook(m_book, m_bookDepth);
 	}
-	else if (m_pgnInput.isOpen())
+	else if (m_pgnInputStream.isOpen())
 	{
-		bool ok = m_game->read(m_pgnInput, PgnGame::Minimal, m_bookDepth);
+		bool ok = m_game->read(m_pgnInputStream, PgnGame::Minimal, m_bookDepth);
 		if (ok)
 			m_pgnGamesRead++;
 		// Rewind the PGN input file
 		else if (m_pgnGamesRead > 0)
 		{
-			m_pgnInput.rewind();
-			ok = m_game->read(m_pgnInput, PgnGame::Minimal, m_bookDepth);
+			m_pgnInputStream.rewind();
+			ok = m_game->read(m_pgnInputStream, PgnGame::Minimal, m_bookDepth);
 			Q_ASSERT(ok);
 			m_pgnGamesRead++;
 		}

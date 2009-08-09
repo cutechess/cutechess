@@ -22,11 +22,12 @@
 #include <QVector>
 #include <QString>
 #include <QTime>
+#include <QFile>
 #include <chessboard/variant.h>
 #include <engineconfiguration.h>
 #include <enginesettings.h>
 #include <engineprocess.h>
-#include <pgnfile.h>
+#include <pgnstream.h>
 #include <pgngame.h>
 
 class ChessGame;
@@ -105,7 +106,8 @@ class EngineMatch : public QObject
 		QString m_fen;
 		QString m_event;
 		QString m_site;
-		PgnFile m_pgnInput;
+		QFile m_pgnInputFile;
+		PgnStream m_pgnInputStream;
 		QString m_pgnOutput;
 		QTime m_startTime;
 };
