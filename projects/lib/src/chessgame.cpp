@@ -309,7 +309,8 @@ void ChessGame::setBoard()
 
 bool ChessGame::arePlayersReady() const
 {
-	return (m_player[0]->isReady() && m_player[1]->isReady());
+	return (m_player[Chess::White]->isReady() &&
+	        m_player[Chess::Black]->isReady());
 }
 
 void ChessGame::syncPlayers(bool ignoreSender)
