@@ -61,7 +61,7 @@ class LIB_EXPORT PgnStream
 		 * found to be illegal.
 		 * Use \a Chess::NoVariant (the default) to allow multiple variants.
 		 */
-		
+
 		/*!
 		 * Returns the Board object which is used to verify the moves
 		 * and FEN strings in the file.
@@ -77,19 +77,19 @@ class LIB_EXPORT PgnStream
 		QString* string() const;
 		/*! Sets the current string to \a string. */
 		void setString(QString* string);
-		
+
 		/*! Returns true if the stream is open. */
 		bool isOpen() const;
 
 		/*! Returns the current line number. */
 		qint64 lineNumber() const;
-		
+
 		/*! Reads one character and returns it. */
 		QChar readChar();
-		
+
 		/*! Reads one line of text and returns it. */
 		QString readLine();
-		
+
 		/*! Rewinds back to the start of input. */
 		void rewind();
 		/*!
@@ -107,10 +107,10 @@ class LIB_EXPORT PgnStream
 		 * a non-space character is read, or EOF is reached.
 		 */
 		void skipWhiteSpace();
-		
+
 		/*! Returns the status of the stream. */
 		QTextStream::Status status() const;
-		
+
 		/*!
 		 * Returns the chess variant of the PGN game/collection.
 		 * \note The value Chess::NoVariant means that no specific
@@ -119,7 +119,7 @@ class LIB_EXPORT PgnStream
 		Chess::Variant variant() const;
 		/*! Sets the expected chess variant to \a variant. */
 		void setVariant(Chess::Variant variant);
-		
+
 	private:
 		QTextStream m_in;
 		Chess::Variant m_variant;

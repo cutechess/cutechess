@@ -84,11 +84,11 @@ QChar PgnStream::readChar()
 		m_rewind = false;
 		return m_lastChar;
 	}
-	
+
 	m_in >> m_lastChar;
 	if (m_lastChar == '\n')
 		m_lineNumber++;
-	
+
 	return m_lastChar;
 }
 
