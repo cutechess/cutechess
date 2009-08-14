@@ -52,17 +52,6 @@ class LIB_EXPORT PgnStream
 		explicit PgnStream(QString* string);
 
 		/*!
-		 * Creates a new PgnStream and opens the file in ReadOnly mode.
-		 * If the opening fails, isOpen() will return false.
-		 *
-		 * \param filename The name of the file which holds the PGN game(s)
-		 * \param variant The chess variant for every game in the file.
-		 * Games of other variants are ignored, or their moves are
-		 * found to be illegal.
-		 * Use \a Chess::NoVariant (the default) to allow multiple variants.
-		 */
-
-		/*!
 		 * Returns the Board object which is used to verify the moves
 		 * and FEN strings in the file.
 		 */
