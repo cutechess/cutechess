@@ -10,6 +10,7 @@
 #include "chessboard/variant.h"
 #include "chessboard/chessmove.h"
 #include "timecontrol.h"
+class QTextStream;
 class PgnStream;
 
 
@@ -63,7 +64,13 @@ class LIB_EXPORT PgnGame
 		bool read(PgnStream& in, PgnMode mode = Verbose, int maxMoves = 1000);
 		
 		/*!
-		 * Write the game to a file.
+		 * Writes the game to a text stream.
+		 * \return True if successfull
+		 */
+		bool write(QTextStream& out, PgnMode mode = Verbose) const;
+
+		/*!
+		 * Writes the game to a file.
 		 * If the file already exists, the game will be appended
 		 * to the end of the file.
 		 *
@@ -188,5 +195,8 @@ class LIB_EXPORT PgnGame
 		Chess::Variant m_variant;
 		TimeControl m_timeControl[2];
 };
+
+/*! Writes a PGN game in verbose mode to a text stream. */
+extern LIB_EXPORT QTextStream& operator<<(QTextStream& out, const PgnGame* game);
 
 #endif // PGNGAME_H

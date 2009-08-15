@@ -26,6 +26,13 @@
 #include "pgnstream.h"
 
 
+QTextStream& operator<<(QTextStream& out, const PgnGame* game)
+{
+	game->write(out);
+	return out;
+}
+
+
 PgnGame::PgnGame(Chess::Variant variant)
 	: m_hasTags(false),
 	  m_round(0),
@@ -319,19 +326,13 @@ static void writeTag(QTextStream& out, const QString& name, const QString& value
 		out << "[" << name << " \"?\"]\n";
 }
 
-bool PgnGame::write(const QString& filename, PgnMode mode) const
+bool PgnGame::write(QTextStream& out, PgnMode mode) const
 {
 	if (!m_hasTags)
 		return false;
 	
 	QString date = QDate::currentDate().toString("yyyy.MM.dd");
 	
-	QFile file(filename);
-	if (!file.open(QIODevice::Append))
-		return false;
-
-	QTextStream out(&file);
-
 	// The seven tag roster
 	writeTag(out, "Event", m_event);
 	writeTag(out, "Site", m_site);
@@ -410,6 +411,16 @@ bool PgnGame::write(const QString& filename, PgnMode mode) const
 		out << " " << str << "\n\n";
 
 	return true;
+}
+
+bool PgnGame::write(const QString& filename, PgnMode mode) const
+{
+	QFile file(filename);
+	if (!file.open(QIODevice::Append))
+		return false;
+
+	QTextStream out(&file);
+	return write(out, mode);
 }
 
 bool PgnGame::isEmpty() const
