@@ -152,6 +152,10 @@ void MainWindow::createDockWindows()
 		moveListView, SLOT(scrollToBottom()));
 
 	addDockWidget(Qt::RightDockWidgetArea, moveListDock);
+
+	// Add toggle view actions to the View menu
+	m_viewMenu->addAction(moveListDock->toggleViewAction());
+	m_viewMenu->addAction(engineDebugDock->toggleViewAction());
 }
 
 void MainWindow::readSettings()
