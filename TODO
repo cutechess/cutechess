@@ -39,3 +39,7 @@
   program crashes
 
 - Verify Qt version requirement before release
+
+- (Mac) dropping FEN on Cute Chess' icon in Dock
+
+- Use PgnStream for HTTP downloading
