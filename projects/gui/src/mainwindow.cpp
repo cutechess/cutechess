@@ -34,6 +34,7 @@
 #include "engineconfigurationmodel.h"
 #include "enginemanagementdlg.h"
 #include "plaintextlog.h"
+#include "gamedatabasemodel.h"
 
 MainWindow::MainWindow()
 {
@@ -140,6 +141,17 @@ void MainWindow::createDockWindows()
 
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
 
+	// Game database
+	QDockWidget* gameDatabaseDock = new QDockWidget(tr("Game Database"), this);
+	QTreeView* gameDatabaseView = new QTreeView(gameDatabaseDock);
+	gameDatabaseView->setModel(new GameDatabaseModel(this));
+	gameDatabaseView->setAlternatingRowColors(true);
+	gameDatabaseView->setRootIsDecorated(false);
+	gameDatabaseDock->setWidget(gameDatabaseView);
+
+	addDockWidget(Qt::BottomDockWidgetArea, gameDatabaseDock);
+	tabifyDockWidget(engineDebugDock, gameDatabaseDock);
+
 	// Move list
 	QDockWidget* moveListDock = new QDockWidget(tr("Move List"), this);
 	QTreeView* moveListView = new QTreeView(moveListDock);
@@ -156,6 +168,7 @@ void MainWindow::createDockWindows()
 	// Add toggle view actions to the View menu
 	m_viewMenu->addAction(moveListDock->toggleViewAction());
 	m_viewMenu->addAction(engineDebugDock->toggleViewAction());
+	m_viewMenu->addAction(gameDatabaseDock->toggleViewAction());
 }
 
 void MainWindow::readSettings()
