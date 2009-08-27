@@ -147,6 +147,7 @@ void MainWindow::createDockWindows()
 	gameDatabaseView->setModel(new GameDatabaseModel(this));
 	gameDatabaseView->setAlternatingRowColors(true);
 	gameDatabaseView->setRootIsDecorated(false);
+	gameDatabaseView->setUniformRowHeights(true);
 	gameDatabaseDock->setWidget(gameDatabaseView);
 
 	addDockWidget(Qt::BottomDockWidgetArea, gameDatabaseDock);
