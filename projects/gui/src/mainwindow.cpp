@@ -84,15 +84,12 @@ void MainWindow::createActions()
 	m_newGameAct = new QAction(tr("&New game..."), this);
 	m_newGameAct->setShortcut(QKeySequence("Ctrl+N"));
 
-	m_printGameAct = new QAction(tr("&Print..."), this);
-
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	m_quitGameAct->setShortcut(QKeySequence(tr("Ctrl+Q")));
 
 	m_manageEnginesAct = new QAction(tr("Manage..."), this);
 
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
-	connect(m_printGameAct, SIGNAL(triggered(bool)), this, SLOT(printGame()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
 
 	connect (m_manageEnginesAct, SIGNAL(triggered(bool)), this,
@@ -103,8 +100,6 @@ void MainWindow::createMenus()
 {
 	m_gameMenu = menuBar()->addMenu(tr("&Game"));
 	m_gameMenu->addAction(m_newGameAct);
-	m_gameMenu->addSeparator();
-	m_gameMenu->addAction(m_printGameAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 
@@ -248,24 +243,6 @@ void MainWindow::newGame()
 
 	m_boardModel->setBoard(chessgame->board());
 	chessgame->start();
-}
-
-void MainWindow::printGame()
-{
-	QPrinter printer(QPrinter::HighResolution);
-
-	QPrintDialog* printDialog = new QPrintDialog(&printer, this);
-	printDialog->setWindowTitle(tr("Print game"));
-
-	if (printDialog->exec() != QDialog::Accepted)
-		return;
-	
-	QPainter painter;
-	painter.begin(&printer);
-
-	m_chessboardView->render(&painter);
-
-	painter.end();
 }
 
 void MainWindow::manageEngines()

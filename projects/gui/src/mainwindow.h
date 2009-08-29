@@ -42,7 +42,6 @@ class MainWindow : public QMainWindow
 
 	private slots:
 		void newGame();
-		void printGame();
 		void manageEngines();
 		void saveLogToFile();
 
@@ -66,7 +65,6 @@ class MainWindow : public QMainWindow
 		EngineConfigurationModel* m_engineConfigurations;
 
 		QAction* m_quitGameAct;
-		QAction* m_printGameAct;
 		QAction* m_newGameAct;
 		QAction* m_manageEnginesAct;
 
