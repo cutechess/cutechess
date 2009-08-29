@@ -44,7 +44,6 @@ class MainWindow : public QMainWindow
 		void newGame();
 		void printGame();
 		void manageEngines();
-		void openConfigurationFile();
 		void saveLogToFile();
 
 	private:
@@ -58,7 +57,6 @@ class MainWindow : public QMainWindow
 		QMenu* m_viewMenu;
 		QMenu* m_enginesMenu;
 		QMenu* m_helpMenu;
-		QMenu* m_debugMenu;
 
 		ChessboardView* m_chessboardView;
 		ChessboardModel* m_boardModel;
@@ -71,7 +69,6 @@ class MainWindow : public QMainWindow
 		QAction* m_printGameAct;
 		QAction* m_newGameAct;
 		QAction* m_manageEnginesAct;
-		QAction* m_openConfigurationFileAct;
 
 		PlainTextLog* m_engineDebugLog;
 
