@@ -22,7 +22,8 @@ HEADERS += chessengine.h \
     enginecombooption.h \
     enginecheckoption.h \
     enginetextoption.h \
-    enginebuttonoption.h
+    enginebuttonoption.h \
+    pgngameentry.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -44,7 +45,8 @@ SOURCES += chessengine.cpp \
     enginecombooption.cpp \
     enginecheckoption.cpp \
     enginetextoption.cpp \
-    enginebuttonoption.cpp
+    enginebuttonoption.cpp \
+    pgngameentry.cpp
 win32 { 
     HEADERS += engineprocess_win.h \
         pipereader_win.h
