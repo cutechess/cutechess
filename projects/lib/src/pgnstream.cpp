@@ -21,25 +21,33 @@
 
 PgnStream::PgnStream()
 	: m_variant(Chess::Variant::NoVariant),
+	  m_pos(0),
 	  m_lineNumber(1),
-	  m_rewind(false)
+	  m_device(0),
+	  m_string(0),
+	  m_status(Ok)
 {
 }
 
 PgnStream::PgnStream(QIODevice* device)
-	: m_variant(Chess::Variant::NoVariant),
-	  m_lineNumber(1),
-	  m_rewind(false)
+	: m_variant(Chess::Variant::NoVariant)
 {
 	setDevice(device);
 }
 
-PgnStream::PgnStream(QString* string)
-	: m_variant(Chess::Variant::NoVariant),
-	  m_lineNumber(1),
-	  m_rewind(false)
+PgnStream::PgnStream(const QString* string)
+	: m_variant(Chess::Variant::NoVariant)
 {
-	m_in.setString(string, QIODevice::ReadOnly);
+	setString(string);
+}
+
+void PgnStream::reset()
+{
+	m_pos = 0;
+	m_lineNumber = 1;
+	m_device = 0;
+	m_string = 0;
+	m_status = Ok;
 }
 
 Chess::Board* PgnStream::board()
@@ -49,27 +57,37 @@ Chess::Board* PgnStream::board()
 
 QIODevice* PgnStream::device() const
 {
-	return m_in.device();
+	return m_device;
 }
 
 void PgnStream::setDevice(QIODevice* device)
 {
-	m_in.setDevice(device);
+	Q_ASSERT(device != 0);
+	reset();
+	m_pos = device->pos();
+	m_device = device;
 }
 
-QString* PgnStream::string() const
+const QString* PgnStream::string() const
 {
-	return m_in.string();
+	return m_string;
 }
 
-void PgnStream::setString(QString* string)
+void PgnStream::setString(const QString* string)
 {
-	m_in.setString(string);
+	Q_ASSERT(string != 0);
+	reset();
+	m_string = string;
 }
 
 bool PgnStream::isOpen() const
 {
-	return (m_in.device() && m_in.device()->isOpen()) || m_in.string();
+	return (m_device && m_device->isOpen()) || m_string;
+}
+
+qint64 PgnStream::pos() const
+{
+	return m_pos;
 }
 
 qint64 PgnStream::lineNumber() const
@@ -79,51 +97,107 @@ qint64 PgnStream::lineNumber() const
 
 QChar PgnStream::readChar()
 {
-	if (m_rewind)
+	QChar c;
+	if (m_device)
 	{
-		m_rewind = false;
-		return m_lastChar;
+		if (!m_device->getChar(&m_lastChar))
+		{
+			m_status = ReadPastEnd;
+			return QChar();
+		}
+		c = QChar(m_lastChar);
+	}
+	else if (m_string && m_pos < m_string->size())
+	{
+		c = m_string->at(m_pos);
+	}
+	else
+	{
+		m_status = ReadPastEnd;
+		return QChar();
 	}
 
-	m_in >> m_lastChar;
-	if (m_lastChar == '\n')
+	m_pos++;
+	if (c == '\n')
 		m_lineNumber++;
 
-	return m_lastChar;
+	return c;
 }
 
 QString PgnStream::readLine()
 {
-	m_lineNumber++;
-	return m_in.readLine();
+	QString str;
+	QChar c;
+	while (!(c = readChar()).isNull() && c != '\n')
+		str += c;
+
+	if (c == '\n')
+		m_lineNumber++;
+	return str;
 }
 
 void PgnStream::rewind()
 {
-	m_in.resetStatus();
-	m_lineNumber = 1;
-	m_rewind = false;
-	m_in.seek(0);
+	seek(0);
 }
 
 void PgnStream::rewindChar()
 {
-	m_rewind = true;
+	if (m_pos <= 0)
+		return;
+
+	QChar c;
+	if (m_device)
+	{
+		c = QChar(m_lastChar);
+		m_device->ungetChar(m_lastChar);
+		m_lastChar = 0;
+	}
+	else if (m_string)
+		c = m_string->at(m_pos);
+	else
+		return;
+
+	if (c == '\n')
+		m_lineNumber--;
+	m_pos--;
+}
+
+bool PgnStream::seek(qint64 pos, qint64 lineNumber)
+{
+	if (pos < 0)
+		return false;
+
+	bool ok = false;
+	if (m_device)
+		ok = m_device->seek(pos);
+	else if (m_string)
+		ok = pos < m_string->size();
+	if (!ok)
+		return false;
+
+	m_status = Ok;
+	m_pos = pos;
+	m_lineNumber = lineNumber;
+	m_lastChar = 0;
+
+	return true;
 }
 
 void PgnStream::skipWhiteSpace()
 {
+	QChar c;
 	do
 	{
-		readChar();
+		c = readChar();
 	}
-	while (m_lastChar.isSpace());
-	m_rewind = true;
+	while (c.isSpace());
+	rewindChar();
 }
 
-QTextStream::Status PgnStream::status() const
+PgnStream::Status PgnStream::status() const
 {
-	return m_in.status();
+	return m_status;
 }
 
 Chess::Variant PgnStream::variant() const

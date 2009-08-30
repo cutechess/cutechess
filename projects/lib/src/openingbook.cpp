@@ -95,7 +95,7 @@ bool OpeningBook::pgnImport(PgnStream& in, int maxMoves)
 	
 	int gameCount = 0;
 	int moveCount = 0;
-	while (in.status() == QTextStream::Ok)
+	while (in.status() == PgnStream::Ok)
 	{
 		PgnGame game;
 		game.read(in, PgnGame::Minimal, maxMoves);

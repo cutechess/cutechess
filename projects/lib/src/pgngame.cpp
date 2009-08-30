@@ -89,7 +89,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
 	QString str;
 	Chess::Board* board = in.board();
 	
-	while (in.status() == QTextStream::Ok)
+	while (in.status() == PgnStream::Ok)
 	{
 		c = in.readChar();
 		if (!m_hasTags && itemType != PgnTag && c != '[')
@@ -298,7 +298,7 @@ bool PgnGame::read(PgnStream& in, PgnMode mode, int maxMoves)
 	else
 		board->setVariant(m_variant);
 	
-	while (in.status() == QTextStream::Ok
+	while (in.status() == PgnStream::Ok
 	   &&  m_moves.size() < maxMoves)
 	{
 		PgnItem item = readItem(in, mode);

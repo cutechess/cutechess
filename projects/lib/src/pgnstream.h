@@ -20,7 +20,6 @@
 
 #include <QtGlobal>
 #include <QString>
-#include <QTextStream>
 #include "chessboard/chessboard.h"
 class QIODevice;
 
@@ -40,6 +39,13 @@ class QIODevice;
 class LIB_EXPORT PgnStream
 {
 	public:
+		/*! The current status of the PGN stream. */
+		enum Status
+		{
+			Ok,         //!< The stream is operating normally.
+			ReadPastEnd //!< The stream has read past the end of the data.
+		};
+
 		/*!
 		 * Creates a new PgnStream.
 		 * A device or a string must be set before the stream
@@ -49,7 +55,7 @@ class LIB_EXPORT PgnStream
 		/*! Creates a PgnStream that operates on \a device. */
 		explicit PgnStream(QIODevice* device);
 		/*! Creates a PgnStream that operates on \a string. */
-		explicit PgnStream(QString* string);
+		explicit PgnStream(const QString* string);
 
 		/*!
 		 * Returns the Board object which is used to verify the moves
@@ -63,12 +69,15 @@ class LIB_EXPORT PgnStream
 		void setDevice(QIODevice* device);
 
 		/*! Returns the assigned string, or 0 if no string is in use. */
-		QString* string() const;
+		const QString* string() const;
 		/*! Sets the current string to \a string. */
-		void setString(QString* string);
+		void setString(const QString* string);
 
 		/*! Returns true if the stream is open. */
 		bool isOpen() const;
+
+		/*! Returns the current position in the stream. */
+		qint64 pos() const;
 
 		/*! Returns the current line number. */
 		qint64 lineNumber() const;
@@ -79,7 +88,13 @@ class LIB_EXPORT PgnStream
 		/*! Reads one line of text and returns it. */
 		QString readLine();
 
-		/*! Rewinds back to the start of input. */
+		/*! Resets the stream to its default state. */
+		void reset();
+
+		/*!
+		 * Rewinds back to the start of input.
+		 * This is equivalent to calling \a seek(0).
+		 */
 		void rewind();
 		/*!
 		 * Rewinds the stream position by one character, which means that
@@ -92,13 +107,19 @@ class LIB_EXPORT PgnStream
 		 */
 		void rewindChar();
 		/*!
+		 * Seeks to position \a pos in the device, and sets the current
+		 * line number to \a lineNumber.
+		 * Returns true if successfull.
+		 */
+		bool seek(qint64 pos, qint64 lineNumber = 1);
+		/*!
 		 * Reads and discards whitespace from the stream until either
 		 * a non-space character is read, or EOF is reached.
 		 */
 		void skipWhiteSpace();
 
 		/*! Returns the status of the stream. */
-		QTextStream::Status status() const;
+		Status status() const;
 
 		/*!
 		 * Returns the chess variant of the PGN game/collection.
@@ -110,12 +131,14 @@ class LIB_EXPORT PgnStream
 		void setVariant(Chess::Variant variant);
 
 	private:
-		QTextStream m_in;
 		Chess::Variant m_variant;
 		Chess::Board m_board;
+		qint64 m_pos;
 		qint64 m_lineNumber;
-		QChar m_lastChar;
-		bool m_rewind;
+		char m_lastChar;
+		QIODevice* m_device;
+		const QString* m_string;
+		Status m_status;
 };
 
 #endif // PGNSTREAM_H
