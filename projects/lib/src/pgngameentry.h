@@ -21,7 +21,6 @@
 #include "chessboard/chess.h"
 #include "chessboard/variant.h"
 #include "chessboard/result.h"
-class QTextStream;
 class PgnStream;
 
 
