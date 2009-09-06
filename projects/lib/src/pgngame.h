@@ -2,9 +2,7 @@
 #define PGNGAME_H
 
 #include <QString>
-#include <QStringList>
 #include <QVector>
-#include <QDate>
 #include "chessboard/chess.h"
 #include "chessboard/result.h"
 #include "chessboard/variant.h"

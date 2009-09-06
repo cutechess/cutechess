@@ -19,6 +19,7 @@
 #define MOVE_LIST_MODEL_H
 
 #include <QAbstractItemModel>
+#include <QStringList>
 
 class ChessGame;
 
