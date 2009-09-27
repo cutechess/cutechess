@@ -98,6 +98,12 @@ void ChessPlayer::go()
 	startThinking();
 }
 
+void ChessPlayer::quit()
+{
+	m_state = Disconnected;
+	emit disconnected();
+}
+
 const MoveEvaluation& ChessPlayer::evaluation() const
 {
 	return m_eval;
@@ -212,6 +218,7 @@ void ChessPlayer::onDisconnect()
 {
 	closeConnection();
 	emitForfeit(Chess::Result::WinByDisconnection);
+	emit disconnected();
 }
 
 void ChessPlayer::onTimeout()

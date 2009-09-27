@@ -58,6 +58,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		// Inherited from ChessPlayer
 		void closeConnection();
+		void quit();
 		virtual void endGame(Chess::Result result);
 		bool isHuman() const;
 		bool isReady() const;
@@ -97,9 +98,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 */
 		void setOption(const QString& name, const QVariant& value);
 		
-		/*! Terminates the engine non-violently. */
-		void quit();
-
 	public slots:
 		// Inherited from ChessPlayer
 		void go();
@@ -167,12 +165,16 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 */
 		void flushWriteBuffer();
 
+	private slots:
+		void onQuitTimeout();
+
 	private:
 		static int m_count;
 		int m_id;
 		State m_pingState;
 		bool m_pinging;
 		QTimer m_pingTimer;
+		QTimer m_quitTimer;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
 		QVector<EngineSettings::CustomSetting> m_optionBuffer;

@@ -144,7 +144,13 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		virtual void go();
 
+		/*! Terminates the player non-violently. */
+		virtual void quit();
+
 	signals:
+		/*! This signal is emitted when the player disconnects. */
+		void disconnected();
+
 		/*! Signals that the player is ready for input. */
 		void ready() const;
 		

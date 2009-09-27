@@ -41,7 +41,9 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
 
 	m_pingTimer.setSingleShot(true);
+	m_quitTimer.setSingleShot(true);
 	connect(&m_pingTimer, SIGNAL(timeout()), this, SLOT(onPingTimeout()));
+	connect(&m_quitTimer, SIGNAL(timeout()), this, SLOT(onQuitTimeout()));
 }
 
 ChessEngine::~ChessEngine()
@@ -284,12 +286,27 @@ void ChessEngine::flushWriteBuffer()
 	m_writeBuffer.clear();
 }
 
+void ChessEngine::onQuitTimeout()
+{
+	Q_ASSERT(state() != Disconnected);
+
+	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onQuitTimeout()));
+
+	if (!m_quitTimer.isActive())
+		closeConnection();
+	else
+		m_quitTimer.stop();
+
+	ChessPlayer::quit();
+}
+
 void ChessEngine::quit()
 {
-	if (!m_ioDevice->isOpen() || state() == Disconnected)
-		return;
+	if (!m_ioDevice || !m_ioDevice->isOpen() || state() == Disconnected)
+		return ChessPlayer::quit();
 
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
+	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onQuitTimeout()));
 	sendQuit();
-	setState(Disconnected);
+	m_quitTimer.start(2000);
 }
