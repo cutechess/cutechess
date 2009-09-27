@@ -26,6 +26,7 @@
 ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 	: QObject(parent),
 	  PgnGame(variant),
+	  m_origThread(0),
 	  m_gameEnded(false),
 	  m_gameInProgress(false),
 	  m_drawMoveNum(0),
@@ -81,6 +82,17 @@ void ChessGame::stop()
 
 	m_player[Chess::White]->endGame(result());
 	m_player[Chess::Black]->endGame(result());
+	
+	// Change thread affinity back to the way it was before the game
+	if (m_origThread != 0 && thread() != m_origThread)
+	{
+		m_player[Chess::White]->disconnect(this);
+		m_player[Chess::Black]->disconnect(this);
+		moveToThread(m_origThread);
+		m_player[Chess::White]->moveToThread(m_origThread);
+		m_player[Chess::Black]->moveToThread(m_origThread);
+		m_origThread = 0;
+	}
 
 	connect(this, SIGNAL(playersReady()), this, SIGNAL(gameEnded()), Qt::QueuedConnection);
 	syncPlayers(true);
@@ -236,11 +248,6 @@ void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
 	Q_ASSERT(side != Chess::NoSide);
 	Q_ASSERT(player != 0);
 	m_player[side] = player;
-
-	connect(player, SIGNAL(moveMade(const Chess::Move&)),
-	        this, SLOT(onMoveMade(const Chess::Move&)));
-	connect(player, SIGNAL(forfeit(Chess::Result)),
-		this, SLOT(onForfeit(Chess::Result)));
 }
 
 bool ChessGame::setFenString(const QString& fen)
@@ -349,21 +356,50 @@ void ChessGame::syncPlayers(bool ignoreSender)
 	emit playersReady();
 }
 
-void ChessGame::start()
+void ChessGame::start(QThread* thread)
+{
+	m_origThread = 0;
+	if (thread != 0)
+	{
+		Q_ASSERT(parent() == 0);
+		Q_ASSERT(m_player[Chess::White]->parent() == 0);
+		Q_ASSERT(m_player[Chess::Black]->parent() == 0);
+
+		m_origThread = this->thread();
+		moveToThread(thread);
+		m_player[Chess::White]->moveToThread(thread);
+		m_player[Chess::Black]->moveToThread(thread);
+	}
+
+	// Connect the signals only after the thread affinity has been changed.
+	// Otherwise the connections may break.
+	for (int i = Chess::White; i <= Chess::Black; i++)
+	{
+		connect(m_player[i], SIGNAL(moveMade(const Chess::Move&)),
+			this, SLOT(onMoveMade(const Chess::Move&)));
+		connect(m_player[i], SIGNAL(forfeit(Chess::Result)),
+			this, SLOT(onForfeit(Chess::Result)));
+	}
+
+	// Start the game in the correct thread
+	QMetaObject::invokeMethod(this, "startGame", Qt::QueuedConnection);
+}
+
+void ChessGame::startGame()
 {
 	setResult(Chess::Result());
 	emit humanEnabled(false);
 
-	disconnect(this, SIGNAL(playersReady()), this, SLOT(start()));
+	disconnect(this, SIGNAL(playersReady()), this, SLOT(startGame()));
 	if (!arePlayersReady())
 	{
-		connect(this, SIGNAL(playersReady()), this, SLOT(start()));
+		connect(this, SIGNAL(playersReady()), this, SLOT(startGame()));
 		syncPlayers(true);
 		return;
 	}
 	if (m_gameEnded)
 		return;
-	
+
 	m_gameInProgress = true;
 	for (int i = 0; i < 2; i++)
 	{

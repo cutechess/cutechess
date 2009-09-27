@@ -29,6 +29,7 @@
 class ChessPlayer;
 class OpeningBook;
 class MoveEvaluation;
+class QThread;
 
 class LIB_EXPORT ChessGame : public QObject, public PgnGame
 {
@@ -47,7 +48,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		void setResignThreshold(int moveCount, int score);
 
 	public slots:
-		void start();
+		void start(QThread* thread = 0);
 		void stop();
 		void kill();
 		void onMoveMade(const Chess::Move& move);
@@ -59,6 +60,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		void playersReady();
 
 	private slots:
+		void startGame();
 		void onForfeit(Chess::Result result);
 		void syncPlayers(bool ignoreSender = false);
 
@@ -70,6 +72,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		ChessPlayer* playerToWait();
 		void setBoard();
 		
+		QThread* m_origThread;
 		Chess::Board* m_board;
 		ChessPlayer* m_player[2];
 		bool m_gameEnded;
