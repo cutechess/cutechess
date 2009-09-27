@@ -239,6 +239,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Maximum book depth in plies (halfmoves)
 		else if (opt.name == "-bookdepth")
 			optOk = ok = match->setBookDepth(opt.value.toInt());
+		else if (opt.name == "-concurrency")
+			optOk = ok = match->setConcurrency(opt.value.toInt());
 		// Threshold for draw adjudication
 		else if (opt.name == "-draw")
 		{
@@ -363,6 +365,7 @@ int main(int argc, char* argv[])
 			       "			Fischerandom, Capablanca, Gothic or Caparandom\n"
 			       "  -book <file>		Use <file> (Polyglot book file) as the opening book\n"
 			       "  -bookdepth <n>	Set the maximum book depth (in plies) to <n>\n"
+			       "  -concurrency <n>	Set the maximum number of concurrent games to <n>\n"
 			       "  -draw <n> <score>	Adjudicate the game as a draw if the score of both\n"
 			       "			engines is within <score> centipawns from zero after\n"
 			       "			<n> full moves have been played\n"
@@ -410,5 +413,7 @@ int main(int argc, char* argv[])
 		return 1;
 	match->start();
 
-	return app.exec();
+	int ret = app.exec();
+	qDebug() << "Finished match";
+	return ret;
 }
