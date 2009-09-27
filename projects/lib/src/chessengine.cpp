@@ -50,6 +50,11 @@ ChessEngine::~ChessEngine()
 	--m_count;
 }
 
+QIODevice* ChessEngine::device() const
+{
+	return m_ioDevice;
+}
+
 void ChessEngine::applySettings(const EngineSettings& settings)
 {
 	foreach (const QString& str, settings.initStrings())

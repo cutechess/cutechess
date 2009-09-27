@@ -53,6 +53,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		ChessEngine(QIODevice* ioDevice, QObject* parent = 0);
 		virtual ~ChessEngine();
 
+		/*! Returns the current device associated with the engine. */
+		QIODevice* device() const;
+
 		// Inherited from ChessPlayer
 		void closeConnection();
 		virtual void endGame(Chess::Result result);
