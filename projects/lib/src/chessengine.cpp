@@ -17,6 +17,7 @@
 
 #include <QVariant>
 #include <QIODevice>
+#include <QTimer>
 #include <QtDebug>
 #include <QtAlgorithms>
 
@@ -33,6 +34,8 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	  m_id(m_count++),
 	  m_pingState(NotStarted),
 	  m_pinging(false),
+	  m_pingTimer(0),
+	  m_quitTimer(0),
 	  m_ioDevice(ioDevice)
 {
 	Q_ASSERT(m_ioDevice != 0);
@@ -40,10 +43,12 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
 
-	m_pingTimer.setSingleShot(true);
-	m_quitTimer.setSingleShot(true);
-	connect(&m_pingTimer, SIGNAL(timeout()), this, SLOT(onPingTimeout()));
-	connect(&m_quitTimer, SIGNAL(timeout()), this, SLOT(onQuitTimeout()));
+	m_pingTimer = new QTimer(this);
+	m_quitTimer = new QTimer(this);
+	m_pingTimer->setSingleShot(true);
+	m_quitTimer->setSingleShot(true);
+	connect(m_pingTimer, SIGNAL(timeout()), this, SLOT(onPingTimeout()));
+	connect(m_quitTimer, SIGNAL(timeout()), this, SLOT(onQuitTimeout()));
 }
 
 ChessEngine::~ChessEngine()
@@ -178,7 +183,7 @@ void ChessEngine::closeConnection()
 	ChessPlayer::closeConnection();
 
 	m_pinging = false;
-	m_pingTimer.stop();
+	m_pingTimer->stop();
 	m_writeBuffer.clear();
 	emit ready();
 
@@ -202,7 +207,7 @@ void ChessEngine::ping()
 
 	m_pinging = true;
 	m_pingState = state();
-	m_pingTimer.start(10000);
+	m_pingTimer->start(10000);
 }
 
 void ChessEngine::pong()
@@ -210,7 +215,7 @@ void ChessEngine::pong()
 	if (!m_pinging)
 		return;
 
-	m_pingTimer.stop();
+	m_pingTimer->stop();
 	m_pinging = false;
 	flushWriteBuffer();
 
@@ -292,10 +297,10 @@ void ChessEngine::onQuitTimeout()
 
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onQuitTimeout()));
 
-	if (!m_quitTimer.isActive())
+	if (!m_quitTimer->isActive())
 		closeConnection();
 	else
-		m_quitTimer.stop();
+		m_quitTimer->stop();
 
 	ChessPlayer::quit();
 }
@@ -308,5 +313,5 @@ void ChessEngine::quit()
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onQuitTimeout()));
 	sendQuit();
-	m_quitTimer.start(2000);
+	m_quitTimer->start(2000);
 }

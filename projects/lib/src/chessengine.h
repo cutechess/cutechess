@@ -173,8 +173,8 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		int m_id;
 		State m_pingState;
 		bool m_pinging;
-		QTimer m_pingTimer;
-		QTimer m_quitTimer;
+		QTimer* m_pingTimer;
+		QTimer* m_quitTimer;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
 		QVector<EngineSettings::CustomSetting> m_optionBuffer;

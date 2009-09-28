@@ -20,7 +20,6 @@
 
 #include <QObject>
 #include <QString>
-#include <QTimer>
 #include <QVector>
 #include "chessboard/chess.h"
 #include "chessboard/result.h"
@@ -28,6 +27,7 @@
 #include "chessboard/chessmove.h"
 #include "timecontrol.h"
 #include "moveevaluation.h"
+class QTimer;
 
 
 /*!
@@ -222,7 +222,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		QString m_name;
 		State m_state;
 		TimeControl m_timeControl;
-		QTimer m_timer;
+		QTimer* m_timer;
 		bool m_forfeited;
 		Chess::Side m_side;
 		Chess::Board* m_board;

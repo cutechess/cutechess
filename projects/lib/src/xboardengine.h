@@ -74,7 +74,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		Chess::Move m_nextMove;
 		QString m_nextMoveString;
 		Chess::MoveNotation m_notation;
-		QTimer m_initTimer;
+		QTimer* m_initTimer;
 };
 
 #endif // XBOARDENGINE_H

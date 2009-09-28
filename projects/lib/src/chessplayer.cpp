@@ -24,13 +24,15 @@
 ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
 	  m_state(NotStarted),
+	  m_timer(0),
 	  m_forfeited(false),
 	  m_side(Chess::NoSide),
 	  m_board(0),
 	  m_opponent(0)
 {
-	m_timer.setSingleShot(true);
-	connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
+	m_timer = new QTimer(this);
+	m_timer->setSingleShot(true);
+	connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 }
 
 ChessPlayer::~ChessPlayer()
@@ -77,7 +79,7 @@ void ChessPlayer::endGame(Chess::Result result)
 
 	m_state = FinishingGame;
 	m_board = 0;
-	m_timer.stop();
+	m_timer->stop();
 }
 
 void ChessPlayer::go()
@@ -122,7 +124,7 @@ void ChessPlayer::startClock()
 		emit startedThinking(m_timeControl.timePerMove());
 	
 	m_timeControl.startTimer();
-	m_timer.start(qMax(m_timeControl.timeLeft(), 0) + 200);
+	m_timer->start(qMax(m_timeControl.timeLeft(), 0) + 200);
 }
 
 void ChessPlayer::makeBookMove(const Chess::Move& move)
@@ -182,7 +184,7 @@ void ChessPlayer::emitForfeit(Chess::Result::Code code, const QString& arg)
 	if (m_forfeited)
 		return;
 
-	m_timer.stop();
+	m_timer->stop();
 	if (m_state == Thinking)
 		m_state = Observing;
 	m_forfeited = true;
@@ -199,7 +201,7 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 	m_timeControl.update();
 	m_eval.setTime(m_timeControl.lastMoveTime());
 
-	m_timer.stop();
+	m_timer->stop();
 	if (m_timeControl.timeLeft() <= 0)
 	{
 		emitForfeit(Chess::Result::WinByTimeout);

@@ -18,6 +18,7 @@
 #include <QtGlobal>
 #include <QString>
 #include <QStringList>
+#include <QTimer>
 #include <QDebug>
 
 #include "xboardengine.h"
@@ -51,8 +52,10 @@ XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
 	  m_ftUsermove(false),
 	  m_gotResult(false),
 	  m_lastPing(0),
-	  m_notation(Chess::LongAlgebraic)
+	  m_notation(Chess::LongAlgebraic),
+	  m_initTimer(0)
 {
+	m_initTimer = new QTimer(this);
 	m_variants.append(Chess::Variant::Standard);
 	setName("XboardEngine");
 }
@@ -66,9 +69,9 @@ void XboardEngine::startProtocol()
 
 	// Give the engine 2 seconds to reply to the protover command.
 	// This is how Xboard deals with protocol 1 engines.
-	m_initTimer.setSingleShot(true);
-	connect(&m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
-	m_initTimer.start(2000);
+	m_initTimer->setSingleShot(true);
+	connect(m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
+	m_initTimer->start(2000);
 }
 
 void XboardEngine::initialize()
@@ -364,7 +367,7 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	else if (name == "done")
 	{
 		write("accepted done");
-		m_initTimer.stop();
+		m_initTimer->stop();
 		
 		if (val == "1")
 			initialize();
