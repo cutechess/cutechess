@@ -36,6 +36,7 @@ class ChessPlayer;
 class LIB_EXPORT PlayerBuilder
 {
 	public:
+		virtual ~PlayerBuilder() {}
 		/*! Creates a new player and sets its parent to \a parent. */
 		virtual ChessPlayer* create(QObject* parent = 0) const = 0;
 };
