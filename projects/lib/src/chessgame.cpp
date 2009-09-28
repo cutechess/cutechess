@@ -83,6 +83,14 @@ void ChessGame::stop()
 	m_player[Chess::White]->endGame(result());
 	m_player[Chess::Black]->endGame(result());
 	
+	connect(this, SIGNAL(playersReady()), this, SLOT(finish()), Qt::QueuedConnection);
+	syncPlayers(true);
+}
+
+void ChessGame::finish()
+{
+	disconnect(this, SIGNAL(playersReady()), this, SLOT(finish()));
+
 	// Change thread affinity back to the way it was before the game
 	if (m_origThread != 0 && thread() != m_origThread)
 	{
@@ -94,8 +102,7 @@ void ChessGame::stop()
 		m_origThread = 0;
 	}
 
-	connect(this, SIGNAL(playersReady()), this, SIGNAL(gameEnded()), Qt::QueuedConnection);
-	syncPlayers(true);
+	emit gameEnded();
 }
 
 void ChessGame::kill()
