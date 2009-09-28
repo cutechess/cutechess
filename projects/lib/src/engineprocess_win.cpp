@@ -272,6 +272,7 @@ void EngineProcess::onFinished()
 		if (m_exitCode != 0)
 			m_exitStatus = CrashExit;
 
+		cleanup();
 		emit finished((int)m_exitCode, m_exitStatus);
 	}
 }
