@@ -48,6 +48,9 @@ OPTIONS
 -bookdepth <n>::
 	Set the maximum book depth (in plies) to <n>.
 
+-concurrency <n>::
+	Set the maximum number of concurrent games to <n>.
+
 -draw <n> <score>::
 	Adjudicate the game as a draw if the score of both engines is
 	within <score> centipawns from zero after <n> full moves have
@@ -121,15 +124,6 @@ depth=<arg>::
 
 nodes=<arg>::
 	Set the node count limit to <arg>.
-
-cpus=<n>::
-	Tell the engine to use a maximum of <n> cpus.
-
-egbbpath=<dir>::
-	Set the path to endgame bitbases to <dir>.
-
-egtbpath=<dir>::
-	Set the path to endgame tablebases to <dir>.
 
 option.<name>=<arg>::
 	Set custom engine option <name> to value <arg>.
