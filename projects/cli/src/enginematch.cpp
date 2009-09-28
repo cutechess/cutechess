@@ -210,8 +210,7 @@ bool EngineMatch::initialize()
 		}
 
 		it->wins = 0;
-		EngineBuilder* builder = new EngineBuilder(it->config, it->settings);
-		it->builder = builder;
+		it->builder = new EngineBuilder(it->config, it->settings);
 	}
 
 	m_pgnInputStream.setVariant(m_variant);
@@ -236,6 +235,7 @@ void EngineMatch::onGameEnded()
 {
 	ChessGame* game = qobject_cast<ChessGame*>(QObject::sender());
 	Q_ASSERT(game != 0);
+	Q_ASSERT(game->thread() == thread());
 
 	disconnect(this, SIGNAL(stopGame()), game, SLOT(kill()));
 
