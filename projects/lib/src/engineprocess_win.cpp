@@ -291,14 +291,12 @@ bool EngineProcess::waitForFinished(int msecs)
 	DWORD ret = WaitForSingleObject(m_processInfo.hProcess, dwWait);
 	if (ret == WAIT_OBJECT_0)
 	{
-		onFinished();
-
 		// The blocking ReadFile call in the pipe reader should
 		// return now that the pipes are closed. But if it doesn't
 		// happen, the pipe reader will be terminated violently
 		// after the timeout.
 		m_reader->wait(10000);
-		cleanup();
+		onFinished();
 
 		return true;
 	}
