@@ -106,7 +106,7 @@ void GameManager::cleanup()
 	for (it = m_idlePlayers.begin(); it != m_idlePlayers.end(); ++it)
 	{
 		connect(it->player, SIGNAL(disconnected()),
-			this, SLOT(onPlayerQuit()));
+			this, SLOT(onPlayerQuit()), Qt::QueuedConnection);
 		it->player->quit();
 	}
 }
