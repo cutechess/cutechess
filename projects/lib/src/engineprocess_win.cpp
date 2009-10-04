@@ -272,6 +272,7 @@ void EngineProcess::onFinished()
 		if (m_exitCode != 0)
 			m_exitStatus = CrashExit;
 
+		Q_ASSERT(m_reader == 0 || m_reader->isFinished());
 		cleanup();
 		emit finished((int)m_exitCode, m_exitStatus);
 	}
