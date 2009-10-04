@@ -80,6 +80,7 @@ void ChessPlayer::endGame(Chess::Result result)
 	m_state = FinishingGame;
 	m_board = 0;
 	m_timer->stop();
+	disconnect(this, SIGNAL(ready()), this, SLOT(go()));
 }
 
 void ChessPlayer::go()
