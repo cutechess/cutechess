@@ -74,7 +74,7 @@ class LIB_EXPORT PipeReader : public QThread
 		char* m_start;
 		char* m_end;
 		qint64 m_bytesLeft;
-		QMutex m_mutex;
+		mutable QMutex m_mutex;
 		QWaitCondition m_cond;
 		int m_lastLineBreak;
 };

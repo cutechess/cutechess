@@ -31,11 +31,13 @@ PipeReader::PipeReader(HANDLE pipe, QObject* parent)
 
 qint64 PipeReader::bytesAvailable() const
 {
+	QMutexLocker locker(&m_mutex);
 	return m_bytesLeft;
 }
 
 bool PipeReader::canReadLine() const
 {
+	QMutexLocker locker(&m_mutex);
 	return m_lastLineBreak > 0;
 }
 
@@ -126,6 +128,8 @@ void PipeReader::run()
 
 		locker.unlock();
 		BOOL ok = ReadFile(m_pipe, m_end, chunkSize, &dwRead, 0);
+		locker.relock();
+
 		if (!ok || dwRead == 0)
 		{
 			DWORD err = GetLastError();
@@ -135,7 +139,6 @@ void PipeReader::run()
 			return;
 		}
 
-		locker.relock();
 		m_bytesLeft += dwRead;
 		Q_ASSERT(m_bytesLeft <= BufSize);
 		m_end += dwRead;
@@ -143,7 +146,6 @@ void PipeReader::run()
 		if (m_end >= bufEnd)
 			m_end = m_data;
 
-		locker.unlock();
 		// To avoid signal spam, send the 'readyRead' signal only
 		// if we have a whole line of new data
 		if (sendReady)
