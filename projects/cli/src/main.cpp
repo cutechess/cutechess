@@ -29,6 +29,7 @@
 #include <enginemanager.h>
 #include "enginematch.h"
 #include "cutechesscoreapp.h"
+#include "matchparser.h"
 
 static EngineMatch* match = 0;
 
@@ -41,35 +42,6 @@ void sigintHandler(int param)
 		abort();
 }
 
-struct CmdOption
-{
-	QString name;
-	QString value;
-	QStringList args;
-};
-
-static QList<CmdOption> getOptions(const QStringList& args)
-{
-	QList<CmdOption> options;
-
-	QStringList::const_iterator it;
-	for (it = args.constBegin(); it != args.constEnd(); ++it)
-	{
-		CmdOption option;
-		option.name = *it;
-		if (it->startsWith('-'))
-		{
-			for (++it; it != args.constEnd() && !it->startsWith('-'); ++it)
-				option.args.append(*it);
-			--it;
-		}
-		if (option.args.size() > 0)
-			option.value = option.args.at(0);
-		options.append(option);
-	}
-
-	return options;
-}
 
 struct EngineData
 {
@@ -207,109 +179,139 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 
 static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 {
-	EngineMatch* match = new EngineMatch(parent);
-	QList<CmdOption> options = getOptions(args);
+	MatchParser parser(args);
+	parser.addOption("-fcp", QVariant::StringList, 1);
+	parser.addOption("-scp", QVariant::StringList, 1);
+	parser.addOption("-both", QVariant::StringList, 1);
+	parser.addOption("-variant", QVariant::String, 1, 1);
+	parser.addOption("-book", QVariant::String, 1, 1);
+	parser.addOption("-bookdepth", QVariant::Int, 1, 1);
+	parser.addOption("-concurrency", QVariant::Int, 1, 1);
+	parser.addOption("-draw", QVariant::StringList, 2, 2);
+	parser.addOption("-resign", QVariant::StringList, 2, 2);
+	parser.addOption("-event", QVariant::String, 1, 1);
+	parser.addOption("-games", QVariant::Int, 1, 1);
+	parser.addOption("-debug", QVariant::Bool, 0, 0);
+	parser.addOption("-pgnin", QVariant::String, 1, 1);
+	parser.addOption("-pgnout", QVariant::StringList, 1, 2);
+	parser.addOption("-repeat", QVariant::Bool, 0, 0);
+	parser.addOption("-site", QVariant::String, 1, 1);
+	parser.addOption("-wait", QVariant::Int, 1, 1);
+	if (!parser.parse())
+		return 0;
 
+	EngineMatch* match = new EngineMatch(parent);
 	EngineData fcp;
 	EngineData scp;
-	bool ok = false;
 
-	foreach (const CmdOption& opt, options)
+	QMap<QString, QVariant> options(parser.options());
+	QMap<QString, QVariant>::const_iterator it;
+	for (it = options.constBegin(); it != options.constEnd(); ++it)
 	{
-		bool optOk = true;
+		bool ok = true;
+		QString name = it.key();
+		QVariant value = it.value();
+		Q_ASSERT(!value.isNull());
 
 		// First chess program
-		if (opt.name == "-fcp")
-			optOk = ok = parseEngine(opt.args, fcp);
+		if (name == "-fcp")
+			ok = parseEngine(value.toStringList(), fcp);
 		// Second chess program
-		else if (opt.name == "-scp")
-			optOk = ok = parseEngine(opt.args, scp);
+		else if (name == "-scp")
+			ok = parseEngine(value.toStringList(), scp);
 		// The engine options apply to both engines
-		else if (opt.name == "-both")
+		else if (name == "-both")
 		{
-			optOk = ok = (parseEngine(opt.args, fcp) &&
-				      parseEngine(opt.args, scp));
+			ok = (parseEngine(value.toStringList(), fcp) &&
+			      parseEngine(value.toStringList(), scp));
 		}
 		// Chess variant (default: standard chess)
-		else if (opt.name == "-variant")
-			match->setVariant(Chess::Variant(opt.value));
+		else if (name == "-variant")
+			ok = match->setVariant(Chess::Variant(value.toString()));
 		// Opening book file (must be in Polyglot format)
-		else if (opt.name == "-book")
-			optOk = ok = match->setBookFile(opt.value);
+		else if (name == "-book")
+			ok = match->setBookFile(value.toString());
 		// Maximum book depth in plies (halfmoves)
-		else if (opt.name == "-bookdepth")
-			optOk = ok = match->setBookDepth(opt.value.toInt());
-		else if (opt.name == "-concurrency")
-			optOk = ok = match->setConcurrency(opt.value.toInt());
+		else if (name == "-bookdepth")
+			ok = match->setBookDepth(value.toInt());
+		else if (name == "-concurrency")
+			ok = match->setConcurrency(value.toInt());
 		// Threshold for draw adjudication
-		else if (opt.name == "-draw")
+		else if (name == "-draw")
 		{
-			if (opt.args.size() != 2)
-			{
-				qWarning() << "-draw needs two arguments";
-				ok = false;
-				break;
-			}
-			int moveNumber = opt.args[0].toInt();
-			int score = opt.args[1].toInt();
-			match->setDrawThreshold(moveNumber, score);
+			QStringList list = value.toStringList();
+			bool numOk = false;
+			bool scoreOk = false;
+			int moveNumber = list[0].toInt(&numOk);
+			int score = list[1].toInt(&scoreOk);
+
+			ok = (numOk && scoreOk);
+			if (ok)
+				match->setDrawThreshold(moveNumber, score);
 		}
 		// Threshold for resign adjudication
-		else if (opt.name == "-resign")
+		else if (name == "-resign")
 		{
-			if (opt.args.size() != 2)
-			{
-				qWarning() << "-resign needs two arguments";
-				ok = false;
-				break;
-			}
-			int moveCount = opt.args[0].toInt();
-			int score = opt.args[1].toInt();
-			match->setResignThreshold(moveCount, -score);
+			QStringList list = value.toStringList();
+			bool countOk = false;
+			bool scoreOk = false;
+			int moveCount = list[0].toInt(&countOk);
+			int score = list[1].toInt(&scoreOk);
+
+			ok = (countOk && scoreOk);
+			if (ok)
+				match->setResignThreshold(moveCount, -score);
 		}
 		// Event name
-		else if (opt.name == "-event")
-			match->setEvent(opt.value);
+		else if (name == "-event")
+			match->setEvent(value.toString());
 		// Number of games to play
-		else if (opt.name == "-games")
-			match->setGameCount(opt.value.toInt());
+		else if (name == "-games")
+			ok = match->setGameCount(value.toInt());
 		// Debugging mode. Prints all engine input and output.
-		else if (opt.name == "-debug")
+		else if (name == "-debug")
 			match->setDebugMode(true);
 		// Use a PGN file as the opening book
-		else if (opt.name == "-pgnin")
-			optOk = ok = match->setPgnInput(opt.value);
+		else if (name == "-pgnin")
+			ok = match->setPgnInput(value.toString());
 		// PGN file where the games should be saved
-		else if (opt.name == "-pgnout")
+		else if (name == "-pgnout")
 		{
 			PgnGame::PgnMode mode = PgnGame::Verbose;
-			if (opt.args.size() > 1 && opt.args[1] == "min")
+			QStringList list = value.toStringList();
+			if (list.size() == 2 && list[1] != "min")
+				ok = false;
+			if (ok)
+			{
 				mode = PgnGame::Minimal;
-			match->setPgnOutput(opt.value, mode);
+				match->setPgnOutput(list[0], mode);
+			}
 		}
 		// Play every opening twice, just switch the players' sides
-		else if (opt.name == "-repeat")
+		else if (name == "-repeat")
 			match->setRepeatOpening(true);
 		// Site/location name
-		else if (opt.name == "-site")
-			match->setSite(opt.value);
+		else if (name == "-site")
+			match->setSite(value.toString());
 		// Delay between games
-		else if (opt.name == "-wait")
-			match->setWait(opt.value.toInt());
+		else if (name == "-wait")
+			ok = match->setWait(value.toInt());
 		else
+			qFatal("Unknown argument: \"%s\"", qPrintable(name));
+
+		if (!ok)
 		{
-			qWarning() << "Invalid argument:" << opt.name;
-			optOk = ok = false;
+			QString val;
+			if (value.type() == QVariant::StringList)
+				val = value.toStringList().join(" ");
+			else
+				val = value.toString();
+			qWarning("Invalid value for option \"%s\": \"%s\"",
+				 qPrintable(name), qPrintable(val));
+
+			delete match;
+			return 0;
 		}
-
-		if (!optOk)
-			break;
-	}
-
-	if (!ok)
-	{
-		delete match;
-		return 0;
 	}
 
 	match->addEngine(fcp.config, fcp.settings);

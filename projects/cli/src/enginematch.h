@@ -52,15 +52,15 @@ class EngineMatch : public QObject
 		void setDebugMode(bool debug);
 		void setDrawThreshold(int moveNumber, int score);
 		void setEvent(const QString& event);
-		void setGameCount(int gameCount);
+		bool setGameCount(int gameCount);
 		bool setPgnInput(const QString& filename);
 		void setPgnOutput(const QString& filename,
 				  PgnGame::PgnMode mode);
 		void setRepeatOpening(bool repeatOpening);
 		void setResignThreshold(int moveCount, int score);
 		void setSite(const QString& site);
-		void setVariant(Chess::Variant variant);
-		void setWait(int msecs);
+		bool setVariant(Chess::Variant variant);
+		bool setWait(int msecs);
 		bool initialize();
 
 	public slots:

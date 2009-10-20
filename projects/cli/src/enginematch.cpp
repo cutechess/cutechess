@@ -133,9 +133,12 @@ void EngineMatch::setEvent(const QString& event)
 	m_event = event;
 }
 
-void EngineMatch::setGameCount(int gameCount)
+bool EngineMatch::setGameCount(int gameCount)
 {
+	if (gameCount <= 0)
+		return false;
 	m_gameCount = gameCount;
+	return true;
 }
 
 bool EngineMatch::setPgnInput(const QString& filename)
@@ -174,14 +177,20 @@ void EngineMatch::setSite(const QString& site)
 	m_site = site;
 }
 
-void EngineMatch::setVariant(Chess::Variant variant)
+bool EngineMatch::setVariant(Chess::Variant variant)
 {
+	if (variant == Chess::Variant::NoVariant)
+		return false;
 	m_variant = variant;
+	return true;
 }
 
-void EngineMatch::setWait(int msecs)
+bool EngineMatch::setWait(int msecs)
 {
+	if (msecs < 0)
+		return false;
 	m_wait = msecs;
+	return true;
 }
 
 bool EngineMatch::initialize()
