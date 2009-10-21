@@ -61,6 +61,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 
 	private slots:
 		void startGame();
+		void sendGameEnded();
 		void finish();
 		void onForfeit(Chess::Result result);
 		void syncPlayers(bool ignoreSender = false);

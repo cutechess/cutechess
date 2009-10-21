@@ -335,7 +335,7 @@ void EngineMatch::start()
 	qDebug() << "Started game" << m_currentGame << "of" << m_gameCount;
 
 	ChessGame* game = new ChessGame(m_variant);
-	connect(this, SIGNAL(stopGame()), game, SLOT(kill()));
+	connect(this, SIGNAL(stopGame()), game, SLOT(kill()), Qt::QueuedConnection);
 
 	EngineData* white = 0;
 	EngineData* black = 0;

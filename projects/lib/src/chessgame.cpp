@@ -74,7 +74,7 @@ void ChessGame::stop()
 	if (!m_gameInProgress)
 	{
 		setResult(Chess::Result());
-		emit gameEnded();
+		finish();
 		return;
 	}
 	
@@ -85,6 +85,11 @@ void ChessGame::stop()
 	
 	connect(this, SIGNAL(playersReady()), this, SLOT(finish()), Qt::QueuedConnection);
 	syncPlayers(true);
+}
+
+void ChessGame::sendGameEnded()
+{
+	emit gameEnded();
 }
 
 void ChessGame::finish()
@@ -102,7 +107,7 @@ void ChessGame::finish()
 		m_origThread = 0;
 	}
 
-	emit gameEnded();
+	QMetaObject::invokeMethod(this, "sendGameEnded", Qt::QueuedConnection);
 }
 
 void ChessGame::kill()
