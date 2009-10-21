@@ -324,7 +324,6 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 int main(int argc, char* argv[])
 {
-	signal(SIGTERM, sigintHandler);
 	signal(SIGINT, sigintHandler);
 
 	CuteChessCoreApplication app(argc, argv);
