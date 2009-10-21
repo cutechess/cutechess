@@ -65,7 +65,7 @@ class LIB_EXPORT PipeReader : public QThread
 		void run();
 
 	private:
-		static const int BufSize = 2048;
+		static const int BufSize = 0x8000;
 
 		bool findLastNewline(const char* end, int size);
 
