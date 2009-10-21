@@ -279,13 +279,15 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		{
 			PgnGame::PgnMode mode = PgnGame::Verbose;
 			QStringList list = value.toStringList();
-			if (list.size() == 2 && list[1] != "min")
-				ok = false;
-			if (ok)
+			if (list.size() == 2)
 			{
-				mode = PgnGame::Minimal;
-				match->setPgnOutput(list[0], mode);
+				if (list.at(1) == "min")
+					mode = PgnGame::Minimal;
+				else
+					ok = false;
 			}
+			if (ok)
+				match->setPgnOutput(list[0], mode);
 		}
 		// Play every opening twice, just switch the players' sides
 		else if (name == "-repeat")
