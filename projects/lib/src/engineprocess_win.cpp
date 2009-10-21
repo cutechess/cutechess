@@ -206,7 +206,7 @@ void EngineProcess::start(const QString& program,
 			    NULL,	// process attributes
 			    NULL,	// thread attributes
 			    TRUE,	// inherit handles
-			    0,		// creation flags
+			    CREATE_NEW_PROCESS_GROUP, // creation flags
 			    NULL,	// environment
 			    wdir.isEmpty() ? NULL : (WCHAR*)wdir.utf16(),
 			    &startupInfo,
@@ -217,7 +217,7 @@ void EngineProcess::start(const QString& program,
 			    NULL,	// process attributes
 			    NULL,	// thread attributes
 			    TRUE,	// inherit handles
-			    0,		// creation flags
+			    CREATE_NEW_PROCESS_GROUP, // creation flags
 			    NULL,	// environment
 			    wdir.isEmpty() ? NULL : wdir.toLocal8Bit().data(),
 			    &startupInfo,
