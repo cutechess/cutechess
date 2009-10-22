@@ -56,6 +56,13 @@ EngineMatch::~EngineMatch()
 
 void EngineMatch::stop()
 {
+	if (m_finishing)
+		return;
+
+	m_finishing = true;
+	disconnect(&m_manager, SIGNAL(ready()), this, SLOT(onManagerReady()));
+	m_manager.finish();
+
 	emit stopGame();
 }
 
@@ -311,11 +318,7 @@ void EngineMatch::onGameEnded()
 	||  result.code() == Chess::Result::NoResult
 	||  result.code() == Chess::Result::WinByDisconnection
 	||  result.code() == Chess::Result::WinByStalledConnection)
-	{
-		m_finishing = true;
-		disconnect(&m_manager, SIGNAL(ready()), this, SLOT(onManagerReady()));
-		m_manager.finish();
-	}
+		stop();
 }
 
 void EngineMatch::onManagerReady()

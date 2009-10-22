@@ -77,6 +77,7 @@ void ChessPlayer::endGame(Chess::Result result)
 	if (m_state != Observing && m_state != Thinking)
 		return;
 
+	Q_ASSERT(m_state != Disconnected);
 	m_state = FinishingGame;
 	m_board = 0;
 	m_timer->stop();
@@ -85,6 +86,8 @@ void ChessPlayer::endGame(Chess::Result result)
 
 void ChessPlayer::go()
 {
+	if (m_state == Disconnected)
+		return;
 	m_state = Thinking;
 
 	disconnect(this, SIGNAL(ready()), this, SLOT(go()));
