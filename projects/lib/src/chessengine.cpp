@@ -24,7 +24,6 @@
 #include "chessengine.h"
 #include "chessboard/chess.h"
 #include "engineoption.h"
-#include "enginesettings.h"
 
 int ChessEngine::m_count = 0;
 
