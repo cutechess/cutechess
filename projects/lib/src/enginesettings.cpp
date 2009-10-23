@@ -18,18 +18,7 @@
 #include "enginesettings.h"
 
 EngineSettings::EngineSettings()
-	: m_whiteEvalPov(false)
 {
-}
-
-const QStringList& EngineSettings::arguments() const
-{
-	return m_arguments;
-}
-
-const QStringList& EngineSettings::initStrings() const
-{
-	return m_initStrings;
 }
 
 const TimeControl& EngineSettings::timeControl() const
@@ -42,39 +31,7 @@ TimeControl& EngineSettings::timeControl()
 	return m_timeControl;
 }
 
-const QVector<EngineSettings::CustomSetting>& EngineSettings::customSettings() const
-{
-	return m_customSettings;
-}
-
-bool EngineSettings::whiteEvalPov() const
-{
-	return m_whiteEvalPov;
-}
-
-
-void EngineSettings::addArgument(const QString& argument)
-{
-	m_arguments.append(argument);
-}
-
-void EngineSettings::addInitString(const QString& str)
-{
-	m_initStrings.append(str);
-}
-
-void EngineSettings::addCustomSetting(const QString& name, const QVariant& value)
-{
-	CustomSetting setting = {name, value};
-	m_customSettings.append(setting);
-}
-
 void EngineSettings::setTimeControl(const TimeControl& timeControl)
 {
 	m_timeControl = timeControl;
-}
-
-void EngineSettings::setWhiteEvalPov(bool whiteEvalPov)
-{
-	m_whiteEvalPov = whiteEvalPov;
 }

@@ -22,6 +22,7 @@
 #include <QStringList>
 #include "chessplayer.h"
 #include "enginesettings.h"
+#include "engineconfiguration.h"
 
 class QIODevice;
 class EngineOption;
@@ -72,6 +73,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		/*! Applies \a settings on the engine. */
 		void applySettings(const EngineSettings& settings);
+		void applyConfiguration(const EngineConfiguration& configuration);
 
 		/*!
 		 * Sends a ping message (an echo request) to the engine to

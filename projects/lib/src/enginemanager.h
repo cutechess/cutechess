@@ -19,6 +19,7 @@
 #define ENGINE_MANAGER_H
 
 #include "engineconfiguration.h"
+#include "chessengine.h"
 
 /*!
  * \brief Manages chess engines and their configurations.

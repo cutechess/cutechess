@@ -19,7 +19,9 @@
 #define ENGINE_CONFIGURATION_H
 
 #include <QString>
-#include "chessengine.h"
+#include <QStringList>
+#include <QVariant>
+#include <QMap>
 
 /*!
  * \brief The EngineConfiguration class defines a chess engine configuration.
@@ -37,7 +39,7 @@ class LIB_EXPORT EngineConfiguration
 		 * command and protocol settings.
 		 */
 		EngineConfiguration(const QString& name, const QString& command,
-		                    ChessEngine::Protocol protocol);
+		                    int protocol);
 
 		/*!
 		 * Sets the engine's name.
@@ -62,7 +64,7 @@ class LIB_EXPORT EngineConfiguration
 		 *
 		 * \sa protocol()
 		 */
-		void setProtocol(ChessEngine::Protocol protocol);
+		void setProtocol(int protocol);
 
 		/*!
 		 * Returns the engine's name.
@@ -87,7 +89,7 @@ class LIB_EXPORT EngineConfiguration
 		 *
 		 * \sa setProtocol()
 		 */
-		ChessEngine::Protocol protocol() const;
+		int protocol() const;
 
 		/*! Returns the command line arguments sent to the engine. */
 		QStringList arguments() const;
@@ -119,7 +121,7 @@ class LIB_EXPORT EngineConfiguration
 		QString m_name;
 		QString m_command;
 		QString m_workingDirectory;
-		ChessEngine::Protocol m_protocol;
+		int m_protocol;
 		QStringList m_arguments;
 		QStringList m_initStrings;
 		QMap<QString, QVariant> m_customOptions;

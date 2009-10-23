@@ -18,14 +18,14 @@
 #include "engineconfiguration.h"
 
 EngineConfiguration::EngineConfiguration()
-	: m_protocol(ChessEngine::Xboard)
+	: m_protocol(0)
 {
 
 }
 
 EngineConfiguration::EngineConfiguration(const QString& name,
                                          const QString& command,
-                                         ChessEngine::Protocol protocol)
+                                         int protocol)
 	: m_name(name),
 	  m_command(command),
 	  m_protocol(protocol)
@@ -43,7 +43,7 @@ void EngineConfiguration::setCommand(const QString& command)
 	m_command = command;
 }
 
-void EngineConfiguration::setProtocol(ChessEngine::Protocol protocol)
+void EngineConfiguration::setProtocol(int protocol)
 {
 	m_protocol = protocol;
 }
@@ -68,7 +68,7 @@ QString EngineConfiguration::workingDirectory() const
 	return m_workingDirectory;
 }
 
-ChessEngine::Protocol EngineConfiguration::protocol() const
+int EngineConfiguration::protocol() const
 {
 	return m_protocol;
 }

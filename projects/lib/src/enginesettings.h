@@ -19,9 +19,7 @@
 #define ENGINESETTINGS_H
 
 #include <QString>
-#include <QStringList>
 #include <QVariant>
-#include <QVector>
 #include "timecontrol.h"
 
 /*!
@@ -50,39 +48,15 @@ class LIB_EXPORT EngineSettings
 		 */
 		EngineSettings();
 
-		/*! Command line arguments. */
-		const QStringList& arguments() const;
-		/*! Initialization strings. */
-		const QStringList& initStrings() const;
 		/*! The engine's time control. */
 		const TimeControl& timeControl() const;
 		/*! The engine's time control. */
 		TimeControl& timeControl();
-		/*
-		 * A list of custom settings.
-		 * \note Only settings supported by the engine are sent.
-		 */
-		const QVector<CustomSetting>& customSettings() const;
-		/*! Returns true if evaluation is from white's perspective. */
-		bool whiteEvalPov() const;
-
-		/*! Adds a new command line argument. */
-		void addArgument(const QString& argument);
-		/*! Adds a new initialization string. */
-		void addInitString(const QString& str);
-		/*! Adds a new custom setting. */
-		void addCustomSetting(const QString& name, const QVariant& value);
 		/*! Sets the time control. */
 		void setTimeControl(const TimeControl& timeControl);
-		/*! Sets white evaluation point of view. */
-		void setWhiteEvalPov(bool whiteEvalPov);
 
 	private:
 		TimeControl m_timeControl;
-		QStringList m_arguments;
-		QStringList m_initStrings;
-		QVector<CustomSetting> m_customSettings;
-		bool m_whiteEvalPov;
 };
 
 #endif // ENGINESETTINGS_H

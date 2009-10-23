@@ -113,7 +113,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 		else if (name == "dir")
 			data.config.setWorkingDirectory(val);
 		else if (name == "arg")
-			data.settings.addArgument(val);
+			data.config.addArgument(val);
 		else if (name == "proto")
 		{
 			if (val == "uci")
@@ -127,7 +127,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 			}
 		}
 		else if (name == "initstr")
-			data.settings.addInitString(val);
+			data.config.addInitString(val);
 
 		// Time control (moves/time+increment)
 		else if (name == "tc")
@@ -144,7 +144,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 		}
 		else if (name == "invertscores")
 		{
-			data.settings.setWhiteEvalPov(true);
+			data.config.setWhiteEvalPov(true);
 		}
 		else if (name == "depth")
 		{
@@ -166,7 +166,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 		}
 		// Custom engine option
 		else if (name.startsWith("option."))
-			data.settings.addCustomSetting(name.section('.', 1), val);
+			data.config.addCustomOption(name.section('.', 1), val);
 		else
 		{
 			qWarning() << "Invalid engine option:" << name;

@@ -15,6 +15,7 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <chessengine.h>
 #include "engineconfigurationmodel.h"
 
 const QStringList EngineConfigurationModel::m_headers = (QStringList() <<

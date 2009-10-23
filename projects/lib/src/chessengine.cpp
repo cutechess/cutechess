@@ -63,18 +63,24 @@ QIODevice* ChessEngine::device() const
 
 void ChessEngine::applySettings(const EngineSettings& settings)
 {
-	foreach (const QString& str, settings.initStrings())
-		write(str);
-
-	foreach (const EngineSettings::CustomSetting& setting,
-		 settings.customSettings())
-	{
-		setOption(setting.name, setting.value);
-	}
-
 	if (settings.timeControl().isValid())
 		setTimeControl(settings.timeControl());
-	m_whiteEvalPov = settings.whiteEvalPov();
+}
+
+void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
+{
+	foreach (const QString& str, configuration.initStrings())
+		write(str);
+
+	QMap<QString, QVariant>::const_iterator i =
+		configuration.customOptions().constBegin();
+	while (i != configuration.customOptions().constEnd())
+	{
+		setOption(i.key(), i.value());
+		++i;
+	}
+
+	m_whiteEvalPov = configuration.whiteEvalPov();
 }
 
 EngineOption* ChessEngine::getOption(const QString& name) const

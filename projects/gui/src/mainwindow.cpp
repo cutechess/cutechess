@@ -215,7 +215,7 @@ void MainWindow::newGame()
 				qDebug() << "Cannot start the engine process:" << config.command();
 				return;
 			}
-			ChessEngine* engine = EngineFactory::createEngine(config.protocol(), process, this);
+			ChessEngine* engine = EngineFactory::createEngine(ChessEngine::Protocol(config.protocol()), process, this);
 			engine->start();
 			engine->setName(config.name());
 			player[i] = engine;

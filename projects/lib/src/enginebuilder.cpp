@@ -50,8 +50,8 @@ ChessPlayer* EngineBuilder::create(QObject* parent) const
 		process->setWorkingDirectory(QDir::currentPath());
 	}
 
-	if (!m_settings.arguments().isEmpty())
-		process->start(m_config.command(), m_settings.arguments());
+	if (!m_config.arguments().isEmpty())
+		process->start(m_config.command(), m_config.arguments());
 	else
 		process->start(m_config.command());
 	bool ok = process->waitForStarted();
@@ -65,12 +65,13 @@ ChessPlayer* EngineBuilder::create(QObject* parent) const
 		return 0;
 	}
 
-	ChessEngine* engine = EngineFactory::createEngine(m_config.protocol(), process, parent);
+	ChessEngine* engine = EngineFactory::createEngine(ChessEngine::Protocol(m_config.protocol()), process, parent);
 	process->setParent(engine);
 
 	if (!m_config.name().isEmpty())
 		engine->setName(m_config.name());
 	engine->applySettings(m_settings);
+	engine->applyConfiguration(m_config);
 
 	engine->start();
 	return engine;
