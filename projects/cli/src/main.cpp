@@ -49,23 +49,6 @@ struct EngineData
 	EngineSettings settings;
 };
 
-static void listEngines()
-{
-	const QList<EngineConfiguration> engines =
-		CuteChessCoreApplication::engineManager()->engines();
-
-	QStringList engineNames;
-
-	foreach (const EngineConfiguration& engine, engines)
-	{
-		engineNames << engine.name();
-	}
-
-	engineNames.sort();
-	foreach (const QString& name, engineNames)
-		qDebug("%s", qPrintable(name));
-}
-
 static bool readEngineConfig(const QString& name, EngineConfiguration& config)
 {
 	const QList<EngineConfiguration> engines =
@@ -351,7 +334,13 @@ int main(int argc, char* argv[])
 		}
 		else if (arg == "--engines")
 		{
-			listEngines();			
+			const QList<EngineConfiguration> engines =
+				CuteChessCoreApplication::engineManager()->engines();
+
+			foreach (const EngineConfiguration& engine, engines)
+				out << engine.name();
+
+			out << endl;
 			return 0;
 		}
 		else if (arg == "--help")
