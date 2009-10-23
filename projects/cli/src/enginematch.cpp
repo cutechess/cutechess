@@ -50,8 +50,7 @@ EngineMatch::EngineMatch(QObject* parent)
 
 EngineMatch::~EngineMatch()
 {
-	if (m_book != 0)
-		delete m_book;
+	delete m_book;
 }
 
 void EngineMatch::stop()
@@ -95,11 +94,8 @@ bool EngineMatch::setBookDepth(int bookDepth)
 
 bool EngineMatch::setBookFile(const QString& filename)
 {
-	if (m_book != 0)
-	{
-		delete m_book;
-		m_book = 0;
-	}
+	delete m_book;
+	m_book = 0;
 
 	m_book = new PolyglotBook;
 	if (!m_book->read(filename))
