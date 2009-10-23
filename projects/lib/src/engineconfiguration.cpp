@@ -72,3 +72,58 @@ ChessEngine::Protocol EngineConfiguration::protocol() const
 {
 	return m_protocol;
 }
+
+QStringList EngineConfiguration::arguments() const
+{
+	return m_arguments;
+}
+
+void EngineConfiguration::setArguments(const QStringList& arguments)
+{
+	m_arguments = arguments;
+}
+
+void EngineConfiguration::addArgument(const QString& argument)
+{
+	m_arguments << argument;
+}
+
+QStringList EngineConfiguration::initStrings() const
+{
+	return m_initStrings;
+}
+
+void EngineConfiguration::setInitStrings(const QStringList& initStrings)
+{
+	m_initStrings = initStrings;
+}
+
+void EngineConfiguration::addInitString(const QString& initString)
+{
+	m_initStrings << initString;
+}
+
+QMap<QString, QVariant> EngineConfiguration::customOptions() const
+{
+	return m_customOptions;
+}
+
+void EngineConfiguration::setCustomOptions(QMap<QString, QVariant> customOptions)
+{
+	m_customOptions = customOptions;
+}
+
+void EngineConfiguration::addCustomOption(const QString& name, const QVariant& value)
+{
+	m_customOptions[name] = value;
+}
+
+bool EngineConfiguration::whiteEvalPov() const
+{
+	return m_whiteEvalPov;
+}
+
+void EngineConfiguration::setWhiteEvalPov(bool whiteEvalPov)
+{
+	m_whiteEvalPov = whiteEvalPov;
+}

@@ -89,11 +89,41 @@ class LIB_EXPORT EngineConfiguration
 		 */
 		ChessEngine::Protocol protocol() const;
 
+		/*! Returns the command line arguments sent to the engine. */
+		QStringList arguments() const;
+		/*! Sets the command line arguments sent to the engine. */
+		void setArguments(const QStringList& arguments);
+		/*! Adds new command line argument. */
+		void addArgument(const QString& argument);
+
+		/*! Returns the initialization strings sent to the engine. */
+		QStringList initStrings() const;
+		/*! Sets the initialization strings sent to the engine. */
+		void setInitStrings(const QStringList& initStrings);
+		/*! Adds new initialization string. */
+		void addInitString(const QString& initString);
+
+		/*! Returns the custom options sent to the engine. */
+		QMap<QString, QVariant> customOptions() const;
+		/*! Sets the custom options sent to the engine. */
+		void setCustomOptions(const QMap<QString, QVariant> options);
+		/*! Adds new custom option. */
+		void addCustomOption(const QString& name, const QVariant& value);
+
+		/*! Sets white evaluation point of view. */
+		bool whiteEvalPov() const;
+		/*! Returns true if evaluation is from white's point of view. */
+		void setWhiteEvalPov(bool whiteEvalPov);
+
 	private:
 		QString m_name;
 		QString m_command;
 		QString m_workingDirectory;
 		ChessEngine::Protocol m_protocol;
+		QStringList m_arguments;
+		QStringList m_initStrings;
+		QMap<QString, QVariant> m_customOptions;
+		bool m_whiteEvalPov;
 
 };
 
