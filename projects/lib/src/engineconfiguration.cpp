@@ -108,7 +108,7 @@ QMap<QString, QVariant> EngineConfiguration::customOptions() const
 	return m_customOptions;
 }
 
-void EngineConfiguration::setCustomOptions(QMap<QString, QVariant> customOptions)
+void EngineConfiguration::setCustomOptions(const QMap<QString, QVariant>& customOptions)
 {
 	m_customOptions = customOptions;
 }

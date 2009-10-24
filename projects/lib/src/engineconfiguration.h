@@ -108,7 +108,7 @@ class LIB_EXPORT EngineConfiguration
 		/*! Returns the custom options sent to the engine. */
 		QMap<QString, QVariant> customOptions() const;
 		/*! Sets the custom options sent to the engine. */
-		void setCustomOptions(const QMap<QString, QVariant> options);
+		void setCustomOptions(const QMap<QString, QVariant>& options);
 		/*! Adds new custom option. */
 		void addCustomOption(const QString& name, const QVariant& value);
 
