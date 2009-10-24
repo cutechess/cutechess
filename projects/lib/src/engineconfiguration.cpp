@@ -18,7 +18,8 @@
 #include "engineconfiguration.h"
 
 EngineConfiguration::EngineConfiguration()
-	: m_protocol(0)
+	: m_protocol(0),
+	  m_whiteEvalPov(false)
 {
 
 }
@@ -28,7 +29,8 @@ EngineConfiguration::EngineConfiguration(const QString& name,
                                          int protocol)
 	: m_name(name),
 	  m_command(command),
-	  m_protocol(protocol)
+	  m_protocol(protocol),
+	  m_whiteEvalPov(false)
 {
 
 }
