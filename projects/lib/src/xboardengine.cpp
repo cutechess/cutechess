@@ -384,11 +384,11 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 
 void XboardEngine::parseLine(const QString& line)
 {
-	QString command = line.section(' ', 0, 0);
+	const QString command = line.section(' ', 0, 0);
 	if (command.isEmpty())
 		return;
 
-	QString args = line.right(line.length() - command.length() - 1);
+	const QString args = line.right(line.length() - command.length() - 1);
 
 	if (command == "move")
 	{
