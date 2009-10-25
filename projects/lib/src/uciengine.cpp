@@ -335,8 +335,8 @@ EngineOption* UciEngine::parseOption(const QString& str)
 
 void UciEngine::parseLine(const QString& line)
 {
-	QString command = line.section(' ', 0, 0);
-	QString args = line.right(line.length() - command.length() - 1);
+	const QString command = line.section(' ', 0, 0);
+	const QString args = line.right(line.length() - command.length() - 1);
 
 	if (command == "bestmove")
 	{
@@ -376,8 +376,8 @@ void UciEngine::parseLine(const QString& line)
 	}
 	else if (command == "id")
 	{
-		QString tag = args.section(' ', 0, 0);
-		QString tagVal = args.section(' ', 1);
+		const QString tag = args.section(' ', 0, 0);
+		const QString tagVal = args.section(' ', 1);
 		
 		if (tag == "name" && name() == "UciEngine")
 			setName(tagVal);
