@@ -24,7 +24,6 @@
 #include "chessboard/chessboard.h"
 #include "chessboard/chessmove.h"
 #include "timecontrol.h"
-#include "enginesettings.h"
 
 #include "enginebuttonoption.h"
 #include "enginecheckoption.h"

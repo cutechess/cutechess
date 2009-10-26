@@ -194,6 +194,7 @@ void MainWindow::newGame()
 	TimeControl tc;
 	tc.setTimePerTc(180000);
 	tc.setMovesPerTc(40);
+	chessgame->setTimeControl(tc);
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -227,7 +228,6 @@ void MainWindow::newGame()
 				player[i], SLOT(onHumanMove(const GenericMove&)));
 		}
 
-		player[i]->setTimeControl(tc);
 		chessgame->setPlayer(side, player[i]);
 		
 		connect(player[i], SIGNAL(startedThinking(int)),

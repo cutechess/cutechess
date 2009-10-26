@@ -27,9 +27,11 @@
 #include <csignal>
 #include <cstdlib>
 #include <enginemanager.h>
+#include <timecontrol.h>
 #include "enginematch.h"
 #include "cutechesscoreapp.h"
 #include "matchparser.h"
+
 
 static EngineMatch* match = 0;
 
@@ -46,7 +48,7 @@ void sigintHandler(int param)
 struct EngineData
 {
 	EngineConfiguration config;
-	EngineSettings settings;
+	TimeControl tc;
 };
 
 static bool readEngineConfig(const QString& name, EngineConfiguration& config)
@@ -121,9 +123,11 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				qWarning() << "Invalid time control:" << val;
 				return false;
 			}
-			tc.setMaxDepth(data.settings.timeControl().maxDepth());
-			tc.setNodeLimit(data.settings.timeControl().nodeLimit());
-			data.settings.setTimeControl(tc);
+			// Preserve previously set depth and node limits
+			tc.setMaxDepth(data.tc.maxDepth());
+			tc.setNodeLimit(data.tc.nodeLimit());
+
+			data.tc = tc;
 		}
 		else if (name == "invertscores")
 		{
@@ -136,7 +140,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				qWarning() << "Invalid depth limit:" << val;
 				return false;
 			}
-			data.settings.timeControl().setMaxDepth(val.toInt());
+			data.tc.setMaxDepth(val.toInt());
 		}
 		else if (name == "nodes")
 		{
@@ -145,7 +149,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				qWarning() << "Invalid node limit:" << val;
 				return false;
 			}
-			data.settings.timeControl().setNodeLimit(val.toInt());
+			data.tc.setNodeLimit(val.toInt());
 		}
 		// Custom engine option
 		else if (name.startsWith("option."))
@@ -299,8 +303,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		}
 	}
 
-	match->addEngine(fcp.config, fcp.settings);
-	match->addEngine(scp.config, scp.settings);
+	match->addEngine(fcp.config, fcp.tc);
+	match->addEngine(scp.config, fcp.tc);
 
 	return match;
 }

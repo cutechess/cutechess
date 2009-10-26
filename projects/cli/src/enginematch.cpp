@@ -65,7 +65,7 @@ void EngineMatch::stop()
 }
 
 void EngineMatch::addEngine(const EngineConfiguration& engineConfig,
-			    const EngineSettings& settings)
+			    const TimeControl& timeControl)
 {
 	// We don't allow more than 2 engines at this point
 	if (m_engines.size() >= 2)
@@ -75,7 +75,7 @@ void EngineMatch::addEngine(const EngineConfiguration& engineConfig,
 	}
 	if (engineConfig.command().isEmpty())
 		return;
-	EngineData data = { engineConfig, settings, 0, 0 };
+	EngineData data = { engineConfig, timeControl, 0, 0 };
 	m_engines.append(data);
 }
 
@@ -212,14 +212,14 @@ bool EngineMatch::initialize()
 	QVector<EngineData>::iterator it;
 	for (it = m_engines.begin(); it != m_engines.end(); ++it)
 	{
-		if (!it->settings.timeControl().isValid())
+		if (!it->tc.isValid())
 		{
 			qWarning() << "Invalid or missing time control";
 			return false;
 		}
 
 		it->wins = 0;
-		it->builder = new EngineBuilder(it->config, it->settings);
+		it->builder = new EngineBuilder(it->config);
 	}
 
 	m_pgnInputStream.setVariant(m_variant);
@@ -345,6 +345,9 @@ void EngineMatch::start()
 		white = &m_engines[1];
 		black = &m_engines[0];
 	}
+
+	game->setTimeControl(white->tc, Chess::White);
+	game->setTimeControl(black->tc, Chess::Black);
 
 	if (!m_fen.isEmpty() || !m_openingMoves.isEmpty())
 	{

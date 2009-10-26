@@ -22,10 +22,8 @@
 #include <QtDebug>
 
 
-EngineBuilder::EngineBuilder(const EngineConfiguration& config,
-			     const EngineSettings& settings)
-	: m_config(config),
-	  m_settings(settings)
+EngineBuilder::EngineBuilder(const EngineConfiguration& config)
+	: m_config(config)
 {
 }
 
@@ -70,7 +68,6 @@ ChessPlayer* EngineBuilder::create(QObject* parent) const
 
 	if (!m_config.name().isEmpty())
 		engine->setName(m_config.name());
-	engine->applySettings(m_settings);
 	engine->applyConfiguration(m_config);
 
 	engine->start();

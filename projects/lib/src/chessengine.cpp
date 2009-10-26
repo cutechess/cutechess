@@ -61,11 +61,13 @@ QIODevice* ChessEngine::device() const
 	return m_ioDevice;
 }
 
+/*
 void ChessEngine::applySettings(const EngineSettings& settings)
 {
 	if (settings.timeControl().isValid())
 		setTimeControl(settings.timeControl());
 }
+*/
 
 void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 {
@@ -98,7 +100,7 @@ void ChessEngine::setOption(const QString& name, const QVariant& value)
 {
 	if (state() == Starting || state() == NotStarted)
 	{
-		EngineSettings::CustomSetting setting = { name, value };
+		CustomSetting setting = { name, value };
 		m_optionBuffer.append(setting);
 		return;
 	}
@@ -143,7 +145,7 @@ void ChessEngine::onProtocolStart()
 
 	flushWriteBuffer();
 
-	foreach (const EngineSettings::CustomSetting& setting,
+	foreach (const CustomSetting& setting,
 		 m_optionBuffer)
 	{
 		setOption(setting.name, setting.value);

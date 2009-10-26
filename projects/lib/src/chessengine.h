@@ -21,7 +21,6 @@
 #include <QVariant>
 #include <QStringList>
 #include "chessplayer.h"
-#include "enginesettings.h"
 #include "engineconfiguration.h"
 
 class QIODevice;
@@ -72,7 +71,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void start();
 
 		/*! Applies \a settings on the engine. */
-		void applySettings(const EngineSettings& settings);
+		//void applySettings(const EngineSettings& settings);
 		void applyConfiguration(const EngineConfiguration& configuration);
 
 		/*!
@@ -171,6 +170,12 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void onQuitTimeout();
 
 	private:
+		struct CustomSetting
+		{
+			QString name;
+			QVariant value;
+		};
+
 		static int m_count;
 		int m_id;
 		State m_pingState;
@@ -179,7 +184,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		QTimer* m_quitTimer;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
-		QVector<EngineSettings::CustomSetting> m_optionBuffer;
+		QVector<CustomSetting> m_optionBuffer;
 };
 
 #endif // CHESSENGINE_H

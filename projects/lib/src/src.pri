@@ -14,7 +14,6 @@ HEADERS += chessengine.h \
     uciengine.h \
     xboardengine.h \
     moveevaluation.h \
-    enginesettings.h \
     enginemanager.h \
     humanplayer.h \
     engineoption.h \
@@ -40,7 +39,6 @@ SOURCES += chessengine.cpp \
     uciengine.cpp \
     xboardengine.cpp \
     moveevaluation.cpp \
-    enginesettings.cpp \
     enginemanager.cpp \
     humanplayer.cpp \
     engineoption.cpp \

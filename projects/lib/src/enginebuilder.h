@@ -21,7 +21,6 @@
 #include "playerbuilder.h"
 #include "chessengine.h"
 #include "engineconfiguration.h"
-#include "enginesettings.h"
 #include <QString>
 
 
@@ -30,15 +29,13 @@ class LIB_EXPORT EngineBuilder : public PlayerBuilder
 {
 	public:
 		/*! Creates a new EngineBuilder. */
-		EngineBuilder(const EngineConfiguration& config,
-			      const EngineSettings& settings);
+		EngineBuilder(const EngineConfiguration& config);
 
 		// Inherited from PlayerBuilder
 		ChessPlayer* create(QObject* parent) const;
 
 	private:
 		EngineConfiguration m_config;
-		EngineSettings m_settings;
 };
 
 #endif // ENGINEBUILDER_H

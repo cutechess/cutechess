@@ -434,7 +434,8 @@ void ChessGame::startGame()
 	{
 		Chess::Side side = Chess::Side(i);
 		setPlayerName(side, m_player[i]->name());
-		setTimeControl(*m_player[i]->timeControl(), side);
+		Q_ASSERT(timeControl(side).isValid());
+		m_player[i]->setTimeControl(timeControl(side));
 		m_player[i]->newGame(side, m_player[!i], m_board);
 	}
 	

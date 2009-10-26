@@ -26,7 +26,7 @@
 #include <QFile>
 #include <chessboard/variant.h>
 #include <engineconfiguration.h>
-#include <enginesettings.h>
+#include <timecontrol.h>
 #include <engineprocess.h>
 #include <pgnstream.h>
 #include <pgngame.h>
@@ -45,7 +45,7 @@ class EngineMatch : public QObject
 		~EngineMatch();
 
 		void addEngine(const EngineConfiguration& config,
-			       const EngineSettings& settings);
+			       const TimeControl& timeControl);
 		bool setBookDepth(int bookDepth);
 		bool setBookFile(const QString& filename);
 		bool setConcurrency(int concurrency);
@@ -81,7 +81,7 @@ class EngineMatch : public QObject
 		struct EngineData
 		{
 			EngineConfiguration config;
-			EngineSettings settings;
+			TimeControl tc;
 			int wins;
 			EngineBuilder* builder;
 		};
