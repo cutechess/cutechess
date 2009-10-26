@@ -338,9 +338,8 @@ int main(int argc, char* argv[])
 				CuteChessCoreApplication::engineManager()->engines();
 
 			foreach (const EngineConfiguration& engine, engines)
-				out << engine.name();
+				out << engine.name() << endl;
 
-			out << endl;
 			return 0;
 		}
 		else if (arg == "--help")
