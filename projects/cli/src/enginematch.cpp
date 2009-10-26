@@ -20,7 +20,6 @@
 #include <enginefactory.h>
 #include <enginebuilder.h>
 #include <polyglotbook.h>
-#include <QDir>
 #include <QTimer>
 #include <QtDebug>
 
@@ -209,8 +208,6 @@ bool EngineMatch::initialize()
 	m_finishedGames = 0;
 	m_drawCount = 0;
 	m_games.clear();
-
-	QString path(QDir::currentPath());
 
 	QVector<EngineData>::iterator it;
 	for (it = m_engines.begin(); it != m_engines.end(); ++it)
