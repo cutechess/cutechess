@@ -28,14 +28,11 @@ ChessEngine* EngineFactory::createEngine(ChessEngine::Protocol protocol,
 	{
 		case ChessEngine::Xboard:
 			return new XboardEngine(ioDevice, parent);
-		break;
 
 		case ChessEngine::Uci:
 			return new UciEngine(ioDevice, parent);
-		break;
 
 		default:
 			return 0;
-		break;
 	}
 }
