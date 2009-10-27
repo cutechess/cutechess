@@ -11,9 +11,9 @@ First you need to build the Makefile in either release or debug mode.
 Release mode is for general program usage and offers the best
 performance. Debug mode is for debugging Cute Chess.
 
-To build the Makefile in release mode (default):
+To build the Makefile in release mode:
 
-    $ qmake
+    $ qmake -config release
 
     or in debug mode:
 
