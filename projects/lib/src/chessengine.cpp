@@ -61,14 +61,6 @@ QIODevice* ChessEngine::device() const
 	return m_ioDevice;
 }
 
-/*
-void ChessEngine::applySettings(const EngineSettings& settings)
-{
-	if (settings.timeControl().isValid())
-		setTimeControl(settings.timeControl());
-}
-*/
-
 void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 {
 	foreach (const QString& str, configuration.initStrings())
