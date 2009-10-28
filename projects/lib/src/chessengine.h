@@ -71,7 +71,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void start();
 
 		/*! Applies \a settings on the engine. */
-		//void applySettings(const EngineSettings& settings);
 		void applyConfiguration(const EngineConfiguration& configuration);
 
 		/*!
