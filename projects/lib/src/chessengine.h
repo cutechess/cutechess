@@ -70,7 +70,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 */
 		void start();
 
-		/*! Applies \a settings on the engine. */
+		/*! Applies \a configuration to the engine. */
 		void applyConfiguration(const EngineConfiguration& configuration);
 
 		/*!
