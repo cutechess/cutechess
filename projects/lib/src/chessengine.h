@@ -169,12 +169,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void onQuitTimeout();
 
 	private:
-		struct CustomSetting
-		{
-			QString name;
-			QVariant value;
-		};
-
 		static int m_count;
 		int m_id;
 		State m_pingState;
@@ -183,7 +177,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		QTimer* m_quitTimer;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
-		QVector<CustomSetting> m_optionBuffer;
+		QMap<QString, QVariant> m_optionBuffer;
 };
 
 #endif // CHESSENGINE_H

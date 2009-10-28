@@ -92,8 +92,7 @@ void ChessEngine::setOption(const QString& name, const QVariant& value)
 {
 	if (state() == Starting || state() == NotStarted)
 	{
-		CustomSetting setting = { name, value };
-		m_optionBuffer.append(setting);
+		m_optionBuffer[name] = value;
 		return;
 	}
 
@@ -137,10 +136,11 @@ void ChessEngine::onProtocolStart()
 
 	flushWriteBuffer();
 
-	foreach (const CustomSetting& setting,
-		 m_optionBuffer)
+	QMap<QString, QVariant>::const_iterator i = m_optionBuffer.constBegin();
+	while (i != m_optionBuffer.constEnd())
 	{
-		setOption(setting.name, setting.value);
+		setOption(i.key(), i.value());
+		++i;
 	}
 	m_optionBuffer.clear();
 }
