@@ -304,7 +304,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	}
 
 	match->addEngine(fcp.config, fcp.tc);
-	match->addEngine(scp.config, fcp.tc);
+	match->addEngine(scp.config, scp.tc);
 
 	return match;
 }
