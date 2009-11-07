@@ -35,11 +35,13 @@ ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 	  m_resignMoveCount(0),
 	  m_resignScore(0)
 {
-	m_resignScoreCount[Chess::White] = 0;
-	m_resignScoreCount[Chess::Black] = 0;
-
-	m_player[Chess::White] = 0;
-	m_player[Chess::Black] = 0;
+	for (int i = 0; i < 2; i++)
+	{
+		m_resignScoreCount[i] = 0;
+		m_player[i] = 0;
+		m_book[i] = 0;
+		m_bookDepth[i] = 0;
+	}
 	m_board = new Chess::Board(variant, this);
 
 	emit humanEnabled(false);
@@ -162,6 +164,8 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 
 static QString evalString(const MoveEvaluation& eval)
 {
+	if (eval.isBookEval())
+		return "book";
 	if (eval.isEmpty())
 		return QString();
 
@@ -224,17 +228,28 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 
 	ChessPlayer* player = playerToWait();
 	player->makeMove(move);
+	m_board->makeMove(move, true);
 
 	if (result().isNone())
-	{
-		player->go();
-		emit humanEnabled(player->isHuman());
-	}
+		startTurn();
 	else
 		stop();
 
-	m_board->makeMove(move, true);
 	emit moveMade(move);
+}
+
+void ChessGame::startTurn()
+{
+	Chess::Side side(m_board->sideToMove());
+	Q_ASSERT(side != Chess::NoSide);
+
+	Chess::Move move(bookMove(side));
+	if (move.isNull())
+		m_player[side]->go();
+	else
+		m_player[side]->makeBookMove(move);
+
+	emit humanEnabled(m_player[side]->isHuman());
 }
 
 void ChessGame::onForfeit(Chess::Result result)
@@ -246,12 +261,15 @@ void ChessGame::onForfeit(Chess::Result result)
 	stop();
 }
 
-Chess::Move ChessGame::bookMove(const OpeningBook* book)
+Chess::Move ChessGame::bookMove(Chess::Side side)
 {
-	if (book == 0)
-		return Chess::Move(0, 0);
-	
-	GenericMove bookMove = book->move(m_board->key());
+	Q_ASSERT(side != Chess::NoSide);
+
+	if (m_book[side] == 0
+	||  m_moves.size() >= m_bookDepth[side] * 2)
+		return Chess::Move();
+
+	GenericMove bookMove = m_book[side]->move(m_board->key());
 	return m_board->moveFromGenericMove(bookMove);
 }
 
@@ -270,20 +288,33 @@ bool ChessGame::setFenString(const QString& fen)
 	return true;
 }
 
-void ChessGame::setOpeningBook(const OpeningBook* book, int maxMoves)
+void ChessGame::generateOpening()
 {
-	Q_ASSERT(book != 0);
-	Q_ASSERT(!m_gameInProgress);
-	
+	if (m_book[Chess::White] == 0 || m_book[Chess::Black] == 0)
+		return;
 	setBoard();
-	m_moves.clear();
-	for (int i = 0; i < maxMoves; i++)
+
+	// First play moves that are already in the move
+	// list (eg. moves from a PGN game)
+	QVector<PgnGame::MoveData>::iterator it;
+	for (it = m_moves.begin(); it != m_moves.end(); ++it)
 	{
-		Chess::Move move = bookMove(book);
+		const Chess::Move& move = it->move;
+		Q_ASSERT(m_board->isLegalMove(move));
+
+		m_board->makeMove(move);
+		if (!m_board->result().isNone())
+			return;
+	}
+
+	// Then play the opening book moves
+	forever
+	{
+		Chess::Move move = bookMove(m_board->sideToMove());
 		if (!m_board->isLegalMove(move)
 		||  m_board->isRepeatMove(move))
 			break;
-		
+
 		addMove(move, m_board);
 
 		m_board->makeMove(move);
@@ -292,6 +323,24 @@ void ChessGame::setOpeningBook(const OpeningBook* book, int maxMoves)
 			m_moves.pop_back();
 			break;
 		}
+	}
+}
+
+void ChessGame::setOpeningBook(const OpeningBook* book,
+                               Chess::Side side,
+			       int depth)
+{
+	Q_ASSERT(!m_gameInProgress);
+	
+	if (side == Chess::NoSide)
+	{
+		setOpeningBook(book, Chess::White, depth);
+		setOpeningBook(book, Chess::Black, depth);
+	}
+	else
+	{
+		m_book[side] = book;
+		m_bookDepth[side] = depth;
 	}
 }
 
@@ -383,16 +432,6 @@ void ChessGame::start(QThread* thread)
 		m_player[Chess::Black]->moveToThread(thread);
 	}
 
-	// Connect the signals only after the thread affinity has been changed.
-	// Otherwise the connections may break.
-	for (int i = Chess::White; i <= Chess::Black; i++)
-	{
-		connect(m_player[i], SIGNAL(moveMade(const Chess::Move&)),
-			this, SLOT(onMoveMade(const Chess::Move&)));
-		connect(m_player[i], SIGNAL(forfeit(Chess::Result)),
-			this, SLOT(onForfeit(Chess::Result)));
-	}
-
 	// Start the game in the correct thread
 	QMetaObject::invokeMethod(this, "startGame", Qt::QueuedConnection);
 }
@@ -462,8 +501,15 @@ void ChessGame::startGame()
 		}
 	}
 	
-	playerToMove()->go();
-	emit humanEnabled(playerToMove()->isHuman());
+	for (int i = 0; i < 2; i++)
+	{
+		connect(m_player[i], SIGNAL(moveMade(const Chess::Move&)),
+			this, SLOT(onMoveMade(const Chess::Move&)));
+		connect(m_player[i], SIGNAL(forfeit(Chess::Result)),
+			this, SLOT(onForfeit(Chess::Result)));
+	}
+	
+	startTurn();
 }
 
 ChessPlayer* ChessGame::player(Chess::Side side) const

@@ -45,14 +45,15 @@ class EngineMatch : public QObject
 		~EngineMatch();
 
 		void addEngine(const EngineConfiguration& config,
-			       const TimeControl& timeControl);
-		bool setBookDepth(int bookDepth);
-		bool setBookFile(const QString& filename);
+			       const TimeControl& timeControl,
+			       const QString& book,
+			       int bookDepth);
 		bool setConcurrency(int concurrency);
 		void setDebugMode(bool debug);
 		void setDrawThreshold(int moveNumber, int score);
 		void setEvent(const QString& event);
 		bool setGameCount(int gameCount);
+		bool setPgnDepth(int depth);
 		bool setPgnInput(const QString& filename);
 		void setPgnOutput(const QString& filename,
 				  PgnGame::PgnMode mode);
@@ -72,32 +73,35 @@ class EngineMatch : public QObject
 		void stopGame();
 
 	private slots:
-		void cleanup();
 		void onGameEnded();
 		void onManagerReady();
 		void print(const QString& msg);
 
 	private:
+		bool loadOpeningBook(const QString& filename, OpeningBook** book);
+
 		struct EngineData
 		{
 			EngineConfiguration config;
 			TimeControl tc;
+			OpeningBook* book;
+			QString bookFile;
+			int bookDepth;
 			int wins;
 			EngineBuilder* builder;
 		};
 
-		int m_bookDepth;
 		int m_gameCount;
 		int m_drawCount;
 		int m_currentGame;
 		int m_finishedGames;
+		int m_pgnDepth;
 		int m_pgnGamesRead;
 		int m_drawMoveNum;
 		int m_drawScore;
 		int m_resignMoveCount;
 		int m_resignScore;
 		int m_wait;
-		OpeningBook* m_book;
 		bool m_debug;
 		bool m_finishing;
 		PgnGame::PgnMode m_pgnMode;
@@ -105,6 +109,8 @@ class EngineMatch : public QObject
 		Chess::Variant m_variant;
 		QVector<EngineData> m_engines;
 		QVector<PgnGame::MoveData> m_openingMoves;
+		QList<OpeningBook*> m_books;
+		QList<EngineBuilder*> m_builders;
 		QString m_fen;
 		QString m_event;
 		QString m_site;

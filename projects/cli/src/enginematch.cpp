@@ -26,18 +26,17 @@
 
 EngineMatch::EngineMatch(QObject* parent)
 	: QObject(parent),
-	  m_bookDepth(1000),
 	  m_gameCount(1),
 	  m_drawCount(0),
 	  m_currentGame(0),
 	  m_finishedGames(0),
+	  m_pgnDepth(1000),
 	  m_pgnGamesRead(0),
 	  m_drawMoveNum(0),
 	  m_drawScore(0),
 	  m_resignMoveCount(0),
 	  m_resignScore(0),
 	  m_wait(0),
-	  m_book(0),
 	  m_debug(false),
 	  m_finishing(false),
 	  m_pgnMode(PgnGame::Verbose),
@@ -49,7 +48,8 @@ EngineMatch::EngineMatch(QObject* parent)
 
 EngineMatch::~EngineMatch()
 {
-	delete m_book;
+	qDeleteAll(m_books);
+	qDeleteAll(m_builders);
 }
 
 void EngineMatch::stop()
@@ -65,7 +65,9 @@ void EngineMatch::stop()
 }
 
 void EngineMatch::addEngine(const EngineConfiguration& engineConfig,
-			    const TimeControl& timeControl)
+			    const TimeControl& timeControl,
+			    const QString& book,
+			    int bookDepth)
 {
 	// We don't allow more than 2 engines at this point
 	if (m_engines.size() >= 2)
@@ -75,37 +77,8 @@ void EngineMatch::addEngine(const EngineConfiguration& engineConfig,
 	}
 	if (engineConfig.command().isEmpty())
 		return;
-	EngineData data = { engineConfig, timeControl, 0, 0 };
+	EngineData data = { engineConfig, timeControl, 0, book, bookDepth, 0, 0 };
 	m_engines.append(data);
-}
-
-bool EngineMatch::setBookDepth(int bookDepth)
-{
-	if (bookDepth <= 0)
-	{
-		qWarning() << "Book depth must be bigger than zero";
-		return false;
-	}
-	m_bookDepth = bookDepth;
-
-	return true;
-}
-
-bool EngineMatch::setBookFile(const QString& filename)
-{
-	delete m_book;
-	m_book = 0;
-
-	m_book = new PolyglotBook;
-	if (!m_book->read(filename))
-	{
-		delete m_book;
-		m_book = 0;
-		qWarning() << "Can't open book file" << filename;
-		return false;
-	}
-
-	return true;
 }
 
 bool EngineMatch::setConcurrency(int concurrency)
@@ -140,6 +113,15 @@ bool EngineMatch::setGameCount(int gameCount)
 	if (gameCount <= 0)
 		return false;
 	m_gameCount = gameCount;
+	return true;
+}
+
+bool EngineMatch::setPgnDepth(int depth)
+{
+	if (depth <= 0)
+		return false;
+
+	m_pgnDepth = depth;
 	return true;
 }
 
@@ -195,6 +177,22 @@ bool EngineMatch::setWait(int msecs)
 	return true;
 }
 
+bool EngineMatch::loadOpeningBook(const QString& filename,
+				  OpeningBook** book)
+{
+	*book = new PolyglotBook;
+	if (!(*book)->read(filename))
+	{
+		delete *book;
+		*book = 0;
+		qWarning() << "Can't open book file" << filename;
+		return false;
+	}
+
+	m_books << *book;
+	return true;
+}
+
 bool EngineMatch::initialize()
 {
 	if (m_engines.size() < 2)
@@ -210,6 +208,25 @@ bool EngineMatch::initialize()
 	m_games.clear();
 
 	QVector<EngineData>::iterator it;
+
+	if (m_engines[0].bookFile == m_engines[1].bookFile
+	&&  !m_engines[0].bookFile.isEmpty())
+	{
+		if (!loadOpeningBook(m_engines[0].bookFile, &m_engines[0].book))
+			return false;
+		m_engines[1].book = m_engines[0].book;
+	}
+	else
+	{
+		for (it = m_engines.begin(); it != m_engines.end(); ++it)
+		{
+			if (it->bookFile.isEmpty())
+				continue;
+			if (!loadOpeningBook(it->bookFile, &it->book))
+				return false;
+		}
+	}
+
 	for (it = m_engines.begin(); it != m_engines.end(); ++it)
 	{
 		if (!it->tc.isValid())
@@ -220,24 +237,18 @@ bool EngineMatch::initialize()
 
 		it->wins = 0;
 		it->builder = new EngineBuilder(it->config);
+		m_builders << it->builder;
 	}
 
 	m_pgnInputStream.setVariant(m_variant);
 	connect(&m_manager, SIGNAL(ready()), this, SLOT(onManagerReady()));
-	connect(&m_manager, SIGNAL(finished()), this, SLOT(cleanup()));
+	connect(&m_manager, SIGNAL(finished()), this, SIGNAL(finished()));
 
 	if (m_debug)
 		connect(&m_manager, SIGNAL(debugMessage(const QString&)),
 			this, SLOT(print(const QString&)));
 
 	return true;
-}
-
-void EngineMatch::cleanup()
-{
-	foreach(const EngineData& data, m_engines)
-		delete data.builder;
-	emit finished();
 }
 
 void EngineMatch::onGameEnded()
@@ -349,6 +360,9 @@ void EngineMatch::start()
 	game->setTimeControl(white->tc, Chess::White);
 	game->setTimeControl(black->tc, Chess::Black);
 
+	game->setOpeningBook(white->book, Chess::White, white->bookDepth);
+	game->setOpeningBook(black->book, Chess::Black, black->bookDepth);
+
 	if (!m_fen.isEmpty() || !m_openingMoves.isEmpty())
 	{
 		if (!m_fen.isEmpty())
@@ -362,24 +376,22 @@ void EngineMatch::start()
 			m_openingMoves.clear();
 		}
 	}
-	else if (m_book != 0)
-	{
-		game->setOpeningBook(m_book, m_bookDepth);
-	}
 	else if (m_pgnInputStream.isOpen())
 	{
-		bool ok = game->read(m_pgnInputStream, PgnGame::Minimal, m_bookDepth);
+		bool ok = game->read(m_pgnInputStream, PgnGame::Minimal, m_pgnDepth);
 		if (ok)
 			m_pgnGamesRead++;
 		// Rewind the PGN input file
 		else if (m_pgnGamesRead > 0)
 		{
 			m_pgnInputStream.rewind();
-			ok = game->read(m_pgnInputStream, PgnGame::Minimal, m_bookDepth);
+			ok = game->read(m_pgnInputStream, PgnGame::Minimal, m_pgnDepth);
 			Q_ASSERT(ok);
 			m_pgnGamesRead++;
 		}
 	}
+
+	game->generateOpening();
 
 	if (m_repeatOpening && (m_currentGame % 2) != 0)
 	{

@@ -49,6 +49,8 @@ struct EngineData
 {
 	EngineConfiguration config;
 	TimeControl tc;
+	QString book;
+	int bookDepth;
 };
 
 static bool readEngineConfig(const QString& name, EngineConfiguration& config)
@@ -113,7 +115,6 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 		}
 		else if (name == "initstr")
 			data.config.addInitString(val);
-
 		// Time control (moves/time+increment)
 		else if (name == "tc")
 		{
@@ -128,6 +129,17 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 			tc.setNodeLimit(data.tc.nodeLimit());
 
 			data.tc = tc;
+		}
+		else if (name == "book")
+			data.book = val;
+		else if (name == "bookdepth")
+		{
+			if (val.toInt() <= 0)
+			{
+				qWarning() << "Invalid book depth limit:" << val;
+				return false;
+			}
+			data.bookDepth = val.toInt();
 		}
 		else if (name == "invertscores")
 		{
@@ -180,6 +192,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-games", QVariant::Int, 1, 1);
 	parser.addOption("-debug", QVariant::Bool, 0, 0);
 	parser.addOption("-pgnin", QVariant::String, 1, 1);
+	parser.addOption("-pgndepth", QVariant::Int, 1, 1);
 	parser.addOption("-pgnout", QVariant::StringList, 1, 2);
 	parser.addOption("-repeat", QVariant::Bool, 0, 0);
 	parser.addOption("-site", QVariant::String, 1, 1);
@@ -190,6 +203,9 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	EngineMatch* match = new EngineMatch(parent);
 	EngineData fcp;
 	EngineData scp;
+
+	fcp.bookDepth = 1000;
+	scp.bookDepth = 1000;
 
 	QMap<QString, QVariant> options(parser.options());
 	QMap<QString, QVariant>::const_iterator it;
@@ -215,12 +231,6 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Chess variant (default: standard chess)
 		else if (name == "-variant")
 			ok = match->setVariant(Chess::Variant(value.toString()));
-		// Opening book file (must be in Polyglot format)
-		else if (name == "-book")
-			ok = match->setBookFile(value.toString());
-		// Maximum book depth in plies (halfmoves)
-		else if (name == "-bookdepth")
-			ok = match->setBookDepth(value.toInt());
 		else if (name == "-concurrency")
 			ok = match->setConcurrency(value.toInt());
 		// Threshold for draw adjudication
@@ -258,6 +268,9 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Debugging mode. Prints all engine input and output.
 		else if (name == "-debug")
 			match->setDebugMode(true);
+		// PGN input depth in plies
+		else if (name == "-pgndepth")
+			ok = match->setPgnDepth(value.toInt());
 		// Use a PGN file as the opening book
 		else if (name == "-pgnin")
 			ok = match->setPgnInput(value.toString());
@@ -303,8 +316,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		}
 	}
 
-	match->addEngine(fcp.config, fcp.tc);
-	match->addEngine(scp.config, scp.tc);
+	match->addEngine(fcp.config, fcp.tc, fcp.book, fcp.bookDepth);
+	match->addEngine(scp.config, scp.tc, scp.book, scp.bookDepth);
 
 	return match;
 }
@@ -358,8 +371,6 @@ int main(int argc, char* argv[])
 			       "  -both <options>	Apply <options> to both engines\n"
 			       "  -variant <arg>	Set chess variant to <arg>. Must be Standard,\n"
 			       "			Fischerandom, Capablanca, Gothic or Caparandom\n"
-			       "  -book <file>		Use <file> (Polyglot book file) as the opening book\n"
-			       "  -bookdepth <n>	Set the maximum book depth (in plies) to <n>\n"
 			       "  -concurrency <n>	Set the maximum number of concurrent games to <n>\n"
 			       "  -draw <n> <score>	Adjudicate the game as a draw if the score of both\n"
 			       "			engines is within <score> centipawns from zero after\n"
@@ -371,6 +382,7 @@ int main(int argc, char* argv[])
 			       "  -games <n>		Play <n> games\n"
 			       "  -debug		Display all engine input and output\n"
 			       "  -pgnin <file>		Use <file> as the opening book in PGN format\n"
+			       "  -pgndepth <n>		Set the maximum depth for PGN input to <n> plies\n"
 			       "  -pgnout <file> [min]	Save the games to <file> in PGN format. Use the 'min'\n"
 			       "			argument to save in a minimal PGN format.\n"
 			       "  -repeat		Play each opening twice so that both players get\n"
@@ -391,6 +403,8 @@ int main(int argc, char* argv[])
 			       "			moves per tc, 'time' is time per tc (either seconds or\n"
 			       "			minutes:seconds), and 'increment' is time increment\n"
 			       "			per move in seconds\n"
+			       "  book=<file>		Use <file> (Polyglot book file) as the opening book\n"
+			       "  bookdepth=<n>		Set the maximum book depth (in fullmoves) to <n>\n"
 			       "  invertscores		Inverts the engine's scores when it plays black\n"
 			       "  depth=<arg>		Set the search depth limit to <arg>\n"
 			       "  nodes=<arg>		Set the node count limit to <arg>\n"

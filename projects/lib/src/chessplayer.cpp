@@ -136,6 +136,9 @@ void ChessPlayer::makeBookMove(const Chess::Move& move)
 	m_timeControl.startTimer();
 	makeMove(move);
 	m_timeControl.update();
+	m_eval.setBookEval(true);
+
+	emit moveMade(move);
 }
 
 const TimeControl* ChessPlayer::timeControl() const

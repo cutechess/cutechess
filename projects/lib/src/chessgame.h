@@ -42,8 +42,11 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		ChessPlayer* player(Chess::Side) const;
 		void setPlayer(Chess::Side, ChessPlayer* player);
 		bool setFenString(const QString& fen);
-		void setOpeningBook(const OpeningBook* book, int maxMoves = 1000);
+                void setOpeningBook(const OpeningBook* book,
+                                    Chess::Side side = Chess::NoSide,
+				    int depth = 1000);
 		void setOpeningMoves(const QVector<PgnGame::MoveData>& moves);
+		void generateOpening();
 		void setDrawThreshold(int moveNumber, int score);
 		void setResignThreshold(int moveCount, int score);
 
@@ -69,7 +72,8 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 	private:
 		void adjudication(const MoveEvaluation& eval);
 		bool arePlayersReady() const;
-		Chess::Move bookMove(const OpeningBook* book);
+		Chess::Move bookMove(Chess::Side side);
+		void startTurn();
 		ChessPlayer* playerToMove();
 		ChessPlayer* playerToWait();
 		void setBoard();
@@ -77,6 +81,8 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		QThread* m_origThread;
 		Chess::Board* m_board;
 		ChessPlayer* m_player[2];
+                const OpeningBook* m_book[2];
+		int m_bookDepth[2];
 		bool m_gameEnded;
 		bool m_gameInProgress;
 		int m_drawMoveNum;
