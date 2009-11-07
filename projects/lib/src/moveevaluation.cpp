@@ -1,7 +1,8 @@
 #include "moveevaluation.h"
 
 MoveEvaluation::MoveEvaluation()
-	: m_depth(0),
+	: m_isBookEval(false),
+	  m_depth(0),
 	  m_score(0),
 	  m_time(0),
 	  m_nodeCount(0)
@@ -16,6 +17,11 @@ bool MoveEvaluation::isEmpty() const
 	&&  m_nodeCount == 0)
 		return true;
 	return false;
+}
+
+bool MoveEvaluation::isBookEval() const
+{
+	return m_isBookEval;
 }
 
 int MoveEvaluation::depth() const
@@ -45,11 +51,17 @@ QString MoveEvaluation::pv() const
 
 void MoveEvaluation::clear()
 {
+	m_isBookEval = false;
 	m_depth = 0;
 	m_score = 0;
 	m_time = 0;
 	m_nodeCount = 0;
 	m_pv.clear();
+}
+
+void MoveEvaluation::setBookEval(bool isBookEval)
+{
+	m_isBookEval = isBookEval;
 }
 
 void MoveEvaluation::setDepth(int depth)

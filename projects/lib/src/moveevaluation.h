@@ -16,10 +16,14 @@
 class LIB_EXPORT MoveEvaluation
 {
 	public:
+		/*! Constructs an empty MoveEvaluation object. */
 		MoveEvaluation();
 
 		/*! Returns true if the evaluation is empty. */
 		bool isEmpty() const;
+		
+		/*! Returns true if the evaluation points to a book move. */
+		bool isBookEval() const;
 
 		/*!
 		 * How many plies were searched?
@@ -54,6 +58,9 @@ class LIB_EXPORT MoveEvaluation
 		/*! Resets everything to zero. */
 		void clear();
 
+		/*! Sets book evaluation. */
+		void setBookEval(bool isBookEval);
+
 		/*! Sets the search depth to \a depth. */
 		void setDepth(int depth);
 
@@ -70,6 +77,7 @@ class LIB_EXPORT MoveEvaluation
 		void setPv(const QString& pv);
 
 	private:
+		bool m_isBookEval;
 		int m_depth;
 		int m_score;
 		int m_time;
