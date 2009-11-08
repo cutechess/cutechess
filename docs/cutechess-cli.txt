@@ -42,12 +42,6 @@ OPTIONS
 	Set chess variant to <arg>. Must be 'Standard', 'Fischerandom',
 	'Capablanca', 'Gothic' or 'Caparandom'.
 
--book <file>::
-	Use <file> (Polyglot book file) as the opening book.
-
--bookdepth <n>::
-	Set the maximum book depth (in plies) to <n>.
-
 -concurrency <n>::
 	Set the maximum number of concurrent games to <n>.
 
@@ -72,6 +66,9 @@ OPTIONS
 -pgnin <file>::
 	Use <file> as the opening book in PGN format.
 
+-pgndepth <n>::
+	Set the maximum depth for PGN input to <n> plies.
+
 -pgnout <file> [min]::
 	Save the games to <file> in PGN format. Use the 'min' argument
 	to save in a minimal PGN format.
@@ -82,6 +79,9 @@ OPTIONS
 
 -site <arg>::
 	Set the site / location to <arg>.
+
+-wait <n>::
+	Wait <n> milliseconds between games. The default is 0.
 
 
 ENGINE OPTIONS
@@ -115,6 +115,12 @@ tc=<arg>::
 	moves per tc, 'time' is time per tc (either seconds or
 	minutes:seconds), and 'increment' is time increment
 	per move in seconds.
+
+book=<file>::
+	Use <file> (Polyglot book file) as the opening book.
+
+bookdepth=<n>::
+	Set the maximum book depth (in fullmoves) to <n>.
 
 invertscores::
 	Inverts the engine's scores when it plays black.
@@ -154,7 +160,7 @@ so only the command is needed.
 seconds with a one second increment.
 
 -----------
-$ cutechess-cli -fcp name=Atak cmd=Atak32.exe dir=C:\atak proto=xboard -scp cmd=glaurung proto=uci cpus=1 -both tc=40/1:30+1
+$ cutechess-cli -fcp name=Atak cmd=Atak32.exe dir=C:\atak proto=xboard -scp cmd=glaurung proto=uci option.Threads=1 -both tc=40/1:30+1
 -----------
 
 AUTHOR
