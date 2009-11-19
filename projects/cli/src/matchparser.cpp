@@ -54,6 +54,13 @@ bool MatchParser::parse()
 		for (++it; it != m_args.constEnd() && !it->startsWith('-'); ++it)
 			list << *it;
 		--it;
+		
+		if (m_options.contains(name))
+		{
+			qWarning("Multiple instances of option \"%s\"",
+				 qPrintable(name));
+			return false;
+		}
 
 		if (list.size() < option.minArgs)
 		{
