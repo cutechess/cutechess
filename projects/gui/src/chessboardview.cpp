@@ -23,7 +23,7 @@ ChessboardView::ChessboardView(QWidget* parent)
 
 	m_lightSquareColor = QColor("#ffce9e");
 	m_darkSquareColor = QColor("#d18b47");
-	m_moveColor = QColor(255, 255, 0, 127);
+	m_moveColor = QColor(255, 255, 0);
 
 	m_pieceRenderer = new QSvgRenderer(QString(":/default.svg"), this);
 	m_resizeTimer.setSingleShot(true);
@@ -204,7 +204,7 @@ void ChessboardView::renderSquare(const QModelIndex& index, QPainter& painter)
 		painter.fillRect(sqBounds, m_darkSquareColor);
 
 	if (index == m_sourceSquare || index == m_targetSquare)
-		painter.fillRect(sqBounds, m_moveColor);
+		painter.fillRect(sqBounds, QBrush(m_moveColor, Qt::Dense4Pattern));
 
 	if (!m_dragging || index != m_dragSquare)
 		renderPiece(index, painter, sqBounds);
