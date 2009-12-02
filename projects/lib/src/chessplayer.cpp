@@ -195,8 +195,10 @@ void ChessPlayer::emitForfeit(Chess::Result::Code code, const QString& arg)
 		m_state = Observing;
 	m_forfeited = true;
 
-	Q_ASSERT(m_side != Chess::NoSide);
-	emit forfeit(Chess::Result(code, Chess::Side(!m_side), arg));
+	if (m_side == Chess::NoSide)
+		emit forfeit(Chess::Result(code, m_side, arg));
+	else
+		emit forfeit(Chess::Result(code, Chess::Side(!m_side), arg));
 }
 
 void ChessPlayer::emitMove(const Chess::Move& move)

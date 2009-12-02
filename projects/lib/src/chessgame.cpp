@@ -266,6 +266,14 @@ void ChessGame::onForfeit(Chess::Result result)
 	if (m_gameEnded)
 		return;
 
+	if (!m_gameInProgress && result.winner() == Chess::NoSide)
+	{
+		ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
+		Q_ASSERT(sender != 0);
+		qWarning("%s: %s", qPrintable(sender->name()),
+				   qPrintable(result.description()));
+	}
+
 	setResult(result);
 	stop();
 }
@@ -450,6 +458,12 @@ void ChessGame::startGame()
 	setResult(Chess::Result());
 	emit humanEnabled(false);
 
+	for (int i = 0; i < 2; i++)
+	{
+		connect(m_player[i], SIGNAL(forfeit(Chess::Result)),
+			this, SLOT(onForfeit(Chess::Result)));
+	}
+
 	disconnect(this, SIGNAL(playersReady()), this, SLOT(startGame()));
 	if (!arePlayersReady())
 	{
@@ -514,8 +528,6 @@ void ChessGame::startGame()
 	{
 		connect(m_player[i], SIGNAL(moveMade(const Chess::Move&)),
 			this, SLOT(onMoveMade(const Chess::Move&)));
-		connect(m_player[i], SIGNAL(forfeit(Chess::Result)),
-			this, SLOT(onForfeit(Chess::Result)));
 	}
 	
 	startTurn();

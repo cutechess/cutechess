@@ -101,8 +101,8 @@ Result::Code Result::simpleCode() const
 QString Result::description() const
 {
 	QString str;
-	QString w;
-	QString l;
+	QString w = QObject::tr("Player");
+	QString l = w;
 
 	if (m_winner == White)
 	{
