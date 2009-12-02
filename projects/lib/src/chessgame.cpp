@@ -97,15 +97,21 @@ void ChessGame::sendGameEnded()
 void ChessGame::finish()
 {
 	disconnect(this, SIGNAL(playersReady()), this, SLOT(finish()));
+	for (int i = 0; i < 2; i++)
+	{
+		if (m_player[i] != 0)
+			m_player[i]->disconnect(this);
+	}
 
 	// Change thread affinity back to the way it was before the game
 	if (m_origThread != 0 && thread() != m_origThread)
 	{
-		m_player[Chess::White]->disconnect(this);
-		m_player[Chess::Black]->disconnect(this);
 		moveToThread(m_origThread);
-		m_player[Chess::White]->moveToThread(m_origThread);
-		m_player[Chess::Black]->moveToThread(m_origThread);
+		for (int i = 0; i < 2; i++)
+		{
+			if (m_player[i] != 0)
+				m_player[i]->moveToThread(m_origThread);
+		}
 		m_origThread = 0;
 	}
 
@@ -114,8 +120,11 @@ void ChessGame::finish()
 
 void ChessGame::kill()
 {
-	m_player[Chess::White]->closeConnection();
-	m_player[Chess::Black]->closeConnection();
+	for (int i = 0; i < 2; i++)
+	{
+		if (m_player[i] != 0)
+			m_player[i]->closeConnection();
+	}
 
 	stop();
 }

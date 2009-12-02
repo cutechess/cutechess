@@ -242,7 +242,8 @@ bool EngineMatch::initialize()
 
 	m_pgnInputStream.setVariant(m_variant);
 	connect(&m_manager, SIGNAL(ready()), this, SLOT(onManagerReady()));
-	connect(&m_manager, SIGNAL(finished()), this, SIGNAL(finished()));
+	connect(&m_manager, SIGNAL(finished()), this, SIGNAL(finished()),
+		Qt::QueuedConnection);
 
 	if (m_debug)
 		connect(&m_manager, SIGNAL(debugMessage(const QString&)),
@@ -258,6 +259,12 @@ void EngineMatch::onGameEnded()
 	Q_ASSERT(game->thread() == thread());
 
 	disconnect(this, SIGNAL(stopGame()), game, SLOT(kill()));
+	if (game->player(Chess::White) == 0
+	||  game->player(Chess::Black) == 0)
+	{
+		game->deleteLater();
+		return;
+	}
 
 	QString name1;
 	QString name2;
@@ -407,7 +414,8 @@ void EngineMatch::start()
 	game->setResignThreshold(m_resignMoveCount, m_resignScore);
 
 	connect(game, SIGNAL(gameEnded()), this, SLOT(onGameEnded()));
-	m_manager.newGame(game, white->builder, black->builder);
+	if (!m_manager.newGame(game, white->builder, black->builder))
+		stop();
 }
 
 void EngineMatch::print(const QString& msg)

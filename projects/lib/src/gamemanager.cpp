@@ -120,7 +120,7 @@ void GameManager::finish()
 		m_finishing = true;
 }
 
-void GameManager::newGame(ChessGame* game,
+bool GameManager::newGame(ChessGame* game,
 			  const PlayerBuilder* white,
 			  const PlayerBuilder* black)
 {
@@ -130,7 +130,7 @@ void GameManager::newGame(ChessGame* game,
 
 	GameEntry entry = { game, white, black };
 	m_gameEntries << entry;
-	startGame();
+	return startGame();
 }
 
 void GameManager::onPlayerQuit()
@@ -193,6 +193,8 @@ ChessPlayer* GameManager::getPlayer(const PlayerBuilder* builder)
 	if (player == 0)
 	{
 		player = builder->create();
+		if (player == 0)
+			return 0;
 		connect(player, SIGNAL(debugMessage(const QString&)),
 			this, SIGNAL(debugMessage(const QString&)));
 	}
@@ -200,22 +202,25 @@ ChessPlayer* GameManager::getPlayer(const PlayerBuilder* builder)
 	return player;
 }
 
-void GameManager::startGame()
+bool GameManager::startGame()
 {
 	if (m_activeGameCount >= m_concurrency)
-		return;
+		return true;
 	if (m_gameEntries.isEmpty())
 	{
 		emit ready();
-		return;
+		return true;
 	}
 
-	m_activeGameCount++;
-
 	GameEntry entry = m_gameEntries.takeFirst();
+	ChessPlayer* white = 0;
+	ChessPlayer* black = 0;
+	if ((white = getPlayer(entry.white)) == 0
+	||  (black = getPlayer(entry.black)) == 0)
+		return false;
+
 	ChessGame* game = entry.game;
-	ChessPlayer* white = getPlayer(entry.white);
-	ChessPlayer* black = getPlayer(entry.black);
+	m_activeGameCount++;
 
 	GameThread* gameThread = new GameThread(game, white, black, entry.white, entry.black, this);
 	connect(game, SIGNAL(gameEnded()), gameThread, SLOT(quit()));
@@ -226,7 +231,7 @@ void GameManager::startGame()
 	game->setPlayer(Chess::Black, black);
 	game->start(gameThread);
 
-	startGame();
+	return startGame();
 }
 
 #include "gamemanager.moc"

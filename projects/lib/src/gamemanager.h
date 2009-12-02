@@ -66,11 +66,12 @@ class LIB_EXPORT GameManager : public QObject
 		 * instead of constructing new players if the same builders are
 		 * used again.
 		 *
+		 * Returns true if successfull.
 		 * \note If there are still free game slots after starting this
 		 * game, the ready() signal is emitted immediately.
 		 * \note \a game must not have a parent.
 		 */
-		void newGame(ChessGame* game,
+		bool newGame(ChessGame* game,
 			     const PlayerBuilder* white,
 			     const PlayerBuilder* black);
 
@@ -110,7 +111,7 @@ class LIB_EXPORT GameManager : public QObject
 		};
 
 		ChessPlayer* getPlayer(const PlayerBuilder* builder);
-		void startGame();
+		bool startGame();
 		void cleanup();
 
 		bool m_finishing;
