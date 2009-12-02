@@ -24,13 +24,12 @@
 ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
 	  m_state(NotStarted),
-	  m_timer(0),
+	  m_timer(new QTimer(this)),
 	  m_forfeited(false),
 	  m_side(Chess::NoSide),
 	  m_board(0),
 	  m_opponent(0)
 {
-	m_timer = new QTimer(this);
 	m_timer->setSingleShot(true);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 }

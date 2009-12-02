@@ -33,8 +33,8 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	  m_id(m_count++),
 	  m_pingState(NotStarted),
 	  m_pinging(false),
-	  m_pingTimer(0),
-	  m_quitTimer(0),
+	  m_pingTimer(new QTimer(this)),
+	  m_quitTimer(new QTimer(this)),
 	  m_ioDevice(ioDevice)
 {
 	Q_ASSERT(m_ioDevice != 0);
@@ -42,11 +42,12 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
 
-	m_pingTimer = new QTimer(this);
-	m_quitTimer = new QTimer(this);
 	m_pingTimer->setSingleShot(true);
-	m_quitTimer->setSingleShot(true);
+	m_pingTimer->setInterval(10000);
 	connect(m_pingTimer, SIGNAL(timeout()), this, SLOT(onPingTimeout()));
+
+	m_quitTimer->setSingleShot(true);
+	m_quitTimer->setInterval(2000);
 	connect(m_quitTimer, SIGNAL(timeout()), this, SLOT(onQuitTimeout()));
 }
 
@@ -206,7 +207,7 @@ void ChessEngine::ping()
 
 	m_pinging = true;
 	m_pingState = state();
-	m_pingTimer->start(10000);
+	m_pingTimer->start();
 }
 
 void ChessEngine::pong()
@@ -313,5 +314,5 @@ void ChessEngine::quit()
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onQuitTimeout()));
 	sendQuit();
-	m_quitTimer->start(2000);
+	m_quitTimer->start();
 }

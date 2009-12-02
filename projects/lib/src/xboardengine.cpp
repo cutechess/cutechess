@@ -53,9 +53,12 @@ XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
 	  m_gotResult(false),
 	  m_lastPing(0),
 	  m_notation(Chess::LongAlgebraic),
-	  m_initTimer(0)
+	  m_initTimer(new QTimer(this))
 {
-	m_initTimer = new QTimer(this);
+	m_initTimer->setSingleShot(true);
+	m_initTimer->setInterval(2000);
+	connect(m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
+
 	m_variants.append(Chess::Variant::Standard);
 	setName("XboardEngine");
 }
@@ -69,9 +72,7 @@ void XboardEngine::startProtocol()
 
 	// Give the engine 2 seconds to reply to the protover command.
 	// This is how Xboard deals with protocol 1 engines.
-	m_initTimer->setSingleShot(true);
-	connect(m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
-	m_initTimer->start(2000);
+	m_initTimer->start();
 }
 
 void XboardEngine::initialize()
@@ -161,9 +162,9 @@ void XboardEngine::startGame()
 	// Tell the opponent's type and name to the engine
 	if (m_ftName)
 	{
-		if (!this->opponent()->isHuman())
+		if (!opponent()->isHuman())
 			write("computer");
-		write("name " + this->opponent()->name());
+		write("name " + opponent()->name());
 	}
 }
 
@@ -186,11 +187,8 @@ void XboardEngine::endGame(Chess::Result result)
 	// for a move or a result, or an error, or whatever. We
 	// would like to extend our middle fingers to every engine
 	// developer who fails to support the ping command.
-	if (!m_ftPing)
-	{
-		if (m_gotResult)
-			finishGame();
-	}
+	if (!m_ftPing && m_gotResult)
+		finishGame();
 }
 
 void XboardEngine::finishGame()
