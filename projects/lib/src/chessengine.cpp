@@ -248,11 +248,12 @@ void ChessEngine::onPingTimeout()
 	emitForfeit(Chess::Result::WinByStalledConnection);
 }
 
-void ChessEngine::write(const QString& data)
+void ChessEngine::write(const QString& data, WriteMode mode)
 {
 	if (state() == Disconnected)
 		return;
-	if (state() == NotStarted || m_pinging)
+	if (state() == NotStarted
+	||  (m_pinging && mode == Buffered))
 	{
 		m_writeBuffer.append(data);
 		return;

@@ -48,6 +48,16 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 			Xboard,	//!< The Xboard/Winboard chess protocol.
 			Uci	//!< The Universal Chess Interface (UCI).
 		};
+		/*!
+		 * The write mode used by \a write() when the engine is
+		 * being pinged. This doesn't affect the IO device's
+		 * buffering.
+		 */
+		enum WriteMode
+		{
+			Buffered,	//!< Use the write buffer
+			Unbuffered	//!< Bypass the write buffer
+		};
 
 		/*! Creates and initializes a new ChessEngine. */
 		ChessEngine(QIODevice* ioDevice, QObject* parent = 0);
@@ -87,8 +97,13 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Returns the engine's chess protocol. */
 		virtual Protocol protocol() const = 0;
 
-		/*! Writes text data to the chess engine. */
-		void write(const QString& data);
+		/*!
+		 * Writes text data to the chess engine.
+		 *
+		 * If \a mode is \a Unbuffered, the data will be written to
+		 * the device immediately even if the engine is being pinged.
+		 */
+		void write(const QString& data, WriteMode mode = Buffered);
 
 		/*!
 		 * Sets an option with the name \a name to \a value.
