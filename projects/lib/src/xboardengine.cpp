@@ -366,7 +366,7 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	}
 	else if (name == "done")
 	{
-		write("accepted done");
+		write("accepted done", Unbuffered);
 		m_initTimer->stop();
 		
 		if (val == "1")
@@ -375,11 +375,11 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	}
 	else
 	{
-		write("rejected " + name);
+		write("rejected " + name, Unbuffered);
 		return;
 	}
 	
-	write("accepted " + name);
+	write("accepted " + name, Unbuffered);
 }
 
 void XboardEngine::parseLine(const QString& line)
