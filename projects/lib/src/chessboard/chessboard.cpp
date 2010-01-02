@@ -465,8 +465,7 @@ void Board::makeMove(const Move& move, bool sendSignal)
 
 void Board::undoMove()
 {
-	if (m_history.isEmpty())
-		return;
+	Q_ASSERT(!m_history.isEmpty());
 	
 	const MoveData& md = m_history.last();
 	const Move& move = md.move;
