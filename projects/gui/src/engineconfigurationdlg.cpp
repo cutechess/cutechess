@@ -95,8 +95,8 @@ void EngineConfigurationDialog::browseCommand()
 	// Paths with spaces must be wrapped in quotes
 	if (fileName.contains(' '))
 	{
-		fileName.push_front('\"');
-		fileName.push_back('\"');
+		fileName.prepend('\"');
+		fileName.append('\"');
 	}
 	m_commandEdit->setText(QDir::toNativeSeparators(fileName));
 }

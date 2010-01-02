@@ -129,9 +129,9 @@ static QString quoteString(QString str)
 		return str;
 
 	if (!str.startsWith('\"'))
-		str.push_front('\"');
+		str.prepend('\"');
 	if (!str.endsWith('\"'))
-		str.push_back('\"');
+		str.append('\"');
 
 	return str;
 }

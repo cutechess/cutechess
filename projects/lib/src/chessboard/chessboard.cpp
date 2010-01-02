@@ -442,7 +442,7 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	else
 		m_reversibleMoveCount = 0;
 	
-	m_history.push_back(md);
+	m_history.append(md);
 	m_sign *= -1;
 	m_side = Side(!m_side);
 	
@@ -465,10 +465,10 @@ void Board::makeMove(const Move& move, bool sendSignal)
 
 void Board::undoMove()
 {
-	if (m_history.empty())
+	if (m_history.isEmpty())
 		return;
 	
-	const MoveData& md = m_history.back();
+	const MoveData& md = m_history.last();
 	const Move& move = md.move;
 	int target = move.targetSquare();
 	int source = move.sourceSquare();
@@ -521,10 +521,10 @@ bool Board::isLegalPosition() const
 	if (inCheck(!m_side))
 		return false;
 	
-	if (m_history.empty())
+	if (m_history.isEmpty())
 		return true;
 	
-	const MoveData& md = m_history.back();
+	const MoveData& md = m_history.last();
 	const Move& move = md.move;
 	
 	// Make sure that no square between the king's initial and final

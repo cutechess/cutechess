@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 
 	// Use trivial command-line parsing for now
 	QTextStream out(stdout);
-	while (!arguments.empty())
+	while (!arguments.isEmpty())
 	{
 		if (arguments.first() == QLatin1String("-v") ||
 			arguments.first() == QLatin1String("--version"))

@@ -92,8 +92,8 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 		{
 			if (val.contains(' '))
 			{
-				val.push_front('\"');
-				val.push_back('\"');
+				val.prepend('\"');
+				val.append('\"');
 			}
 			data.config.setCommand(val);
 		}
