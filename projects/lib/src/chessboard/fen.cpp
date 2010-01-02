@@ -123,7 +123,9 @@ bool Board::setFenString(const QString& fen)
 	int k = m_arwidth * 2 + 1;
 	
 	FenData fd;
-	fd.squares = QVector<Piece>(m_squares.size(), Piece::WallPiece);
+	fd.squares.clear();
+	for (int i = 0; i < m_squares.size(); i++)
+		fd.squares.append(Piece::WallPiece);
 	
 	// Get the board contents (squares)
 	for (int i = 0; i < token->length(); i++)

@@ -3,6 +3,7 @@
 
 #include <QtGlobal>
 #include <QObject>
+#include <QVarLengthArray>
 #include <QVector>
 #include <QString>
 #include <QStringList>
@@ -167,7 +168,6 @@ class LIB_EXPORT Board : public QObject
 		/*! Returns a vector of legal chess moves. */
 		QVector<Move> legalMoves();
 
-
 		/*!
 		 * Returns a Unicode version of a SAN move string.
 		 *
@@ -261,7 +261,7 @@ class LIB_EXPORT Board : public QObject
 				//! Castling rights.
 				CastlingRights cr;
 				//! The contents of the board.
-				QVector<Piece> squares;
+				QVarLengthArray<Piece> squares;
 				//! Square indexes for the king on both sides.
 				int kingSquare[2];
 				//! Is support for random starting positions required?
@@ -279,20 +279,20 @@ class LIB_EXPORT Board : public QObject
 		
 		/*! Generates moves for a hopping piece at \a sourceSquare. */
 		void generateHoppingMoves(int sourceSquare,
-		                          const QVector<int>& offsets,
-		                          QVector<Move>& moves) const;
+					  const QVarLengthArray<int>& offsets,
+					  QVarLengthArray<Move>& moves) const;
 		
 		/*! Generates moves for a sliding piece at \a sourceSquare. */
 		void generateSlidingMoves(int sourceSquare,
-		                          const QVector<int>& offsets,
-		                          QVector<Move>& moves) const;
+					  const QVarLengthArray<int>& offsets,
+					  QVarLengthArray<Move>& moves) const;
 		
 		/*! Generates castling moves. */
-		void generateCastlingMoves(QVector<Move>& moves) const;
+		void generateCastlingMoves(QVarLengthArray<Move>& moves) const;
 		
 		/*! Generates moves for a pawn at \a sourceSquare. */
 		void generatePawnMoves(int sourceSquare,
-		                       QVector<Move>& moves) const;
+				       QVarLengthArray<Move>& moves) const;
 		
 		/*!
 		 * Generates pseudo-legal moves for pieces of \a type.
@@ -301,19 +301,19 @@ class LIB_EXPORT Board : public QObject
 		 * for every piece type.
 		 * \sa legalMoves()
 		 */
-		void generateMoves(QVector<Move>& moves,
+		void generateMoves(QVarLengthArray<Move>& moves,
 				   Piece::Type type = Piece::NoPiece) const;
 
 		/*! Generates pseudo-legal moves for the piece at \a square. */
-		void generateMovesForSquare(QVector<Move>& moves, int square) const;
+		void generateMovesForSquare(QVarLengthArray<Move>& moves, int square) const;
 		
 		/*!
 		 * Adds pawn promotions (from \a sourceSquare to \a targetSquare)
-		 * to a vector (\a moves).
+		 * to a move array (\a moves).
 		 */
 		void addPromotions(int sourceSquare,
 		                   int targetSquare,
-		                   QVector<Move>& moves) const;
+				   QVarLengthArray<Move>& moves) const;
 		
 		/*! Returns true if side to move can castle to \a castlingSide. */
 		bool canCastle(int castlingSide) const;
@@ -377,16 +377,16 @@ class LIB_EXPORT Board : public QObject
 		int m_kingSquare[2];
 		int m_enpassantSquare;
 		int m_reversibleMoveCount;
-		QVector<Piece> m_squares;
+		QVarLengthArray<Piece> m_squares;
 		QVector<MoveData> m_history;
 		CastlingRights m_castlingRights;
 		int m_castleTarget[2][2];
 		quint64 m_key;
 		QString m_startFen;
 		
-		QVector<int> m_knightOffsets;
-		QVector<int> m_bishopOffsets;
-		QVector<int> m_rookOffsets;
+		QVarLengthArray<int> m_knightOffsets;
+		QVarLengthArray<int> m_bishopOffsets;
+		QVarLengthArray<int> m_rookOffsets;
 };
 
 } // namespace Chess

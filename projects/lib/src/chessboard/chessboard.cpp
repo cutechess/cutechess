@@ -41,7 +41,9 @@ void Board::setVariant(Variant variant)
 	// Allocate the squares, with one 'wall' file on both sides,
 	// and two 'wall' ranks at the top and bottom.
 	m_arwidth = m_width + 2;
-	m_squares.fill(Piece::WallPiece, m_arwidth * (m_height + 4));
+	m_squares.clear();
+	for (int i = 0; i < m_arwidth * (m_height + 4); i++)
+		m_squares.append(Piece::WallPiece);
 	
 	
 	// Initialize the move offsets
@@ -135,7 +137,7 @@ Piece Board::pieceAt(const Square& square) const
 	if (!isValidSquare(square))
 		return Piece::WallPiece;
 	
-	return m_squares.at(squareIndex(square));
+	return m_squares[squareIndex(square)];
 }
 
 void Board::print() const
@@ -245,9 +247,9 @@ bool Board::inCheck(int side, int square) const
 		return true;
 	
 	// Knight, archbishop, chancellor attacks
-	foreach (int i, m_knightOffsets)
+	for (int i = 0; i < m_knightOffsets.size(); i++)
 	{
-		attacker = m_squares[square + i].code();
+		attacker = m_squares[square + m_knightOffsets[i]].code();
 		switch (attacker * sign)
 		{
 		case -Piece::Knight:
@@ -258,9 +260,10 @@ bool Board::inCheck(int side, int square) const
 	}
 	
 	// Bishop, queen, archbishop, king attacks
-	foreach (int i, m_bishopOffsets)
+	for (int i = 0; i < m_bishopOffsets.size(); i++)
 	{
-		int targetSquare = square + i;
+		int offset = m_bishopOffsets[i];
+		int targetSquare = square + offset;
 		if (targetSquare == m_kingSquare[!side])
 			return true;
 		while ((attacker = m_squares[targetSquare].code()) != Piece::WallPiece
@@ -275,14 +278,15 @@ bool Board::inCheck(int side, int square) const
 			}
 			if (attacker != Piece::NoPiece)
 				break;
-			targetSquare += i;
+			targetSquare += offset;
 		}
 	}
 	
 	// Rook, queen, chancellor, king attacks
-	foreach (int i, m_rookOffsets)
+	for (int i = 0; i < m_rookOffsets.size(); i++)
 	{
-		int targetSquare = square + i;
+		int offset = m_rookOffsets[i];
+		int targetSquare = square + offset;
 		if (targetSquare == m_kingSquare[!side])
 			return true;
 		while ((attacker = m_squares[targetSquare].code()) != Piece::WallPiece
@@ -297,7 +301,7 @@ bool Board::inCheck(int side, int square) const
 			}
 			if (attacker != Piece::NoPiece)
 				break;
-			targetSquare += i;
+			targetSquare += offset;
 		}
 	}
 	
@@ -546,9 +550,19 @@ bool Board::isLegalMove(const Chess::Move& move)
 	if (move.isNull())
 		return false;
 
-	QVector<Move> moves;
+	QVarLengthArray<Move> moves;
 	generateMovesForSquare(moves, move.sourceSquare());
-	if (!moves.contains(move))
+
+	bool moveExists = false;
+	for (int i = 0; i < moves.size(); i++)
+	{
+		if (moves[i] == move)
+		{
+			moveExists = true;
+			break;
+		}
+	}
+	if (!moveExists)
 		return false;
 
 	makeMove(move);
@@ -569,8 +583,9 @@ Result Board::result()
 	}
 	
 	int material[2] = { 0, 0 };
-	foreach (const Piece& piece, m_squares)
+	for (int i = 0; i < m_squares.size(); i++)
 	{
+		const Piece& piece = m_squares[i];
 		if (!piece.isValid())
 			continue;
 

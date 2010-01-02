@@ -20,7 +20,7 @@
 using namespace Chess;
 
 
-void Board::generateMovesForSquare(QVector<Chess::Move>& moves, int square) const
+void Board::generateMovesForSquare(QVarLengthArray<Chess::Move>& moves, int square) const
 {
 	Piece piece = m_squares[square];
 	if (piece.side() != m_side)
@@ -62,7 +62,7 @@ void Board::generateMovesForSquare(QVector<Chess::Move>& moves, int square) cons
 	}
 }
 
-void Board::generateMoves(QVector<Chess::Move>& moves, Piece::Type type) const
+void Board::generateMoves(QVarLengthArray<Chess::Move>& moves, Piece::Type type) const
 {
 	// Cut the wall squares (the ones with a value of InvalidPiece) off
 	// from the squares to iterate over. It bumps the speed up a bit.
@@ -81,12 +81,12 @@ void Board::generateMoves(QVector<Chess::Move>& moves, Piece::Type type) const
 
 bool Board::canMove()
 {
-	QVector<Move> moves;
+	QVarLengthArray<Move> moves;
 	generateMoves(moves);
 
-	foreach (const Move& move, moves)
+	for (int i = 0; i < moves.size(); i++)
 	{
-		makeMove(move);
+		makeMove(moves[i]);
 		bool isLegal = isLegalPosition();
 		undoMove();
 
@@ -99,40 +99,42 @@ bool Board::canMove()
 
 QVector<Move> Board::legalMoves()
 {
-	QVector<Move> moves;
+	QVarLengthArray<Move> moves;
+	QVector<Move> legalMoves;
 	
 	// Generate pseudo-legal moves
 	generateMoves(moves);
+	legalMoves.reserve(moves.size());
 	// Erase all illegal moves from the vector
 	for (int i = moves.size() - 1; i >= 0; i--)
 	{
 		makeMove(moves[i]);
-		if (!isLegalPosition())
-			moves.erase(moves.begin() + i);
+		if (isLegalPosition())
+			legalMoves << moves[i];
 		undoMove();
 	}
 	
-	return moves;
+	return legalMoves;
 }
 
 void Board::addPromotions(int sourceSquare,
                           int targetSquare,
-                          QVector<Chess::Move>& moves) const
+			  QVarLengthArray<Chess::Move>& moves) const
 {
-	moves.push_back(Move(sourceSquare, targetSquare, Piece::Knight));
-	moves.push_back(Move(sourceSquare, targetSquare, Piece::Bishop));
-	moves.push_back(Move(sourceSquare, targetSquare, Piece::Rook));
-	moves.push_back(Move(sourceSquare, targetSquare, Piece::Queen));
+	moves.append(Move(sourceSquare, targetSquare, Piece::Knight));
+	moves.append(Move(sourceSquare, targetSquare, Piece::Bishop));
+	moves.append(Move(sourceSquare, targetSquare, Piece::Rook));
+	moves.append(Move(sourceSquare, targetSquare, Piece::Queen));
 	
 	if (m_variant.isCapablanca())
 	{
-		moves.push_back(Move(sourceSquare, targetSquare, Piece::Archbishop));
-		moves.push_back(Move(sourceSquare, targetSquare, Piece::Chancellor));
+		moves.append(Move(sourceSquare, targetSquare, Piece::Archbishop));
+		moves.append(Move(sourceSquare, targetSquare, Piece::Chancellor));
 	}
 }
 
 void Board::generatePawnMoves(int sourceSquare,
-                              QVector<Chess::Move>& moves) const
+			      QVarLengthArray<Chess::Move>& moves) const
 {
 	int targetSquare;
 	Piece capture;
@@ -148,7 +150,7 @@ void Board::generatePawnMoves(int sourceSquare,
 			addPromotions(sourceSquare, targetSquare, moves);
 		else
 		{
-			moves.push_back(Move(sourceSquare, targetSquare));
+			moves.append(Move(sourceSquare, targetSquare));
 			
 			// Two squares ahead
 			if (m_squares[sourceSquare + step * 2].isWall())
@@ -156,7 +158,7 @@ void Board::generatePawnMoves(int sourceSquare,
 				targetSquare -= step;
 				capture = m_squares[targetSquare];
 				if (capture.isEmpty())
-					moves.push_back(Move(sourceSquare, targetSquare));
+					moves.append(Move(sourceSquare, targetSquare));
 			}
 		}
 	}
@@ -172,7 +174,7 @@ void Board::generatePawnMoves(int sourceSquare,
 			if (isPromotion)
 				addPromotions(sourceSquare, targetSquare, moves);
 			else
-				moves.push_back(Move(sourceSquare, targetSquare));
+				moves.append(Move(sourceSquare, targetSquare));
 		}
 	}
 }
@@ -231,7 +233,7 @@ bool Board::canCastle(int castlingSide) const
 	return true;
 }
 
-void Board::generateCastlingMoves(QVector<Chess::Move>& moves) const
+void Board::generateCastlingMoves(QVarLengthArray<Chess::Move>& moves) const
 {
 	int source = m_kingSquare[m_side];
 	for (int i = QueenSide; i <= KingSide; i++)
@@ -239,39 +241,40 @@ void Board::generateCastlingMoves(QVector<Chess::Move>& moves) const
 		if (canCastle(i))
 		{
 			int target = m_castleTarget[m_side][i];
-			moves.push_back(Move(source, target, Piece::NoPiece, i));
+			moves.append(Move(source, target, Piece::NoPiece, i));
 		}
 	}
 }
 
 void Board::generateHoppingMoves(int sourceSquare,
-                                 const QVector<int>& offsets,
-                                 QVector<Chess::Move>& moves) const
+				 const QVarLengthArray<int>& offsets,
+				 QVarLengthArray<Chess::Move>& moves) const
 {
-	foreach (int i, offsets)
+	for (int i = 0; i < offsets.size(); i++)
 	{
-		int targetSquare = sourceSquare + i;
+		int targetSquare = sourceSquare + offsets[i];
 		Piece capture = m_squares[targetSquare];
 		if (capture.isEmpty() || capture.side() == !m_side)
-			moves.push_back(Move(sourceSquare, targetSquare));
+			moves.append(Move(sourceSquare, targetSquare));
 	}
 }
 
 void Board::generateSlidingMoves(int sourceSquare,
-                                 const QVector<int>& offsets,
-                                 QVector<Chess::Move>& moves) const
+				 const QVarLengthArray<int>& offsets,
+				 QVarLengthArray<Chess::Move>& moves) const
 {
-	foreach (int i, offsets)
+	for (int i = 0; i < offsets.size(); i++)
 	{
-		int targetSquare = sourceSquare + i;
+		int offset = offsets[i];
+		int targetSquare = sourceSquare + offset;
 		Piece capture;
 		while (!(capture = m_squares[targetSquare]).isWall()
 		&&      capture.side() != m_side)
 		{
-			moves.push_back(Move(sourceSquare, targetSquare));
+			moves.append(Move(sourceSquare, targetSquare));
 			if (!capture.isEmpty())
 				break;
-			targetSquare += i;
+			targetSquare += offset;
 		}
 	}
 }

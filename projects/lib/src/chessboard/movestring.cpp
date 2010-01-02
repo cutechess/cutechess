@@ -156,11 +156,12 @@ QString Board::sanMoveString(const Move& move)
 	else	// not king or pawn
 	{
 		str += piece.toChar().toUpper();
-		QVector<Move> moves;
+		QVarLengthArray<Move> moves;
 		generateMoves(moves, piece.type());
 		
-		foreach (const Move& move2, moves)
+		for (int i = 0; i < moves.size(); i++)
 		{
+			const Move& move2 = moves[i];
 			if (move2.sourceSquare() == source
 			||  move2.targetSquare() != target)
 				continue;
@@ -388,14 +389,15 @@ Move Board::moveFromSanString(const QString& str)
 			return Move();
 	}
 	
-	QVector<Move> moves;
+	QVarLengthArray<Move> moves;
 	generateMoves(moves, piece.type());
 	const Move* match = 0;
 	
 	// Loop through all legal moves to find a move that matches
 	// the data we got from the move string.
-	foreach (const Move& move, moves)
+	for (int i = 0; i < moves.size(); i++)
 	{
+		const Move& move = moves[i];
 		if (move.targetSquare() != target)
 			continue;
 		Square sourceSq2 = chessSquare(move.sourceSquare());
