@@ -1,6 +1,9 @@
 # main executables
 cutechess
 cutechess-cli
+cutechess.app/
+cutechess.exe
+cutechess-cli.exe
 
 # test executables
 test_board
@@ -8,6 +11,8 @@ test_board
 # libraries
 *.so
 *.so.*
+*.dylib
+*.dll
 
 # qmake generated Makefile
 Makefile
@@ -26,15 +31,19 @@ docs/api/html/
 .obj/
 
 # other temporary files
-*.h~
-*.cpp~
+*~
+*.a
 ui_*.h
+
+# files created by MinGW
+*.Debug
+*.Release
 
 # files created by KDevelop
 Doxyfile
-cutechess.kdevelop
-cutechess.kdevelop.pcs
-cutechess.kdevses
+*.kdevelop
+*.kdevelop.pcs
+*.kdevses
 
 # files created by Qt Creator
 cutechess.pro.user
