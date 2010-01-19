@@ -336,6 +336,7 @@ int main(int argc, char* argv[])
 		if (arg == "-v" || arg == "--version")
 		{
 			out << "cutechess-cli " << CUTECHESS_CLI_VERSION << endl;
+			out << "Using Qt version " << qVersion() << endl << endl;
 			out << "Copyright (C) 2008-2009 Ilari Pihlajisto and Arto Jonsson" << endl;
 			out << "This is free software; see the source for copying ";
 			out << "conditions.  There is NO" << endl << "warranty; not even for ";
