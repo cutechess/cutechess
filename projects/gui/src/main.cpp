@@ -16,17 +16,11 @@
 */
 
 #include <QtGlobal>
-
-#if QT_VERSION < 0x040400
-  #error "Qt version 4.4.0 or later is required"
-#endif
-
 #include <QApplication>
 #include <QDebug>
 #include <QTextStream>
 #include <QTime>
 #include <QSettings>
-
 #include "mainwindow.h"
 
 int main(int argc, char* argv[])

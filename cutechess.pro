@@ -1,3 +1,9 @@
+# Check Qt version
+contains(QT_VERSION, ^4\.[0-3]\..*) {
+    message("Cannot build Cute Chess with Qt version $${QT_VERSION}.")
+    error("Qt version 4.4 or later is required.")
+}
+
 TEMPLATE = subdirs
 SUBDIRS = projects
 
