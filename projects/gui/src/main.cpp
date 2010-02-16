@@ -15,26 +15,14 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGlobal>
-#include <QApplication>
 #include <QDebug>
 #include <QTextStream>
-#include <QTime>
-#include <QSettings>
+#include "cutechessapp.h"
 #include "mainwindow.h"
 
 int main(int argc, char* argv[])
 {
-	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-	
-	QCoreApplication::setOrganizationName("cutechess");
-	QCoreApplication::setOrganizationDomain("cutechess.org");
-	QCoreApplication::setApplicationName("cutechess");
-
-	QApplication app(argc, argv);
-
-	// Use Ini format on all platforms
-	QSettings::setDefaultFormat(QSettings::IniFormat);
+	CuteChessApplication app(argc, argv);
 
 	QStringList arguments = app.arguments();
 	arguments.takeFirst(); // application name

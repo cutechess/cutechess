@@ -10,7 +10,8 @@ HEADERS += chessboardview.h \
     promotiondlg.h \
     chessboardmodel.h \
     movelistmodel.h \
-    gamedatabasemodel.h
+    gamedatabasemodel.h \
+    cutechessapp.h
 SOURCES += main.cpp \
     chessboardview.cpp \
     chessclock.cpp \
@@ -23,4 +24,5 @@ SOURCES += main.cpp \
     promotiondlg.cpp \
     chessboardmodel.cpp \
     movelistmodel.cpp \
-    gamedatabasemodel.cpp
+    gamedatabasemodel.cpp \
+    cutechessapp.cpp
