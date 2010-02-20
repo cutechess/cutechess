@@ -76,8 +76,6 @@ MainWindow::MainWindow()
 	createMenus();
 	createToolBars();
 	createDockWindows();
-
-	readSettings();
 }
 
 void MainWindow::createActions()
@@ -163,27 +161,6 @@ void MainWindow::createDockWindows()
 	m_viewMenu->addAction(moveListDock->toggleViewAction());
 	m_viewMenu->addAction(engineDebugDock->toggleViewAction());
 	m_viewMenu->addAction(gameDatabaseDock->toggleViewAction());
-}
-
-void MainWindow::readSettings()
-{
-	QSettings settings;
-
-	int size = settings.beginReadArray("engines");
-	for (int i = 0; i < size; i++)
-	{
-		settings.setArrayIndex(i);
-		EngineConfiguration config;
-		config.setName(settings.value("name").toString());
-		config.setCommand(settings.value("command").toString());
-		config.setWorkingDirectory(
-			settings.value("working_directory").toString());
-		config.setProtocol(ChessEngine::Protocol(
-			settings.value("protocol").toInt()));
-
-		m_engineConfigurations->addConfiguration(config);
-	}
-	settings.endArray();
 }
 
 void MainWindow::newGame()

@@ -34,6 +34,9 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 
 	// Use Ini format on all platforms
 	QSettings::setDefaultFormat(QSettings::IniFormat);
+
+	// Load the engines
+	engineManager()->loadEngines();
 }
 
 CuteChessApplication::~CuteChessApplication()
