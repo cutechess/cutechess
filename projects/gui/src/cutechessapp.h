@@ -20,6 +20,8 @@
 
 #include <QApplication>
 
+class EngineManager;
+
 class CuteChessApplication : public QApplication
 {
 	Q_OBJECT
@@ -27,6 +29,11 @@ class CuteChessApplication : public QApplication
 	public:
 		CuteChessApplication(int& argc, char* argv[]);
 		~CuteChessApplication();
+
+		EngineManager* engineManager();
+
+	private:
+		EngineManager* m_engineManager;
 
 };
 

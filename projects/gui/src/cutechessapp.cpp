@@ -19,10 +19,12 @@
 #include <QTime>
 #include <QSettings>
 
+#include <enginemanager.h>
+
 #include "cutechessapp.h"
 
 CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
-	: QApplication(argc, argv)
+	: QApplication(argc, argv), m_engineManager(0)
 {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
@@ -36,4 +38,12 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 
 CuteChessApplication::~CuteChessApplication()
 {
+}
+
+EngineManager* CuteChessApplication::engineManager()
+{
+	if (m_engineManager == 0)
+		m_engineManager = new EngineManager(this);
+
+	return m_engineManager;
 }
