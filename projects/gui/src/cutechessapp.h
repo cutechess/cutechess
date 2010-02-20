@@ -30,6 +30,8 @@ class CuteChessApplication : public QApplication
 		CuteChessApplication(int& argc, char* argv[]);
 		~CuteChessApplication();
 
+		static CuteChessApplication* instance();
+
 		EngineManager* engineManager();
 
 	private:

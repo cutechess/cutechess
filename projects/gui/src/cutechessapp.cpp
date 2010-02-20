@@ -43,6 +43,11 @@ CuteChessApplication::~CuteChessApplication()
 {
 }
 
+CuteChessApplication* CuteChessApplication::instance()
+{
+	return static_cast<CuteChessApplication*>(QApplication::instance());
+}
+
 EngineManager* CuteChessApplication::engineManager()
 {
 	if (m_engineManager == 0)
