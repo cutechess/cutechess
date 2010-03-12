@@ -44,9 +44,9 @@ void EngineManager::updateEngineAt(int index, const EngineConfiguration& engine)
 
 void EngineManager::removeEngineAt(int index)
 {
-	m_engines.removeAt(index);
+	emit engineAboutToBeRemoved(index);
 
-	emit engineRemoved(index);
+	m_engines.removeAt(index);
 }
 
 QList<EngineConfiguration> EngineManager::engines() const

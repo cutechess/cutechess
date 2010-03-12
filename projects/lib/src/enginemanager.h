@@ -58,11 +58,11 @@ class LIB_EXPORT EngineManager : public QObject
 		/*! Emitted when an engine is added to \a index. */
 		void engineAdded(int index);
 		/*!
-		 * Emitted when an engine is removed from \a index.
-		 * \note The engine is already removed when this signal is emitted so
-		 * the index position is no longer valid.
+		 * Emitted when an engine at \a index is about to be removed.
+		 * \note This signal is emitted before the engine is removed so
+		 * the index position is still valid.
 		 */
-		void engineRemoved(int index);
+		void engineAboutToBeRemoved(int index);
 		/*! Emitted when an engine is updated at \a index. */
 		void engineUpdated(int index);
 
