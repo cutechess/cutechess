@@ -82,3 +82,22 @@ void EngineManager::loadEngines()
 	}
 	settings.endArray();
 }
+
+void EngineManager::saveEngines()
+{
+	QSettings settings;
+
+	settings.beginWriteArray("engines");
+	for (int i = 0; i < m_engines.size(); i++)
+	{
+		settings.setArrayIndex(i);
+		settings.setValue("name", m_engines.at(i).name());
+		settings.setValue("command", m_engines.at(i).command());
+		settings.setValue("working_directory", m_engines.at(i).workingDirectory());
+		settings.setValue("protocol", m_engines.at(i).protocol());
+	}
+	settings.endArray();
+
+	// Make sure that the settings are flushed to disk now
+	settings.sync();
+}

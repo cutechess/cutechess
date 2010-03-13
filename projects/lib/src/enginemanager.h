@@ -48,6 +48,7 @@ class LIB_EXPORT EngineManager : public QObject
 		void setEngines(const QList<EngineConfiguration>& engines);
 
 		void loadEngines();
+		void saveEngines();
 
 	signals:
 		/*!
