@@ -24,10 +24,8 @@
 
 #include "cutechesscoreapp.h"
 
-EngineManager* CuteChessCoreApplication::s_engineManager = 0;
-
 CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
-	: QCoreApplication(argc, argv)
+	: QCoreApplication(argc, argv), m_engineManager(0)
 {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
@@ -39,12 +37,13 @@ CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 	QSettings::setDefaultFormat(QSettings::IniFormat);
 
 	qInstallMsgHandler(CuteChessCoreApplication::messageHandler);
+
+	// Load the engines
+	engineManager()->loadEngines();
 }
 
 CuteChessCoreApplication::~CuteChessCoreApplication()
 {
-	delete s_engineManager;
-	s_engineManager = 0;
 }
 
 void CuteChessCoreApplication::messageHandler(QtMsgType type,
@@ -72,10 +71,10 @@ void CuteChessCoreApplication::messageHandler(QtMsgType type,
 
 EngineManager* CuteChessCoreApplication::engineManager()
 {
-	if (s_engineManager == 0)
-		s_engineManager = new EngineManager();
+	if (m_engineManager == 0)
+		m_engineManager = new EngineManager(this);
 
-	return s_engineManager;
+	return m_engineManager;
 }
 
 CuteChessCoreApplication* CuteChessCoreApplication::instance()

@@ -30,12 +30,12 @@ class CuteChessCoreApplication : public QCoreApplication
 		CuteChessCoreApplication(int& argc, char* argv[]);
 		~CuteChessCoreApplication();
 
-		static EngineManager* engineManager();
+		EngineManager* engineManager();
 		static CuteChessCoreApplication* instance();
 
 		static void messageHandler(QtMsgType type, const char* message);
 	private:
-		static EngineManager* s_engineManager;
+		EngineManager* m_engineManager;
 
 };
 

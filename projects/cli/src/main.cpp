@@ -51,7 +51,7 @@ struct EngineData
 static bool readEngineConfig(const QString& name, EngineConfiguration& config)
 {
 	const QList<EngineConfiguration> engines =
-		CuteChessCoreApplication::engineManager()->engines();
+		CuteChessCoreApplication::instance()->engineManager()->engines();
 
 	foreach (const EngineConfiguration& engine, engines)
 	{
@@ -323,9 +323,6 @@ int main(int argc, char* argv[])
 
 	CuteChessCoreApplication app(argc, argv);
 
-	// Load the engines
-	CuteChessCoreApplication::engineManager()->loadEngines();
-
 	QStringList arguments = CuteChessCoreApplication::arguments();
 	arguments.takeFirst(); // application name
 
@@ -348,7 +345,7 @@ int main(int argc, char* argv[])
 		else if (arg == "--engines")
 		{
 			const QList<EngineConfiguration> engines =
-				CuteChessCoreApplication::engineManager()->engines();
+				CuteChessCoreApplication::instance()->engineManager()->engines();
 
 			foreach (const EngineConfiguration& engine, engines)
 				out << engine.name() << endl;
