@@ -77,3 +77,8 @@ EngineManager* CuteChessCoreApplication::engineManager()
 
 	return s_engineManager;
 }
+
+CuteChessCoreApplication* CuteChessCoreApplication::instance()
+{
+	return static_cast<CuteChessCoreApplication*>(QCoreApplication::instance());
+}
