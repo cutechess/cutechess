@@ -18,16 +18,18 @@
 #include <QAbstractItemView>
 #include <QSortFilterProxyModel>
 
+#include "cutechessapp.h"
 #include "newgamedlg.h"
 #include "engineconfigurationmodel.h"
 #include "engineconfigurationdlg.h"
 
-NewGameDialog::NewGameDialog(EngineConfigurationModel* engineConfigurations,
-			     QWidget* parent)
-	: QDialog(parent),
-	  m_engines(engineConfigurations)
+NewGameDialog::NewGameDialog(QWidget* parent)
+	: QDialog(parent)
 {
 	setupUi(this);
+
+	m_engines = new EngineConfigurationModel(
+		CuteChessApplication::instance()->engineManager(), this);
 
 	// Add Start button to the standard button box at the bottom
 	QPushButton* startButton = new QPushButton(tr("Start"));
@@ -66,30 +68,31 @@ NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
 		return (m_blackPlayerHumanRadio->isChecked()) ? Human : CPU;
 }
 
-QModelIndex NewGameDialog::selectedEngine(Chess::Side side) const
+int NewGameDialog::selectedEngineIndex(Chess::Side side) const
 {
 	Q_ASSERT(side != Chess::NoSide);
 
-	int index;
+	int i;
 	if (side == Chess::White)
-		index = m_whiteEngineComboBox->currentIndex();
+		i = m_whiteEngineComboBox->currentIndex();
 	else
-		index = m_blackEngineComboBox->currentIndex();
+		i = m_blackEngineComboBox->currentIndex();
 
-	QModelIndex modelIndex = m_proxyModel->index(index, 0);
-	return m_proxyModel->mapToSource(modelIndex);
+	return m_proxyModel->mapToSource(m_proxyModel->index(i, 0)).row();
 }
 
 void NewGameDialog::configureWhiteEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 
-	QModelIndex index = selectedEngine(Chess::White);
-	dlg.applyEngineInformation(m_engines->configuration(index));
+	int i = selectedEngineIndex(Chess::White);
+	dlg.applyEngineInformation(
+		CuteChessApplication::instance()->engineManager()->engines().at(i));
 
 	if (dlg.exec() == QDialog::Accepted)
 	{
-		m_engines->setConfiguration(index, dlg.engineConfiguration());
+		CuteChessApplication::instance()->engineManager()->updateEngineAt(i,
+			dlg.engineConfiguration());
 	}
 }
 
@@ -97,11 +100,13 @@ void NewGameDialog::configureBlackEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 
-	QModelIndex index = selectedEngine(Chess::Black);
-	dlg.applyEngineInformation(m_engines->configuration(index));
+	int i = selectedEngineIndex(Chess::Black);
+	dlg.applyEngineInformation(
+		CuteChessApplication::instance()->engineManager()->engines().at(i));
 
 	if (dlg.exec() == QDialog::Accepted)
 	{
-		m_engines->setConfiguration(index, dlg.engineConfiguration());
+		CuteChessApplication::instance()->engineManager()->updateEngineAt(i,
+			dlg.engineConfiguration());
 	}
 }

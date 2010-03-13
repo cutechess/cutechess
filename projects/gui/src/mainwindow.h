@@ -63,8 +63,6 @@ class MainWindow : public QMainWindow
 		MoveListModel* m_moveListModel;
 		ChessClock* m_chessClock[2];
 
-		EngineConfigurationModel* m_engineConfigurations;
-
 		QAction* m_quitGameAct;
 		QAction* m_gamePropertiesAct;
 		QAction* m_newGameAct;

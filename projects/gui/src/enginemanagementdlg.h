@@ -20,9 +20,11 @@
 
 #include <QDialog>
 
+#include <engineconfiguration.h>
+
 #include "ui_enginemanagementdlg.h"
 
-class EngineConfigurationModel;
+class EngineManager;
 class QSortFilterProxyModel;
 
 /*!
@@ -38,8 +40,9 @@ class EngineManagementDialog : public QDialog, private Ui::EngineManagementDialo
 		 * Creates a new engine management window with \a engineConfigurations
 		 * and \a parent as parent.
 		*/
-		EngineManagementDialog(EngineConfigurationModel* engineConfigurations,
-		                       QWidget* parent = 0);
+		EngineManagementDialog(QWidget* parent = 0);
+
+		QList<EngineConfiguration> engines() const;
 	
 	private slots:
 		void updateUi();
@@ -49,8 +52,8 @@ class EngineManagementDialog : public QDialog, private Ui::EngineManagementDialo
 		void removeEngine();
 
 	private:
+		EngineManager* m_engineManager;
 		QSortFilterProxyModel* m_filteredModel;
-		EngineConfigurationModel* m_originalModel;
 
 };
 

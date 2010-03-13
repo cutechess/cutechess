@@ -25,6 +25,7 @@
 #include <engineprocess.h>
 #include <humanplayer.h>
 
+#include "cutechessapp.h"
 #include "mainwindow.h"
 #include "chessboardview.h"
 #include "chessboardmodel.h"
@@ -69,8 +70,6 @@ MainWindow::MainWindow()
 	setCentralWidget(mainWidget);
 	
 	setStatusBar(new QStatusBar());
-
-	m_engineConfigurations = new EngineConfigurationModel(this);
 
 	createActions();
 	createMenus();
@@ -165,7 +164,7 @@ void MainWindow::createDockWindows()
 
 void MainWindow::newGame()
 {
-	NewGameDialog dlg(m_engineConfigurations, this);
+	NewGameDialog dlg(this);
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
@@ -184,7 +183,8 @@ void MainWindow::newGame()
 		Chess::Side side = (Chess::Side)i;
 		if (dlg.playerType(side) == NewGameDialog::CPU)
 		{
-			EngineConfiguration config = m_engineConfigurations->configuration(dlg.selectedEngine(side));
+			EngineConfiguration config =
+				CuteChessApplication::instance()->engineManager()->engines().at(dlg.selectedEngineIndex(side));
 
 			EngineProcess* process = new EngineProcess(this);
 
@@ -242,37 +242,12 @@ void MainWindow::gameProperties()
 
 void MainWindow::manageEngines()
 {
-	QList<EngineConfiguration> oldConfigurations =
-		m_engineConfigurations->configurations();
-
-	EngineManagementDialog dlg(m_engineConfigurations, this);
+	EngineManagementDialog dlg(this);
 
 	if (dlg.exec() == QDialog::Accepted)
 	{
-		QSettings settings;
-
-		const QList<EngineConfiguration> engines = m_engineConfigurations->configurations();
-
-		settings.beginWriteArray("engines");
-		for (int i = 0; i < engines.size(); i++)
-		{
-			settings.setArrayIndex(i);
-			settings.setValue("name", engines.at(i).name());
-			settings.setValue("command", engines.at(i).command());
-			settings.setValue("working_directory", engines.at(i).workingDirectory());
-			settings.setValue("protocol", engines.at(i).protocol());
-		}
-		settings.endArray();
-
-		// Make sure that the settings are flushed to disk now
-		settings.sync();
-	}
-	else
-	{
-		// Release the engine configurations model and use
-		// the old configurations as base for the new model
-		delete m_engineConfigurations;
-		m_engineConfigurations = new EngineConfigurationModel(oldConfigurations);
+		CuteChessApplication::instance()->engineManager()->setEngines(dlg.engines());
+		CuteChessApplication::instance()->engineManager()->saveEngines();
 	}
 }
 

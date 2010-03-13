@@ -17,20 +17,29 @@
 
 #include <QSortFilterProxyModel>
 
+#include <enginemanager.h>
+
+#include "cutechessapp.h"
 #include "engineconfigurationmodel.h"
 #include "enginemanagementdlg.h"
 #include "engineconfigurationdlg.h"
 
-EngineManagementDialog::EngineManagementDialog(
-	EngineConfigurationModel* engineConfigurations, QWidget* parent)
+EngineManagementDialog::EngineManagementDialog(QWidget* parent)
 	: QDialog(parent),
-	  m_filteredModel(new QSortFilterProxyModel(this)),
-	  m_originalModel(engineConfigurations)
+	  m_filteredModel(new QSortFilterProxyModel(this))
 {
 	setupUi(this);
 
+	// Setup a copy of the Engine Manager to manage adding, deleting and
+	// configuring engines _within_ this dialog.
+	m_engineManager = new EngineManager(this);
+	m_engineManager->setEngines(
+		CuteChessApplication::instance()->engineManager()->engines());
+
 	// Set up a filtered model
-	m_filteredModel->setSourceModel(engineConfigurations);
+	m_filteredModel->setSourceModel(new EngineConfigurationModel(
+		m_engineManager, this));
+
 	m_filteredModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
 	m_enginesList->setModel(m_filteredModel);
@@ -74,26 +83,20 @@ void EngineManagementDialog::addEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::AddEngine, this);
 	if (dlg.exec() == QDialog::Accepted)
-	{
-		m_originalModel->addConfiguration(dlg.engineConfiguration());
-	}
+		m_engineManager->addEngine(dlg.engineConfiguration());
 }
 
 void EngineManagementDialog::configureEngine()
 {
 	// Map the index from the filtered model to the original model
-	const QModelIndex index = m_filteredModel->mapToSource(
-		m_enginesList->selectionModel()->currentIndex());
+	int index = m_filteredModel->mapToSource(
+		m_enginesList->selectionModel()->currentIndex()).row();
 
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
-	dlg.applyEngineInformation(m_originalModel->configurations().at(
-		index.row()));
+	dlg.applyEngineInformation(m_engineManager->engines().at(index));
 
 	if (dlg.exec() == QDialog::Accepted)
-	{
-		// Update the configuration in the model
-		m_originalModel->setConfiguration(index, dlg.engineConfiguration());
-	}
+		m_engineManager->updateEngineAt(index, dlg.engineConfiguration());
 }
 
 void EngineManagementDialog::removeEngine()
@@ -104,8 +107,12 @@ void EngineManagementDialog::removeEngine()
 	foreach (const QModelIndex& index, selected)
 	{
 		// Map the index from the filtered model to the original model
-		m_originalModel->removeRows(
-			m_filteredModel->mapToSource(index).row(), 1);
+		m_engineManager->removeEngineAt(
+			m_filteredModel->mapToSource(index).row());
 	}
 }
 
+QList<EngineConfiguration> EngineManagementDialog::engines() const
+{
+	return m_engineManager->engines();
+}

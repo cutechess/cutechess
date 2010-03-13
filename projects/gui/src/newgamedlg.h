@@ -47,8 +47,7 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 		 * Creates a new game dialog with \a engineConfigurations as the
 		 * list of chess engines and given \a parent.
 		*/
-		NewGameDialog(EngineConfigurationModel* engineConfigurations,
-			      QWidget* parent = 0);
+		NewGameDialog(QWidget* parent = 0);
 
 		/*! Returns the user selected player type for \a side. */
 		PlayerType playerType(Chess::Side side) const;
@@ -56,9 +55,9 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 		/*!
 		 * Returns the user selected chess engine for \a side.
 		 *
-		 * The return value is an index to the engine configurations model.
+		 * The return value is an index to the list of engines.
 		*/
-		QModelIndex selectedEngine(Chess::Side side) const;
+		int selectedEngineIndex(Chess::Side side) const;
 
 	private slots:
 		void configureWhiteEngine();

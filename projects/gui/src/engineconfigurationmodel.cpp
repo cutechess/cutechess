@@ -21,24 +21,26 @@
 const QStringList EngineConfigurationModel::m_headers = (QStringList() <<
 	tr("Name") << tr("Command") << tr("Working Directory") << tr("Protocol"));
 
-EngineConfigurationModel::EngineConfigurationModel(QObject* parent)
-	: QAbstractListModel(parent)
+EngineConfigurationModel::EngineConfigurationModel(EngineManager* engineManager, QObject* parent)
+	: QAbstractListModel(parent), m_engineManager(engineManager)
 {
-}
+	Q_ASSERT(m_engineManager != 0);
 
-EngineConfigurationModel::EngineConfigurationModel(
-	const QList<EngineConfiguration>& configurations, QObject* parent)
-	: QAbstractListModel(parent),
-	  m_configurations(configurations)
-{
-
+	connect(m_engineManager, SIGNAL(engineAdded(int)), this,
+		SLOT(onEngineAdded(int)));
+	connect(m_engineManager, SIGNAL(engineAboutToBeRemoved(int)), this,
+		SLOT(onEngineAboutToBeRemoved(int)));
+	connect(m_engineManager, SIGNAL(engineUpdated(int)), this,
+		SLOT(onEngineUpdated(int)));
+	connect(m_engineManager, SIGNAL(enginesReset()), this,
+		SLOT(onEnginesReset()));
 }
 
 int EngineConfigurationModel::rowCount(const QModelIndex& parent) const
 {
 	Q_UNUSED(parent)
 
-	return m_configurations.count();
+	return m_engineManager->engines().count();
 }
 
 int EngineConfigurationModel::columnCount(const QModelIndex& parent) const
@@ -55,16 +57,16 @@ QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) cons
 		switch (index.column())
 		{
 			case 0:
-				return m_configurations.at(index.row()).name();
+				return m_engineManager->engines().at(index.row()).name();
 
 			case 1:
-				return m_configurations.at(index.row()).command();
+				return m_engineManager->engines().at(index.row()).command();
 
 			case 2:
-				return m_configurations.at(index.row()).workingDirectory();
+				return m_engineManager->engines().at(index.row()).workingDirectory();
 
 			case 3:
-				return m_configurations.at(index.row()).protocol();
+				return m_engineManager->engines().at(index.row()).protocol();
 
 			default:
 				return QVariant();
@@ -78,112 +80,30 @@ QVariant EngineConfigurationModel::headerData(int section, Qt::Orientation orien
                                               int role) const
 {
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
-	{
 		return m_headers.at(section);
-	}
 
 	return QVariant();
 }
 
-bool EngineConfigurationModel::insertRows(int row, int count,
-                                          const QModelIndex& parent)
+void EngineConfigurationModel::onEngineAdded(int index)
 {
-	Q_UNUSED(parent)
-
-	beginInsertRows(QModelIndex(), row, row + count - 1);
-
-	for (int i = 0; i < count; i++)
-	{
-		EngineConfiguration config(" ", " ", ChessEngine::Xboard);
-		m_configurations.insert(row, config);
-	}
-
+	beginInsertRows(QModelIndex(), index, index);
 	endInsertRows();
-	return true;
 }
 
-bool EngineConfigurationModel::removeRows(int row, int count,
-                                          const QModelIndex& parent)
+void EngineConfigurationModel::onEngineAboutToBeRemoved(int index)
 {
-	Q_UNUSED(parent)
-
-	beginRemoveRows(QModelIndex(), row, row + count - 1);
-
-	for (int i = 0; i < count; i++)
-	{
-		m_configurations.removeAt(row);
-	}
-
+	beginRemoveRows(QModelIndex(), index, index);
 	endRemoveRows();
-	return true;
 }
 
-bool EngineConfigurationModel::setData(const QModelIndex& index,
-                                       const QVariant& value, int role)
+void EngineConfigurationModel::onEngineUpdated(int index)
 {
-	if (index.isValid() && role == Qt::EditRole)
-	{
-		EngineConfiguration config = m_configurations.at(index.row());
-
-		switch (index.column())
-		{
-			case 0:
-				config.setName(value.toString());
-			break;
-
-			case 1:
-				config.setCommand(value.toString());
-			break;
-
-			case 2:
-				config.setWorkingDirectory(value.toString());
-			break;
-			
-			case 3:
-				config.setProtocol(ChessEngine::Protocol(value.toInt()));
-			break;
-
-			default:
-				return false;
-		}
-
-		m_configurations[index.row()] = config;
-		emit dataChanged(index, index);
-
-		return true;
-	}
-	return false;
+	QModelIndex indexToUpdate = this->index(index);
+	emit dataChanged(indexToUpdate, indexToUpdate);
 }
 
-void EngineConfigurationModel::addConfiguration(const EngineConfiguration& configuration)
+void EngineConfigurationModel::onEnginesReset()
 {
-	beginInsertRows(QModelIndex(), m_configurations.count(), m_configurations.count());
-
-	m_configurations << configuration;
-
-	endInsertRows();
-}
-
-EngineConfiguration EngineConfigurationModel::configuration(const QModelIndex& index) const
-{
-	if (!index.isValid())
-		return EngineConfiguration();
-	return m_configurations.at(index.row());
-}
-
-QList<EngineConfiguration> EngineConfigurationModel::configurations() const
-{
-	return m_configurations;
-}
-
-bool EngineConfigurationModel::setConfiguration(const QModelIndex& index,
-                                                const EngineConfiguration& configuration)
-{
-	if (index.isValid())
-	{
-		m_configurations[index.row()] = configuration;
-		emit dataChanged(index, index);
-		return true;
-	}
-	return false;
+	reset();
 }
