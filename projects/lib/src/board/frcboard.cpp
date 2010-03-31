@@ -1,0 +1,104 @@
+/*
+    This file is part of Cute Chess.
+
+    Cute Chess is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Cute Chess is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "frcboard.h"
+#include "westernzobrist.h"
+#include "piece.h"
+
+
+static void addPiece(QVector<int>& pieces,
+		     int piece,
+		     int pos,
+		     int start = 0,
+		     int step = 1)
+{
+	int i = 0;
+	for (int j = start; j < pieces.size(); j += step)
+	{
+		if (pieces[j] != Chess::Piece::NoPiece)
+			continue;
+		if (i == pos)
+		{
+			pieces[j] = piece;
+			break;
+		}
+		i++;
+	}
+}
+
+
+namespace Chess {
+
+FrcBoard::FrcBoard(QObject* parent)
+	: WesternBoard(new WesternZobrist(), parent)
+{
+}
+
+QString FrcBoard::variant() const
+{
+	return "Fischerandom";
+}
+
+bool FrcBoard::isRandomVariant() const
+{
+	return true;
+}
+
+QString FrcBoard::defaultFenString() const
+{
+	const int empty = Piece::NoPiece;
+	QVector<int> pieces(8, empty);
+
+	addPiece(pieces, Bishop, qrand() % 4, 0, 2);
+	addPiece(pieces, Bishop, qrand() % 4, 1, 2);
+	addPiece(pieces, Queen, qrand() % 6);
+	addPiece(pieces, Knight, qrand() % 5);
+	addPiece(pieces, Knight, qrand() % 4);
+	addPiece(pieces, Rook, 0);
+	addPiece(pieces, King, 0);
+	addPiece(pieces, Rook, 0);
+
+	QString fen;
+
+	// Black pieces
+	foreach (int pieceType, pieces)
+		fen += pieceSymbol(Piece(Black, pieceType));
+	fen += '/';
+	// Black pawns
+	for (int i = 0; i < width(); i++)
+		fen += pieceSymbol(Piece(Black, Pawn));
+	fen += '/';
+
+	// Empty squares
+	for (int i = 0; i < height() - 4; i++)
+		fen += QString::number(pieces.size()) + '/';
+
+	// White pawns
+	for (int i = 0; i < width(); i++)
+		fen += pieceSymbol(Piece(White, Pawn));
+	fen += '/';
+	// White pieces
+	foreach (int pieceType, pieces)
+		fen += pieceSymbol(Piece(White, pieceType));
+
+	// Side to move, castling rights, enpassant square, etc.
+	fen += " w KQkq - 0 1";
+
+	return fen;
+}
+
+} // namespace Chess

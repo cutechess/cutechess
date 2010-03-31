@@ -16,29 +16,9 @@
 */
 
 #include "square.h"
-using namespace Chess;
 
 
-static QChar fileChar(int file)
-{
-	return QChar('a' + file);
-}
-
-static QChar rankChar(int rank)
-{
-	return QChar('1' + rank);
-}
-
-static int fileInt(const QChar& c)
-{
-	return c.toAscii() - 'a';
-}
-
-static int rankInt(const QChar& c)
-{
-	return c.toAscii() - '1';
-}
-
+namespace Chess {
 
 Square::Square()
 	: m_file(-1),
@@ -50,17 +30,6 @@ Square::Square(int file, int rank)
 	: m_file(file),
 	  m_rank(rank)
 {
-}
-
-Square::Square(const QString& str)
-	: m_file(-1),
-	  m_rank(-1)
-{
-	if (str.length() == 2)
-	{
-		m_file = fileInt(str[0]);
-		m_rank = rankInt(str[1]);
-	}
 }
 
 bool Square::operator==(const Square& other) const
@@ -88,14 +57,6 @@ int Square::rank() const
 	return m_rank;
 }
 
-QString Square::toString() const
-{
-	if (!isValid())
-		return QString();
-
-	return QString(fileChar(m_file)) + rankChar(m_rank);
-}
-
 void Square::setFile(int file)
 {
 	m_file = file;
@@ -105,3 +66,5 @@ void Square::setRank(int rank)
 {
 	m_rank = rank;
 }
+
+} // namespace Chess

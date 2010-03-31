@@ -19,6 +19,7 @@
 #define XBOARDENGINE_H
 
 #include "chessengine.h"
+#include "board/board.h"
 
 /*!
  * \brief A chess engine which uses the Xboard chess engine communication protocol.
@@ -73,7 +74,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		int m_lastPing;
 		Chess::Move m_nextMove;
 		QString m_nextMoveString;
-		Chess::MoveNotation m_notation;
+		Chess::Board::MoveNotation m_notation;
 		QTimer* m_initTimer;
 };
 

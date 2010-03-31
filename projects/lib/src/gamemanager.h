@@ -18,7 +18,6 @@
 #ifndef GAMEMANAGER_H
 #define GAMEMANAGER_H
 
-#include "chessboard/variant.h"
 #include <QObject>
 #include <QList>
 class ChessGame;

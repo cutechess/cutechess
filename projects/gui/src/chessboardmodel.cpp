@@ -16,7 +16,7 @@
 */
 
 #include "chessboardmodel.h"
-#include <chessboard/chessboard.h>
+#include <board/board.h>
 
 const QString ChessboardModel::m_files = QLatin1String("abcdefghij");
 
@@ -91,7 +91,7 @@ QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 
 		if (!piece.isValid())
 			return QVariant();
-		return piece.internalName();
+		return m_board->pieceSymbol(piece);
 	}
 
 	return QVariant();
@@ -130,7 +130,7 @@ void ChessboardModel::updateSelectable()
 	QVector<Chess::Move> moves(m_board->legalMoves());
 	foreach (const Chess::Move& move, moves)
 	{
-		GenericMove tmp(m_board->genericMove(move));
+		Chess::GenericMove tmp(m_board->genericMove(move));
 		QModelIndex index = squareToIndex(tmp.sourceSquare());
 
 		if (!m_selectable.contains(index))

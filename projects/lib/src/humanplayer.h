@@ -19,7 +19,7 @@
 #define HUMANPLAYER_H
 
 #include "chessplayer.h"
-class GenericMove;
+namespace Chess { class GenericMove; }
 
 class LIB_EXPORT HumanPlayer : public ChessPlayer
 {
@@ -31,7 +31,7 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		// Inherted from ChessPlayer
 		void endGame(Chess::Result result);
 		void makeMove(const Chess::Move& move);
-		bool supportsVariant(Chess::Variant variant) const;
+		bool supportsVariant(const QString& variant) const;
 		bool isHuman() const;
 
 	protected:
@@ -40,7 +40,7 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		void startThinking();
 
 	public slots:
-		void onHumanMove(const GenericMove& move);
+		void onHumanMove(const Chess::GenericMove& move);
 };
 
 #endif // HUMANPLAYER_H

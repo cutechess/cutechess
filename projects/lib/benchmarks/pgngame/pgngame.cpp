@@ -1,5 +1,5 @@
 #include <QtTest/QtTest>
-#include <chessboard/chessboard.h>
+#include <board/standardboard.h>
 #include <pgnstream.h>
 #include <pgngame.h>
 
@@ -95,8 +95,8 @@ void PgnGameBenchmark::parser()
 	QFETCH(bool, verbose);
 	PgnGame::PgnMode mode = verbose ? PgnGame::Verbose : PgnGame::Minimal;
 
-	PgnStream stream(&pgn);
-	PgnGame game(Chess::Variant::Standard);
+	PgnStream stream(new Chess::StandardBoard(this), &pgn);
+	PgnGame game("Standard");
 	QBENCHMARK
 	{
 		game.read(stream, mode);

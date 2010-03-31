@@ -22,8 +22,6 @@
 #include <QDebug>
 
 #include "xboardengine.h"
-#include "chessboard/chessboard.h"
-#include "chessboard/chessmove.h"
 #include "timecontrol.h"
 #include "enginespinoption.h"
 #include "enginetextoption.h"
@@ -52,14 +50,14 @@ XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
 	  m_ftUsermove(false),
 	  m_gotResult(false),
 	  m_lastPing(0),
-	  m_notation(Chess::LongAlgebraic),
+	  m_notation(Chess::Board::LongAlgebraic),
 	  m_initTimer(new QTimer(this))
 {
 	m_initTimer->setSingleShot(true);
 	m_initTimer->setInterval(2000);
 	connect(m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
 
-	m_variants.append(Chess::Variant::Standard);
+	m_variants.append("Standard");
 	setName("XboardEngine");
 }
 
@@ -84,39 +82,36 @@ void XboardEngine::initialize()
 	}
 }
 
-static Chess::Variant variantCode(const QString& str)
+static QString variantFromXboard(const QString& str)
 {
 	if (str == "normal")
-		return Chess::Variant::Standard;
+		return "Standard";
 	else if (str == "fischerandom")
-		return Chess::Variant::Fischerandom;
+		return "Fischerandom";
 	else if (str == "capablanca")
-		return Chess::Variant::Capablanca;
+		return "Capablanca";
 	else if (str == "gothic")
-		return Chess::Variant::Gothic;
+		return "Gothic";
 	else if (str == "caparandom")
-		return Chess::Variant::Caparandom;
+		return "Caparandom";
 	
-	return Chess::Variant::NoVariant;
+	return QString();
 }
 
-static QString variantString(Chess::Variant variant)
+static QString variantToXboard(const QString& str)
 {
-	switch (variant.code())
-	{
-	case Chess::Variant::Standard:
+	if (str == "Standard")
 		return "normal";
-	case Chess::Variant::Fischerandom:
+	if (str == "Fischerandom")
 		return "fischerandom";
-	case Chess::Variant::Capablanca:
+	if (str == "Capablanca")
 		return "capablanca";
-	case Chess::Variant::Gothic:
+	if (str == "Gothic")
 		return "gothic";
-	case Chess::Variant::Caparandom:
+	if (str == "Caparandom")
 		return "caparandom";
-	default:
-		return "unknown";
-	}
+
+	return QString();
 }
 
 void XboardEngine::startGame()
@@ -127,12 +122,11 @@ void XboardEngine::startGame()
 	m_nextMove = Chess::Move();
 	write("new");
 	
-	const Chess::Variant& variant = board()->variant();
+	if (board()->variant() != "Standard")
+		write("variant " + variantToXboard(board()->variant()));
 	
-	if (variant != Chess::Variant::Standard)
-		write("variant " + variantString(variant));
-	
-	if (variant.isRandom() || board()->fenString() != variant.startingFen())
+	if (board()->isRandomVariant()
+	||  board()->fenString() != board()->defaultFenString())
 	{
 		if (m_ftSetboard)
 			write("setboard " + board()->fenString());
@@ -179,7 +173,7 @@ void XboardEngine::endGame(Chess::Result result)
 
 	stopThinking();
 	setForceMode(true);
-	write("result " + result.toString());
+	write("result " + result.toVerboseString());
 
 	ChessEngine::endGame(result);
 
@@ -317,9 +311,9 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	else if (name == "san")
 	{
 		if (val == "1")
-			m_notation = Chess::StandardAlgebraic;
+			m_notation = Chess::Board::StandardAlgebraic;
 		else
-			m_notation = Chess::LongAlgebraic;
+			m_notation = Chess::Board::LongAlgebraic;
 	}
 	else if (name == "usermove")
 		m_ftUsermove = (val == "1");
@@ -336,9 +330,9 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 		QStringList variants = val.split(',');
 		foreach (const QString& str, variants)
 		{
-			Chess::Variant v = variantCode(str.trimmed());
-			if (!v.isNone())
-				m_variants.append(v);
+			QString variant = variantFromXboard(str.trimmed());
+			if (!variant.isEmpty())
+				m_variants.append(variant);
 		}
 	}
 	else if (name == "name")
@@ -402,7 +396,7 @@ void XboardEngine::parseLine(const QString& line)
 		Chess::Move move = board()->moveFromString(args);
 		if (move.isNull())
 		{
-			emitForfeit(Chess::Result::WinByIllegalMove, args);
+			emitForfeit(Chess::Result::IllegalMove, args);
 			return;
 		}
 
@@ -420,7 +414,7 @@ void XboardEngine::parseLine(const QString& line)
 			{
 				qDebug("%s forfeits by invalid draw claim",
 				       qPrintable(name()));
-				emitForfeit(Chess::Result::WinByAdjudication);
+				emitForfeit(Chess::Result::Adjudication);
 				return;
 			}
 		}
@@ -451,24 +445,20 @@ void XboardEngine::parseLine(const QString& line)
 			{
 				qDebug("%s forfeits by invalid draw claim",
 				       qPrintable(name()));
-				emitForfeit(Chess::Result::WinByAdjudication);
+				emitForfeit(Chess::Result::Adjudication);
 			}
 			return;
 		}
 		
-		Chess::Result::Code resultCode;
 		if ((command == "1-0" && side() == Chess::White)
 		||  (command == "0-1" && side() == Chess::Black))
 		{
 			qDebug("%s forfeits by invalid victory claim",
 			       qPrintable(name()));
-			resultCode = Chess::Result::WinByAdjudication;
+			emitForfeit(Chess::Result::Adjudication);
 		}
 		else
-			// resign
-			resultCode = Chess::Result::WinByResignation;
-
-		emitForfeit(resultCode);
+			emitForfeit(Chess::Result::Resignation);
 	}
 	else if (command == "feature")
 	{

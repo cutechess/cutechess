@@ -19,7 +19,7 @@
 #include <QString>
 #include <QFile>
 #include <QDataStream>
-#include "chessboard/chessboard.h"
+#include "board/board.h"
 #include "pgngame.h"
 #include "pgnstream.h"
 
@@ -97,7 +97,7 @@ bool OpeningBook::pgnImport(PgnStream& in, int maxMoves)
 	int moveCount = 0;
 	while (in.status() == PgnStream::Ok)
 	{
-		PgnGame game;
+		PgnGame game(in.board()->variant());
 		game.read(in, PgnGame::Minimal, maxMoves);
 		if (game.isEmpty())
 			break;
@@ -127,9 +127,9 @@ bool OpeningBook::pgnImport(PgnStream& in, int maxMoves)
 	return true;
 }
 
-GenericMove OpeningBook::move(quint64 key) const
+Chess::GenericMove OpeningBook::move(quint64 key) const
 {
-	GenericMove move;
+	Chess::GenericMove move;
 	
 	// There can be multiple entries/moves with the same key.
 	// We need to find them all to choose the best one

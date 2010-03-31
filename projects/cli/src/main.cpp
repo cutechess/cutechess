@@ -225,7 +225,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		}
 		// Chess variant (default: standard chess)
 		else if (name == "-variant")
-			ok = match->setVariant(Chess::Variant(value.toString()));
+			ok = match->setVariant(value.toString());
 		else if (name == "-concurrency")
 			ok = match->setConcurrency(value.toInt());
 		// Threshold for draw adjudication

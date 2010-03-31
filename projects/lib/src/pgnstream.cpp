@@ -16,11 +16,12 @@
 */
 
 #include "pgnstream.h"
+#include "board/board.h"
 #include <QIODevice>
 
 
 PgnStream::PgnStream()
-	: m_variant(Chess::Variant::NoVariant),
+	: m_board(0),
 	  m_pos(0),
 	  m_lineNumber(1),
 	  m_device(0),
@@ -29,14 +30,14 @@ PgnStream::PgnStream()
 {
 }
 
-PgnStream::PgnStream(QIODevice* device)
-	: m_variant(Chess::Variant::NoVariant)
+PgnStream::PgnStream(Chess::Board* board, QIODevice* device)
+	: m_board(board)
 {
 	setDevice(device);
 }
 
-PgnStream::PgnStream(const QString* string)
-	: m_variant(Chess::Variant::NoVariant)
+PgnStream::PgnStream(Chess::Board* board, const QString* string)
+	: m_board(board)
 {
 	setString(string);
 }
@@ -52,7 +53,7 @@ void PgnStream::reset()
 
 Chess::Board* PgnStream::board()
 {
-	return &m_board;
+	return m_board;
 }
 
 QIODevice* PgnStream::device() const
@@ -198,16 +199,4 @@ void PgnStream::skipWhiteSpace()
 PgnStream::Status PgnStream::status() const
 {
 	return m_status;
-}
-
-Chess::Variant PgnStream::variant() const
-{
-	return m_variant;
-}
-
-void PgnStream::setVariant(Chess::Variant variant)
-{
-	m_variant = variant;
-	if (!m_variant.isNone())
-		m_board.setVariant(m_variant);
 }

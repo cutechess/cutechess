@@ -16,7 +16,7 @@
 */
 
 #include "chessplayer.h"
-#include "chessboard/chessboard.h"
+#include "board/board.h"
 #include <QString>
 #include <QTimer>
 
@@ -185,7 +185,7 @@ void ChessPlayer::setName(const QString& name)
 	m_name = name;
 }
 
-void ChessPlayer::emitForfeit(Chess::Result::Code code, const QString& arg)
+void ChessPlayer::emitForfeit(Chess::Result::Type type, const QString& description)
 {
 	if (m_forfeited)
 		return;
@@ -195,10 +195,10 @@ void ChessPlayer::emitForfeit(Chess::Result::Code code, const QString& arg)
 		m_state = Observing;
 	m_forfeited = true;
 
-	if (m_side == Chess::NoSide)
-		emit forfeit(Chess::Result(code, m_side, arg));
-	else
-		emit forfeit(Chess::Result(code, Chess::Side(!m_side), arg));
+	Chess::Side winner = Chess::NoSide;
+	if (m_side != Chess::NoSide)
+		winner = Chess::otherSide(m_side);
+	emit forfeit(Chess::Result(type, winner, description));
 }
 
 void ChessPlayer::emitMove(const Chess::Move& move)
@@ -212,7 +212,7 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 	m_timer->stop();
 	if (m_timeControl.timeLeft() <= 0)
 	{
-		emitForfeit(Chess::Result::WinByTimeout);
+		onTimeout();
 		return;
 	}
 	
@@ -227,11 +227,11 @@ void ChessPlayer::closeConnection()
 void ChessPlayer::onDisconnect()
 {
 	closeConnection();
-	emitForfeit(Chess::Result::WinByDisconnection);
+	emitForfeit(Chess::Result::Disconnection);
 	emit disconnected();
 }
 
 void ChessPlayer::onTimeout()
 {
-	emitForfeit(Chess::Result::WinByTimeout);
+	emitForfeit(Chess::Result::Timeout);
 }

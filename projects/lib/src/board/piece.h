@@ -18,8 +18,10 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include "chess.h"
-class QString;
+#include "side.h"
+#include <QtGlobal>
+#include <QString>
+#include <QObject>
 
 namespace Chess {
 
@@ -28,36 +30,26 @@ namespace Chess {
  *
  * The Piece class represents the contents of a square on the chessboard.
  * It can be an empty piece (NoPiece) or a wall piece (WallPiece) belonging
- * to neither player (Chess::NoSide), or it can be any chess piece belonging
+ * to neither player (NoSide), or it can be any chess piece belonging
  * to either White or Black.
  *
  * For performance reasons the class is just a wrapper for integer, and it
  * has a constructor for implicitly converting integers to Piece objects.
+ *
+ * \note A Board object is needed to convert between a Piece and a string.
  */
 class LIB_EXPORT Piece
 {
 	public:
-		/*! Piece types for all supported chess variants. */
-		enum Type
-		{
-			NoPiece,	//!< No piece. Used for empty squares.
-			Pawn,		//!< Pawn
-			Knight,		//!< Knight
-			Bishop,		//!< Bishop
-			Rook,		//!< Rook
-			Queen,		//!< Queen
-			King,		//!< King
-			Archbishop,	//!< Archbishop. Only for Capablanca variants.
-			Chancellor,	//!< Chancellor. Only for Capablanca variants.
-			WallPiece	//!< A wall square outside of board.
-		};
+		/*! No piece. Used for empty squares. */
+		static const int NoPiece = 0;
+		/*! A wall square outside of board. */
+		static const int WallPiece = 100;
 
-		/*! Creates a new piece with piece code \a code. */
-		Piece(int code = NoPiece);
+		/*! Creates a new piece of type \a type for \a NoSide. */
+		Piece(int type = NoPiece);
 		/*! Creates a new piece of type \a type for \a side. */
-		Piece(Side side, Type type);
-		/*! Creates a new piece from piece character \a c. */
-		Piece(const QChar& c);
+		Piece(Side side, int type);
 
 		/*! Returns true if \a other is the same as this piece. */
 		bool operator==(const Piece& other) const;
@@ -68,82 +60,81 @@ class LIB_EXPORT Piece
 		bool isEmpty() const;
 		/*! Returns true if this is a valid chess piece. */
 		bool isValid() const;
-		/*! Returns true if this is a wall piece (an inaccessible square). */
+		/*! Returns true if this is a wall piece (inaccessible square). */
 		bool isWall() const;
 
-		/*! Returns the piece code, the raw data of this object. */
-		int code() const;
 		/*! Returns the side the piece belongs to. */
 		Side side() const;
 		/*! Returns the type of the piece. */
-		Type type() const;
-		/*! Returns the piece in character format. */
-		QChar toChar() const;
-		/*! Returns the internal non-internationalized name of the piece. */
-		QString internalName() const;
-		/*! Returns the piece's Unicode symbol. */
-		QString symbol() const;
+		int type() const;
 
 		/*! Sets the side to \a side. */
 		void setSide(Side side);
-		/*! Sets the type to type. */
-		void setType(Type type);
+		/*! Sets the type to \a type. */
+		void setType(int type);
 
 	private:
-		int m_code;
+		quint16 m_data;
 };
 
 
-inline Piece::Piece(int code)
-	: m_code(code)
+inline Piece::Piece(int type)
+	: m_data(type | (NoSide << 10))
 {
+}
+
+inline Piece::Piece(Side side, int type)
+	: m_data(type | (side << 10))
+{
+	Q_ASSERT(side != NoSide);
+	Q_ASSERT(type != WallPiece);
+	Q_ASSERT(type != NoPiece);
 }
 
 inline bool Piece::operator==(const Piece& other) const
 {
-	return m_code == other.m_code;
+	return m_data == other.m_data;
 }
 
 inline bool Piece::operator!=(const Piece& other) const
 {
-	return m_code != other.m_code;
+	return m_data != other.m_data;
 }
 
 inline bool Piece::isEmpty() const
 {
-	return m_code == NoPiece;
+	return type() == NoPiece;
 }
 
 inline bool Piece::isValid() const
 {
-	return m_code != WallPiece && m_code != NoPiece;
+	return side() != NoSide;
 }
 
 inline bool Piece::isWall() const
 {
-	return m_code == WallPiece;
-}
-
-inline int Piece::code() const
-{
-	return m_code;
+	return type() == WallPiece;
 }
 
 inline Side Piece::side() const
 {
-	if (!isValid())
-		return NoSide;
-
-	if (m_code > 0)
-		return White;
-	return Black;
+	return Side(m_data >> 10);
 }
 
-inline Piece::Type Piece::type() const
+inline int Piece::type() const
 {
-	return (Type)qAbs(m_code);
+	return m_data & 0x3FF;
 }
 
+inline void Piece::setSide(Side side)
+{
+	m_data = type() | (side << 10);
+}
+
+inline void Piece::setType(int type)
+{
+	m_data = type | (m_data & 0xC00);
+}
 
 } // namespace Chess
 #endif // PIECE_H

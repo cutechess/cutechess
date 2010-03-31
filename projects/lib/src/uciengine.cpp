@@ -21,8 +21,7 @@
 #include <QDebug>
 
 #include "uciengine.h"
-#include "chessboard/chessboard.h"
-#include "chessboard/chessmove.h"
+#include "board/board.h"
 #include "timecontrol.h"
 
 #include "enginebuttonoption.h"
@@ -35,7 +34,7 @@
 UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessEngine(ioDevice, parent)
 {
-	m_variants.append(Chess::Variant::Standard);
+	m_variants.append("Standard");
 	
 	setName("UciEngine");
 }
@@ -50,8 +49,7 @@ void UciEngine::sendPosition()
 {
 	QString str("position");
 	
-	const Chess::Variant& variant = board()->variant();
-	if (variant.isRandom() || m_startFen != variant.startingFen())
+	if (board()->isRandomVariant() || m_startFen != board()->defaultFenString())
 		str += QString(" fen ") + m_startFen;
 	else
 		str += " startpos";
@@ -62,51 +60,47 @@ void UciEngine::sendPosition()
 	write(str);
 }
 
-static Chess::Variant variantCode(const QString& str)
+static QString variantFromUci(const QString& str)
 {
 	if (str == "UCI_Chess960")
-		return Chess::Variant::Fischerandom;
-	else if (str == "UCI_Capablanca")
-		return Chess::Variant::Capablanca;
-	else if (str == "UCI_Gothic")
-		return Chess::Variant::Gothic;
-	else if (str == "UCI_CapaRandom")
-		return Chess::Variant::Caparandom;
+		return "Fischerandom";
+	if (str == "UCI_Capablanca")
+		return "Capablanca";
+	if (str == "UCI_Gothic")
+		return "Gothic";
+	if (str == "UCI_CapaRandom")
+		return "Caparandom";
 	
-	return Chess::Variant::NoVariant;
+	return QString();
 }
 
-static QString variantString(Chess::Variant variant)
+static QString variantToUci(const QString& str)
 {
-	switch (variant.code())
-	{
-	case Chess::Variant::Fischerandom:
+	if (str == "Fischerandom")
 		return "UCI_Chess960";
-	case Chess::Variant::Capablanca:
+	if (str == "Capablanca")
 		return "UCI_Capablanca";
-	case Chess::Variant::Gothic:
+	if (str == "Gothic")
 		return "UCI_Gothic";
-	case Chess::Variant::Caparandom:
+	if (str == "Caparandom")
 		return "UCI_CapaRandom";
-	default:
-		return QString();
-	}
+
+	return QString();
 }
 
 void UciEngine::startGame()
 {
-	m_moveStrings.clear();
-
-	const Chess::Variant& variant = board()->variant();
+	QString variant(board()->variant());
 	Q_ASSERT(supportsVariant(variant));
 
-	if (variant.isRandom())
-		m_startFen = board()->fenString(Chess::ShredderFen);
+	m_moveStrings.clear();
+	if (board()->isRandomVariant())
+		m_startFen = board()->fenString(Chess::Board::ShredderFen);
 	else
 		m_startFen = board()->fenString();
 	
-	if (variant != Chess::Variant::Standard)
-		setOption(variantString(variant), "true");
+	if (variant != "Standard")
+		setOption(variantToUci(variant), "true");
 	write("ucinewgame");
 
 	if (getOption("UCI_Opponent") != 0)
@@ -123,7 +117,8 @@ void UciEngine::endGame(Chess::Result result)
 
 void UciEngine::makeMove(const Chess::Move& move)
 {
-	m_moveStrings += " " + board()->moveString(move, Chess::UciLongAlgebraic);
+	// TODO: support UciLongAlgebraic
+	m_moveStrings += " " + board()->moveString(move, Chess::Board::LongAlgebraic);
 	sendPosition();
 }
 
@@ -192,9 +187,9 @@ void UciEngine::addVariants()
 {
 	foreach (const EngineOption* option, m_options)
 	{
-		Chess::Variant v(variantCode(option->name()));
-		if (!v.isNone())
-			m_variants.append(v);
+		QString variant(variantFromUci(option->name()));
+		if (!variant.isEmpty())
+			m_variants.append(variant);
 	}
 }
 
@@ -358,7 +353,7 @@ void UciEngine::parseLine(const QString& line)
 		if (!move.isNull())
 			emitMove(move);
 		else
-			emitForfeit(Chess::Result::WinByIllegalMove, moveString);
+			emitForfeit(Chess::Result::IllegalMove, moveString);
 	}
 	else if (command == "uciok")
 	{

@@ -20,8 +20,8 @@
 
 #include <QtGlobal>
 #include <QString>
-#include "chessboard/chessboard.h"
 class QIODevice;
+namespace Chess { class Board; }
 
 
 /*!
@@ -53,9 +53,9 @@ class LIB_EXPORT PgnStream
 		 */
 		PgnStream();
 		/*! Creates a PgnStream that operates on \a device. */
-		explicit PgnStream(QIODevice* device);
+		explicit PgnStream(Chess::Board* board, QIODevice* device);
 		/*! Creates a PgnStream that operates on \a string. */
-		explicit PgnStream(const QString* string);
+		explicit PgnStream(Chess::Board* board, const QString* string);
 
 		/*!
 		 * Returns the Board object which is used to verify the moves
@@ -121,18 +121,8 @@ class LIB_EXPORT PgnStream
 		/*! Returns the status of the stream. */
 		Status status() const;
 
-		/*!
-		 * Returns the chess variant of the PGN game/collection.
-		 * \note The value Chess::NoVariant means that no specific
-		 * variant is expected, but games may still be read.
-		 */
-		Chess::Variant variant() const;
-		/*! Sets the expected chess variant to \a variant. */
-		void setVariant(Chess::Variant variant);
-
 	private:
-		Chess::Variant m_variant;
-		Chess::Board m_board;
+		Chess::Board* m_board;
 		qint64 m_pos;
 		qint64 m_lineNumber;
 		char m_lastChar;

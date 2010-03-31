@@ -16,6 +16,7 @@
 */
 
 #include "enginematch.h"
+#include <board/standardboard.h>
 #include <chessgame.h>
 #include <enginefactory.h>
 #include <enginebuilder.h>
@@ -41,7 +42,7 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_finishing(false),
 	  m_pgnMode(PgnGame::Verbose),
 	  m_repeatOpening(false),
-	  m_variant(Chess::Variant::Standard)
+	  m_variant("Standard")
 {
 	m_startTime.start();
 }
@@ -161,9 +162,9 @@ void EngineMatch::setSite(const QString& site)
 	m_site = site;
 }
 
-bool EngineMatch::setVariant(Chess::Variant variant)
+bool EngineMatch::setVariant(const QString& variant)
 {
-	if (variant == Chess::Variant::NoVariant)
+	if (variant.isEmpty())
 		return false;
 	m_variant = variant;
 	return true;
@@ -240,7 +241,6 @@ bool EngineMatch::initialize()
 		m_builders << it->builder;
 	}
 
-	m_pgnInputStream.setVariant(m_variant);
 	connect(&m_manager, SIGNAL(ready()), this, SLOT(onManagerReady()));
 	connect(&m_manager, SIGNAL(finished()), this, SIGNAL(finished()),
 		Qt::QueuedConnection);
@@ -286,7 +286,7 @@ void EngineMatch::onGameEnded()
 	}
 
 	Chess::Result result = game->result();
-	qDebug("Game %d ended: %s", game->round(), qPrintable(result.toString()));
+	qDebug("Game %d ended: %s", game->round(), qPrintable(result.toVerboseString()));
 	if (result.isDraw())
 		m_drawCount++;
 	else
@@ -325,10 +325,10 @@ void EngineMatch::onGameEnded()
 	if (m_finishing)
 		return;
 	if (m_finishedGames >= m_gameCount
-	||  result.code() == Chess::Result::ResultError
-	||  result.code() == Chess::Result::NoResult
-	||  result.code() == Chess::Result::WinByDisconnection
-	||  result.code() == Chess::Result::WinByStalledConnection)
+	||  result.type() == Chess::Result::ResultError
+	||  result.type() == Chess::Result::NoResult
+	||  result.type() == Chess::Result::Disconnection
+	||  result.type() == Chess::Result::StalledConnection)
 		stop();
 }
 
@@ -348,7 +348,9 @@ void EngineMatch::start()
 	m_currentGame++;
 	qDebug() << "Started game" << m_currentGame << "of" << m_gameCount;
 
-	ChessGame* game = new ChessGame(m_variant);
+	Chess::Board* board = new Chess::StandardBoard;
+	ChessGame* game = new ChessGame(board);
+	board->setParent(game);
 	connect(this, SIGNAL(stopGame()), game, SLOT(kill()), Qt::QueuedConnection);
 
 	EngineData* white = 0;

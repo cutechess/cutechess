@@ -19,7 +19,7 @@
 #include "polyglotbook.h"
 
 
-static GenericMove moveFromBits(quint16 pgMove)
+static Chess::GenericMove moveFromBits(quint16 pgMove)
 {
 	using Chess::Square;
 	
@@ -31,10 +31,10 @@ static GenericMove moveFromBits(quint16 pgMove)
 	if (promotion > 0)
 		promotion++;
 	
-	return GenericMove(source, target, Chess::Piece::Type(promotion));
+	return Chess::GenericMove(source, target, promotion);
 }
 
-static quint16 moveToBits(const GenericMove& move)
+static quint16 moveToBits(const Chess::GenericMove& move)
 {
 	using Chess::Square;
 	
@@ -51,9 +51,9 @@ static quint16 moveToBits(const GenericMove& move)
 }
 
 
-Chess::Variant PolyglotBook::variant() const
+QString PolyglotBook::variant() const
 {
-	return Chess::Variant::Standard;
+	return "Standard";
 }
 
 void PolyglotBook::loadEntry(QDataStream& in)

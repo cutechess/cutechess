@@ -20,12 +20,11 @@
 
 #include <QObject>
 #include <QVector>
-#include "chessboard/chess.h"
-#include "chessboard/result.h"
-#include "chessboard/variant.h"
-#include "chessboard/chessmove.h"
+#include "board/result.h"
+#include "board/move.h"
 #include "pgngame.h"
 
+namespace Chess { class Board; }
 class ChessPlayer;
 class OpeningBook;
 class MoveEvaluation;
@@ -36,7 +35,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 	Q_OBJECT
 
 	public:
-		explicit ChessGame(Chess::Variant variant, QObject* parent = 0);
+		explicit ChessGame(Chess::Board* board, QObject* parent = 0);
 		
 		Chess::Board* board() const;
 		ChessPlayer* player(Chess::Side) const;

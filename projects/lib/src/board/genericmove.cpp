@@ -17,15 +17,16 @@
 
 #include "genericmove.h"
 
+namespace Chess {
 
 GenericMove::GenericMove()
-	: m_promotion(Chess::Piece::NoPiece)
+	: m_promotion(0)
 {
 }
 
-GenericMove::GenericMove(const Chess::Square& sourceSquare,
-			 const Chess::Square& targetSquare,
-			 Chess::Piece::Type promotion)
+GenericMove::GenericMove(const Square& sourceSquare,
+			 const Square& targetSquare,
+			 int promotion)
 	: m_sourceSquare(sourceSquare),
 	  m_targetSquare(targetSquare),
 	  m_promotion(promotion)
@@ -55,17 +56,19 @@ bool GenericMove::isNull() const
 	return !(m_sourceSquare.isValid() && m_targetSquare.isValid());
 }
 
-const Chess::Square& GenericMove::sourceSquare() const
+Square GenericMove::sourceSquare() const
 {
 	return m_sourceSquare;
 }
 
-const Chess::Square& GenericMove::targetSquare() const
+Square GenericMove::targetSquare() const
 {
 	return m_targetSquare;
 }
 
-Chess::Piece::Type GenericMove::promotion() const
+int GenericMove::promotion() const
 {
 	return m_promotion;
 }
+
+} // namespace Chess

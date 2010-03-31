@@ -21,7 +21,7 @@
 #include <QDialog>
 
 #include "ui_newgamedlg.h"
-#include <chessboard/chess.h>
+#include <board/side.h>
 
 class EngineConfigurationModel;
 class QSortFilterProxyModel;

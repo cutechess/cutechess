@@ -21,13 +21,12 @@
 #include <QObject>
 #include <QString>
 #include <QVector>
-#include "chessboard/chess.h"
-#include "chessboard/result.h"
-#include "chessboard/variant.h"
-#include "chessboard/chessmove.h"
+#include "board/result.h"
+#include "board/move.h"
 #include "timecontrol.h"
 #include "moveevaluation.h"
 class QTimer;
+namespace Chess { class Board; }
 
 
 /*!
@@ -128,7 +127,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		void setName(const QString& name);
 
 		/*! Returns true if the player can play \a variant. */
-		virtual bool supportsVariant(Chess::Variant variant) const = 0;
+		virtual bool supportsVariant(const QString& variant) const = 0;
 
 		/*! Returns true if the player is human. */
 		virtual bool isHuman() const = 0;
@@ -199,7 +198,8 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void startThinking() = 0;
 
 		/*! Emits the forfeit() signal. */
-		void emitForfeit(Chess::Result::Code code, const QString& arg = "");
+		void emitForfeit(Chess::Result::Type type,
+				 const QString& description = QString());
 
 		/*!
 		 * Emits the player's move, and a timeout signal if the

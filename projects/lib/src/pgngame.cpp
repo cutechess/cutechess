@@ -21,7 +21,7 @@
 #include <QtDebug>
 #include "pgngame.h"
 #include "chessgame.h"
-#include "chessboard/chessboard.h"
+#include "board/board.h"
 #include "chessplayer.h"
 #include "pgnstream.h"
 
@@ -33,11 +33,12 @@ QTextStream& operator<<(QTextStream& out, const PgnGame* game)
 }
 
 
-PgnGame::PgnGame(Chess::Variant variant)
+PgnGame::PgnGame(const QString& variant)
 	: m_hasTags(false),
+	  m_hasCustomFen(false),
 	  m_round(0),
-	  m_startingSide(Chess::White),
-	  m_variant(variant)
+	  m_variant(variant),
+	  m_startingSide(Chess::White)
 {
 }
 
@@ -51,7 +52,7 @@ bool PgnGame::addMove(const Chess::Move& move,
 
 	MoveData md;
 	md.move = move;
-	md.sanMove = board->moveString(move, Chess::StandardAlgebraic);
+	md.sanMove = board->moveString(move, Chess::Board::StandardAlgebraic);
 	md.comment = comment;
 
 	m_moves.append(md);
@@ -212,18 +213,17 @@ PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
 		else if (tag == "Result")
 		{
 			m_result = Chess::Result(param);
-			if (m_result.code() == Chess::Result::ResultError)
+			if (m_result.type() == Chess::Result::ResultError)
 				qDebug() << "Invalid result:" << param;
 		}
 		else if (tag == "Variant")
 		{
-			m_variant = param;
-			if (m_variant.isNone())
+			if (board->variant() != param)
 			{
-				qDebug() << "Invalid variant:" << param;
+				qDebug() << "Unexpected variant:" << param;
 				return PgnError;
 			}
-			board->setVariant(m_variant);
+			m_variant = param;
 		}
 		else if (tag == "FEN")
 		{
@@ -232,6 +232,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
 				qDebug() << "Invalid FEN:" << param;
 				return PgnError;
 			}
+			m_hasCustomFen = true;
 			setStartingFen(param);
 		}
 		else if (mode == Verbose)
@@ -259,7 +260,7 @@ PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
 		// set the board when we get the first move
 		if (m_fen.isEmpty())
 		{
-			setStartingFen(board->variant().startingFen());
+			setStartingFen(board->defaultFenString());
 			board->setFenString(m_fen);
 		}
 		
@@ -293,10 +294,8 @@ bool PgnGame::read(PgnStream& in, PgnMode mode, int maxMoves)
 	m_moves.clear();
 
 	Chess::Board* board = in.board();
-	if (!in.variant().isNone())
-		m_variant = in.variant();
-	else
-		board->setVariant(m_variant);
+	m_variant = board->variant();
+	m_hasCustomFen = board->isRandomVariant();
 	
 	while (in.status() == PgnStream::Ok
 	   &&  m_moves.size() < maxMoves)
@@ -343,7 +342,7 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 		writeTag(out, "Round", "?");
 	writeTag(out, "White", m_playerName[Chess::White]);
 	writeTag(out, "Black", m_playerName[Chess::Black]);
-	writeTag(out, "Result", m_result.toSimpleString());
+	writeTag(out, "Result", m_result.toShortString());
 
 	if (mode == Verbose)
 	{
@@ -362,10 +361,9 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 		}
 	}
 
-	if (m_variant != Chess::Variant::Standard)
-		writeTag(out, "Variant", m_variant.toString());
-	if (!m_fen.isEmpty()
-	&&  (m_variant.isRandom() || m_fen != m_variant.startingFen()))
+	if (m_variant != "Standard")
+		writeTag(out, "Variant", m_variant);
+	if (!m_fen.isEmpty() && m_hasCustomFen)
 	{
 		writeTag(out, "SetUp", "1");
 		writeTag(out, "FEN", m_fen);
@@ -404,7 +402,7 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 	}
 	str = QString("{%1} %2")
 	      .arg(m_result.description())
-	      .arg(m_result.toSimpleString());
+	      .arg(m_result.toShortString());
 	if (lineLength + str.size() >= 80)
 		out << "\n" << str << "\n\n";
 	else

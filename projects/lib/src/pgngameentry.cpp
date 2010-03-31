@@ -19,7 +19,7 @@
 #include "pgnstream.h"
 
 
-PgnGameEntry::PgnGameEntry(Chess::Variant variant)
+PgnGameEntry::PgnGameEntry(const QString& variant)
 	: m_round(0),
 	  m_pos(0),
 	  m_lineNumber(1),
@@ -44,7 +44,7 @@ void PgnGameEntry::addTag(const QString& tagName, const QString& tagValue)
 	else if (tagName == "Result")
 		m_result = Chess::Result(tagValue);
 	else if (tagName == "Variant")
-		m_variant = Chess::Variant(tagValue);
+		m_variant = tagValue;
 	else if (tagName == "Round")
 		m_round = tagValue.toInt();
 }
@@ -59,7 +59,7 @@ void PgnGameEntry::clear()
 	m_white.clear();
 	m_black.clear();
 	m_result = Chess::Result();
-	m_variant = Chess::Variant::Standard;
+	m_variant = "Standard";
 }
 
 bool PgnGameEntry::read(PgnStream& in)
@@ -160,7 +160,7 @@ Chess::Result PgnGameEntry::result() const
 	return m_result;
 }
 
-Chess::Variant PgnGameEntry::variant() const
+QString PgnGameEntry::variant() const
 {
 	return m_variant;
 }

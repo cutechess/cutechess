@@ -17,6 +17,7 @@
 
 #include <QtGui>
 
+#include <board/standardboard.h>
 #include <chessgame.h>
 #include <chessplayer.h>
 #include <timecontrol.h>
@@ -169,7 +170,9 @@ void MainWindow::newGame()
 		return;
 
 	ChessPlayer* player[2] = { 0, 0 };
-	ChessGame* chessgame = new ChessGame(Chess::Variant::Standard, this);
+	Chess::Board* board = new Chess::StandardBoard;
+	ChessGame* chessgame = new ChessGame(board, this);
+	board->setParent(chessgame);
 	connect(chessgame, SIGNAL(humanEnabled(bool)),
 		m_chessboardView, SLOT(setEnabled(bool)));
 
@@ -207,8 +210,8 @@ void MainWindow::newGame()
 		else
 		{
 			player[i] = new HumanPlayer(this);
-			connect(m_chessboardView, SIGNAL(humanMove(const GenericMove&)),
-				player[i], SLOT(onHumanMove(const GenericMove&)));
+			connect(m_chessboardView, SIGNAL(humanMove(const Chess::GenericMove&)),
+				player[i], SLOT(onHumanMove(const Chess::GenericMove&)));
 		}
 
 		chessgame->setPlayer(side, player[i]);

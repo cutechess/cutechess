@@ -27,7 +27,7 @@ namespace Chess {
 *
 * Square is mainly used as a middle-layer between the Board
 * class (which uses integers for squares) and more generic, high-level
-* classes.
+* classes like GenericMove.
 */
 class LIB_EXPORT Square
 {
@@ -36,8 +36,6 @@ class LIB_EXPORT Square
 		Square();
 		/*! Creates a new square from \a file and \a rank. */
 		Square(int file, int rank);
-		/*! Creates a new square from a string. */
-		Square(const QString& str);
 
 		/*! Returns true if \a other is the same as this square. */
 		bool operator==(const Square& other) const;
@@ -51,8 +49,6 @@ class LIB_EXPORT Square
 		int file() const;
 		/*! Zero-based rank of the square. 0 is white's first rank. */
 		int rank() const;
-		/*! Returns a string representation of the square. */
-		QString toString() const;
 
 		/*! Sets the file to \a file. */
 		void setFile(int file);

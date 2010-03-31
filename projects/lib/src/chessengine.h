@@ -72,7 +72,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		virtual void endGame(Chess::Result result);
 		bool isHuman() const;
 		bool isReady() const;
-		bool supportsVariant(Chess::Variant variant) const;
+		bool supportsVariant(const QString& variant) const;
 
 		/*!
 		 * Starts communicating with the engine.
@@ -150,7 +150,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		bool m_whiteEvalPov;
 
 		/*! Supported variants. */
-		QVector<Chess::Variant> m_variants;
+		QStringList m_variants;
 
 		QVector<EngineOption*> m_options;
 		

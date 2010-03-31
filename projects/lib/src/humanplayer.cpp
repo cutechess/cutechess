@@ -16,7 +16,7 @@
 */
 
 #include "humanplayer.h"
-#include "chessboard/chessboard.h"
+#include "board/board.h"
 
 HumanPlayer::HumanPlayer(QObject* parent)
 	: ChessPlayer(parent)
@@ -44,7 +44,7 @@ void HumanPlayer::makeMove(const Chess::Move& move)
 	Q_UNUSED(move);
 }
 
-bool HumanPlayer::supportsVariant(Chess::Variant variant) const
+bool HumanPlayer::supportsVariant(const QString& variant) const
 {
 	Q_UNUSED(variant);
 	return true;
@@ -55,7 +55,7 @@ bool HumanPlayer::isHuman() const
 	return true;
 }
 
-void HumanPlayer::onHumanMove(const GenericMove& move)
+void HumanPlayer::onHumanMove(const Chess::GenericMove& move)
 {
 	if (state() != Thinking)
 		return;

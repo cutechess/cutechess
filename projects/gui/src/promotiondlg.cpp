@@ -17,7 +17,7 @@
 
 #include "promotiondlg.h"
 #include <QtGui>
-#include <chessboard/piece.h>
+#include <board/westernboard.h>
 
 PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 	: QDialog(parent, f)
@@ -32,7 +32,7 @@ PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 
 	// Assign Queen as the default promotion type
 	m_queenRadio->setChecked(true);
-	m_promotionType = Chess::Piece::Queen;
+	m_promotionType = 5;
 
 	QLabel* promoteToLabel = new QLabel(tr("Promote to:"));
 
@@ -40,10 +40,10 @@ PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 	// Unicode symbols, so use SVGs instead.
 	
 	// Labels that will show the Unicode chess symbol graphics
-	QLabel* queenLabel = new QLabel(Chess::Piece(Chess::Black, Chess::Piece::Queen).symbol());
-	QLabel* knightLabel = new QLabel(Chess::Piece(Chess::Black, Chess::Piece::Knight).symbol());
-	QLabel* rookLabel = new QLabel(Chess::Piece(Chess::Black, Chess::Piece::Rook).symbol());
-	QLabel* bishopLabel = new QLabel(Chess::Piece(Chess::Black, Chess::Piece::Bishop).symbol());
+	QLabel* queenLabel = new QLabel("Q");
+	QLabel* knightLabel = new QLabel("N");
+	QLabel* rookLabel = new QLabel("R");
+	QLabel* bishopLabel = new QLabel("B");
 
 	// Double the original point size of the symbol labels
 	// so that they're more visible
@@ -115,26 +115,26 @@ PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 	m_signalMapper = new QSignalMapper(this);
 
 	connect(m_queenRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_queenRadio, Chess::Piece::Queen);
+	m_signalMapper->setMapping(m_queenRadio, 5);
 
 	connect(m_knightRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_knightRadio, Chess::Piece::Knight);
+	m_signalMapper->setMapping(m_knightRadio, 2);
 
 	connect(m_rookRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_rookRadio, Chess::Piece::Rook);
+	m_signalMapper->setMapping(m_rookRadio, 4);
 
 	connect(m_bishopRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_bishopRadio, Chess::Piece::Bishop);
+	m_signalMapper->setMapping(m_bishopRadio, 3);
 
 	connect(m_signalMapper, SIGNAL(mapped(int)), this, SLOT(selectPromotionType(int)));
 }
 
 void PromotionDialog::selectPromotionType(int type)
 {
-	m_promotionType = Chess::Piece::Type(type);
+	m_promotionType = type;
 }
 
-Chess::Piece::Type PromotionDialog::promotionType() const
+int PromotionDialog::promotionType() const
 {
 	return m_promotionType;
 }

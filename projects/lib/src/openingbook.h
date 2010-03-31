@@ -3,8 +3,7 @@
 
 #include <QtGlobal>
 #include <QMultiMap>
-#include "chessboard/variant.h"
-#include "chessboard/genericmove.h"
+#include "board/genericmove.h"
 
 class QString;
 class QDataStream;
@@ -46,7 +45,7 @@ class LIB_EXPORT OpeningBook
 		 * returned. Popular moves have a higher probablity of being
 		 * selected than unpopular ones.
 		 */
-		GenericMove move(quint64 key) const;
+		Chess::GenericMove move(quint64 key) const;
 
 		/*!
 		 * Reads a book from \ə filename.
@@ -75,7 +74,7 @@ class LIB_EXPORT OpeningBook
 		struct Entry
 		{
 			/*! A book move. */
-			GenericMove move;
+			Chess::GenericMove move;
 			/*!
 			 * A weight or score, usually based on popularity
 			 * of the move. The higher the weight, the more
@@ -89,7 +88,7 @@ class LIB_EXPORT OpeningBook
 		
 		
 		/*! Returns the book's chess variant. */
-		virtual Chess::Variant variant() const = 0;
+		virtual QString variant() const = 0;
 		
 		/*! Adds a new entry to the book. */
 		void addEntry(const Entry& entry, quint64 key);

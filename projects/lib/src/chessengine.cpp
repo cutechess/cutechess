@@ -22,7 +22,6 @@
 #include <QtAlgorithms>
 
 #include "chessengine.h"
-#include "chessboard/chess.h"
 #include "engineoption.h"
 
 int ChessEngine::m_count = 0;
@@ -171,7 +170,7 @@ bool ChessEngine::isReady() const
 	return ChessPlayer::isReady();
 }
 
-bool ChessEngine::supportsVariant(Chess::Variant variant) const
+bool ChessEngine::supportsVariant(const QString& variant) const
 {
 	return m_variants.contains(variant);
 }
@@ -246,7 +245,7 @@ void ChessEngine::onPingTimeout()
 	m_writeBuffer.clear();
 	closeConnection();
 
-	emitForfeit(Chess::Result::WinByStalledConnection);
+	emitForfeit(Chess::Result::StalledConnection);
 }
 
 void ChessEngine::write(const QString& data, WriteMode mode)

@@ -1,4 +1,4 @@
-include(chessboard/chessboard.pri)
+include(board/board.pri)
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 HEADERS += chessengine.h \

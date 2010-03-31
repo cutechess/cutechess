@@ -3,13 +3,12 @@
 
 #include <QString>
 #include <QVector>
-#include "chessboard/chess.h"
-#include "chessboard/result.h"
-#include "chessboard/variant.h"
-#include "chessboard/chessmove.h"
+#include "board/result.h"
+#include "board/move.h"
 #include "timecontrol.h"
 class QTextStream;
 class PgnStream;
+namespace Chess { class Board; }
 
 
 /*!
@@ -45,7 +44,7 @@ class LIB_EXPORT PgnGame
 		};
 
 		/*! Creates a new PgnGame object. */
-		explicit PgnGame(Chess::Variant variant = Chess::Variant::Standard);
+		explicit PgnGame(const QString& variant);
 		
 		/*!
 		 * Reads a game from a PGN text stream.
@@ -183,14 +182,15 @@ class LIB_EXPORT PgnGame
 		PgnItem readItem(PgnStream& in, PgnMode mode);
 		
 		bool m_hasTags;
+		bool m_hasCustomFen;
 		int m_round;
 		QString m_event;
 		QString m_site;
 		QString m_fen;
 		QString m_playerName[2];
+		QString m_variant;
 		Chess::Side m_startingSide;
 		Chess::Result m_result;
-		Chess::Variant m_variant;
 		TimeControl m_timeControl[2];
 };
 

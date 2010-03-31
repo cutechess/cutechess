@@ -24,7 +24,6 @@
 #include <QString>
 #include <QTime>
 #include <QFile>
-#include <chessboard/variant.h>
 #include <engineconfiguration.h>
 #include <timecontrol.h>
 #include <engineprocess.h>
@@ -60,7 +59,7 @@ class EngineMatch : public QObject
 		void setRepeatOpening(bool repeatOpening);
 		void setResignThreshold(int moveCount, int score);
 		void setSite(const QString& site);
-		bool setVariant(Chess::Variant variant);
+		bool setVariant(const QString& variant);
 		bool setWait(int msecs);
 		bool initialize();
 
@@ -106,7 +105,7 @@ class EngineMatch : public QObject
 		bool m_finishing;
 		PgnGame::PgnMode m_pgnMode;
 		bool m_repeatOpening;
-		Chess::Variant m_variant;
+		QString m_variant;
 		QVector<EngineData> m_engines;
 		QVector<PgnGame::MoveData> m_openingMoves;
 		QList<OpeningBook*> m_books;

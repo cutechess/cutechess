@@ -17,16 +17,17 @@
 
 #include "chessgame.h"
 #include <QtDebug>
-#include "chessboard/chessboard.h"
+#include "board/board.h"
 #include "chessplayer.h"
 #include "openingbook.h"
 #include "pgngame.h"
 
 
-ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
+ChessGame::ChessGame(Chess::Board* board, QObject* parent)
 	: QObject(parent),
-	  PgnGame(variant),
+	  PgnGame(board->variant()),
 	  m_origThread(0),
+	  m_board(board),
 	  m_gameEnded(false),
 	  m_gameInProgress(false),
 	  m_drawMoveNum(0),
@@ -42,7 +43,6 @@ ChessGame::ChessGame(Chess::Variant variant, QObject* parent)
 		m_book[i] = 0;
 		m_bookDepth[i] = 0;
 	}
-	m_board = new Chess::Board(variant, this);
 
 	emit humanEnabled(false);
 }
@@ -63,7 +63,7 @@ ChessPlayer* ChessGame::playerToWait()
 {
 	if (m_board->sideToMove() == Chess::NoSide)
 		return 0;
-	return m_player[!((int)m_board->sideToMove())];
+	return m_player[Chess::otherSide(m_board->sideToMove())];
 }
 
 void ChessGame::stop()
@@ -131,7 +131,8 @@ void ChessGame::kill()
 
 void ChessGame::adjudication(const MoveEvaluation& eval)
 {
-	int side = !((int)m_board->sideToMove());
+	Chess::Side side(Chess::otherSide(m_board->sideToMove()));
+
 	if (eval.depth() <= 0)
 	{
 		m_drawScoreCount = 0;
@@ -149,7 +150,8 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 		if (moves().size() / 2 >= m_drawMoveNum
 		&&  m_drawScoreCount >= 2)
 		{
-			setResult(Chess::Result(Chess::Result::DrawByAdjudication));
+			setResult(Chess::Result(Chess::Result::Draw, Chess::NoSide,
+						tr("Draw by adjudication")));
 			return;
 		}
 	}
@@ -164,9 +166,10 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 			count = 0;
 		if (count >= m_resignMoveCount)
 		{
-			Chess::Result::Code code = Chess::Result::WinByAdjudication;
-			Chess::Side winner = Chess::Side(!side);
-			setResult(Chess::Result(code, winner));
+			Chess::Result::Type type = Chess::Result::Win;
+			Chess::Side winner = Chess::otherSide(side);
+			QString str = tr("%1 wins by adjudication").arg(Chess::sideString(winner));
+			setResult(Chess::Result(type, winner, str));
 		}
 	}
 }
@@ -286,7 +289,7 @@ Chess::Move ChessGame::bookMove(Chess::Side side)
 	||  m_moves.size() >= m_bookDepth[side] * 2)
 		return Chess::Move();
 
-	GenericMove bookMove = m_book[side]->move(m_board->key());
+	Chess::GenericMove bookMove = m_book[side]->move(m_board->key());
 	return m_board->moveFromGenericMove(bookMove);
 }
 
@@ -384,7 +387,7 @@ void ChessGame::setBoard()
 	QString fen = startingFen();
 	if (fen.isEmpty())
 	{
-		fen = m_board->variant().startingFen();
+		fen = m_board->defaultFenString();
 		setStartingFen(fen);
 	}
 
@@ -484,7 +487,7 @@ void ChessGame::startGame()
 		if (!player->supportsVariant(m_board->variant()))
 		{
 			qDebug() << player->name() << "doesn't support variant"
-				 << m_board->variant().toString();
+				 << m_board->variant();
 			setResult(Chess::Result(Chess::Result::ResultError));
 			stop();
 			return;
@@ -495,10 +498,11 @@ void ChessGame::startGame()
 	for (int i = 0; i < 2; i++)
 	{
 		Chess::Side side = Chess::Side(i);
-		setPlayerName(side, m_player[i]->name());
+
+		setPlayerName(side, m_player[side]->name());
 		Q_ASSERT(timeControl(side).isValid());
-		m_player[i]->setTimeControl(timeControl(side));
-		m_player[i]->newGame(side, m_player[!i], m_board);
+		m_player[side]->setTimeControl(timeControl(side));
+		m_player[side]->newGame(side, m_player[Chess::otherSide(side)], m_board);
 	}
 	
 	// Play the forced opening moves first

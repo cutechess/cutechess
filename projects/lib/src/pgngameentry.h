@@ -18,9 +18,7 @@
 #ifndef PGNGAMEENTRY_H
 #define PGNGAMEENTRY_H
 
-#include "chessboard/chess.h"
-#include "chessboard/variant.h"
-#include "chessboard/result.h"
+#include "board/result.h"
 class PgnStream;
 
 
@@ -39,7 +37,7 @@ class PgnGameEntry
 {
 	public:
 		/*! Creates a new empty PgnGameEntry object. */
-		explicit PgnGameEntry(Chess::Variant variant = Chess::Variant::Standard);
+		explicit PgnGameEntry(const QString& variant = "Standard");
 
 		/*! Resets the entry to an empty default. */
 		void clear();
@@ -64,10 +62,10 @@ class PgnGameEntry
 		QString white() const;
 		/*! Returns the name of the black player. */
 		QString black() const;
+		/*! Returns the game's chess variant. */
+		QString variant() const;
 		/*! Returns the game result. */
 		Chess::Result result() const;
-		/*! Returns the game's chess variant. */
-		Chess::Variant variant() const;
 
 	private:
 		void addTag(const QString& tagName, const QString& tagValue);
@@ -79,8 +77,8 @@ class PgnGameEntry
 		QString m_site;
 		QString m_white;
 		QString m_black;
+		QString m_variant;
 		Chess::Result m_result;
-		Chess::Variant m_variant;
 };
 
 #endif // PGNGAMEENTRY_H
