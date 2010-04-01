@@ -86,14 +86,18 @@ static QString variantFromXboard(const QString& str)
 {
 	if (str == "normal")
 		return "Standard";
-	else if (str == "fischerandom")
+	if (str == "fischerandom")
 		return "Fischerandom";
-	else if (str == "capablanca")
+	if (str == "capablanca")
 		return "Capablanca";
-	else if (str == "gothic")
+	if (str == "gothic")
 		return "Gothic";
-	else if (str == "caparandom")
+	if (str == "caparandom")
 		return "Caparandom";
+	if (str == "atomic")
+		return "Atomic";
+	if (str == "losers")
+		return "Losers";
 	
 	return QString();
 }
@@ -110,6 +114,10 @@ static QString variantToXboard(const QString& str)
 		return "gothic";
 	if (str == "Caparandom")
 		return "caparandom";
+	if (str == "Atomic")
+		return "atomic";
+	if (str == "Losers")
+		return "losers";
 
 	return QString();
 }

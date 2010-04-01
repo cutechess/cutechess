@@ -9,7 +9,9 @@ SOURCES += board.cpp \
     frcboard.cpp \
     caparandomboard.cpp \
     result.cpp \
-    genericmove.cpp
+    genericmove.cpp \
+    atomicboard.cpp \
+    losersboard.cpp
 HEADERS += board.h \
     move.h \
     piece.h \
@@ -23,4 +25,6 @@ HEADERS += board.h \
     caparandomboard.h \
     result.h \
     side.h \
-    genericmove.h
+    genericmove.h \
+    atomicboard.h \
+    losersboard.h

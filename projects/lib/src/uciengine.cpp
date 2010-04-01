@@ -70,6 +70,10 @@ static QString variantFromUci(const QString& str)
 		return "Gothic";
 	if (str == "UCI_CapaRandom")
 		return "Caparandom";
+	if (str == "UCI_Atomic")
+		return "Atomic";
+	if (str == "UCI_Losers")
+		return "Losers";
 	
 	return QString();
 }
@@ -84,6 +88,10 @@ static QString variantToUci(const QString& str)
 		return "UCI_Gothic";
 	if (str == "Caparandom")
 		return "UCI_CapaRandom";
+	if (str == "Atomic")
+		return "UCI_Atomic";
+	if (str == "Losers")
+		return "UCI_Losers";
 
 	return QString();
 }
