@@ -25,7 +25,8 @@ HEADERS += chessengine.h \
     pgngameentry.h \
     gamemanager.h \
     playerbuilder.h \
-    enginebuilder.h
+    enginebuilder.h \
+    classregistry.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
