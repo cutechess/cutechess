@@ -46,6 +46,7 @@ class LIB_EXPORT StandardBoard : public WesternBoard
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
 };
+REGISTER_BOARD(StandardBoard, "Standard")
 
 } // namespace Chess
 #endif // STANDARDBOARD_H

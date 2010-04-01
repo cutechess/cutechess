@@ -24,6 +24,7 @@
 #include "genericmove.h"
 #include "zobrist.h"
 #include "result.h"
+#include <classregistry.h>
 #include <QObject>
 #include <QString>
 #include <QVector>
@@ -476,6 +477,16 @@ class LIB_EXPORT Board : public QObject
 		QVector<MoveData> m_moveHistory;
 		QVector<int> m_handPieces[2];
 };
+
+/*!
+ * Registers board class \a classname with variant name \a variant.
+ *
+ * Every concrete Board class's definition must follow with
+ * REGISTER_BOARD.
+ */
+#define REGISTER_BOARD(classname, variant) \
+	REGISTER_CLASS(Board, classname, variant);
+
 
 extern LIB_EXPORT QDebug operator<<(QDebug dbg, const Board* board);
 

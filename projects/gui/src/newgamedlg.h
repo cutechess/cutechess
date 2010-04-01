@@ -59,6 +59,9 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 		*/
 		int selectedEngineIndex(Chess::Side side) const;
 
+		/*! Returns the user-selected chess variant. */
+		QString selectedVariant() const;
+
 	private slots:
 		void configureWhiteEngine();
 		void configureBlackEngine();

@@ -16,7 +16,8 @@
 */
 
 #include "enginematch.h"
-#include <board/standardboard.h>
+#include <board/board.h>
+#include <classregistry.h>
 #include <chessgame.h>
 #include <enginefactory.h>
 #include <enginebuilder.h>
@@ -164,8 +165,9 @@ void EngineMatch::setSite(const QString& site)
 
 bool EngineMatch::setVariant(const QString& variant)
 {
-	if (variant.isEmpty())
+	if (!ClassRegistry<Chess::Board>::instance().items().contains(variant))
 		return false;
+
 	m_variant = variant;
 	return true;
 }
@@ -348,7 +350,8 @@ void EngineMatch::start()
 	m_currentGame++;
 	qDebug() << "Started game" << m_currentGame << "of" << m_gameCount;
 
-	Chess::Board* board = new Chess::StandardBoard;
+	Chess::Board* board = ClassRegistry<Chess::Board>::create(m_variant);
+	Q_ASSERT(board != 0);
 	ChessGame* game = new ChessGame(board);
 	board->setParent(game);
 	connect(this, SIGNAL(stopGame()), game, SLOT(kill()), Qt::QueuedConnection);

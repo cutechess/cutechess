@@ -17,7 +17,7 @@
 
 #include <QtGui>
 
-#include <board/standardboard.h>
+#include <board/board.h>
 #include <chessgame.h>
 #include <chessplayer.h>
 #include <timecontrol.h>
@@ -170,7 +170,9 @@ void MainWindow::newGame()
 		return;
 
 	ChessPlayer* player[2] = { 0, 0 };
-	Chess::Board* board = new Chess::StandardBoard;
+	QString variant = dlg.selectedVariant();
+	Chess::Board* board = ClassRegistry<Chess::Board>::create(variant);
+	Q_ASSERT(board != 0);
 	ChessGame* chessgame = new ChessGame(board, this);
 	board->setParent(chessgame);
 	connect(chessgame, SIGNAL(humanEnabled(bool)),

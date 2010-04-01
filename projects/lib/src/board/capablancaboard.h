@@ -56,6 +56,7 @@ class LIB_EXPORT CapablancaBoard : public WesternBoard
 					   int targetSquare,
 					   QVarLengthArray<Move>& moves) const;
 };
+REGISTER_BOARD(CapablancaBoard, "Capablanca")
 
 } // namespace Chess
 #endif // CAPABLANCABOARD_H

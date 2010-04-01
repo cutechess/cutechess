@@ -52,6 +52,7 @@ class LIB_EXPORT FrcBoard : public WesternBoard
 		 */
 		virtual QString defaultFenString() const;
 };
+REGISTER_BOARD(FrcBoard, "Fischerandom")
 
 } // namespace Chess
 #endif // FRCBOARD_H

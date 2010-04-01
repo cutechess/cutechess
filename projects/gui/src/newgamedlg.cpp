@@ -18,6 +18,9 @@
 #include <QAbstractItemView>
 #include <QSortFilterProxyModel>
 
+#include <board/board.h>
+#include <classregistry.h>
+
 #include "cutechessapp.h"
 #include "newgamedlg.h"
 #include "engineconfigurationmodel.h"
@@ -56,6 +59,9 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 		m_whiteEngineComboBox->setCurrentIndex(0);
 		m_blackEngineComboBox->setCurrentIndex(0);
 	}
+
+	QStringList variants = ClassRegistry<Chess::Board>::instance().items().keys();
+	m_variantComboBox->addItems(variants);
 }
 
 NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
@@ -79,6 +85,11 @@ int NewGameDialog::selectedEngineIndex(Chess::Side side) const
 		i = m_blackEngineComboBox->currentIndex();
 
 	return m_proxyModel->mapToSource(m_proxyModel->index(i, 0)).row();
+}
+
+QString NewGameDialog::selectedVariant() const
+{
+	return m_variantComboBox->currentText();
 }
 
 void NewGameDialog::configureWhiteEngine()
