@@ -23,6 +23,8 @@
 #include <cstdlib>
 #include <enginemanager.h>
 #include <timecontrol.h>
+#include <board/board.h>
+#include <classregistry.h>
 #include "enginematch.h"
 #include "cutechesscoreapp.h"
 #include "matchparser.h"
@@ -352,18 +354,26 @@ int main(int argc, char* argv[])
 
 			return 0;
 		}
+		else if (arg == "--variants")
+		{
+			QStringList variants = ClassRegistry<Chess::Board>::instance().items().keys();
+			foreach (const QString& variant, variants)
+				out << variant << endl;
+
+			return 0;
+		}
 		else if (arg == "--help")
 		{
 			out << "Usage: cutechess-cli -fcp [eng_options] -scp [eng_options] [options]\n"
 			       "Options:\n"
 			       "  --help		Display this information\n"
 			       "  --version		Display the version number\n"
-			       "  --engines		Display the list of configured engines and exit\n\n"
+			       "  --engines		Display a list of configured engines and exit\n"
+			       "  --variants		Display a list of supported chess variants and exit\n\n"
 			       "  -fcp <options>	Apply <options> to the first engine\n"
 			       "  -scp <options>	Apply <options> to the second engine\n"
 			       "  -both <options>	Apply <options> to both engines\n"
-			       "  -variant <arg>	Set chess variant to <arg>. Must be Standard,\n"
-			       "			Fischerandom, Capablanca, Gothic or Caparandom\n"
+			       "  -variant <arg>	Set the chess variant to <arg>\n"
 			       "  -concurrency <n>	Set the maximum number of concurrent games to <n>\n"
 			       "  -draw <n> <score>	Adjudicate the game as a draw if the score of both\n"
 			       "			engines is within <score> centipawns from zero after\n"

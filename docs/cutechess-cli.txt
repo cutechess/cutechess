@@ -27,7 +27,10 @@ OPTIONS
 	Display help information.
 
 --engines::
-	Display the list of configured engines and exit.
+	Display a list of configured engines and exit.
+
+--variants::
+	Display a list of supported chess variants and exit.
 
 -fcp <options>::
 	Apply <options> to the first engine.
@@ -39,8 +42,7 @@ OPTIONS
 	Apply <options> to both engines.
 
 -variant <arg>::
-	Set chess variant to <arg>. Must be 'Standard', 'Fischerandom',
-	'Capablanca', 'Gothic' or 'Caparandom'.
+	Set chess variant to <arg>.
 
 -concurrency <n>::
 	Set the maximum number of concurrent games to <n>.
