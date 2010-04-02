@@ -160,6 +160,13 @@ Piece Board::pieceFromSymbol(const QString& pieceSymbol) const
 	return Piece(otherSide(side), code);
 }
 
+QString Board::pieceString(int pieceType) const
+{
+	if (pieceType <= 0 || pieceType >= m_pieceData.size())
+		return QString();
+	return m_pieceData[pieceType].name;
+}
+
 void Board::addHandPiece(const Piece& piece, int count)
 {
 	Q_ASSERT(piece.isValid());

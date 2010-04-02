@@ -164,6 +164,8 @@ class LIB_EXPORT Board : public QObject
 		QString pieceSymbol(Piece piece) const;
 		/*! Converts \a pieceSymbol into a Piece object. */
 		Piece pieceFromSymbol(const QString& pieceSymbol) const;
+		/*! Returns the internationalized name of \a pieceType. */
+		QString pieceString(int pieceType) const;
 
 		/*!
 		 * Makes a chess move on the board.
