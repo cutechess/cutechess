@@ -19,6 +19,7 @@
 #define HUMANPLAYER_H
 
 #include "chessplayer.h"
+#include <QList>
 namespace Chess { class GenericMove; }
 
 class LIB_EXPORT HumanPlayer : public ChessPlayer
@@ -33,6 +34,11 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		void makeMove(const Chess::Move& move);
 		bool supportsVariant(const QString& variant) const;
 		bool isHuman() const;
+		
+	signals:
+		void needsPromotion(const Chess::Board* board,
+				    const Chess::Move& move,
+				    const QList<int>& promotions);
 
 	protected:
 		// Inherited from ChessPlayer
@@ -41,6 +47,7 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 
 	public slots:
 		void onHumanMove(const Chess::GenericMove& move);
+		void onPromotionMove(const Chess::Move& move);
 };
 
 #endif // HUMANPLAYER_H

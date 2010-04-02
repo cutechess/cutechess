@@ -38,6 +38,7 @@
 #include "plaintextlog.h"
 #include "gamedatabasemodel.h"
 #include "gamepropertiesdlg.h"
+#include "promotiondlg.h"
 
 MainWindow::MainWindow()
 {
@@ -163,6 +164,24 @@ void MainWindow::createDockWindows()
 	m_viewMenu->addAction(gameDatabaseDock->toggleViewAction());
 }
 
+void MainWindow::selectPromotion(const Chess::Board* board,
+			      const Chess::Move& move,
+			      const QList<int>& promotions)
+{
+	Q_ASSERT(board != 0);
+	Q_ASSERT(!move.isNull());
+	Q_ASSERT(promotions.size() > 1);
+
+	PromotionDialog dlg(board, promotions, this);
+	if (dlg.exec() != QDialog::Accepted)
+		return;
+
+	Chess::Move newMove(move.sourceSquare(),
+			    move.targetSquare(),
+			    dlg.promotionType());
+	emit promotionMove(newMove);
+}
+
 void MainWindow::newGame()
 {
 	NewGameDialog dlg(this);
@@ -214,6 +233,10 @@ void MainWindow::newGame()
 			player[i] = new HumanPlayer(this);
 			connect(m_chessboardView, SIGNAL(humanMove(const Chess::GenericMove&)),
 				player[i], SLOT(onHumanMove(const Chess::GenericMove&)));
+			connect(player[i], SIGNAL(needsPromotion(const Chess::Board*, const Chess::Move&, const QList<int>&)),
+				this, SLOT(selectPromotion(const Chess::Board*, const Chess::Move& ,const QList<int>&)));
+			connect(this, SIGNAL(promotionMove(const Chess::Move&)),
+				player[i], SLOT(onPromotionMove(const Chess::Move&)));
 		}
 
 		chessgame->setPlayer(side, player[i]);

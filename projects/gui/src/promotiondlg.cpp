@@ -16,43 +16,44 @@
 */
 
 #include "promotiondlg.h"
+#include <board/board.h>
 #include <QtGui>
-#include <board/westernboard.h>
 
-PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
+
+PromotionDialog::PromotionDialog(const Chess::Board* board,
+				 const QList<int>& promotions,
+				 QWidget* parent,
+				 Qt::WindowFlags f)
 	: QDialog(parent, f)
 {
-	setWindowTitle(tr("Promote"));
+	Q_ASSERT(board != 0);
+	Q_ASSERT(promotions.size() > 1);
+
+	setWindowTitle(tr("Promotion"));
 
 	// Radio buttons that will control the type of the promotion
-	m_queenRadio = new QRadioButton(tr("Queen"));
-	m_knightRadio = new QRadioButton(tr("Knight"));
-	m_rookRadio = new QRadioButton(tr("Rook"));
-	m_bishopRadio = new QRadioButton(tr("Bishop"));
+	QList<QRadioButton*> radioButtons;
+	// Labels that will show the chess symbol
+	QList<QLabel*> labels;
 
-	// Assign Queen as the default promotion type
-	m_queenRadio->setChecked(true);
-	m_promotionType = 5;
+	foreach (int prom, promotions)
+	{
+		if (prom == Chess::Piece::NoPiece)
+		{
+			radioButtons << new QRadioButton(tr("No promotion"));
+			labels << new QLabel("-");
+			continue;
+		}
+
+		radioButtons << new QRadioButton(board->pieceString(prom));
+		labels << new QLabel(board->pieceSymbol(Chess::Piece(Chess::White, prom)));
+	}
+
+	// Set default promotion type
+	radioButtons.first()->setChecked(true);
+	m_promotionType = promotions.first();
 
 	QLabel* promoteToLabel = new QLabel(tr("Promote to:"));
-
-	// TODO: Capablanca pieces (archbishop and chancellor) don't have
-	// Unicode symbols, so use SVGs instead.
-	
-	// Labels that will show the Unicode chess symbol graphics
-	QLabel* queenLabel = new QLabel("Q");
-	QLabel* knightLabel = new QLabel("N");
-	QLabel* rookLabel = new QLabel("R");
-	QLabel* bishopLabel = new QLabel("B");
-
-	// Double the original point size of the symbol labels
-	// so that they're more visible
-	QFont labelFont = queenLabel->font();
-	labelFont.setPointSize(2 * labelFont.pointSize());
-	queenLabel->setFont(labelFont);
-	knightLabel->setFont(labelFont);
-	rookLabel->setFont(labelFont);
-	bishopLabel->setFont(labelFont);
 
 	// Promote and Cancel buttons at the bottom
 	QPushButton* promoteButton = new QPushButton(tr("Promote"));
@@ -85,21 +86,20 @@ PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 	this->setLayout(layout);
 
 	layout->addWidget(promoteToLabel);
-
 	layout->addLayout(innerLayout);
 
-	innerLayout->addWidget(queenLabel, 0, 1);
-	innerLayout->addWidget(m_queenRadio, 0, 2);
+	QSignalMapper* signalMapper = new QSignalMapper(this);
 
-	innerLayout->addWidget(knightLabel, 1, 1);
-	innerLayout->addWidget(m_knightRadio, 1, 2);
+	for (int i = 0; i < radioButtons.size(); i++)
+	{
+		innerLayout->addWidget(labels[i], i, 1);
+		innerLayout->addWidget(radioButtons[i], i, 2);
 
-	innerLayout->addWidget(rookLabel, 2, 1);
-	innerLayout->addWidget(m_rookRadio, 2, 2);
-
-	innerLayout->addWidget(bishopLabel, 3, 1);
-	innerLayout->addWidget(m_bishopRadio, 3, 2);
-
+		// Use signal mapper to map all radio button signals to one
+		// one slot: selectPromotionType()
+		connect(radioButtons[i], SIGNAL(clicked(bool)), signalMapper, SLOT(map()));
+		signalMapper->setMapping(radioButtons[i], promotions[i]);
+	}
 	innerLayout->setColumnMinimumWidth(0, 20);
 	innerLayout->setColumnStretch(2, 1);
 
@@ -110,23 +110,7 @@ PromotionDialog::PromotionDialog(QWidget* parent, Qt::WindowFlags f)
 	connect(promoteButton, SIGNAL(clicked(bool)), this, SLOT(accept()));
 	connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(reject()));
 
-	// Use signal mapper to map all radio button signals to one
-	// one slot: selectPromotionType()
-	m_signalMapper = new QSignalMapper(this);
-
-	connect(m_queenRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_queenRadio, 5);
-
-	connect(m_knightRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_knightRadio, 2);
-
-	connect(m_rookRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_rookRadio, 4);
-
-	connect(m_bishopRadio, SIGNAL(clicked(bool)), m_signalMapper, SLOT(map()));
-	m_signalMapper->setMapping(m_bishopRadio, 3);
-
-	connect(m_signalMapper, SIGNAL(mapped(int)), this, SLOT(selectPromotionType(int)));
+	connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(selectPromotionType(int)));
 }
 
 void PromotionDialog::selectPromotionType(int type)

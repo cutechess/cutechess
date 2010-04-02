@@ -43,3 +43,6 @@
 - (Mac) dropping FEN on Cute Chess' icon in Dock
 
 - Use PgnStream for HTTP downloading
+
+- Use SVG graphics to display piece symbols in PromotionDialog
+

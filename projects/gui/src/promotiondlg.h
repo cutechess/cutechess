@@ -19,9 +19,7 @@
 #define PROMOTIONDLG_H
 
 #include <QDialog>
-
-class QRadioButton;
-class QSignalMapper;
+namespace Chess { class Board; }
 
 /*!
  * \brief The PromotionDialog class provides a dialog for chess piece promotion.
@@ -33,15 +31,21 @@ class PromotionDialog : public QDialog
 	public:
 		/*!
 		 * Creates a new promotion dialog.
-		*/
-		PromotionDialog(QWidget* parent = 0, Qt::WindowFlags f = 0);
+		 *
+		 * \param board A board object for converting the promotion piece
+		 * types into strings or piece symbols.
+		 * \param promotions A list of accepted promotion piece types.
+		 */
+		PromotionDialog(const Chess::Board* board,
+				const QList<int>& promotions,
+				QWidget* parent = 0,
+				Qt::WindowFlags f = 0);
 		/*!
 		 * Returns the user selected promotion type.
 		 *
 		 * This method always returns a valid promotion type even if
-		 * the user cancelled the dialog. By default the promotion type
-		 * is queen.
-		*/
+		 * the user cancelled the dialog.
+		 */
 		int promotionType() const;
 	
 	private slots:
@@ -49,12 +53,6 @@ class PromotionDialog : public QDialog
 
 	private:
 		int m_promotionType;
-		QRadioButton* m_queenRadio;
-		QRadioButton* m_knightRadio;
-		QRadioButton* m_rookRadio;
-		QRadioButton* m_bishopRadio;
-		QSignalMapper* m_signalMapper;
-
 };
 
 #endif // PROMOTIONDLG_H

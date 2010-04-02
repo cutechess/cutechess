@@ -20,6 +20,7 @@
 
 #include <QMainWindow>
 
+namespace Chess { class Board; class Move; }
 class QMenu;
 class QAction;
 class QTextEdit;
@@ -40,8 +41,14 @@ class MainWindow : public QMainWindow
 	public:
 		MainWindow();
 
+	signals:
+		void promotionMove(const Chess::Move& move);
+
 	private slots:
 		void newGame();
+		void selectPromotion(const Chess::Board* board,
+				     const Chess::Move& move,
+				     const QList<int>& promotions);
 		void gameProperties();
 		void manageEngines();
 		void saveLogToFile();
