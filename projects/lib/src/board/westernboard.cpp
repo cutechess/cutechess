@@ -215,7 +215,7 @@ QString WesternBoard::sanMoveString(const Move& move)
 	str += squareString(target);
 
 	if (move.promotion() != Piece::NoPiece)
-		str += "=" + pieceSymbol(move.promotion());
+		str += "=" + pieceSymbol(move.promotion()).toUpper();
 
 	if (checkOrMate != 0)
 		str += checkOrMate;
