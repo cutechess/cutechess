@@ -1,10 +1,14 @@
 #include <QtTest/QtTest>
-#include <chessboard/chessboard.h>
+#include <board/board.h>
+#include <classregistry.h>
 
 
 class TestBoard: public QObject
 {
 	Q_OBJECT
+
+	public:
+		TestBoard();
 	
 	private slots:
 		void zobristKeys_data() const;
@@ -17,22 +21,39 @@ class TestBoard: public QObject
 		void perft();
 	
 	private:
-		Chess::Board m_board;
+		void setVariant(const QString& variant);
+		Chess::Board* m_board;
 };
 
-static quint64 perftVal(Chess::Board& board, int depth)
+
+TestBoard::TestBoard()
+	: m_board(0)
+{
+}
+
+void TestBoard::setVariant(const QString& variant)
+{
+	if (m_board == 0 || m_board->variant() != variant)
+	{
+		delete m_board;
+		m_board = ClassRegistry<Chess::Board>::create(variant, this);
+	}
+	QVERIFY(m_board != 0);
+}
+
+static quint64 perftVal(Chess::Board* board, int depth)
 {
 	quint64 nodeCount = 0;
-	QVector<Chess::Move> moves(board.legalMoves());
+	QVector<Chess::Move> moves(board->legalMoves());
 	if (depth == 1 || moves.size() == 0)
 		return moves.size();
 
 	QVector<Chess::Move>::const_iterator it;
 	for (it = moves.begin(); it != moves.end(); ++it)
 	{
-		board.makeMove(*it);
+		board->makeMove(*it);
 		nodeCount += perftVal(board, depth - 1);
-		board.undoMove();
+		board->undoMove();
 	}
 
 	return nodeCount;
@@ -42,21 +63,25 @@ static quint64 perftRoot(const Chess::Board* board,
 			 const Chess::Move& move,
 			 int depth)
 {
-	Chess::Board tmp(board->variant());
-	tmp.setFenString(board->fenString());
-	tmp.makeMove(move);
-	return perftVal(tmp, depth - 1);
+	Chess::Board* tmp = ClassRegistry<Chess::Board>::create(board->variant());
+	Q_ASSERT(tmp != 0);
+	tmp->setFenString(board->fenString());
+	tmp->makeMove(move);
+
+	quint64 val = perftVal(tmp, depth - 1);
+	delete tmp;
+	return val;
 }
 
-static quint64 smpPerft(Chess::Board& board, int depth)
+static quint64 smpPerft(Chess::Board* board, int depth)
 {
-	QVector<Chess::Move> moves(board.legalMoves());
+	QVector<Chess::Move> moves(board->legalMoves());
 	if (depth <= 1)
 		return moves.size();
 	
 	QVector< QFuture<quint64> > futures;
 	foreach (const Chess::Move& move, moves)
-		futures << QtConcurrent::run(perftRoot, &board, move, depth);
+		futures << QtConcurrent::run(perftRoot, board, move, depth);
 
 	quint64 nodeCount = 0;
 	foreach (const QFuture<quint64>& future, futures)
@@ -68,11 +93,11 @@ static quint64 smpPerft(Chess::Board& board, int depth)
 
 void TestBoard::zobristKeys_data() const
 {
-	QTest::addColumn<int>("variant");
+	QTest::addColumn<QString>("variant");
 	QTest::addColumn<QString>("fen");
 	QTest::addColumn<quint64>("key");
 	
-	int variant = Chess::Variant::Standard;
+	QString variant = "Standard";
 
 	QTest::newRow("startpos")
 		<< variant
@@ -114,32 +139,30 @@ void TestBoard::zobristKeys_data() const
 
 void TestBoard::zobristKeys()
 {
-	QFETCH(int, variant);
+	QFETCH(QString, variant);
 	QFETCH(QString, fen);
 	QFETCH(quint64, key);
 
-	m_board.setVariant((Chess::Variant::Code)variant);
-	QVERIFY(m_board.setFenString(fen));
-	QCOMPARE(m_board.key(), key);
+	setVariant(variant);
+	QVERIFY(m_board->setFenString(fen));
+	QCOMPARE(m_board->key(), key);
 }
 
 void TestBoard::moveStrings_data() const
 {
-	QTest::addColumn<int>("variant");
+	QTest::addColumn<QString>("variant");
 	QTest::addColumn<QString>("moves");
 	QTest::addColumn<QString>("startfen");
 	QTest::addColumn<QString>("endfen");
 	
-	int variant = Chess::Variant::Standard;
-	
 	QTest::newRow("san")
-		<< variant
+		<< "Standard"
 		<< "e4 Nc6 e5 d5 exd6 Be6 Nf3 Qd7 Bb5 O-O-O dxc7 a6 O-O Qxd2 "
 		   "cxd8=N Qxc1 Bxc6 Qxd1 Nxb7 Qxf1+ Kxf1 Bxa2 Rxa2 Kc7"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< "5bnr/1Nk1pppp/p1B5/8/8/5N2/RPP2PPP/1N3K2 w - - 1 13";
 	QTest::newRow("coord")
-		<< variant
+		<< "Standard"
 		<< "e2e4 b8c6 e4e5 d7d5 e5d6 c8e6 g1f3 d8d7 f1b5 e8c8 d6c7 "
 		   "a7a6 e1g1 d7d2 c7d8n d2c1 b5c6 c1d1 d8b7 d1f1 g1f1 e6a2 "
 		   "a1a2 c8c7"
@@ -149,33 +172,36 @@ void TestBoard::moveStrings_data() const
 
 void TestBoard::moveStrings()
 {
-	QFETCH(int, variant);
+	QFETCH(QString, variant);
 	QFETCH(QString, moves);
 	QFETCH(QString, startfen);
 	QFETCH(QString, endfen);
 
-	m_board.setVariant((Chess::Variant::Code)variant);
-	QVERIFY(m_board.setFenString(startfen));
+	setVariant(variant);
+	QVERIFY(m_board->setFenString(startfen));
 
-	foreach (const QString& moveStr, moves.split(' '))
+	QStringList moveList = moves.split(' ');
+	foreach (const QString& moveStr, moveList)
 	{
-		Chess::Move move = m_board.moveFromString(moveStr);
-		QVERIFY(m_board.isLegalMove(move));
-		m_board.makeMove(move);
+		Chess::Move move = m_board->moveFromString(moveStr);
+		QVERIFY(m_board->isLegalMove(move));
+		m_board->makeMove(move);
 	}
-	
-	QCOMPARE(m_board.startingFen(), startfen);
-	QCOMPARE(m_board.fenString(), endfen);
+	QCOMPARE(m_board->fenString(), endfen);
+
+	for (int i = 0; i < moveList.size(); i++)
+		m_board->undoMove();
+	QCOMPARE(m_board->fenString(), startfen);
 }
 
 void TestBoard::perft_data() const
 {
-	QTest::addColumn<int>("variant");
+	QTest::addColumn<QString>("variant");
 	QTest::addColumn<QString>("fen");
 	QTest::addColumn<int>("depth");
 	QTest::addColumn<quint64>("nodecount");
 	
-	int variant = Chess::Variant::Standard;
+	QString variant = "Standard";
 	
 	QTest::newRow("startpos")
 		<< variant
@@ -198,7 +224,7 @@ void TestBoard::perft_data() const
 		<< 6
 		<< Q_UINT64_C(11030083);
 	
-	variant = Chess::Variant::Gothic;
+	variant = "Capablanca";
 	QTest::newRow("gothic startpos")
 		<< variant
 		<< "rnbqckabnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBQCKABNR w KQkq - 0 1"
@@ -218,13 +244,13 @@ void TestBoard::perft_data() const
 
 void TestBoard::perft()
 {
-	QFETCH(int, variant);
+	QFETCH(QString, variant);
 	QFETCH(QString, fen);
 	QFETCH(int, depth);
 	QFETCH(quint64, nodecount);
 
-	m_board.setVariant((Chess::Variant::Code)variant);
-	QVERIFY(m_board.setFenString(fen));
+	setVariant(variant);
+	QVERIFY(m_board->setFenString(fen));
 	QCOMPARE(smpPerft(m_board, depth), nodecount);
 }
 
