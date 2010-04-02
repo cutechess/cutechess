@@ -18,18 +18,14 @@
 #include "atomicboard.h"
 #include "westernzobrist.h"
 
-static const int s_offsets[8] =
-{
-	-11, -10, -9,
-	-1,        1,
-	 9,   10, 11
- };
 
 namespace Chess {
 
 AtomicBoard::AtomicBoard(QObject* parent)
 	: WesternBoard(new WesternZobrist(), parent)
 {
+	for (int i = 0; i < 8; i++)
+		m_offsets[i] = 0;
 }
 
 QString AtomicBoard::variant() const
@@ -47,6 +43,21 @@ bool AtomicBoard::kingCanCapture() const
 	return false;
 }
 
+void AtomicBoard::vInitialize()
+{
+	int arwidth = width() + 2;
+	m_offsets[0] = -arwidth - 1;
+	m_offsets[1] = -arwidth;
+	m_offsets[2] = -arwidth + 1;
+	m_offsets[3] = -1;
+	m_offsets[4] = 1;
+	m_offsets[5] = arwidth - 1;
+	m_offsets[6] = arwidth;
+	m_offsets[7] = arwidth + 1;
+
+	WesternBoard::vInitialize();
+}
+
 bool AtomicBoard::vSetFenString(const QStringList& fen)
 {
 	m_history.clear();
@@ -62,7 +73,7 @@ bool AtomicBoard::inCheck(Side side, int square) const
 		// If the kings touch, there's no check
 		for (int i = 0; i < 8; i++)
 		{
-			Piece pc = pieceAt(kingSq + s_offsets[i]);
+			Piece pc = pieceAt(kingSq + m_offsets[i]);
 			if (pc.type() == King)
 				return false;
 		}
@@ -81,7 +92,7 @@ bool AtomicBoard::vIsLegalMove(const Move& move)
 		int target = move.targetSquare();
 		for (int i = 0; i < 8; i++)
 		{
-			Piece pc = pieceAt(target + s_offsets[i]);
+			Piece pc = pieceAt(target + m_offsets[i]);
 			if (pc.type() == King)
 			{
 				// Can't explode your own king
@@ -113,7 +124,7 @@ void AtomicBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSquar
 		setSquare(target, Piece::NoPiece);
 		for (int i = 0; i < 8; i++)
 		{
-			int sq = target + s_offsets[i];
+			int sq = target + m_offsets[i];
 			Piece& pc = md.captures[i];
 			pc = pieceAt(sq);
 			if (!pc.isWall() && pc.type() != Pawn)
@@ -139,7 +150,7 @@ void AtomicBoard::vUndoMove(const Move& move)
 		setSquare(source, md.piece);
 		for (int i = 0; i < 8; i++)
 		{
-			int sq = target + s_offsets[i];
+			int sq = target + m_offsets[i];
 			if (md.captures[i].isValid())
 				setSquare(sq, md.captures[i]);
 		}

@@ -45,6 +45,7 @@ class LIB_EXPORT AtomicBoard : public WesternBoard
 
 	protected:
 		// Inherited from WesternBoard
+		virtual void vInitialize();
 		virtual bool inCheck(Side side, int square = 0) const;
 		virtual bool kingCanCapture() const;
 		virtual bool vSetFenString(const QStringList& fen);
@@ -62,6 +63,7 @@ class LIB_EXPORT AtomicBoard : public WesternBoard
 		};
 
 		QVector<MoveData> m_history;
+		int m_offsets[8];
 };
 REGISTER_BOARD(AtomicBoard, "Atomic")
 
