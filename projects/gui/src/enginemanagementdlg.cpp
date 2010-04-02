@@ -15,14 +15,13 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "enginemanagementdlg.h"
 #include <QSortFilterProxyModel>
-
 #include <enginemanager.h>
-
 #include "cutechessapp.h"
 #include "engineconfigurationmodel.h"
-#include "enginemanagementdlg.h"
 #include "engineconfigurationdlg.h"
+
 
 EngineManagementDialog::EngineManagementDialog(QWidget* parent)
 	: QDialog(parent),

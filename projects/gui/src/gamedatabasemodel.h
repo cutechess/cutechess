@@ -18,8 +18,9 @@
 #ifndef GAME_DATABASE_MODEL_H
 #define GAME_DATABASE_MODEL_H
 
-#include <QStringList>
 #include <QAbstractItemModel>
+#include <QStringList>
+
 
 /*!
  * \brief Supplies chess game database information to views.

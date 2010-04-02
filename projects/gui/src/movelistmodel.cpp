@@ -15,9 +15,9 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "movelistmodel.h"
 #include <chessgame.h>
 
-#include "movelistmodel.h"
 
 const QStringList MoveListModel::m_headers = (QStringList() <<
 	tr("White") << tr("Black"));

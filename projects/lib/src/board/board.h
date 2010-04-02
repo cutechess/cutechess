@@ -18,19 +18,20 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <QObject>
+#include <QString>
+#include <QVector>
+#include <QVarLengthArray>
+#include <QDebug>
+#include <classregistry.h>
 #include "square.h"
 #include "piece.h"
 #include "move.h"
 #include "genericmove.h"
 #include "zobrist.h"
 #include "result.h"
-#include <classregistry.h>
-#include <QObject>
-#include <QString>
-#include <QVector>
-#include <QVarLengthArray>
-#include <QDebug>
 class QStringList;
+
 
 namespace Chess {
 

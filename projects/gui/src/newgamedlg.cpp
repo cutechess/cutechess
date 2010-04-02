@@ -15,16 +15,18 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "newgamedlg.h"
+
 #include <QAbstractItemView>
 #include <QSortFilterProxyModel>
 
 #include <board/board.h>
-#include <classregistry.h>
+#include <enginemanager.h>
 
 #include "cutechessapp.h"
-#include "newgamedlg.h"
 #include "engineconfigurationmodel.h"
 #include "engineconfigurationdlg.h"
+
 
 NewGameDialog::NewGameDialog(QWidget* parent)
 	: QDialog(parent)

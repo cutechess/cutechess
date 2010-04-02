@@ -16,14 +16,13 @@
 */
 
 #include "enginematch.h"
+#include <QTimer>
+#include <QtDebug>
 #include <board/board.h>
-#include <classregistry.h>
 #include <chessgame.h>
 #include <enginefactory.h>
 #include <enginebuilder.h>
 #include <polyglotbook.h>
-#include <QTimer>
-#include <QtDebug>
 
 
 EngineMatch::EngineMatch(QObject* parent)

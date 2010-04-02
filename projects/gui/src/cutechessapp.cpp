@@ -15,13 +15,12 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cutechessapp.h"
 #include <QCoreApplication>
 #include <QTime>
 #include <QSettings>
-
 #include <enginemanager.h>
 
-#include "cutechessapp.h"
 
 CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	: QApplication(argc, argv), m_engineManager(0)

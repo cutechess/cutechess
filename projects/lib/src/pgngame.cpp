@@ -15,14 +15,12 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "pgngame.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDate>
 #include <QtDebug>
-#include "pgngame.h"
-#include "chessgame.h"
 #include "board/board.h"
-#include "chessplayer.h"
 #include "pgnstream.h"
 
 

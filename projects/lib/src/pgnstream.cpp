@@ -16,7 +16,6 @@
 */
 
 #include "pgnstream.h"
-#include "board/board.h"
 #include <QIODevice>
 
 

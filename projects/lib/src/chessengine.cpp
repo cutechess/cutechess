@@ -15,14 +15,13 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QVariant>
+#include "chessengine.h"
 #include <QIODevice>
 #include <QTimer>
 #include <QtDebug>
 #include <QtAlgorithms>
-
-#include "chessengine.h"
 #include "engineoption.h"
+
 
 int ChessEngine::m_count = 0;
 

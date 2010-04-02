@@ -16,8 +16,8 @@
 */
 
 #include "promotiondlg.h"
-#include <board/board.h>
 #include <QtGui>
+#include <board/board.h>
 
 
 PromotionDialog::PromotionDialog(const Chess::Board* board,

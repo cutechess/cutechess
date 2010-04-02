@@ -18,9 +18,9 @@
 #ifndef CHESSENGINE_H
 #define CHESSENGINE_H
 
+#include "chessplayer.h"
 #include <QVariant>
 #include <QStringList>
-#include "chessplayer.h"
 #include "engineconfiguration.h"
 
 class QIODevice;

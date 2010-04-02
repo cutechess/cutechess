@@ -20,7 +20,6 @@
 #include "board/board.h"
 #include "chessplayer.h"
 #include "openingbook.h"
-#include "pgngame.h"
 
 
 ChessGame::ChessGame(Chess::Board* board, QObject* parent)

@@ -16,8 +16,9 @@
 */
 
 #include "board.h"
-#include "zobrist.h"
 #include <QStringList>
+#include "zobrist.h"
+
 
 namespace Chess {
 

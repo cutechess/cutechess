@@ -16,10 +16,11 @@
 */
 
 #include "zobrist.h"
-#include "piece.h"
 #include <QVarLengthArray>
 #include <QMutex>
 #include <QMutexLocker>
+#include "piece.h"
+
 
 static QVarLengthArray<quint64, 0x2000> s_keys;
 static QMutex s_mutex;

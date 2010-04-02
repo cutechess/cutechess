@@ -15,6 +15,8 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "mainwindow.h"
+
 #include <QtGui>
 
 #include <board/board.h>
@@ -22,12 +24,12 @@
 #include <chessplayer.h>
 #include <timecontrol.h>
 #include <engineconfiguration.h>
+#include <enginemanager.h>
 #include <enginefactory.h>
 #include <engineprocess.h>
 #include <humanplayer.h>
 
 #include "cutechessapp.h"
-#include "mainwindow.h"
 #include "chessboardview.h"
 #include "chessboardmodel.h"
 #include "movelistmodel.h"
@@ -39,6 +41,7 @@
 #include "gamedatabasemodel.h"
 #include "gamepropertiesdlg.h"
 #include "promotiondlg.h"
+
 
 MainWindow::MainWindow()
 {

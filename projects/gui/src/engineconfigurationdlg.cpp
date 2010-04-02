@@ -15,13 +15,12 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "engineconfigurationdlg.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QDir>
-
 #include <chessengine.h>
 
-#include "engineconfigurationdlg.h"
 
 EngineConfigurationDialog::EngineConfigurationDialog(
 	EngineConfigurationDialog::DialogMode mode, QWidget* parent)

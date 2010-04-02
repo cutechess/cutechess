@@ -16,11 +16,11 @@
 */
 
 #include "gamemanager.h"
+#include <QThread>
+#include <QtDebug>
 #include "playerbuilder.h"
 #include "chessgame.h"
 #include "chessplayer.h"
-#include <QThread>
-#include <QtDebug>
 
 
 class GameThread : public QThread

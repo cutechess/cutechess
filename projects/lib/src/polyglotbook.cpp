@@ -15,8 +15,8 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDataStream>
 #include "polyglotbook.h"
+#include <QDataStream>
 
 
 static Chess::GenericMove moveFromBits(quint16 pgMove)

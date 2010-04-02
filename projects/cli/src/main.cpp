@@ -15,19 +15,18 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <csignal>
+#include <cstdlib>
 #include <QtGlobal>
 #include <QDebug>
 #include <QTextStream>
 #include <QStringList>
-#include <csignal>
-#include <cstdlib>
 #include <enginemanager.h>
-#include <timecontrol.h>
 #include <board/board.h>
-#include <classregistry.h>
-#include "enginematch.h"
+#include <chessengine.h>
 #include "cutechesscoreapp.h"
 #include "matchparser.h"
+#include "enginematch.h"
 
 
 static EngineMatch* match = 0;

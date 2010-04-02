@@ -26,7 +26,6 @@
 #include <QFile>
 #include <engineconfiguration.h>
 #include <timecontrol.h>
-#include <engineprocess.h>
 #include <pgnstream.h>
 #include <pgngame.h>
 #include <gamemanager.h>
@@ -34,6 +33,7 @@
 class ChessGame;
 class OpeningBook;
 class EngineBuilder;
+
 
 class EngineMatch : public QObject
 {

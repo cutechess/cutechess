@@ -16,10 +16,10 @@
 */
 
 #include "engineprocess_win.h"
-#include "pipereader_win.h"
 #include <QDir>
 #include <QTimerEvent>
 #include <QtDebug>
+#include "pipereader_win.h"
 
 
 EngineProcess::EngineProcess(QObject* parent)

@@ -18,7 +18,6 @@
 #ifndef UCIENGINE_H
 #define UCIENGINE_H
 
-#include <QString>
 #include "chessengine.h"
 
 

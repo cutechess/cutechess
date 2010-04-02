@@ -16,9 +16,8 @@
 */
 
 #include "chessplayer.h"
-#include "board/board.h"
-#include <QString>
 #include <QTimer>
+#include "board/board.h"
 
 
 ChessPlayer::ChessPlayer(QObject* parent)

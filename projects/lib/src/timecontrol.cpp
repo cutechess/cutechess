@@ -15,10 +15,9 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDebug>
+#include "timecontrol.h"
 #include <QStringList>
 
-#include "timecontrol.h"
 
 TimeControl::TimeControl()
 	: m_movesPerTc(0),

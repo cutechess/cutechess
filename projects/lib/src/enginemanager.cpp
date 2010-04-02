@@ -15,9 +15,10 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QSettings>
-
 #include "enginemanager.h"
+#include <QSettings>
+#include "chessengine.h"
+
 
 EngineManager::EngineManager(QObject* parent)
 	: QObject(parent)

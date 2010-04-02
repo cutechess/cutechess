@@ -15,8 +15,8 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui>
 #include "chessclock.h"
+#include <QTimerEvent>
 
 
 ChessClock::ChessClock(QWidget* parent)

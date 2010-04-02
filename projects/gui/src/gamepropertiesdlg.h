@@ -18,9 +18,9 @@
 #ifndef GAME_PROPERTIES_DIALOG_H
 #define GAME_PROPERTIES_DIALOG_H
 
+#include "ui_gamepropertiesdlg.h"
 #include <QDialog>
 
-#include "ui_gamepropertiesdlg.h"
 
 class GamePropertiesDialog : public QDialog, private Ui::GamePropertiesDialog
 {

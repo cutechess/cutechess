@@ -19,9 +19,7 @@
 #define ENGINEBUILDER_H
 
 #include "playerbuilder.h"
-#include "chessengine.h"
 #include "engineconfiguration.h"
-#include <QString>
 
 
 /*! \brief A class for constructing local chess engines. */

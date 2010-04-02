@@ -18,9 +18,8 @@
 #ifndef NEWGAMEDIALOG_H
 #define NEWGAMEDIALOG_H
 
-#include <QDialog>
-
 #include "ui_newgamedlg.h"
+#include <QDialog>
 #include <board/side.h>
 
 class EngineConfigurationModel;

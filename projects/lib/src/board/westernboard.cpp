@@ -16,8 +16,9 @@
 */
 
 #include "westernboard.h"
-#include "westernzobrist.h"
 #include <QStringList>
+#include "westernzobrist.h"
+
 
 namespace Chess {
 

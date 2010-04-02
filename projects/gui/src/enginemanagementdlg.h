@@ -18,14 +18,13 @@
 #ifndef ENGINEMANAGEMENTDIALOG_H
 #define ENGINEMANAGEMENTDIALOG_H
 
-#include <QDialog>
-
-#include <engineconfiguration.h>
-
 #include "ui_enginemanagementdlg.h"
+#include <QDialog>
+#include <engineconfiguration.h>
 
 class EngineManager;
 class QSortFilterProxyModel;
+
 
 /*!
  * \brief The EngineManagementDialog class provides a dialog for chess engine

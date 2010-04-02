@@ -16,10 +16,10 @@
 */
 
 #include "enginebuilder.h"
-#include "engineprocess.h"
-#include "enginefactory.h"
 #include <QDir>
 #include <QtDebug>
+#include "engineprocess.h"
+#include "enginefactory.h"
 
 
 EngineBuilder::EngineBuilder(const EngineConfiguration& config)

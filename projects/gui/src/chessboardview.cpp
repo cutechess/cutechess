@@ -1,11 +1,11 @@
 #include "chessboardview.h"
-#include <board/piece.h>
-#include <board/genericmove.h>
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QResizeEvent>
 #include <QApplication>
 #include <QtDebug>
+#include <board/piece.h>
+#include <board/genericmove.h>
 
 
 ChessboardView::ChessboardView(QWidget* parent)

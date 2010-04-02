@@ -48,4 +48,3 @@ class ChessClock: public QLCDNumber
 
 
 #endif // CHESSCLOCK
-

@@ -19,8 +19,11 @@
 #define WESTERNBOARD_H
 
 #include "board.h"
+
 namespace Chess {
+
 class WesternZobrist;
+
 
 /*!
  * A board for western chess variants

@@ -15,11 +15,10 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "plaintextlog.h"
 #include <QContextMenuEvent>
 #include <QMenu>
-#include <QFileDialog>
 
-#include "plaintextlog.h"
 
 PlainTextLog::PlainTextLog(QWidget* parent)
 	: QPlainTextEdit(parent)

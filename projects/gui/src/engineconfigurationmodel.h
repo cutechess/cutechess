@@ -19,11 +19,9 @@
 #define ENGINE_CONFIGURATION_MODEL_H
 
 #include <QAbstractListModel>
-#include <QList>
 #include <QStringList>
+class EngineManager;
 
-#include <enginemanager.h>
-#include <engineconfiguration.h>
 
 /*!
  * \brief The EngineConfigurationModel class represents a chess engine

@@ -15,12 +15,13 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "uciengine.h"
+
 #include <QString>
 #include <QStringList>
 #include <QRegExp>
 #include <QDebug>
 
-#include "uciengine.h"
 #include "board/board.h"
 #include "timecontrol.h"
 

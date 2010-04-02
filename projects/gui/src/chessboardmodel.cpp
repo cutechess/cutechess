@@ -18,6 +18,7 @@
 #include "chessboardmodel.h"
 #include <board/board.h>
 
+
 const QString ChessboardModel::m_files = QLatin1String("abcdefghij");
 
 ChessboardModel::ChessboardModel(QObject* parent)

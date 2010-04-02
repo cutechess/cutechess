@@ -20,15 +20,16 @@
 
 #include <QObject>
 #include <QVector>
+#include "pgngame.h"
 #include "board/result.h"
 #include "board/move.h"
-#include "pgngame.h"
 
 namespace Chess { class Board; }
 class ChessPlayer;
 class OpeningBook;
 class MoveEvaluation;
 class QThread;
+
 
 class LIB_EXPORT ChessGame : public QObject, public PgnGame
 {

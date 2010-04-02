@@ -15,10 +15,10 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QDebug>
 #include <QTextStream>
 #include "cutechessapp.h"
 #include "mainwindow.h"
+
 
 int main(int argc, char* argv[])
 {
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			qWarning() << "Unknown argument:" << arguments.first();
+			out << "Unknown argument: " << arguments.first() << endl;
 		}
 		arguments.takeFirst();
 	}
@@ -56,4 +56,3 @@ int main(int argc, char* argv[])
 
 	return app.exec();
 }
-

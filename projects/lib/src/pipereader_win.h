@@ -18,10 +18,10 @@
 #ifndef PIPEREADER_WIN_H
 #define PIPEREADER_WIN_H
 
+#include <windows.h>
 #include <QThread>
 #include <QMutex>
 #include <QWaitCondition>
-#include <windows.h>
 
 
 /*!

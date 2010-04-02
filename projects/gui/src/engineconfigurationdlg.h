@@ -18,10 +18,10 @@
 #ifndef ENGINECONFIGURATIONDIALOG_H
 #define ENGINECONFIGURATIONDIALOG_H
 
+#include "ui_engineconfigdlg.h"
 #include <QDialog>
 #include <engineconfiguration.h>
 
-#include "ui_engineconfigdlg.h"
 
 /*!
  * \brief The EngineConfigurationDialog class provides a dialog for chess engine

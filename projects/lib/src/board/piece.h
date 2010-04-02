@@ -18,10 +18,8 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include "side.h"
 #include <QtGlobal>
-#include <QString>
-#include <QObject>
+#include "side.h"
 
 namespace Chess {
 

@@ -15,13 +15,14 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "xboardengine.h"
+
 #include <QtGlobal>
 #include <QString>
 #include <QStringList>
 #include <QTimer>
 #include <QDebug>
 
-#include "xboardengine.h"
 #include "timecontrol.h"
 #include "enginespinoption.h"
 #include "enginetextoption.h"
