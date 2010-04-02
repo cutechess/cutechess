@@ -604,7 +604,7 @@ bool WesternBoard::vSetFenString(const QStringList& fen)
 
 	// En-passant square
 	++token;
-	setEnpassantSquare(0);
+	m_enpassantSquare = 0;
 	Side side(sideToMove());
 	m_sign = (side == White) ? 1 : -1;
 	if (*token != "-")
