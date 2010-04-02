@@ -53,6 +53,24 @@ bool AtomicBoard::vSetFenString(const QStringList& fen)
 	return WesternBoard::vSetFenString(fen);
 }
 
+bool AtomicBoard::inCheck(Side side, int square) const
+{
+	if (square == 0)
+	{
+		int kingSq = kingSquare(side);
+
+		// If the kings touch, there's no check
+		for (int i = 0; i < 8; i++)
+		{
+			Piece pc = pieceAt(kingSq + s_offsets[i]);
+			if (pc.type() == King)
+				return false;
+		}
+	}
+
+	return WesternBoard::inCheck(side, square);
+}
+
 bool AtomicBoard::vIsLegalMove(const Move& move)
 {
 	Q_ASSERT(!move.isNull());

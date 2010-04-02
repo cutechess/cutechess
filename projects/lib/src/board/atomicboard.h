@@ -45,6 +45,7 @@ class LIB_EXPORT AtomicBoard : public WesternBoard
 
 	protected:
 		// Inherited from WesternBoard
+		virtual bool inCheck(Side side, int square = 0) const;
 		virtual bool kingCanCapture() const;
 		virtual bool vSetFenString(const QStringList& fen);
 		virtual bool vIsLegalMove(const Move& move);

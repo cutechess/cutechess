@@ -91,6 +91,11 @@ class LIB_EXPORT WesternBoard : public Board
 		int kingSquare(Side side) const;
 		/*! Returns the number of consecutive reversible moves made. */
 		int reversibleMoveCount() const;
+		/*!
+		 * Returns true if \a side is under attack at \a square.
+		 * If \a square is 0, then the king square is used.
+		 */
+		virtual bool inCheck(Side side, int square = 0) const;
 
 		// Inherited from Board
 		virtual void vInitialize();
@@ -140,7 +145,6 @@ class LIB_EXPORT WesternBoard : public Board
 				       QVarLengthArray<Move>& moves) const;
 
 		bool canCastle(CastlingSide castlingSide) const;
-		bool inCheck(Side side, int square = 0) const;
 		QString castlingRightsString(FenNotation notation) const;
 		bool parseCastlingRights(QChar c);
 		CastlingSide castlingSide(const Move& move) const;
