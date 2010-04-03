@@ -955,7 +955,7 @@ bool WesternBoard::isLegalPosition()
 	{
 		int source = move.sourceSquare();
 		int target = m_castleTarget[side][cside];
-		int offset = (cside == KingSide) ? 1 : -1;
+		int offset = (source <= target) ? 1 : -1;
 		
 		if (source == target)
 		{
