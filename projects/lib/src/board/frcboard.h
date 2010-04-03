@@ -18,7 +18,7 @@
 #ifndef FRCBOARD_H
 #define FRCBOARD_H
 
-#include "westernboard.h"
+#include "standardboard.h"
 
 namespace Chess {
 
@@ -27,13 +27,14 @@ namespace Chess {
  *
  * Fischer Random is like standard chess, but it uses randomized
  * starting positions, one of which is the starting position of
- * standard chess.
+ * standard chess. FrcBoard uses the same zobrist position keys
+ * as StandardBoard, so Polyglot opening books can be used.
  *
  * \note Rules: http://en.wikipedia.org/wiki/Chess960
  * \sa StandardBoard
  * \sa CaparandomBoard
  */
-class LIB_EXPORT FrcBoard : public WesternBoard
+class LIB_EXPORT FrcBoard : public StandardBoard
 {
 	Q_OBJECT
 
@@ -41,7 +42,7 @@ class LIB_EXPORT FrcBoard : public WesternBoard
 		/*! Creates a new FrcBoard object. */
 		FrcBoard(QObject* parent = 0);
 
-		// Inherited from WesternBoard
+		// Inherited from StandardBoard
 		virtual QString variant() const;
 		virtual bool isRandomVariant() const;
 		/*!

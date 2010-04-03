@@ -16,7 +16,6 @@
 */
 
 #include "frcboard.h"
-#include "westernzobrist.h"
 #include "piece.h"
 
 
@@ -46,7 +45,7 @@ namespace Chess {
 REGISTER_BOARD(FrcBoard, "fischerandom")
 
 FrcBoard::FrcBoard(QObject* parent)
-	: WesternBoard(new WesternZobrist(), parent)
+	: StandardBoard(parent)
 {
 }
 
