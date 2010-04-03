@@ -20,7 +20,7 @@
 
 namespace Chess {
 
-REGISTER_BOARD(LosersBoard, "Losers")
+REGISTER_BOARD(LosersBoard, "losers")
 
 LosersBoard::LosersBoard(QObject* parent)
 	: WesternBoard(new WesternZobrist(), parent),
@@ -31,7 +31,7 @@ LosersBoard::LosersBoard(QObject* parent)
 
 QString LosersBoard::variant() const
 {
-	return "Losers";
+	return "losers";
 }
 
 QString LosersBoard::defaultFenString() const

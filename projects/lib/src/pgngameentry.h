@@ -37,7 +37,7 @@ class PgnGameEntry
 {
 	public:
 		/*! Creates a new empty PgnGameEntry object. */
-		explicit PgnGameEntry(const QString& variant = "Standard");
+		explicit PgnGameEntry(const QString& variant = "standard");
 
 		/*! Resets the entry to an empty default. */
 		void clear();

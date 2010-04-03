@@ -41,7 +41,7 @@ static void addPiece(QVector<int>& pieces,
 
 namespace Chess {
 
-REGISTER_BOARD(CaparandomBoard, "Caparandom")
+REGISTER_BOARD(CaparandomBoard, "caparandom")
 
 CaparandomBoard::CaparandomBoard(QObject* parent)
 	: CapablancaBoard(parent)
@@ -50,7 +50,7 @@ CaparandomBoard::CaparandomBoard(QObject* parent)
 
 QString CaparandomBoard::variant() const
 {
-	return "Caparandom";
+	return "caparandom";
 }
 
 bool CaparandomBoard::isRandomVariant() const

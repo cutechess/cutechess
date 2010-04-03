@@ -58,7 +58,7 @@ XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
 	m_initTimer->setInterval(2000);
 	connect(m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
 
-	m_variants.append("Standard");
+	m_variants.append("standard");
 	setName("XboardEngine");
 }
 
@@ -86,41 +86,17 @@ void XboardEngine::initialize()
 static QString variantFromXboard(const QString& str)
 {
 	if (str == "normal")
-		return "Standard";
-	if (str == "fischerandom")
-		return "Fischerandom";
-	if (str == "capablanca")
-		return "Capablanca";
-	if (str == "gothic")
-		return "Gothic";
-	if (str == "caparandom")
-		return "Caparandom";
-	if (str == "atomic")
-		return "Atomic";
-	if (str == "losers")
-		return "Losers";
-	
-	return QString();
+		return "standard";
+
+	return str;
 }
 
 static QString variantToXboard(const QString& str)
 {
-	if (str == "Standard")
+	if (str == "standard")
 		return "normal";
-	if (str == "Fischerandom")
-		return "fischerandom";
-	if (str == "Capablanca")
-		return "capablanca";
-	if (str == "Gothic")
-		return "gothic";
-	if (str == "Caparandom")
-		return "caparandom";
-	if (str == "Atomic")
-		return "atomic";
-	if (str == "Losers")
-		return "losers";
 
-	return QString();
+	return str;
 }
 
 void XboardEngine::startGame()
@@ -131,7 +107,7 @@ void XboardEngine::startGame()
 	m_nextMove = Chess::Move();
 	write("new");
 	
-	if (board()->variant() != "Standard")
+	if (board()->variant() != "standard")
 		write("variant " + variantToXboard(board()->variant()));
 	
 	if (board()->isRandomVariant()

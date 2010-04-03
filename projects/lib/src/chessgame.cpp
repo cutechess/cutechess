@@ -149,8 +149,7 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 		if (moves().size() / 2 >= m_drawMoveNum
 		&&  m_drawScoreCount >= 2)
 		{
-			setResult(Chess::Result(Chess::Result::Draw, Chess::NoSide,
-						tr("Draw by adjudication")));
+			setResult(Chess::Result(Chess::Result::Adjudication, Chess::NoSide));
 			return;
 		}
 	}
@@ -163,13 +162,10 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 			count++;
 		else
 			count = 0;
+
 		if (count >= m_resignMoveCount)
-		{
-			Chess::Result::Type type = Chess::Result::Win;
-			Chess::Side winner = Chess::otherSide(side);
-			QString str = tr("%1 wins by adjudication").arg(Chess::sideString(winner));
-			setResult(Chess::Result(type, winner, str));
-		}
+			setResult(Chess::Result(Chess::Result::Adjudication,
+						Chess::otherSide(side)));
 	}
 }
 

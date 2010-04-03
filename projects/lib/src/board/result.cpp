@@ -149,9 +149,9 @@ QString Result::description() const
 	if (m_description.isEmpty())
 	{
 		if (m_type == Win)
-			return QObject::tr("%1 wins").arg(w);
+			str = QObject::tr("%1 wins").arg(w);
 		else if (m_type == Draw)
-			return QObject::tr("Drawn game");
+			str = QObject::tr("Drawn game");
 	}
 	else
 	{
@@ -161,6 +161,7 @@ QString Result::description() const
 	}
 
 	Q_ASSERT(!str.isEmpty());
+	str[0] = str[0].toUpper();
 	return str;
 }
 

@@ -32,12 +32,12 @@ WesternBoard::WesternBoard(WesternZobrist* zobrist,
 	  m_kingCanCapture(true),
 	  m_zobrist(zobrist)
 {
-	setPieceType(Pawn, tr("Pawn"), "P");
-	setPieceType(Knight, tr("Knight"), "N", KnightMovement);
-	setPieceType(Bishop, tr("Bishop"), "B", BishopMovement);
-	setPieceType(Rook, tr("Rook"), "R", RookMovement);
-	setPieceType(Queen, tr("Queen"), "Q", BishopMovement | RookMovement);
-	setPieceType(King, tr("King"), "K");
+	setPieceType(Pawn, tr("pawn"), "P");
+	setPieceType(Knight, tr("knight"), "N", KnightMovement);
+	setPieceType(Bishop, tr("bishop"), "B", BishopMovement);
+	setPieceType(Rook, tr("rook"), "R", RookMovement);
+	setPieceType(Queen, tr("queen"), "Q", BishopMovement | RookMovement);
+	setPieceType(King, tr("king"), "K");
 }
 
 int WesternBoard::width() const

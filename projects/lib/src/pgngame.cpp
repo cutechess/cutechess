@@ -359,7 +359,7 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 		}
 	}
 
-	if (m_variant != "Standard")
+	if (m_variant != "standard")
 		writeTag(out, "Variant", m_variant);
 	if (!m_fen.isEmpty() && m_hasCustomFen)
 	{

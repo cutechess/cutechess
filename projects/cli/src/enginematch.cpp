@@ -42,7 +42,7 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_finishing(false),
 	  m_pgnMode(PgnGame::Verbose),
 	  m_repeatOpening(false),
-	  m_variant("Standard")
+	  m_variant("standard")
 {
 	m_startTime.start();
 }

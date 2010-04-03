@@ -20,7 +20,7 @@
 
 namespace Chess {
 
-REGISTER_BOARD(GothicBoard, "Gothic")
+REGISTER_BOARD(GothicBoard, "gothic")
 
 GothicBoard::GothicBoard(QObject* parent)
 	: CapablancaBoard(parent)
@@ -29,7 +29,7 @@ GothicBoard::GothicBoard(QObject* parent)
 
 QString GothicBoard::variant() const
 {
-	return "Gothic";
+	return "gothic";
 }
 
 QString GothicBoard::defaultFenString() const

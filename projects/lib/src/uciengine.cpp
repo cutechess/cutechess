@@ -35,7 +35,7 @@
 UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
 	: ChessEngine(ioDevice, parent)
 {
-	m_variants.append("Standard");
+	m_variants.append("standard");
 	
 	setName("UciEngine");
 }
@@ -63,38 +63,30 @@ void UciEngine::sendPosition()
 
 static QString variantFromUci(const QString& str)
 {
+	if (!str.startsWith("UCI_"))
+		return QString();
+
 	if (str == "UCI_Chess960")
-		return "Fischerandom";
-	if (str == "UCI_Capablanca")
-		return "Capablanca";
-	if (str == "UCI_Gothic")
-		return "Gothic";
+		return "fischerandom";
 	if (str == "UCI_CapaRandom")
-		return "Caparandom";
-	if (str == "UCI_Atomic")
-		return "Atomic";
-	if (str == "UCI_Losers")
-		return "Losers";
-	
-	return QString();
+		return "caparandom";
+
+	return str.mid(4).toLower();
 }
 
 static QString variantToUci(const QString& str)
 {
-	if (str == "Fischerandom")
-		return "UCI_Chess960";
-	if (str == "Capablanca")
-		return "UCI_Capablanca";
-	if (str == "Gothic")
-		return "UCI_Gothic";
-	if (str == "Caparandom")
-		return "UCI_CapaRandom";
-	if (str == "Atomic")
-		return "UCI_Atomic";
-	if (str == "Losers")
-		return "UCI_Losers";
+	if (str.isEmpty())
+		return QString();
 
-	return QString();
+	if (str == "fischerandom")
+		return "UCI_Chess960";
+	if (str == "caparandom")
+		return "UCI_CapaRandom";
+
+	QString tmp = QString("UCI_%1").arg(str);
+	tmp[4] = tmp[4].toUpper();
+	return tmp;
 }
 
 void UciEngine::startGame()
@@ -108,7 +100,7 @@ void UciEngine::startGame()
 	else
 		m_startFen = board()->fenString();
 	
-	if (variant != "Standard")
+	if (variant != "standard")
 		setOption(variantToUci(variant), "true");
 	write("ucinewgame");
 

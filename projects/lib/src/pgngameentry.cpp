@@ -59,7 +59,7 @@ void PgnGameEntry::clear()
 	m_white.clear();
 	m_black.clear();
 	m_result = Chess::Result();
-	m_variant = "Standard";
+	m_variant = "standard";
 }
 
 bool PgnGameEntry::read(PgnStream& in)

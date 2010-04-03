@@ -21,7 +21,7 @@
 
 namespace Chess {
 
-REGISTER_BOARD(AtomicBoard, "Atomic")
+REGISTER_BOARD(AtomicBoard, "atomic")
 
 AtomicBoard::AtomicBoard(QObject* parent)
 	: WesternBoard(new WesternZobrist(), parent)
@@ -32,7 +32,7 @@ AtomicBoard::AtomicBoard(QObject* parent)
 
 QString AtomicBoard::variant() const
 {
-	return "Atomic";
+	return "atomic";
 }
 
 QString AtomicBoard::defaultFenString() const

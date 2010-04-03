@@ -43,7 +43,7 @@ static void addPiece(QVector<int>& pieces,
 
 namespace Chess {
 
-REGISTER_BOARD(FrcBoard, "Fischerandom")
+REGISTER_BOARD(FrcBoard, "fischerandom")
 
 FrcBoard::FrcBoard(QObject* parent)
 	: WesternBoard(new WesternZobrist(), parent)
@@ -52,7 +52,7 @@ FrcBoard::FrcBoard(QObject* parent)
 
 QString FrcBoard::variant() const
 {
-	return "Fischerandom";
+	return "fischerandom";
 }
 
 bool FrcBoard::isRandomVariant() const

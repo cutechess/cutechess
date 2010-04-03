@@ -62,9 +62,9 @@ inline Side sideFromString(const QString& str)
 inline QString sideString(Side side)
 {
 	if (side == White)
-		return QObject::tr("White");
+		return QObject::tr("white");
 	else if (side == Black)
-		return QObject::tr("Black");
+		return QObject::tr("black");
 	return QString();
 }
 
