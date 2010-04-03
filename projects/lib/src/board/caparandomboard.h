@@ -54,7 +54,6 @@ class LIB_EXPORT CaparandomBoard : public CapablancaBoard
 	private:
 		bool pawnsAreSafe(const QVector<int>& pieces) const;
 };
-REGISTER_BOARD(CaparandomBoard, "Caparandom")
 
 } // namespace Chess
 #endif // CAPARANDOMBOARD_H

@@ -43,7 +43,6 @@ class LIB_EXPORT GothicBoard : public CapablancaBoard
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
 };
-REGISTER_BOARD(GothicBoard, "Gothic")
 
 } // namespace Chess
 #endif // GOTHICBOARD_H

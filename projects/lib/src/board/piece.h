@@ -36,7 +36,7 @@ namespace Chess {
  *
  * \note A Board object is needed to convert between a Piece and a string.
  */
-class LIB_EXPORT Piece
+class Piece
 {
 	public:
 		/*! No piece. Used for empty squares. */

@@ -98,6 +98,9 @@ class LIB_EXPORT Board : public QObject
 			ShredderFen
 		};
 
+		/*! Returns the class registry for concrete Board subclasses. */
+		static ClassRegistry<Board>* registry();
+
 		/*!
 		 * Creates a new Board object.
 		 *
@@ -482,13 +485,13 @@ class LIB_EXPORT Board : public QObject
 };
 
 /*!
- * Registers board class \a classname with variant name \a variant.
+ * Registers board class \a TYPE with variant name \a VARIANT.
  *
- * Every concrete Board class's definition must follow with
- * REGISTER_BOARD.
+ * Every concrete Board class's implementation file (.cpp) must
+ * call this macro.
  */
-#define REGISTER_BOARD(classname, variant) \
-	REGISTER_CLASS(Board, classname, variant);
+#define REGISTER_BOARD(TYPE, VARIANT) \
+	REGISTER_CLASS(Board, TYPE, VARIANT, Board::registry());
 
 
 extern LIB_EXPORT QDebug operator<<(QDebug dbg, const Board* board);

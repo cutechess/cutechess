@@ -164,7 +164,7 @@ void EngineMatch::setSite(const QString& site)
 
 bool EngineMatch::setVariant(const QString& variant)
 {
-	if (!ClassRegistry<Chess::Board>::instance().items().contains(variant))
+	if (!Chess::Board::registry()->items().contains(variant))
 		return false;
 
 	m_variant = variant;
@@ -349,7 +349,7 @@ void EngineMatch::start()
 	m_currentGame++;
 	qDebug() << "Started game" << m_currentGame << "of" << m_gameCount;
 
-	Chess::Board* board = ClassRegistry<Chess::Board>::create(m_variant);
+	Chess::Board* board = Chess::Board::registry()->create(m_variant);
 	Q_ASSERT(board != 0);
 	ChessGame* game = new ChessGame(board);
 	board->setParent(game);

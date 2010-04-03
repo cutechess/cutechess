@@ -193,7 +193,7 @@ void MainWindow::newGame()
 
 	ChessPlayer* player[2] = { 0, 0 };
 	QString variant = dlg.selectedVariant();
-	Chess::Board* board = ClassRegistry<Chess::Board>::create(variant);
+	Chess::Board* board = Chess::Board::registry()->create(variant);
 	Q_ASSERT(board != 0);
 	ChessGame* chessgame = new ChessGame(board, this);
 	board->setParent(chessgame);

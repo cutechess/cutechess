@@ -37,7 +37,7 @@ namespace Chess {
  * \sa Board
  * \sa GenericMove
  */
-class LIB_EXPORT Move
+class Move
 {
 	public:
 		/*! Creates an empty Move (null move). */

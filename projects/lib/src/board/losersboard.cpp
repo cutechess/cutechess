@@ -20,6 +20,8 @@
 
 namespace Chess {
 
+REGISTER_BOARD(LosersBoard, "Losers")
+
 LosersBoard::LosersBoard(QObject* parent)
 	: WesternBoard(new WesternZobrist(), parent),
 	  m_canCapture(false),

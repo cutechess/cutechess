@@ -65,7 +65,6 @@ class LIB_EXPORT AtomicBoard : public WesternBoard
 		QVector<MoveData> m_history;
 		int m_offsets[8];
 };
-REGISTER_BOARD(AtomicBoard, "Atomic")
 
 } // namespace Chess
 #endif // ATOMICBOARD_H

@@ -53,7 +53,6 @@ class LIB_EXPORT LosersBoard : public WesternBoard
 		bool m_canCapture;
 		quint64 m_captureKey;
 };
-REGISTER_BOARD(LosersBoard, "Losers")
 
 } // namespace Chess
 #endif // LOSERSBOARD_H

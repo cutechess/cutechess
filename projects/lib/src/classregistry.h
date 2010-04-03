@@ -23,17 +23,22 @@
 class QObject;
 
 /*!
- * Registers class \a subclass (derived from \a baseclass) with key \a key.
+ * Registers a new class.
  *
- * The call to REGISTER_CLASS should be in \a subclass's header file after
- * the class definition.
+ * \param BASE The base class.
+ * \param TYPE The subclass to register.
+ * \param KEY The key associated with class \a TYPE.
+ * \param REGISTRY A pointer to a ClassRegistry<BASE> object.
+ *
+ * \note The call to this macro should be in class \a TYPE's
+ * implementation file (.cpp).
  */
-#define REGISTER_CLASS(baseclass, subclass, key) \
-	static ClassRegistration<baseclass> _class_registration_ ## subclass(&classFactory<baseclass, subclass>, key);
+#define REGISTER_CLASS(BASE, TYPE, KEY, REGISTRY) \
+	static ClassRegistration<BASE> _class_registration_ ## TYPE(REGISTRY, &ClassRegistry<BASE>::factory<TYPE>, KEY);
 
 /*!
- * A singleton class for creating objects based on
- * the class' runtime name or key (a string).
+ * A class for creating objects based on the class' runtime
+ * name or key (a string).
  *
  * The created objects of a registry must have the same base
  * class, and they must be derived from QObject.
@@ -45,11 +50,14 @@ class ClassRegistry
 		/*! Typedef to the factory function. */
 		typedef T* (*Factory)(void);
 
-		/*! Returns the instance of the registry. */
-		static ClassRegistry<T>& instance()
+		/*!
+		 * Factory function for creating an object of type \a Subclass,
+		 * which must be a subclass of \a T.
+		 */
+		template<class Subclass>
+		static T* factory()
 		{
-			static ClassRegistry<T> instance;
-			return instance;
+			return new Subclass;
 		}
 
 		/*! Returns a list of factory functions. */
@@ -68,13 +76,12 @@ class ClassRegistry
 		 * Returns 0 if there is no type that matches \a key.
 		 * Sets the created object's parent to \a parent.
 		 */
-		static T* create(const QString& key, QObject* parent = 0)
+		T* create(const QString& key, QObject* parent = 0)
 		{
-			const QMap<QString, Factory>& items = instance().m_items;
-			if (!items.contains(key))
+			if (!m_items.contains(key))
 				return 0;
 
-			T* ptr = items[key]();
+			T* ptr = m_items[key]();
 			ptr->setParent(parent);
 			return ptr;
 		}
@@ -83,29 +90,25 @@ class ClassRegistry
 		QMap<QString, Factory> m_items;
 };
 
-/*!
- * Factory function for creating an object of type \a T,
- * which must be a subclass of \a Base.
- */
-template<class Base, class T>
-Base* classFactory()
-{
-	return new T;
-}
-
 /*! A class for registering a new subclass of the templated class. */
 template<class T>
 class ClassRegistration
 {
 	public:
 		/*!
-		 * Creates a new registration object and adds a factory
-		 * function associated with \a key to the class registry.
+		 * Creates a new registration object and adds (registers)
+		 * a new class to a class registry.
+		 *
+		 * \param registry A registry where the class is added.
+		 * \param factory A factory function for creating instances
+		 * of the class.
+		 * \param key A key (class name) associated with the class.
 		 */
-		ClassRegistration(typename ClassRegistry<T>::Factory factory,
+		ClassRegistration(ClassRegistry<T>* registry,
+				  typename ClassRegistry<T>::Factory factory,
 				  const QString& key)
 		{
-			ClassRegistry<T>::instance().add(factory, key);
+			registry->add(factory, key);
 		}
 };
 

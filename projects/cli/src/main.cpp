@@ -355,7 +355,7 @@ int main(int argc, char* argv[])
 		}
 		else if (arg == "--variants")
 		{
-			QStringList variants = ClassRegistry<Chess::Board>::instance().items().keys();
+			QStringList variants = Chess::Board::registry()->items().keys();
 			foreach (const QString& variant, variants)
 				out << variant << endl;
 

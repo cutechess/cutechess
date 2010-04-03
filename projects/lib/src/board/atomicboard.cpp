@@ -21,6 +21,8 @@
 
 namespace Chess {
 
+REGISTER_BOARD(AtomicBoard, "Atomic")
+
 AtomicBoard::AtomicBoard(QObject* parent)
 	: WesternBoard(new WesternZobrist(), parent)
 {

@@ -20,6 +20,8 @@
 
 namespace Chess {
 
+REGISTER_BOARD(GothicBoard, "Gothic")
+
 GothicBoard::GothicBoard(QObject* parent)
 	: CapablancaBoard(parent)
 {

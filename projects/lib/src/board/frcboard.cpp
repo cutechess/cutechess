@@ -43,6 +43,8 @@ static void addPiece(QVector<int>& pieces,
 
 namespace Chess {
 
+REGISTER_BOARD(FrcBoard, "Fischerandom")
+
 FrcBoard::FrcBoard(QObject* parent)
 	: WesternBoard(new WesternZobrist(), parent)
 {
