@@ -96,7 +96,7 @@ void TestBoard::zobristKeys_data() const
 	QTest::addColumn<QString>("fen");
 	QTest::addColumn<quint64>("key");
 	
-	QString variant = "Standard";
+	QString variant = "standard";
 
 	QTest::newRow("startpos")
 		<< variant
@@ -155,13 +155,13 @@ void TestBoard::moveStrings_data() const
 	QTest::addColumn<QString>("endfen");
 	
 	QTest::newRow("san")
-		<< "Standard"
+		<< "standard"
 		<< "e4 Nc6 e5 d5 exd6 Be6 Nf3 Qd7 Bb5 O-O-O dxc7 a6 O-O Qxd2 "
 		   "cxd8=N Qxc1 Bxc6 Qxd1 Nxb7 Qxf1+ Kxf1 Bxa2 Rxa2 Kc7"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< "5bnr/1Nk1pppp/p1B5/8/8/5N2/RPP2PPP/1N3K2 w - - 1 13";
 	QTest::newRow("coord")
-		<< "Standard"
+		<< "standard"
 		<< "e2e4 b8c6 e4e5 d7d5 e5d6 c8e6 g1f3 d8d7 f1b5 e8c8 d6c7 "
 		   "a7a6 e1g1 d7d2 c7d8n d2c1 b5c6 c1d1 d8b7 d1f1 g1f1 e6a2 "
 		   "a1a2 c8c7"
@@ -200,7 +200,7 @@ void TestBoard::perft_data() const
 	QTest::addColumn<int>("depth");
 	QTest::addColumn<quint64>("nodecount");
 	
-	QString variant = "Standard";
+	QString variant = "standard";
 	
 	QTest::newRow("startpos")
 		<< variant
@@ -223,7 +223,7 @@ void TestBoard::perft_data() const
 		<< 6
 		<< Q_UINT64_C(11030083);
 	
-	variant = "Capablanca";
+	variant = "capablanca";
 	QTest::newRow("gothic startpos")
 		<< variant
 		<< "rnbqckabnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBQCKABNR w KQkq - 0 1"
