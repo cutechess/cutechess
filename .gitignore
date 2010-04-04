@@ -46,6 +46,6 @@ Doxyfile
 *.kdevses
 
 # files created by Qt Creator
-cutechess.pro.user
+*.pro.user
 qtc-gdbmacros/
 
