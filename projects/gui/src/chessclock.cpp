@@ -44,7 +44,7 @@ void ChessClock::stop()
 
 void ChessClock::updateDisplay()
 {
-	int msLeft = m_totalTime - m_time.elapsed();
+	int msLeft = m_totalTime - m_time.elapsed() - 500;
 	QTime timeLeft = QTime().addMSecs(abs(msLeft));
 
 	QString format;
