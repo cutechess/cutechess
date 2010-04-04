@@ -31,7 +31,9 @@ namespace Chess { class Board; }
  * It has its own input methods, and keeps track of the current line
  * number which can be used to report errors in the games. PgnStream
  * also has its own Chess::Board object, so that the same board can be
- * easily used with all the games in the stream.
+ * easily used with all the games in the stream. The chess variant can
+ * be changed at any time, so it's possible to read PGN streams that
+ * contain games of multiple variants.
  *
  * \sa PgnGame
  * \sa OpeningBook
@@ -48,18 +50,24 @@ class LIB_EXPORT PgnStream
 
 		/*!
 		 * Creates a new PgnStream.
+		 *
 		 * A device or a string must be set before the stream
 		 * can be used.
 		 */
-		PgnStream();
+		explicit PgnStream(const QString& variant = "standard");
 		/*! Creates a PgnStream that operates on \a device. */
-		explicit PgnStream(Chess::Board* board, QIODevice* device);
+		explicit PgnStream(QIODevice* device,
+				   const QString& variant = "standard");
 		/*! Creates a PgnStream that operates on \a string. */
-		explicit PgnStream(Chess::Board* board, const QString* string);
+		explicit PgnStream(const QString* string,
+				   const QString& variant = "standard");
+
+		/*! Destructs the PgnStream object. */
+		~PgnStream();
 
 		/*!
 		 * Returns the Board object which is used to verify the moves
-		 * and FEN strings in the file.
+		 * and FEN strings in the stream.
 		 */
 		Chess::Board* board();
 
@@ -72,6 +80,14 @@ class LIB_EXPORT PgnStream
 		const QString* string() const;
 		/*! Sets the current string to \a string. */
 		void setString(const QString* string);
+
+		/*! Returns the chess variant. */
+		QString variant() const;
+		/*!
+		 * Sets the chess variant to \a variant.
+		 * Returns true if successfull.
+		 */
+		bool setVariant(const QString& variant);
 
 		/*! Returns true if the stream is open. */
 		bool isOpen() const;

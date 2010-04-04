@@ -17,9 +17,10 @@
 
 #include "pgnstream.h"
 #include <QIODevice>
+#include <board/board.h>
 
 
-PgnStream::PgnStream()
+PgnStream::PgnStream(const QString& variant)
 	: m_board(0),
 	  m_pos(0),
 	  m_lineNumber(1),
@@ -27,18 +28,26 @@ PgnStream::PgnStream()
 	  m_string(0),
 	  m_status(Ok)
 {
+	setVariant(variant);
 }
 
-PgnStream::PgnStream(Chess::Board* board, QIODevice* device)
-	: m_board(board)
+PgnStream::PgnStream(QIODevice* device, const QString& variant)
+	: m_board(0)
 {
+	setVariant(variant);
 	setDevice(device);
 }
 
-PgnStream::PgnStream(Chess::Board* board, const QString* string)
-	: m_board(board)
+PgnStream::PgnStream(const QString* string, const QString& variant)
+	: m_board(0)
 {
+	setVariant(variant);
 	setString(string);
+}
+
+PgnStream::~PgnStream()
+{
+	delete m_board;
 }
 
 void PgnStream::reset()
@@ -78,6 +87,26 @@ void PgnStream::setString(const QString* string)
 	Q_ASSERT(string != 0);
 	reset();
 	m_string = string;
+}
+
+QString PgnStream::variant() const
+{
+	Q_ASSERT(m_board != 0);
+	return m_board->variant();
+}
+
+bool PgnStream::setVariant(const QString& variant)
+{
+	if (m_board != 0 && m_board->variant() == variant)
+		return true;
+	if (!Chess::Board::registry()->items().contains(variant))
+		return false;
+
+	delete m_board;
+	m_board = Chess::Board::registry()->create(variant);
+	Q_ASSERT(m_board != 0);
+
+	return true;
 }
 
 bool PgnStream::isOpen() const

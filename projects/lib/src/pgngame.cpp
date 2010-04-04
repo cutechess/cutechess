@@ -216,12 +216,12 @@ PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
 		}
 		else if (tag == "Variant")
 		{
-			if (board->variant() != param)
+			if (!in.setVariant(param.toLower()))
 			{
-				qDebug() << "Unexpected variant:" << param;
+				qDebug() << "Unknown variant:" << param;
 				return PgnError;
 			}
-			m_variant = param;
+			m_variant = in.variant();
 		}
 		else if (tag == "FEN")
 		{

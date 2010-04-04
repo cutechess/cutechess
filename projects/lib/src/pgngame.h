@@ -44,7 +44,7 @@ class LIB_EXPORT PgnGame
 		};
 
 		/*! Creates a new PgnGame object. */
-		explicit PgnGame(const QString& variant);
+		explicit PgnGame(const QString& variant = "standard");
 		
 		/*!
 		 * Reads a game from a PGN text stream.
