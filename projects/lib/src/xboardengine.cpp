@@ -212,6 +212,21 @@ void XboardEngine::setForceMode(bool enable)
 	m_forceMode = enable;
 }
 
+QString XboardEngine::moveString(const Chess::Move& move)
+{
+	Q_ASSERT(!move.isNull());
+
+	// Xboard always uses SAN for castling moves in random variants
+	if (m_notation == Chess::Board::LongAlgebraic && board()->isRandomVariant())
+	{
+		QString str(board()->moveString(move, Chess::Board::StandardAlgebraic));
+		if (str.startsWith("O-O"))
+			return str;
+	}
+
+	return board()->moveString(move, m_notation);
+}
+
 void XboardEngine::makeMove(const Chess::Move& move)
 {
 	Q_ASSERT(!move.isNull());
@@ -220,7 +235,7 @@ void XboardEngine::makeMove(const Chess::Move& move)
 	if (move == m_nextMove)
 		moveString = m_nextMoveString;
 	else
-		moveString = board()->moveString(move, m_notation);
+		moveString = this->moveString(move);
 
 	// If we're not in force mode, we'll have to wait for the
 	// 'go' command until the move can be sent to the engine.

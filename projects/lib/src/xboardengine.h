@@ -59,6 +59,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void setForceMode(bool enable);
 		void sendTimeLeft();
 		void finishGame();
+		QString moveString(const Chess::Move& move);
 		
 		bool m_forceMode;
 		bool m_drawOnNextMove;
