@@ -87,9 +87,6 @@ class LIB_EXPORT OpeningBook
 		typedef QMultiMap<quint64, Entry> Map;
 		
 		
-		/*! Returns the book's chess variant. */
-		virtual QString variant() const = 0;
-		
 		/*! Adds a new entry to the book. */
 		void addEntry(const Entry& entry, quint64 key);
 		

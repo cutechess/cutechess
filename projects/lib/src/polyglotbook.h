@@ -14,10 +14,10 @@
  */
 class LIB_EXPORT PolyglotBook: public OpeningBook
 {
-	private:
-		QString variant() const;
-		void loadEntry(QDataStream& in);
-		void saveEntry(const Map::const_iterator& it,
+	protected:
+		// Inherited from OpeningBook
+		virtual void loadEntry(QDataStream& in);
+		virtual void saveEntry(const Map::const_iterator& it,
 		                       QDataStream& out) const;
 };
 

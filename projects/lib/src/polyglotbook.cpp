@@ -50,12 +50,6 @@ static quint16 moveToBits(const Chess::GenericMove& move)
 	return target | source | promotion;
 }
 
-
-QString PolyglotBook::variant() const
-{
-	return "standard";
-}
-
 void PolyglotBook::loadEntry(QDataStream& in)
 {
 	quint64 key;
