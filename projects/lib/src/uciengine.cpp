@@ -98,7 +98,7 @@ void UciEngine::startGame()
 	if (board()->isRandomVariant())
 		m_startFen = board()->fenString(Chess::Board::ShredderFen);
 	else
-		m_startFen = board()->fenString();
+		m_startFen = board()->fenString(Chess::Board::XFen);
 	
 	if (variant != "standard")
 		setOption(variantToUci(variant), "true");
@@ -118,7 +118,6 @@ void UciEngine::endGame(Chess::Result result)
 
 void UciEngine::makeMove(const Chess::Move& move)
 {
-	// TODO: support UciLongAlgebraic
 	m_moveStrings += " " + board()->moveString(move, Chess::Board::LongAlgebraic);
 	sendPosition();
 }
