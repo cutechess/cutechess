@@ -151,7 +151,7 @@ void ChessEngine::go()
 	ChessPlayer::go();
 }
 
-void ChessEngine::endGame(Chess::Result result)
+void ChessEngine::endGame(const Chess::Result& result)
 {
 	ChessPlayer::endGame(result);
 	ping();

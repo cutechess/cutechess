@@ -34,7 +34,7 @@ void HumanPlayer::startThinking()
 {
 }
 
-void HumanPlayer::endGame(Chess::Result result)
+void HumanPlayer::endGame(const Chess::Result& result)
 {
 	ChessPlayer::endGame(result);
 	setState(Idle);

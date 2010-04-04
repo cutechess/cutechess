@@ -66,7 +66,7 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		void startGame();
 		void sendGameEnded();
 		void finish();
-		void onForfeit(Chess::Result result);
+		void onForfeit(const Chess::Result& result);
 		void syncPlayers(bool ignoreSender = false);
 
 	private:

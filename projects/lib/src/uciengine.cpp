@@ -110,7 +110,7 @@ void UciEngine::startGame()
 	sendPosition();
 }
 
-void UciEngine::endGame(Chess::Result result)
+void UciEngine::endGame(const Chess::Result& result)
 {
 	stopThinking();
 	ChessEngine::endGame(result);

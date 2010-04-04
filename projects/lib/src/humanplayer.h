@@ -30,7 +30,7 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		HumanPlayer(QObject* parent = 0);
 
 		// Inherted from ChessPlayer
-		void endGame(Chess::Result result);
+		void endGame(const Chess::Result& result);
 		void makeMove(const Chess::Move& move);
 		bool supportsVariant(const QString& variant) const;
 		bool isHuman() const;

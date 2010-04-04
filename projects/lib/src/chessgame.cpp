@@ -259,7 +259,7 @@ void ChessGame::startTurn()
 	emit humanEnabled(m_player[side]->isHuman());
 }
 
-void ChessGame::onForfeit(Chess::Result result)
+void ChessGame::onForfeit(const Chess::Result& result)
 {
 	if (m_gameEnded)
 		return;
@@ -458,8 +458,8 @@ void ChessGame::startGame()
 
 	for (int i = 0; i < 2; i++)
 	{
-		connect(m_player[i], SIGNAL(forfeit(Chess::Result)),
-			this, SLOT(onForfeit(Chess::Result)));
+		connect(m_player[i], SIGNAL(forfeit(const Chess::Result&)),
+			this, SLOT(onForfeit(const Chess::Result&)));
 	}
 
 	disconnect(this, SIGNAL(playersReady()), this, SLOT(startGame()));

@@ -69,7 +69,7 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board*
 	startGame();
 }
 
-void ChessPlayer::endGame(Chess::Result result)
+void ChessPlayer::endGame(const Chess::Result& result)
 {
 	Q_UNUSED(result);
 	if (m_state != Observing && m_state != Thinking)

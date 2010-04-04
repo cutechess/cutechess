@@ -69,7 +69,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		// Inherited from ChessPlayer
 		void closeConnection();
 		void quit();
-		virtual void endGame(Chess::Result result);
+		virtual void endGame(const Chess::Result& result);
 		bool isHuman() const;
 		bool isReady() const;
 		bool supportsVariant(const QString& variant) const;

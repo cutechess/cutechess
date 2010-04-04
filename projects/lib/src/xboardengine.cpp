@@ -147,7 +147,7 @@ void XboardEngine::startGame()
 	}
 }
 
-void XboardEngine::endGame(Chess::Result result)
+void XboardEngine::endGame(const Chess::Result& result)
 {
 	State s = state();
 	if (s != Thinking && s != Observing)

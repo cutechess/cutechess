@@ -96,7 +96,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 * \note Subclasses that reimplement this function must call
 		 * the base implementation.
 		 */
-		virtual void endGame(Chess::Result result);
+		virtual void endGame(const Chess::Result& result);
 		
 		/*! Returns the player's evaluation of the current position. */
 		const MoveEvaluation& evaluation() const;
@@ -164,7 +164,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		void moveMade(const Chess::Move& move) const;
 		
 		/*! Signals that the player forfeits the game. */
-		void forfeit(Chess::Result result) const;
+		void forfeit(const Chess::Result& result) const;
 
 		/*! Signals a debugging message from the player. */
 		void debugMessage(const QString& data) const;
