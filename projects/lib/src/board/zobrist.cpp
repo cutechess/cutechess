@@ -24,14 +24,18 @@
 
 static QVarLengthArray<quint64, 0x2000> s_keys;
 static QMutex s_mutex;
-static int s_randomSeed = 1;
+
+
+namespace Chess {
+
+int Zobrist::s_randomSeed = 1;
 
 /*!
  * The "minimal standard" random number generator
  * by Park and Miller.
  * Returns a pseudo-random integer between 1 and 2147483646.
  */
-static int random()
+int Zobrist::random32()
 {
 	const int a = 16807;
 	const int m = 2147483647;
@@ -50,8 +54,6 @@ static int random()
 	return s_randomSeed;
 }
 
-
-namespace Chess {
 
 Zobrist::Zobrist(const quint64* keys)
 	: m_squareCount(0),
@@ -110,9 +112,9 @@ quint64 Zobrist::handPiece(const Piece& piece, int slot) const
 
 quint64 Zobrist::random64()
 {
-	quint64 random1 = (quint64)random();
-	quint64 random2 = (quint64)random();
-	quint64 random3 = (quint64)random();
+	quint64 random1 = (quint64)random32();
+	quint64 random2 = (quint64)random32();
+	quint64 random3 = (quint64)random32();
 
 	return random1 ^ (random2 << 31) ^ (random3 << 62);
 }

@@ -90,6 +90,9 @@ class LIB_EXPORT Zobrist
 		const quint64* keys() const;
 
 	private:
+		static int random32();
+		static int s_randomSeed;
+
 		int m_squareCount;
 		int m_pieceTypeCount;
 		const quint64* m_keys;
