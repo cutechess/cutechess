@@ -33,7 +33,7 @@ class PgnStream;
  *
  * \sa PgnGame, PgnStream
  */
-class PgnGameEntry
+class LIB_EXPORT PgnGameEntry
 {
 	public:
 		/*! Creates a new empty PgnGameEntry object. */
