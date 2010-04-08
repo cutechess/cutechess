@@ -74,17 +74,7 @@ void ChessboardView::mouseReleaseEvent(QMouseEvent* event)
 	if (m_dragging)
 	{
 		m_dragging = false;
-		Chess::Square src;
-		src.setFile(m_dragSquare.column());
-		src.setRank(model()->rowCount() - m_dragSquare.row() - 1);
-
-		QModelIndex dragTarget = indexAt(event->pos());
-		Chess::Square trg;
-		trg.setFile(dragTarget.column());
-		trg.setRank(model()->rowCount() - dragTarget.row() - 1);
-
-		Chess::GenericMove move(src, trg, Chess::Piece::NoPiece);
-		emit humanMove(move);
+		emit humanMove(m_dragSquare, indexAt(event->pos()));
 
 		m_dragUpdateRegion = m_dragRect;
 		m_dragUpdateRegion += visualRect(m_dragSquare);

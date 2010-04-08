@@ -235,7 +235,7 @@ class LIB_EXPORT Board : public QObject
 		 * This signal is emitted when a move is made on the board.
 		 * \sa makeMove()
 		 */
-		void moveMade(const Chess::Square& source, const Chess::Square& target);
+		void moveMade(const Chess::GenericMove& move);
 		/*!
 		 * This signal is emitted for every changed square when
 		 * a move is made on the board.

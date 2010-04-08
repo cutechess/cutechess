@@ -20,7 +20,7 @@
 
 #include <QAbstractTableModel>
 
-namespace Chess { class Board; class Square; }
+namespace Chess { class Board; class Square; class GenericMove; }
 
 class ChessboardModel : public QAbstractTableModel
 {
@@ -41,16 +41,19 @@ class ChessboardModel : public QAbstractTableModel
 
 	signals:
 		void moveMade(const QModelIndex& source, const QModelIndex& target);
+		void humanMove(const Chess::GenericMove& move);
 
 	public slots:
 		void squareChanged(const Chess::Square& square);
 		void boardReset();
+		void onHumanMove(const QModelIndex& source, const QModelIndex& target);
 
 	private slots:
-		void onMoveMade(const Chess::Square& source, const Chess::Square& target);
+		void onMoveMade(const Chess::GenericMove& move);
 
 	private:
 		QModelIndex squareToIndex(const Chess::Square& square) const;
+		Chess::Square indexToSquare(const QModelIndex& index) const;
 		void updateSelectable();
 
 		Chess::Board* m_board;

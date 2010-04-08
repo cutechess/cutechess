@@ -608,8 +608,7 @@ void Board::makeMove(const Move& move, bool sendSignal)
 			squares.append(source);
 		squares.append(target);
 
-		emit moveMade(chessSquare(source),
-			      chessSquare(target));
+		emit moveMade(genericMove(move));
 		for (int i = 0; i < squares.size(); i++)
 			emit squareChanged(chessSquare(squares[i]));
 	}

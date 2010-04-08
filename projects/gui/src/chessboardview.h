@@ -40,7 +40,7 @@ class ChessboardView : public QAbstractItemView
 		QColor darkSquareColor() const;
 
 	signals:
-		void humanMove(const Chess::GenericMove& move) const;
+		void humanMove(const QModelIndex& source, const QModelIndex& target) const;
 
 	public slots:
 		void onMoveMade(const QModelIndex& source, const QModelIndex& target);
