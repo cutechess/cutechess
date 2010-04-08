@@ -129,11 +129,12 @@ void AtomicBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSquar
 			int sq = target + m_offsets[i];
 			Piece& pc = md.captures[i];
 			pc = pieceAt(sq);
-			if (!pc.isWall() && pc.type() != Pawn)
-			{
-				setSquare(sq, Piece::NoPiece);
-				changedSquares.append(sq);
-			}
+			if (pc.isWall() || pc.type() == Pawn)
+				continue;
+			
+			removeCastlingRights(sq);
+			setSquare(sq, Piece::NoPiece);
+			changedSquares.append(sq);
 		}
 	}
 	m_history << md;

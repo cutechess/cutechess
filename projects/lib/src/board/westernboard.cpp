@@ -670,6 +670,21 @@ void WesternBoard::setCastlingSquare(Side side,
 	rs = square;
 }
 
+void WesternBoard::removeCastlingRights(int square)
+{
+	Piece piece = pieceAt(square);
+	if (piece.type() != Rook)
+		return;
+
+	Side side(piece.side());
+	const int* cr = m_castlingRights.rookSquare[side];
+
+	if (square == cr[QueenSide])
+		setCastlingSquare(side, QueenSide, 0);
+	else if (square == cr[KingSide])
+		setCastlingSquare(side, KingSide, 0);
+}
+
 void WesternBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSquares)
 {
 	Side side = sideToMove();
@@ -763,22 +778,9 @@ void WesternBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSqua
 		}
 	}
 
-	int ctype = captureType(move);
-	if (ctype != Piece::NoPiece)
+	if (captureType(move) != Piece::NoPiece)
 	{
-		// If the move captures opponent's castling rook, remove
-		// his castling rights from that side.
-		if (ctype == Rook)
-		{
-			Side opSide = otherSide(side);
-			const int* opCr = m_castlingRights.rookSquare[opSide];
-
-			if (target == opCr[QueenSide])
-				setCastlingSquare(opSide, QueenSide, 0);
-			else if (target == opCr[KingSide])
-				setCastlingSquare(opSide, KingSide, 0);
-		}
-
+		removeCastlingRights(target);
 		isReversible = false;
 	}
 

@@ -92,6 +92,14 @@ class LIB_EXPORT WesternBoard : public Board
 		/*! Returns the number of consecutive reversible moves made. */
 		int reversibleMoveCount() const;
 		/*!
+		 * Removes castling rights at \a square.
+		 *
+		 * If one of the players has a rook at \a square, the rook can't
+		 * be used for castling. This function should be called when a
+		 * capture happens at \a square.
+		 */
+		void removeCastlingRights(int square);
+		/*!
 		 * Returns true if \a side is under attack at \a square.
 		 * If \a square is 0, then the king square is used.
 		 */
