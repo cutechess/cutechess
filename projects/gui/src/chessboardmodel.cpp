@@ -77,11 +77,8 @@ int ChessboardModel::columnCount(const QModelIndex& parent) const
 
 QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 {
-	if (!index.isValid())
+	if (!index.isValid() || m_board == 0)
 		return QVariant();
-
-	if (m_board == 0)
-		return QString();
 
 	if (role == Qt::DisplayRole)
 	{
@@ -105,13 +102,8 @@ QVariant ChessboardModel::headerData(int section,
 	if (role == Qt::DisplayRole)
 	{
 		if (orientation == Qt::Vertical)
-		{
 			return QString::number(rowCount(QModelIndex()) - section);
-		}
-		else
-		{
-			return m_files.at(section);
-		}
+		return m_files.at(section);
 	}
 
 	return QVariant();
