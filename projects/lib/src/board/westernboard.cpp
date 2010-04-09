@@ -139,10 +139,6 @@ QString WesternBoard::sanMoveString(const Move& move)
 	Piece capture = pieceAt(target);
 	Square square = chessSquare(source);
 
-	// drop move
-	if (source == 0 && move.promotion() != Piece::NoPiece)
-		return lanMoveString(move);
-
 	char checkOrMate = 0;
 	makeMove(move);
 	if (inCheck(sideToMove()))
@@ -153,6 +149,15 @@ QString WesternBoard::sanMoveString(const Move& move)
 			checkOrMate = '#';
 	}
 	undoMove();
+
+	// drop move
+	if (source == 0 && move.promotion() != Piece::NoPiece)
+	{
+		str = lanMoveString(move);
+		if (checkOrMate != 0)
+			str += checkOrMate;
+		return str;
+	}
 
 	bool needRank = false;
 	bool needFile = false;
