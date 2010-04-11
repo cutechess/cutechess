@@ -19,6 +19,7 @@
 #define CHESSBOARD_MODEL_H
 
 #include <QAbstractTableModel>
+#include <board/piece.h>
 
 namespace Chess { class Board; class Square; class GenericMove; }
 
@@ -44,7 +45,8 @@ class ChessboardModel : public QAbstractTableModel
 		void humanMove(const Chess::GenericMove& move);
 
 	public slots:
-		void squareChanged(const Chess::Square& square);
+		void onSquareChanged(const Chess::Square& square);
+		void onHandPieceChanged(Chess::Piece piece);
 		void boardReset();
 		void onHumanMove(const QModelIndex& source, const QModelIndex& target);
 
@@ -54,12 +56,16 @@ class ChessboardModel : public QAbstractTableModel
 	private:
 		QModelIndex squareToIndex(const Chess::Square& square) const;
 		Chess::Square indexToSquare(const QModelIndex& index) const;
+		QModelIndex handPieceToIndex(Chess::Piece piece) const;
+		Chess::Piece indexToHandPiece(const QModelIndex& index) const;
 		void updateSelectable();
 
 		Chess::Board* m_board;
+		int m_width;
+		int m_height;
+		int m_widthOffset;
 		QModelIndexList m_selectable;
 		static const QString m_files;
 };
 
 #endif // CHESSBOARD_MODEL_H
-

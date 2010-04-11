@@ -174,6 +174,19 @@ QString Board::pieceString(int pieceType) const
 	return m_pieceData[pieceType].name;
 }
 
+int Board::handPieceType(int pieceType) const
+{
+	return pieceType;
+}
+
+int Board::handPieceCount(Piece piece) const
+{
+	if (!piece.isValid()
+	||  piece.type() >= m_handPieces[piece.side()].size())
+		return 0;
+	return m_handPieces[piece.side()][piece.type()];
+}
+
 void Board::addHandPiece(const Piece& piece, int count)
 {
 	Q_ASSERT(piece.isValid());
@@ -591,6 +604,9 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	Q_ASSERT(!move.isNull());
 
 	MoveData md = { move, m_key };
+	int handPieceType = Piece::NoPiece;
+	if (sendSignal)
+		handPieceType = this->handPieceType(captureType(move));
 
 	QVarLengthArray<int> squares;
 	vMakeMove(move, squares);
@@ -601,6 +617,7 @@ void Board::makeMove(const Move& move, bool sendSignal)
 
 	if (sendSignal)
 	{
+		Chess::Side side(otherSide(m_side));
 		int source = move.sourceSquare();
 		int target = move.targetSquare();
 
@@ -611,6 +628,11 @@ void Board::makeMove(const Move& move, bool sendSignal)
 		emit moveMade(genericMove(move));
 		for (int i = 0; i < squares.size(); i++)
 			emit squareChanged(chessSquare(squares[i]));
+
+		if (move.sourceSquare() == 0)
+			emit handPieceChanged(Piece(side, move.promotion()));
+		if (handPieceType != Piece::NoPiece && variantHasDrops())
+			emit handPieceChanged(Piece(side, handPieceType));
 	}
 }
 
@@ -644,9 +666,17 @@ void Board::generateMoves(QVarLengthArray<Move>& moves, int pieceType) const
 			generateMovesForPiece(moves, tmp.type(), sq);
 	}
 
-	if (!m_handPieces[m_side].isEmpty())
+	generateDropMoves(moves, pieceType);
+}
+
+void Board::generateDropMoves(QVarLengthArray<Move>& moves, int pieceType) const
+{
+	const QVector<int>& pieces(m_handPieces[m_side]);
+	if (pieces.isEmpty())
+		return;
+
+	if (pieceType == Piece::NoPiece)
 	{
-		const QVector<int>& pieces(m_handPieces[m_side]);
 		for (int i = 1; i < pieces.size(); i++)
 		{
 			Q_ASSERT(pieces[i] >= 0);
@@ -654,6 +684,8 @@ void Board::generateMoves(QVarLengthArray<Move>& moves, int pieceType) const
 				generateMovesForPiece(moves, i, 0);
 		}
 	}
+	else if (pieceType < pieces.size() && pieces[pieceType] > 0)
+		generateMovesForPiece(moves, pieceType, 0);
 }
 
 void Board::generateHoppingMoves(int sourceSquare,
@@ -696,12 +728,17 @@ bool Board::moveExists(const Move& move) const
 	Q_ASSERT(!move.isNull());
 
 	int source = move.sourceSquare();
-	Piece piece = m_squares[source];
-	if (piece.side() != m_side)
-		return false;
-
 	QVarLengthArray<Move> moves;
-	generateMovesForPiece(moves, piece.type(), source);
+
+	if (source == 0)
+		generateDropMoves(moves, move.promotion());
+	else
+	{
+		Piece piece = m_squares[source];
+		if (piece.side() != m_side)
+			return false;
+		generateMovesForPiece(moves, piece.type(), source);
+	}
 
 	for (int i = 0; i < moves.size(); i++)
 	{

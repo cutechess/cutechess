@@ -120,6 +120,14 @@ class LIB_EXPORT Board : public QObject
 		 * The default value is false.
 		 */
 		virtual bool isRandomVariant() const;
+		/*!
+		 * Returns true if the variant allows piece drops.
+		 * The default value is false.
+		 *
+		 * \sa ShogiBoard
+		 * \sa CrazyhouseBoard
+		 */
+		virtual bool variantHasDrops() const;
 		/*! Returns the coordinate system used in the variant. */
 		virtual CoordinateSystem coordinateSystem() const;
 		/*! Returns the width of the board in squares. */
@@ -160,10 +168,22 @@ class LIB_EXPORT Board : public QObject
 		 */
 		void reset();
 
+		/*!
+		 * Returns the side whose pieces are denoted by uppercase letters.
+		 * The default value is White.
+		 */
+		virtual Side upperCaseSide() const;
 		/*! Returns the side to move. */
 		Side sideToMove() const;
 		/*! Returns the piece at \a square. */
 		Piece pieceAt(const Square& square) const;
+		/*!
+		 * Returns the number of held pieces of type \a piece.
+		 *
+		 * On variants that don't have piece drops this function
+		 * always returns 0.
+		 */
+		int handPieceCount(Piece piece) const;
 		/*! Converts \a piece into a piece symbol. */
 		QString pieceSymbol(Piece piece) const;
 		/*! Converts \a pieceSymbol into a Piece object. */
@@ -243,25 +263,17 @@ class LIB_EXPORT Board : public QObject
 		 */
 		void squareChanged(const Chess::Square& square);
 		/*!
+		 * This signal is emitted by makeMove() when the number of
+		 * hand pieces of type \a piece changes.
+		 */
+		void handPieceChanged(Chess::Piece piece);
+		/*!
 		 * This signal is emitted when the board's contents are reset.
 		 * \sa setFenString()
 		 */
 		void boardReset();
 
 	protected:
-		/*!
-		 * Returns true if the variant allows piece drops.
-		 * The default value is false.
-		 *
-		 * \sa ShogiBoard
-		 * \sa CrazyhouseBoard
-		 */
-		virtual bool variantHasDrops() const;
-		/*!
-		 * Returns the side whose pieces are denoted by uppercase letters.
-		 * The default value is White.
-		 */
-		virtual Side upperCaseSide() const;
 		/*!
 		 * Initializes the variant.
 		 *
@@ -369,6 +381,14 @@ class LIB_EXPORT Board : public QObject
 		void generateMoves(QVarLengthArray<Move>& moves,
 				   int pieceType = Piece::NoPiece) const;
 		/*!
+		 * Generates piece drops for pieces of type \a pieceType.
+		 *
+		 * \note If \a pieceType is Piece::NoPiece, moves are generated
+		 * for every piece type.
+		 * \sa generateMoves()
+		 */
+		void generateDropMoves(QVarLengthArray<Move>& moves, int pieceType) const;
+		/*!
 		 * Generates pseudo-legal moves for a piece of \a pieceType
 		 * at square \a square.
 		 *
@@ -453,6 +473,16 @@ class LIB_EXPORT Board : public QObject
 		int repeatCount() const;
 		/*! Returns the last move made in the game. */
 		const Move& lastMove() const;
+		/*!
+		 * Returns the hand piece type corresponding to \a pieceType.
+		 *
+		 * The returned value is the type of piece a player receives
+		 * (in variants that have piece drops) when he captures a piece of
+		 * type \a pieceType.
+		 *
+		 * The default value is \a pieceType.
+		 */
+		virtual int handPieceType(int pieceType) const;
 		/*! Adds \a count hand pieces of type \a piece. */
 		void addHandPiece(const Piece& piece, int count = 1);
 		/*! Removes a hand piece of type \a piece. */

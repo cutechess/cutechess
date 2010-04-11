@@ -6,6 +6,7 @@
 #include <QtDebug>
 #include <board/piece.h>
 #include <board/genericmove.h>
+#include "squareinfo.h"
 
 
 ChessboardView::ChessboardView(QWidget* parent)
@@ -100,7 +101,7 @@ void ChessboardView::startDrag()
 	m_dragPixmap.fill(Qt::transparent);
 
 	painter.begin(&m_dragPixmap);
-	renderPiece(m_dragSquare, painter, painter.viewport());
+	renderPiece(m_dragSquare, painter.viewport(), painter);
 	painter.end();
 
 	m_dragRect = rect;
@@ -124,14 +125,12 @@ bool ChessboardView::edit(const QModelIndex& index, EditTrigger trigger, QEvent*
 
 QModelIndex ChessboardView::indexAt(const QPoint& point) const
 {
-	if (model() != 0 && m_squaresRect.contains(point))
-	{
-		int row = (point.y() - m_squaresRect.y()) / m_squareSize;
-		int column = (point.x() - m_squaresRect.x()) / m_squareSize;
-		return model()->index(row, column);
-	}
+	if (!model() || !m_squaresRect.contains(point))
+		return QModelIndex();
 
-	return QModelIndex();
+	int row = (point.y() - m_squaresRect.y()) / m_squareSize;
+	int column = (point.x() - m_squaresRect.x()) / m_squareSize;
+	return model()->index(row, column);
 }
 
 void ChessboardView::scrollTo(const QModelIndex& index, ScrollHint hint)
@@ -142,61 +141,108 @@ void ChessboardView::scrollTo(const QModelIndex& index, ScrollHint hint)
 
 QRect ChessboardView::visualRect(const QModelIndex& index) const
 {
-	if (index.isValid())
-	{
-		return QRect (m_squaresRect.x() + (index.column() * m_squareSize),
-			m_squaresRect.y() + (index.row() * m_squareSize),
-			m_squareSize, m_squareSize);
-	}
+	if (!index.isValid())
+		return QRect();
 
-	return QRect();
+	return QRect(m_squaresRect.x() + (index.column() * m_squareSize),
+		     m_squaresRect.y() + (index.row() * m_squareSize),
+		     m_squareSize, m_squareSize);
 }
 
-void ChessboardView::renderPiece(const QModelIndex& index, QPainter& painter, QRectF bounds)
+void ChessboardView::renderPiece(const QString& symbol,
+				 const QRectF& bounds,
+				 QPainter& painter)
 {
-	QVariant data = model()->data(index);
-	if (data.isNull())
-		return;
+	Q_ASSERT(!symbol.isEmpty());
+	Q_ASSERT(bounds.isValid());
 
-	QString id = data.toString();
-	QRectF pieceBounds(m_pieceRenderer->boundsOnElement(id));
+	QRectF squareBounds(bounds);
+	QRectF pieceBounds(m_pieceRenderer->boundsOnElement(symbol));
 
 	qreal aspect = pieceBounds.width() / pieceBounds.height();
 	if (aspect > 1.0)
 	{
 		qreal height = bounds.height() / aspect;
 		qreal adjust = (bounds.height() - height) / 2;
-		bounds.adjust(0, adjust, 0, -adjust);
+		squareBounds.adjust(0, adjust, 0, -adjust);
 	}
 	else if (aspect < 1.0)
 	{
 		qreal width = bounds.width() * aspect;
 		qreal adjust = (bounds.width() - width) / 2;
-		bounds.adjust(adjust, 0, -adjust, 0);
+		squareBounds.adjust(adjust, 0, -adjust, 0);
 	}
-	qreal a = bounds.width() / 10;
-	bounds.adjust(a, a, -a, -a);
+	qreal a = squareBounds.width() / 10;
+	squareBounds.adjust(a, a, -a, -a);
 
-	m_pieceRenderer->render(&painter, id, bounds);
+	m_pieceRenderer->render(&painter, symbol, squareBounds);
+}
+
+void ChessboardView::renderPiece(const QModelIndex& index,
+				 const QRectF& bounds,
+				 QPainter& painter)
+{
+	Q_ASSERT(index.isValid());
+	Q_ASSERT(bounds.isValid());
+
+	QVariant data = model()->data(index);
+	if (data.canConvert<SquareInfo>())
+	{
+		SquareInfo info(data.value<SquareInfo>());
+		renderPiece(info.pieceSymbol(), bounds, painter);
+	}
 }
 
 void ChessboardView::renderSquare(const QModelIndex& index, QPainter& painter)
 {
+	Q_ASSERT(index.isValid());
+
 	int row = index.row();
 	int column = index.column();
 	QRectF sqBounds(column * m_squareSize, row * m_squareSize,
 			m_squareSize, m_squareSize);
 
-	if ((row % 2) == (column % 2))
+	QVariant data = model()->data(index);
+	SquareInfo squareInfo;
+	if (data.canConvert<SquareInfo>())
+		squareInfo = data.value<SquareInfo>();
+
+	switch (squareInfo.color())
+	{
+	case SquareInfo::BackgroundColor:
+		painter.fillRect(sqBounds, painter.background());
+		break;
+	case SquareInfo::LightColor:
 		painter.fillRect(sqBounds, m_lightSquareColor);
-	else
+		break;
+	case SquareInfo::DarkColor:
 		painter.fillRect(sqBounds, m_darkSquareColor);
+		break;
+	default:
+		return;
+	}
 
 	if (index == m_sourceSquare || index == m_targetSquare)
 		painter.fillRect(sqBounds, QBrush(m_moveColor, Qt::Dense4Pattern));
 
-	if (!m_dragging || index != m_dragSquare)
-		renderPiece(index, painter, sqBounds);
+	int count = squareInfo.pieceCount();
+	if (count > 0 && (!m_dragging || index != m_dragSquare))
+	{
+		if (count > 1)
+		{
+			// Display the piece count
+			QRectF textBounds(sqBounds);
+			textBounds.setX(textBounds.x() + 2);
+			painter.setFont(m_font);
+			painter.drawText(textBounds, QString::number(count));
+		}
+		if (squareInfo.color() == SquareInfo::BackgroundColor)
+		{
+			qreal a = qreal(m_font.pixelSize()) / 2.0;
+			sqBounds.adjust(a, a, 0, 0);
+		}
+		renderPiece(squareInfo.pieceSymbol(), sqBounds, painter);
+	}
 }
 
 void ChessboardView::paintEvent(QPaintEvent* event)
@@ -309,6 +355,8 @@ void ChessboardView::resizeBoard(const QSize& size)
 	m_squaresRect.setWidth(columnCount * m_squareSize);
 	m_squaresRect.setHeight(rowCount * m_squareSize);
 	m_squaresRect.moveCenter(viewport()->rect().center());
+
+	m_font.setPixelSize(qMax(8, m_squareSize / 4));
 }
 
 void ChessboardView::onResizeTimeout()

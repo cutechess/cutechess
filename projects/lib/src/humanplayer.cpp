@@ -62,6 +62,8 @@ void HumanPlayer::onHumanMove(const Chess::GenericMove& move)
 		return;
 
 	Chess::Move boardMove = board()->moveFromGenericMove(move);
+	if (boardMove.promotion() != Chess::Piece::NoPiece)
+		return onPromotionMove(boardMove);
 
 	QVector<Chess::Move> moves(board()->legalMoves());
 	QList<int> promotions;

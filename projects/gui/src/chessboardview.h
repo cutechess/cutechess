@@ -68,7 +68,8 @@ class ChessboardView : public QAbstractItemView
 		void onResizeTimeout();
 
 	private:
-		void renderPiece(const QModelIndex& index, QPainter& painter, QRectF bounds);
+		void renderPiece(const QString& symbol, const QRectF& bounds, QPainter& painter);
+		void renderPiece(const QModelIndex& index, const QRectF& bounds, QPainter& painter);
 		void renderSquare(const QModelIndex& index, QPainter& painter);
 		void resizeBoard(const QSize& size);
 		void startDrag();
@@ -89,6 +90,7 @@ class ChessboardView : public QAbstractItemView
 		QColor m_moveColor;
 		QRect m_squaresRect;
 		QPixmap m_background;
+		QFont m_font;
 		QSvgRenderer* m_pieceRenderer;
 		QModelIndex m_sourceSquare;
 		QModelIndex m_targetSquare;

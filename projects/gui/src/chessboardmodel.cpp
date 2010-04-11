@@ -17,13 +17,17 @@
 
 #include "chessboardmodel.h"
 #include <board/board.h>
+#include "squareinfo.h"
 
 
 const QString ChessboardModel::m_files = QLatin1String("abcdefghij");
 
 ChessboardModel::ChessboardModel(QObject* parent)
 	: QAbstractTableModel(parent),
-	  m_board(0)
+	  m_board(0),
+	  m_width(8),
+	  m_height(8),
+	  m_widthOffset(0)
 {
 }
 
@@ -46,11 +50,23 @@ void ChessboardModel::setBoard(Chess::Board* board)
 	}
 
 	m_board = board;
+	m_width = m_board->width();
+	m_height = m_board->height();
+	m_widthOffset = 0;
+
+	// If the variant has piece drops, add additional
+	// columns for piece holdings
+	if (m_board->variantHasDrops())
+		m_widthOffset = 1;
+	m_width += m_widthOffset * 2;
+
 	connect(m_board, SIGNAL(boardReset()), this, SLOT(boardReset()));
 	connect(m_board, SIGNAL(squareChanged(const Chess::Square&)),
-	        this, SLOT(squareChanged(const Chess::Square&)));
-	connect(m_board, SIGNAL(moveMade(const Chess::Square&, const Chess::Square&)),
-		this, SLOT(onMoveMade(const Chess::Square&, const Chess::Square&)));
+		this, SLOT(onSquareChanged(const Chess::Square&)));
+	connect(m_board, SIGNAL(handPieceChanged(Chess::Piece)),
+		this, SLOT(onHandPieceChanged(Chess::Piece)));
+	connect(m_board, SIGNAL(moveMade(const Chess::GenericMove&)),
+		this, SLOT(onMoveMade(const Chess::GenericMove&)));
 
 	reset();
 }
@@ -58,21 +74,13 @@ void ChessboardModel::setBoard(Chess::Board* board)
 int ChessboardModel::rowCount(const QModelIndex& parent) const
 {
 	Q_UNUSED(parent);
-
-	if (m_board == 0)
-		return 8;
-
-	return m_board->height();
+	return m_height;
 }
 
 int ChessboardModel::columnCount(const QModelIndex& parent) const
 {
 	Q_UNUSED(parent);
-
-	if (m_board == 0)
-		return 8;
-
-	return m_board->width();
+	return m_width;
 }
 
 QVariant ChessboardModel::data(const QModelIndex& index, int role) const
@@ -82,14 +90,25 @@ QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 
 	if (role == Qt::DisplayRole)
 	{
-		int file = index.column();
-		int rank = (rowCount(QModelIndex()) - 1) - index.row();
-		Chess::Square sq(file, rank);
-		Chess::Piece piece = m_board->pieceAt(sq);
+		SquareInfo squareInfo;
+		Chess::Square sq(indexToSquare(index));
+		Chess::Piece piece;
 
-		if (!piece.isValid())
-			return QVariant();
-		return m_board->pieceSymbol(piece);
+		if (m_board->isValidSquare(sq))
+		{
+			if ((sq.file() % 2) == (sq.rank() % 2))
+				squareInfo.setColor(SquareInfo::DarkColor);
+			else
+				squareInfo.setColor(SquareInfo::LightColor);
+
+			if ((piece = m_board->pieceAt(sq)).isValid())
+				squareInfo.setPieceCount(1);
+		}
+		else if ((piece = indexToHandPiece(index)).isValid())
+			squareInfo.setPieceCount(m_board->handPieceCount(piece));
+
+		squareInfo.setPieceSymbol(m_board->pieceSymbol(piece));
+		return QVariant::fromValue(squareInfo);
 	}
 
 	return QVariant();
@@ -102,7 +121,7 @@ QVariant ChessboardModel::headerData(int section,
 	if (role == Qt::DisplayRole)
 	{
 		if (orientation == Qt::Vertical)
-			return QString::number(rowCount(QModelIndex()) - section);
+			return QString::number(m_height - section);
 		return m_files.at(section);
 	}
 
@@ -111,20 +130,91 @@ QVariant ChessboardModel::headerData(int section,
 
 QModelIndex ChessboardModel::squareToIndex(const Chess::Square& square) const
 {
-	int row = (rowCount(QModelIndex()) - 1) - square.rank();
-	int column = square.file();
+	if (!square.isValid())
+		return QModelIndex();
+
+	int row = (m_height - 1) - square.rank();
+	int column = square.file() + m_widthOffset;
 	return createIndex(row, column);
+}
+
+Chess::Square ChessboardModel::indexToSquare(const QModelIndex& index) const
+{
+	if (!index.isValid())
+		return Chess::Square();
+
+	Chess::Square square;
+	square.setFile(index.column() - m_widthOffset);
+	square.setRank(m_height - index.row() - 1);
+
+	return square;
+}
+
+QModelIndex ChessboardModel::handPieceToIndex(Chess::Piece piece) const
+{
+	Q_ASSERT(m_board != 0);
+
+	if (!piece.isValid() || m_widthOffset == 0)
+		return QModelIndex();
+
+	int col = 0;
+	int row = piece.type() - 1;
+	if (piece.side() == m_board->upperCaseSide())
+	{
+		col = m_width - 1;
+		row = m_height - piece.type();
+	}
+
+	return createIndex(row, col);
+}
+
+Chess::Piece ChessboardModel::indexToHandPiece(const QModelIndex& index) const
+{
+	Q_ASSERT(index.isValid());
+	Q_ASSERT(m_board != 0);
+
+	if (m_widthOffset == 0 || index.column() >= m_width)
+		return Chess::Piece::NoPiece;
+
+	Chess::Side side = Chess::NoSide;
+	int col = index.column();
+	int pieceType = index.row() + 1;
+
+	if (col == 0)
+		side = Chess::otherSide(m_board->upperCaseSide());
+	else if (col == m_width - 1)
+	{
+		side = m_board->upperCaseSide();
+		pieceType = m_height - index.row();
+	}
+	else
+		return Chess::Piece::NoPiece;
+
+	return Chess::Piece(side, pieceType);
 }
 
 void ChessboardModel::updateSelectable()
 {
+	Q_ASSERT(m_board != 0);
+
 	m_selectable.clear();
+	Chess::Side side(m_board->sideToMove());
 
 	QVector<Chess::Move> moves(m_board->legalMoves());
 	foreach (const Chess::Move& move, moves)
 	{
-		Chess::GenericMove tmp(m_board->genericMove(move));
-		QModelIndex index = squareToIndex(tmp.sourceSquare());
+		QModelIndex index;
+		
+		if (move.sourceSquare() == 0) // piece drop
+		{
+			Chess::Piece piece(side, move.promotion());
+			index = handPieceToIndex(piece);
+		}
+		else // normal move
+		{
+			Chess::GenericMove tmp(m_board->genericMove(move));
+			index = squareToIndex(tmp.sourceSquare());
+		}
 
 		if (!m_selectable.contains(index))
 		{
@@ -134,15 +224,38 @@ void ChessboardModel::updateSelectable()
 	}
 }
 
-void ChessboardModel::onMoveMade(const Chess::Square& source, const Chess::Square& target)
+void ChessboardModel::onHumanMove(const QModelIndex& source, const QModelIndex& target)
 {
-	emit moveMade(squareToIndex(source), squareToIndex(target));
+	Chess::GenericMove move;
+	Chess::Piece piece(indexToHandPiece(source));
+
+	if (piece.isValid()) // piece drop
+		move = Chess::GenericMove(Chess::Square(),
+					  indexToSquare(target),
+					  piece.type());
+	else // normal move
+		move = Chess::GenericMove(indexToSquare(source),
+					  indexToSquare(target),
+					  Chess::Piece::NoPiece);
+	emit humanMove(move);
+}
+
+void ChessboardModel::onMoveMade(const Chess::GenericMove& move)
+{
+	emit moveMade(squareToIndex(move.sourceSquare()),
+		      squareToIndex(move.targetSquare()));
 	updateSelectable();
 }
 
-void ChessboardModel::squareChanged(const Chess::Square& square)
+void ChessboardModel::onSquareChanged(const Chess::Square& square)
 {
-	QModelIndex index = squareToIndex(square);
+	QModelIndex index(squareToIndex(square));
+	emit dataChanged(index, index);
+}
+
+void ChessboardModel::onHandPieceChanged(Chess::Piece piece)
+{
+	QModelIndex index(handPieceToIndex(piece));
 	emit dataChanged(index, index);
 }
 
