@@ -20,8 +20,6 @@
 #include "squareinfo.h"
 
 
-const QString ChessboardModel::m_files = QLatin1String("abcdefghij");
-
 ChessboardModel::ChessboardModel(QObject* parent)
 	: QAbstractTableModel(parent),
 	  m_board(0),
@@ -127,14 +125,26 @@ QVariant ChessboardModel::headerData(int section,
                                 Qt::Orientation orientation,
                                 int role) const
 {
-	if (role == Qt::DisplayRole)
+	if (!m_board || role != Qt::DisplayRole)
+		return QVariant();
+
+	if (orientation == Qt::Horizontal && m_widthOffset != 0)
+	{
+		if (section < m_widthOffset
+		||  section >= m_width - m_widthOffset)
+			return QVariant();
+		section -= m_widthOffset;
+	}
+
+	if (m_board->coordinateSystem() == Chess::Board::NormalCoordinates)
 	{
 		if (orientation == Qt::Vertical)
 			return QString::number(m_height - section);
-		return m_files.at(section);
+		return QChar('a' + section);
 	}
-
-	return QVariant();
+	if (orientation == Qt::Vertical)
+		return QChar('a' + section);
+	return QString::number(m_width - section);
 }
 
 QModelIndex ChessboardModel::squareToIndex(const Chess::Square& square) const
