@@ -966,6 +966,7 @@ bool WesternBoard::isLegalPosition()
 		
 		if (source == target)
 		{
+			offset = (cside == KingSide) ? 1 : -1;
 			int i = target - offset;
 			forever
 			{
