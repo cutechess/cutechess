@@ -111,7 +111,10 @@ QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 				squareInfo.setType(SquareInfo::TargetSquare);
 		}
 		else if ((piece = indexToHandPiece(index)).isValid())
+		{
 			squareInfo.setPieceCount(m_board->handPieceCount(piece));
+			squareInfo.setColor(SquareInfo::HoldingsColor);
+		}
 
 		squareInfo.setPieceSymbol(m_board->pieceSymbol(piece));
 		return QVariant::fromValue(squareInfo);

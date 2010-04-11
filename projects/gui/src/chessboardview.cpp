@@ -210,6 +210,7 @@ void ChessboardView::renderSquare(const QModelIndex& index, QPainter& painter)
 	switch (squareInfo.color())
 	{
 	case SquareInfo::BackgroundColor:
+	case SquareInfo::HoldingsColor:
 		painter.fillRect(sqBounds, painter.background());
 		break;
 	case SquareInfo::LightColor:
@@ -237,7 +238,7 @@ void ChessboardView::renderSquare(const QModelIndex& index, QPainter& painter)
 			painter.setFont(m_font);
 			painter.drawText(textBounds, QString::number(count));
 		}
-		if (squareInfo.color() == SquareInfo::BackgroundColor)
+		if (squareInfo.color() == SquareInfo::HoldingsColor)
 		{
 			qreal a = qreal(m_font.pixelSize()) / 2.0;
 			sqBounds.adjust(a, a, 0, 0);

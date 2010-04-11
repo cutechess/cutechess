@@ -45,6 +45,7 @@ class SquareInfo
 		enum Color
 		{
 			BackgroundColor, //!< Background color (default)
+			HoldingsColor,	 //!< Piece holdings slot color
 			LightColor,	 //!< Light color
 			DarkColor	 //!< Dark color
 		};
