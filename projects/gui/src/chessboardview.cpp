@@ -207,25 +207,29 @@ void ChessboardView::renderSquare(const QModelIndex& index, QPainter& painter)
 	if (data.canConvert<SquareInfo>())
 		squareInfo = data.value<SquareInfo>();
 
+	QColor squareColor;
 	switch (squareInfo.color())
 	{
 	case SquareInfo::BackgroundColor:
 	case SquareInfo::HoldingsColor:
-		painter.fillRect(sqBounds, painter.background());
+		squareColor = painter.background().color();
 		break;
 	case SquareInfo::LightColor:
-		painter.fillRect(sqBounds, m_lightSquareColor);
+		squareColor = m_lightSquareColor;
 		break;
 	case SquareInfo::DarkColor:
-		painter.fillRect(sqBounds, m_darkSquareColor);
+		squareColor = m_darkSquareColor;
 		break;
 	default:
 		return;
 	}
-
 	if (squareInfo.type() == SquareInfo::SourceSquare
 	||  squareInfo.type() == SquareInfo::TargetSquare)
-		painter.fillRect(sqBounds, QBrush(m_moveColor, Qt::Dense4Pattern));
+		squareColor.setRgb((squareColor.red() + m_moveColor.red()) / 2,
+				   (squareColor.green() + m_moveColor.green()) / 2,
+				   (squareColor.blue() + m_moveColor.blue()) / 2);
+
+	painter.fillRect(sqBounds, squareColor);
 
 	int count = squareInfo.pieceCount();
 	if (count > 0 && (!m_dragging || index != m_dragSquare))
