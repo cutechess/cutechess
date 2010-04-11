@@ -12,7 +12,8 @@ SOURCES += board.cpp \
     genericmove.cpp \
     atomicboard.cpp \
     losersboard.cpp \
-    gothicboard.cpp
+    gothicboard.cpp \
+    crazyhouseboard.cpp
 HEADERS += board.h \
     move.h \
     piece.h \
@@ -29,4 +30,5 @@ HEADERS += board.h \
     genericmove.h \
     atomicboard.h \
     losersboard.h \
-    gothicboard.h
+    gothicboard.h \
+    crazyhouseboard.h
