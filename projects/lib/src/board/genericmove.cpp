@@ -71,4 +71,19 @@ int GenericMove::promotion() const
 	return m_promotion;
 }
 
+void GenericMove::setSourceSquare(const Square& square)
+{
+	m_sourceSquare = square;
+}
+
+void GenericMove::setTargetSquare(const Square& square)
+{
+	m_targetSquare = square;
+}
+
+void GenericMove::setPromotion(int pieceType)
+{
+	m_promotion = pieceType;
+}
+
 } // namespace Chess

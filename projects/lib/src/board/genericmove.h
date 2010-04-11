@@ -54,6 +54,13 @@ class LIB_EXPORT GenericMove
 		/*! Type of the promotion piece. */
 		int promotion() const;
 
+		/*! Sets the source square to \a square. */
+		void setSourceSquare(const Square& square);
+		/*! Sets the target square to \ə square. */
+		void setTargetSquare(const Square& square);
+		/*! Sets the promotion type to \a pieceType. */
+		void setPromotion(int pieceType);
+
 	private:
 		Square m_sourceSquare;
 		Square m_targetSquare;
