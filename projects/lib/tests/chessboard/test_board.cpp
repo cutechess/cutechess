@@ -239,6 +239,30 @@ void TestBoard::perft_data() const
 		<< "r1b2k2nr/p1ppq1ppbp/n1Pcpa2p1/5p4/5P4/1p1PBCPN2/PP1QP1BPPP/RN3KA2R w KQkq -"
 		<< 4
 		<< Q_UINT64_C(4869569);
+
+	variant = "fischerandom";
+	QTest::newRow("frc1")
+		<< variant
+		<< "1rk3r1/8/8/8/8/8/8/1RK1R3 w EBgb -"
+		<< 2
+		<< Q_UINT64_C(464);
+	QTest::newRow("frc2")
+		<< variant
+		<< "bnrbnkrq/pppppppp/8/8/8/8/PPPPPPPP/BNRBNKRQ w KQkq - 0 1"
+		<< 4
+		<< Q_UINT64_C(233585);
+	QTest::newRow("frc3")
+		<< variant
+		<< "2rkr3/5PP1/8/5Q2/5q2/8/5pp1/2RKR3 w KQkq - 0 1"
+		<< 3
+		<< Q_UINT64_C(71005);
+
+	variant = "crazyhouse";
+	QTest::newRow("crazyhouse startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - KQkq - 0 1"
+		<< 5
+		<< Q_UINT64_C(4888832);
 }
 
 void TestBoard::perft()
