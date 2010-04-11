@@ -20,8 +20,9 @@
 
 #include <QAbstractTableModel>
 #include <board/piece.h>
+#include <board/genericmove.h>
 
-namespace Chess { class Board; class Square; class GenericMove; }
+namespace Chess { class Board; }
 
 class ChessboardModel : public QAbstractTableModel
 {
@@ -41,7 +42,6 @@ class ChessboardModel : public QAbstractTableModel
 		                    int role = Qt::DisplayRole) const;
 
 	signals:
-		void moveMade(const QModelIndex& source, const QModelIndex& target);
 		void humanMove(const Chess::GenericMove& move);
 
 	public slots:
@@ -61,6 +61,7 @@ class ChessboardModel : public QAbstractTableModel
 		void updateSelectable();
 
 		Chess::Board* m_board;
+		Chess::GenericMove m_move;
 		int m_width;
 		int m_height;
 		int m_widthOffset;

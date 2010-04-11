@@ -50,6 +50,7 @@ void ChessboardModel::setBoard(Chess::Board* board)
 	}
 
 	m_board = board;
+	m_move = Chess::GenericMove();
 	m_width = m_board->width();
 	m_height = m_board->height();
 	m_widthOffset = 0;
@@ -103,6 +104,11 @@ QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 
 			if ((piece = m_board->pieceAt(sq)).isValid())
 				squareInfo.setPieceCount(1);
+
+			if (m_move.sourceSquare() == sq)
+				squareInfo.setType(SquareInfo::SourceSquare);
+			else if (m_move.targetSquare() == sq)
+				squareInfo.setType(SquareInfo::TargetSquare);
 		}
 		else if ((piece = indexToHandPiece(index)).isValid())
 			squareInfo.setPieceCount(m_board->handPieceCount(piece));
@@ -242,8 +248,14 @@ void ChessboardModel::onHumanMove(const QModelIndex& source, const QModelIndex& 
 
 void ChessboardModel::onMoveMade(const Chess::GenericMove& move)
 {
-	emit moveMade(squareToIndex(move.sourceSquare()),
-		      squareToIndex(move.targetSquare()));
+	QModelIndex index(squareToIndex(m_move.sourceSquare()));
+	if (index.isValid())
+		emit dataChanged(index, index);
+	index = squareToIndex(m_move.targetSquare());
+	if (index.isValid())
+		emit dataChanged(index, index);
+
+	m_move = move;
 	updateSelectable();
 }
 
@@ -261,6 +273,7 @@ void ChessboardModel::onHandPieceChanged(Chess::Piece piece)
 
 void ChessboardModel::boardReset()
 {
+	m_move = Chess::GenericMove();
 	updateSelectable();
 	reset();
 }

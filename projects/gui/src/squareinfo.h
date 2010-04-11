@@ -27,34 +27,38 @@
  * and its contents.
  *
  * SquareInfo objects are used by ChessboardModel to inform
- * ChessboardView about the color and contents of a square.
+ * ChessboardView about the type, color and contents of a square.
  * QVariant objects are used to carry the information.
  */
 class SquareInfo
 {
 	public:
+		/*! The type of the square. */
+		enum Type
+		{
+			NormalSquare,	 //!< Normal square (default)
+			SourceSquare,	 //!< Source square
+			TargetSquare	 //!< Target square
+		};
+
 		/*! The color of the square. */
 		enum Color
 		{
 			BackgroundColor, //!< Background color (default)
 			LightColor,	 //!< Light color
-			DarkColor,	 //!< Dark color
-			NoColor		 //!< No color (invalid color)
+			DarkColor	 //!< Dark color
 		};
 
 		/*! Creates a new SquareInfo object. */
 		SquareInfo();
 		/*! Creates a new SquareInfo object. */
-		SquareInfo(Color color,
+		SquareInfo(Type type,
+			   Color color,
 			   int pieceCount,
 			   const QString& pieceSymbol);
 
-		/*!
-		 * Returns true if \a color is not \a NoColor and
-		 * \a pieceCount and \a pieceSymbol are consistent.
-		 */
-		bool isValid() const;
-
+		/*! Returns the type of the square. */
+		Type type() const;
 		/*! Returns the color of the square. */
 		Color color() const;
 		/*!
@@ -65,6 +69,8 @@ class SquareInfo
 		/*! Returns the symbol of the piece(s). */
 		QString pieceSymbol() const;
 
+		/*! Sets the square's type to \a type. */
+		void setType(Type type);
 		/*! Sets the square's color to \a color. */
 		void setColor(Color color);
 		/*!
@@ -76,6 +82,7 @@ class SquareInfo
 		void setPieceSymbol(const QString& symbol);
 
 	private:
+		Type m_type;
 		Color m_color;
 		int m_pieceCount;
 		QString m_pieceSymbol;

@@ -18,26 +18,27 @@
 #include "squareinfo.h"
 
 SquareInfo::SquareInfo()
-	: m_color(BackgroundColor),
+	: m_type(NormalSquare),
+	  m_color(BackgroundColor),
 	  m_pieceCount(0)
 {
 }
 
-SquareInfo::SquareInfo(Color color,
+SquareInfo::SquareInfo(Type type,
+		       Color color,
 		       int pieceCount,
 		       const QString& pieceSymbol)
-	: m_color(color),
+	: m_type(type),
+	  m_color(color),
 	  m_pieceCount(pieceCount),
 	  m_pieceSymbol(pieceSymbol)
 {
 	Q_ASSERT(pieceCount >= 0);
 }
 
-bool SquareInfo::isValid() const
+SquareInfo::Type SquareInfo::type() const
 {
-	return (m_color != NoColor &&
-		m_pieceCount >= 0 &&
-		((m_pieceCount == 0) == (m_pieceSymbol.isEmpty())));
+	return m_type;
 }
 
 SquareInfo::Color SquareInfo::color() const
@@ -53,6 +54,11 @@ int SquareInfo::pieceCount() const
 QString SquareInfo::pieceSymbol() const
 {
 	return m_pieceSymbol;
+}
+
+void SquareInfo::setType(Type type)
+{
+	m_type = type;
 }
 
 void SquareInfo::setColor(Color color)

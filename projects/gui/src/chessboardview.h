@@ -43,7 +43,6 @@ class ChessboardView : public QAbstractItemView
 		void humanMove(const QModelIndex& source, const QModelIndex& target) const;
 
 	public slots:
-		void onMoveMade(const QModelIndex& source, const QModelIndex& target);
 		void reset();
 
 	protected:
@@ -92,8 +91,6 @@ class ChessboardView : public QAbstractItemView
 		QPixmap m_background;
 		QFont m_font;
 		QSvgRenderer* m_pieceRenderer;
-		QModelIndex m_sourceSquare;
-		QModelIndex m_targetSquare;
 };
 
 #endif // CHESSBOARDVIEW_H

@@ -222,7 +222,8 @@ void ChessboardView::renderSquare(const QModelIndex& index, QPainter& painter)
 		return;
 	}
 
-	if (index == m_sourceSquare || index == m_targetSquare)
+	if (squareInfo.type() == SquareInfo::SourceSquare
+	||  squareInfo.type() == SquareInfo::TargetSquare)
 		painter.fillRect(sqBounds, QBrush(m_moveColor, Qt::Dense4Pattern));
 
 	int count = squareInfo.pieceCount();
@@ -372,18 +373,6 @@ void ChessboardView::resizeEvent(QResizeEvent* event)
 	m_resizeTimer.start(100);
 }
 
-void ChessboardView::onMoveMade(const QModelIndex& source, const QModelIndex& target)
-{
-	QModelIndex oldSource = m_sourceSquare;
-	QModelIndex oldTarget = m_targetSquare;
-
-	m_sourceSquare = source;
-	m_targetSquare = target;
-
-	update(oldSource);
-	update(oldTarget);
-}
-
 void ChessboardView::setLightSquareColor(const QColor& color)
 {
 	m_lightSquareColor = color;
@@ -406,8 +395,6 @@ QColor ChessboardView::darkSquareColor() const
 
 void ChessboardView::reset()
 {
-	m_sourceSquare = QModelIndex();
-	m_targetSquare = QModelIndex();
 	resizeBoard(size());
 	m_needsUpdate = true;
 	QAbstractItemView::reset();
