@@ -22,7 +22,7 @@
 #include <board/piece.h>
 #include <board/genericmove.h>
 
-namespace Chess { class Board; }
+namespace Chess { class Board; class Move; }
 
 class ChessboardModel : public QAbstractTableModel
 {
@@ -42,7 +42,10 @@ class ChessboardModel : public QAbstractTableModel
 		                    int role = Qt::DisplayRole) const;
 
 	signals:
-		void humanMove(const Chess::GenericMove& move);
+		void humanMove(const Chess::Move& move);
+		void promotionNeeded(const Chess::Board* board,
+				     const Chess::Move& move,
+				     const QList<int>& promotions);
 
 	public slots:
 		void onSquareChanged(const Chess::Square& square);

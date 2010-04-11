@@ -246,17 +246,49 @@ void ChessboardModel::updateSelectable()
 void ChessboardModel::onHumanMove(const QModelIndex& source, const QModelIndex& target)
 {
 	Chess::GenericMove move;
-	Chess::Piece piece(indexToHandPiece(source));
+	move.setTargetSquare(indexToSquare(target));
 
-	if (piece.isValid()) // piece drop
-		move = Chess::GenericMove(Chess::Square(),
-					  indexToSquare(target),
-					  piece.type());
-	else // normal move
-		move = Chess::GenericMove(indexToSquare(source),
-					  indexToSquare(target),
-					  Chess::Piece::NoPiece);
-	emit humanMove(move);
+	// Piece drop
+	Chess::Piece piece(indexToHandPiece(source));
+	if (piece.isValid())
+	{
+		move.setPromotion(piece.type());
+		emit humanMove(m_board->moveFromGenericMove(move));
+		return;
+	}
+
+	move.setSourceSquare(indexToSquare(source));
+	Chess::Move boardMove = m_board->moveFromGenericMove(move);
+
+	QVector<Chess::Move> moves(m_board->legalMoves());
+	QList<int> promotions;
+	foreach (const Chess::Move& tmp, moves)
+	{
+		if (tmp.sourceSquare() == boardMove.sourceSquare()
+		&&  tmp.targetSquare() == boardMove.targetSquare())
+		{
+			int prom = tmp.promotion();
+
+			// Make sure "No promotion" is at the top
+			if (prom == Chess::Piece::NoPiece)
+				promotions.prepend(prom);
+			else
+				promotions.append(prom);
+		}
+	}
+
+	// Emit the move if there's only one match
+	if (promotions.size() == 1)
+	{
+		boardMove = Chess::Move(boardMove.sourceSquare(),
+					boardMove.targetSquare(),
+					promotions.first());
+		emit humanMove(boardMove);
+	}
+	// If there are multiple promotion possibilities, the user
+	// has to select a promotion piece.
+	else if (promotions.size() > 1)
+		emit promotionNeeded(m_board, boardMove, promotions);
 }
 
 void ChessboardModel::onMoveMade(const Chess::GenericMove& move)

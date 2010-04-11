@@ -56,48 +56,10 @@ bool HumanPlayer::isHuman() const
 	return true;
 }
 
-void HumanPlayer::onHumanMove(const Chess::GenericMove& move)
+void HumanPlayer::onHumanMove(const Chess::Move& move)
 {
-	if (state() != Thinking)
+	if (state() != Thinking || !board()->isLegalMove(move))
 		return;
 
-	Chess::Move boardMove = board()->moveFromGenericMove(move);
-	if (boardMove.promotion() != Chess::Piece::NoPiece)
-		return onPromotionMove(boardMove);
-
-	QVector<Chess::Move> moves(board()->legalMoves());
-	QList<int> promotions;
-	foreach (const Chess::Move& tmp, moves)
-	{
-		if (tmp.sourceSquare() == boardMove.sourceSquare()
-		&&  tmp.targetSquare() == boardMove.targetSquare())
-		{
-			int prom = tmp.promotion();
-
-			// Make sure "No promotion" is at the top
-			if (prom == Chess::Piece::NoPiece)
-				promotions.prepend(prom);
-			else
-				promotions.append(prom);
-		}
-	}
-
-	if (promotions.size() == 1)
-	{
-		Chess::Move tmp(boardMove.sourceSquare(),
-				boardMove.targetSquare(),
-				promotions.first());
-		emitMove(tmp);
-	}
-	else if (promotions.size() > 1)
-		emit needsPromotion(board(), boardMove, promotions);
-}
-
-void HumanPlayer::onPromotionMove(const Chess::Move& move)
-{
-	if (state() != Thinking)
-		return;
-
-	if (board()->isLegalMove(move))
-		emitMove(move);
+	emitMove(move);
 }
