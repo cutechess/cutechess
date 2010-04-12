@@ -53,6 +53,60 @@ int CrazyhouseBoard::handPieceType(int pieceType) const
 	return pieceType;
 }
 
+int CrazyhouseBoard::normalPieceType(int type)
+{
+	switch (type)
+	{
+	case PromotedKnight:
+		return Knight;
+	case PromotedBishop:
+		return Bishop;
+	case PromotedRook:
+		return Rook;
+	case PromotedQueen:
+		return Queen;
+	default:
+		return type;
+	}
+}
+
+int CrazyhouseBoard::promotedPieceType(int type)
+{
+	switch (type)
+	{
+	case Knight:
+		return PromotedKnight;
+	case Bishop:
+		return PromotedBishop;
+	case Rook:
+		return PromotedRook;
+	case Queen:
+		return PromotedQueen;
+	default:
+		return type;
+	}
+}
+
+QString CrazyhouseBoard::lanMoveString(const Move& move)
+{
+	Move tmp(move.sourceSquare(),
+		 move.targetSquare(),
+		 normalPieceType(move.promotion()));
+
+	return WesternBoard::lanMoveString(tmp);
+}
+
+Move CrazyhouseBoard::moveFromLanString(const QString& str)
+{
+	Move move(WesternBoard::moveFromLanString(str));
+	if (move.promotion() == Piece::NoPiece || move.sourceSquare() == 0)
+		return move;
+
+	return Move(move.sourceSquare(),
+		    move.targetSquare(),
+		    promotedPieceType(move.promotion()));
+}
+
 void CrazyhouseBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSquares)
 {
 	Q_UNUSED(changedSquares);
