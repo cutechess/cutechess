@@ -25,10 +25,10 @@ REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
 CrazyhouseBoard::CrazyhouseBoard(QObject* parent)
 	: WesternBoard(new WesternZobrist(), parent)
 {
-	setPieceType(PromotedKnight, tr("promoted knight"), "N-", KnightMovement);
-	setPieceType(PromotedBishop, tr("promoted bishop"), "B-", BishopMovement);
-	setPieceType(PromotedRook, tr("promoted rook"), "R-", RookMovement);
-	setPieceType(PromotedQueen, tr("promoted queen"), "Q-", BishopMovement | RookMovement);
+	setPieceType(PromotedKnight, tr("promoted knight"), "N~", KnightMovement);
+	setPieceType(PromotedBishop, tr("promoted bishop"), "B~", BishopMovement);
+	setPieceType(PromotedRook, tr("promoted rook"), "R~", RookMovement);
+	setPieceType(PromotedQueen, tr("promoted queen"), "Q~", BishopMovement | RookMovement);
 }
 
 QString CrazyhouseBoard::variant() const
