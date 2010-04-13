@@ -154,6 +154,11 @@ class LIB_EXPORT Board : public QObject
 		 */
 		QString fenString(FenNotation notation = XFen) const;
 		/*!
+		 * Returns the FEN string of the starting position.
+		 * \note This is not always the same as \a defaultFenString().
+		 */
+		QString startingFenString() const;
+		/*!
 		 * Sets the board position according to a FEN string.
 		 *
 		 * The \a fen string can be in standard FEN, X-FEN or
@@ -175,6 +180,8 @@ class LIB_EXPORT Board : public QObject
 		virtual Side upperCaseSide() const;
 		/*! Returns the side to move. */
 		Side sideToMove() const;
+		/*! Returns the side that made/makes the first move. */
+		Side startingSide() const;
 		/*! Returns the piece at \a square. */
 		Piece pieceAt(const Square& square) const;
 		/*!
@@ -506,6 +513,8 @@ class LIB_EXPORT Board : public QObject
 		int m_width;
 		int m_height;
 		Side m_side;
+		Side m_startingSide;
+		QString m_startingFen;
 		quint64 m_key;
 		Zobrist* m_zobrist;
 		QVarLengthArray<PieceData> m_pieceData;
@@ -534,6 +543,16 @@ inline int Board::arraySize() const
 inline Side Board::sideToMove() const
 {
 	return m_side;
+}
+
+inline Side Board::startingSide() const
+{
+	return m_startingSide;
+}
+
+inline QString Board::startingFenString() const
+{
+	return m_startingFen;
 }
 
 inline quint64 Board::key() const

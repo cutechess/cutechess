@@ -64,6 +64,7 @@ Board::Board(Zobrist* zobrist,
 	  m_width(0),
 	  m_height(0),
 	  m_side(White),
+	  m_startingSide(White),
 	  m_key(0),
 	  m_zobrist(zobrist)
 {
@@ -544,6 +545,7 @@ bool Board::setFenString(const QString& fen)
 	if (++token == strList.end())
 		return false;
 	m_side = sideFromString(*token);
+	m_startingSide = m_side;
 	if (m_side == NoSide)
 		return false;
 
@@ -575,6 +577,7 @@ bool Board::setFenString(const QString& fen)
 	}
 
 	m_moveHistory.clear();
+	m_startingFen = fen;
 
 	// Let subclasses handle the rest of the FEN string
 	if (token != strList.end())
