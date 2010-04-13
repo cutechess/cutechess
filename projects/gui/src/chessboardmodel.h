@@ -42,7 +42,7 @@ class ChessboardModel : public QAbstractTableModel
 		                    int role = Qt::DisplayRole) const;
 
 	signals:
-		void humanMove(const Chess::Move& move);
+		void humanMove(const Chess::Move& move, Chess::Side side);
 		void promotionNeeded(const Chess::Board* board,
 				     const Chess::Move& move,
 				     const QList<int>& promotions);

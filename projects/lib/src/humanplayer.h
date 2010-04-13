@@ -40,7 +40,7 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		void startThinking();
 
 	public slots:
-		void onHumanMove(const Chess::Move& move);
+		void onHumanMove(const Chess::Move& move, Chess::Side side);
 };
 
 #endif // HUMANPLAYER_H

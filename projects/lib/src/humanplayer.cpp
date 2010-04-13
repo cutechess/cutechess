@@ -56,10 +56,11 @@ bool HumanPlayer::isHuman() const
 	return true;
 }
 
-void HumanPlayer::onHumanMove(const Chess::Move& move)
+void HumanPlayer::onHumanMove(const Chess::Move& move, Chess::Side side)
 {
-	if (state() != Thinking || !board()->isLegalMove(move))
+	if (state() != Thinking || side != this->side())
 		return;
 
+	Q_ASSERT(board()->isLegalMove(move));
 	emitMove(move);
 }

@@ -62,8 +62,8 @@ MainWindow::MainWindow()
 		m_boardModel, SLOT(onHumanMove(const QModelIndex&, const QModelIndex&)));
 	connect(m_boardModel, SIGNAL(promotionNeeded(const Chess::Board*, const Chess::Move&, const QList<int>&)),
 		this, SLOT(selectPromotion(const Chess::Board*, const Chess::Move& ,const QList<int>&)));
-	connect(this, SIGNAL(promotionMove(const Chess::Move&)),
-		m_boardModel, SIGNAL(humanMove(const Chess::Move&)));
+	connect(this, SIGNAL(promotionMove(const Chess::Move&, Chess::Side)),
+		m_boardModel, SIGNAL(humanMove(const Chess::Move&, Chess::Side)));
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
@@ -186,7 +186,7 @@ void MainWindow::selectPromotion(const Chess::Board* board,
 	Chess::Move newMove(move.sourceSquare(),
 			    move.targetSquare(),
 			    dlg.promotionType());
-	emit promotionMove(newMove);
+	emit promotionMove(newMove, board->sideToMove());
 }
 
 void MainWindow::newGame()
@@ -238,8 +238,8 @@ void MainWindow::newGame()
 		else
 		{
 			player[i] = new HumanPlayer(this);
-			connect(m_boardModel, SIGNAL(humanMove(const Chess::Move&)),
-				player[i], SLOT(onHumanMove(const Chess::Move&)));
+			connect(m_boardModel, SIGNAL(humanMove(const Chess::Move&, Chess::Side)),
+				player[i], SLOT(onHumanMove(const Chess::Move&, Chess::Side)));
 		}
 
 		chessgame->setPlayer(side, player[i]);

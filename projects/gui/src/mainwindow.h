@@ -19,6 +19,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <board/side.h>
 
 namespace Chess { class Board; class Move; }
 class QMenu;
@@ -42,7 +43,7 @@ class MainWindow : public QMainWindow
 		MainWindow();
 
 	signals:
-		void promotionMove(const Chess::Move& move);
+		void promotionMove(const Chess::Move& move, Chess::Side side);
 
 	private slots:
 		void newGame();

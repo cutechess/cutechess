@@ -245,6 +245,7 @@ void ChessboardModel::updateSelectable()
 
 void ChessboardModel::onHumanMove(const QModelIndex& source, const QModelIndex& target)
 {
+	Chess::Side side(m_board->sideToMove());
 	Chess::GenericMove move;
 	move.setTargetSquare(indexToSquare(target));
 
@@ -253,7 +254,7 @@ void ChessboardModel::onHumanMove(const QModelIndex& source, const QModelIndex& 
 	if (piece.isValid())
 	{
 		move.setPromotion(piece.type());
-		emit humanMove(m_board->moveFromGenericMove(move));
+		emit humanMove(m_board->moveFromGenericMove(move), side);
 		return;
 	}
 
@@ -283,7 +284,7 @@ void ChessboardModel::onHumanMove(const QModelIndex& source, const QModelIndex& 
 		boardMove = Chess::Move(boardMove.sourceSquare(),
 					boardMove.targetSquare(),
 					promotions.first());
-		emit humanMove(boardMove);
+		emit humanMove(boardMove, side);
 	}
 	// If there are multiple promotion possibilities, the user
 	// has to select a promotion piece.
