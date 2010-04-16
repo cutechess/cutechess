@@ -24,9 +24,8 @@
 
 ChessGame::ChessGame(Chess::Board* board, QObject* parent)
 	: QObject(parent),
-	  PgnGame(board->variant()),
-	  m_origThread(0),
 	  m_board(board),
+	  m_origThread(0),
 	  m_gameEnded(false),
 	  m_gameInProgress(false),
 	  m_drawMoveNum(0),
@@ -46,9 +45,30 @@ ChessGame::ChessGame(Chess::Board* board, QObject* parent)
 	emit humanEnabled(false);
 }
 
-Chess::Board* ChessGame::board() const
+ChessPlayer* ChessGame::player(Chess::Side side) const
 {
-	return m_board;
+	Q_ASSERT(side != Chess::NoSide);
+	return m_player[side];
+}
+
+PgnGame& ChessGame::pgn()
+{
+	return m_pgn;
+}
+
+QString ChessGame::startingFen() const
+{
+	return m_startingFen;
+}
+
+const QVector<Chess::Move>& ChessGame::moves() const
+{
+	return m_moves;
+}
+
+Chess::Result ChessGame::result() const
+{
+	return m_result;
 }
 
 ChessPlayer* ChessGame::playerToMove()
@@ -74,15 +94,18 @@ void ChessGame::stop()
 	emit humanEnabled(false);
 	if (!m_gameInProgress)
 	{
-		setResult(Chess::Result());
+		m_result = Chess::Result();
 		finish();
 		return;
 	}
 	
 	m_gameInProgress = false;
+	m_pgn.setTag("PlyCount", QString::number(m_pgn.moves().size()));
+	m_pgn.setResult(m_result);
+	m_pgn.setResultDescription(m_result.description());
 
-	m_player[Chess::White]->endGame(result());
-	m_player[Chess::Black]->endGame(result());
+	m_player[Chess::White]->endGame(m_result);
+	m_player[Chess::Black]->endGame(m_result);
 	
 	connect(this, SIGNAL(playersReady()), this, SLOT(finish()), Qt::QueuedConnection);
 	syncPlayers(true);
@@ -146,10 +169,10 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 			m_drawScoreCount++;
 		else
 			m_drawScoreCount = 0;
-		if (moves().size() / 2 >= m_drawMoveNum
+		if (m_moves.size() / 2 >= m_drawMoveNum
 		&&  m_drawScoreCount >= 2)
 		{
-			setResult(Chess::Result(Chess::Result::Adjudication, Chess::NoSide));
+			m_result = Chess::Result(Chess::Result::Adjudication, Chess::NoSide);
 			return;
 		}
 	}
@@ -164,8 +187,8 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 			count = 0;
 
 		if (count >= m_resignMoveCount)
-			setResult(Chess::Result(Chess::Result::Adjudication,
-						Chess::otherSide(side)));
+			m_result = Chess::Result(Chess::Result::Adjudication,
+						 Chess::otherSide(side));
 	}
 }
 
@@ -211,6 +234,17 @@ static QString evalString(const MoveEvaluation& eval)
 	return str;
 }
 
+void ChessGame::addPgnMove(const Chess::Move& move, const QString& comment)
+{
+	PgnGame::MoveData md;
+	md.key = m_board->key();
+	md.move = m_board->genericMove(move);
+	md.moveString = m_board->moveString(move, Chess::Board::StandardAlgebraic);
+	md.comment = comment;
+
+	m_pgn.addMove(md);
+}
+
 void ChessGame::onMoveMade(const Chess::Move& move)
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
@@ -224,12 +258,13 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 		return;
 	}
 
-	addMove(move, m_board, evalString(sender->evaluation()));
+	m_moves.append(move);
+	addPgnMove(move, evalString(sender->evaluation()));
 
 	// Get the result before sending the move to the opponent
 	m_board->makeMove(move, false);
-	setResult(m_board->result());
-	if (result().isNone())
+	m_result = m_board->result();
+	if (m_result.isNone())
 		adjudication(sender->evaluation());
 	m_board->undoMove();
 
@@ -237,7 +272,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	player->makeMove(move);
 	m_board->makeMove(move, true);
 
-	if (result().isNone())
+	if (m_result.isNone())
 		startTurn();
 	else
 		stop();
@@ -272,7 +307,7 @@ void ChessGame::onForfeit(const Chess::Result& result)
 				   qPrintable(result.description()));
 	}
 
-	setResult(result);
+	m_result = result;
 	stop();
 }
 
@@ -295,58 +330,53 @@ void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
 	m_player[side] = player;
 }
 
-bool ChessGame::setFenString(const QString& fen)
+void ChessGame::setStartingFen(const QString& fen)
 {
-	if (!m_board->setFenString(fen))
-		return false;
-	setStartingFen(fen);
-	return true;
+	Q_ASSERT(!m_gameInProgress);
+	m_startingFen = fen;
 }
 
-void ChessGame::generateOpening()
+void ChessGame::setTimeControl(const TimeControl& timeControl, Chess::Side side)
 {
-	if (m_book[Chess::White] == 0 || m_book[Chess::Black] == 0)
-		return;
-	setBoard();
+	if (side != Chess::White)
+		m_timeControl[Chess::Black] = timeControl;
+	if (side != Chess::Black)
+		m_timeControl[Chess::White] = timeControl;
+}
 
-	// First play moves that are already in the move
-	// list (eg. moves from a PGN game)
-	QVector<PgnGame::MoveData>::iterator it;
-	for (it = m_moves.begin(); it != m_moves.end(); ++it)
+void ChessGame::setMoves(const QVector<Chess::Move>& moves)
+{
+	Q_ASSERT(!m_gameInProgress);
+	m_moves = moves;
+}
+
+void ChessGame::setMoves(const PgnGame& pgn)
+{
+	Q_ASSERT(pgn.variant() == m_board->variant());
+
+	setStartingFen(pgn.startingFenString());
+	resetBoard();
+	m_moves.clear();
+
+	foreach (const PgnGame::MoveData& md, pgn.moves())
 	{
-		const Chess::Move& move = it->move;
+		Chess::Move move(m_board->moveFromGenericMove(md.move));
 		Q_ASSERT(m_board->isLegalMove(move));
 
 		m_board->makeMove(move);
 		if (!m_board->result().isNone())
 			return;
-	}
 
-	// Then play the opening book moves
-	forever
-	{
-		Chess::Move move = bookMove(m_board->sideToMove());
-		if (!m_board->isLegalMove(move)
-		||  m_board->isRepeatMove(move))
-			break;
-
-		addMove(move, m_board);
-
-		m_board->makeMove(move);
-		if (!m_board->result().isNone())
-		{
-			m_moves.pop_back();
-			break;
-		}
+		m_moves.append(move);
 	}
 }
 
 void ChessGame::setOpeningBook(const OpeningBook* book,
-                               Chess::Side side,
+			       Chess::Side side,
 			       int depth)
 {
 	Q_ASSERT(!m_gameInProgress);
-	
+
 	if (side == Chess::NoSide)
 	{
 		setOpeningBook(book, Chess::White, depth);
@@ -359,10 +389,35 @@ void ChessGame::setOpeningBook(const OpeningBook* book,
 	}
 }
 
-void ChessGame::setOpeningMoves(const QVector<PgnGame::MoveData>& moves)
+void ChessGame::generateOpening()
 {
-	Q_ASSERT(!m_gameInProgress);
-	m_moves = moves;
+	if (m_book[Chess::White] == 0 || m_book[Chess::Black] == 0)
+		return;
+	resetBoard();
+
+	// First play moves that are already in the opening
+	foreach (const Chess::Move& move, m_moves)
+	{
+		Q_ASSERT(m_board->isLegalMove(move));
+
+		m_board->makeMove(move);
+		if (!m_board->result().isNone())
+			return;
+	}
+
+	// Then play the opening book moves
+	forever
+	{
+		Chess::Move move = bookMove(m_board->sideToMove());
+		if (!m_board->isLegalMove(move) || m_board->isRepeatMove(move))
+			break;
+
+		m_board->makeMove(move);
+		if (!m_board->result().isNone())
+			break;
+
+		m_moves.append(move);
+	}
 }
 
 void ChessGame::setDrawThreshold(int moveNumber, int score)
@@ -377,17 +432,18 @@ void ChessGame::setResignThreshold(int moveCount, int score)
 	m_resignScore = score;
 }
 
-void ChessGame::setBoard()
+void ChessGame::resetBoard()
 {
-	QString fen = startingFen();
+	QString fen(m_startingFen);
 	if (fen.isEmpty())
 	{
 		fen = m_board->defaultFenString();
-		setStartingFen(fen);
+		if (m_board->isRandomVariant())
+			m_startingFen = fen;
 	}
 
 	if (!m_board->setFenString(fen))
-		qFatal("Invalid FEN: %s", qPrintable(fen));
+		qFatal("Invalid FEN string: %s", qPrintable(fen));
 }
 
 bool ChessGame::arePlayersReady() const
@@ -451,9 +507,27 @@ void ChessGame::start(QThread* thread)
 	QMetaObject::invokeMethod(this, "startGame", Qt::QueuedConnection);
 }
 
+void ChessGame::initializePgn()
+{
+	m_pgn.setVariant(m_board->variant());
+	m_pgn.setStartingFenString(m_board->startingSide(), m_startingFen);
+	m_pgn.setDate(QDate::currentDate());
+	m_pgn.setPlayerName(Chess::White, m_player[Chess::White]->name());
+	m_pgn.setPlayerName(Chess::Black, m_player[Chess::Black]->name());
+	m_pgn.setResult(m_result);
+
+	if (m_timeControl[Chess::White] == m_timeControl[Chess::Black])
+		m_pgn.setTag("TimeControl", m_timeControl[0].toString());
+	else
+	{
+		m_pgn.setTag("WhiteTimeControl", m_timeControl[Chess::White].toString());
+		m_pgn.setTag("BlackTimeControl", m_timeControl[Chess::Black].toString());
+	}
+}
+
 void ChessGame::startGame()
 {
-	setResult(Chess::Result());
+	m_result = Chess::Result();
 	emit humanEnabled(false);
 
 	for (int i = 0; i < 2; i++)
@@ -483,31 +557,31 @@ void ChessGame::startGame()
 		{
 			qDebug() << player->name() << "doesn't support variant"
 				 << m_board->variant();
-			setResult(Chess::Result(Chess::Result::ResultError));
+			m_result = Chess::Result(Chess::Result::ResultError);
 			stop();
 			return;
 		}	
 	}
 	
-	setBoard();
+	resetBoard();
+	initializePgn();
 	for (int i = 0; i < 2; i++)
 	{
 		Chess::Side side = Chess::Side(i);
 
-		setPlayerName(side, m_player[side]->name());
-		Q_ASSERT(timeControl(side).isValid());
-		m_player[side]->setTimeControl(timeControl(side));
+		Q_ASSERT(m_timeControl[side].isValid());
+		m_player[side]->setTimeControl(m_timeControl[side]);
 		m_player[side]->newGame(side, m_player[Chess::otherSide(side)], m_board);
 	}
 	
 	// Play the forced opening moves first
-	QVector<PgnGame::MoveData>::iterator it;
-	for (it = m_moves.begin(); it != m_moves.end(); ++it)
+	for (int i = 0; i < m_moves.size(); i++)
 	{
-		const Chess::Move& move = it->move;
+		Chess::Move move(m_moves.at(i));
 		Q_ASSERT(m_board->isLegalMove(move));
 		
-		it->comment = "book";
+		addPgnMove(move, "book");
+
 		playerToMove()->makeBookMove(move);
 		playerToWait()->makeMove(move);
 		m_board->makeMove(move, true);
@@ -517,7 +591,7 @@ void ChessGame::startGame()
 		if (!m_board->result().isNone())
 		{
 			qDebug() << "Every move was played from the book";
-			setResult(m_board->result());
+			m_result = m_board->result();
 			stop();
 			return;
 		}
@@ -530,10 +604,4 @@ void ChessGame::startGame()
 	}
 	
 	startTurn();
-}
-
-ChessPlayer* ChessGame::player(Chess::Side side) const
-{
-	Q_ASSERT(side != Chess::NoSide);
-	return m_player[side];
 }

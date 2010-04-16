@@ -20,9 +20,11 @@
 
 #include <QObject>
 #include <QVector>
+#include <QStringList>
 #include "pgngame.h"
 #include "board/result.h"
 #include "board/move.h"
+#include "timecontrol.h"
 
 namespace Chess { class Board; }
 class ChessPlayer;
@@ -31,24 +33,32 @@ class MoveEvaluation;
 class QThread;
 
 
-class LIB_EXPORT ChessGame : public QObject, public PgnGame
+class LIB_EXPORT ChessGame : public QObject
 {
 	Q_OBJECT
 
 	public:
 		explicit ChessGame(Chess::Board* board, QObject* parent = 0);
 		
-		Chess::Board* board() const;
-		ChessPlayer* player(Chess::Side) const;
-		void setPlayer(Chess::Side, ChessPlayer* player);
-		bool setFenString(const QString& fen);
-                void setOpeningBook(const OpeningBook* book,
+		ChessPlayer* player(Chess::Side side) const;
+
+		PgnGame& pgn();
+		QString startingFen() const;
+		const QVector<Chess::Move>& moves() const;
+		Chess::Result result() const;
+
+		void setPlayer(Chess::Side side, ChessPlayer* player);
+		void setStartingFen(const QString& fen);
+		void setTimeControl(const TimeControl& timeControl, Chess::Side side = Chess::NoSide);
+		void setMoves(const QVector<Chess::Move>& moves);
+		void setMoves(const PgnGame& pgn);
+		void setOpeningBook(const OpeningBook* book,
                                     Chess::Side side = Chess::NoSide,
 				    int depth = 1000);
-		void setOpeningMoves(const QVector<PgnGame::MoveData>& moves);
-		void generateOpening();
 		void setDrawThreshold(int moveNumber, int score);
 		void setResignThreshold(int moveCount, int score);
+
+		void generateOpening();
 
 	public slots:
 		void start(QThread* thread = 0);
@@ -76,11 +86,14 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		void startTurn();
 		ChessPlayer* playerToMove();
 		ChessPlayer* playerToWait();
-		void setBoard();
+		void resetBoard();
+		void initializePgn();
+		void addPgnMove(const Chess::Move& move, const QString& comment);
 		
-		QThread* m_origThread;
 		Chess::Board* m_board;
+		QThread* m_origThread;
 		ChessPlayer* m_player[2];
+		TimeControl m_timeControl[2];
                 const OpeningBook* m_book[2];
 		int m_bookDepth[2];
 		bool m_gameEnded;
@@ -91,6 +104,10 @@ class LIB_EXPORT ChessGame : public QObject, public PgnGame
 		int m_resignMoveCount;
 		int m_resignScore;
 		int m_resignScoreCount[2];
+		QString m_startingFen;
+		Chess::Result m_result;
+		QVector<Chess::Move> m_moves;
+		PgnGame m_pgn;
 };
 
 #endif // CHESSGAME_H

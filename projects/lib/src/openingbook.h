@@ -7,6 +7,7 @@
 
 class QString;
 class QDataStream;
+class PgnGame;
 class PgnStream;
 
 
@@ -17,22 +18,34 @@ class PgnStream;
  * can be played by the GUI. When the game goes "out of book", control
  * of the game is transferred to the players.
  *
- * The opening book is stored externally in a binary file. When it's needed,
+ * The opening book can be stored externally in a binary file. When it's needed,
  * it is loaded in memory, and positions can be found quickly by searching
  * the book for Zobrist keys that match the current board position.
  */
 class LIB_EXPORT OpeningBook
 {
 	public:
+		/*! Destroys the opening book. */
 		virtual ~OpeningBook() {}
 		
 		/*!
-		 * Imports games in PGN format.
-		 * \param in The PGN stream.
-		 * \param maxMoves Store at most this many halfmoves per game.
-		 * Returns true if successfull.
+		 * Imports a PGN game.
+		 *
+		 * \param pgn The game to import.
+		 * \param maxMoves The maximum number of halfmoves per game
+		 *                 that can be imported.
+		 * Returns the number of moves imported.
 		 */
-		bool pgnImport(PgnStream& in, int maxMoves);
+		int import(const PgnGame& pgn, int maxMoves);
+		/*!
+		 * Imports PGN games from a stream.
+		 *
+		 * \param in The PGN stream that contains the games.
+		 * \param maxMoves The maximum number of halfmoves per game
+		 *                 that can be imported.
+		 * Returns the number of moves imported.
+		 */
+		int import(PgnStream& in, int maxMoves);
 		
 		/*!
 		 * Returns a move that can be played in a position where the

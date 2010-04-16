@@ -255,7 +255,7 @@ void MainWindow::newGame()
 	}
 	m_moveListModel->setGame(chessgame);
 
-	m_boardModel->setBoard(chessgame->board());
+	m_boardModel->setBoard(board);
 	chessgame->start();
 }
 

@@ -24,6 +24,7 @@
 #include <QString>
 #include <QTime>
 #include <QFile>
+#include <board/move.h>
 #include <engineconfiguration.h>
 #include <timecontrol.h>
 #include <pgnstream.h>
@@ -107,7 +108,7 @@ class EngineMatch : public QObject
 		bool m_repeatOpening;
 		QString m_variant;
 		QVector<EngineData> m_engines;
-		QVector<PgnGame::MoveData> m_openingMoves;
+		QVector<Chess::Move> m_openingMoves;
 		QList<OpeningBook*> m_books;
 		QList<EngineBuilder*> m_builders;
 		QString m_fen;

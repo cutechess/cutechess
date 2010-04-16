@@ -1,21 +1,43 @@
+/*
+    This file is part of Cute Chess.
+
+    Cute Chess is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Cute Chess is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef PGNGAME_H
 #define PGNGAME_H
 
+#include <QMap>
 #include <QString>
 #include <QVector>
+#include <QDate>
+#include "board/genericmove.h"
 #include "board/result.h"
-#include "board/move.h"
-#include "timecontrol.h"
 class QTextStream;
 class PgnStream;
-namespace Chess { class Board; }
 
 
 /*!
- * \brief A class for reading and writing chess games in PGN format.
+ * \brief A game of chess in PGN format.
  *
- * PGN (Portable game notation) is a text format for chess games of any
- * variants: http://en.wikipedia.org/wiki/Portable_Game_Notation
+ * PGN (Portable game notation) is a text format for chess games.
+ * Specification: http://www.very-best.de/pgn-spec.htm
+ *
+ * PgnGame is a middle format between text-based PGN games and games
+ * played by Cute Chess. PgnGame objects are used for converting played
+ * games to PGN format, importing PGN data to opening books, analyzing
+ * previous games on a graphical board, etc.
  *
  * \sa PgnStream
  * \sa ChessGame
@@ -23,7 +45,7 @@ namespace Chess { class Board; }
 class LIB_EXPORT PgnGame
 {
 	public:
-		/*! The mode for reading and writing PGN games. */
+		/*! The mode for writing PGN games. */
 		enum PgnMode
 		{
 			//! Only use data which is required by the PGN standard
@@ -35,137 +57,107 @@ class LIB_EXPORT PgnGame
 		/*! A struct for storing the game's move history. */
 		struct MoveData
 		{
-			/*! The move in the internal format. */
-			Chess::Move move;
-			/*! The move in Standard Algebraic notation. */
-			QString sanMove;
-			/*! A comment or annotation for the move. */
+			/*! The zobrist position key before the move. */
+			quint64 key;
+			/*! The move in the "generic" format. */
+			Chess::GenericMove move;
+			/*! The move in Standard Algebraic Notation. */
+			QString moveString;
+			/*! A comment/annotation describing the move. */
 			QString comment;
 		};
 
 		/*! Creates a new PgnGame object. */
-		explicit PgnGame(const QString& variant = "standard");
-		
+		PgnGame();
+		/*! Returns true if the game doesn't contain any tags or moves. */
+		bool isNull() const;
+		/*! Deletes all tags and moves. */
+		void clear();
+
+		/*! Returns the moves that were played in the game. */
+		const QVector<MoveData>& moves() const;
+		/*! Adds a new move to the game. */
+		void addMove(const MoveData& data);
+
 		/*!
 		 * Reads a game from a PGN text stream.
 		 *
-		 * \param in The input PGN file.
-		 * \param mode The PGN mode for reading the game.
+		 * \param in The PGN stream to read from.
 		 * \param maxMoves The maximum number of halfmoves to read.
 		 *
 		 * \note Even if the stream contains multiple games,
 		 * only one will be read.
 		 *
-		 * \return True, if a FEN tag or moves were read.
+		 * Returns true if any tags and/or moves were read.
 		 */
-		bool read(PgnStream& in, PgnMode mode = Verbose, int maxMoves = 1000);
-		
-		/*!
-		 * Writes the game to a text stream.
-		 * \return True if successfull
-		 */
-		bool write(QTextStream& out, PgnMode mode = Verbose) const;
-
+		bool read(PgnStream& in, int maxMoves = 1000);
+		/*! Writes the game to a text stream. */
+		void write(QTextStream& out, PgnMode mode = Verbose) const;
 		/*!
 		 * Writes the game to a file.
 		 * If the file already exists, the game will be appended
 		 * to the end of the file.
 		 *
-		 * \return True if successfull
+		 * Returns true if successfull.
 		 */
 		bool write(const QString& filename, PgnMode mode = Verbose) const;
 		
-		/*! Returns true if the game doesn't contain any moves. */
-		bool isEmpty() const;
-		
-		/*! Returns the event/tournament name. */
+		/*!
+		 * Returns the value of tag \a tag.
+		 * If \a tag doesn't exist, an empty string is returned.
+		 */
+		QString tagValue(const QString& tag) const;
+		/*! Returns the name of the tournament or match event. */
 		QString event() const;
-
-		/*! Returns the site/location where the game was played. */
+		/*! Returns the location of the event. */
 		QString site() const;
-
-		/*! Returns the round number of a match or tournament. */
+		/*! Returns the starting date of the game. */
+		QDate date() const;
+		/*! Returns the the playing round ordinal of the game. */
 		int round() const;
-
 		/*! Returns the player's name who plays \a side. */
 		QString playerName(Chess::Side side) const;
-
-		/*! Sets a player's name. */
-		void setPlayerName(Chess::Side side, const QString& name);
-
-		/*! Returns the starting position's FEN string. */
-		QString startingFen() const;
-
-		/*! Returns the game result. */
+		/*! Returns the result of the game. */
 		Chess::Result result() const;
+		/*! Returns the chess variant of the game. */
+		QString variant() const;
+		/*! Returns the side that starts the game. */
+		Chess::Side startingSide() const;
+		/*! Returns the starting position's FEN string. */
+		QString startingFenString() const;
 
 		/*!
-		 * Returns the time control for \a side.
-		 *
-		 * \note Usually both players have the same time control, in which
-		 * case the default value for \a side should be used.
+		 * Sets \a tag's value to \a value.
+		 * If \a tag doesn't exist, a new tag is created.
 		 */
-		const TimeControl& timeControl(Chess::Side side = Chess::White) const;
-
-		/*! Returns the moves that were played in the game. */
-		const QVector<MoveData>& moves() const;
-
-		/*! Sets the event (eg. "My tournament"). */
+		void setTag(const QString& tag, const QString& value);
+		/*! Sets the name of the tournament or match event. */
 		void setEvent(const QString& event);
-
-		/*! Sets the site (eg. "My basement"). */
+		/*! Sets the location of the event. */
 		void setSite(const QString& site);
-
-		/*! Sets the round number in a match or tournament. */
+		/*! Sets the starting date of the game. */
+		void setDate(const QDate& date);
+		/*! Sets the playing round ordinal of the game. */
 		void setRound(int round);
-
-		/*! Sets the game result. */
+		/*! Sets the player's name who plays \a side. */
+		void setPlayerName(Chess::Side side, const QString& name);
+		/*! Sets the result of the game. */
 		void setResult(const Chess::Result& result);
-
-		/*! Sets the starting position's FEN string to \a fen. */
-		void setStartingFen(const QString& fen);
-
+		/*! Sets the chess variant of the game. */
+		void setVariant(const QString& variant);
+		/*! Sets the side that starts the game. */
+		void setStartingSide(Chess::Side side);
+		/*! Sets the starting position's FEN string. */
+		void setStartingFenString(Chess::Side side, const QString& fen);
 		/*!
-		 * Sets the time control for \a side to \a timeControl.
+		 * Sets a description for the result.
 		 *
-		 * \note If \a side is Chess::NoSide (the default), the same
-		 * time control will be used for both players.
+		 * The description is appended to the last move's comment/annotation.
+		 * \note This is not the same as the "Termination" tag which can
+		 *       only hold one of the standardized values.
 		 */
-		void setTimeControl(const TimeControl& timeControl,
-				    Chess::Side side = Chess::NoSide);
+		void setResultDescription(const QString& description);
 
-	protected:
-		/*!
-		 * Adds a new move to the game.
-		 *
-		 * \param move The move in the internal format.
-		 * \param board The board object that is used to convert the
-		 * move to SAN.
-		 * \param comment A comment/annotation for the move.
-		 *
-		 * \return True if the move is legal.
-		 */
-		bool addMove(const Chess::Move& move,
-			     Chess::Board* board,
-			     const QString& comment = QString());
-
-		/*!
-		 * Adds a new move to the game.
-		 *
-		 * \param moveString The move in Standard Algebraic notation.
-		 * \param board The board object that is used to convert the
-		 * move to the internal format.
-		 * \param comment A comment/annotation for the move.
-		 *
-		 * \return True if the move is legal.
-		 */
-		bool addMove(const QString& moveString,
-			     Chess::Board* board,
-			     const QString& comment = QString());
-
-		/*! The game's moves. */
-		QVector<MoveData> m_moves;
-		
 	private:
 		enum PgnItem
 		{
@@ -179,19 +171,11 @@ class LIB_EXPORT PgnGame
 			PgnError
 		};
 
-		PgnItem readItem(PgnStream& in, PgnMode mode);
+		PgnItem readItem(PgnStream& in);
 		
-		bool m_hasTags;
-		bool m_hasCustomFen;
-		int m_round;
-		QString m_event;
-		QString m_site;
-		QString m_fen;
-		QString m_playerName[2];
-		QString m_variant;
 		Chess::Side m_startingSide;
-		Chess::Result m_result;
-		TimeControl m_timeControl[2];
+		QMap<QString, QString> m_tags;
+		QVector<MoveData > m_moves;
 };
 
 /*! Writes a PGN game in verbose mode to a text stream. */

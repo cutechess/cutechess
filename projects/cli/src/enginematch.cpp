@@ -271,7 +271,8 @@ void EngineMatch::onGameEnded()
 	QString name2;
 	EngineData* white = 0;
 	EngineData* black = 0;
-	if ((game->round() % 2) != 0)
+	int gameId = game->pgn().round();
+	if ((gameId % 2) != 0)
 	{
 		white = &m_engines[0];
 		black = &m_engines[1];
@@ -287,7 +288,7 @@ void EngineMatch::onGameEnded()
 	}
 
 	Chess::Result result = game->result();
-	qDebug("Game %d ended: %s", game->round(), qPrintable(result.toVerboseString()));
+	qDebug("Game %d ended: %s", gameId, qPrintable(result.toVerboseString()));
 	if (result.isDraw())
 		m_drawCount++;
 	else
@@ -311,14 +312,14 @@ void EngineMatch::onGameEnded()
 	       qPrintable(name2),
 	       m_engines[0].wins, m_engines[1].wins, m_drawCount);
 
-	m_games[game->round()] = game;
+	m_games[gameId] = game;
 	while (m_games.contains(m_finishedGames + 1))
 	{
 		m_finishedGames++;
 		game = m_games.take(m_finishedGames);
 
 		if (!m_pgnOutput.isEmpty())
-			game->write(m_pgnOutput, m_pgnMode);
+			game->pgn().write(m_pgnOutput, m_pgnMode);
 
 		game->deleteLater();
 	}
@@ -376,30 +377,25 @@ void EngineMatch::start()
 
 	if (!m_fen.isEmpty() || !m_openingMoves.isEmpty())
 	{
-		if (!m_fen.isEmpty())
-		{
-			game->setFenString(m_fen);
-			m_fen.clear();
-		}
-		if (!m_openingMoves.isEmpty())
-		{
-			game->setOpeningMoves(m_openingMoves);
-			m_openingMoves.clear();
-		}
+		game->setStartingFen(m_fen);
+		m_fen.clear();
+		game->setMoves(m_openingMoves);
+		m_openingMoves.clear();
 	}
 	else if (m_pgnInputStream.isOpen())
 	{
-		bool ok = game->read(m_pgnInputStream, PgnGame::Minimal, m_pgnDepth);
-		if (ok)
+		PgnGame pgn;
+		if (pgn.read(m_pgnInputStream, m_pgnDepth))
 			m_pgnGamesRead++;
 		// Rewind the PGN input file
 		else if (m_pgnGamesRead > 0)
 		{
 			m_pgnInputStream.rewind();
-			ok = game->read(m_pgnInputStream, PgnGame::Minimal, m_pgnDepth);
+			bool ok = pgn.read(m_pgnInputStream, m_pgnDepth);
 			Q_ASSERT(ok);
 			m_pgnGamesRead++;
 		}
+		game->setMoves(pgn);
 	}
 
 	game->generateOpening();
@@ -410,9 +406,9 @@ void EngineMatch::start()
 		m_openingMoves = game->moves();
 	}
 
-	game->setRound(m_currentGame);
-	game->setEvent(m_event);
-	game->setSite(m_site);
+	game->pgn().setRound(m_currentGame);
+	game->pgn().setEvent(m_event);
+	game->pgn().setSite(m_site);
 
 	game->setDrawThreshold(m_drawMoveNum, m_drawScore);
 	game->setResignThreshold(m_resignMoveCount, m_resignScore);

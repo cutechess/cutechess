@@ -16,9 +16,8 @@
 */
 
 #include "pgngame.h"
+#include <QStringList>
 #include <QFile>
-#include <QTextStream>
-#include <QDate>
 #include <QtDebug>
 #include "board/board.h"
 #include "pgnstream.h"
@@ -31,52 +30,34 @@ QTextStream& operator<<(QTextStream& out, const PgnGame* game)
 }
 
 
-PgnGame::PgnGame(const QString& variant)
-	: m_hasTags(false),
-	  m_hasCustomFen(false),
-	  m_round(0),
-	  m_variant(variant),
-	  m_startingSide(Chess::White)
+PgnGame::PgnGame()
+	: m_startingSide(Chess::White)
 {
 }
 
-bool PgnGame::addMove(const Chess::Move& move,
-		      Chess::Board* board,
-		      const QString& comment)
+bool PgnGame::isNull() const
 {
-	Q_ASSERT(board != 0);
-	if (!board->isLegalMove(move))
-		return false;
-
-	MoveData md;
-	md.move = move;
-	md.sanMove = board->moveString(move, Chess::Board::StandardAlgebraic);
-	md.comment = comment;
-
-	m_moves.append(md);
-	return true;
+	return (m_tags.isEmpty() && m_moves.isEmpty());
 }
 
-bool PgnGame::addMove(const QString& moveString,
-		      Chess::Board* board,
-		      const QString& comment)
+void PgnGame::clear()
 {
-	Q_ASSERT(board != 0);
-
-	MoveData md;
-	md.move = board->moveFromString(moveString);
-	if (md.move.isNull())
-		return false;
-
-	Q_ASSERT(board->isLegalMove(md.move));
-	md.sanMove = moveString;
-	md.comment = comment;
-
-	m_moves.append(md);
-	return true;
+	m_startingSide = Chess::NoSide;
+	m_tags.clear();
+	m_moves.clear();
 }
 
-PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
+const QVector<PgnGame::MoveData>& PgnGame::moves() const
+{
+	return m_moves;
+}
+
+void PgnGame::addMove(const MoveData& data)
+{
+	m_moves.append(data);
+}
+
+PgnGame::PgnItem PgnGame::readItem(PgnStream& in)
 {
 	in.skipWhiteSpace();
 	PgnItem itemType = PgnMove;
@@ -86,12 +67,11 @@ PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
 	QChar closingBracket;
 	int bracketLevel = 0;
 	QString str;
-	Chess::Board* board = in.board();
 	
 	while (in.status() == PgnStream::Ok)
 	{
 		c = in.readChar();
-		if (!m_hasTags && itemType != PgnTag && c != '[')
+		if (m_tags.isEmpty() && itemType != PgnTag && c != '[')
 			continue;
 		if ((c == '\n' || c == '\r') && itemType != PgnComment)
 			break;
@@ -185,11 +165,11 @@ PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
 	if ((itemType == PgnMove || itemType == PgnMoveNumber)
 	&&  (str == "*" || str == "1/2-1/2" || str == "1-0" || str == "0-1"))
 	{
-		Chess::Result result(str);
-		if (result != m_result)
-			qDebug() << "Line" << in.lineNumber() << "The termination "
+		QString& resultTag = m_tags["Result"];
+		if (!resultTag.isEmpty() && str != resultTag)
+			qDebug() << "Line" << in.lineNumber() << ": The termination "
 			            "marker is different from the result tag";
-		m_result = result;
+		resultTag = str;
 		return PgnResult;
 	}
 	
@@ -198,77 +178,64 @@ PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
 		QString tag = str.section(' ', 0, 0);
 		QString param = str.section(' ', 1).replace('\"', "");
 		
-		if (tag == "Event")
-			m_event = param;
-		else if (tag == "Site")
-			m_site = param;
-		else if (tag == "Round")
-			m_round = param.toInt();
-		else if (tag == "White")
-			m_playerName[Chess::White] = param;
-		else if (tag == "Black")
-			m_playerName[Chess::Black] = param;
-		else if (tag == "Result")
-		{
-			m_result = Chess::Result(param);
-			if (m_result.type() == Chess::Result::ResultError)
-				qDebug() << "Invalid result:" << param;
-		}
-		else if (tag == "Variant")
-		{
-			if (!in.setVariant(param.toLower()))
-			{
-				qDebug() << "Unknown variant:" << param;
-				return PgnError;
-			}
-			m_variant = in.variant();
-		}
-		else if (tag == "FEN")
-		{
-			if (!board->setFenString(param))
-			{
-				qDebug() << "Invalid FEN:" << param;
-				return PgnError;
-			}
-			m_hasCustomFen = true;
-			setStartingFen(param);
-		}
-		else if (mode == Verbose)
-		{
-			if (tag == "TimeControl")
-			{
-				m_timeControl[0] = TimeControl(param);
-				m_timeControl[1] = m_timeControl[0];
-			}
-			else if (tag == "WhiteTimeControl")
-				m_timeControl[Chess::White] = TimeControl(param);
-			else if (tag == "BlackTimeControl")
-				m_timeControl[Chess::Black] = TimeControl(param);
-		}
+		m_tags[tag] = param;
 	}
 	else if (itemType == PgnMove)
 	{
-		if (!m_hasTags)
+		if (m_tags.isEmpty())
 		{
 			qDebug() << "No tags found";
 			return PgnError;
 		}
-		
+
+		Chess::Board* board(in.board());
+
 		// If the FEN string wasn't already set by the FEN tag,
 		// set the board when we get the first move
-		if (m_fen.isEmpty())
+		if (m_moves.isEmpty())
 		{
-			setStartingFen(board->defaultFenString());
-			board->setFenString(m_fen);
+			QString tmp(m_tags.value("Variant"));
+
+			if (!tmp.isEmpty() && !in.setVariant(tmp))
+			{
+				qDebug() << "Unknown variant:" << tmp;
+				return PgnError;
+			}
+			board = in.board();
+			if (tmp.isEmpty() && board->variant() != "standard")
+				m_tags["Variant"] = board->variant();
+
+			tmp = m_tags.value("FEN");
+			if (tmp.isEmpty())
+			{
+				if (board->isRandomVariant())
+				{
+					qDebug() << "Missing FEN tag";
+					return PgnError;
+				}
+				tmp = board->defaultFenString();
+			}
+			
+			if (!board->setFenString(tmp))
+			{
+				qDebug() << "Invalid FEN string:" << tmp;
+				return PgnError;
+			}
+			m_startingSide = board->startingSide();
 		}
-		
-		if (addMove(str, board))
-			board->makeMove(m_moves.last().move);
-		else
+
+		Chess::Move move(board->moveFromString(str));
+		if (move.isNull())
 		{
 			qDebug() << "Illegal move:" << str;
 			return PgnError;
 		}
+
+		MoveData md = { board->key(), board->genericMove(move),
+				str, QString() };
+		addMove(md);
+
+		board->makeMove(move);
 	}
 	else if (itemType == PgnNag)
 	{
@@ -284,87 +251,64 @@ PgnGame::PgnItem PgnGame::readItem(PgnStream& in, PgnMode mode)
 	return itemType;
 }
 
-bool PgnGame::read(PgnStream& in, PgnMode mode, int maxMoves)
+bool PgnGame::read(PgnStream& in, int maxMoves)
 {
-	m_hasTags = false;
-	m_round = 0;
-	setStartingFen(QString());
-	m_moves.clear();
-
-	Chess::Board* board = in.board();
-	m_variant = board->variant();
-	m_hasCustomFen = board->isRandomVariant();
+	clear();
 	
 	while (in.status() == PgnStream::Ok
 	   &&  m_moves.size() < maxMoves)
 	{
-		PgnItem item = readItem(in, mode);
+		PgnItem item = readItem(in);
 		if (item == PgnError)
 		{
 			qDebug() << "PGN error on line" << in.lineNumber();
 			break;
 		}
-		else if (item == PgnTag)
-			m_hasTags = true;
-		else if (item == PgnResult)
-			break;
-		else if (item == PgnEmpty)
+		else if (item == PgnResult || item == PgnEmpty)
 			break;
 	}
+	if (m_tags.isEmpty())
+		return false;
 
-	return !m_fen.isEmpty();
+	m_tags["PlyCount"] = QString::number(m_moves.size());
+
+	return true;
 }
 
-static void writeTag(QTextStream& out, const QString& name, const QString& value)
+static void writeTag(QTextStream& out, const QString& tag, const QString& value)
 {
 	if (!value.isEmpty())
-		out << "[" << name << " \"" << value << "\"]\n";
+		out << "[" << tag << " \"" << value << "\"]\n";
 	else
-		out << "[" << name << " \"?\"]\n";
+		out << "[" << tag << " \"?\"]\n";
 }
 
-bool PgnGame::write(QTextStream& out, PgnMode mode) const
+void PgnGame::write(QTextStream& out, PgnMode mode) const
 {
-	if (!m_hasTags)
-		return false;
-	
-	QString date = QDate::currentDate().toString("yyyy.MM.dd");
+	if (m_tags.isEmpty())
+		return;
 	
 	// The seven tag roster
-	writeTag(out, "Event", m_event);
-	writeTag(out, "Site", m_site);
-	writeTag(out, "Date", date);
-	if (m_round > 0)
-		writeTag(out, "Round", QString::number(m_round));
-	else
-		writeTag(out, "Round", "?");
-	writeTag(out, "White", m_playerName[Chess::White]);
-	writeTag(out, "Black", m_playerName[Chess::Black]);
-	writeTag(out, "Result", m_result.toShortString());
-
+	QStringList roster;
+	roster << "Event" << "Site" << "Date" << "Round"
+	       << "White" << "Black" << "Result";
+	foreach (const QString& tag, roster)
+		writeTag(out, tag, m_tags.value(tag));
+	
+	// Other supported tags
 	if (mode == Verbose)
 	{
-		writeTag(out, "PlyCount", QString::number(m_moves.size()));
-
-		const TimeControl& wtc = m_timeControl[Chess::White];
-		const TimeControl& btc = m_timeControl[Chess::Black];
-		if (wtc == btc && wtc.isValid())
-			writeTag(out, "TimeControl", wtc.toString());
-		else
+		QMap<QString, QString>::const_iterator it;
+		for (it = m_tags.constBegin(); it != m_tags.constEnd(); ++it)
 		{
-			if (wtc.isValid())
-				writeTag(out, "WhiteTimeControl", wtc.toString());
-			if (btc.isValid())
-				writeTag(out, "BlackTimeControl", btc.toString());
+			if (!roster.contains(it.key()) && !it.value().isEmpty())
+				writeTag(out, it.key(), it.value());
 		}
 	}
-
-	if (m_variant != "standard")
-		writeTag(out, "Variant", m_variant);
-	if (!m_fen.isEmpty() && m_hasCustomFen)
+	else if (mode == Minimal && m_tags.contains("FEN"))
 	{
-		writeTag(out, "SetUp", "1");
-		writeTag(out, "FEN", m_fen);
+		writeTag(out, "FEN", m_tags["FEN"]);
+		writeTag(out, "SetUp", m_tags["SetUp"]);
 	}
 
 	QString str;
@@ -374,15 +318,15 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 
 	for (int i = 0; i < m_moves.size(); i++)
 	{
-		const MoveData& md = m_moves.at(i);
+		const MoveData& data = m_moves.at(i);
 
 		str.clear();
 		if (side == Chess::White || i == 0)
 			str = QString::number(++movenum) + ". ";
 
-		str += md.sanMove;
-		if (mode == Verbose && !md.comment.isEmpty())
-			str += QString(" {%1}").arg(md.comment);
+		str += data.moveString;
+		if (mode == Verbose && !data.comment.isEmpty())
+			str += QString(" {%1}").arg(data.comment);
 
 		// Limit the lines to 80 characters
 		if (lineLength == 0 || lineLength + str.size() >= 80)
@@ -398,124 +342,176 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 
 		side = !side;
 	}
-	str = QString("{%1} %2")
-	      .arg(m_result.description())
-	      .arg(m_result.toShortString());
+	str = m_tags.value("Result");
 	if (lineLength + str.size() >= 80)
 		out << "\n" << str << "\n\n";
 	else
 		out << " " << str << "\n\n";
-
-	return true;
 }
 
 bool PgnGame::write(const QString& filename, PgnMode mode) const
 {
+	if (m_tags.isEmpty())
+		return false;
+
 	QFile file(filename);
 	if (!file.open(QIODevice::Append))
 		return false;
 
 	QTextStream out(&file);
-	return write(out, mode);
+	write(out, mode);
+	return true;
 }
 
-bool PgnGame::isEmpty() const
+QString PgnGame::tagValue(const QString& tag) const
 {
-	return m_moves.isEmpty();
+	return m_tags.value(tag);
 }
 
 QString PgnGame::event() const
 {
-	return m_event;
+	return m_tags.value("Event");
 }
 
 QString PgnGame::site() const
 {
-	return m_site;
+	return m_tags.value("Site");
+}
+
+QDate PgnGame::date() const
+{
+	return QDate::fromString(m_tags.value("Date"), "yyyy.MM.dd");
 }
 
 int PgnGame::round() const
 {
-	return m_round;
-}
-
-QString PgnGame::startingFen() const
-{
-	return m_fen;
-}
-
-Chess::Result PgnGame::result() const
-{
-	return m_result;
-}
-
-const TimeControl& PgnGame::timeControl(Chess::Side side) const
-{
-	Q_ASSERT(side != Chess::NoSide);
-	return m_timeControl[side];
-}
-
-const QVector<PgnGame::MoveData>& PgnGame::moves() const
-{
-	return m_moves;
+	return m_tags.value("Round").toInt();
 }
 
 QString PgnGame::playerName(Chess::Side side) const
 {
-	return m_playerName[side];
+	if (side == Chess::White)
+		return m_tags.value("White");
+	else if (side == Chess::Black)
+		return m_tags.value("Black");
+
+	return QString();
 }
 
-void PgnGame::setPlayerName(Chess::Side side, const QString& name)
+Chess::Result PgnGame::result() const
 {
-	m_playerName[side] = name;
-	m_hasTags = true;
+	return Chess::Result(m_tags.value("Result"));
+}
+
+QString PgnGame::variant() const
+{
+	if (m_tags.contains("Variant"))
+		return m_tags.value("Variant");
+	return "standard";
+}
+
+Chess::Side PgnGame::startingSide() const
+{
+	return m_startingSide;
+}
+
+QString PgnGame::startingFenString() const
+{
+	return m_tags.value("FEN");
+}
+
+void PgnGame::setTag(const QString& tag, const QString& value)
+{
+	m_tags[tag] = value;
 }
 
 void PgnGame::setEvent(const QString& event)
 {
-	m_event = event;
+	m_tags["Event"] = event;
 }
 
 void PgnGame::setSite(const QString& site)
 {
-	m_site = site;
+	m_tags["Site"] = site;
+}
+
+void PgnGame::setDate(const QDate& date)
+{
+	m_tags["Date"] = date.toString("yyyy.MM.dd");
 }
 
 void PgnGame::setRound(int round)
 {
-	m_round = round;
+	m_tags["Round"] = QString::number(round);
+}
+
+void PgnGame::setPlayerName(Chess::Side side, const QString& name)
+{
+	if (side == Chess::White)
+		m_tags["White"] = name;
+	else if (side == Chess::Black)
+		m_tags["Black"] = name;
 }
 
 void PgnGame::setResult(const Chess::Result& result)
 {
-	m_result = result;
+	m_tags["Result"] = result.toShortString();
+
+	switch (result.type())
+	{
+	case Chess::Result::Adjudication:
+		m_tags["Termination"] = "adjudication";
+		break;
+	case Chess::Result::Timeout:
+		m_tags["Termination"] = "time forfeit";
+		break;
+	case Chess::Result::Disconnection:
+		m_tags["Termination"] = "abandoned";
+		break;
+	case Chess::Result::NoResult:
+		m_tags["Termination"] = "unterminated";
+		break;
+	default:
+		m_tags.remove("Termination");
+		break;
+	}
 }
 
-void PgnGame::setStartingFen(const QString& fen)
+void PgnGame::setVariant(const QString& variant)
 {
-	if (!fen.isEmpty())
-	{
-		QString sideStr = fen.section(' ', 1, 1);
-		Q_ASSERT(sideStr == "w" || sideStr == "b");
-
-		if (sideStr == "b")
-			m_startingSide = Chess::Black;
-		else
-			m_startingSide = Chess::White;
-	}
+	if (variant == "standard")
+		m_tags.remove("Variant");
 	else
-		m_startingSide = Chess::White;
-
-	m_fen = fen;
+		m_tags["Variant"] = variant;
 }
 
-void PgnGame::setTimeControl(const TimeControl& timeControl, Chess::Side side)
+void PgnGame::setStartingSide(Chess::Side side)
 {
-	if (side != Chess::NoSide)
-		m_timeControl[side] = timeControl;
+	m_startingSide = side;
+}
+
+void PgnGame::setStartingFenString(Chess::Side side, const QString& fen)
+{
+	m_startingSide = side;
+	if (fen.isEmpty())
+	{
+		m_tags.remove("FEN");
+		m_tags.remove("SetUp");
+	}
 	else
 	{
-		m_timeControl[Chess::White] = timeControl;
-		m_timeControl[Chess::Black] = timeControl;
+		m_tags["FEN"] = fen;
+		m_tags["SetUp"] = "1";
 	}
+}
+
+void PgnGame::setResultDescription(const QString& description)
+{
+	if (description.isEmpty() || m_moves.isEmpty())
+		return;
+
+	QString& comment = m_moves.last().comment;
+	if (!comment.isEmpty())
+		comment += ", ";
+	comment += description;
 }

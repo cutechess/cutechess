@@ -102,16 +102,16 @@ QVariant MoveListModel::data(const QModelIndex& index, int role) const
 {
 	if (index.isValid() && role == Qt::DisplayRole)
 	{
-		const QVector<PgnGame::MoveData> moves = m_game->moves();
+		const QVector<PgnGame::MoveData> moves = m_game->pgn().moves();
 
 		if (moves.size() > ((index.row() * 2) + index.column()))
 		{
 			const PgnGame::MoveData move = moves.at((index.row() * 2) + index.column());
 
 			if (move.comment.isEmpty())
-				return move.sanMove;
+				return move.moveString;
 			else
-				return move.sanMove + " {" + move.comment + " }";
+				return move.moveString + " {" + move.comment + " }";
 		}
 	}
 

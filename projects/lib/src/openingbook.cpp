@@ -19,7 +19,6 @@
 #include <QString>
 #include <QFile>
 #include <QDataStream>
-#include "board/board.h"
 #include "pgngame.h"
 #include "pgnstream.h"
 
@@ -83,48 +82,54 @@ void OpeningBook::addEntry(const Entry& entry, quint64 key)
 	m_map.insert(key, entry);
 }
 
-bool OpeningBook::pgnImport(PgnStream& in, int maxMoves)
+int OpeningBook::import(const PgnGame& pgn, int maxMoves)
 {
-	using namespace Chess;
-	
+	Q_ASSERT(maxMoves > 0);
+
+	Chess::Side winner(pgn.result().winner());
+	int loserMod = -1;
+	int weight = 1;
+	maxMoves = qMin(maxMoves, pgn.moves().size());
+
+	if (winner != Chess::NoSide)
+	{
+		loserMod = int(pgn.startingSide() == winner);
+		weight = 2;
+	}
+
+	const QVector<PgnGame::MoveData>& moves = pgn.moves();
+	for (int i = 0; i < maxMoves; i++)
+	{
+		// Skip the loser's moves
+		if ((i % 2) == loserMod)
+		{
+			Entry entry = { moves[i].move, weight };
+			addEntry(entry, moves[i].key);
+		}
+	}
+
+	return maxMoves;
+}
+
+int OpeningBook::import(PgnStream& in, int maxMoves)
+{
 	Q_ASSERT(maxMoves > 0);
 	
 	if (!in.isOpen())
-		return false;
-	Chess::Board* board = in.board();
+		return 0;
 	
-	int gameCount = 0;
 	int moveCount = 0;
 	while (in.status() == PgnStream::Ok)
 	{
-		PgnGame game(in.board()->variant());
-		game.read(in, PgnGame::Minimal, maxMoves);
-		if (game.isEmpty())
+		PgnGame game;
+		game.read(in, maxMoves);
+		if (game.moves().isEmpty())
 			break;
-		
-		board->setFenString(game.startingFen());
-		const QVector<PgnGame::MoveData>& moves = game.moves();
-
-		Chess::Side winner = game.result().winner();
-		int weight = (winner == Chess::NoSide) ? 1 : 2;
-		
-		foreach (const PgnGame::MoveData& md, moves)
-		{
-			// Skip the loser's moves
-			if (winner == Chess::NoSide || winner == board->sideToMove())
-			{
-				Entry entry = { board->genericMove(md.move), weight };
-				addEntry(entry, board->key());
-			}
-
-			board->makeMove(md.move);
-		}
-		moveCount += moves.size();
-		gameCount++;
+				
+		moveCount += import(game, maxMoves);
 	}
-	qDebug("Imported %d moves from %d games", moveCount, gameCount);
 	
-	return true;
+	return moveCount;
 }
 
 Chess::GenericMove OpeningBook::move(quint64 key) const
