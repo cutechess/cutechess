@@ -23,7 +23,7 @@
 namespace Chess {
 
 /*!
- * A board for Capablanca Random chess
+ * \brief A board for Capablanca Random chess
  *
  * Capablanca Random is like Capablanca chess, but it uses randomized
  * starting positions similarly to Fischer Random chess.

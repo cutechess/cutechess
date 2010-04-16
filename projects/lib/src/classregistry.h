@@ -37,8 +37,8 @@ class QObject;
 	static ClassRegistration<BASE> _class_registration_ ## TYPE(REGISTRY, &ClassRegistry<BASE>::factory<TYPE>, KEY);
 
 /*!
- * A class for creating objects based on the class' runtime
- * name or key (a string).
+ * \brief A class for creating objects based on the class'
+ * runtime name or key (a string).
  *
  * The created objects of a registry must have the same base
  * class, and they must be derived from QObject.
@@ -90,7 +90,7 @@ class ClassRegistry
 		QMap<QString, Factory> m_items;
 };
 
-/*! A class for registering a new subclass of the templated class. */
+/*! \brief A class for registering a new subclass of the templated class. */
 template<class T>
 class ClassRegistration
 {

@@ -23,7 +23,7 @@
 namespace Chess {
 
 /*!
- * A board for Crazyhouse chess
+ * \brief A board for Crazyhouse chess
  *
  * Crazyhouse is a variant of standard chess where captured
  * pieces can be brought back ("dropped") into the game,

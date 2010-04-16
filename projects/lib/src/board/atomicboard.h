@@ -23,7 +23,7 @@
 namespace Chess {
 
 /*!
- * A board for Atomic chess
+ * \brief A board for Atomic chess
  *
  * Atomic chess is a variant of standard chess where captures result
  * in an explosion on the target square.

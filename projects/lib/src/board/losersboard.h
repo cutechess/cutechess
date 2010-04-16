@@ -23,7 +23,7 @@
 namespace Chess {
 
 /*!
- * A board for Losers chess (or Wild 17)
+ * \brief A board for Losers chess (or Wild 17)
  *
  * Losers is a variant of Standard chess where the players
  * try to lose all of their pieces, except for the king. If a

@@ -23,7 +23,7 @@
 namespace Chess {
 
 /*!
- * A board for Capablanca chess
+ * \brief A board for Capablanca chess
  *
  * Capablanca chess is a variant of standard chess which adds two
  * piece types and is played on a 10x8 board.

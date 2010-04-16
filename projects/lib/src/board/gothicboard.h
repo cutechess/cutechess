@@ -23,7 +23,7 @@
 namespace Chess {
 
 /*!
- * A board for Gothic chess
+ * \brief A board for Gothic chess
  *
  * Gothic chess is a variant of Capablanca chess that uses a
  * different starting position.

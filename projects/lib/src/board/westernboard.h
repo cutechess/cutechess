@@ -26,7 +26,7 @@ class WesternZobrist;
 
 
 /*!
- * A board for western chess variants
+ * \brief A board for western chess variants
  *
  * WesternBoard serves as the overclass for all western variants.
  * In addition to possibly unique pieces, a western variant has

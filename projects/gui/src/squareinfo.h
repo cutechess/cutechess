@@ -23,7 +23,7 @@
 
 
 /*!
- * A class for providing information about a chess square
+ * \brief A class for providing information about a chess square
  * and its contents.
  *
  * SquareInfo objects are used by ChessboardModel to inform

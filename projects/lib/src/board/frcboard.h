@@ -23,7 +23,7 @@
 namespace Chess {
 
 /*!
- * A board for Fischer Random chess (or Chess 960)
+ * \brief A board for Fischer Random chess (or Chess 960)
  *
  * Fischer Random is like standard chess, but it uses randomized
  * starting positions, one of which is the starting position of

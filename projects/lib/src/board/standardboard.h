@@ -23,7 +23,7 @@
 namespace Chess {
 
 /*!
- * A board for standard chess
+ * \brief A board for standard chess
  *
  * This is the most common chess variant, and one that is
  * supported by almost all chess engines.
