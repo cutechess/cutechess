@@ -25,7 +25,14 @@
 
 int ChessEngine::m_count = 0;
 
-ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
+ClassRegistry<ChessEngine>* ChessEngine::registry()
+{
+	static ClassRegistry<ChessEngine>* registry = new ClassRegistry<ChessEngine>;
+	return registry;
+}
+
+
+ChessEngine::ChessEngine(QObject* parent)
 	: ChessPlayer(parent),
 	  m_whiteEvalPov(false),
 	  m_id(m_count++),
@@ -33,13 +40,8 @@ ChessEngine::ChessEngine(QIODevice* ioDevice, QObject* parent)
 	  m_pinging(false),
 	  m_pingTimer(new QTimer(this)),
 	  m_quitTimer(new QTimer(this)),
-	  m_ioDevice(ioDevice)
+	  m_ioDevice(0)
 {
-	Q_ASSERT(m_ioDevice != 0);
-	
-	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
-	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
-
 	m_pingTimer->setSingleShot(true);
 	m_pingTimer->setInterval(10000);
 	connect(m_pingTimer, SIGNAL(timeout()), this, SLOT(onPingTimeout()));
@@ -58,6 +60,15 @@ ChessEngine::~ChessEngine()
 QIODevice* ChessEngine::device() const
 {
 	return m_ioDevice;
+}
+
+void ChessEngine::setDevice(QIODevice* device)
+{
+	Q_ASSERT(device != 0);
+
+	m_ioDevice = device;
+	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
 }
 
 void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)

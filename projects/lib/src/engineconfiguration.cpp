@@ -26,7 +26,7 @@ EngineConfiguration::EngineConfiguration()
 
 EngineConfiguration::EngineConfiguration(const QString& name,
                                          const QString& command,
-                                         int protocol)
+					 const QString& protocol)
 	: m_name(name),
 	  m_command(command),
 	  m_protocol(protocol),
@@ -45,7 +45,7 @@ void EngineConfiguration::setCommand(const QString& command)
 	m_command = command;
 }
 
-void EngineConfiguration::setProtocol(int protocol)
+void EngineConfiguration::setProtocol(const QString& protocol)
 {
 	m_protocol = protocol;
 }
@@ -70,7 +70,7 @@ QString EngineConfiguration::workingDirectory() const
 	return m_workingDirectory;
 }
 
-int EngineConfiguration::protocol() const
+QString EngineConfiguration::protocol() const
 {
 	return m_protocol;
 }

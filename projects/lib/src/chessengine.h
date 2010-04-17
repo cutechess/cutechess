@@ -21,6 +21,7 @@
 #include "chessplayer.h"
 #include <QVariant>
 #include <QStringList>
+#include "classregistry.h"
 #include "engineconfiguration.h"
 
 class QIODevice;
@@ -42,12 +43,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 	Q_OBJECT
 
 	public:
-		/*! The chess communication protocol. */
-		enum Protocol
-		{
-			Xboard,	//!< The Xboard/Winboard chess protocol.
-			Uci	//!< The Universal Chess Interface (UCI).
-		};
 		/*!
 		 * The write mode used by \a write() when the engine is
 		 * being pinged. This doesn't affect the IO device's
@@ -59,12 +54,17 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 			Unbuffered	//!< Bypass the write buffer
 		};
 
+		/*! Returns the class registry for concrete ChessEngine subclasses. */
+		static ClassRegistry<ChessEngine>* registry();
+
 		/*! Creates and initializes a new ChessEngine. */
-		ChessEngine(QIODevice* ioDevice, QObject* parent = 0);
+		ChessEngine(QObject* parent = 0);
 		virtual ~ChessEngine();
 
 		/*! Returns the current device associated with the engine. */
 		QIODevice* device() const;
+		/*! Sets the current device to \a device. */
+		void setDevice(QIODevice* device);
 
 		// Inherited from ChessPlayer
 		void closeConnection();
@@ -95,7 +95,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void ping();
 		
 		/*! Returns the engine's chess protocol. */
-		virtual Protocol protocol() const = 0;
+		virtual QString protocol() const = 0;
 
 		/*!
 		 * Writes text data to the chess engine.
@@ -194,5 +194,14 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		QStringList m_writeBuffer;
 		QMap<QString, QVariant> m_optionBuffer;
 };
+
+/*!
+ * Registers engine class \a TYPE with protocol name \a PROTOCOL.
+ *
+ * Every concrete ChessEngine class's implementation file (.cpp) must
+ * call this macro.
+ */
+#define REGISTER_ENGINE_CLASS(TYPE, PROTOCOL) \
+	REGISTER_CLASS(ChessEngine, TYPE, PROTOCOL, ChessEngine::registry());
 
 #endif // CHESSENGINE_H

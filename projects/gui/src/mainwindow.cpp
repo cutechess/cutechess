@@ -25,7 +25,7 @@
 #include <timecontrol.h>
 #include <engineconfiguration.h>
 #include <enginemanager.h>
-#include <enginefactory.h>
+#include <chessengine.h>
 #include <engineprocess.h>
 #include <humanplayer.h>
 
@@ -230,7 +230,10 @@ void MainWindow::newGame()
 				qDebug() << "Cannot start the engine process:" << config.command();
 				return;
 			}
-			ChessEngine* engine = EngineFactory::createEngine(ChessEngine::Protocol(config.protocol()), process, this);
+			ChessEngine* engine = ChessEngine::registry()->create(config.protocol(), this);
+			Q_ASSERT(engine != 0);
+			engine->setDevice(process);
+
 			engine->start();
 			engine->setName(config.name());
 			player[i] = engine;

@@ -32,12 +32,12 @@ class LIB_EXPORT UciEngine : public ChessEngine
 
 	public:
 		/*! Creates a new UciEngine. */
-		UciEngine(QIODevice* ioDevice, QObject* parent = 0);
+		UciEngine(QObject* parent = 0);
 
 		// Inherited from ChessEngine
 		void endGame(const Chess::Result& result);
 		void makeMove(const Chess::Move& move);
-		Protocol protocol() const;
+		QString protocol() const;
 
 	protected:
 		// Inherited from ChessEngine

@@ -19,8 +19,8 @@
 #include <QTimer>
 #include <QtDebug>
 #include <board/board.h>
+#include <chessplayer.h>
 #include <chessgame.h>
-#include <enginefactory.h>
 #include <enginebuilder.h>
 #include <polyglotbook.h>
 
@@ -234,6 +234,11 @@ bool EngineMatch::initialize()
 		if (!it->tc.isValid())
 		{
 			qWarning() << "Invalid or missing time control";
+			return false;
+		}
+		if (it->config.protocol().isEmpty())
+		{
+			qWarning() << "Missing chess protocol";
 			return false;
 		}
 

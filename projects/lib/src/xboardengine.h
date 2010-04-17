@@ -32,12 +32,12 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 
 	public:
 		/*! Creates a new XboardEngine. */
-		XboardEngine(QIODevice* ioDevice, QObject* parent = 0);
+		XboardEngine(QObject* parent = 0);
 
 		// Inherited from ChessEngine
 		void endGame(const Chess::Result& result);
 		void makeMove(const Chess::Move& move);
-		Protocol protocol() const;
+		QString protocol() const;
 
 	protected:
 		// Inherited from ChessEngine

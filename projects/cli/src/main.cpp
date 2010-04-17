@@ -99,10 +99,8 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 			data.config.addArgument(val);
 		else if (name == "proto")
 		{
-			if (val == "uci")
-				data.config.setProtocol(ChessEngine::Uci);
-			else if (val == "xboard")
-				data.config.setProtocol(ChessEngine::Xboard);
+			if (ChessEngine::registry()->items().contains(val))
+				data.config.setProtocol(val);
 			else
 			{
 				qWarning()<< "Usupported chess protocol:" << val;
@@ -353,6 +351,14 @@ int main(int argc, char* argv[])
 
 			return 0;
 		}
+		else if (arg == "--protocols")
+		{
+			QStringList protocols = ChessEngine::registry()->items().keys();
+			foreach (const QString& protocol, protocols)
+				out << protocol << endl;
+
+			return 0;
+		}
 		else if (arg == "--variants")
 		{
 			QStringList variants = Chess::Board::registry()->items().keys();
@@ -368,6 +374,7 @@ int main(int argc, char* argv[])
 			       "  --help		Display this information\n"
 			       "  --version		Display the version number\n"
 			       "  --engines		Display a list of configured engines and exit\n"
+			       "  --protocols		Display a list of supported chess protocols and exit\n"
 			       "  --variants		Display a list of supported chess variants and exit\n\n"
 			       "  -fcp <options>	Apply <options> to the first engine\n"
 			       "  -scp <options>	Apply <options> to the second engine\n"
@@ -399,7 +406,7 @@ int main(int argc, char* argv[])
 			       "  dir=<arg>		Set the working directory to <arg>\n"
 			       "  arg=<arg>		Pass <arg> to the engine as a command line argument\n"
 			       "  initstr=<arg>		Send <arg> to the engine's standard input at startup\n"
-			       "  proto=<arg>		Set the chess protocol to <arg>. Must be xboard or uci\n"
+			       "  proto=<arg>		Set the chess protocol to <arg>\n"
 			       "  tc=<arg>		Set the time control to <arg>. The format is\n"
 			       "			moves/time+increment, where 'moves' is the number of\n"
 			       "			moves per tc, 'time' is time per tc (either seconds or\n"

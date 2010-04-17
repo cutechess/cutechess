@@ -32,8 +32,10 @@
 #include "enginetextoption.h"
 
 
-UciEngine::UciEngine(QIODevice* ioDevice, QObject* parent)
-	: ChessEngine(ioDevice, parent)
+REGISTER_ENGINE_CLASS(UciEngine, "uci")
+
+UciEngine::UciEngine(QObject* parent)
+	: ChessEngine(parent)
 {
 	m_variants.append("standard");
 	
@@ -167,9 +169,9 @@ void UciEngine::stopThinking()
 		write("stop");
 }
 
-ChessEngine::Protocol UciEngine::protocol() const
+QString UciEngine::protocol() const
 {
-	return ChessEngine::Uci;
+	return "uci";
 }
 
 bool UciEngine::sendPing()

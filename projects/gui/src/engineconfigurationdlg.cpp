@@ -37,8 +37,8 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 		setWindowTitle(tr("Configure Engine"));
 	}
 
-	m_protocolCombo->addItem("Xboard");
-	m_protocolCombo->addItem("UCI");
+	QStringList protocols = ChessEngine::registry()->items().keys();
+	m_protocolCombo->addItems(protocols);
 
 	connect(m_browseCmdBtn, SIGNAL(clicked(bool)), this, SLOT(browseCommand()));
 	connect(m_browseWorkingDirBtn, SIGNAL(clicked(bool)), this,
@@ -51,7 +51,9 @@ void EngineConfigurationDialog::applyEngineInformation(
 	m_nameEdit->setText(engine.name());
 	m_commandEdit->setText(engine.command());
 	m_workingDirEdit->setText(engine.workingDirectory());
-	m_protocolCombo->setCurrentIndex(engine.protocol());
+
+	int i = m_protocolCombo->findText(engine.protocol());
+	m_protocolCombo->setCurrentIndex(i);
 }
 
 EngineConfiguration EngineConfigurationDialog::engineConfiguration()
@@ -60,8 +62,7 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 	engine.setName(m_nameEdit->text());
 	engine.setCommand(m_commandEdit->text());
 	engine.setWorkingDirectory(m_workingDirEdit->text());
-	engine.setProtocol(ChessEngine::Protocol(
-		m_protocolCombo->currentIndex()));
+	engine.setProtocol(m_protocolCombo->currentText());
 
 	return engine;
 }

@@ -29,6 +29,9 @@ OPTIONS
 --engines::
 	Display a list of configured engines and exit.
 
+--protocols::
+	Display a list of supported chess protocols and exit.
+
 --variants::
 	Display a list of supported chess variants and exit.
 
@@ -109,7 +112,7 @@ initstr=<arg>::
 	Send <arg> to the engine's standard input at startup.
 
 proto=<arg>::
-	Set the chess protocol to <arg>. Must be 'xboard' or 'uci'.
+	Set the chess protocol to <arg>.
 
 tc=<arg>::
 	Set the time control to <arg>. The format is

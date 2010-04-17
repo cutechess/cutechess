@@ -17,7 +17,6 @@
 
 #include "enginemanager.h"
 #include <QSettings>
-#include "chessengine.h"
 
 
 EngineManager::EngineManager(QObject* parent)
@@ -76,8 +75,7 @@ void EngineManager::loadEngines()
 		config.setCommand(settings.value("command").toString());
 		config.setWorkingDirectory(
 			settings.value("working_directory").toString());
-		config.setProtocol(ChessEngine::Protocol(
-			settings.value("protocol").toInt()));
+		config.setProtocol(settings.value("protocol").toString());
 
 		addEngine(config);
 	}

@@ -38,8 +38,9 @@ class LIB_EXPORT EngineConfiguration
 		 * Creates a new chess engine configuration with specified name,
 		 * command and protocol settings.
 		 */
-		EngineConfiguration(const QString& name, const QString& command,
-		                    int protocol);
+		EngineConfiguration(const QString& name,
+				    const QString& command,
+				    const QString& protocol);
 
 		/*!
 		 * Sets the engine's name.
@@ -64,7 +65,7 @@ class LIB_EXPORT EngineConfiguration
 		 *
 		 * \sa protocol()
 		 */
-		void setProtocol(int protocol);
+		void setProtocol(const QString& protocol);
 
 		/*!
 		 * Returns the engine's name.
@@ -89,7 +90,7 @@ class LIB_EXPORT EngineConfiguration
 		 *
 		 * \sa setProtocol()
 		 */
-		int protocol() const;
+		QString protocol() const;
 
 		/*! Returns the command line arguments sent to the engine. */
 		QStringList arguments() const;
@@ -121,7 +122,7 @@ class LIB_EXPORT EngineConfiguration
 		QString m_name;
 		QString m_command;
 		QString m_workingDirectory;
-		int m_protocol;
+		QString m_protocol;
 		QStringList m_arguments;
 		QStringList m_initStrings;
 		QMap<QString, QVariant> m_customOptions;

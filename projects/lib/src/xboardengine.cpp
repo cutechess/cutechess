@@ -39,9 +39,10 @@ static QString msToXboardTime(int ms)
 	return number;
 }
 
+REGISTER_ENGINE_CLASS(XboardEngine, "xboard")
 
-XboardEngine::XboardEngine(QIODevice* ioDevice, QObject* parent)
-	: ChessEngine(ioDevice, parent),
+XboardEngine::XboardEngine(QObject* parent)
+	: ChessEngine(parent),
 	  m_forceMode(false),
 	  m_drawOnNextMove(false),
 	  m_ftName(false),
@@ -276,9 +277,9 @@ void XboardEngine::stopThinking()
 		write("?");
 }
 
-ChessEngine::Protocol XboardEngine::protocol() const
+QString XboardEngine::protocol() const
 {
-	return ChessEngine::Xboard;
+	return "xboard";
 }
 
 bool XboardEngine::sendPing()
