@@ -24,7 +24,7 @@
 /*!
  * \brief A chess engine which uses the Xboard chess engine communication protocol.
  *
- * Xboard's specifications: http://www.tim-mann.org/xboard/engine-intf.html
+ * Xboard's specifications: http://www.open-aurec.com/wbforum/WinBoard/engine-intf.html
  */
 class LIB_EXPORT XboardEngine : public ChessEngine
 {
