@@ -221,8 +221,11 @@ static QString evalString(const MoveEvaluation& eval)
 		str += "/" + QString::number(eval.depth()) + " ";
 	}
 
-	int precision = 0;
 	int t = eval.time();
+	if (t == 0)
+		return str + "0s";
+
+	int precision = 0;
 	if (t < 100)
 		precision = 3;
 	else if (t < 1000)
