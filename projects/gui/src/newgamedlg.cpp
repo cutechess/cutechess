@@ -64,6 +64,8 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 
 	QStringList variants = Chess::Board::registry()->items().keys();
 	m_variantComboBox->addItems(variants);
+	int index = m_variantComboBox->findText("standard");
+	m_variantComboBox->setCurrentIndex(index);
 }
 
 NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
