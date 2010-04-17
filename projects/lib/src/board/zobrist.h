@@ -43,6 +43,8 @@ class LIB_EXPORT Zobrist
 		 * class.
 		 */
 		Zobrist(const quint64* keys = 0);
+		/*! Destroys the Zobrist object. */
+		virtual ~Zobrist() {}
 		/*!
 		 * Initializes the zobrist numbers.
 		 *
