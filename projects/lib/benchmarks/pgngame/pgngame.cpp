@@ -15,7 +15,6 @@ class PgnGameBenchmark: public QObject
 void PgnGameBenchmark::parser_data() const
 {
 	QTest::addColumn<QString>("pgn");
-	QTest::addColumn<bool>("verbose");
 
 	QString pgn = "[Event \"?\"]\n"
 		      "[Site \"Linares\"]\n"
@@ -43,8 +42,7 @@ void PgnGameBenchmark::parser_data() const
 		      "85. Rg2 Rf6 86. Rh2 Rh6 87. Rg2 Kf1 88. Rg5 Rf6 89. Rc5 Rd2 90. Rc6 Rf4\n"
 		      "91. Rc1+ Kg2 92. Rbb1 Rf8 93. Ka5 Ra2+ 94. Kb6 Rf6+ 95. Kc5 Rf5+ 96. Kb6\n"
 		      "Re2 97. b5 Re6+ 98. Ka5 Rfe5 99. Ka4 Re4+ 1/2-1/2\n";
-	QTest::newRow("game1-verbose") << pgn << true;
-	QTest::newRow("game1-minimal") << pgn << false;
+	QTest::newRow("game1") << pgn;
 
 	pgn = "[Event \"CCRL 40/40\"]\n"
 	      "[Site \"CCRL\"]\n"
@@ -84,21 +82,18 @@ void PgnGameBenchmark::parser_data() const
 	      "{-10.04/17 38s} Ke3 {+8.12/13 37s} 49. Ka3 {-11.44/18 38s} f4 {+9.40/14 37s}\n"
 	      "50. Rg5 {-12.37/18 38s} Rf1 {+9.91/13 37s} 51. Re5+ {-16.96/17 38s} Kd3\n"
 	      "{+12.91/14 37s 0-1 Adjudication} 0-1\n";
-	QTest::newRow("game2-verbose") << pgn << true;
-	QTest::newRow("game2-minimal") << pgn << false;
+	QTest::newRow("game2") << pgn;
 }
 
 void PgnGameBenchmark::parser()
 {
 	QFETCH(QString, pgn);
-	QFETCH(bool, verbose);
-	PgnGame::PgnMode mode = verbose ? PgnGame::Verbose : PgnGame::Minimal;
 
 	PgnStream stream(&pgn);
 	PgnGame game;
 	QBENCHMARK
 	{
-		QVERIFY(game.read(stream, mode));
+		QVERIFY(game.read(stream));
 		stream.rewind();
 	}
 }
