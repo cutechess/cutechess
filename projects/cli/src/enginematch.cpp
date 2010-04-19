@@ -398,6 +398,7 @@ void EngineMatch::start()
 			m_pgnInputStream.rewind();
 			bool ok = pgn.read(m_pgnInputStream, m_pgnDepth);
 			Q_ASSERT(ok);
+			Q_UNUSED(ok);
 			m_pgnGamesRead++;
 		}
 		game->setMoves(pgn);
