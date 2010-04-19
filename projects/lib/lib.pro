@@ -9,6 +9,10 @@ win32 {
     DEFINES += LIB_EXPORT=\"\"
 }
 
+exists($$PWD/3rdparty/qjson) {
+    INCLUDEPATH += $$PWD/3rdparty/qjson/include
+}
+
 include(src/src.pri)
 
 OBJECTS_DIR = .obj

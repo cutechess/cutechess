@@ -46,8 +46,8 @@ class LIB_EXPORT EngineManager : public QObject
 		/*! Sets the available engines to \a engines. */
 		void setEngines(const QList<EngineConfiguration>& engines);
 
-		void loadEngines();
-		void saveEngines();
+		void loadEngines(const QString& fileName);
+		void saveEngines(const QString& fileName);
 
 	signals:
 		/*!

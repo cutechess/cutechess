@@ -16,11 +16,12 @@
 */
 
 #include "cutechesscoreapp.h"
-#include <cstdlib>
-#include <cstdio>
 #include <QSettings>
 #include <QTime>
+#include <QFileInfo>
 #include <enginemanager.h>
+#include <cstdlib>
+#include <cstdio>
 
 
 CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
@@ -38,7 +39,11 @@ CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 	qInstallMsgHandler(CuteChessCoreApplication::messageHandler);
 
 	// Load the engines
-	engineManager()->loadEngines();
+	// Note that we can't use QDesktopServices because of dependencies
+	QSettings settings;
+	QFileInfo fi(settings.fileName());
+	engineManager()->loadEngines(fi.absolutePath() +
+		QLatin1String("/engines.json"));
 }
 
 CuteChessCoreApplication::~CuteChessCoreApplication()

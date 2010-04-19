@@ -17,6 +17,11 @@
 
 #include "enginemanager.h"
 #include <QSettings>
+#include <QFile>
+#include <QTextStream>
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
+#include <QDebug>
 
 
 EngineManager::EngineManager(QObject* parent)
@@ -61,42 +66,69 @@ void EngineManager::setEngines(const QList<EngineConfiguration>& engines)
 	emit enginesReset();
 }
 
-void EngineManager::loadEngines()
+void EngineManager::loadEngines(const QString& fileName)
 {
-	QSettings settings;
+	QFile input(fileName);
+	QJson::Parser parser;
+	bool ok = false;
 
-	int size = settings.beginReadArray("engines");
-	for (int i = 0; i < size; i++)
+	if (!QFile::exists(fileName))
+		return;
+
+	if (!input.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
-		settings.setArrayIndex(i);
+		qWarning() << "cannot open engine configuration file:" << fileName;
+		return;
+	}
+
+	const QVariantList engines = parser.parse(&input, &ok).toList();
+
+	if (!ok)
+	{
+		qWarning() << "bad engine configuration file line" <<
+			parser.errorLine() << "in" << fileName << ":"
+				<< parser.errorString();
+		return;
+	}
+
+	foreach(const QVariant& engine, engines)
+	{
+		const QVariantMap result = engine.toMap();
 
 		EngineConfiguration config;
-		config.setName(settings.value("name").toString());
-		config.setCommand(settings.value("command").toString());
-		config.setWorkingDirectory(
-			settings.value("working_directory").toString());
-		config.setProtocol(settings.value("protocol").toString());
+		config.setName(result["name"].toString());
+		config.setCommand(result["command"].toString());
+		config.setWorkingDirectory(result["workingDirectory"].toString());
+		config.setProtocol(result["protocol"].toString());
 
 		addEngine(config);
 	}
-	settings.endArray();
 }
 
-void EngineManager::saveEngines()
+void EngineManager::saveEngines(const QString& fileName)
 {
-	QSettings settings;
+	QVariantList engines;
 
-	settings.beginWriteArray("engines");
-	for (int i = 0; i < m_engines.size(); i++)
+	foreach(const EngineConfiguration config, m_engines)
 	{
-		settings.setArrayIndex(i);
-		settings.setValue("name", m_engines.at(i).name());
-		settings.setValue("command", m_engines.at(i).command());
-		settings.setValue("working_directory", m_engines.at(i).workingDirectory());
-		settings.setValue("protocol", m_engines.at(i).protocol());
-	}
-	settings.endArray();
+		QVariantMap engine;
+		engine.insert("name", config.name());
+		engine.insert("command", config.command());
+		engine.insert("workingDirectory", config.workingDirectory());
+		engine.insert("protocol", config.protocol());
 
-	// Make sure that the settings are flushed to disk now
-	settings.sync();
+		engines << engine;
+	}
+
+	QJson::Serializer serializer;
+	QFile output(fileName);
+
+	if (!output.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		qWarning() << "cannot open engine configuration file:" << fileName;
+		return;
+	}
+
+	QTextStream out(&output);
+	out << serializer.serialize(engines);
 }

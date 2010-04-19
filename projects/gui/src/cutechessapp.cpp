@@ -19,6 +19,7 @@
 #include <QCoreApplication>
 #include <QTime>
 #include <QSettings>
+#include <QFileInfo>
 #include <enginemanager.h>
 
 
@@ -35,7 +36,12 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	QSettings::setDefaultFormat(QSettings::IniFormat);
 
 	// Load the engines
-	engineManager()->loadEngines();
+	// We could use QDesktopServices but then this would be inconsistent with
+	// CuteChessCoreApp
+	QSettings settings;
+	QFileInfo fi(settings.fileName());
+	engineManager()->loadEngines(fi.absolutePath() +
+		QLatin1String("/engines.json"));
 }
 
 CuteChessApplication::~CuteChessApplication()
