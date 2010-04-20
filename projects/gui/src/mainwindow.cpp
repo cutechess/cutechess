@@ -286,8 +286,8 @@ void MainWindow::manageEngines()
 		// CuteChessCoreApp
 		QSettings settings;
 		QFileInfo fi(settings.fileName());
-		CuteChessApplication::instance()->engineManager()->saveEngines(fi.absolutePath() +
-			QLatin1String("/engines.json"));
+		CuteChessApplication::instance()->engineManager()->saveEngines(
+			CuteChessApplication::instance()->configPath() + QLatin1String("/engines.json"));
 	}
 }
 

@@ -30,6 +30,7 @@ class CuteChessCoreApplication : public QCoreApplication
 		CuteChessCoreApplication(int& argc, char* argv[]);
 		~CuteChessCoreApplication();
 
+		QString configPath();
 		EngineManager* engineManager();
 		static CuteChessCoreApplication* instance();
 

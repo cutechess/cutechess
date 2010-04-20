@@ -39,11 +39,7 @@ CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 	qInstallMsgHandler(CuteChessCoreApplication::messageHandler);
 
 	// Load the engines
-	// Note that we can't use QDesktopServices because of dependencies
-	QSettings settings;
-	QFileInfo fi(settings.fileName());
-	engineManager()->loadEngines(fi.absolutePath() +
-		QLatin1String("/engines.json"));
+	engineManager()->loadEngines(configPath() + QLatin1String("/engines.json"));
 }
 
 CuteChessCoreApplication::~CuteChessCoreApplication()
@@ -71,6 +67,19 @@ void CuteChessCoreApplication::messageHandler(QtMsgType type,
 			fprintf(stderr, "Fatal: %s\n", message);
 			abort();
 	}
+}
+
+QString CuteChessCoreApplication::configPath()
+{
+	QSettings settings;
+	QFileInfo fi(settings.fileName());
+	if (!QFile::exists(fi.absolutePath()))
+	{
+		QDir dir;
+		dir.mkpath(fi.absolutePath());
+	}
+
+	return fi.absolutePath();
 }
 
 EngineManager* CuteChessCoreApplication::engineManager()

@@ -17,6 +17,8 @@
 
 #include "cutechessapp.h"
 #include <QCoreApplication>
+#include <QFile>
+#include <QDir>
 #include <QTime>
 #include <QSettings>
 #include <QFileInfo>
@@ -36,12 +38,7 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	QSettings::setDefaultFormat(QSettings::IniFormat);
 
 	// Load the engines
-	// We could use QDesktopServices but then this would be inconsistent with
-	// CuteChessCoreApp
-	QSettings settings;
-	QFileInfo fi(settings.fileName());
-	engineManager()->loadEngines(fi.absolutePath() +
-		QLatin1String("/engines.json"));
+	engineManager()->loadEngines(configPath() + QLatin1String("/engines.json"));
 }
 
 CuteChessApplication::~CuteChessApplication()
@@ -51,6 +48,19 @@ CuteChessApplication::~CuteChessApplication()
 CuteChessApplication* CuteChessApplication::instance()
 {
 	return static_cast<CuteChessApplication*>(QApplication::instance());
+}
+
+QString CuteChessApplication::configPath()
+{
+	QSettings settings;
+	QFileInfo fi(settings.fileName());
+	if (!QFile::exists(fi.absolutePath()))
+	{
+		QDir dir;
+		dir.mkpath(fi.absolutePath());
+	}
+
+	return fi.absolutePath();
 }
 
 EngineManager* CuteChessApplication::engineManager()

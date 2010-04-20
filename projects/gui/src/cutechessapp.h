@@ -30,9 +30,9 @@ class CuteChessApplication : public QApplication
 		CuteChessApplication(int& argc, char* argv[]);
 		~CuteChessApplication();
 
-		static CuteChessApplication* instance();
-
+		QString configPath();
 		EngineManager* engineManager();
+		static CuteChessApplication* instance();
 
 	private:
 		EngineManager* m_engineManager;
