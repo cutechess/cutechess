@@ -19,6 +19,7 @@
 #include <QSettings>
 #include <QTime>
 #include <QFileInfo>
+#include <QDir>
 #include <enginemanager.h>
 #include <cstdlib>
 #include <cstdio>
