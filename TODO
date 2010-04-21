@@ -46,3 +46,4 @@
 
 - Use SVG graphics to display piece symbols in PromotionDialog
 
+- Per window dialogs should use QDialog::open() instead of exec()
