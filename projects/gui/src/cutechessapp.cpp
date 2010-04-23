@@ -52,6 +52,8 @@ CuteChessApplication* CuteChessApplication::instance()
 
 QString CuteChessApplication::configPath()
 {
+	// We want to have the exact same config path in "gui" and
+	// "cli" applications so that they can share resources
 	QSettings settings;
 	QFileInfo fi(settings.fileName());
 	if (!QFile::exists(fi.absolutePath()))

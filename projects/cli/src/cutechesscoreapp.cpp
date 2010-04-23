@@ -72,6 +72,7 @@ void CuteChessCoreApplication::messageHandler(QtMsgType type,
 
 QString CuteChessCoreApplication::configPath()
 {
+	// QDesktopServices requires QtGui
 	QSettings settings;
 	QFileInfo fi(settings.fileName());
 	if (!QFile::exists(fi.absolutePath()))
