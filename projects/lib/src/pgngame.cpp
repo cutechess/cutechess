@@ -31,7 +31,7 @@ QTextStream& operator<<(QTextStream& out, const PgnGame* game)
 
 
 PgnGame::PgnGame()
-	: m_startingSide(Chess::White)
+	: m_startingSide(Chess::Side::White)
 {
 }
 
@@ -42,7 +42,7 @@ bool PgnGame::isNull() const
 
 void PgnGame::clear()
 {
-	m_startingSide = Chess::NoSide;
+	m_startingSide = Chess::Side();
 	m_tags.clear();
 	m_moves.clear();
 }
@@ -321,7 +321,7 @@ void PgnGame::write(QTextStream& out, PgnMode mode) const
 		const MoveData& data = m_moves.at(i);
 
 		str.clear();
-		if (side == Chess::White || i == 0)
+		if (side == Chess::Side::White || i == 0)
 			str = QString::number(++movenum) + ". ";
 
 		str += data.moveString;
@@ -390,9 +390,9 @@ int PgnGame::round() const
 
 QString PgnGame::playerName(Chess::Side side) const
 {
-	if (side == Chess::White)
+	if (side == Chess::Side::White)
 		return m_tags.value("White");
-	else if (side == Chess::Black)
+	else if (side == Chess::Side::Black)
 		return m_tags.value("Black");
 
 	return QString();
@@ -447,9 +447,9 @@ void PgnGame::setRound(int round)
 
 void PgnGame::setPlayerName(Chess::Side side, const QString& name)
 {
-	if (side == Chess::White)
+	if (side == Chess::Side::White)
 		m_tags["White"] = name;
-	else if (side == Chess::Black)
+	else if (side == Chess::Side::Black)
 		m_tags["Black"] = name;
 }
 

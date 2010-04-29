@@ -265,8 +265,8 @@ void EngineMatch::onGameEnded()
 	Q_ASSERT(game->thread() == thread());
 
 	disconnect(this, SIGNAL(stopGame()), game, SLOT(kill()));
-	if (game->player(Chess::White) == 0
-	||  game->player(Chess::Black) == 0)
+	if (game->player(Chess::Side::White) == 0
+	||  game->player(Chess::Side::Black) == 0)
 	{
 		game->deleteLater();
 		return;
@@ -281,15 +281,15 @@ void EngineMatch::onGameEnded()
 	{
 		white = &m_engines[0];
 		black = &m_engines[1];
-		name1 = game->player(Chess::White)->name();
-		name2 = game->player(Chess::Black)->name();
+		name1 = game->player(Chess::Side::White)->name();
+		name2 = game->player(Chess::Side::Black)->name();
 	}
 	else
 	{
 		white = &m_engines[1];
 		black = &m_engines[0];
-		name1 = game->player(Chess::Black)->name();
-		name2 = game->player(Chess::White)->name();
+		name1 = game->player(Chess::Side::Black)->name();
+		name2 = game->player(Chess::Side::White)->name();
 	}
 
 	Chess::Result result = game->result();
@@ -298,17 +298,17 @@ void EngineMatch::onGameEnded()
 		m_drawCount++;
 	else
 	{
-		if (result.winner() == Chess::White)
+		if (result.winner() == Chess::Side::White)
 		{
 			white->wins++;
 			qDebug("%s wins the game as white",
-			       qPrintable(game->player(Chess::White)->name()));
+			       qPrintable(game->player(Chess::Side::White)->name()));
 		}
-		else if (result.winner() == Chess::Black)
+		else if (result.winner() == Chess::Side::Black)
 		{
 			black->wins++;
 			qDebug("%s wins the game as black",
-			       qPrintable(game->player(Chess::Black)->name()));
+			       qPrintable(game->player(Chess::Side::Black)->name()));
 		}
 	}
 
@@ -374,11 +374,11 @@ void EngineMatch::start()
 		black = &m_engines[0];
 	}
 
-	game->setTimeControl(white->tc, Chess::White);
-	game->setTimeControl(black->tc, Chess::Black);
+	game->setTimeControl(white->tc, Chess::Side::White);
+	game->setTimeControl(black->tc, Chess::Side::Black);
 
-	game->setOpeningBook(white->book, Chess::White, white->bookDepth);
-	game->setOpeningBook(black->book, Chess::Black, black->bookDepth);
+	game->setOpeningBook(white->book, Chess::Side::White, white->bookDepth);
+	game->setOpeningBook(black->book, Chess::Side::Black, black->bookDepth);
 
 	if (!m_fen.isEmpty() || !m_openingMoves.isEmpty())
 	{

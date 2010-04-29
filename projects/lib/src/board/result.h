@@ -68,7 +68,7 @@ class LIB_EXPORT Result
 		 *        additional description is appended to it.
 		 */
 		explicit Result(Type type = NoResult,
-				Side winner = NoSide,
+				Side winner = Side(),
 				const QString& description = QString());
 		/*! Creates a new result from a string. */
 		explicit Result(const QString& str);

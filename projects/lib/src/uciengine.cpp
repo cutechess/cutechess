@@ -129,12 +129,12 @@ void UciEngine::startThinking()
 	const TimeControl* whiteTc = 0;
 	const TimeControl* blackTc = 0;
 	const TimeControl* myTc = timeControl();
-	if (side() == Chess::White)
+	if (side() == Chess::Side::White)
 	{
 		whiteTc = myTc;
 		blackTc = opponent()->timeControl();
 	}
-	else if (side() == Chess::Black)
+	else if (side() == Chess::Side::Black)
 	{
 		whiteTc = opponent()->timeControl();
 		blackTc = myTc;
@@ -256,7 +256,7 @@ void UciEngine::parseInfo(const QString& line)
 				if (attr2[0] == "cp")
 				{
 					score = attr2[1].toInt();
-					if (m_whiteEvalPov && side() == Chess::Black)
+					if (m_whiteEvalPov && side() == Chess::Side::Black)
 						score = -score;
 					hasScore = true;
 				}

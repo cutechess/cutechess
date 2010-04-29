@@ -211,7 +211,7 @@ void MainWindow::newGame()
 
 	for (int i = 0; i < 2; i++)
 	{
-		Chess::Side side = (Chess::Side)i;
+		Chess::Side side = Chess::Side::Type(i);
 		if (dlg.playerType(side) == NewGameDialog::CPU)
 		{
 			EngineConfiguration config =

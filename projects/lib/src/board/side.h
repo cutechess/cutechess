@@ -18,54 +18,83 @@
 #ifndef SIDE_H
 #define SIDE_H
 
-#include <QObject>
 #include <QString>
 
 namespace Chess {
 
-/*! The side or color of a chess player. */
-enum Side
+/*!
+ * \brief The side or color of a chess player.
+ *
+ * This class is a simple wrapper for the enumerated type Side::Type.
+ * Side objects can be used just like one would use an enum type
+ * (eg. as an array index).
+ */
+class Side
 {
-	White,	//!< The side with the white pieces.
-	Black,	//!< The side with the black pieces.
-	NoSide	//!< No side
+	public:
+		/*! The enumerated type for the side. */
+		enum Type
+		{
+			White,	//!< The side with the white pieces.
+			Black,	//!< The side with the black pieces.
+			NoSide	//!< No side
+		};
+
+		/*! Constructs a new, null Side object. */
+		Side();
+		/*! Constructs a new Side object of type \a type. */
+		Side(Type type);
+		/*!
+		 * Constructs a new Side object from a symbol.
+		 *
+		 * The symbol can be "w" for \a White, "b" for \a Black,
+		 * or anything else for \a NoSide.
+		 */
+		explicit Side(const QString& symbol);
+
+		/*! Returns true if the side is \a NoSide. */
+		bool isNull() const;
+		/*! Operator for the \a Type value of the side. */
+		operator Type() const;
+
+		/*!
+		 * Returns the opposite side.
+		 * \note The side must not be null.
+		 */
+		Side opposite() const;
+		/*! Returns the text symbol for the side. */
+		QString symbol() const;
+		/*! Returns a localized name of the side. */
+		QString toString() const;
+
+	private:
+		Type m_type;
 };
 
-/*! Returns the opposing side of \a side. */
-inline Side otherSide(Side side)
+inline Side::Side()
+	: m_type(NoSide)
 {
-	Q_ASSERT(side != NoSide);
-	return Side(side ^ 1);
 }
 
-/*! Returns the character representation of \a side. */
-inline QChar sideChar(Side side)
+inline Side::Side(Type type)
+	: m_type(type)
 {
-	if (side == White)
-		return 'w';
-	else if (side == Black)
-		return 'b';
-	return QChar();
 }
 
-/*! Converts a string into a Side. */
-inline Side sideFromString(const QString& str)
+inline bool Side::isNull() const
 {
-	if (str == "w")
-		return White;
-	else if (str == "b")
-		return Black;
-	return NoSide;
+	return (m_type == NoSide);
 }
 
-/*! Returns a verbose, localized string representation of \a side. */
-inline QString sideString(Side side)
+inline Side::operator Type() const
 {
-	if (side == White)
-		return QObject::tr("white");
-	else if (side == Black)
-		return QObject::tr("black");
-	return QString();
+	return m_type;
+}
+
+inline Side Side::opposite() const
+{
+	Q_ASSERT(!isNull());
+	return Side(Type(int(m_type) ^ 1));
 }
 
 } // namespace Chess

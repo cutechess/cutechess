@@ -9,6 +9,7 @@ SOURCES += board.cpp \
     frcboard.cpp \
     caparandomboard.cpp \
     result.cpp \
+    side.cpp \
     genericmove.cpp \
     atomicboard.cpp \
     losersboard.cpp \

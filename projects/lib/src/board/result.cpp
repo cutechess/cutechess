@@ -29,18 +29,17 @@ Result::Result(Type type, Side winner, const QString& description)
 }
 
 Result::Result(const QString& str)
-	: m_type(ResultError),
-	  m_winner(NoSide)
+	: m_type(ResultError)
 {
 	if (str.startsWith("1-0"))
 	{
 		m_type = Win;
-		m_winner = White;
+		m_winner = Side::White;
 	}
 	else if (str.startsWith("0-1"))
 	{
 		m_type = Win;
-		m_winner = Black;
+		m_winner = Side::Black;
 	}
 	else if (str.startsWith("1/2-1/2"))
 		m_type = Draw;
@@ -74,7 +73,7 @@ bool Result::isNone() const
 
 bool Result::isDraw() const
 {
-	return (m_winner == NoSide &&
+	return (m_winner.isNull() &&
 		m_type != NoResult &&
 		m_type != ResultError);
 }
@@ -86,9 +85,9 @@ Side Result::winner() const
 
 Side Result::loser() const
 {
-	if (m_winner == NoSide)
-		return NoSide;
-	return otherSide(m_winner);
+	if (m_winner.isNull())
+		return Side::NoSide;
+	return m_winner.opposite();
 }
 
 Result::Type Result::type() const
@@ -98,8 +97,8 @@ Result::Type Result::type() const
 
 QString Result::description() const
 {
-	QString w(sideString(winner()));
-	QString l(sideString(loser()));
+	QString w(winner().toString());
+	QString l(loser().toString());
 	QString str;
 
 	if (m_type == Resignation)
@@ -169,9 +168,9 @@ QString Result::toShortString() const
 {
 	if (m_type == NoResult || m_type == ResultError)
 		return "*";
-	if (m_winner == White)
+	if (m_winner == Side::White)
 		return "1-0";
-	if (m_winner == Black)
+	if (m_winner == Side::Black)
 		return "0-1";
 	return "1/2-1/2";
 }

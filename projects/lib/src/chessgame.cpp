@@ -47,7 +47,7 @@ ChessGame::ChessGame(Chess::Board* board, QObject* parent)
 
 ChessPlayer* ChessGame::player(Chess::Side side) const
 {
-	Q_ASSERT(side != Chess::NoSide);
+	Q_ASSERT(!side.isNull());
 	return m_player[side];
 }
 
@@ -73,16 +73,16 @@ Chess::Result ChessGame::result() const
 
 ChessPlayer* ChessGame::playerToMove()
 {
-	if (m_board->sideToMove() == Chess::NoSide)
+	if (m_board->sideToMove().isNull())
 		return 0;
 	return m_player[m_board->sideToMove()];
 }
 
 ChessPlayer* ChessGame::playerToWait()
 {
-	if (m_board->sideToMove() == Chess::NoSide)
+	if (m_board->sideToMove().isNull())
 		return 0;
-	return m_player[Chess::otherSide(m_board->sideToMove())];
+	return m_player[m_board->sideToMove().opposite()];
 }
 
 void ChessGame::stop()
@@ -104,8 +104,8 @@ void ChessGame::stop()
 	m_pgn.setResult(m_result);
 	m_pgn.setResultDescription(m_result.description());
 
-	m_player[Chess::White]->endGame(m_result);
-	m_player[Chess::Black]->endGame(m_result);
+	m_player[Chess::Side::White]->endGame(m_result);
+	m_player[Chess::Side::Black]->endGame(m_result);
 	
 	connect(this, SIGNAL(playersReady()), this, SLOT(finish()), Qt::QueuedConnection);
 	syncPlayers(true);
@@ -153,7 +153,7 @@ void ChessGame::kill()
 
 void ChessGame::adjudication(const MoveEvaluation& eval)
 {
-	Chess::Side side(Chess::otherSide(m_board->sideToMove()));
+	Chess::Side side(m_board->sideToMove().opposite());
 
 	if (eval.depth() <= 0)
 	{
@@ -172,7 +172,7 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 		if (m_moves.size() / 2 >= m_drawMoveNum
 		&&  m_drawScoreCount >= 2)
 		{
-			m_result = Chess::Result(Chess::Result::Adjudication, Chess::NoSide);
+			m_result = Chess::Result(Chess::Result::Adjudication, Chess::Side::NoSide);
 			return;
 		}
 	}
@@ -188,7 +188,7 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 
 		if (count >= m_resignMoveCount)
 			m_result = Chess::Result(Chess::Result::Adjudication,
-						 Chess::otherSide(side));
+						 side.opposite());
 	}
 }
 
@@ -286,7 +286,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 void ChessGame::startTurn()
 {
 	Chess::Side side(m_board->sideToMove());
-	Q_ASSERT(side != Chess::NoSide);
+	Q_ASSERT(!side.isNull());
 
 	Chess::Move move(bookMove(side));
 	if (move.isNull())
@@ -302,7 +302,7 @@ void ChessGame::onForfeit(const Chess::Result& result)
 	if (m_gameEnded)
 		return;
 
-	if (!m_gameInProgress && result.winner() == Chess::NoSide)
+	if (!m_gameInProgress && result.winner().isNull())
 	{
 		ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 		Q_ASSERT(sender != 0);
@@ -316,7 +316,7 @@ void ChessGame::onForfeit(const Chess::Result& result)
 
 Chess::Move ChessGame::bookMove(Chess::Side side)
 {
-	Q_ASSERT(side != Chess::NoSide);
+	Q_ASSERT(!side.isNull());
 
 	if (m_book[side] == 0
 	||  m_moves.size() >= m_bookDepth[side] * 2)
@@ -328,7 +328,7 @@ Chess::Move ChessGame::bookMove(Chess::Side side)
 
 void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
 {
-	Q_ASSERT(side != Chess::NoSide);
+	Q_ASSERT(!side.isNull());
 	Q_ASSERT(player != 0);
 	m_player[side] = player;
 }
@@ -341,10 +341,10 @@ void ChessGame::setStartingFen(const QString& fen)
 
 void ChessGame::setTimeControl(const TimeControl& timeControl, Chess::Side side)
 {
-	if (side != Chess::White)
-		m_timeControl[Chess::Black] = timeControl;
-	if (side != Chess::Black)
-		m_timeControl[Chess::White] = timeControl;
+	if (side != Chess::Side::White)
+		m_timeControl[Chess::Side::Black] = timeControl;
+	if (side != Chess::Side::Black)
+		m_timeControl[Chess::Side::White] = timeControl;
 }
 
 void ChessGame::setMoves(const QVector<Chess::Move>& moves)
@@ -380,10 +380,10 @@ void ChessGame::setOpeningBook(const OpeningBook* book,
 {
 	Q_ASSERT(!m_gameInProgress);
 
-	if (side == Chess::NoSide)
+	if (side.isNull())
 	{
-		setOpeningBook(book, Chess::White, depth);
-		setOpeningBook(book, Chess::Black, depth);
+		setOpeningBook(book, Chess::Side::White, depth);
+		setOpeningBook(book, Chess::Side::Black, depth);
 	}
 	else
 	{
@@ -394,7 +394,7 @@ void ChessGame::setOpeningBook(const OpeningBook* book,
 
 void ChessGame::generateOpening()
 {
-	if (m_book[Chess::White] == 0 || m_book[Chess::Black] == 0)
+	if (m_book[Chess::Side::White] == 0 || m_book[Chess::Side::Black] == 0)
 		return;
 	resetBoard();
 
@@ -451,8 +451,8 @@ void ChessGame::resetBoard()
 
 bool ChessGame::arePlayersReady() const
 {
-	return (m_player[Chess::White]->isReady() &&
-	        m_player[Chess::Black]->isReady());
+	return (m_player[Chess::Side::White]->isReady() &&
+		m_player[Chess::Side::Black]->isReady());
 }
 
 void ChessGame::syncPlayers(bool ignoreSender)
@@ -497,13 +497,13 @@ void ChessGame::start(QThread* thread)
 	if (thread != 0)
 	{
 		Q_ASSERT(parent() == 0);
-		Q_ASSERT(m_player[Chess::White]->parent() == 0);
-		Q_ASSERT(m_player[Chess::Black]->parent() == 0);
+		Q_ASSERT(m_player[Chess::Side::White]->parent() == 0);
+		Q_ASSERT(m_player[Chess::Side::Black]->parent() == 0);
 
 		m_origThread = this->thread();
 		moveToThread(thread);
-		m_player[Chess::White]->moveToThread(thread);
-		m_player[Chess::Black]->moveToThread(thread);
+		m_player[Chess::Side::White]->moveToThread(thread);
+		m_player[Chess::Side::Black]->moveToThread(thread);
 	}
 
 	// Start the game in the correct thread
@@ -515,16 +515,16 @@ void ChessGame::initializePgn()
 	m_pgn.setVariant(m_board->variant());
 	m_pgn.setStartingFenString(m_board->startingSide(), m_startingFen);
 	m_pgn.setDate(QDate::currentDate());
-	m_pgn.setPlayerName(Chess::White, m_player[Chess::White]->name());
-	m_pgn.setPlayerName(Chess::Black, m_player[Chess::Black]->name());
+	m_pgn.setPlayerName(Chess::Side::White, m_player[Chess::Side::White]->name());
+	m_pgn.setPlayerName(Chess::Side::Black, m_player[Chess::Side::Black]->name());
 	m_pgn.setResult(m_result);
 
-	if (m_timeControl[Chess::White] == m_timeControl[Chess::Black])
+	if (m_timeControl[Chess::Side::White] == m_timeControl[Chess::Side::Black])
 		m_pgn.setTag("TimeControl", m_timeControl[0].toString());
 	else
 	{
-		m_pgn.setTag("WhiteTimeControl", m_timeControl[Chess::White].toString());
-		m_pgn.setTag("BlackTimeControl", m_timeControl[Chess::Black].toString());
+		m_pgn.setTag("WhiteTimeControl", m_timeControl[Chess::Side::White].toString());
+		m_pgn.setTag("BlackTimeControl", m_timeControl[Chess::Side::Black].toString());
 	}
 }
 
@@ -570,11 +570,11 @@ void ChessGame::startGame()
 	initializePgn();
 	for (int i = 0; i < 2; i++)
 	{
-		Chess::Side side = Chess::Side(i);
+		Chess::Side side = Chess::Side::Type(i);
 
 		Q_ASSERT(m_timeControl[side].isValid());
 		m_player[side]->setTimeControl(m_timeControl[side]);
-		m_player[side]->newGame(side, m_player[Chess::otherSide(side)], m_board);
+		m_player[side]->newGame(side, m_player[side.opposite()], m_board);
 	}
 	
 	// Play the forced opening moves first

@@ -227,8 +227,8 @@ bool GameManager::startGame()
 	connect(gameThread, SIGNAL(finished()), this, SLOT(onThreadQuit()));
 	gameThread->start();
 	
-	game->setPlayer(Chess::White, white);
-	game->setPlayer(Chess::Black, black);
+	game->setPlayer(Chess::Side::White, white);
+	game->setPlayer(Chess::Side::Black, black);
 	game->start(gameThread);
 
 	return startGame();

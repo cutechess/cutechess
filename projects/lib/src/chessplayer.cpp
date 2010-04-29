@@ -25,7 +25,6 @@ ChessPlayer::ChessPlayer(QObject* parent)
 	  m_state(NotStarted),
 	  m_timer(new QTimer(this)),
 	  m_forfeited(false),
-	  m_side(Chess::NoSide),
 	  m_board(0),
 	  m_opponent(0)
 {
@@ -194,9 +193,9 @@ void ChessPlayer::emitForfeit(Chess::Result::Type type, const QString& descripti
 		m_state = Observing;
 	m_forfeited = true;
 
-	Chess::Side winner = Chess::NoSide;
-	if (m_side != Chess::NoSide)
-		winner = Chess::otherSide(m_side);
+	Chess::Side winner;
+	if (!m_side.isNull())
+		winner = m_side.opposite();
 	emit forfeit(Chess::Result(type, winner, description));
 }
 

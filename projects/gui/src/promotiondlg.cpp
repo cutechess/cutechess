@@ -46,7 +46,7 @@ PromotionDialog::PromotionDialog(const Chess::Board* board,
 		}
 
 		radioButtons << new QRadioButton(board->pieceString(prom));
-		labels << new QLabel(board->pieceSymbol(Chess::Piece(Chess::White, prom)));
+		labels << new QLabel(board->pieceSymbol(Chess::Piece(Chess::Side::White, prom)));
 	}
 
 	// Set default promotion type

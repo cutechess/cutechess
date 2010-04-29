@@ -451,8 +451,8 @@ void XboardEngine::parseLine(const QString& line)
 			return;
 		}
 		
-		if ((command == "1-0" && side() == Chess::White)
-		||  (command == "0-1" && side() == Chess::Black))
+		if ((command == "1-0" && side() == Chess::Side::White)
+		||  (command == "0-1" && side() == Chess::Side::Black))
 		{
 			qDebug("%s forfeits by invalid victory claim",
 			       qPrintable(name()));
@@ -508,7 +508,7 @@ void XboardEngine::parseLine(const QString& line)
 		int eval = args.section(' ', 0, 0).toInt(&ok);
 		if (ok)
 		{
-			if (m_whiteEvalPov && side() == Chess::Black)
+			if (m_whiteEvalPov && side() == Chess::Side::Black)
 				eval = -eval;
 			m_eval.setScore(eval);
 		}

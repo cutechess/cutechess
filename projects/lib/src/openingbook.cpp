@@ -91,7 +91,7 @@ int OpeningBook::import(const PgnGame& pgn, int maxMoves)
 	int weight = 1;
 	maxMoves = qMin(maxMoves, pgn.moves().size());
 
-	if (winner != Chess::NoSide)
+	if (!winner.isNull())
 	{
 		loserMod = int(pgn.startingSide() == winner);
 		weight = 2;

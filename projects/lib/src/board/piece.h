@@ -77,14 +77,14 @@ class Piece
 
 
 inline Piece::Piece(int type)
-	: m_data(type | (NoSide << 10))
+	: m_data(type | (Side::NoSide << 10))
 {
 }
 
 inline Piece::Piece(Side side, int type)
 	: m_data(type | (side << 10))
 {
-	Q_ASSERT(side != NoSide);
+	Q_ASSERT(!side.isNull());
 	Q_ASSERT(type != WallPiece);
 	Q_ASSERT(type != NoPiece);
 }
@@ -106,7 +106,7 @@ inline bool Piece::isEmpty() const
 
 inline bool Piece::isValid() const
 {
-	return side() != NoSide;
+	return !side().isNull();
 }
 
 inline bool Piece::isWall() const
@@ -116,7 +116,7 @@ inline bool Piece::isWall() const
 
 inline Side Piece::side() const
 {
-	return Side(m_data >> 10);
+	return Side(Side::Type(m_data >> 10));
 }
 
 inline int Piece::type() const

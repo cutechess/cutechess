@@ -63,8 +63,8 @@ Board::Board(Zobrist* zobrist,
 	  m_initialized(false),
 	  m_width(0),
 	  m_height(0),
-	  m_side(White),
-	  m_startingSide(White),
+	  m_side(Side::White),
+	  m_startingSide(Side::White),
 	  m_key(0),
 	  m_zobrist(zobrist)
 {
@@ -95,7 +95,7 @@ Board::CoordinateSystem Board::coordinateSystem() const
 
 Side Board::upperCaseSide() const
 {
-	return White;
+	return Side::White;
 }
 
 Piece Board::pieceAt(const Square& square) const
@@ -165,7 +165,7 @@ Piece Board::pieceFromSymbol(const QString& pieceSymbol) const
 	Side side(upperCaseSide());
 	if (pieceSymbol == symbol)
 		return Piece(side, code);
-	return Piece(otherSide(side), code);
+	return Piece(side.opposite(), code);
 }
 
 QString Board::pieceString(int pieceType) const
@@ -428,15 +428,15 @@ QString Board::fenString(FenNotation notation) const
 	}
 
 	// Side to move
-	fen += QString(" %1 ").arg(sideChar(m_side));
+	fen += QString(" %1 ").arg(m_side.symbol());
 
 	// Hand pieces
 	if (variantHasDrops())
 	{
 		QString str;
-		for (int i = White; i <= Black; i++)
+		for (int i = Side::White; i <= Side::Black; i++)
 		{
-			Side side = Side(i);
+			Side side = Side::Type(i);
 			for (int j = m_handPieces[i].size() - 1; j >= 1; j--)
 			{
 				int count = m_handPieces[i][j];
@@ -544,14 +544,14 @@ bool Board::setFenString(const QString& fen)
 	// Side to move
 	if (++token == strList.end())
 		return false;
-	m_side = sideFromString(*token);
+	m_side = Side(*token);
 	m_startingSide = m_side;
-	if (m_side == NoSide)
+	if (m_side.isNull())
 		return false;
 
 	// Hand pieces
-	m_handPieces[White].clear();
-	m_handPieces[Black].clear();
+	m_handPieces[Side::White].clear();
+	m_handPieces[Side::Black].clear();
 	if (variantHasDrops()
 	&&  ++token != strList.end()
 	&&  *token != "-")
@@ -586,7 +586,7 @@ bool Board::setFenString(const QString& fen)
 	if (!vSetFenString(strList))
 		return false;
 
-	if (m_side == White)
+	if (m_side == Side::White)
 		xorKey(m_zobrist->side());
 
 	if (!isLegalPosition())
@@ -603,7 +603,7 @@ void Board::reset()
 
 void Board::makeMove(const Move& move, bool sendSignal)
 {
-	Q_ASSERT(m_side != NoSide);
+	Q_ASSERT(!m_side.isNull());
 	Q_ASSERT(!move.isNull());
 
 	MoveData md = { move, m_key };
@@ -615,12 +615,12 @@ void Board::makeMove(const Move& move, bool sendSignal)
 	vMakeMove(move, squares);
 
 	xorKey(m_zobrist->side());
-	m_side = otherSide(m_side);
+	m_side = m_side.opposite();
 	m_moveHistory << md;
 
 	if (sendSignal)
 	{
-		Chess::Side side(otherSide(m_side));
+		Chess::Side side(m_side.opposite());
 		int source = move.sourceSquare();
 		int target = move.targetSquare();
 
@@ -642,9 +642,9 @@ void Board::makeMove(const Move& move, bool sendSignal)
 void Board::undoMove()
 {
 	Q_ASSERT(!m_moveHistory.isEmpty());
-	Q_ASSERT(m_side != NoSide);
+	Q_ASSERT(!m_side.isNull());
 
-	m_side = otherSide(m_side);
+	m_side = m_side.opposite();
 	vUndoMove(m_moveHistory.last().move);
 
 	m_key = m_moveHistory.last().key;
@@ -653,7 +653,7 @@ void Board::undoMove()
 
 void Board::generateMoves(QVarLengthArray<Move>& moves, int pieceType) const
 {
-	Q_ASSERT(m_side != NoSide);
+	Q_ASSERT(!m_side.isNull());
 
 	// Cut the wall squares (the ones with a value of WallPiece) off
 	// from the squares to iterate over. It bumps the speed up a bit.
@@ -695,7 +695,7 @@ void Board::generateHoppingMoves(int sourceSquare,
 				 const QVarLengthArray<int>& offsets,
 				 QVarLengthArray<Move>& moves) const
 {
-	Side opSide = otherSide(sideToMove());
+	Side opSide = sideToMove().opposite();
 	for (int i = 0; i < offsets.size(); i++)
 	{
 		int targetSquare = sourceSquare + offsets[i];
@@ -756,7 +756,7 @@ int Board::captureType(const Move& move) const
 	Q_ASSERT(!move.isNull());
 
 	Piece piece(m_squares[move.targetSquare()]);
-	if (piece.side() == otherSide(m_side))
+	if (piece.side() == m_side.opposite())
 		return piece.type();
 	return Piece::NoPiece;
 }

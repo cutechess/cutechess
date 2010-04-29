@@ -195,12 +195,12 @@ Chess::Piece ChessboardModel::indexToHandPiece(const QModelIndex& index) const
 	if (m_widthOffset == 0 || index.column() >= m_width)
 		return Chess::Piece::NoPiece;
 
-	Chess::Side side = Chess::NoSide;
+	Chess::Side side;
 	int col = index.column();
 	int pieceType = index.row() + 1;
 
 	if (col == 0)
-		side = Chess::otherSide(m_board->upperCaseSide());
+		side = m_board->upperCaseSide().opposite();
 	else if (col == m_width - 1)
 	{
 		side = m_board->upperCaseSide();

@@ -76,14 +76,14 @@ bool LosersBoard::vIsLegalMove(const Move& move)
 
 Result LosersBoard::result()
 {
-	Side winner = NoSide;
+	Side winner;
 	QString str;
 
 	// Checkmate/Stalemate
 	if (!canMove())
 	{
 		winner = sideToMove();
-		str = tr("%1 gets mated").arg(sideString(winner));
+		str = tr("%1 gets mated").arg(winner.toString());
 		return Result(Result::Win, winner, str);
 	}
 
@@ -98,7 +98,7 @@ Result LosersBoard::result()
 	if (pieceCount <= 1)
 	{
 		winner = sideToMove();
-		str = tr("%1 lost all pieces").arg(sideString(winner));
+		str = tr("%1 lost all pieces").arg(winner.toString());
 		return Result(Result::Win, winner, str);
 	}
 
@@ -106,14 +106,14 @@ Result LosersBoard::result()
 	if (reversibleMoveCount() >= 100)
 	{
 		str = tr("Draw by fifty moves rule");
-		return Result(Result::Draw, NoSide, str);
+		return Result(Result::Draw, Side::NoSide, str);
 	}
 
 	// 3-fold repetition
 	if (repeatCount() >= 2)
 	{
 		str = tr("Draw by 3-fold repetition");
-		return Result(Result::Draw, NoSide, str);
+		return Result(Result::Draw, Side::NoSide, str);
 	}
 
 	return Result();

@@ -62,7 +62,7 @@ quint64 WesternZobrist::enpassant(int square) const
 
 quint64 WesternZobrist::castling(int side, int square) const
 {
-	Q_ASSERT(side != NoSide);
+	Q_ASSERT(side != Side::NoSide);
 	Q_ASSERT(square >= 0 && square < squareCount());
 
 	return keys()[m_castlingIndex + squareCount() * side + square];

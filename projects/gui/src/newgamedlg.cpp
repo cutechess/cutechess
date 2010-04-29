@@ -70,9 +70,9 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 
 NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
 {
-	Q_ASSERT(side != Chess::NoSide);
+	Q_ASSERT(!side.isNull());
 
-	if (side == Chess::White)
+	if (side == Chess::Side::White)
 		return (m_whitePlayerHumanRadio->isChecked()) ? Human : CPU;
 	else
 		return (m_blackPlayerHumanRadio->isChecked()) ? Human : CPU;
@@ -80,10 +80,10 @@ NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
 
 int NewGameDialog::selectedEngineIndex(Chess::Side side) const
 {
-	Q_ASSERT(side != Chess::NoSide);
+	Q_ASSERT(!side.isNull());
 
 	int i;
-	if (side == Chess::White)
+	if (side == Chess::Side::White)
 		i = m_whiteEngineComboBox->currentIndex();
 	else
 		i = m_blackEngineComboBox->currentIndex();
@@ -100,7 +100,7 @@ void NewGameDialog::configureWhiteEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 
-	int i = selectedEngineIndex(Chess::White);
+	int i = selectedEngineIndex(Chess::Side::White);
 	dlg.applyEngineInformation(
 		CuteChessApplication::instance()->engineManager()->engines().at(i));
 
@@ -115,7 +115,7 @@ void NewGameDialog::configureBlackEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 
-	int i = selectedEngineIndex(Chess::Black);
+	int i = selectedEngineIndex(Chess::Side::Black);
 	dlg.applyEngineInformation(
 		CuteChessApplication::instance()->engineManager()->engines().at(i));
 

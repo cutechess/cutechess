@@ -49,11 +49,12 @@ class LIB_EXPORT ChessGame : public QObject
 
 		void setPlayer(Chess::Side side, ChessPlayer* player);
 		void setStartingFen(const QString& fen);
-		void setTimeControl(const TimeControl& timeControl, Chess::Side side = Chess::NoSide);
+		void setTimeControl(const TimeControl& timeControl,
+				    Chess::Side side = Chess::Side());
 		void setMoves(const QVector<Chess::Move>& moves);
 		void setMoves(const PgnGame& pgn);
 		void setOpeningBook(const OpeningBook* book,
-                                    Chess::Side side = Chess::NoSide,
+				    Chess::Side side = Chess::Side(),
 				    int depth = 1000);
 		void setDrawThreshold(int moveNumber, int score);
 		void setResignThreshold(int moveCount, int score);
