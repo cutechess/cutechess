@@ -75,11 +75,10 @@ QString CuteChessCoreApplication::configPath()
 	// QDesktopServices requires QtGui
 	QSettings settings;
 	QFileInfo fi(settings.fileName());
-	if (!QFile::exists(fi.absolutePath()))
-	{
-		QDir dir;
+	QDir dir(fi.absolutePath());
+
+	if (!dir.exists())
 		dir.mkpath(fi.absolutePath());
-	}
 
 	return fi.absolutePath();
 }

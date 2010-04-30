@@ -17,7 +17,6 @@
 
 #include "cutechessapp.h"
 #include <QCoreApplication>
-#include <QFile>
 #include <QDir>
 #include <QTime>
 #include <QSettings>
@@ -56,11 +55,10 @@ QString CuteChessApplication::configPath()
 	// "cli" applications so that they can share resources
 	QSettings settings;
 	QFileInfo fi(settings.fileName());
-	if (!QFile::exists(fi.absolutePath()))
-	{
-		QDir dir;
+	QDir dir(fi.absolutePath());
+
+	if (!dir.exists())
 		dir.mkpath(fi.absolutePath());
-	}
 
 	return fi.absolutePath();
 }
