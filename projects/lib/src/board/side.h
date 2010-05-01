@@ -29,7 +29,7 @@ namespace Chess {
  * Side objects can be used just like one would use an enum type
  * (eg. as an array index).
  */
-class Side
+class LIB_EXPORT Side
 {
 	public:
 		/*! The enumerated type for the side. */
