@@ -40,6 +40,7 @@ ChessEngine::ChessEngine(QObject* parent)
 	  m_pinging(false),
 	  m_pingTimer(new QTimer(this)),
 	  m_quitTimer(new QTimer(this)),
+	  m_idleTimer(new QTimer(this)),
 	  m_ioDevice(0)
 {
 	m_pingTimer->setSingleShot(true);
@@ -49,6 +50,10 @@ ChessEngine::ChessEngine(QObject* parent)
 	m_quitTimer->setSingleShot(true);
 	m_quitTimer->setInterval(2000);
 	connect(m_quitTimer, SIGNAL(timeout()), this, SLOT(onQuitTimeout()));
+
+	m_idleTimer->setSingleShot(true);
+	m_idleTimer->setInterval(10000);
+	connect(m_idleTimer, SIGNAL(timeout()), this, SLOT(onIdleTimeout()));
 }
 
 ChessEngine::~ChessEngine()
@@ -185,6 +190,28 @@ bool ChessEngine::supportsVariant(const QString& variant) const
 	return m_variants.contains(variant);
 }
 
+void ChessEngine::stopThinking()
+{
+	if (state() == Thinking)
+	{
+		Q_ASSERT(!m_pinging);
+		m_idleTimer->start();
+		sendStop();
+	}
+}
+
+void ChessEngine::onIdleTimeout()
+{
+	m_idleTimer->stop();
+	if (state() != Thinking || m_pinging)
+		return;
+
+	m_writeBuffer.clear();
+	closeConnection();
+
+	emitForfeit(Chess::Result::StalledConnection);
+}
+
 void ChessEngine::closeConnection()
 {
 	if (state() == Disconnected)
@@ -282,6 +309,7 @@ void ChessEngine::onReadyRead()
 {
 	while (m_ioDevice->isReadable() && m_ioDevice->canReadLine())
 	{
+		m_idleTimer->stop();
 		QString line = QString(m_ioDevice->readLine()).simplified();
 		emit debugMessage(QString("<%1(%2): %3")
 				  .arg(name())

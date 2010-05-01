@@ -136,11 +136,14 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 */
 		virtual bool sendPing() = 0;
 
+		/*! Sends the stop command to the engine. */
+		virtual void sendStop() = 0;
+
 		/*! Sends the quit command to the engine. */
 		virtual void sendQuit() = 0;
 
 		/*! Tells the engine to stop thinking and move now. */
-		virtual void stopThinking() = 0;
+		void stopThinking();
 
 		EngineOption* getOption(const QString& name) const;
 
@@ -161,8 +164,11 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Reads input from the engine. */
 		void onReadyRead();
 
-		/*! Called when the engine becomes unresponsive. */
+		/*! Called when the engine doesn't respond to ping. */
 		void onPingTimeout();
+
+		/*! Called when the engine idles for too long. */
+		void onIdleTimeout();
 
 		/*! Called when the engine responds to ping. */
 		void pong();
@@ -190,6 +196,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		bool m_pinging;
 		QTimer* m_pingTimer;
 		QTimer* m_quitTimer;
+		QTimer* m_idleTimer;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
 		QMap<QString, QVariant> m_optionBuffer;

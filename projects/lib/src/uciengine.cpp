@@ -163,10 +163,9 @@ void UciEngine::startThinking()
 	write(command);
 }
 
-void UciEngine::stopThinking()
+void UciEngine::sendStop()
 {
-	if (state() == Thinking)
-		write("stop");
+	write("stop");
 }
 
 QString UciEngine::protocol() const

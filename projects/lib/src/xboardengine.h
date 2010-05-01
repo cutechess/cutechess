@@ -42,12 +42,12 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 	protected:
 		// Inherited from ChessEngine
 		bool sendPing();
+		void sendStop();
 		void sendQuit();
 		void startProtocol();
 		void startGame();
 		void startThinking();
 		void parseLine(const QString& line);
-		void stopThinking();
 		void sendOption(const QString& name, const QString& value);
 
 	private slots:

@@ -271,10 +271,9 @@ void XboardEngine::startThinking()
 		makeMove(m_nextMove);
 }
 
-void XboardEngine::stopThinking()
+void XboardEngine::sendStop()
 {
-	if (state() == Thinking)
-		write("?");
+	write("?");
 }
 
 QString XboardEngine::protocol() const

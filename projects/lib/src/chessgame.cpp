@@ -484,7 +484,8 @@ void ChessGame::syncPlayers(bool ignoreSender)
 	else
 	{
 		disconnect(sender, SIGNAL(ready()), this, SLOT(syncPlayers()));
-		if (!arePlayersReady() || sender->state() == ChessPlayer::Disconnected)
+		if (!arePlayersReady()
+		||  (!m_gameEnded && sender->state() == ChessPlayer::Disconnected))
 			return;
 	}
 
