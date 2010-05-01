@@ -64,7 +64,7 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board*
 	m_timeControl.setTimeLeft(m_timeControl.timePerTc());
 	m_timeControl.setMovesLeft(m_timeControl.movesPerTc());
 
-	m_state = Observing;
+	setState(Observing);
 	startGame();
 }
 
@@ -75,7 +75,7 @@ void ChessPlayer::endGame(const Chess::Result& result)
 		return;
 
 	Q_ASSERT(m_state != Disconnected);
-	m_state = FinishingGame;
+	setState(FinishingGame);
 	m_board = 0;
 	m_timer->stop();
 	disconnect(this, SIGNAL(ready()), this, SLOT(go()));
@@ -85,7 +85,7 @@ void ChessPlayer::go()
 {
 	if (m_state == Disconnected)
 		return;
-	m_state = Thinking;
+	setState(Thinking);
 
 	disconnect(this, SIGNAL(ready()), this, SLOT(go()));
 	if (!isReady())
@@ -103,7 +103,7 @@ void ChessPlayer::go()
 
 void ChessPlayer::quit()
 {
-	m_state = Disconnected;
+	setState(Disconnected);
 	emit disconnected();
 }
 
@@ -170,6 +170,11 @@ ChessPlayer::State ChessPlayer::state() const
 
 void ChessPlayer::setState(State state)
 {
+	if (state == m_state)
+		return;
+	if (m_state == Thinking)
+		emit stoppedThinking();
+
 	m_state = state;
 }
 
@@ -190,7 +195,7 @@ void ChessPlayer::emitForfeit(Chess::Result::Type type, const QString& descripti
 
 	m_timer->stop();
 	if (m_state == Thinking)
-		m_state = Observing;
+		setState(Observing);
 	m_forfeited = true;
 
 	Chess::Side winner;
@@ -202,7 +207,7 @@ void ChessPlayer::emitForfeit(Chess::Result::Type type, const QString& descripti
 void ChessPlayer::emitMove(const Chess::Move& move)
 {
 	if (m_state == Thinking)
-		m_state = Observing;
+		setState(Observing);
 
 	m_timeControl.update();
 	m_eval.setTime(m_timeControl.lastMoveTime());
@@ -219,7 +224,7 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 
 void ChessPlayer::closeConnection()
 {
-	m_state = Disconnected;
+	setState(Disconnected);
 }
 
 void ChessPlayer::onDisconnect()

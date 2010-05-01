@@ -160,6 +160,14 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		void startedThinking(int timeLeft) const;
 
+		/*!
+		 * This signal is emitted when the player stops thinking of
+		 * a move. Note that it doesn't necessarily mean that the
+		 * player has made a move - they could've lost the game on
+		 * time, disconnected, etc.
+		 */
+		void stoppedThinking() const;
+
 		/*! Signals the player's move. */
 		void moveMade(const Chess::Move& move) const;
 		

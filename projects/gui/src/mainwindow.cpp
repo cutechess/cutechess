@@ -249,10 +249,8 @@ void MainWindow::newGame()
 		
 		connect(player[i], SIGNAL(startedThinking(int)),
 			m_chessClock[i], SLOT(start(int)));
-		connect(player[i], SIGNAL(moveMade(const Chess::Move&)),
+		connect(player[i], SIGNAL(stoppedThinking()),
 			m_chessClock[i], SLOT(stop()));
-		connect(chessgame, SIGNAL(gameEnded()),
-		        m_chessClock[i], SLOT(stop()));
 		connect(player[i], SIGNAL(debugMessage(const QString&)),
 			m_engineDebugLog, SLOT(appendPlainText(const QString&)));
 	}
