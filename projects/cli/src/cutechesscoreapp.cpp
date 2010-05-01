@@ -40,7 +40,10 @@ CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 	qInstallMsgHandler(CuteChessCoreApplication::messageHandler);
 
 	// Load the engines
-	engineManager()->loadEngines(configPath() + QLatin1String("/engines.json"));
+	QString configFile("engines.json");
+	if (!QFile::exists(configFile))
+		configFile = configPath() + "/" + configFile;
+	engineManager()->loadEngines(configFile);
 }
 
 CuteChessCoreApplication::~CuteChessCoreApplication()
