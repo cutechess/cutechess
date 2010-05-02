@@ -195,7 +195,8 @@ QString WesternBoard::sanMoveString(const Move& move)
 		for (int i = 0; i < moves.size(); i++)
 		{
 			const Move& move2 = moves[i];
-			if (move2.sourceSquare() == source
+			if (move2.sourceSquare() == 0
+			||  move2.sourceSquare() == source
 			||  move2.targetSquare() != target)
 				continue;
 
@@ -314,7 +315,22 @@ Move WesternBoard::moveFromSanString(const QString& str)
 			it += 2;
 	}
 	else
+	{
 		++it;
+
+		// Drop moves
+		if (*it == '@')
+		{
+			targetSq = chessSquare(mstr.right(2));
+			if (!isValidSquare(targetSq))
+				return Move();
+
+			Move move(0, squareIndex(targetSq), piece.type());
+			if (isLegalMove(move))
+				return move;
+			return Move();
+		}
+	}
 
 	bool stringIsCapture = false;
 
@@ -399,7 +415,7 @@ Move WesternBoard::moveFromSanString(const QString& str)
 	for (int i = 0; i < moves.size(); i++)
 	{
 		const Move& move = moves[i];
-		if (move.targetSquare() != target)
+		if (move.sourceSquare() == 0 || move.targetSquare() != target)
 			continue;
 		Square sourceSq2 = chessSquare(move.sourceSquare());
 		if (sourceSq.rank() != -1 && sourceSq2.rank() != sourceSq.rank())
