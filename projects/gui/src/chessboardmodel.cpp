@@ -254,7 +254,9 @@ void ChessboardModel::onHumanMove(const QModelIndex& source, const QModelIndex& 
 	if (piece.isValid())
 	{
 		move.setPromotion(piece.type());
-		emit humanMove(m_board->moveFromGenericMove(move), side);
+		Chess::Move tmp(m_board->moveFromGenericMove(move));
+		if (m_board->isLegalMove(tmp))
+			emit humanMove(tmp, side);
 		return;
 	}
 
