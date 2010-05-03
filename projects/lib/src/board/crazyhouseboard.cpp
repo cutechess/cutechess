@@ -87,58 +87,108 @@ int CrazyhouseBoard::promotedPieceType(int type)
 	}
 }
 
-QString CrazyhouseBoard::lanMoveString(const Move& move)
+void CrazyhouseBoard::normalizePieces(Piece piece, QVarLengthArray<int>& squares)
 {
-	Move tmp(move.sourceSquare(),
-		 move.targetSquare(),
-		 normalPieceType(move.promotion()));
+	if (!piece.isValid())
+		return;
 
-	return WesternBoard::lanMoveString(tmp);
+	Piece prom(piece.side(), promotedPieceType(piece.type()));
+	Piece base(piece.side(), normalPieceType(piece.type()));
+	if (base == prom)
+		return;
+
+	const int size = arraySize();
+	for (int i = 0; i < size; i++)
+	{
+		if (pieceAt(i) == prom)
+		{
+			squares.append(i);
+			setSquare(i, base);
+		}
+	}
 }
 
-Move CrazyhouseBoard::moveFromLanString(const QString& str)
+void CrazyhouseBoard::restorePieces(Piece piece, const QVarLengthArray<int>& squares)
 {
-	Move move(WesternBoard::moveFromLanString(str));
-	if (move.promotion() == Piece::NoPiece || move.sourceSquare() == 0)
-		return move;
+	if (!piece.isValid() || squares.isEmpty())
+		return;
 
-	return Move(move.sourceSquare(),
-		    move.targetSquare(),
-		    promotedPieceType(move.promotion()));
+	Piece prom(piece.side(), promotedPieceType(piece.type()));
+	for (int i = 0; i < squares.size(); i++)
+		setSquare(squares[i], prom);
+}
+
+QString CrazyhouseBoard::sanMoveString(const Move& move)
+{
+	Piece piece(pieceAt(move.sourceSquare()));
+	QVarLengthArray<int> squares;
+
+	normalizePieces(piece, squares);
+	QString str(WesternBoard::sanMoveString(move));
+	restorePieces(piece, squares);
+
+	return str;
+}
+
+Move CrazyhouseBoard::moveFromSanString(const QString& str)
+{
+	if (str.isEmpty())
+		return Move();
+
+	Piece piece(pieceFromSymbol(str.at(0)));
+	if (piece.isValid())
+	{
+		piece.setSide(sideToMove());
+		QVarLengthArray<int> squares;
+
+		normalizePieces(piece, squares);
+		Move move(WesternBoard::moveFromSanString(str));
+		restorePieces(piece, squares);
+
+		return move;
+	}
+
+	return WesternBoard::moveFromSanString(str);
 }
 
 void CrazyhouseBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSquares)
 {
 	Q_UNUSED(changedSquares);
 
+	int source = move.sourceSquare();
+	int target = move.targetSquare();
+	int prom = move.promotion();
+
+	Move tmp(move);
+	if (source != 0 && prom != Piece::NoPiece)
+		tmp = Move(source, target, promotedPieceType(prom));
+	
 	int ctype = captureType(move);
 	if (ctype != Piece::NoPiece)
 		addHandPiece(Piece(sideToMove(), handPieceType(ctype)));
-	else if (move.sourceSquare() == 0)
-		removeHandPiece(Piece(sideToMove(), move.promotion()));
+	else if (source == 0)
+		removeHandPiece(Piece(sideToMove(), prom));
 
-	return WesternBoard::vMakeMove(move, changedSquares);
+	return WesternBoard::vMakeMove(tmp, changedSquares);
 }
 
 void CrazyhouseBoard::vUndoMove(const Move& move)
 {
-	WesternBoard::vUndoMove(move);
+	int source = move.sourceSquare();
+	int target = move.targetSquare();
+	int prom = move.promotion();
+
+	Move tmp(move);
+	if (source != 0 && prom != Piece::NoPiece)
+		tmp = Move(source, target, promotedPieceType(prom));
+
+	WesternBoard::vUndoMove(tmp);
 
 	int ctype = captureType(move);
 	if (ctype != Piece::NoPiece)
 		removeHandPiece(Piece(sideToMove(), handPieceType(ctype)));
-	else if (move.sourceSquare() == 0)
-		addHandPiece(Piece(sideToMove(), move.promotion()));
-}
-
-void CrazyhouseBoard::addPromotions(int sourceSquare,
-				    int targetSquare,
-				    QVarLengthArray<Move>& moves) const
-{
-	moves.append(Move(sourceSquare, targetSquare, PromotedKnight));
-	moves.append(Move(sourceSquare, targetSquare, PromotedBishop));
-	moves.append(Move(sourceSquare, targetSquare, PromotedRook));
-	moves.append(Move(sourceSquare, targetSquare, PromotedQueen));
+	else if (source == 0)
+		addHandPiece(Piece(sideToMove(), prom));
 }
 
 void CrazyhouseBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,

@@ -62,14 +62,11 @@ class CrazyhouseBoard : public WesternBoard
 
 		// Inherited from WesternBoard
 		virtual int handPieceType(int pieceType) const;
-		virtual QString lanMoveString(const Move& move);
-		virtual Move moveFromLanString(const QString& str);
+		virtual QString sanMoveString(const Move& move);
+		virtual Move moveFromSanString(const QString& str);
 		virtual void vMakeMove(const Move& move,
 				       QVarLengthArray<int>& changedSquares);
 		virtual void vUndoMove(const Move& move);
-		virtual void addPromotions(int sourceSquare,
-					   int targetSquare,
-					   QVarLengthArray<Move>& moves) const;
 		virtual void generateMovesForPiece(QVarLengthArray<Move>& moves,
 						   int pieceType,
 						   int square) const;
@@ -77,6 +74,8 @@ class CrazyhouseBoard : public WesternBoard
 	private:
 		static int normalPieceType(int type);
 		static int promotedPieceType(int type);
+		void normalizePieces(Piece piece, QVarLengthArray<int>& squares);
+		void restorePieces(Piece piece, const QVarLengthArray<int>& squares);
 };
 
 } // namespace Chess
