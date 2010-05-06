@@ -10,7 +10,7 @@ win32 {
     DEFINES += LIB_EXPORT=\"\"
 }
 
-CUTECHESS_CLI_VERSION = 0.2.1
+CUTECHESS_CLI_VERSION = 0.2.2
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
@@ -36,4 +36,3 @@ QT -= gui
 
 # Code
 include(src/src.pri)
-
