@@ -11,7 +11,9 @@ win32 {
 
 exists($$PWD/3rdparty/qjson) {
     INCLUDEPATH += $$PWD/3rdparty/qjson/include
+    LIBS += -L$$PWD/3rdparty/qjson/lib
 }
+LIBS += -lqjson
 
 include(src/src.pri)
 
