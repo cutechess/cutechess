@@ -7,9 +7,9 @@
 class LIB_EXPORT EngineOption
 {
 	public:
-		EngineOption(const QString& name,
-			     const QVariant& value = QVariant(),
-			     const QVariant& defaultValue = QVariant());
+		explicit EngineOption(const QString& name,
+				      const QVariant& value = QVariant(),
+				      const QVariant& defaultValue = QVariant());
 		virtual ~EngineOption() {}
 
 		bool isValid() const;
