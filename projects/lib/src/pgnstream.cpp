@@ -17,7 +17,7 @@
 
 #include "pgnstream.h"
 #include <QIODevice>
-#include <board/board.h>
+#include <board/boardfactory.h>
 
 
 PgnStream::PgnStream(const QString& variant)
@@ -99,11 +99,11 @@ bool PgnStream::setVariant(const QString& variant)
 {
 	if (m_board != 0 && m_board->variant() == variant)
 		return true;
-	if (!Chess::Board::registry()->items().contains(variant))
+	if (!Chess::BoardFactory::variants().contains(variant))
 		return false;
 
 	delete m_board;
-	m_board = Chess::Board::registry()->create(variant);
+	m_board = Chess::BoardFactory::create(variant);
 	Q_ASSERT(m_board != 0);
 
 	return true;

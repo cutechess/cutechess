@@ -21,7 +21,6 @@
 #include "chessplayer.h"
 #include <QVariant>
 #include <QStringList>
-#include "classregistry.h"
 #include "engineconfiguration.h"
 
 class QIODevice;
@@ -53,9 +52,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 			Buffered,	//!< Use the write buffer
 			Unbuffered	//!< Bypass the write buffer
 		};
-
-		/*! Returns the class registry for concrete ChessEngine subclasses. */
-		static ClassRegistry<ChessEngine>* registry();
 
 		/*! Creates and initializes a new ChessEngine. */
 		ChessEngine(QObject* parent = 0);
@@ -201,14 +197,5 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		QStringList m_writeBuffer;
 		QMap<QString, QVariant> m_optionBuffer;
 };
-
-/*!
- * Registers engine class \a TYPE with protocol name \a PROTOCOL.
- *
- * Every concrete ChessEngine class's implementation file (.cpp) must
- * call this macro.
- */
-#define REGISTER_ENGINE_CLASS(TYPE, PROTOCOL) \
-	REGISTER_CLASS(ChessEngine, TYPE, PROTOCOL, ChessEngine::registry());
 
 #endif // CHESSENGINE_H

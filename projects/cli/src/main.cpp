@@ -22,8 +22,8 @@
 #include <QTextStream>
 #include <QStringList>
 #include <enginemanager.h>
-#include <board/board.h>
-#include <chessengine.h>
+#include <board/boardfactory.h>
+#include <enginefactory.h>
 #include "cutechesscoreapp.h"
 #include "matchparser.h"
 #include "enginematch.h"
@@ -99,7 +99,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 			data.config.addArgument(val);
 		else if (name == "proto")
 		{
-			if (ChessEngine::registry()->items().contains(val))
+			if (EngineFactory::protocols().contains(val))
 				data.config.setProtocol(val);
 			else
 			{
@@ -353,16 +353,14 @@ int main(int argc, char* argv[])
 		}
 		else if (arg == "--protocols")
 		{
-			QStringList protocols = ChessEngine::registry()->items().keys();
-			foreach (const QString& protocol, protocols)
+			foreach (const QString& protocol, EngineFactory::protocols())
 				out << protocol << endl;
 
 			return 0;
 		}
 		else if (arg == "--variants")
 		{
-			QStringList variants = Chess::Board::registry()->items().keys();
-			foreach (const QString& variant, variants)
+			foreach (const QString& variant, Chess::BoardFactory::variants())
 				out << variant << endl;
 
 			return 0;

@@ -19,7 +19,7 @@
 #include <QDir>
 #include <QtDebug>
 #include "engineprocess.h"
-#include "chessengine.h"
+#include "enginefactory.h"
 
 
 EngineBuilder::EngineBuilder(const EngineConfiguration& config)
@@ -63,7 +63,7 @@ ChessPlayer* EngineBuilder::create(QObject* parent) const
 		return 0;
 	}
 
-	ChessEngine* engine = ChessEngine::registry()->create(m_config.protocol(), parent);
+	ChessEngine* engine = EngineFactory::create(m_config.protocol(), parent);
 	Q_ASSERT(engine != 0);
 	engine->setDevice(process);
 	process->setParent(engine);

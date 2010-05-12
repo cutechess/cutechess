@@ -25,12 +25,6 @@
 
 int ChessEngine::m_count = 0;
 
-ClassRegistry<ChessEngine>* ChessEngine::registry()
-{
-	static ClassRegistry<ChessEngine>* registry = new ClassRegistry<ChessEngine>;
-	return registry;
-}
-
 
 ChessEngine::ChessEngine(QObject* parent)
 	: ChessPlayer(parent),

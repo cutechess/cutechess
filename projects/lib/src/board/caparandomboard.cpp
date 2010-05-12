@@ -41,8 +41,6 @@ static void addPiece(QVector<int>& pieces,
 
 namespace Chess {
 
-REGISTER_BOARD(CaparandomBoard, "caparandom")
-
 CaparandomBoard::CaparandomBoard(QObject* parent)
 	: CapablancaBoard(parent)
 {

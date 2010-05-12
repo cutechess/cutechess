@@ -32,8 +32,6 @@
 #include "enginetextoption.h"
 
 
-REGISTER_ENGINE_CLASS(UciEngine, "uci")
-
 UciEngine::UciEngine(QObject* parent)
 	: ChessEngine(parent)
 {

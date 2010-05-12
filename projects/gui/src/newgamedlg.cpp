@@ -20,7 +20,7 @@
 #include <QAbstractItemView>
 #include <QSortFilterProxyModel>
 
-#include <board/board.h>
+#include <board/boardfactory.h>
 #include <enginemanager.h>
 
 #include "cutechessapp.h"
@@ -62,8 +62,7 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 		m_blackEngineComboBox->setCurrentIndex(0);
 	}
 
-	QStringList variants = Chess::Board::registry()->items().keys();
-	m_variantComboBox->addItems(variants);
+	m_variantComboBox->addItems(Chess::BoardFactory::variants());
 	int index = m_variantComboBox->findText("standard");
 	m_variantComboBox->setCurrentIndex(index);
 }

@@ -22,12 +22,6 @@
 
 namespace Chess {
 
-ClassRegistry<Board>* Board::registry()
-{
-	static ClassRegistry<Board>* registry = new ClassRegistry<Board>;
-	return registry;
-}
-
 QDebug operator<<(QDebug dbg, const Board* board)
 {
 	QString str = "FEN: " + board->fenString() + '\n';

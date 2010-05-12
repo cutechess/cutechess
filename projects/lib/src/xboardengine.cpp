@@ -39,7 +39,6 @@ static QString msToXboardTime(int ms)
 	return number;
 }
 
-REGISTER_ENGINE_CLASS(XboardEngine, "xboard")
 
 XboardEngine::XboardEngine(QObject* parent)
 	: ChessEngine(parent),

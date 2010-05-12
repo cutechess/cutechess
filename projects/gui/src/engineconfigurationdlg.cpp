@@ -19,7 +19,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QDir>
-#include <chessengine.h>
+#include <enginefactory.h>
 
 
 EngineConfigurationDialog::EngineConfigurationDialog(
@@ -37,8 +37,7 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 		setWindowTitle(tr("Configure Engine"));
 	}
 
-	QStringList protocols = ChessEngine::registry()->items().keys();
-	m_protocolCombo->addItems(protocols);
+	m_protocolCombo->addItems(EngineFactory::protocols());
 
 	connect(m_browseCmdBtn, SIGNAL(clicked(bool)), this, SLOT(browseCommand()));
 	connect(m_browseWorkingDirBtn, SIGNAL(clicked(bool)), this,

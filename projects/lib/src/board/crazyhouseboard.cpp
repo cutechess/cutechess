@@ -20,8 +20,6 @@
 
 namespace Chess {
 
-REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
-
 CrazyhouseBoard::CrazyhouseBoard(QObject* parent)
 	: WesternBoard(new WesternZobrist(), parent)
 {

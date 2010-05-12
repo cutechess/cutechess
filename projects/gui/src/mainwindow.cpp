@@ -19,13 +19,13 @@
 
 #include <QtGui>
 
-#include <board/board.h>
+#include <board/boardfactory.h>
 #include <chessgame.h>
 #include <chessplayer.h>
 #include <timecontrol.h>
 #include <engineconfiguration.h>
 #include <enginemanager.h>
-#include <chessengine.h>
+#include <enginefactory.h>
 #include <engineprocess.h>
 #include <humanplayer.h>
 
@@ -197,7 +197,7 @@ void MainWindow::newGame()
 
 	ChessPlayer* player[2] = { 0, 0 };
 	QString variant = dlg.selectedVariant();
-	Chess::Board* board = Chess::Board::registry()->create(variant);
+	Chess::Board* board = Chess::BoardFactory::create(variant);
 	Q_ASSERT(board != 0);
 	ChessGame* chessgame = new ChessGame(board, this);
 	board->setParent(chessgame);
@@ -230,7 +230,7 @@ void MainWindow::newGame()
 				qDebug() << "Cannot start the engine process:" << config.command();
 				return;
 			}
-			ChessEngine* engine = ChessEngine::registry()->create(config.protocol(), this);
+			ChessEngine* engine = EngineFactory::create(config.protocol(), this);
 			Q_ASSERT(engine != 0);
 			engine->setDevice(process);
 
