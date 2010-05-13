@@ -78,11 +78,11 @@ class LIB_EXPORT ChessGame : public QObject
 		void sendGameEnded();
 		void finish();
 		void onForfeit(const Chess::Result& result);
-		void syncPlayers(bool ignoreSender = false);
+		void onPlayerReady();
+		void syncPlayers();
 
 	private:
 		void adjudication(const MoveEvaluation& eval);
-		bool arePlayersReady() const;
 		Chess::Move bookMove(Chess::Side side);
 		void startTurn();
 		ChessPlayer* playerToMove();

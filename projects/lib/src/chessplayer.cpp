@@ -55,6 +55,7 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board*
 	Q_ASSERT(opponent != 0);
 	Q_ASSERT(board != 0);
 	Q_ASSERT(isReady());
+	Q_ASSERT(m_state != Disconnected);
 
 	m_forfeited = false;
 	m_eval.clear();

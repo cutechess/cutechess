@@ -108,7 +108,7 @@ void ChessGame::stop()
 	m_player[Chess::Side::Black]->endGame(m_result);
 	
 	connect(this, SIGNAL(playersReady()), this, SLOT(finish()), Qt::QueuedConnection);
-	syncPlayers(true);
+	syncPlayers();
 }
 
 void ChessGame::sendGameEnded()
@@ -449,47 +449,36 @@ void ChessGame::resetBoard()
 		qFatal("Invalid FEN string: %s", qPrintable(fen));
 }
 
-bool ChessGame::arePlayersReady() const
-{
-	return (m_player[Chess::Side::White]->isReady() &&
-		m_player[Chess::Side::Black]->isReady());
-}
-
-void ChessGame::syncPlayers(bool ignoreSender)
+void ChessGame::onPlayerReady()
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
+	Q_ASSERT(sender != 0);
+	Q_ASSERT(sender->isReady());
 
-	if (ignoreSender && sender != 0)
-	{
-		// There should be no sender, but for some reason we've got one
-		disconnect(sender, SIGNAL(ready()), this, SLOT(syncPlayers()));
-		sender = 0;
-	}
+	disconnect(sender, SIGNAL(ready()), this, SLOT(onPlayerReady()));
 
-	if (!sender)
+	if (m_player[Chess::Side::White]->isReady()
+	&&  m_player[Chess::Side::Black]->isReady())
+		emit playersReady();
+}
+
+void ChessGame::syncPlayers()
+{
+	bool ready = true;
+
+	for (int i = 0; i < 2; i++)
 	{
-		bool ready = true;
-		for (int i = 0; i < 2; i++)
+		ChessPlayer* player = m_player[i];
+		Q_ASSERT(player != 0);
+
+		if (!player->isReady())
 		{
-			if (!m_player[i]->isReady())
-			{
-				ready = false;
-				connect(m_player[i], SIGNAL(ready()),
-					this, SLOT(syncPlayers()));
-			}
+			ready = false;
+			connect(player, SIGNAL(ready()), this, SLOT(onPlayerReady()));
 		}
-		if (!ready)
-			return;
 	}
-	else
-	{
-		disconnect(sender, SIGNAL(ready()), this, SLOT(syncPlayers()));
-		if (!arePlayersReady()
-		||  (!m_gameEnded && sender->state() == ChessPlayer::Disconnected))
-			return;
-	}
-
-	emit playersReady();
+	if (ready)
+		emit playersReady();
 }
 
 void ChessGame::start(QThread* thread)
@@ -507,8 +496,15 @@ void ChessGame::start(QThread* thread)
 		m_player[Chess::Side::Black]->moveToThread(thread);
 	}
 
+	for (int i = 0; i < 2; i++)
+	{
+		connect(m_player[i], SIGNAL(forfeit(const Chess::Result&)),
+			this, SLOT(onForfeit(const Chess::Result&)));
+	}
+
 	// Start the game in the correct thread
-	QMetaObject::invokeMethod(this, "startGame", Qt::QueuedConnection);
+	connect(this, SIGNAL(playersReady()), this, SLOT(startGame()));
+	QMetaObject::invokeMethod(this, "syncPlayers", Qt::QueuedConnection);
 }
 
 void ChessGame::initializePgn()
@@ -534,19 +530,7 @@ void ChessGame::startGame()
 	m_result = Chess::Result();
 	emit humanEnabled(false);
 
-	for (int i = 0; i < 2; i++)
-	{
-		connect(m_player[i], SIGNAL(forfeit(const Chess::Result&)),
-			this, SLOT(onForfeit(const Chess::Result&)));
-	}
-
 	disconnect(this, SIGNAL(playersReady()), this, SLOT(startGame()));
-	if (!arePlayersReady())
-	{
-		connect(this, SIGNAL(playersReady()), this, SLOT(startGame()));
-		syncPlayers(true);
-		return;
-	}
 	if (m_gameEnded)
 		return;
 
@@ -557,6 +541,8 @@ void ChessGame::startGame()
 		Q_ASSERT(player != 0);
 		Q_ASSERT(player->isReady());
 		
+		if (player->state() == ChessPlayer::Disconnected)
+			return;
 		if (!player->supportsVariant(m_board->variant()))
 		{
 			qDebug() << player->name() << "doesn't support variant"
@@ -564,7 +550,7 @@ void ChessGame::startGame()
 			m_result = Chess::Result(Chess::Result::ResultError);
 			stop();
 			return;
-		}	
+		}
 	}
 	
 	resetBoard();

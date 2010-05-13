@@ -186,9 +186,8 @@ bool ChessEngine::supportsVariant(const QString& variant) const
 
 void ChessEngine::stopThinking()
 {
-	if (state() == Thinking)
+	if (state() == Thinking && !m_pinging)
 	{
-		Q_ASSERT(!m_pinging);
 		m_idleTimer->start();
 		sendStop();
 	}
