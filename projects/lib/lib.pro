@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = chess
+TARGET = cutechess
 QT = core
 DESTDIR = $$PWD
 

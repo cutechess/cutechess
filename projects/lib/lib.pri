@@ -1,5 +1,5 @@
 INCLUDEPATH += $$PWD/src
-LIBS += -lchess -L$$PWD
+LIBS += -lcutechess -L$$PWD
 
 exists($$PWD/3rdparty/qjson) {
     INCLUDEPATH += $$PWD/3rdparty/qjson/include
