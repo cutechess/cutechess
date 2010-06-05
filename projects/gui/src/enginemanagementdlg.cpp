@@ -43,8 +43,8 @@ EngineManagementDialog::EngineManagementDialog(QWidget* parent)
 
 	m_enginesList->setModel(m_filteredModel);
 
-	connect(m_searchEngineEdit, SIGNAL(textChanged(const QString&)),
-		this, SLOT(updateSearch(const QString&)));
+	connect(m_searchEngineEdit, SIGNAL(textChanged(QString)),
+		this, SLOT(updateSearch(QString)));
 	
 	// Signals for updating the UI
 	connect(m_enginesList->selectionModel(),

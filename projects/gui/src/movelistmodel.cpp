@@ -39,7 +39,7 @@ void MoveListModel::setGame(ChessGame* game)
 	}
 
 	m_game = game;
-	connect(m_game, SIGNAL(moveMade(const Chess::Move&)),
+	connect(m_game, SIGNAL(moveMade(Chess::Move)),
 		this, SLOT(onMoveMade()));
 
 	reset();

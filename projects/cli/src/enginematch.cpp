@@ -252,8 +252,8 @@ bool EngineMatch::initialize()
 		Qt::QueuedConnection);
 
 	if (m_debug)
-		connect(&m_manager, SIGNAL(debugMessage(const QString&)),
-			this, SLOT(print(const QString&)));
+		connect(&m_manager, SIGNAL(debugMessage(QString)),
+			this, SLOT(print(QString)));
 
 	return true;
 }

@@ -195,8 +195,8 @@ ChessPlayer* GameManager::getPlayer(const PlayerBuilder* builder)
 		player = builder->create();
 		if (player == 0)
 			return 0;
-		connect(player, SIGNAL(debugMessage(const QString&)),
-			this, SIGNAL(debugMessage(const QString&)));
+		connect(player, SIGNAL(debugMessage(QString)),
+			this, SIGNAL(debugMessage(QString)));
 	}
 
 	return player;

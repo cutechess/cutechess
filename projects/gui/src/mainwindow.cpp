@@ -58,12 +58,12 @@ MainWindow::MainWindow()
 	m_chessboardView = new ChessboardView(this);
 	m_chessboardView->setModel(m_boardModel);
 	m_moveListModel = new MoveListModel(this);
-	connect(m_chessboardView, SIGNAL(humanMove(const QModelIndex&, const QModelIndex&)),
-		m_boardModel, SLOT(onHumanMove(const QModelIndex&, const QModelIndex&)));
-	connect(m_boardModel, SIGNAL(promotionNeeded(const Chess::Board*, const Chess::Move&, const QList<int>&)),
-		this, SLOT(selectPromotion(const Chess::Board*, const Chess::Move& ,const QList<int>&)));
-	connect(this, SIGNAL(promotionMove(const Chess::Move&, Chess::Side)),
-		m_boardModel, SIGNAL(humanMove(const Chess::Move&, Chess::Side)));
+	connect(m_chessboardView, SIGNAL(humanMove(QModelIndex, QModelIndex)),
+		m_boardModel, SLOT(onHumanMove(QModelIndex, QModelIndex)));
+	connect(m_boardModel, SIGNAL(promotionNeeded(const Chess::Board*, Chess::Move, QList<int>)),
+		this, SLOT(selectPromotion(const Chess::Board*, Chess::Move, QList<int>)));
+	connect(this, SIGNAL(promotionMove(Chess::Move, Chess::Side)),
+		m_boardModel, SIGNAL(humanMove(Chess::Move,Chess::Side)));
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
@@ -160,7 +160,7 @@ void MainWindow::createDockWindows()
 	moveListView->setRootIsDecorated(false);
 	moveListDock->setWidget(moveListView);
 
-	connect(m_moveListModel, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+	connect(m_moveListModel, SIGNAL(rowsInserted(QModelIndex, int, int)),
 		moveListView, SLOT(scrollToBottom()));
 
 	addDockWidget(Qt::RightDockWidgetArea, moveListDock);
@@ -241,8 +241,8 @@ void MainWindow::newGame()
 		else
 		{
 			player[i] = new HumanPlayer(this);
-			connect(m_boardModel, SIGNAL(humanMove(const Chess::Move&, Chess::Side)),
-				player[i], SLOT(onHumanMove(const Chess::Move&, Chess::Side)));
+			connect(m_boardModel, SIGNAL(humanMove(Chess::Move, Chess::Side)),
+				player[i], SLOT(onHumanMove(Chess::Move, Chess::Side)));
 		}
 
 		chessgame->setPlayer(side, player[i]);
@@ -251,8 +251,8 @@ void MainWindow::newGame()
 			m_chessClock[i], SLOT(start(int)));
 		connect(player[i], SIGNAL(stoppedThinking()),
 			m_chessClock[i], SLOT(stop()));
-		connect(player[i], SIGNAL(debugMessage(const QString&)),
-			m_engineDebugLog, SLOT(appendPlainText(const QString&)));
+		connect(player[i], SIGNAL(debugMessage(QString)),
+			m_engineDebugLog, SLOT(appendPlainText(QString)));
 	}
 	m_moveListModel->setGame(chessgame);
 

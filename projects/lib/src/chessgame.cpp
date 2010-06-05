@@ -498,8 +498,8 @@ void ChessGame::start(QThread* thread)
 
 	for (int i = 0; i < 2; i++)
 	{
-		connect(m_player[i], SIGNAL(forfeit(const Chess::Result&)),
-			this, SLOT(onForfeit(const Chess::Result&)));
+		connect(m_player[i], SIGNAL(forfeit(Chess::Result)),
+			this, SLOT(onForfeit(Chess::Result)));
 	}
 
 	// Start the game in the correct thread
@@ -589,8 +589,8 @@ void ChessGame::startGame()
 	
 	for (int i = 0; i < 2; i++)
 	{
-		connect(m_player[i], SIGNAL(moveMade(const Chess::Move&)),
-			this, SLOT(onMoveMade(const Chess::Move&)));
+		connect(m_player[i], SIGNAL(moveMade(Chess::Move)),
+			this, SLOT(onMoveMade(Chess::Move)));
 	}
 	
 	startTurn();

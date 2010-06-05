@@ -60,12 +60,12 @@ void ChessboardModel::setBoard(Chess::Board* board)
 	m_width += m_widthOffset * 2;
 
 	connect(m_board, SIGNAL(boardReset()), this, SLOT(boardReset()));
-	connect(m_board, SIGNAL(squareChanged(const Chess::Square&)),
-		this, SLOT(onSquareChanged(const Chess::Square&)));
+	connect(m_board, SIGNAL(squareChanged(Chess::Square)),
+		this, SLOT(onSquareChanged(Chess::Square)));
 	connect(m_board, SIGNAL(handPieceChanged(Chess::Piece)),
 		this, SLOT(onHandPieceChanged(Chess::Piece)));
-	connect(m_board, SIGNAL(moveMade(const Chess::GenericMove&)),
-		this, SLOT(onMoveMade(const Chess::GenericMove&)));
+	connect(m_board, SIGNAL(moveMade(Chess::GenericMove)),
+		this, SLOT(onMoveMade(Chess::GenericMove)));
 
 	reset();
 }
