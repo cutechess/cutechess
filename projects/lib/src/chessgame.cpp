@@ -323,7 +323,17 @@ Chess::Move ChessGame::bookMove(Chess::Side side)
 		return Chess::Move();
 
 	Chess::GenericMove bookMove = m_book[side]->move(m_board->key());
-	return m_board->moveFromGenericMove(bookMove);
+	Chess::Move move = m_board->moveFromGenericMove(bookMove);
+
+	if (!move.isNull() && !m_board->isLegalMove(move))
+	{
+		qWarning("Illegal opening book move for %s: %s",
+			 qPrintable(side.toString()),
+			 qPrintable(m_board->moveString(move, Chess::Board::LongAlgebraic)));
+		move = Chess::Move();
+	}
+
+	return move;
 }
 
 void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)
