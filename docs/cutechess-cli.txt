@@ -20,19 +20,19 @@ Runs chess matches from the command line.
 OPTIONS
 -------
 
---version::
+\--version::
 	Display the version information.
 
---help::
+\--help::
 	Display help information.
 
---engines::
+\--engines::
 	Display a list of configured engines and exit.
 
---protocols::
+\--protocols::
 	Display a list of supported chess protocols and exit.
 
---variants::
+\--variants::
 	Display a list of supported chess variants and exit.
 
 -fcp <options>::

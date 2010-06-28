@@ -20,7 +20,7 @@ OPTIONS
 -------
 
 -v::
---version::
+\--version::
 	Display the version information.
 
 FILES
