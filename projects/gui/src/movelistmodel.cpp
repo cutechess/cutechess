@@ -63,16 +63,10 @@ QModelIndex MoveListModel::parent(const QModelIndex& index) const
 	return QModelIndex();
 }
 
-bool MoveListModel::hasChildren(const QModelIndex& parent) const
-{
-	Q_UNUSED(parent);
-
-	return false;
-}
-
 int MoveListModel::rowCount(const QModelIndex& parent) const
 {
-	Q_UNUSED(parent)
+	if (parent.isValid())
+		return 0;
 
 	if (m_game)
 	{
@@ -93,7 +87,8 @@ int MoveListModel::rowCount(const QModelIndex& parent) const
 
 int MoveListModel::columnCount(const QModelIndex& parent) const
 {
-	Q_UNUSED(parent)
+	if (parent.isValid())
+		return 0;
 
 	return m_headers.count();
 }
