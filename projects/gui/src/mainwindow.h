@@ -64,6 +64,7 @@ class MainWindow : public QMainWindow
 		void updateWindowTitle();
 		bool save();
 		bool saveAs();
+		void import();
 
 	private:
 		void createActions();
@@ -92,7 +93,9 @@ class MainWindow : public QMainWindow
 		QAction* m_closeGameAct;
 		QAction* m_saveGameAct;
 		QAction* m_saveGameAsAct;
+		QAction* m_importGameAct;
 		QAction* m_manageEnginesAct;
+		QAction* m_showGameDatabaseWindowAct;
 
 		PlainTextLog* m_engineDebugLog;
 

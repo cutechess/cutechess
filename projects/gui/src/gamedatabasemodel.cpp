@@ -16,59 +16,187 @@
 */
 
 #include "gamedatabasemodel.h"
+#include "gamedatabasemanager.h"
+#include "treeviewitem.h"
+#include "pgndatabase.h"
+#include <pgngameentry.h>
+
+#include <QDebug>
 
 const QStringList GameDatabaseModel::m_headers = (QStringList() <<
 	tr("White") << tr("Black") << tr("Event") << tr("Site") << tr("Result"));
 
-GameDatabaseModel::GameDatabaseModel(QObject* parent)
-	: QAbstractItemModel(parent)
+GameDatabaseModel::GameDatabaseModel(GameDatabaseManager* gameDatabaseManager,
+                                     QObject* parent)
+	: QAbstractItemModel(parent),
+	  m_gameDatabaseManager(gameDatabaseManager)
 {
+	Q_ASSERT(gameDatabaseManager);
+
+	m_root = new TreeViewItem();
+
+	/* Use a tree structure to adapt the GameDatabaseManager's list of
+	 * databases and games to a tree-like format. All databases are children
+	 * of 'm_root' while the games are children of their respective databases.
+	 * Using a tree structure makes some operations, like index() and
+	 * parent() O(1). The penalty is that initially we have to build the
+	 * structure and later we have to keep it updated.
+	 */
+	for (int i = 0; i < m_gameDatabaseManager->databases().count(); i++)
+	{
+		m_root->addChild(
+			buildInternalTree(m_gameDatabaseManager->databases().at(i), i));
+	}
+
+	connect(m_gameDatabaseManager, SIGNAL(databaseAdded(int)), this,
+		SLOT(onDatabaseAdded(int)));
+}
+
+GameDatabaseModel::~GameDatabaseModel()
+{
+	delete m_root;
+	m_root = 0;
+}
+
+TreeViewItem* GameDatabaseModel::root() const
+{
+	return m_root;
+}
+
+TreeViewItem* GameDatabaseModel::buildInternalTree(PgnDatabase* db, int row)
+{
+	Q_ASSERT(db != NULL);
+
+	TreeViewItem* dbItem = new TreeViewItem(m_root);
+	dbItem->setRow(row);
+	dbItem->setData(db);
+
+	TreeViewItem* gameItem;
+	for (int i = 0; i < db->entries().count(); i++)
+	{
+		gameItem = new TreeViewItem(dbItem);
+		gameItem->setRow(i);
+
+		gameItem->setData(db->entries().at(i));
+		dbItem->addChild(gameItem);
+	}
+	return dbItem;
+}
+
+void GameDatabaseModel::onDatabaseAdded(int index)
+{
+	qDebug() << "onDatabaseAdded, index:" << index;
+
+	beginInsertRows(QModelIndex(), index, index);
+
+	TreeViewItem* dbItem =
+		buildInternalTree(m_gameDatabaseManager->databases().at(index), index);
+
+	if (index < m_gameDatabaseManager->databases().count() - 1)
+	{
+		qDebug() << "Database was added before back";
+		m_root->addChildAt(dbItem, index);
+	}
+	else
+	{
+		qDebug() << "Database was added at back";
+		m_root->addChild(dbItem);
+	}
+
+	endInsertRows();
 }
 
 QModelIndex GameDatabaseModel::index(int row, int column,
                                      const QModelIndex& parent) const
 {
-	Q_UNUSED(parent);
-
 	if (!hasIndex(row, column, parent))
 		return QModelIndex();
 
-	return createIndex(row, column);
+	if (!parent.isValid())
+		return createIndex(row, column, m_root->children().at(row));
+
+	TreeViewItem* parentItem =
+		static_cast<TreeViewItem*>(parent.internalPointer());
+
+	return createIndex(row, column, parentItem->children().at(row));
 }
 
 QModelIndex GameDatabaseModel::parent(const QModelIndex& index) const
 {
-	Q_UNUSED(index);
+	if (!index.isValid())
+		return QModelIndex();
 
-	return QModelIndex();
-}
+	TreeViewItem* item =
+		static_cast<TreeViewItem*>(index.internalPointer());
 
-bool GameDatabaseModel::hasChildren(const QModelIndex& parent) const
-{
-	Q_UNUSED(parent);
+	if (item->parent() == m_root)
+		return QModelIndex();
 
-	return false;
+	return createIndex(item->parent()->row(), 0, item->parent());
 }
 
 int GameDatabaseModel::rowCount(const QModelIndex& parent) const
 {
-	Q_UNUSED(parent)
+	if (!parent.isValid())
+		return m_root->children().count();
 
-	return 0;
+	TreeViewItem* parentItem =
+		static_cast<TreeViewItem*>(parent.internalPointer());
+
+	return parentItem->children().count();
 }
 
 int GameDatabaseModel::columnCount(const QModelIndex& parent) const
 {
-	Q_UNUSED(parent)
-
 	return m_headers.count();
 }
 
 QVariant GameDatabaseModel::data(const QModelIndex& index, int role) const
 {
-	Q_UNUSED(index)
-	Q_UNUSED(role)
+	if (!index.isValid())
+		return QVariant();
 
+	TreeViewItem* item =
+		static_cast<TreeViewItem*>(index.internalPointer());
+
+	if (item->parent() == m_root) // item is a database?
+	{
+		PgnDatabase* db = static_cast<PgnDatabase*>(item->data());
+
+		if (index.column() == 0 && role == Qt::DisplayRole ||
+		    role == Qt::EditRole)
+		{
+			return db->displayName();
+		}
+	}
+	else // it's a game
+	{
+		PgnGameEntry* gameEntry = static_cast<PgnGameEntry*>(item->data());
+
+		if (role == Qt::DisplayRole)
+		{
+			switch (index.column())
+			{
+				case 0:
+					return gameEntry->white();
+
+				case 1:
+					return gameEntry->black();
+
+				case 2:
+					return gameEntry->event();
+
+				case 3:
+					return gameEntry->site();
+
+				case 4:
+					return gameEntry->result().toShortString();
+
+				default:
+					return QVariant();
+			}
+		}
+	}
 	return QVariant();
 }
 
@@ -84,4 +212,44 @@ QVariant GameDatabaseModel::headerData(int section, Qt::Orientation orientation,
 	}
 
 	return QVariant();
+}
+
+Qt::ItemFlags GameDatabaseModel::flags(const QModelIndex& index) const
+{
+	if (!index.isValid())
+		return Qt::ItemFlags(Qt::NoItemFlags);
+
+	Qt::ItemFlags defaultFlags =
+		Qt::ItemFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+
+	TreeViewItem* item =
+		static_cast<TreeViewItem*>(index.internalPointer());
+
+	// database's display name is editable
+	if (item->parent() == m_root && index.column() == 0)
+		return Qt::ItemFlags(defaultFlags | Qt::ItemIsEditable);
+
+	return defaultFlags;  // games are not editable
+}
+
+bool GameDatabaseModel::setData(const QModelIndex& index, const QVariant& data,
+                                int role)
+{
+	Q_UNUSED(role);
+
+	if (!index.isValid())
+		return false;
+
+	TreeViewItem* item =
+		static_cast<TreeViewItem*>(index.internalPointer());
+
+	// only database's display name should be editable
+	if (item->parent() == m_root && index.column() == 0)
+	{
+		PgnDatabase* db = static_cast<PgnDatabase*>(item->data());
+		db->setDisplayName(data.toString());
+
+		return true;
+	}
+	return false;
 }

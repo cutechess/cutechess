@@ -14,7 +14,13 @@ HEADERS += chessboardview.h \
     cutechessapp.h \
     gamepropertiesdlg.h \
     squareinfo.h \
-    autoverticalscroller.h
+    autoverticalscroller.h \
+    gamedatabasedlg.h \
+    pgnimporter.h \
+    gamedatabasemanager.h \
+    importprogressdlg.h \
+    pgndatabase.h \
+    treeviewitem.h
 SOURCES += main.cpp \
     chessboardview.cpp \
     chessclock.cpp \
@@ -31,4 +37,10 @@ SOURCES += main.cpp \
     cutechessapp.cpp \
     gamepropertiesdlg.cpp \
     squareinfo.cpp \
-    autoverticalscroller.cpp
+    autoverticalscroller.cpp \
+    gamedatabasedlg.cpp \
+    pgnimporter.cpp \
+    gamedatabasemanager.cpp \
+    importprogressdlg.cpp \
+    pgndatabase.cpp \
+    treeviewitem.cpp

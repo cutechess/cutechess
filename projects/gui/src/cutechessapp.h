@@ -24,6 +24,9 @@
 class EngineManager;
 class GameManager;
 class MainWindow;
+class GameDatabaseManager;
+class GameDatabaseDialog;
+class PgnImporter;
 
 class CuteChessApplication : public QApplication
 {
@@ -38,16 +41,26 @@ class CuteChessApplication : public QApplication
 		GameManager* gameManager();
 		QList<MainWindow*> gameWindows();
 		void showGameWindow(int index);
+		GameDatabaseManager* gameDatabaseManager();
 		static CuteChessApplication* instance();
 
 	public slots:
 		MainWindow* newGameWindow();
+		void showGameDatabaseDialog();
+
+	private slots:
+		void showImportProgressDialog(PgnImporter* importer);
 
 	private:
 		EngineManager* m_engineManager;
 		GameManager* m_gameManager;
+		GameDatabaseManager* m_gameDatabaseManager;
 		QList<QPointer<MainWindow> > m_gameWindows;
 		void cleanGameWindows();
+		GameDatabaseDialog* m_gameDatabaseDialog;
+
+	private slots:
+		void onAboutToQuit();
 
 };
 

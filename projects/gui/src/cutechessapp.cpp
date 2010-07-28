@@ -30,12 +30,18 @@
 #include <timecontrol.h>
 #include <humanplayer.h>
 #include "mainwindow.h"
+#include "gamedatabasedlg.h"
+#include "gamedatabasemanager.h"
+#include "importprogressdlg.h"
+#include "pgnimporter.h"
 
 
 CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	: QApplication(argc, argv),
 	  m_engineManager(0),
-	  m_gameManager(0)
+	  m_gameManager(0),
+	  m_gameDatabaseManager(0),
+	  m_gameDatabaseDialog(0)
 {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
@@ -48,10 +54,16 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 
 	// Load the engines
 	engineManager()->loadEngines(configPath() + QLatin1String("/engines.json"));
+
+	// Read the game database state
+	gameDatabaseManager()->readState(configPath() + QLatin1String("/gamedb.bin"));
+
+	connect(this, SIGNAL(aboutToQuit()), this, SLOT(onAboutToQuit()));
 }
 
 CuteChessApplication::~CuteChessApplication()
 {
+	delete m_gameDatabaseDialog;
 }
 
 CuteChessApplication* CuteChessApplication::instance()
@@ -137,4 +149,41 @@ void CuteChessApplication::showGameWindow(int index)
 	MainWindow* gameWindow = m_gameWindows.at(index);
 	gameWindow->activateWindow();
 	gameWindow->raise();
+}
+
+GameDatabaseManager* CuteChessApplication::gameDatabaseManager()
+{
+	if (m_gameDatabaseManager == 0)
+	{
+		m_gameDatabaseManager = new GameDatabaseManager(this);
+
+		connect(m_gameDatabaseManager, SIGNAL(importStarted(PgnImporter*)),
+			this, SLOT(showImportProgressDialog(PgnImporter*)));
+	}
+
+	return m_gameDatabaseManager;
+}
+
+void CuteChessApplication::showGameDatabaseDialog()
+{
+	if (m_gameDatabaseDialog == 0)
+		m_gameDatabaseDialog = new GameDatabaseDialog();
+
+	m_gameDatabaseDialog->show();
+	m_gameDatabaseDialog->raise();
+	m_gameDatabaseDialog->activateWindow();
+}
+
+void CuteChessApplication::onAboutToQuit()
+{
+	gameDatabaseManager()->writeState(configPath() + QLatin1String("/gamedb.bin"));
+}
+
+void CuteChessApplication::showImportProgressDialog(PgnImporter* importer)
+{
+	ImportProgressDialog* dlg = new ImportProgressDialog(importer);
+
+	dlg->show();
+	dlg->raise();
+	dlg->activateWindow();
 }

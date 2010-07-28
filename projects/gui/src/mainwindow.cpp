@@ -38,10 +38,10 @@
 #include "engineconfigurationmodel.h"
 #include "enginemanagementdlg.h"
 #include "plaintextlog.h"
-#include "gamedatabasemodel.h"
 #include "gamepropertiesdlg.h"
 #include "promotiondlg.h"
 #include "autoverticalscroller.h"
+#include "gamedatabasemanager.h"
 
 MainWindow::MainWindow(ChessGame* game)
 	: m_game(game)
@@ -137,6 +137,8 @@ void MainWindow::createActions()
 
 	m_gamePropertiesAct = new QAction(tr("P&roperties..."), this);
 
+	m_importGameAct = new QAction(tr("Import..."), this);
+
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	#ifdef Q_OS_WIN
 	m_quitGameAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
@@ -146,15 +148,21 @@ void MainWindow::createActions()
 
 	m_manageEnginesAct = new QAction(tr("Manage..."), this);
 
+	m_showGameDatabaseWindowAct = new QAction(tr("&Game Database"), this);
+
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
 	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
 	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered(bool)), this, SLOT(saveAs()));
 	connect(m_gamePropertiesAct, SIGNAL(triggered(bool)), this, SLOT(gameProperties()));
+	connect(m_importGameAct, SIGNAL(triggered(bool)), this, SLOT(import()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(closeAllWindows()));
 
 	connect(m_manageEnginesAct, SIGNAL(triggered(bool)), this,
 		SLOT(manageEngines()));
+
+	connect(m_showGameDatabaseWindowAct, SIGNAL(triggered(bool)),
+		CuteChessApplication::instance(), SLOT(showGameDatabaseDialog()));
 }
 
 void MainWindow::createMenus()
@@ -166,6 +174,7 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_saveGameAct);
 	m_gameMenu->addAction(m_saveGameAsAct);
 	m_gameMenu->addAction(m_gamePropertiesAct);
+	m_gameMenu->addAction(m_importGameAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 
@@ -198,18 +207,6 @@ void MainWindow::createDockWindows()
 
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
 
-	// Game database
-	QDockWidget* gameDatabaseDock = new QDockWidget(tr("Game Database"), this);
-	QTreeView* gameDatabaseView = new QTreeView(gameDatabaseDock);
-	gameDatabaseView->setModel(new GameDatabaseModel(this));
-	gameDatabaseView->setAlternatingRowColors(true);
-	gameDatabaseView->setRootIsDecorated(false);
-	gameDatabaseView->setUniformRowHeights(true);
-	gameDatabaseDock->setWidget(gameDatabaseView);
-
-	addDockWidget(Qt::BottomDockWidgetArea, gameDatabaseDock);
-	tabifyDockWidget(engineDebugDock, gameDatabaseDock);
-
 	// Move list
 	QDockWidget* moveListDock = new QDockWidget(tr("Move List"), this);
 	QTreeView* moveListView = new QTreeView(moveListDock);
@@ -228,7 +225,6 @@ void MainWindow::createDockWindows()
 	// Add toggle view actions to the View menu
 	m_viewMenu->addAction(moveListDock->toggleViewAction());
 	m_viewMenu->addAction(engineDebugDock->toggleViewAction());
-	m_viewMenu->addAction(gameDatabaseDock->toggleViewAction());
 }
 
 void MainWindow::selectPromotion(const Chess::Board* board,
@@ -349,6 +345,9 @@ void MainWindow::onWindowMenuAboutToShow()
 {
 	m_windowMenu->clear();
 
+	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
+	m_windowMenu->addSeparator();
+
 	const QList<MainWindow*> gameWindows =
 		CuteChessApplication::instance()->gameWindows();
 
@@ -448,4 +447,15 @@ bool MainWindow::askToSave()
 			return false;
 	}
 	return true;
+}
+
+void MainWindow::import()
+{
+	const QString fileName = QFileDialog::getOpenFileName(this, tr("Import Game"),
+		QString(), tr("Portable Game Notation (*.pgn);;All Files (*.*)"));
+
+	if (fileName.isEmpty())
+		return;
+
+	CuteChessApplication::instance()->gameDatabaseManager()->importPgnFile(fileName);
 }

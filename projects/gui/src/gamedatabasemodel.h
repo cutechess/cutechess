@@ -21,6 +21,9 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 
+class GameDatabaseManager;
+class TreeViewItem;
+class PgnDatabase;
 
 /*!
  * \brief Supplies chess game database information to views.
@@ -31,21 +34,34 @@ class GameDatabaseModel : public QAbstractItemModel
 
 	public:
 		/*! Constructs a game database model with the given \a parent. */
-		GameDatabaseModel(QObject* parent = 0);
+		GameDatabaseModel(GameDatabaseManager* gameDatabaseManager,
+		                  QObject* parent = 0);
+		~GameDatabaseModel();
+
+		TreeViewItem* root() const;
 
 		// Inherited from QAbstractItemModel
 		QModelIndex index(int row, int column,
 		                  const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex parent(const QModelIndex& index) const;
-		bool hasChildren(const QModelIndex& parent = QModelIndex()) const;
 		int rowCount(const QModelIndex& parent = QModelIndex()) const;
 		int columnCount(const QModelIndex& parent = QModelIndex()) const;
 		QVariant data(const QModelIndex& index, int role) const;
 		QVariant headerData(int section, Qt::Orientation orientation,
 		                    int role = Qt::DisplayRole) const;
+		Qt::ItemFlags flags(const QModelIndex& index) const;
+		bool setData(const QModelIndex& index, const QVariant& value,
+		             int role = Qt::EditRole);
+
+	private slots:
+		void onDatabaseAdded(int index);
 
 	private:
+		TreeViewItem* buildInternalTree(PgnDatabase* db, int row);
+
+		TreeViewItem* m_root;
 		static const QStringList m_headers;
+		GameDatabaseManager* m_gameDatabaseManager;
 
 };
 

@@ -1,0 +1,112 @@
+/*
+    This file is part of Cute Chess.
+
+    Cute Chess is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Cute Chess is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "pgndatabase.h"
+#include <pgngameentry.h>
+#include <pgngameentry.h>
+#include <pgnstream.h>
+#include <QDebug>
+#include <QFileInfo>
+
+PgnDatabase::PgnDatabase(const QString& fileName, QObject* parent)
+	: QObject(parent),
+	  m_fileName(fileName),
+	  m_displayName(fileName)
+{
+}
+
+PgnDatabase::~PgnDatabase()
+{
+	qDeleteAll(m_entries);
+}
+
+void PgnDatabase::setEntries(const QList<PgnGameEntry*> entries)
+{
+	m_entries = entries;
+}
+
+QList<PgnGameEntry*> PgnDatabase::entries() const
+{
+	return m_entries;
+}
+
+QString PgnDatabase::fileName() const
+{
+	return m_fileName;
+}
+
+QDateTime PgnDatabase::lastModified() const
+{
+	return m_lastModified;
+}
+
+void PgnDatabase::setLastModified(const QDateTime& lastModified)
+{
+	m_lastModified = lastModified;
+}
+
+QString PgnDatabase::displayName() const
+{
+	return m_displayName;
+}
+
+void PgnDatabase::setDisplayName(const QString& displayName)
+{
+	m_displayName = displayName;
+}
+
+bool PgnDatabase::game(const PgnGameEntry* entry, PgnGame* game)
+{
+	Q_ASSERT(entry);
+	Q_ASSERT(game);
+
+	QFile file(m_fileName);
+	QFileInfo fileInfo(m_fileName);
+
+	if (!fileInfo.exists())
+	{
+		qDebug() << "PGN database does not exist";
+		return false;
+	}
+
+	if (fileInfo.lastModified() != m_lastModified)
+	{
+		qDebug() << "PGN database last modified does not match";
+		return false;
+	}
+
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		qDebug() << "Cannot open PNG database file";
+		return false;
+	}
+
+	PgnStream pgnStream(&file);
+
+	if (!pgnStream.seek(entry->pos(), entry->lineNumber()))
+	{
+		qDebug() << "PGN database seek failed";
+		return false;
+	}
+
+	if (!game->read(pgnStream))
+	{
+		qDebug() << "PGN database read failed";
+		return false;
+	}
+	return true;
+}
