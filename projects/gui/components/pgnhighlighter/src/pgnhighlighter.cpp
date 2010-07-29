@@ -94,9 +94,7 @@ void PgnHighlighter::highlightBlock(const QString& text)
 				} else if (ch.isDigit()) {
 					start = pos;
 
-					if (ch.digitValue() >= 1) {
-						state = InMoveNumber;
-					} else if (text.mid(pos, 3) == "0-1" || text.mid(pos, 3) == "1-0") {
+					if (text.mid(pos, 3) == "0-1" || text.mid(pos, 3) == "1-0") {
 						pos += 3;
 						setFormat(start, pos - start, m_formats[Result]);
 						state = NormalState;
@@ -104,6 +102,8 @@ void PgnHighlighter::highlightBlock(const QString& text)
 						pos += 7;
 						setFormat(start, pos - start, m_formats[Result]);
 						state = NormalState;
+					} else if (ch.digitValue() >= 1) {
+						state = InMoveNumber;
 					}
 				}
 				break;
