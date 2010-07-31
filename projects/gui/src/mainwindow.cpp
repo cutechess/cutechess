@@ -89,12 +89,12 @@ MainWindow::MainWindow()
 void MainWindow::createActions()
 {
 	m_newGameAct = new QAction(tr("&New game..."), this);
-	m_newGameAct->setShortcut(QKeySequence("Ctrl+N"));
+	m_newGameAct->setShortcut(QKeySequence::New);
 
 	m_gamePropertiesAct = new QAction(tr("P&roperties..."), this);
 
 	m_quitGameAct = new QAction(tr("&Quit"), this);
-	m_quitGameAct->setShortcut(QKeySequence(tr("Ctrl+Q")));
+	m_quitGameAct->setShortcut(QKeySequence::Quit);
 
 	m_manageEnginesAct = new QAction(tr("Manage..."), this);
 
