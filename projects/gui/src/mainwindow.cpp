@@ -158,6 +158,7 @@ void MainWindow::createDockWindows()
 	moveListView->setModel(m_moveListModel);
 	moveListView->setAlternatingRowColors(true);
 	moveListView->setRootIsDecorated(false);
+	moveListView->header()->setResizeMode(0, QHeaderView::ResizeToContents);
 	moveListDock->setWidget(moveListView);
 
 	connect(m_moveListModel, SIGNAL(rowsInserted(QModelIndex, int, int)),

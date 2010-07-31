@@ -20,7 +20,7 @@
 
 
 const QStringList MoveListModel::m_headers = (QStringList() <<
-	tr("White") << tr("Black"));
+	QString("") << tr("White") << tr("Black"));
 
 MoveListModel::MoveListModel(QObject* parent)
 	: QAbstractItemModel(parent),
@@ -97,11 +97,14 @@ QVariant MoveListModel::data(const QModelIndex& index, int role) const
 {
 	if (index.isValid() && role == Qt::DisplayRole)
 	{
+		if (index.column() == 0)
+			return QString::number(index.row() + 1);
+
 		const QVector<PgnGame::MoveData> moves = m_game->pgn().moves();
 
-		if (moves.size() > ((index.row() * 2) + index.column()))
+		if (moves.size() > ((index.row() * 2) + index.column() - 1))
 		{
-			const PgnGame::MoveData move = moves.at((index.row() * 2) + index.column());
+			const PgnGame::MoveData move = moves.at((index.row() * 2) + index.column() - 1);
 
 			if (move.comment.isEmpty())
 				return move.moveString;
