@@ -13,7 +13,8 @@ HEADERS += chessboardview.h \
     gamedatabasemodel.h \
     cutechessapp.h \
     gamepropertiesdlg.h \
-    squareinfo.h
+    squareinfo.h \
+    autoverticalscroller.h
 SOURCES += main.cpp \
     chessboardview.cpp \
     chessclock.cpp \
@@ -29,4 +30,5 @@ SOURCES += main.cpp \
     gamedatabasemodel.cpp \
     cutechessapp.cpp \
     gamepropertiesdlg.cpp \
-    squareinfo.cpp
+    squareinfo.cpp \
+    autoverticalscroller.cpp

@@ -41,6 +41,7 @@
 #include "gamedatabasemodel.h"
 #include "gamepropertiesdlg.h"
 #include "promotiondlg.h"
+#include "autoverticalscroller.h"
 
 
 MainWindow::MainWindow()
@@ -161,8 +162,9 @@ void MainWindow::createDockWindows()
 	moveListView->header()->setResizeMode(0, QHeaderView::ResizeToContents);
 	moveListDock->setWidget(moveListView);
 
-	connect(m_moveListModel, SIGNAL(rowsInserted(QModelIndex, int, int)),
-		moveListView, SLOT(scrollToBottom()));
+	AutoVerticalScroller* moveListScroller =
+		new AutoVerticalScroller(moveListView, m_moveListModel, this);
+	Q_UNUSED(moveListScroller);
 
 	addDockWidget(Qt::RightDockWidgetArea, moveListDock);
 
