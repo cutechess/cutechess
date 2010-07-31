@@ -2,7 +2,7 @@
     Installation
 
 
-Cute Chess requires Qt (at least version 4.5), qmake (the Qt Makefile
+Cute Chess requires Qt (at least version 4.6), qmake (the Qt Makefile
 generator) and QJson. The current qmake project file doesn't have support for
 installations. However the main executable has the necessary resources built-in
 by default so it's the only thing you need to deploy.
