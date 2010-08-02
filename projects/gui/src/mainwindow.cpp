@@ -46,6 +46,8 @@
 
 MainWindow::MainWindow()
 {
+	setAttribute(Qt::WA_DeleteOnClose, true);
+
 	setWindowTitle("Cute Chess");
 
 	QHBoxLayout* clockLayout = new QHBoxLayout();
@@ -120,6 +122,10 @@ void MainWindow::createMenus()
 
 	m_enginesMenu = menuBar()->addMenu(tr("En&gines"));
 	m_enginesMenu->addAction(m_manageEnginesAct);
+
+	m_windowMenu = menuBar()->addMenu(tr("&Window"));
+	connect(m_windowMenu, SIGNAL(aboutToShow()), this,
+		SLOT(onWindowMenuAboutToShow()));
 
 	m_helpMenu = menuBar()->addMenu(tr("&Help"));
 }
@@ -351,4 +357,31 @@ void MainWindow::saveLogToFile()
 
 	QTextStream out(&file);
 	out << log->toPlainText();
+}
+
+void MainWindow::onWindowMenuAboutToShow()
+{
+	m_windowMenu->clear();
+
+	const QList<MainWindow*> gameWindows =
+		CuteChessApplication::instance()->gameWindows();
+
+	for (int i = 0; i < gameWindows.size(); i++)
+	{
+		MainWindow* gameWindow = gameWindows.at(i);
+
+		QAction* showWindowAction = m_windowMenu->addAction(gameWindow->windowTitle(),
+			this, SLOT(showGameWindow()));
+		showWindowAction->setData(i);
+		showWindowAction->setCheckable(true);
+
+		if (gameWindow == this)
+			showWindowAction->setChecked(true);
+	}
+}
+
+void MainWindow::showGameWindow()
+{
+	if (QAction* action = qobject_cast<QAction*>(sender()))
+		CuteChessApplication::instance()->showGameWindow(action->data().toInt());
 }

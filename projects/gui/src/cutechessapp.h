@@ -19,8 +19,10 @@
 #define CUTE_CHESS_APPLICATION_H
 
 #include <QApplication>
+#include <QPointer>
 
 class EngineManager;
+class MainWindow;
 
 class CuteChessApplication : public QApplication
 {
@@ -32,10 +34,17 @@ class CuteChessApplication : public QApplication
 
 		QString configPath();
 		EngineManager* engineManager();
+		QList<MainWindow*> gameWindows();
+		void showGameWindow(int index);
 		static CuteChessApplication* instance();
+
+	public slots:
+		MainWindow* newGameWindow();
 
 	private:
 		EngineManager* m_engineManager;
+		QList<QPointer<MainWindow> > m_gameWindows;
+		void cleanGameWindows();
 
 };
 

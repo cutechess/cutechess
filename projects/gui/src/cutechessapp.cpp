@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <QFileInfo>
 #include <enginemanager.h>
+#include "mainwindow.h"
 
 
 CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
@@ -69,4 +70,40 @@ EngineManager* CuteChessApplication::engineManager()
 		m_engineManager = new EngineManager(this);
 
 	return m_engineManager;
+}
+
+QList<MainWindow*> CuteChessApplication::gameWindows()
+{
+	cleanGameWindows();
+
+	QList<MainWindow*> gameWindowList;
+	for (int i = 0; i < m_gameWindows.size(); i++)
+		gameWindowList.append(m_gameWindows.at(i));
+
+	return gameWindowList;
+}
+
+MainWindow* CuteChessApplication::newGameWindow()
+{
+	MainWindow* mainWindow = new MainWindow();
+	m_gameWindows.prepend(mainWindow);
+	mainWindow->show();
+
+	return mainWindow;
+}
+
+void CuteChessApplication::cleanGameWindows()
+{
+	for (int i = m_gameWindows.size() - 1; i >= 0; i--)
+	{
+		if (m_gameWindows.at(i).isNull())
+			m_gameWindows.removeAt(i);
+	}
+}
+
+void CuteChessApplication::showGameWindow(int index)
+{
+	MainWindow* gameWindow = m_gameWindows.at(index);
+	gameWindow->activateWindow();
+	gameWindow->raise();
 }

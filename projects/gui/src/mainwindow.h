@@ -53,6 +53,8 @@ class MainWindow : public QMainWindow
 		void gameProperties();
 		void manageEngines();
 		void saveLogToFile();
+		void onWindowMenuAboutToShow();
+		void showGameWindow();
 
 	private:
 		void createActions();
@@ -64,6 +66,7 @@ class MainWindow : public QMainWindow
 		QMenu* m_gameMenu;
 		QMenu* m_viewMenu;
 		QMenu* m_enginesMenu;
+		QMenu* m_windowMenu;
 		QMenu* m_helpMenu;
 
 		ChessboardView* m_chessboardView;

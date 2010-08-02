@@ -50,9 +50,6 @@ int main(int argc, char* argv[])
 		}
 		arguments.takeFirst();
 	}
-
-	MainWindow mainWindow;
-	mainWindow.show();
-
+	app.newGameWindow();
 	return app.exec();
 }
