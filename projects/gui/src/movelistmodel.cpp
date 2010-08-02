@@ -20,7 +20,7 @@
 
 
 const QStringList MoveListModel::m_headers = (QStringList() <<
-	QString("") << tr("White") << tr("Black"));
+	QString("#") << tr("White") << tr("Black"));
 
 MoveListModel::MoveListModel(QObject* parent)
 	: QAbstractItemModel(parent),
