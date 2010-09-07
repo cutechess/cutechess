@@ -29,7 +29,7 @@ class AutoVerticalScroller : QObject
 
 	public:
 		AutoVerticalScroller(QAbstractItemView* view, QAbstractItemModel* model,
-		             QObject* parent);
+		             QObject* parent = 0);
 
 	private:
 		QAbstractItemView* m_view;
