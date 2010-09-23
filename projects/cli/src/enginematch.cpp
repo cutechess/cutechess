@@ -262,71 +262,50 @@ void EngineMatch::onGameEnded()
 {
 	ChessGame* game = qobject_cast<ChessGame*>(QObject::sender());
 	Q_ASSERT(game != 0);
-	Q_ASSERT(game->thread() == thread());
 
-	disconnect(this, SIGNAL(stopGame()), game, SLOT(kill()));
-	if (game->player(Chess::Side::White) == 0
-	||  game->player(Chess::Side::Black) == 0)
+	PgnGame* pgn(game->pgn());
+	Chess::Result result(game->result());
+	bool playerMissing(game->player(Chess::Side::White) == 0 ||
+			   game->player(Chess::Side::Black) == 0);
+
+	game->deleteLater();
+	game = 0;
+
+	if (playerMissing)
 	{
-		game->deleteLater();
+		delete pgn;
 		return;
 	}
 
-	QString name1;
-	QString name2;
-	EngineData* white = 0;
-	EngineData* black = 0;
-	int gameId = game->pgn().round();
-	if ((gameId % 2) != 0)
-	{
-		white = &m_engines[0];
-		black = &m_engines[1];
-		name1 = game->player(Chess::Side::White)->name();
-		name2 = game->player(Chess::Side::Black)->name();
-	}
-	else
-	{
-		white = &m_engines[1];
-		black = &m_engines[0];
-		name1 = game->player(Chess::Side::Black)->name();
-		name2 = game->player(Chess::Side::White)->name();
-	}
+	int gameId = pgn->round();
+	int wIndex = !(gameId % 2);
 
-	Chess::Result result = game->result();
 	qDebug("Game %d ended: %s", gameId, qPrintable(result.toVerboseString()));
 	if (result.isDraw())
 		m_drawCount++;
-	else
+	else if (!result.isNone())
 	{
-		if (result.winner() == Chess::Side::White)
-		{
-			white->wins++;
-			qDebug("%s wins the game as white",
-			       qPrintable(game->player(Chess::Side::White)->name()));
-		}
-		else if (result.winner() == Chess::Side::Black)
-		{
-			black->wins++;
-			qDebug("%s wins the game as black",
-			       qPrintable(game->player(Chess::Side::Black)->name()));
-		}
+		qDebug("%s wins the game as %s",
+		       qPrintable(pgn->playerName(result.winner())),
+		       qPrintable(result.winner().toString()));
+		m_engines[wIndex ^ result.winner()].wins++;
 	}
 
 	qDebug("Score of %s vs %s: %d - %d - %d",
-	       qPrintable(name1),
-	       qPrintable(name2),
+	       qPrintable(pgn->playerName(Chess::Side::Type(wIndex))),
+	       qPrintable(pgn->playerName(Chess::Side::Type(!wIndex))),
 	       m_engines[0].wins, m_engines[1].wins, m_drawCount);
 
-	m_games[gameId] = game;
+	m_games[gameId] = pgn;
 	while (m_games.contains(m_finishedGames + 1))
 	{
 		m_finishedGames++;
-		game = m_games.take(m_finishedGames);
+		pgn = m_games.take(m_finishedGames);
 
 		if (!m_pgnOutput.isEmpty())
-			game->pgn().write(m_pgnOutput, m_pgnMode);
+			pgn->write(m_pgnOutput, m_pgnMode);
 
-		game->deleteLater();
+		delete pgn;
 	}
 
 	if (m_finishing)
@@ -357,7 +336,7 @@ void EngineMatch::start()
 
 	Chess::Board* board = Chess::BoardFactory::create(m_variant);
 	Q_ASSERT(board != 0);
-	ChessGame* game = new ChessGame(board);
+	ChessGame* game = new ChessGame(board, new PgnGame);
 	board->setParent(game);
 	connect(this, SIGNAL(stopGame()), game, SLOT(kill()), Qt::QueuedConnection);
 
@@ -412,9 +391,9 @@ void EngineMatch::start()
 		m_openingMoves = game->moves();
 	}
 
-	game->pgn().setRound(m_currentGame);
-	game->pgn().setEvent(m_event);
-	game->pgn().setSite(m_site);
+	game->pgn()->setRound(m_currentGame);
+	game->pgn()->setEvent(m_event);
+	game->pgn()->setSite(m_site);
 
 	game->setDrawThreshold(m_drawMoveNum, m_drawScore);
 	game->setResignThreshold(m_resignMoveCount, m_resignScore);

@@ -28,42 +28,154 @@ class GameThread : public QThread
 	Q_OBJECT
 
 	public:
-		GameThread(ChessGame* game,
-			   ChessPlayer* white,
-			   ChessPlayer* black,
-			   const PlayerBuilder* whiteBuilder,
+		GameThread(const PlayerBuilder* whiteBuilder,
 			   const PlayerBuilder* blackBuilder,
-			   QObject* parent = 0)
-			: QThread(parent),
-			  m_game(game),
-			  m_white(white),
-			  m_black(black),
-			  m_whiteBuilder(whiteBuilder),
-			  m_blackBuilder(blackBuilder)
-		{
-			Q_ASSERT(game != 0);
-			Q_ASSERT(white != 0);
-			Q_ASSERT(black != 0);
-			Q_ASSERT(whiteBuilder != 0);
-			Q_ASSERT(blackBuilder != 0);
-		}
+			   QObject* parent = 0);
+		~GameThread();
 
-		ChessGame* game() const { return m_game; }
-		ChessPlayer* white() const { return m_white; }
-		ChessPlayer* black() const { return m_black; }
-		const PlayerBuilder* whiteBuilder() const { return m_whiteBuilder; }
-		const PlayerBuilder* blackBuilder() const { return m_blackBuilder; }
+		bool isReady() const;
+		bool newGame(ChessGame* game);
+		void swapSides();
+		void quitPlayers();
 
-	protected:
-		void run() { exec(); }
+		const PlayerBuilder* whiteBuilder() const;
+		const PlayerBuilder* blackBuilder() const;
+
+	signals:
+		void debugMessage(const QString& data);
+		void ready();
+
+	private slots:
+		void onGameDestroyed();
+		void onPlayerQuit();
 
 	private:
+		bool m_ready;
+		int m_playerCount;
 		ChessGame* m_game;
-		ChessPlayer* m_white;
-		ChessPlayer* m_black;
-		const PlayerBuilder* m_whiteBuilder;
-		const PlayerBuilder* m_blackBuilder;
+		ChessPlayer* m_player[2];
+		const PlayerBuilder* m_builder[2];
 };
+
+GameThread::GameThread(const PlayerBuilder* whiteBuilder,
+		       const PlayerBuilder* blackBuilder,
+		       QObject* parent)
+	: QThread(parent),
+	  m_ready(true),
+	  m_playerCount(0),
+	  m_game(0)
+{
+	Q_ASSERT(whiteBuilder != 0);
+	Q_ASSERT(blackBuilder != 0);
+
+	m_player[Chess::Side::White] = 0;
+	m_player[Chess::Side::Black] = 0;
+	m_builder[Chess::Side::White] = whiteBuilder;
+	m_builder[Chess::Side::Black] = blackBuilder;
+}
+
+GameThread::~GameThread()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		if (m_player[i] == 0)
+			continue;
+
+		m_player[i]->closeConnection();
+		delete m_player[i];
+	}
+}
+
+bool GameThread::isReady() const
+{
+	return m_ready;
+}
+
+bool GameThread::newGame(ChessGame* game)
+{
+	m_ready = false;
+	m_game = game;
+	m_game->moveToThread(this);
+	connect(game, SIGNAL(destroyed()), this, SLOT(onGameDestroyed()));
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (m_player[i] == 0)
+		{
+			m_player[i] = m_builder[i]->create();
+			if (m_player[i] == 0)
+			{
+				m_ready = true;
+				m_playerCount = 0;
+
+				int j = !i;
+				if (m_player[j] != 0)
+				{
+					m_player[j]->closeConnection();
+					delete m_player[j];
+					m_player[j] = 0;
+				}
+
+				return false;
+			}
+
+			m_player[i]->moveToThread(this);
+			connect(m_player[i], SIGNAL(debugMessage(QString)),
+				this, SIGNAL(debugMessage(QString)));
+		}
+		m_game->setPlayer(Chess::Side::Type(i), m_player[i]);
+	}
+	m_playerCount = 2;
+
+	return true;
+}
+
+void GameThread::swapSides()
+{
+	qSwap(m_player[0], m_player[1]);
+	qSwap(m_builder[0], m_builder[1]);
+}
+
+void GameThread::quitPlayers()
+{
+	if (m_playerCount <= 0)
+	{
+		quit();
+		return;
+	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (m_player[i] == 0)
+			continue;
+
+		connect(m_player[i], SIGNAL(disconnected()),
+			this, SLOT(onPlayerQuit()), Qt::QueuedConnection);
+		QMetaObject::invokeMethod(m_player[i], "quit", Qt::QueuedConnection);
+	}
+}
+
+const PlayerBuilder* GameThread::whiteBuilder() const
+{
+	return m_builder[Chess::Side::White];
+}
+
+const PlayerBuilder* GameThread::blackBuilder() const
+{
+	return m_builder[Chess::Side::Black];
+}
+
+void GameThread::onGameDestroyed()
+{
+	m_ready = true;
+	emit ready();
+}
+
+void GameThread::onPlayerQuit()
+{
+	if (--m_playerCount <= 0)
+		quit();
+}
 
 
 GameManager::GameManager(QObject* parent)
@@ -72,13 +184,6 @@ GameManager::GameManager(QObject* parent)
 	  m_concurrency(1),
 	  m_activeGameCount(0)
 {
-}
-
-GameManager::~GameManager()
-{
-	QList<PlayerData>::iterator it;
-	for (it = m_idlePlayers.begin(); it != m_idlePlayers.end(); ++it)
-		it->player->deleteLater();
 }
 
 int GameManager::concurrency() const
@@ -95,19 +200,28 @@ void GameManager::cleanup()
 {
 	m_finishing = false;
 
-	if (m_idlePlayers.isEmpty())
+	// Remove idle threads from the list
+	QList<GameThread*>::iterator it = m_threads.begin();
+	while (it != m_threads.end())
+	{
+		if (!(*it)->isRunning())
+			it = m_threads.erase(it);
+		else
+			++it;
+	}
+
+	if (m_threads.isEmpty())
 	{
 		emit finished();
 		return;
 	}
 
-	// Terminate players
-	QList<PlayerData>::iterator it;
-	for (it = m_idlePlayers.begin(); it != m_idlePlayers.end(); ++it)
+	// Terminate running threads
+	foreach (GameThread* thread, m_threads)
 	{
-		connect(it->player, SIGNAL(disconnected()),
-			this, SLOT(onPlayerQuit()), Qt::QueuedConnection);
-		it->player->quit();
+		connect(thread, SIGNAL(finished()), this, SLOT(onThreadQuit()),
+			Qt::QueuedConnection);
+		thread->quitPlayers();
 	}
 }
 
@@ -130,76 +244,54 @@ bool GameManager::newGame(ChessGame* game,
 
 	GameEntry entry = { game, white, black };
 	m_gameEntries << entry;
+
 	return startGame();
 }
 
-void GameManager::onPlayerQuit()
+void GameManager::onThreadQuit()
 {
-	Q_ASSERT(!m_idlePlayers.isEmpty());
-	ChessPlayer* player = qobject_cast<ChessPlayer*>(QObject::sender());
-	Q_ASSERT(player != 0);
+	GameThread* thread = qobject_cast<GameThread*>(QObject::sender());
+	Q_ASSERT(thread != 0);
 
-	QList<PlayerData>::iterator it;
-	for (it = m_idlePlayers.begin(); it != m_idlePlayers.end(); ++it)
-	{
-		if (it->player == player)
-		{
-			m_idlePlayers.erase(it);
-			break;
-		}
-	}
-	player->deleteLater();
-
-	if (m_idlePlayers.isEmpty())
+	m_threads.removeOne(thread);
+	if (m_threads.isEmpty())
 	{
 		m_finishing = false;
 		emit finished();
 	}
 }
 
-void GameManager::onThreadQuit()
+void GameManager::onThreadReady()
 {
-	GameThread* gameThread = qobject_cast<GameThread*>(QObject::sender());
-	Q_ASSERT(gameThread != 0);
-
 	m_activeGameCount--;
-
-	PlayerData white = { gameThread->whiteBuilder(), gameThread->white() };
-	PlayerData black = { gameThread->blackBuilder(), gameThread->black() };
-	m_idlePlayers << white << black;
-
-	delete gameThread;
 	startGame();
 
 	if (m_finishing && m_activeGameCount == 0)
 		cleanup();
 }
 
-ChessPlayer* GameManager::getPlayer(const PlayerBuilder* builder)
+GameThread* GameManager::getThread(const PlayerBuilder* white,
+				   const PlayerBuilder* black)
 {
-	ChessPlayer* player = 0;
-	QList<PlayerData>::iterator it;
-
-	for (it = m_idlePlayers.begin(); it != m_idlePlayers.end(); ++it)
+	foreach (GameThread* thread, m_threads)
 	{
-		if (it->builder == builder)
-		{
-			player = it->player;
-			m_idlePlayers.erase(it);
-			break;
-		}
+		if (!thread->isReady())
+			continue;
+
+		if (thread->whiteBuilder() == black
+		&&  thread->blackBuilder() == white)
+			thread->swapSides();
+		if (thread->whiteBuilder() == white && thread->blackBuilder() == black)
+			return thread;
 	}
 
-	if (player == 0)
-	{
-		player = builder->create();
-		if (player == 0)
-			return 0;
-		connect(player, SIGNAL(debugMessage(QString)),
-			this, SIGNAL(debugMessage(QString)));
-	}
+	GameThread* gameThread = new GameThread(white, black, this);
+	m_threads << gameThread;
+	connect(gameThread, SIGNAL(debugMessage(QString)),
+		this, SIGNAL(debugMessage(QString)));
+	connect(gameThread, SIGNAL(ready()), this, SLOT(onThreadReady()));
 
-	return player;
+	return gameThread;
 }
 
 bool GameManager::startGame()
@@ -213,23 +305,14 @@ bool GameManager::startGame()
 	}
 
 	GameEntry entry = m_gameEntries.takeFirst();
-	ChessPlayer* white = 0;
-	ChessPlayer* black = 0;
-	if ((white = getPlayer(entry.white)) == 0
-	||  (black = getPlayer(entry.black)) == 0)
-		return false;
+	GameThread* gameThread = getThread(entry.white, entry.black);
 
-	ChessGame* game = entry.game;
+	if (!gameThread->newGame(entry.game))
+		return false;
 	m_activeGameCount++;
 
-	GameThread* gameThread = new GameThread(game, white, black, entry.white, entry.black, this);
-	connect(game, SIGNAL(gameEnded()), gameThread, SLOT(quit()));
-	connect(gameThread, SIGNAL(finished()), this, SLOT(onThreadQuit()));
 	gameThread->start();
-	
-	game->setPlayer(Chess::Side::White, white);
-	game->setPlayer(Chess::Side::Black, black);
-	game->start(gameThread);
+	entry.game->start();
 
 	return startGame();
 }

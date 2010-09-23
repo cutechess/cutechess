@@ -119,7 +119,7 @@ class EngineMatch : public QObject
 		QString m_pgnOutput;
 		QTime m_startTime;
 		GameManager m_manager;
-		QMap<int, ChessGame*> m_games;
+		QMap<int, PgnGame*> m_games;
 };
 
 #endif // ENGINEMATCH_H

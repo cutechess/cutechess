@@ -208,7 +208,7 @@ void MainWindow::newGame()
 	QString variant = dlg.selectedVariant();
 	Chess::Board* board = Chess::BoardFactory::create(variant);
 	Q_ASSERT(board != 0);
-	ChessGame* chessgame = new ChessGame(board, this);
+	ChessGame* chessgame = new ChessGame(board, new PgnGame, this);
 	board->setParent(chessgame);
 	connect(chessgame, SIGNAL(humanEnabled(bool)),
 		m_chessboardView, SLOT(setEnabled(bool)));

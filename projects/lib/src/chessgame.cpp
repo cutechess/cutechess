@@ -22,18 +22,20 @@
 #include "openingbook.h"
 
 
-ChessGame::ChessGame(Chess::Board* board, QObject* parent)
+ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	: QObject(parent),
 	  m_board(board),
-	  m_origThread(0),
 	  m_gameEnded(false),
 	  m_gameInProgress(false),
 	  m_drawMoveNum(0),
 	  m_drawScore(0),
 	  m_drawScoreCount(0),
 	  m_resignMoveCount(0),
-	  m_resignScore(0)
+	  m_resignScore(0),
+	  m_pgn(pgn)
 {
+	Q_ASSERT(pgn != 0);
+
 	for (int i = 0; i < 2; i++)
 	{
 		m_resignScoreCount[i] = 0;
@@ -51,7 +53,7 @@ ChessPlayer* ChessGame::player(Chess::Side side) const
 	return m_player[side];
 }
 
-PgnGame& ChessGame::pgn()
+PgnGame* ChessGame::pgn() const
 {
 	return m_pgn;
 }
@@ -100,20 +102,15 @@ void ChessGame::stop()
 	}
 	
 	m_gameInProgress = false;
-	m_pgn.setTag("PlyCount", QString::number(m_pgn.moves().size()));
-	m_pgn.setResult(m_result);
-	m_pgn.setResultDescription(m_result.description());
+	m_pgn->setTag("PlyCount", QString::number(m_pgn->moves().size()));
+	m_pgn->setResult(m_result);
+	m_pgn->setResultDescription(m_result.description());
 
 	m_player[Chess::Side::White]->endGame(m_result);
 	m_player[Chess::Side::Black]->endGame(m_result);
 	
 	connect(this, SIGNAL(playersReady()), this, SLOT(finish()), Qt::QueuedConnection);
 	syncPlayers();
-}
-
-void ChessGame::sendGameEnded()
-{
-	emit gameEnded();
 }
 
 void ChessGame::finish()
@@ -125,19 +122,7 @@ void ChessGame::finish()
 			m_player[i]->disconnect(this);
 	}
 
-	// Change thread affinity back to the way it was before the game
-	if (m_origThread != 0 && thread() != m_origThread)
-	{
-		moveToThread(m_origThread);
-		for (int i = 0; i < 2; i++)
-		{
-			if (m_player[i] != 0)
-				m_player[i]->moveToThread(m_origThread);
-		}
-		m_origThread = 0;
-	}
-
-	QMetaObject::invokeMethod(this, "sendGameEnded", Qt::QueuedConnection);
+	emit gameEnded();
 }
 
 void ChessGame::kill()
@@ -245,7 +230,7 @@ void ChessGame::addPgnMove(const Chess::Move& move, const QString& comment)
 	md.moveString = m_board->moveString(move, Chess::Board::StandardAlgebraic);
 	md.comment = comment;
 
-	m_pgn.addMove(md);
+	m_pgn->addMove(md);
 }
 
 void ChessGame::onMoveMade(const Chess::Move& move)
@@ -491,21 +476,8 @@ void ChessGame::syncPlayers()
 		emit playersReady();
 }
 
-void ChessGame::start(QThread* thread)
+void ChessGame::start()
 {
-	m_origThread = 0;
-	if (thread != 0)
-	{
-		Q_ASSERT(parent() == 0);
-		Q_ASSERT(m_player[Chess::Side::White]->parent() == 0);
-		Q_ASSERT(m_player[Chess::Side::Black]->parent() == 0);
-
-		m_origThread = this->thread();
-		moveToThread(thread);
-		m_player[Chess::Side::White]->moveToThread(thread);
-		m_player[Chess::Side::Black]->moveToThread(thread);
-	}
-
 	for (int i = 0; i < 2; i++)
 	{
 		connect(m_player[i], SIGNAL(forfeit(Chess::Result)),
@@ -519,19 +491,19 @@ void ChessGame::start(QThread* thread)
 
 void ChessGame::initializePgn()
 {
-	m_pgn.setVariant(m_board->variant());
-	m_pgn.setStartingFenString(m_board->startingSide(), m_startingFen);
-	m_pgn.setDate(QDate::currentDate());
-	m_pgn.setPlayerName(Chess::Side::White, m_player[Chess::Side::White]->name());
-	m_pgn.setPlayerName(Chess::Side::Black, m_player[Chess::Side::Black]->name());
-	m_pgn.setResult(m_result);
+	m_pgn->setVariant(m_board->variant());
+	m_pgn->setStartingFenString(m_board->startingSide(), m_startingFen);
+	m_pgn->setDate(QDate::currentDate());
+	m_pgn->setPlayerName(Chess::Side::White, m_player[Chess::Side::White]->name());
+	m_pgn->setPlayerName(Chess::Side::Black, m_player[Chess::Side::Black]->name());
+	m_pgn->setResult(m_result);
 
 	if (m_timeControl[Chess::Side::White] == m_timeControl[Chess::Side::Black])
-		m_pgn.setTag("TimeControl", m_timeControl[0].toString());
+		m_pgn->setTag("TimeControl", m_timeControl[0].toString());
 	else
 	{
-		m_pgn.setTag("WhiteTimeControl", m_timeControl[Chess::Side::White].toString());
-		m_pgn.setTag("BlackTimeControl", m_timeControl[Chess::Side::Black].toString());
+		m_pgn->setTag("WhiteTimeControl", m_timeControl[Chess::Side::White].toString());
+		m_pgn->setTag("BlackTimeControl", m_timeControl[Chess::Side::Black].toString());
 	}
 }
 

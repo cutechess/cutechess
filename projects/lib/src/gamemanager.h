@@ -23,6 +23,7 @@
 class ChessGame;
 class ChessPlayer;
 class PlayerBuilder;
+class GameThread;
 
 
 /*!
@@ -41,8 +42,6 @@ class LIB_EXPORT GameManager : public QObject
 	public:
 		/*! Creates a new game manager. */
 		GameManager(QObject* parent = 0);
-		/*! Destructs the manager and deletes all idle players. */
-		~GameManager();
 
 		/*! Returns the maximum allowed number of concurrent games. */
 		int concurrency() const;
@@ -57,13 +56,17 @@ class LIB_EXPORT GameManager : public QObject
 		void finish();
 
 		/*!
-		 * Adds game \a game to the game queue.
+		 * Adds \a game to the game queue.
 		 *
-		 * The game is started as soon as free game slots are available.
-		 * Construction of the players is delayed to the moment when the
-		 * game starts. Idle players from a previous game are reused
-		 * instead of constructing new players if the same builders are
-		 * used again.
+		 * The game is started in a separate thread as soon as a free
+		 * game slot is available. Construction of the players is delayed
+		 * to the moment when the game starts. Idle players from
+		 * a previous game are reused instead of constructing new players
+		 * if the same builders are used again.
+		 *
+		 * When \a game isn't needed any more, it must be destroyed with
+		 * the \a deleteLater() method. Then the game slot is freed again
+		 * and ready for another game.
 		 *
 		 * Returns true if successfull.
 		 * \note If there are still free game slots after starting this
@@ -92,7 +95,7 @@ class LIB_EXPORT GameManager : public QObject
 		void debugMessage(const QString& data);
 
 	private slots:
-		void onPlayerQuit();
+		void onThreadReady();
 		void onThreadQuit();
 
 	private:
@@ -103,21 +106,16 @@ class LIB_EXPORT GameManager : public QObject
 			const PlayerBuilder* black;
 		};
 
-		struct PlayerData
-		{
-			const PlayerBuilder* builder;
-			ChessPlayer* player;
-		};
-
-		ChessPlayer* getPlayer(const PlayerBuilder* builder);
+		GameThread* getThread(const PlayerBuilder* white,
+				      const PlayerBuilder* black);
 		bool startGame();
 		void cleanup();
 
 		bool m_finishing;
 		int m_concurrency;
 		int m_activeGameCount;
+		QList<GameThread*> m_threads;
 		QList<GameEntry> m_gameEntries;
-		QList<PlayerData> m_idlePlayers;
 };
 
 #endif // GAMEMANAGER_H

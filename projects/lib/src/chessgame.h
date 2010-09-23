@@ -30,7 +30,6 @@ namespace Chess { class Board; }
 class ChessPlayer;
 class OpeningBook;
 class MoveEvaluation;
-class QThread;
 
 
 class LIB_EXPORT ChessGame : public QObject
@@ -38,11 +37,11 @@ class LIB_EXPORT ChessGame : public QObject
 	Q_OBJECT
 
 	public:
-		explicit ChessGame(Chess::Board* board, QObject* parent = 0);
+		ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent = 0);
 		
 		ChessPlayer* player(Chess::Side side) const;
 
-		PgnGame& pgn();
+		PgnGame* pgn() const;
 		QString startingFen() const;
 		const QVector<Chess::Move>& moves() const;
 		Chess::Result result() const;
@@ -62,7 +61,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void generateOpening();
 
 	public slots:
-		void start(QThread* thread = 0);
+		void start();
 		void stop();
 		void kill();
 		void onMoveMade(const Chess::Move& move);
@@ -75,7 +74,6 @@ class LIB_EXPORT ChessGame : public QObject
 
 	private slots:
 		void startGame();
-		void sendGameEnded();
 		void finish();
 		void onForfeit(const Chess::Result& result);
 		void onPlayerReady();
@@ -92,7 +90,6 @@ class LIB_EXPORT ChessGame : public QObject
 		void addPgnMove(const Chess::Move& move, const QString& comment);
 		
 		Chess::Board* m_board;
-		QThread* m_origThread;
 		ChessPlayer* m_player[2];
 		TimeControl m_timeControl[2];
                 const OpeningBook* m_book[2];
@@ -108,7 +105,7 @@ class LIB_EXPORT ChessGame : public QObject
 		QString m_startingFen;
 		Chess::Result m_result;
 		QVector<Chess::Move> m_moves;
-		PgnGame m_pgn;
+		PgnGame* m_pgn;
 };
 
 #endif // CHESSGAME_H

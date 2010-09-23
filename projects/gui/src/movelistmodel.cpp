@@ -100,7 +100,7 @@ QVariant MoveListModel::data(const QModelIndex& index, int role) const
 		if (index.column() == 0)
 			return QString::number(index.row() + 1);
 
-		const QVector<PgnGame::MoveData> moves = m_game->pgn().moves();
+		const QVector<PgnGame::MoveData> moves = m_game->pgn()->moves();
 
 		if (moves.size() > ((index.row() * 2) + index.column() - 1))
 		{
