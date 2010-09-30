@@ -190,6 +190,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-pgnout", QVariant::StringList, 1, 2);
 	parser.addOption("-repeat", QVariant::Bool, 0, 0);
 	parser.addOption("-site", QVariant::String, 1, 1);
+	parser.addOption("-srand", QVariant::UInt, 1, 1);
 	parser.addOption("-wait", QVariant::Int, 1, 1);
 	if (!parser.parse())
 		return 0;
@@ -289,6 +290,9 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Site/location name
 		else if (name == "-site")
 			match->setSite(value.toString());
+		// Set the random seed manually
+		else if (name == "-srand")
+			qsrand(value.toUInt());
 		// Delay between games
 		else if (name == "-wait")
 			ok = match->setWait(value.toInt());
@@ -395,6 +399,7 @@ int main(int argc, char* argv[])
 			       "  -repeat		Play each opening twice so that both players get\n"
 			       "			to play it on both sides\n"
 			       "  -site <arg>		Set the site/location to <arg>\n"
+			       "  -srand <n>		Set the random seed for the book move selector to <n>\n"
 			       "  -wait <n>		Wait <n> milliseconds between games. The default is 0.\n\n"
 			       "Engine options:\n"
 			       "  conf=<arg>		Use an engine with the name <arg> from Cute Chess'\n"

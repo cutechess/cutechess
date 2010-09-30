@@ -85,6 +85,9 @@ OPTIONS
 -site <arg>::
 	Set the site / location to <arg>.
 
+-srand <n>::
+	Set the random seed for the book move selector to <n>.
+
 -wait <n>::
 	Wait <n> milliseconds between games. The default is 0.
 
