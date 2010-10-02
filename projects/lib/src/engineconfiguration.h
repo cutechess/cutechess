@@ -113,9 +113,9 @@ class LIB_EXPORT EngineConfiguration
 		/*! Adds new custom option. */
 		void addCustomOption(const QString& name, const QVariant& value);
 
-		/*! Sets white evaluation point of view. */
-		bool whiteEvalPov() const;
 		/*! Returns true if evaluation is from white's point of view. */
+		bool whiteEvalPov() const;
+		/*! Sets white evaluation point of view. */
 		void setWhiteEvalPov(bool whiteEvalPov);
 
 	private:
