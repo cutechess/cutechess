@@ -270,6 +270,20 @@ void XboardEngine::startThinking()
 		makeMove(m_nextMove);
 }
 
+void XboardEngine::onTimeout()
+{
+	if (m_drawOnNextMove)
+	{
+		Q_ASSERT(state() == Thinking);
+
+		m_drawOnNextMove = false;
+		qDebug("%s forfeits by invalid draw claim", qPrintable(name()));
+		emitForfeit(Chess::Result::Adjudication);
+	}
+	else
+		ChessEngine::onTimeout();
+}
+
 void XboardEngine::sendStop()
 {
 	write("?");

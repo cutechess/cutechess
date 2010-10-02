@@ -50,6 +50,10 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void parseLine(const QString& line);
 		void sendOption(const QString& name, const QString& value);
 
+	protected slots:
+		// Inherited from ChessEngine
+		void onTimeout();
+
 	private slots:
 		/*! Initializes the engine, and emits the 'ready' signal. */
 		void initialize();
