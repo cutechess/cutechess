@@ -135,7 +135,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 			}
 			data.bookDepth = val.toInt();
 		}
-		else if (name == "invertscores")
+		else if (name == "whitepov")
 		{
 			data.config.setWhiteEvalPov(true);
 		}
@@ -417,7 +417,9 @@ int main(int argc, char* argv[])
 			       "			per move in seconds\n"
 			       "  book=<file>		Use <file> (Polyglot book file) as the opening book\n"
 			       "  bookdepth=<n>		Set the maximum book depth (in fullmoves) to <n>\n"
-			       "  invertscores		Inverts the engine's scores when it plays black\n"
+			       "  whitepov		Invert the engine's scores when it plays black. This\n"
+			       "			option should be used with engines that always report\n"
+			       "			scores from white's perspective.\n"
 			       "  depth=<arg>		Set the search depth limit to <arg>\n"
 			       "  nodes=<arg>		Set the node count limit to <arg>\n"
 			       "  option.<name>=<arg>	Set custom option <name> to value <arg>\n";

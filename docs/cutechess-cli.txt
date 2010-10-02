@@ -130,8 +130,10 @@ book=<file>::
 bookdepth=<n>::
 	Set the maximum book depth (in fullmoves) to <n>.
 
-invertscores::
-	Inverts the engine's scores when it plays black.
+whitepov::
+	Invert the engine's scores when it plays black. This
+	option should be used with engines that always report
+	scores from white's perspective.
 
 depth=<arg>::
 	Set the search depth limit to <arg>.
