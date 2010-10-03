@@ -92,33 +92,14 @@ void EngineManager::loadEngines(const QString& fileName)
 	}
 
 	foreach(const QVariant& engine, engines)
-	{
-		const QVariantMap result = engine.toMap();
-
-		EngineConfiguration config;
-		config.setName(result["name"].toString());
-		config.setCommand(result["command"].toString());
-		config.setWorkingDirectory(result["workingDirectory"].toString());
-		config.setProtocol(result["protocol"].toString());
-
-		addEngine(config);
-	}
+		addEngine(EngineConfiguration(engine));
 }
 
 void EngineManager::saveEngines(const QString& fileName)
 {
 	QVariantList engines;
-
-	foreach(const EngineConfiguration config, m_engines)
-	{
-		QVariantMap engine;
-		engine.insert("name", config.name());
-		engine.insert("command", config.command());
-		engine.insert("workingDirectory", config.workingDirectory());
-		engine.insert("protocol", config.protocol());
-
-		engines << engine;
-	}
+	foreach (const EngineConfiguration& config, m_engines)
+		engines << config.toVariant();
 
 	QJson::Serializer serializer;
 	QFile output(fileName);

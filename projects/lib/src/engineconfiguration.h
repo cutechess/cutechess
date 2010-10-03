@@ -41,6 +41,16 @@ class LIB_EXPORT EngineConfiguration
 		EngineConfiguration(const QString& name,
 				    const QString& command,
 				    const QString& protocol);
+		/*! Creates a new chess engine configuration from a QVariant. */
+		EngineConfiguration(const QVariant& variant);
+
+		/*!
+		 * Converts the object into a QVariant.
+		 *
+		 * This makes it easy to serialize EngineConfiguration
+		 * objects with QJson.
+		 */
+		QVariant toVariant() const;
 
 		/*!
 		 * Sets the engine's name.

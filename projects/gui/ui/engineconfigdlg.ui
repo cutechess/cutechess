@@ -1,104 +1,135 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>EngineConfigurationDialog</class>
- <widget class="QDialog" name="EngineConfigurationDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="EngineConfigurationDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>233</height>
+    <width>450</width>
+    <height>355</height>
    </rect>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="0" column="0" >
-    <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QGroupBox" name="groupBox" >
-       <property name="title" >
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
         <string>Engine Configuration</string>
        </property>
-       <layout class="QGridLayout" name="gridLayout_2" >
-        <item row="0" column="0" >
-         <layout class="QFormLayout" name="formLayout" >
-          <property name="fieldGrowthPolicy" >
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
           </property>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
              <string>&amp;Name:</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>m_nameEdit</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label_2" >
-            <property name="text" >
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="m_nameEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
              <string>Co&amp;mmand:</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>m_commandEdit</cstring>
             </property>
            </widget>
           </item>
-          <item row="3" column="0" >
-           <widget class="QLabel" name="label_3" >
-            <property name="text" >
-             <string>&amp;Protocol:</string>
-            </property>
-            <property name="buddy" >
-             <cstring>m_protocolCombo</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QLineEdit" name="m_nameEdit" />
-          </item>
-          <item row="3" column="1" >
-           <widget class="QComboBox" name="m_protocolCombo" />
-          </item>
-          <item row="1" column="1" >
-           <layout class="QHBoxLayout" name="horizontalLayout" >
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QLineEdit" name="m_commandEdit" />
+             <widget class="QLineEdit" name="m_commandEdit"/>
             </item>
             <item>
-             <widget class="QPushButton" name="m_browseCmdBtn" >
-              <property name="text" >
+             <widget class="QPushButton" name="m_browseCmdBtn">
+              <property name="text">
                <string>Browse...</string>
               </property>
              </widget>
             </item>
            </layout>
           </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label_4" >
-            <property name="text" >
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
              <string>Working &amp;Directory:</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>m_workingDirEdit</cstring>
             </property>
            </widget>
           </item>
-          <item row="2" column="1" >
-           <layout class="QHBoxLayout" name="horizontalLayout_2" >
+          <item row="3" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QLineEdit" name="m_workingDirEdit" />
+             <widget class="QLineEdit" name="m_workingDirEdit"/>
             </item>
             <item>
-             <widget class="QPushButton" name="m_browseWorkingDirBtn" >
-              <property name="toolTip" >
+             <widget class="QPushButton" name="m_browseWorkingDirBtn">
+              <property name="toolTip">
                <string>Browse working directory.</string>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>Browse...</string>
               </property>
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>&amp;Protocol:</string>
+            </property>
+            <property name="buddy">
+             <cstring>m_protocolCombo</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QComboBox" name="m_protocolCombo"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>&amp;Init Strings:</string>
+            </property>
+            <property name="buddy">
+             <cstring>m_initStringEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QPlainTextEdit" name="m_initStringEdit">
+            <property name="font">
+             <font>
+              <family>Monospace</family>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="plainText">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QCheckBox" name="m_whitePovCheck">
+            <property name="text">
+             <string>Scores from &amp;white's perspective</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -106,11 +137,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="buttonBox" >
-       <property name="orientation" >
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="standardButtons" >
+       <property name="standardButtons">
         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
        </property>
       </widget>
@@ -136,11 +167,11 @@
    <receiver>EngineConfigurationDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>268</x>
      <y>222</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>196</y>
     </hint>
@@ -152,11 +183,11 @@
    <receiver>EngineConfigurationDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>336</x>
      <y>222</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>196</y>
     </hint>

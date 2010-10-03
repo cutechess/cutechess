@@ -35,6 +35,41 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 
 }
 
+EngineConfiguration::EngineConfiguration(const QVariant& variant)
+	: m_whiteEvalPov(false)
+{
+	const QVariantMap map = variant.toMap();
+
+	setName(map["name"].toString());
+	setCommand(map["command"].toString());
+	setWorkingDirectory(map["workingDirectory"].toString());
+	setProtocol(map["protocol"].toString());
+
+	if (map.contains("initStrings"))
+		setInitStrings(map["initStrings"].toStringList());
+	if (map.contains("whitepov"))
+		setWhiteEvalPov(map["whitepov"].toBool());
+}
+
+QVariant EngineConfiguration::toVariant() const
+{
+	QVariantMap map;
+
+	map.insert("name", m_name);
+	map.insert("command", m_command);
+	map.insert("workingDirectory", m_workingDirectory);
+	map.insert("protocol", m_protocol);
+
+	// Convert QStringList objects to QVariantList because the latest "stable"
+	// release of QJson (v0.7.1) doesn't serialize QStringLists.
+	if (!m_initStrings.isEmpty())
+		map.insert("initStrings", QVariant(m_initStrings).toList());
+	if (m_whiteEvalPov)
+		map.insert("whitepov", true);
+
+	return map;
+}
+
 void EngineConfiguration::setName(const QString& name)
 {
 	m_name = name;

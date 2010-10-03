@@ -53,6 +53,11 @@ void EngineConfigurationDialog::applyEngineInformation(
 
 	int i = m_protocolCombo->findText(engine.protocol());
 	m_protocolCombo->setCurrentIndex(i);
+
+	m_initStringEdit->setPlainText(engine.initStrings().join("\n"));
+
+	if (engine.whiteEvalPov())
+		m_whitePovCheck->setCheckState(Qt::Checked);
 }
 
 EngineConfiguration EngineConfigurationDialog::engineConfiguration()
@@ -62,6 +67,12 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 	engine.setCommand(m_commandEdit->text());
 	engine.setWorkingDirectory(m_workingDirEdit->text());
 	engine.setProtocol(m_protocolCombo->currentText());
+
+	QString initStr(m_initStringEdit->toPlainText());
+	if (!initStr.isEmpty())
+		engine.setInitStrings(initStr.split('\n'));
+
+	engine.setWhiteEvalPov(m_whitePovCheck->checkState() == Qt::Checked);
 
 	return engine;
 }
