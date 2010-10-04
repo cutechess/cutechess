@@ -18,8 +18,7 @@
 #include "engineconfiguration.h"
 
 EngineConfiguration::EngineConfiguration()
-	: m_protocol(0),
-	  m_whiteEvalPov(false)
+	: m_whiteEvalPov(false)
 {
 
 }
