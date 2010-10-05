@@ -23,13 +23,13 @@
 #include "engineoption.h"
 
 
-int ChessEngine::m_count = 0;
+int ChessEngine::s_count = 0;
 
 
 ChessEngine::ChessEngine(QObject* parent)
 	: ChessPlayer(parent),
 	  m_whiteEvalPov(false),
-	  m_id(m_count++),
+	  m_id(s_count++),
 	  m_pingState(NotStarted),
 	  m_pinging(false),
 	  m_pingTimer(new QTimer(this)),
@@ -53,7 +53,6 @@ ChessEngine::ChessEngine(QObject* parent)
 ChessEngine::~ChessEngine()
 {
 	qDeleteAll(m_options);
-	--m_count;
 }
 
 QIODevice* ChessEngine::device() const

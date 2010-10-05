@@ -186,7 +186,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void onQuitTimeout();
 
 	private:
-		static int m_count;
+		static int s_count;
 		int m_id;
 		State m_pingState;
 		bool m_pinging;
