@@ -308,8 +308,6 @@ void EngineMatch::onGameEnded()
 		delete pgn;
 	}
 
-	if (m_finishing)
-		return;
 	if (m_finishedGames >= m_gameCount
 	||  result.type() == Chess::Result::ResultError
 	||  result.type() == Chess::Result::NoResult
