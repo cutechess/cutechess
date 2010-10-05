@@ -78,6 +78,9 @@ OPTIONS
 	Save the games to <file> in PGN format. Use the 'min' argument
 	to save in a minimal PGN format.
 
+-recover::
+	Restart crashed engines instead of stopping the match.
+
 -repeat::
 	Play each opening twice so that both players get to play it on
 	both sides.

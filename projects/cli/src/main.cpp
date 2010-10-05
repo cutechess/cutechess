@@ -189,6 +189,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-pgndepth", QVariant::Int, 1, 1);
 	parser.addOption("-pgnout", QVariant::StringList, 1, 2);
 	parser.addOption("-repeat", QVariant::Bool, 0, 0);
+	parser.addOption("-recover", QVariant::Bool, 0, 0);
 	parser.addOption("-site", QVariant::String, 1, 1);
 	parser.addOption("-srand", QVariant::UInt, 1, 1);
 	parser.addOption("-wait", QVariant::Int, 1, 1);
@@ -287,6 +288,9 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Play every opening twice, just switch the players' sides
 		else if (name == "-repeat")
 			match->setRepeatOpening(true);
+		// Recover crashed/stalled engines
+		else if (name == "-recover")
+			match->setRecoveryMode(true);
 		// Site/location name
 		else if (name == "-site")
 			match->setSite(value.toString());
@@ -396,6 +400,7 @@ int main(int argc, char* argv[])
 			       "  -pgndepth <n>		Set the maximum depth for PGN input to <n> plies\n"
 			       "  -pgnout <file> [min]	Save the games to <file> in PGN format. Use the 'min'\n"
 			       "			argument to save in a minimal PGN format.\n"
+			       "  -recover		Restart crashed engines instead of stopping the match\n"
 			       "  -repeat		Play each opening twice so that both players get\n"
 			       "			to play it on both sides\n"
 			       "  -site <arg>		Set the site/location to <arg>\n"

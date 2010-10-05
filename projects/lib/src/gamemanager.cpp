@@ -100,6 +100,15 @@ bool GameThread::newGame(ChessGame* game)
 
 	for (int i = 0; i < 2; i++)
 	{
+		// Delete a disconnected player (crashed engine) so that
+		// it will be restarted.
+		if (m_player[i] != 0
+		&&  m_player[i]->state() == ChessPlayer::Disconnected)
+		{
+			m_player[i]->deleteLater();
+			m_player[i] = 0;
+		}
+
 		if (m_player[i] == 0)
 		{
 			m_player[i] = m_builder[i]->create();

@@ -57,6 +57,7 @@ class EngineMatch : public QObject
 		bool setPgnInput(const QString& filename);
 		void setPgnOutput(const QString& filename,
 				  PgnGame::PgnMode mode);
+		void setRecoveryMode(bool recover);
 		void setRepeatOpening(bool repeatOpening);
 		void setResignThreshold(int moveCount, int score);
 		void setSite(const QString& site);
@@ -103,6 +104,7 @@ class EngineMatch : public QObject
 		int m_resignScore;
 		int m_wait;
 		bool m_debug;
+		bool m_recover;
 		bool m_finishing;
 		PgnGame::PgnMode m_pgnMode;
 		bool m_repeatOpening;

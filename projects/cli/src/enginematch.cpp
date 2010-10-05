@@ -39,6 +39,7 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_resignScore(0),
 	  m_wait(0),
 	  m_debug(false),
+	  m_recover(false),
 	  m_finishing(false),
 	  m_pgnMode(PgnGame::Verbose),
 	  m_repeatOpening(false),
@@ -144,6 +145,11 @@ void EngineMatch::setPgnOutput(const QString& filename,
 {
 	m_pgnOutput = filename;
 	m_pgnMode = mode;
+}
+
+void EngineMatch::setRecoveryMode(bool recover)
+{
+	m_recover = recover;
 }
 
 void EngineMatch::setRepeatOpening(bool repeatOpening)
@@ -311,10 +317,10 @@ void EngineMatch::onGameEnded()
 	}
 
 	if (m_finishedGames >= m_gameCount
-	||  result.type() == Chess::Result::ResultError
 	||  result.type() == Chess::Result::NoResult
-	||  result.type() == Chess::Result::Disconnection
-	||  result.type() == Chess::Result::StalledConnection)
+	||  (!m_recover &&
+	     (result.type() == Chess::Result::Disconnection ||
+	      result.type() == Chess::Result::StalledConnection)))
 		stop();
 }
 
