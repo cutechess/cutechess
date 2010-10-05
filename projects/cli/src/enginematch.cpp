@@ -271,9 +271,11 @@ void EngineMatch::onGameEnded()
 	game->deleteLater();
 	game = 0;
 
-	if (playerMissing)
+	if (playerMissing || result.type() == Chess::Result::ResultError)
 	{
 		delete pgn;
+		m_finishedGames++;
+		stop();
 		return;
 	}
 
