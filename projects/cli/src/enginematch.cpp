@@ -16,6 +16,7 @@
 */
 
 #include "enginematch.h"
+#include <cmath>
 #include <QTimer>
 #include <QtDebug>
 #include <board/boardfactory.h>
@@ -321,7 +322,18 @@ void EngineMatch::onGameEnded()
 	||  (!m_recover &&
 	     (result.type() == Chess::Result::Disconnection ||
 	      result.type() == Chess::Result::StalledConnection)))
+	{
+		int score = m_engines[0].wins * 2 + m_drawCount;
+		int total = (m_engines[0].wins + m_engines[1].wins + m_drawCount) * 2;
+		if (total > 0)
+		{
+			double ratio = double(score) / double(total);
+			double eloDiff = -400.0 * std::log(1.0 / ratio - 1.0) / std::log(10.0);
+			qDebug("ELO difference: %.0f", eloDiff);
+		}
+
 		stop();
+	}
 }
 
 void EngineMatch::onManagerReady()
