@@ -18,6 +18,7 @@
 #include "engineprocess_win.h"
 #include <QDir>
 #include <QTimerEvent>
+#include <QRegExp>
 #include <QtDebug>
 #include "pipereader_win.h"
 
@@ -250,7 +251,21 @@ void EngineProcess::start(const QString& program,
 void EngineProcess::start(const QString& program,
 			  OpenMode mode)
 {
-	start(program, QStringList(), mode);
+	QStringList args;
+
+	QRegExp rx("((?:[^\\s\"]+)|(?:\"(?:\\\\\"|[^\"])*\"))");
+	int pos = 0;
+	while ((pos = rx.indexIn(program, pos)) != -1)
+	{
+		args << rx.cap();
+		pos += rx.matchedLength();
+	}
+	if (args.isEmpty())
+		return;
+
+	QString prog = args.first();
+	args.removeFirst();
+	start(prog, args, mode);
 }
 
 void EngineProcess::kill()
