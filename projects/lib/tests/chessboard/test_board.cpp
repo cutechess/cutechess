@@ -1,5 +1,6 @@
 #include <QtTest/QtTest>
 #include <board/board.h>
+#include <board/boardfactory.h>
 
 
 class TestBoard: public QObject
@@ -35,7 +36,7 @@ void TestBoard::setVariant(const QString& variant)
 	if (m_board == 0 || m_board->variant() != variant)
 	{
 		delete m_board;
-		m_board = Chess::Board::registry()->create(variant, this);
+		m_board = Chess::BoardFactory::create(variant, this);
 	}
 	QVERIFY(m_board != 0);
 }
@@ -62,7 +63,7 @@ static quint64 perftRoot(const Chess::Board* board,
 			 const Chess::Move& move,
 			 int depth)
 {
-	Chess::Board* tmp = Chess::Board::registry()->create(board->variant());
+	Chess::Board* tmp = Chess::BoardFactory::create(board->variant());
 	Q_ASSERT(tmp != 0);
 	tmp->setFenString(board->fenString());
 	tmp->makeMove(move);
