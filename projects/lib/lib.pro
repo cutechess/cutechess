@@ -9,11 +9,11 @@ win32:!static {
     DEFINES += LIB_EXPORT=\"\"
 }
 
-exists($$PWD/3rdparty/qjson) {
-    INCLUDEPATH += $$PWD/3rdparty/qjson/include
-    LIBS += -L$$PWD/3rdparty/qjson/lib
+win32 {
+    include($$PWD/3rdparty/qjson/qjson.pri)
+} else {
+    LIBS += -lqjson
 }
-LIBS += -lqjson
 
 include(src/src.pri)
 
