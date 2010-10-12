@@ -7,19 +7,14 @@ generator) and QJson. The current qmake project file doesn't have support for
 installations. However the main executable has the necessary resources built-in
 by default so it's the only thing you need to deploy.
 
-First you need to make sure that QJson is installed. On Unix and derivates you
-should be able to install it through package manager. 0.7.0+ version of QJson
-is highly recommended due to problems in earlier versions. On Windows the
-easiest way is to drop the QJson source files to "3rdparty/qjson/" directory
-under "projects/lib" and make a local installation of QJson. So, with 'cmake'
-program installed in "3rdparty/qjson/" directory:
+First you need to make sure that QJson is installed. On Unix-like operating
+systems you should be able to install it through package manager. 0.7.0+
+version of QJson is highly recommended due to problems in earlier versions. On
+Windows included version of QJson (located at projects/lib/3rdparty/qjson/) is
+used automatically and no installation is required.
 
-    cmake -DCMAKE_INSTALL_PREFIX=.
-    make
-    make install
-
-QJSon is now installed to the current directory where Cute Chess' build system
-will pick it up.
+If you're using Qt Creator to build the sources you can skip the rest of this
+document.
 
 Next you need to build Cute Chess' Makefile in either release or debug mode.
 Release mode is for general program usage and offers the best
