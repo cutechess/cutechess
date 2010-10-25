@@ -59,10 +59,8 @@ QVariant EngineConfiguration::toVariant() const
 	map.insert("workingDirectory", m_workingDirectory);
 	map.insert("protocol", m_protocol);
 
-	// Convert QStringList objects to QVariantList because the latest "stable"
-	// release of QJson (v0.7.1) doesn't serialize QStringLists.
 	if (!m_initStrings.isEmpty())
-		map.insert("initStrings", QVariant(m_initStrings).toList());
+		map.insert("initStrings", m_initStrings);
 	if (m_whiteEvalPov)
 		map.insert("whitepov", true);
 
