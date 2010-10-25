@@ -9,12 +9,6 @@ win32:!static {
     DEFINES += LIB_EXPORT=\"\"
 }
 
-win32 {
-    include($$PWD/3rdparty/qjson/qjson.pri)
-} else {
-    LIBS += -lqjson
-}
-
 include(src/src.pri)
 
 OBJECTS_DIR = .obj

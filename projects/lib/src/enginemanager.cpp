@@ -19,9 +19,9 @@
 #include <QSettings>
 #include <QFile>
 #include <QTextStream>
-#include <qjson/parser.h>
-#include <qjson/serializer.h>
 #include <QDebug>
+#include "jsonparser.h"
+#include "jsonserializer.h"
 
 
 EngineManager::EngineManager(QObject* parent)
@@ -68,26 +68,25 @@ void EngineManager::setEngines(const QList<EngineConfiguration>& engines)
 
 void EngineManager::loadEngines(const QString& fileName)
 {
-	QFile input(fileName);
-	QJson::Parser parser;
-	bool ok = false;
-
 	if (!QFile::exists(fileName))
 		return;
 
+	QFile input(fileName);
 	if (!input.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
 		qWarning() << "cannot open engine configuration file:" << fileName;
 		return;
 	}
 
-	const QVariantList engines = parser.parse(&input, &ok).toList();
+	QTextStream stream(&input);
+	JsonParser parser(stream);
+	const QVariantList engines(parser.parse().toList());
 
-	if (!ok)
+	if (parser.isError())
 	{
 		qWarning() << "bad engine configuration file line" <<
-			parser.errorLine() << "in" << fileName << ":"
-				<< parser.errorString();
+			parser.errorLineNumber() << "in" << fileName << ":"
+				<< parser.errorMessage();
 		return;
 	}
 
@@ -101,9 +100,7 @@ void EngineManager::saveEngines(const QString& fileName)
 	foreach (const EngineConfiguration& config, m_engines)
 		engines << config.toVariant();
 
-	QJson::Serializer serializer;
 	QFile output(fileName);
-
 	if (!output.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
 		qWarning() << "cannot open engine configuration file:" << fileName;
@@ -111,5 +108,6 @@ void EngineManager::saveEngines(const QString& fileName)
 	}
 
 	QTextStream out(&output);
-	out << serializer.serialize(engines);
+	JsonSerializer serializer(engines);
+	serializer.serialize(out);
 }
