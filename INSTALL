@@ -2,23 +2,17 @@
     Installation
 
 
-Cute Chess requires Qt (at least version 4.6), qmake (the Qt Makefile
-generator) and QJson. The current qmake project file doesn't have support for
+Cute Chess requires Qt (at least version 4.6) and qmake (the Qt Makefile
+generator). The current qmake project file doesn't have support for
 installations. However the main executable has the necessary resources built-in
 by default so it's the only thing you need to deploy.
-
-First you need to make sure that QJson is installed. On Unix-like operating
-systems you should be able to install it through package manager. 0.7.0+
-version of QJson is highly recommended due to problems in earlier versions. On
-Windows included version of QJson (located at projects/lib/3rdparty/qjson/) is
-used automatically and no installation is required.
 
 If you're using Qt Creator to build the sources you can skip the rest of this
 document.
 
-Next you need to build Cute Chess' Makefile in either release or debug mode.
-Release mode is for general program usage and offers the best
-performance. Debug mode is for debugging Cute Chess.
+First you need to build Cute Chess' Makefile in either release or debug mode.
+Release mode is for general program usage and offers the best performance.
+Debug mode is for debugging Cute Chess.
 
 To build the Makefile in release mode:
 
