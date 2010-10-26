@@ -10,6 +10,7 @@ win32:!static {
 }
 
 include(src/src.pri)
+include(components/json/src/json.pri)
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc

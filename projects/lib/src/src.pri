@@ -26,9 +26,7 @@ HEADERS += chessengine.h \
     playerbuilder.h \
     enginebuilder.h \
     classregistry.h \
-    enginefactory.h \
-    jsonparser.h \
-    jsonserializer.h
+    enginefactory.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -52,9 +50,7 @@ SOURCES += chessengine.cpp \
     pgngameentry.cpp \
     gamemanager.cpp \
     enginebuilder.cpp \
-    enginefactory.cpp \
-    jsonparser.cpp \
-    jsonserializer.cpp
+    enginefactory.cpp
 win32 { 
     HEADERS += engineprocess_win.h \
         pipereader_win.h

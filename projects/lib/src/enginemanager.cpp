@@ -20,8 +20,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
-#include "jsonparser.h"
-#include "jsonserializer.h"
+#include <jsonparser.h>
+#include <jsonserializer.h>
 
 
 EngineManager::EngineManager(QObject* parent)
