@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = parser
+SUBDIRS = parser serializer
