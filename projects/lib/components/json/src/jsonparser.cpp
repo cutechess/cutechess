@@ -108,7 +108,7 @@ JsonParser::Token JsonParser::parseToken()
 
 	m_lastToken.clear();
 
-	while (!m_stream.atEnd() && !m_error)
+	while ((!m_stream.atEnd() || !m_buffer.isNull()) && !m_error)
 	{
 		if (m_buffer.isNull())
 		{
@@ -221,35 +221,40 @@ JsonParser::Token JsonParser::parseToken()
 			}
 			break;
 		case JsonGeneric:
-			if (c.isSpace() || termination.contains(c))
+			if (!c.isSpace() && !termination.contains(c))
 			{
-				if (m_lastToken == "true")
-					type = JsonTrue;
-				else if (m_lastToken == "false")
-					type = JsonFalse;
-				else if (m_lastToken == "null")
-					type = JsonNull;
-				else if (m_lastToken.at(0).isDigit()
-				     ||  m_lastToken.at(0) == '-')
-					type = JsonNumber;
+				m_lastToken += c;
+				if (m_stream.atEnd())
+					c = '\n';
 				else
-				{
-					setError(QObject::tr("Unknown token: %1")
-						 .arg(m_lastToken));
-					return JsonError;
-				}
-
-				m_buffer = c;
-				return type;
+					break;
 			}
-			m_lastToken += c;
-			break;
+
+			if (m_lastToken == "true")
+				type = JsonTrue;
+			else if (m_lastToken == "false")
+				type = JsonFalse;
+			else if (m_lastToken == "null")
+				type = JsonNull;
+			else if (m_lastToken.at(0).isDigit()
+			     ||  m_lastToken.at(0) == '-')
+				type = JsonNumber;
+			else
+			{
+				setError(QObject::tr("Unknown token: %1")
+					 .arg(m_lastToken));
+				return JsonError;
+			}
+
+			m_buffer = c;
+			return type;
 		default:
 			qFatal("UNREACHABLE");
 		}
 	}
 
-	return type;
+	setError(QObject::tr("Reached EOF unexpectedly"));
+	return JsonError;
 }
 
 QVariant JsonParser::parseValue(Token* tokenType)
@@ -316,7 +321,7 @@ QVariant JsonParser::parseObject()
 	QVariant value;
 	QVariantMap map;
 
-	while (!m_stream.atEnd())
+	forever
 	{
 		t = parseToken();
 		if (t == JsonEndObject)
@@ -370,7 +375,7 @@ QVariant JsonParser::parseArray()
 	QVariant value;
 	QVariantList list;
 
-	while (!m_stream.atEnd())
+	forever
 	{
 		value = parseValue(&t);
 
