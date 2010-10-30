@@ -79,11 +79,11 @@ void TestParser::basics_data() const
 	QTest::newRow("64-bit int")
 		<< "3567830610840546163"
 		<< QVariant::LongLong
-		<< QVariant(Q_UINT64_C(3567830610840546163));
+		<< QVariant(Q_INT64_C(3567830610840546163));
 	QTest::newRow("negative 64-bit int")
 		<< "-3567830610840546163"
 		<< QVariant::LongLong
-		<< QVariant(Q_UINT64_C(-3567830610840546163));
+		<< QVariant(Q_INT64_C(-3567830610840546163));
 
 	QTest::newRow("double")
 		<< "0.012"
