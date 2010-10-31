@@ -108,7 +108,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 			}
 		}
 		else if (name == "initstr")
-			data.config.addInitString(val);
+			data.config.addInitString(val.replace("\\n", "\n"));
 		// Time control (moves/time+increment)
 		else if (name == "tc")
 		{

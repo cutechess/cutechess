@@ -134,7 +134,7 @@ void EngineConfiguration::setInitStrings(const QStringList& initStrings)
 
 void EngineConfiguration::addInitString(const QString& initString)
 {
-	m_initStrings << initString;
+	m_initStrings << initString.split('\n');
 }
 
 QMap<QString, QVariant> EngineConfiguration::customOptions() const
