@@ -37,8 +37,17 @@ class LIB_EXPORT PlayerBuilder
 {
 	public:
 		virtual ~PlayerBuilder() {}
-		/*! Creates a new player and sets its parent to \a parent. */
-		virtual ChessPlayer* create(QObject* parent = 0) const = 0;
+		/*!
+		 * Creates a new player and sets its parent to \a parent.
+		 *
+		 * \param receiver The receiver of the player's debugging messages.
+		 * \param method The receiver's method the \a debugMessage(QString)
+		 *               signal will connect to.
+		 * \param parent The player's parent object.
+		 */
+		virtual ChessPlayer* create(QObject* receiver = 0,
+					    const char* method = 0,
+					    QObject* parent = 0) const = 0;
 };
 
 #endif // PLAYERBUILDER_H

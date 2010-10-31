@@ -30,7 +30,7 @@ class GameThread : public QThread
 	public:
 		GameThread(const PlayerBuilder* whiteBuilder,
 			   const PlayerBuilder* blackBuilder,
-			   QObject* parent = 0);
+			   QObject* parent);
 		~GameThread();
 
 		bool isReady() const;
@@ -42,7 +42,6 @@ class GameThread : public QThread
 		const PlayerBuilder* blackBuilder() const;
 
 	signals:
-		void debugMessage(const QString& data);
 		void ready();
 
 	private slots:
@@ -65,6 +64,7 @@ GameThread::GameThread(const PlayerBuilder* whiteBuilder,
 	  m_playerCount(0),
 	  m_game(0)
 {
+	Q_ASSERT(parent != 0);
 	Q_ASSERT(whiteBuilder != 0);
 	Q_ASSERT(blackBuilder != 0);
 
@@ -111,7 +111,7 @@ bool GameThread::newGame(ChessGame* game)
 
 		if (m_player[i] == 0)
 		{
-			m_player[i] = m_builder[i]->create();
+			m_player[i] = m_builder[i]->create(parent(), SIGNAL(debugMessage(QString)));
 			if (m_player[i] == 0)
 			{
 				m_ready = true;
@@ -129,8 +129,6 @@ bool GameThread::newGame(ChessGame* game)
 			}
 
 			m_player[i]->moveToThread(this);
-			connect(m_player[i], SIGNAL(debugMessage(QString)),
-				this, SIGNAL(debugMessage(QString)));
 		}
 		m_game->setPlayer(Chess::Side::Type(i), m_player[i]);
 	}
@@ -296,8 +294,6 @@ GameThread* GameManager::getThread(const PlayerBuilder* white,
 
 	GameThread* gameThread = new GameThread(white, black, this);
 	m_threads << gameThread;
-	connect(gameThread, SIGNAL(debugMessage(QString)),
-		this, SIGNAL(debugMessage(QString)));
 	connect(gameThread, SIGNAL(ready()), this, SLOT(onThreadReady()));
 
 	return gameThread;

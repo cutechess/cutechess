@@ -27,7 +27,9 @@ EngineBuilder::EngineBuilder(const EngineConfiguration& config)
 {
 }
 
-ChessPlayer* EngineBuilder::create(QObject* parent) const
+ChessPlayer* EngineBuilder::create(QObject* receiver,
+				   const char* method,
+				   QObject* parent) const
 {
 	QString path(QDir::currentPath());
 	EngineProcess* process = new EngineProcess();
@@ -65,6 +67,9 @@ ChessPlayer* EngineBuilder::create(QObject* parent) const
 
 	ChessEngine* engine = EngineFactory::create(m_config.protocol(), parent);
 	Q_ASSERT(engine != 0);
+	if (receiver != 0 && method != 0)
+		QObject::connect(engine, SIGNAL(debugMessage(QString)),
+				 receiver, method);
 	engine->setDevice(process);
 	process->setParent(engine);
 

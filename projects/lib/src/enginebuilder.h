@@ -30,7 +30,9 @@ class LIB_EXPORT EngineBuilder : public PlayerBuilder
 		EngineBuilder(const EngineConfiguration& config);
 
 		// Inherited from PlayerBuilder
-		ChessPlayer* create(QObject* parent) const;
+		ChessPlayer* create(QObject* receiver,
+				    const char* method,
+				    QObject* parent) const;
 
 	private:
 		EngineConfiguration m_config;
