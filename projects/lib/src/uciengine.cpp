@@ -401,5 +401,8 @@ void UciEngine::parseLine(const QString& line)
 
 void UciEngine::sendOption(const QString& name, const QString& value)
 {
-	write(QString("setoption name %1 value %2").arg(name).arg(value));
+	if (!value.isEmpty())
+		write(QString("setoption name %1 value %2").arg(name).arg(value));
+	else
+		write(QString("setoption name %1").arg(name));
 }
