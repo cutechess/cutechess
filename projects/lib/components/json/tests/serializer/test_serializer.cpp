@@ -194,6 +194,11 @@ void TestSerializer::test_data() const
 	obj["empty array"] = QVariantList();
 	QTest::newRow("object #3") << QVariant(obj);
 
+	QStringList stringList;
+	stringList << "aA" << "bB" << "cC" << "dD";
+	obj.clear();
+	obj["alphabet"] = stringList;
+	QTest::newRow("stringlist") << QVariant(obj);
 
 	QVariantList list;
 
