@@ -56,14 +56,14 @@ JsonParser::JsonParser(QTextStream& stream)
 {
 }
 
-bool JsonParser::isError() const
+bool JsonParser::hasError() const
 {
 	return m_error;
 }
 
-QString JsonParser::errorMessage() const
+QString JsonParser::errorString() const
 {
-	return m_errorMessage;
+	return m_errorString;
 }
 
 qint64 JsonParser::errorLineNumber() const
@@ -77,7 +77,7 @@ void JsonParser::setError(const QString& message)
 		return;
 
 	m_error = true;
-	m_errorMessage = message;
+	m_errorString = message;
 	m_errorLine = m_currentLine;
 }
 
@@ -87,7 +87,7 @@ void JsonParser::clearError()
 		return;
 
 	m_error = false;
-	m_errorMessage.clear();
+	m_errorString.clear();
 	m_errorLine = 0;
 }
 

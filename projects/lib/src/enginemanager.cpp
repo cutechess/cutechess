@@ -82,11 +82,11 @@ void EngineManager::loadEngines(const QString& fileName)
 	JsonParser parser(stream);
 	const QVariantList engines(parser.parse().toList());
 
-	if (parser.isError())
+	if (parser.hasError())
 	{
 		qWarning() << "bad engine configuration file line" <<
 			parser.errorLineNumber() << "in" << fileName << ":"
-				<< parser.errorMessage();
+				<< parser.errorString();
 		return;
 	}
 

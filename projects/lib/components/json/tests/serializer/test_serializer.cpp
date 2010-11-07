@@ -223,12 +223,12 @@ void TestSerializer::test() const
 	QString str;
 	QTextStream stream(&str, QIODevice::Text | QIODevice::WriteOnly);
 	serializer.serialize(stream);
-	QVERIFY(!serializer.isError());
+	QVERIFY(!serializer.hasError());
 
 	stream.setString(&str, QIODevice::ReadOnly);
 	JsonParser parser(stream);
 	QVariant result(parser.parse());
-	QVERIFY(!parser.isError());
+	QVERIFY(!parser.hasError());
 
 	QCOMPARE(result, input);
 }

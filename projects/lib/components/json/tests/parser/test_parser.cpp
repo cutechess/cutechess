@@ -234,7 +234,7 @@ void TestParser::invalid() const
 	QVariant data(parser.parse());
 
 	QVERIFY(data.isNull());
-	QVERIFY(parser.isError());
+	QVERIFY(parser.hasError());
 }
 
 QVariant TestParser::sample1() const

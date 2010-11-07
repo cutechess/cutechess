@@ -77,14 +77,14 @@ JsonSerializer::JsonSerializer(const QVariant& data)
 {
 }
 
-bool JsonSerializer::isError() const
+bool JsonSerializer::hasError() const
 {
 	return m_error;
 }
 
-QString JsonSerializer::errorMessage() const
+QString JsonSerializer::errorString() const
 {
-	return m_errorMessage;
+	return m_errorString;
 }
 
 void JsonSerializer::setError(const QString &message)
@@ -92,7 +92,7 @@ void JsonSerializer::setError(const QString &message)
 	if (m_error)
 		return;
 	m_error = true;
-	m_errorMessage = message;
+	m_errorString = message;
 }
 
 bool JsonSerializer::serializeNode(QTextStream& stream,

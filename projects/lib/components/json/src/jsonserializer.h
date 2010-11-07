@@ -64,9 +64,9 @@ class LIB_EXPORT JsonSerializer
 		bool serialize(QTextStream& stream);
 
 		/*! Returns true if an error occured. */
-		bool isError() const;
+		bool hasError() const;
 		/*! Returns a detailed description of the error. */
-		QString errorMessage() const;
+		QString errorString() const;
 
 	private:
 		bool serializeNode(QTextStream& stream,
@@ -76,7 +76,7 @@ class LIB_EXPORT JsonSerializer
 
 		bool m_error;
 		const QVariant m_data;
-		QString m_errorMessage;
+		QString m_errorString;
 };
 
 #endif // JSONSERIALIZER_H
