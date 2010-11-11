@@ -114,6 +114,34 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void go();
 		
 	protected:
+		/*!
+		 * Reads the first whitespace-delimited token from a string
+		 * and returns a QStringRef reference to the token.
+		 *
+		 * If \a readToEnd is true, the whole string is read, except
+		 * for leading and trailing whitespace. Otherwise only one
+		 * word is read.
+		 *
+		 * If \a str doesn't contain any words, a null QStringRef
+		 * object is returned.
+		 */
+		static QStringRef firstToken(const QString& str,
+					     bool readToEnd = false);
+		/*!
+		 * Reads the first whitespace-delimited token after the
+		 * token referenced by \a previous.
+		 *
+		 * If \a readToEnd is true, everything from the first word
+		 * after \a previous to the end of the string is read,
+		 * except for leading and trailing whitespace. Otherwise
+		 * only one word is read.
+		 *
+		 * If \a previous is null or it's not followed by any words,
+		 * a null QStringRef object is returned.
+		 */
+		static QStringRef nextToken(const QStringRef& previous,
+					    bool readToEnd = false);
+
 		// Inherited from ChessPlayer
 		virtual void startGame() = 0;
 
@@ -187,6 +215,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 	private:
 		static int s_count;
+
 		int m_id;
 		State m_pingState;
 		bool m_pinging;

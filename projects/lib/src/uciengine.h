@@ -19,6 +19,7 @@
 #define UCIENGINE_H
 
 #include "chessengine.h"
+#include <QVarLengthArray>
 
 
 /*!
@@ -52,8 +53,15 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		
 	private:
 		void addVariants();
-		void parseInfo(const QString& line);
-		EngineOption* parseOption(const QString& line);
+		static QStringRef parseUciTokens(const QStringRef& first,
+						 const QString* types,
+						 int typeCount,
+						 QVarLengthArray<QStringRef>& tokens,
+						 int& type);
+		void parseInfo(const QVarLengthArray<QStringRef>& tokens,
+			       int type);
+		void parseInfo(const QStringRef& line);
+		EngineOption* parseOption(const QStringRef& line);
 		void sendPosition();
 		
 		QString m_startFen;

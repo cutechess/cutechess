@@ -389,11 +389,53 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 
 void XboardEngine::parseLine(const QString& line)
 {
-	const QString command = line.section(' ', 0, 0);
-	if (command.isEmpty())
-		return;
+	if (line.at(0).isDigit()) // principal variation
+	{
+		bool ok = false;
+		int val = 0;
+		QStringRef ref(firstToken(line));
+		
+		// Search depth
+		QString depth(ref.toString());
+		if (!(depth.end() - 1)->isDigit())
+			depth.chop(1);
+		m_eval.setDepth(depth.toInt());
 
-	const QString args = line.right(line.length() - command.length() - 1);
+		// Evaluation
+		if ((ref = nextToken(ref)).isNull())
+			return;
+		val = ref.toString().toInt(&ok);
+		if (ok)
+		{
+			if (m_whiteEvalPov && side() == Chess::Side::Black)
+				val = -val;
+			m_eval.setScore(val);
+		}
+
+		// Search time
+		if ((ref = nextToken(ref)).isNull())
+			return;
+		val = ref.toString().toInt(&ok);
+		if (ok)
+			m_eval.setTime(val * 10);
+
+		// Node count
+		if ((ref = nextToken(ref)).isNull())
+			return;
+		val = ref.toString().toInt(&ok);
+		if (ok)
+			m_eval.setNodeCount(val);
+
+		// Principal variation
+		if ((ref = nextToken(ref, true)).isNull())
+			return;
+		m_eval.setPv(ref.toString());
+
+		return;
+	}
+
+	const QStringRef command(firstToken(line));
+	const QString args(nextToken(command, true).toString());
 
 	if (command == "move")
 	{
@@ -502,38 +544,6 @@ void XboardEngine::parseLine(const QString& line)
 		QString str = args.section(':', 1).trimmed();
 		if (str.startsWith("result"))
 			finishGame();
-	}
-	else if (command.at(0).isDigit()) // principal variation
-	{
-		bool ok = false;
-
-		QString depthStr;
-		foreach (const QChar& c, command)
-		{
-			if (c.isDigit())
-				depthStr += c;
-			else
-				break;
-		}
-		m_eval.setDepth(depthStr.toInt());
-
-		int eval = args.section(' ', 0, 0).toInt(&ok);
-		if (ok)
-		{
-			if (m_whiteEvalPov && side() == Chess::Side::Black)
-				eval = -eval;
-			m_eval.setScore(eval);
-		}
-
-		int ms = args.section(' ', 1, 1).toInt(&ok);
-		if (ok)
-			m_eval.setTime(ms * 10);
-
-		int nodes = args.section(' ', 2, 2).toInt(&ok);
-		if (ok)
-			m_eval.setNodeCount(nodes);
-
-		m_eval.setPv(args.section(' ', 3));
 	}
 }
 

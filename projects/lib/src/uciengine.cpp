@@ -19,7 +19,6 @@
 
 #include <QString>
 #include <QStringList>
-#include <QRegExp>
 #include <QDebug>
 
 #include "board/board.h"
@@ -192,122 +191,218 @@ void UciEngine::addVariants()
 	}
 }
 
-static QVector<QStringList> parseCommand(const QString& str, const QRegExp& rx)
+QStringRef UciEngine::parseUciTokens(const QStringRef& first,
+				     const QString* types,
+				     int typeCount,
+				     QVarLengthArray<QStringRef>& tokens,
+				     int& type)
 {
-	QVector<QStringList> attrs;
+	QStringRef token(first);
+	type = -1;
+	tokens.clear();
 
-	// Put the attributes' names and values in a vector
-	QString item;
-	int pos = 0;
-	int prevPos= 0;
-	while ((pos = rx.indexIn(str, pos)) != -1)
+	do
 	{
-		if (!item.isEmpty())
+		bool newType = false;
+		for (int i = 0; i < typeCount; i++)
 		{
-			QString val = str.mid(prevPos + 1, pos - prevPos - 2);
-			attrs.append((QStringList() << item << val.trimmed()));
+			if (token == types[i])
+			{
+				if (type != -1)
+					return token;
+				type = i;
+				newType = true;
+				break;
+			}
 		}
-		item = rx.cap();
-		pos += rx.matchedLength();
-		prevPos = pos;
+		if (!newType && type != -1)
+			tokens.append(token);
 	}
-	if (prevPos >= str.length() - 1)
-		return attrs; // No value for the last attribute
+	while (!(token = nextToken(token)).isNull());
 
-	// Add the last attribute to the vector
-	if (!item.isEmpty())
-	{
-		QString val = str.right(str.length() - prevPos - 1);
-		attrs.append((QStringList() << item << val.trimmed()));
-	}
-
-	return attrs;
+	return token;
 }
 
-void UciEngine::parseInfo(const QString& line)
+void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
+			  int type)
 {
-	QRegExp rx("\\b(depth|seldepth|time|nodes|pv|multipv|score|currmove|"
-		   "currmovenumber|hashfull|nps|tbhits|cpuload|string|"
-		   "refutation|currline)\\b");
-	QVector<QStringList> attrs = parseCommand(line, rx);
-
-	foreach (const QStringList& attr, attrs)
+	enum Keyword
 	{
-		if (attr[0] == "depth")
-			m_eval.setDepth(attr[1].toInt());
-		else if (attr[0] == "time")
-			m_eval.setTime(attr[1].toInt());
-		else if (attr[0] == "nodes")
-			m_eval.setNodeCount(attr[1].toInt());
-		else if (attr[0] == "pv")
-			m_eval.setPv(attr[1]);
-		else if (attr[0] == "score")
-		{
-			QRegExp rx2("\\b(cp|mate|lowerbound|upperbound)\\b");
-			QVector<QStringList> attrs2 = parseCommand(attr[1], rx2);
-			int score = 0;
-			bool hasScore = false;
+		InfoDepth,
+		InfoSelDepth,
+		InfoTime,
+		InfoNodes,
+		InfoPv,
+		InfoMultiPv,
+		InfoScore,
+		InfoCurrMove,
+		InfoCurrMoveNumber,
+		InfoHashFull,
+		InfoNps,
+		InfoTbHits,
+		InfoCpuLoad,
+		InfoString,
+		InfoRefutation,
+		InfoCurrLine
+	};
 
-			foreach (const QStringList& attr2, attrs2)
+	if (tokens.isEmpty())
+		return;
+	
+	switch (type)
+	{
+	case InfoDepth:
+		m_eval.setDepth(tokens[0].toString().toInt());
+		break;
+	case InfoTime:
+		m_eval.setTime(tokens[0].toString().toInt());
+		break;
+	case InfoNodes:
+		m_eval.setNodeCount(tokens[0].toString().toInt());
+		break;
+	case InfoPv:
+		{
+			QString pv(tokens[0].toString());
+			for (int i = 1; i < tokens.size(); i++)
 			{
-				if (attr2[0] == "cp")
+				pv += ' ';
+				tokens[i].appendTo(&pv);
+			}
+			m_eval.setPv(pv);
+		}
+		break;
+	case InfoScore:
+		{
+			int score = 0;
+			for (int i = 1; i < tokens.size(); i++)
+			{
+				if (tokens[i - 1] == "cp")
 				{
-					score = attr2[1].toInt();
-					if (m_whiteEvalPov && side() == Chess::Side::Black)
+					score = tokens[i].toString().toInt();
+					if (m_whiteEvalPov
+					&&  side() == Chess::Side::Black)
 						score = -score;
-					hasScore = true;
 				}
-				else if (attr2[0] == "lowerbound"
-				     ||  attr2[0] == "upperbound")
+				else if (tokens[i - 1] == "mate")
 				{
-					hasScore = false;
-					break;
-				}
-				else if (attr2[0] == "mate")
-				{
-					score = attr2[1].toInt();
+					score = tokens[i].toString().toInt();
 					if (score > 0)
 						score = 30001 - score * 2;
 					else if (score < 0)
 						score = -30000 - score * 2;
-					hasScore = true;
 				}
+				else if (tokens[i - 1] == "lowerbound"
+				     ||  tokens[i - 1] == "upperbound")
+					return;
+				i++;
 			}
-			if (hasScore)
-				m_eval.setScore(score);
+			m_eval.setScore(score);
 		}
+		break;
+	default:
+		break;
 	}
 }
 
-EngineOption* UciEngine::parseOption(const QString& str)
+void UciEngine::parseInfo(const QStringRef& line)
 {
+	static const QString types[] =
+	{
+		"depth",
+		"seldepth",
+		"time",
+		"nodes",
+		"pv",
+		"multipv",
+		"score",
+		"currmove",
+		"currmovenumber",
+		"hashfull",
+		"nps",
+		"tbhits",
+		"cpuload",
+		"string",
+		"refutation",
+		"currline"
+	};
+
+	int type = -1;
+	QStringRef token(nextToken(line));
+	QVarLengthArray<QStringRef> tokens;
+
+	while (!token.isNull())
+	{
+		token = parseUciTokens(token, types, 16, tokens, type);
+		parseInfo(tokens, type);
+	}
+}
+
+EngineOption* UciEngine::parseOption(const QStringRef& line)
+{
+	enum Keyword
+	{
+		OptionName,
+		OptionType,
+		OptionDefault,
+		OptionMin,
+		OptionMax,
+		OptionVar
+	};
+	static const QString types[] =
+	{
+		"name",
+		"type",
+		"default",
+		"min",
+		"max",
+		"var"
+	};
+
 	QString name;
 	QString type;
 	QString value;
 	QStringList choices;
 	int min = 0;
 	int max = 0;
+	
+	int keyword = -1;
+	QStringRef token(nextToken(line));
+	QVarLengthArray<QStringRef> tokens;
 
-	QRegExp rx("\\b(name|type|default|min|max|var)\\b");
-	QVector<QStringList> attrs = parseCommand(str, rx);
-
-	foreach (const QStringList& attr, attrs)
+	while (!token.isNull())
 	{
-		if (attr.size() < 2)
+		token = parseUciTokens(token, types, 6, tokens, keyword);
+		if (tokens.isEmpty() || keyword == -1)
 			continue;
 
-		if (attr[0] == "name")
-			name = attr[1];
-		else if (attr[0] == "type")
-			type = attr[1];
-		else if (attr[0] == "default")
-			value = attr[1];
-		else if (attr[0] == "min")
-			min = attr[1].toInt();
-		else if (attr[0] == "max")
-			max = attr[1].toInt();
-		else if (attr[0] == "var")
-			choices << attr[1];
+		QString str(tokens[0].toString());
+		for (int i = 1; i < tokens.size(); i++)
+		{
+			str += ' ';
+			tokens[i].appendTo(&str);
+		}
+
+		switch (keyword)
+		{
+		case OptionName:
+			name = str;
+			break;
+		case OptionType:
+			type = str;
+			break;
+		case OptionDefault:
+			value = str;
+			break;
+		case OptionMin:
+			min = str.toInt();
+			break;
+		case OptionMax:
+			max = str.toInt();
+			break;
+		case OptionVar:
+			choices << str;
+			break;
+		}
 	}
 	if (name.isEmpty())
 		return 0;
@@ -328,10 +423,13 @@ EngineOption* UciEngine::parseOption(const QString& str)
 
 void UciEngine::parseLine(const QString& line)
 {
-	const QString command = line.section(' ', 0, 0);
-	const QString args = line.right(line.length() - command.length() - 1);
+	const QStringRef command(firstToken(line));
 
-	if (command == "bestmove")
+	if (command == "info")
+	{
+		parseInfo(command);
+	}
+	else if (command == "bestmove")
 	{
 		if (state() != Thinking)
 		{
@@ -342,10 +440,7 @@ void UciEngine::parseLine(const QString& line)
 			return;
 		}
 
-		QString moveString = args.section(' ', 0, 0);
-		if (moveString.isEmpty())
-			moveString = args;
-
+		QString moveString(nextToken(command).toString());
 		m_moveStrings += " " + moveString;
 		Chess::Move move = board()->moveFromString(moveString);
 
@@ -353,6 +448,10 @@ void UciEngine::parseLine(const QString& line)
 			emitMove(move);
 		else
 			emitForfeit(Chess::Result::IllegalMove, moveString);
+	}
+	else if (command == "readyok")
+	{
+		pong();
 	}
 	else if (command == "uciok")
 	{
@@ -363,21 +462,15 @@ void UciEngine::parseLine(const QString& line)
 			ping();
 		}
 	}
-	else if (command == "readyok")
-	{
-		pong();
-	}
 	else if (command == "id")
 	{
-		const QString tag = args.section(' ', 0, 0);
-		const QString tagVal = args.section(' ', 1);
-		
+		QStringRef tag(nextToken(command));
 		if (tag == "name" && name() == "UciEngine")
-			setName(tagVal);
+			setName(nextToken(tag, true).toString());
 	}
 	else if (command == "registration")
 	{
-		if (args == "error")
+		if (nextToken(command) == "error")
 		{
 			qDebug() << "Failed to register UCI engine" << name();
 			write("register later");
@@ -385,17 +478,13 @@ void UciEngine::parseLine(const QString& line)
 	}
 	else if (command == "option")
 	{
-		EngineOption* option = parseOption(args);
+		EngineOption* option = parseOption(command);
 
 		if (option == 0 || !option->isValid())
 			qDebug() << "Invalid UCI option from" << name() << ":"
-				 << args;
+				 << line;
 		else
 			m_options.append(option);
-	}
-	else if (command == "info")
-	{
-		parseInfo(args);
 	}
 }
 
