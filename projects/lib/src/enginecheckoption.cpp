@@ -9,5 +9,10 @@ EngineCheckOption::EngineCheckOption(const QString& name,
 
 bool EngineCheckOption::isValid(const QVariant& value) const
 {
-	return value.canConvert(QVariant::Bool);
+	if (value.canConvert(QVariant::Bool))
+	{
+		QString str(value.toString());
+		return (str == "true" || str == "false");
+	}
+	return false;
 }
