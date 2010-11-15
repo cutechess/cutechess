@@ -389,11 +389,15 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 
 void XboardEngine::parseLine(const QString& line)
 {
-	if (line.at(0).isDigit()) // principal variation
+	const QStringRef command(firstToken(line));
+	if (command.isEmpty())
+		return;
+
+	if (command.at(0).isDigit()) // principal variation
 	{
 		bool ok = false;
 		int val = 0;
-		QStringRef ref(firstToken(line));
+		QStringRef ref(command);
 		
 		// Search depth
 		QString depth(ref.toString());
@@ -434,7 +438,6 @@ void XboardEngine::parseLine(const QString& line)
 		return;
 	}
 
-	const QStringRef command(firstToken(line));
 	const QString args(nextToken(command, true).toString());
 
 	if (command == "move")
