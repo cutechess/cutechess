@@ -21,19 +21,16 @@
 #include <QObject>
 
 class QAbstractItemView;
-class QAbstractItemModel;
 
 class AutoVerticalScroller : QObject
 {
 	Q_OBJECT
 
 	public:
-		AutoVerticalScroller(QAbstractItemView* view, QAbstractItemModel* model,
-		             QObject* parent = 0);
+		AutoVerticalScroller(QAbstractItemView* view, QObject* parent = 0);
 
 	private:
 		QAbstractItemView* m_view;
-		QAbstractItemModel* m_model;
 		bool m_scrollToBottom;
 
 	private slots:

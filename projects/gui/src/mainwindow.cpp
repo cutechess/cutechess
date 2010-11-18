@@ -169,7 +169,7 @@ void MainWindow::createDockWindows()
 	moveListDock->setWidget(moveListView);
 
 	AutoVerticalScroller* moveListScroller =
-		new AutoVerticalScroller(moveListView, m_moveListModel, this);
+		new AutoVerticalScroller(moveListView, this);
 	Q_UNUSED(moveListScroller);
 
 	addDockWidget(Qt::RightDockWidgetArea, moveListDock);

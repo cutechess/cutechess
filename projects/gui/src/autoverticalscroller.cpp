@@ -16,20 +16,18 @@
 */
 
 #include <QAbstractItemView>
-#include <QAbstractItemModel>
 #include <QScrollBar>
 
 #include "autoverticalscroller.h"
 
 AutoVerticalScroller::AutoVerticalScroller(QAbstractItemView* view,
-                                           QAbstractItemModel* model,
                                            QObject* parent)
-	: QObject(parent), m_view(view), m_model(model), m_scrollToBottom(false)
+	: QObject(parent), m_view(view), m_scrollToBottom(false)
 {
-	connect(m_model,
+	connect(m_view->model(),
 		SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)),
 		this, SLOT(onRowsAboutToBeInserted()));
-	connect(m_model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+	connect(m_view->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
 		this, SLOT(onRowsInserted()));
 }
 
