@@ -22,6 +22,14 @@
 
 class QAbstractItemView;
 
+/*!
+ * \brief Automatically scroll an item view when new items are added.
+ *
+ * AutoVerticalScroller automatically scrolls an item view vertically when
+ * new items are added. Automatic scrolling only happens when the scroll bar
+ * is positioned at the bottom and thus the user has always control of the
+ * behavior.
+ */
 class AutoVerticalScroller : QObject
 {
 	Q_OBJECT
