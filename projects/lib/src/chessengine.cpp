@@ -348,6 +348,8 @@ void ChessEngine::onReadyRead()
 		QString line = QString(m_ioDevice->readLine());
 		if (line.endsWith('\n'))
 			line.chop(1);
+		if (line.endsWith('\r'))
+			line.chop(1);
 		if (line.isEmpty())
 			continue;
 
