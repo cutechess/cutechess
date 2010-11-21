@@ -59,7 +59,9 @@ class LIB_EXPORT TimeControl
 
 		/*!
 		 * Returns true if \a other is the same as this time control.
-		 * The timeLeft and movesLeft values are not compared.
+		 *
+		 * The state of a game (eg. time left, used time, the expiry flag)
+		 * and the expiry margin are ignored.
 		 */
 		bool operator==(const TimeControl& other) const;
 
