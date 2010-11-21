@@ -127,6 +127,10 @@ tc=<arg>::
 	minutes:seconds), and 'increment' is time increment
 	per move in seconds.
 
+st=<n>::
+	Set the time limit for each move to <n> seconds.
+	This option can't be used in combination with "tc".
+
 book=<file>::
 	Use <file> (Polyglot book file) as the opening book.
 

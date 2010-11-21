@@ -141,7 +141,7 @@ void UciEngine::startThinking()
 	
 	QString command = "go";
 	if (myTc->timePerMove() > 0)
-		command += QString(" movetime %1").arg(myTc->timePerMove());
+		command += QString(" movetime %1").arg(myTc->timeLeft());
 	else
 	{
 		command += QString(" wtime %1").arg(whiteTc->timeLeft());
@@ -152,11 +152,12 @@ void UciEngine::startThinking()
 			command += QString(" binc %1").arg(blackTc->timeIncrement());
 		if (myTc->movesLeft() > 0)
 			command += QString(" movestogo %1").arg(myTc->movesLeft());
-		if (myTc->maxDepth() > 0)
-			command += QString(" depth %1").arg(myTc->maxDepth());
-		if (myTc->nodeLimit() > 0)
-			command += QString(" nodes %1").arg(myTc->nodeLimit());
 	}
+	if (myTc->maxDepth() > 0)
+		command += QString(" depth %1").arg(myTc->maxDepth());
+	if (myTc->nodeLimit() > 0)
+		command += QString(" nodes %1").arg(myTc->nodeLimit());
+
 	write(command);
 }
 

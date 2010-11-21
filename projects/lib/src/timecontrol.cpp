@@ -28,7 +28,8 @@ TimeControl::TimeControl()
 	  m_movesLeft(0),
 	  m_maxDepth(0),
 	  m_nodeLimit(0),
-	  m_lastMoveTime(0)
+	  m_lastMoveTime(0),
+	  m_expired(false)
 {
 }
 
@@ -41,7 +42,8 @@ TimeControl::TimeControl(const QString& str)
 	  m_movesLeft(0),
 	  m_maxDepth(0),
 	  m_nodeLimit(0),
-	  m_lastMoveTime(0)
+	  m_lastMoveTime(0),
+	  m_expired(false)
 {
 	QStringList list = str.split('+');
 
@@ -94,11 +96,12 @@ bool TimeControl::operator==(const TimeControl& other) const
 bool TimeControl::isValid() const
 {
 	if (m_movesPerTc < 0
-	||  m_timePerTc <= 0
+	||  m_timePerTc < 0
 	||  m_timePerMove < 0
 	||  m_increment < 0
 	||  m_maxDepth < 0
-	||  m_nodeLimit < 0)
+	||  m_nodeLimit < 0
+	||  (m_timePerTc == 0 && m_timePerMove == 0))
 		return false;
 	return true;
 }
@@ -116,6 +119,20 @@ QString TimeControl::toString() const
 	if (m_increment > 0)
 		str += QString("+") + QString::number((double)m_increment / 1000);
 	return str;
+}
+
+void TimeControl::initialize()
+{
+	m_expired = false;
+	m_lastMoveTime = 0;
+
+	if (m_timePerTc != 0)
+	{
+		m_timeLeft = m_timePerTc;
+		m_movesLeft = m_movesPerTc;
+	}
+	else if (m_timePerMove != 0)
+		m_timeLeft = m_timePerMove;
 }
 
 int TimeControl::timePerTc() const
@@ -201,8 +218,6 @@ void TimeControl::setTimePerMove(int timePerMove)
 void TimeControl::setTimeLeft(int timeLeft)
 {
 	m_timeLeft = timeLeft;
-	if (timeLeft != 0)
-		m_timePerMove = 0;
 }
 
 void TimeControl::setMovesLeft(int movesLeft)
@@ -233,9 +248,14 @@ void TimeControl::startTimer()
 
 void TimeControl::update()
 {
-	if (m_timePerMove == 0)
+	m_lastMoveTime = m_time.elapsed();
+	if (m_lastMoveTime > m_timeLeft)
+		m_expired = true;
+
+	if (m_timePerMove != 0)
+		setTimeLeft(m_timePerMove);
+	else
 	{
-		m_lastMoveTime = m_time.elapsed();
 		setTimeLeft(m_timeLeft + m_increment - m_lastMoveTime);
 		
 		if (m_movesPerTc > 0)
@@ -250,11 +270,14 @@ void TimeControl::update()
 			}
 		}
 	}
-	else
-		m_lastMoveTime = m_timePerMove;
 }
 
 int TimeControl::lastMoveTime() const
 {
 	return m_lastMoveTime;
+}
+
+bool TimeControl::expired() const
+{
+	return m_expired;
 }

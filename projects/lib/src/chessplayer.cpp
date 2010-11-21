@@ -62,8 +62,7 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board*
 	m_opponent = opponent;
 	m_board = board;
 	m_side = side;
-	m_timeControl.setTimeLeft(m_timeControl.timePerTc());
-	m_timeControl.setMovesLeft(m_timeControl.movesPerTc());
+	m_timeControl.initialize();
 
 	setState(Observing);
 	startGame();
@@ -120,11 +119,8 @@ void ChessPlayer::startClock()
 
 	m_eval.clear();
 
-	if (m_timeControl.timePerTc() != 0)
+	if (m_timeControl.isValid())
 		emit startedThinking(m_timeControl.timeLeft());
-	else if (m_timeControl.timePerMove() != 0)
-		emit startedThinking(m_timeControl.timePerMove());
-	
 	m_timeControl.startTimer();
 	m_timer->start(qMax(m_timeControl.timeLeft(), 0) + 200);
 }
@@ -214,12 +210,12 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 	m_eval.setTime(m_timeControl.lastMoveTime());
 
 	m_timer->stop();
-	if (m_timeControl.timeLeft() <= 0)
+	if (m_timeControl.expired())
 	{
 		emitForfeit(Chess::Result::Timeout);
 		return;
 	}
-	
+
 	emit moveMade(move);
 }
 

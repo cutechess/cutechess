@@ -69,6 +69,9 @@ class LIB_EXPORT TimeControl
 		/*! Returns the time control string in PGN format. */
 		QString toString() const;
 
+		/*! Initializes the time control ready for a new game. */
+		void initialize();
+
 		/*!
 		 * Returns the time per time control,
 		 * or 0 if there's no specified total time.
@@ -142,6 +145,9 @@ class LIB_EXPORT TimeControl
 		/*! Returns the last elapsed move time. */
 		int lastMoveTime() const;
 
+		/*! Returns true if the allotted time has expired. */
+		bool expired() const;
+
 	private:
 		int m_movesPerTc;
 		int m_timePerTc;
@@ -152,6 +158,7 @@ class LIB_EXPORT TimeControl
 		int m_maxDepth;
 		int m_nodeLimit;
 		int m_lastMoveTime;
+		bool m_expired;
 		QTime m_time;
 
 };

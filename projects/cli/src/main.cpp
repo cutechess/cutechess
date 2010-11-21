@@ -117,6 +117,18 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 
 			data.tc = tc;
 		}
+		// Search time per move
+		else if (name == "st")
+		{
+			bool ok = false;
+			int moveTime = val.toDouble(&ok) * 1000.0;
+			if (!ok || moveTime <= 0)
+			{
+				qWarning() << "Invalid search time:" << val;
+				return false;
+			}
+			data.tc.setTimePerMove(moveTime);
+		}
 		else if (name == "book")
 			data.book = val;
 		else if (name == "bookdepth")
@@ -413,6 +425,8 @@ int main(int argc, char* argv[])
 			       "			moves per tc, 'time' is time per tc (either seconds or\n"
 			       "			minutes:seconds), and 'increment' is time increment\n"
 			       "			per move in seconds\n"
+			       "  st=<n>		Set the time limit for each move to <n> seconds.\n"
+			       "			This option can't be used in combination with \"tc\".\n"
 			       "  book=<file>		Use <file> (Polyglot book file) as the opening book\n"
 			       "  bookdepth=<n>		Set the maximum book depth (in fullmoves) to <n>\n"
 			       "  whitepov		Invert the engine's scores when it plays black. This\n"
