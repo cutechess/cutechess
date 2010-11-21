@@ -114,7 +114,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 
 			data.tc.setTimePerTc(tc.timePerTc());
 			data.tc.setMovesPerTc(tc.movesPerTc());
-			data.tc.setIncrement(tc.timeIncrement());
+			data.tc.setTimeIncrement(tc.timeIncrement());
 		}
 		// Search time per move
 		else if (name == "st")

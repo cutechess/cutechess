@@ -54,7 +54,7 @@ TimeControl::TimeControl(const QString& str)
 	{
 		int inc = (int)(list[1].toDouble() * 1000);
 		if (inc >= 0)
-			setIncrement(inc);
+			setTimeIncrement(inc);
 	}
 
 	list = list[0].split('/');
@@ -198,7 +198,7 @@ void TimeControl::setMovesPerTc(int movesPerTc)
 	m_movesPerTc = movesPerTc;
 }
 
-void TimeControl::setIncrement(int increment)
+void TimeControl::setTimeIncrement(int increment)
 {
 	Q_ASSERT(increment >= 0);
 	m_increment = increment;

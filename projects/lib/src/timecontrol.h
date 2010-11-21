@@ -129,7 +129,7 @@ class LIB_EXPORT TimeControl
 		void setMovesPerTc(int movesPerTc);
 
 		/*! Sets the time increment per move. */
-		void setIncrement(int increment);
+		void setTimeIncrement(int increment);
 
 		/*! Sets the time per move. */
 		void setTimePerMove(int timePerMove);
