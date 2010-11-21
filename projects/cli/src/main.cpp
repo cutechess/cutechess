@@ -111,9 +111,10 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				qWarning() << "Invalid time control:" << val;
 				return false;
 			}
-			// Preserve previously set depth and node limits
+			// Preserve previously set values
 			tc.setMaxDepth(data.tc.maxDepth());
 			tc.setNodeLimit(data.tc.nodeLimit());
+			tc.setExpiryMargin(data.tc.expiryMargin());
 
 			data.tc = tc;
 		}
@@ -128,6 +129,18 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				return false;
 			}
 			data.tc.setTimePerMove(moveTime);
+		}
+		// Time expiry margin
+		else if (name == "timemargin")
+		{
+			bool ok = false;
+			int margin = val.toInt(&ok);
+			if (!ok || margin < 0)
+			{
+				qWarning() << "Invalid time margin:" << val;
+				return false;
+			}
+			data.tc.setExpiryMargin(margin);
 		}
 		else if (name == "book")
 			data.book = val;
@@ -427,6 +440,7 @@ int main(int argc, char* argv[])
 			       "			per move in seconds\n"
 			       "  st=<n>		Set the time limit for each move to <n> seconds.\n"
 			       "			This option can't be used in combination with \"tc\".\n"
+			       "  timemargin=<n>	Let engines go <n> milliseconds over the time limit.\n"
 			       "  book=<file>		Use <file> (Polyglot book file) as the opening book\n"
 			       "  bookdepth=<n>		Set the maximum book depth (in fullmoves) to <n>\n"
 			       "  whitepov		Invert the engine's scores when it plays black. This\n"

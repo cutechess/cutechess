@@ -121,8 +121,11 @@ void ChessPlayer::startClock()
 
 	if (m_timeControl.isValid())
 		emit startedThinking(m_timeControl.timeLeft());
+
 	m_timeControl.startTimer();
-	m_timer->start(qMax(m_timeControl.timeLeft(), 0) + 200);
+
+	int t = m_timeControl.timeLeft() + m_timeControl.expiryMargin();
+	m_timer->start(qMax(t, 0) + 200);
 }
 
 void ChessPlayer::makeBookMove(const Chess::Move& move)

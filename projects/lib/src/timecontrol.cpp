@@ -29,6 +29,7 @@ TimeControl::TimeControl()
 	  m_maxDepth(0),
 	  m_nodeLimit(0),
 	  m_lastMoveTime(0),
+	  m_expiryMargin(0),
 	  m_expired(false)
 {
 }
@@ -43,6 +44,7 @@ TimeControl::TimeControl(const QString& str)
 	  m_maxDepth(0),
 	  m_nodeLimit(0),
 	  m_lastMoveTime(0),
+	  m_expiryMargin(0),
 	  m_expired(false)
 {
 	QStringList list = str.split('+');
@@ -88,7 +90,8 @@ bool TimeControl::operator==(const TimeControl& other) const
 	&&  m_timePerMove == other.m_timePerMove
 	&&  m_increment == other.m_increment
 	&&  m_maxDepth == other.m_maxDepth
-	&&  m_nodeLimit == other.m_nodeLimit)
+	&&  m_nodeLimit == other.m_nodeLimit
+	&&  m_expiryMargin == other.m_expiryMargin)
 		return true;
 	return false;
 }
@@ -101,6 +104,7 @@ bool TimeControl::isValid() const
 	||  m_increment < 0
 	||  m_maxDepth < 0
 	||  m_nodeLimit < 0
+	||  m_expiryMargin < 0
 	||  (m_timePerTc == 0 && m_timePerMove == 0))
 		return false;
 	return true;
@@ -175,6 +179,11 @@ int TimeControl::nodeLimit() const
 	return m_nodeLimit;
 }
 
+int TimeControl::expiryMargin() const
+{
+	return m_expiryMargin;
+}
+
 void TimeControl::setTimePerTc(int timePerTc)
 {
 	Q_ASSERT(timePerTc >= 0);
@@ -241,6 +250,12 @@ void TimeControl::setNodeLimit(int limit)
 	m_nodeLimit = limit;
 }
 
+void TimeControl::setExpiryMargin(int expiryMargin)
+{
+	Q_ASSERT(expiryMargin >= 0);
+	m_expiryMargin = expiryMargin;
+}
+
 void TimeControl::startTimer()
 {
 	m_time.start();
@@ -249,7 +264,7 @@ void TimeControl::startTimer()
 void TimeControl::update()
 {
 	m_lastMoveTime = m_time.elapsed();
-	if (m_lastMoveTime > m_timeLeft)
+	if (m_lastMoveTime > m_timeLeft + m_expiryMargin)
 		m_expired = true;
 
 	if (m_timePerMove != 0)

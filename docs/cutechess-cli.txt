@@ -131,6 +131,9 @@ st=<n>::
 	Set the time limit for each move to <n> seconds.
 	This option can't be used in combination with "tc".
 
+timemargin=<n>::
+	Let engines go <n> milliseconds over the time limit.
+
 book=<file>::
 	Use <file> (Polyglot book file) as the opening book.
 

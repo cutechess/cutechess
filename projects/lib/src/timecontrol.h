@@ -110,6 +110,15 @@ class LIB_EXPORT TimeControl
 		/*! Returns the node limit for each move. */
 		int nodeLimit() const;
 
+		/*!
+		 * Returns the expiry margin.
+		 *
+		 * Expiry margin is the amount of time a player can go over
+		 * the time limit without losing on time.
+		 * The default value is 0.
+		 */
+		int expiryMargin() const;
+
 
 		/*! Sets the time per time control. */
 		void setTimePerTc(int timePerTc);
@@ -135,6 +144,9 @@ class LIB_EXPORT TimeControl
 		/*! Sets the node limit. */
 		void setNodeLimit(int limit);
 
+		/*! Sets the expiry margin. */
+		void setExpiryMargin(int expiryMargin);
+
 		
 		/*! Start the timer. */
 		void startTimer();
@@ -158,6 +170,7 @@ class LIB_EXPORT TimeControl
 		int m_maxDepth;
 		int m_nodeLimit;
 		int m_lastMoveTime;
+		int m_expiryMargin;
 		bool m_expired;
 		QTime m_time;
 
