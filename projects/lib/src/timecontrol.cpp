@@ -90,8 +90,7 @@ bool TimeControl::operator==(const TimeControl& other) const
 	&&  m_timePerMove == other.m_timePerMove
 	&&  m_increment == other.m_increment
 	&&  m_maxDepth == other.m_maxDepth
-	&&  m_nodeLimit == other.m_nodeLimit
-	&&  m_expiryMargin == other.m_expiryMargin)
+	&&  m_nodeLimit == other.m_nodeLimit)
 		return true;
 	return false;
 }
@@ -105,7 +104,7 @@ bool TimeControl::isValid() const
 	||  m_maxDepth < 0
 	||  m_nodeLimit < 0
 	||  m_expiryMargin < 0
-	||  (m_timePerTc == 0 && m_timePerMove == 0))
+	||  (m_timePerTc == m_timePerMove))
 		return false;
 	return true;
 }
@@ -113,7 +112,10 @@ bool TimeControl::isValid() const
 QString TimeControl::toString() const
 {
 	if (!isValid())
-		return "";
+		return QString();
+
+	if (m_timePerMove != 0)
+		return QString("%1/move").arg((double)m_timePerMove / 1000);
 
 	QString str;
 	if (m_movesPerTc > 0)
@@ -187,41 +189,25 @@ int TimeControl::expiryMargin() const
 void TimeControl::setTimePerTc(int timePerTc)
 {
 	Q_ASSERT(timePerTc >= 0);
-	
 	m_timePerTc = timePerTc;
-	if (m_timePerTc > 0)
-		m_timePerMove = 0;
 }
 
 void TimeControl::setMovesPerTc(int movesPerTc)
 {
 	Q_ASSERT(movesPerTc >= 0);
-	
 	m_movesPerTc = movesPerTc;
-	if (m_movesPerTc > 0)
-		m_timePerMove = 0;
 }
 
 void TimeControl::setIncrement(int increment)
 {
 	Q_ASSERT(increment >= 0);
-	
 	m_increment = increment;
-	if (m_increment > 0)
-		m_timePerMove = 0;
 }
 
 void TimeControl::setTimePerMove(int timePerMove)
 {
 	Q_ASSERT(timePerMove >= 0);
-	
 	m_timePerMove = timePerMove;
-	if (m_timePerMove > 0)
-	{
-		m_timePerTc = 0;
-		m_movesPerTc = 0;
-		m_increment = 0;
-	}
 }
 
 void TimeControl::setTimeLeft(int timeLeft)
@@ -232,10 +218,7 @@ void TimeControl::setTimeLeft(int timeLeft)
 void TimeControl::setMovesLeft(int movesLeft)
 {
 	Q_ASSERT(movesLeft >= 0);
-	
 	m_movesLeft = movesLeft;
-	if (movesLeft > 0)
-		m_timePerMove = 0;
 }
 
 void TimeControl::setMaxDepth(int maxDepth)
