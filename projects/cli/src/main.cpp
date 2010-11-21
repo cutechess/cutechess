@@ -111,12 +111,10 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				qWarning() << "Invalid time control:" << val;
 				return false;
 			}
-			// Preserve previously set values
-			tc.setMaxDepth(data.tc.maxDepth());
-			tc.setNodeLimit(data.tc.nodeLimit());
-			tc.setExpiryMargin(data.tc.expiryMargin());
 
-			data.tc = tc;
+			data.tc.setTimePerTc(tc.timePerTc());
+			data.tc.setMovesPerTc(tc.movesPerTc());
+			data.tc.setIncrement(tc.timeIncrement());
 		}
 		// Search time per move
 		else if (name == "st")
