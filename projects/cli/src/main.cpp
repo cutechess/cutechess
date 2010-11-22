@@ -444,8 +444,8 @@ int main(int argc, char* argv[])
 			       "  whitepov		Invert the engine's scores when it plays black. This\n"
 			       "			option should be used with engines that always report\n"
 			       "			scores from white's perspective.\n"
-			       "  depth=<arg>		Set the search depth limit to <arg>\n"
-			       "  nodes=<arg>		Set the node count limit to <arg>\n"
+			       "  depth=<n>		Set the search depth limit to <n> plies\n"
+			       "  nodes=<n>		Set the node count limit to <n> nodes\n"
 			       "  option.<name>=<arg>	Set custom option <name> to value <arg>\n";
 			return 0;
 		}

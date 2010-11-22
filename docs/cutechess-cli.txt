@@ -145,11 +145,11 @@ whitepov::
 	option should be used with engines that always report
 	scores from white's perspective.
 
-depth=<arg>::
-	Set the search depth limit to <arg>.
+depth=<n>::
+	Set the search depth limit to <n> plies.
 
-nodes=<arg>::
-	Set the node count limit to <arg>.
+nodes=<n>::
+	Set the node count limit to <n> nodes.
 
 option.<name>=<arg>::
 	Set custom engine option <name> to value <arg>.
