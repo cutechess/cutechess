@@ -224,6 +224,17 @@ QStringRef UciEngine::parseUciTokens(const QStringRef& first,
 	return token;
 }
 
+static QStringRef joinTokens(const QVarLengthArray<QStringRef>& tokens)
+{
+	Q_ASSERT(!tokens.isEmpty());
+
+	const QStringRef& last = tokens[tokens.size() - 1];
+	int start = tokens[0].position();
+	int end = last.position() + last.size();
+
+	return QStringRef(last.string(), start, end - start);
+}
+
 void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 			  int type)
 {
@@ -262,15 +273,7 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 		m_eval.setNodeCount(tokens[0].toString().toInt());
 		break;
 	case InfoPv:
-		{
-			QString pv(tokens[0].toString());
-			for (int i = 1; i < tokens.size(); i++)
-			{
-				pv += ' ';
-				tokens[i].appendTo(&pv);
-			}
-			m_eval.setPv(pv);
-		}
+		m_eval.setPv(joinTokens(tokens).toString());
 		break;
 	case InfoScore:
 		{
@@ -376,12 +379,7 @@ EngineOption* UciEngine::parseOption(const QStringRef& line)
 		if (tokens.isEmpty() || keyword == -1)
 			continue;
 
-		QString str(tokens[0].toString());
-		for (int i = 1; i < tokens.size(); i++)
-		{
-			str += ' ';
-			tokens[i].appendTo(&str);
-		}
+		QString str(joinTokens(tokens).toString());
 
 		switch (keyword)
 		{
