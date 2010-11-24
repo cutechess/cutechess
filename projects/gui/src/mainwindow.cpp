@@ -105,7 +105,7 @@ void MainWindow::createActions()
 	connect(m_gamePropertiesAct, SIGNAL(triggered(bool)), this, SLOT(gameProperties()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
 
-	connect (m_manageEnginesAct, SIGNAL(triggered(bool)), this,
+	connect(m_manageEnginesAct, SIGNAL(triggered(bool)), this,
 		SLOT(manageEngines()));
 }
 
