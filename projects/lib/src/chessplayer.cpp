@@ -186,6 +186,7 @@ QString ChessPlayer::name() const
 void ChessPlayer::setName(const QString& name)
 {
 	m_name = name;
+	emit nameChanged(m_name);
 }
 
 void ChessPlayer::emitForfeit(Chess::Result::Type type, const QString& description)

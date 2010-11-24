@@ -177,6 +177,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Signals a debugging message from the player. */
 		void debugMessage(const QString& data) const;
 
+		/*! Emitted when player's name is changed. */
+		void nameChanged(const QString& name);
+
 	protected slots:
 		/*!
 		 * Called when the player disconnects.
