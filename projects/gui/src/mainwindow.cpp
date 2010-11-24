@@ -91,7 +91,7 @@ MainWindow::MainWindow()
 
 void MainWindow::createActions()
 {
-	m_newGameAct = new QAction(tr("&New game..."), this);
+	m_newGameAct = new QAction(tr("&New..."), this);
 	m_newGameAct->setShortcut(QKeySequence::New);
 
 	m_gamePropertiesAct = new QAction(tr("P&roperties..."), this);
