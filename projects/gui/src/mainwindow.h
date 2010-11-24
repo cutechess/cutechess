@@ -77,6 +77,7 @@ class MainWindow : public QMainWindow
 		QAction* m_quitGameAct;
 		QAction* m_gamePropertiesAct;
 		QAction* m_newGameAct;
+		QAction* m_closeGameAct;
 		QAction* m_manageEnginesAct;
 
 		PlainTextLog* m_engineDebugLog;

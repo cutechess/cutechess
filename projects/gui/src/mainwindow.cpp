@@ -94,6 +94,9 @@ void MainWindow::createActions()
 	m_newGameAct = new QAction(tr("&New..."), this);
 	m_newGameAct->setShortcut(QKeySequence::New);
 
+	m_closeGameAct = new QAction(tr("&Close"), this);
+	m_closeGameAct->setShortcut(QKeySequence::Close);
+
 	m_gamePropertiesAct = new QAction(tr("P&roperties..."), this);
 
 	m_quitGameAct = new QAction(tr("&Quit"), this);
@@ -102,6 +105,7 @@ void MainWindow::createActions()
 	m_manageEnginesAct = new QAction(tr("Manage..."), this);
 
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
+	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
 	connect(m_gamePropertiesAct, SIGNAL(triggered(bool)), this, SLOT(gameProperties()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
 
@@ -114,6 +118,7 @@ void MainWindow::createMenus()
 	m_gameMenu = menuBar()->addMenu(tr("&Game"));
 	m_gameMenu->addAction(m_newGameAct);
 	m_gameMenu->addSeparator();
+	m_gameMenu->addAction(m_closeGameAct);
 	m_gameMenu->addAction(m_gamePropertiesAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
