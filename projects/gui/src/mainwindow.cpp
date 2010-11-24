@@ -293,11 +293,6 @@ void MainWindow::manageEngines()
 	if (dlg.exec() == QDialog::Accepted)
 	{
 		CuteChessApplication::instance()->engineManager()->setEngines(dlg.engines());
-
-		// We could use QDesktopServices but then this would be inconsistent with
-		// CuteChessCoreApp
-		QSettings settings;
-		QFileInfo fi(settings.fileName());
 		CuteChessApplication::instance()->engineManager()->saveEngines(
 			CuteChessApplication::instance()->configPath() + QLatin1String("/engines.json"));
 	}
