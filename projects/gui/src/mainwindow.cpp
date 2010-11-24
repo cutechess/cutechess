@@ -44,8 +44,11 @@
 #include "autoverticalscroller.h"
 
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(ChessGame* game)
+	: m_game(game)
 {
+	Q_ASSERT(m_game != 0);
+
 	setAttribute(Qt::WA_DeleteOnClose, true);
 
 	setWindowTitle("Cute Chess");
@@ -87,6 +90,29 @@ MainWindow::MainWindow()
 	createMenus();
 	createToolBars();
 	createDockWindows();
+
+	// Attach the game to the GUI
+	connect(m_game, SIGNAL(humanEnabled(bool)),
+			m_chessboardView, SLOT(setEnabled(bool)));
+
+	for (int i = 0; i < 2; i++)
+	{
+		Chess::Side side = Chess::Side::Type(i);
+		connect(m_game->player(side), SIGNAL(startedThinking(int)),
+			m_chessClock[i], SLOT(start(int)));
+		connect(m_game->player(side), SIGNAL(stoppedThinking()),
+			m_chessClock[i], SLOT(stop()));
+		connect(m_game->player(side), SIGNAL(debugMessage(QString)),
+			m_engineDebugLog, SLOT(appendPlainText(QString)));
+
+		if (m_game->player(side)->isHuman())
+			connect(m_boardModel, SIGNAL(humanMove(Chess::Move, Chess::Side)),
+				m_game->player(side), SLOT(onHumanMove(Chess::Move, Chess::Side)));
+	}
+
+	m_moveListModel->setGame(m_game);
+	m_boardModel->setBoard(m_game->board());
+	m_game->start();
 }
 
 void MainWindow::createActions()
@@ -205,73 +231,7 @@ void MainWindow::selectPromotion(const Chess::Board* board,
 
 void MainWindow::newGame()
 {
-	NewGameDialog dlg(this);
-	if (dlg.exec() != QDialog::Accepted)
-		return;
-
-	ChessPlayer* player[2] = { 0, 0 };
-	QString variant = dlg.selectedVariant();
-	Chess::Board* board = Chess::BoardFactory::create(variant);
-	Q_ASSERT(board != 0);
-	ChessGame* chessgame = new ChessGame(board, new PgnGame, this);
-	board->setParent(chessgame);
-	connect(chessgame, SIGNAL(humanEnabled(bool)),
-		m_chessboardView, SLOT(setEnabled(bool)));
-
-	TimeControl tc;
-	tc.setTimePerTc(180000);
-	tc.setMovesPerTc(40);
-	chessgame->setTimeControl(tc);
-
-	for (int i = 0; i < 2; i++)
-	{
-		Chess::Side side = Chess::Side::Type(i);
-		if (dlg.playerType(side) == NewGameDialog::CPU)
-		{
-			EngineConfiguration config =
-				CuteChessApplication::instance()->engineManager()->engines().at(dlg.selectedEngineIndex(side));
-
-			EngineProcess* process = new EngineProcess(this);
-
-			if (config.workingDirectory().isEmpty())
-				process->setWorkingDirectory(QDir::tempPath());
-			else
-				process->setWorkingDirectory(config.workingDirectory());
-
-			process->start(config.command());
-			if (!process->waitForStarted())
-			{
-				qDebug() << "Cannot start the engine process:" << config.command();
-				return;
-			}
-			ChessEngine* engine = EngineFactory::create(config.protocol(), this);
-			Q_ASSERT(engine != 0);
-			engine->setDevice(process);
-
-			engine->start();
-			engine->setName(config.name());
-			player[i] = engine;
-		}
-		else
-		{
-			player[i] = new HumanPlayer(this);
-			connect(m_boardModel, SIGNAL(humanMove(Chess::Move, Chess::Side)),
-				player[i], SLOT(onHumanMove(Chess::Move, Chess::Side)));
-		}
-
-		chessgame->setPlayer(side, player[i]);
-		
-		connect(player[i], SIGNAL(startedThinking(int)),
-			m_chessClock[i], SLOT(start(int)));
-		connect(player[i], SIGNAL(stoppedThinking()),
-			m_chessClock[i], SLOT(stop()));
-		connect(player[i], SIGNAL(debugMessage(QString)),
-			m_engineDebugLog, SLOT(appendPlainText(QString)));
-	}
-	m_moveListModel->setGame(chessgame);
-
-	m_boardModel->setBoard(board);
-	chessgame->start();
+	CuteChessApplication::instance()->newGameWindow();
 }
 
 void MainWindow::gameProperties()

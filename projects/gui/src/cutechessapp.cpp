@@ -21,7 +21,13 @@
 #include <QTime>
 #include <QSettings>
 #include <QFileInfo>
+
 #include <enginemanager.h>
+#include <board/boardfactory.h>
+#include <chessgame.h>
+#include <chessplayer.h>
+#include <timecontrol.h>
+#include <humanplayer.h>
 #include "mainwindow.h"
 
 
@@ -85,7 +91,24 @@ QList<MainWindow*> CuteChessApplication::gameWindows()
 
 MainWindow* CuteChessApplication::newGameWindow()
 {
-	MainWindow* mainWindow = new MainWindow();
+	// TODO: This should be placed in a class that manages games
+
+	ChessPlayer* player[2] = { 0, 0 };
+	ChessGame* game = new ChessGame(Chess::BoardFactory::create("standard"), new PgnGame(), this);
+
+	TimeControl tc;
+	tc.setTimePerTc(180000);
+	tc.setMovesPerTc(40);
+	game->setTimeControl(tc);
+
+	for (int i = 0; i < 2; i++)
+	{
+		Chess::Side side = Chess::Side::Type(i);
+		player[i] = new HumanPlayer(this);
+		game->setPlayer(side, player[i]);
+	}
+
+	MainWindow* mainWindow = new MainWindow(game);
 	m_gameWindows.prepend(mainWindow);
 	mainWindow->show();
 

@@ -31,6 +31,7 @@ class MoveListModel;
 class EngineConfigurationModel;
 class ChessClock;
 class PlainTextLog;
+class ChessGame;
 
 /**
  * MainWindow
@@ -40,7 +41,7 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 	public:
-		MainWindow();
+		MainWindow(ChessGame* game);
 
 	signals:
 		void promotionMove(const Chess::Move& move, Chess::Side side);
@@ -81,6 +82,8 @@ class MainWindow : public QMainWindow
 		QAction* m_manageEnginesAct;
 
 		PlainTextLog* m_engineDebugLog;
+
+		ChessGame* m_game;
 
 };
 
