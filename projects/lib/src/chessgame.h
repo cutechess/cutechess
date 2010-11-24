@@ -42,6 +42,7 @@ class LIB_EXPORT ChessGame : public QObject
 		ChessPlayer* player(Chess::Side side) const;
 
 		PgnGame* pgn() const;
+		Chess::Board* board() const;
 		QString startingFen() const;
 		const QVector<Chess::Move>& moves() const;
 		Chess::Result result() const;

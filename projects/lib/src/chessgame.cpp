@@ -58,6 +58,11 @@ PgnGame* ChessGame::pgn() const
 	return m_pgn;
 }
 
+Chess::Board* ChessGame::board() const
+{
+	return m_board;
+}
+
 QString ChessGame::startingFen() const
 {
 	return m_startingFen;
