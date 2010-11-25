@@ -43,7 +43,6 @@
 #include "promotiondlg.h"
 #include "autoverticalscroller.h"
 
-
 MainWindow::MainWindow(ChessGame* game)
 	: m_game(game)
 {
@@ -336,8 +335,8 @@ void MainWindow::onWindowMenuAboutToShow()
 	{
 		MainWindow* gameWindow = gameWindows.at(i);
 
-		QAction* showWindowAction = m_windowMenu->addAction(gameWindow->windowTitle(),
-			this, SLOT(showGameWindow()));
+		QAction* showWindowAction = m_windowMenu->addAction(
+			gameWindow->windowListTitle(), this, SLOT(showGameWindow()));
 		showWindowAction->setData(i);
 		showWindowAction->setCheckable(true);
 
@@ -354,7 +353,23 @@ void MainWindow::showGameWindow()
 
 void MainWindow::updateWindowTitle()
 {
-	setWindowTitle(QString("%1 - %2 [*]")
+	// setWindowTitle() requires "[*]" (see docs)
+	setWindowTitle(genericWindowTitle() + QLatin1String("[*]"));
+}
+
+QString MainWindow::windowListTitle() const
+{
+	#ifndef Q_WS_MAC
+	if (isWindowModified())
+		return genericWindowTitle() + QLatin1String("*");
+	#endif
+
+	return genericWindowTitle();
+}
+
+QString MainWindow::genericWindowTitle() const
+{
+	return QString("%1 - %2")
 		.arg(m_game->player(Chess::Side::White)->name())
-			.arg(m_game->player(Chess::Side::Black)->name()));
+			.arg(m_game->player(Chess::Side::Black)->name());
 }

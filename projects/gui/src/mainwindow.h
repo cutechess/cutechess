@@ -42,6 +42,7 @@ class MainWindow : public QMainWindow
 
 	public:
 		MainWindow(ChessGame* game);
+		QString windowListTitle() const;
 
 	signals:
 		void promotionMove(const Chess::Move& move, Chess::Side side);
@@ -64,6 +65,7 @@ class MainWindow : public QMainWindow
 		void createToolBars();
 		void createDockWindows();
 		void readSettings();
+		QString genericWindowTitle() const;
 
 		QMenu* m_gameMenu;
 		QMenu* m_viewMenu;
