@@ -51,8 +51,6 @@ MainWindow::MainWindow(ChessGame* game)
 
 	setAttribute(Qt::WA_DeleteOnClose, true);
 
-	setWindowTitle("Cute Chess");
-
 	QHBoxLayout* clockLayout = new QHBoxLayout();
 	for (int i = 0; i < 2; i++)
 	{
@@ -113,6 +111,8 @@ MainWindow::MainWindow(ChessGame* game)
 	m_moveListModel->setGame(m_game);
 	m_boardModel->setBoard(m_game->board());
 	m_game->start();
+
+	updateWindowTitle();
 }
 
 void MainWindow::createActions()
@@ -344,4 +344,11 @@ void MainWindow::showGameWindow()
 {
 	if (QAction* action = qobject_cast<QAction*>(sender()))
 		CuteChessApplication::instance()->showGameWindow(action->data().toInt());
+}
+
+void MainWindow::updateWindowTitle()
+{
+	setWindowTitle(QString("%1 - %2 [*]")
+		.arg(m_game->player(Chess::Side::White)->name())
+			.arg(m_game->player(Chess::Side::Black)->name()));
 }

@@ -56,6 +56,7 @@ class MainWindow : public QMainWindow
 		void saveLogToFile();
 		void onWindowMenuAboutToShow();
 		void showGameWindow();
+		void updateWindowTitle();
 
 	private:
 		void createActions();
