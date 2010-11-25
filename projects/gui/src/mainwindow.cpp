@@ -238,12 +238,18 @@ void MainWindow::gameProperties()
 {
 	GamePropertiesDialog dlg(this);
 
-	// TODO: Apply game information
+	dlg.setEvent(m_game->pgn()->event());
+	dlg.setSite(m_game->pgn()->site());
+	dlg.setRound(m_game->pgn()->round());
 
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
-	// TODO: Use game information
+	m_game->pgn()->setEvent(dlg.event());
+	m_game->pgn()->setSite(dlg.site());
+	m_game->pgn()->setRound(dlg.round());
+
+	setWindowModified(true);
 }
 
 void MainWindow::manageEngines()
