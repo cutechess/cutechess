@@ -402,7 +402,7 @@ bool MainWindow::save()
 
 bool MainWindow::saveAs()
 {
-	QString fileName = QFileDialog::getSaveFileName(this, tr("Save Game"),
+	const QString fileName = QFileDialog::getSaveFileName(this, tr("Save Game"),
 		QString(), tr("Portable Game Notation (*.pgn);;All Files (*.*)"));
 
 	if (fileName.isEmpty())
