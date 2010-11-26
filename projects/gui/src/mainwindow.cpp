@@ -120,12 +120,20 @@ void MainWindow::createActions()
 	m_newGameAct->setShortcut(QKeySequence::New);
 
 	m_closeGameAct = new QAction(tr("&Close"), this);
+	#ifdef Q_WS_WIN
+	m_closeGameAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+	#else
 	m_closeGameAct->setShortcut(QKeySequence::Close);
+	#endif
 
 	m_gamePropertiesAct = new QAction(tr("P&roperties..."), this);
 
 	m_quitGameAct = new QAction(tr("&Quit"), this);
+	#ifdef Q_OS_WIN
+	m_quitGameAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+	#else
 	m_quitGameAct->setShortcut(QKeySequence::Quit);
+	#endif
 
 	m_manageEnginesAct = new QAction(tr("Manage..."), this);
 
