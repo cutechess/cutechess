@@ -421,3 +421,28 @@ bool MainWindow::saveGame(const QString& fileName)
 
 	return true;
 }
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+	if (askToSave())
+		event->accept();
+	else
+		event->ignore();
+}
+
+bool MainWindow::askToSave()
+{
+	if (isWindowModified())
+	{
+		QMessageBox::StandardButton result;
+		result = QMessageBox::warning(this, QApplication::applicationName(),
+			tr("The game was modified.\nDo you want to save your changes?"),
+				QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+
+		if (result == QMessageBox::Save)
+			return save();
+		else if (result == QMessageBox::Cancel)
+			return false;
+	}
+	return true;
+}

@@ -25,6 +25,7 @@ namespace Chess { class Board; class Move; }
 class QMenu;
 class QAction;
 class QTextEdit;
+class QCloseEvent;
 class ChessboardView;
 class ChessboardModel;
 class MoveListModel;
@@ -43,6 +44,9 @@ class MainWindow : public QMainWindow
 	public:
 		MainWindow(ChessGame* game);
 		QString windowListTitle() const;
+
+	protected:
+		void closeEvent(QCloseEvent* event);
 
 	signals:
 		void promotionMove(const Chess::Move& move, Chess::Side side);
@@ -69,6 +73,7 @@ class MainWindow : public QMainWindow
 		void readSettings();
 		QString genericWindowTitle() const;
 		bool saveGame(const QString& fileName);
+		bool askToSave();
 
 		QMenu* m_gameMenu;
 		QMenu* m_viewMenu;
