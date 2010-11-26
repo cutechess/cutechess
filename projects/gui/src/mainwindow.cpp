@@ -148,7 +148,7 @@ void MainWindow::createActions()
 	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered(bool)), this, SLOT(saveAs()));
 	connect(m_gamePropertiesAct, SIGNAL(triggered(bool)), this, SLOT(gameProperties()));
-	connect(m_quitGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
+	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(closeAllWindows()));
 
 	connect(m_manageEnginesAct, SIGNAL(triggered(bool)), this,
 		SLOT(manageEngines()));
