@@ -58,6 +58,8 @@ class MainWindow : public QMainWindow
 		void onWindowMenuAboutToShow();
 		void showGameWindow();
 		void updateWindowTitle();
+		bool save();
+		bool saveAs();
 
 	private:
 		void createActions();
@@ -66,6 +68,7 @@ class MainWindow : public QMainWindow
 		void createDockWindows();
 		void readSettings();
 		QString genericWindowTitle() const;
+		bool saveGame(const QString& fileName);
 
 		QMenu* m_gameMenu;
 		QMenu* m_viewMenu;
@@ -82,11 +85,15 @@ class MainWindow : public QMainWindow
 		QAction* m_gamePropertiesAct;
 		QAction* m_newGameAct;
 		QAction* m_closeGameAct;
+		QAction* m_saveGameAct;
+		QAction* m_saveGameAsAct;
 		QAction* m_manageEnginesAct;
 
 		PlainTextLog* m_engineDebugLog;
 
 		ChessGame* m_game;
+
+		QString m_currentFile;
 
 };
 

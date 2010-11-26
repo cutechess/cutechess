@@ -126,6 +126,12 @@ void MainWindow::createActions()
 	m_closeGameAct->setShortcut(QKeySequence::Close);
 	#endif
 
+	m_saveGameAct = new QAction(tr("&Save"), this);
+	m_saveGameAct->setShortcut(QKeySequence::Save);
+
+	m_saveGameAsAct = new QAction(tr("Save &As..."), this);
+	m_saveGameAsAct->setShortcut(QKeySequence::SaveAs);
+
 	m_gamePropertiesAct = new QAction(tr("P&roperties..."), this);
 
 	m_quitGameAct = new QAction(tr("&Quit"), this);
@@ -139,6 +145,8 @@ void MainWindow::createActions()
 
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
 	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
+	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
+	connect(m_saveGameAsAct, SIGNAL(triggered(bool)), this, SLOT(saveAs()));
 	connect(m_gamePropertiesAct, SIGNAL(triggered(bool)), this, SLOT(gameProperties()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
 
@@ -152,6 +160,8 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_newGameAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_closeGameAct);
+	m_gameMenu->addAction(m_saveGameAct);
+	m_gameMenu->addAction(m_saveGameAsAct);
 	m_gameMenu->addAction(m_gamePropertiesAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
@@ -380,4 +390,34 @@ QString MainWindow::genericWindowTitle() const
 	return QString("%1 - %2")
 		.arg(m_game->player(Chess::Side::White)->name())
 			.arg(m_game->player(Chess::Side::Black)->name());
+}
+
+bool MainWindow::save()
+{
+	if (m_currentFile.isEmpty())
+		return saveAs();
+
+	return saveGame(m_currentFile);
+}
+
+bool MainWindow::saveAs()
+{
+	QString fileName = QFileDialog::getSaveFileName(this, tr("Save Game"),
+		QString(), tr("Portable Game Notation (*.pgn);;All Files (*.*)"));
+
+	if (fileName.isEmpty())
+		return false;
+
+	return saveGame(fileName);
+}
+
+bool MainWindow::saveGame(const QString& fileName)
+{
+	if (!m_game->pgn()->write(fileName))
+		return false;
+
+	m_currentFile = fileName;
+	setWindowModified(false);
+
+	return true;
 }
