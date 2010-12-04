@@ -14,34 +14,35 @@ class PgnGameBenchmark: public QObject
 
 void PgnGameBenchmark::parser_data() const
 {
-	QTest::addColumn<QString>("pgn");
+	QTest::addColumn<QByteArray>("pgn");
+	QByteArray pgn;
 
-	QString pgn = "[Event \"?\"]\n"
-		      "[Site \"Linares\"]\n"
-		      "[Date \"1993.??.??\"]\n"
-		      "[Round \"0.12\"]\n"
-		      "[White \"Karpov,An\"]\n"
-		      "[Black \"Kramnik,V\"]\n"
-		      "[Result \"1/2-1/2\"]\n"
-		      "[ECO \"B13\"]\n\n"
-		      "1. c4 c6 2. e4 d5 3. exd5 cxd5 4. d4 Nf6 5. Nc3 Nc6 6. Nf3 Bg4 7. cxd5\n"
-		      "Nxd5 8. Qb3 Bxf3 9. gxf3 e6 10. Qxb7 Nxd4 11. Bb5+ Nxb5 12. Qc6+ Ke7\n"
-		      "13. Qxb5 Qd7 14. Nxd5+ Qxd5 15. Bg5+ f6 16. Qxd5 exd5 17. Be3 Ke6\n"
-		      "18. O-O-O Bb4 19. Rd3 Rhd8 20. a3 Rac8+ 21. Kb1 Bc5 22. Re1 Kd6 23. Rg1\n"
-		      "g6 24. Rgd1 Ke6 25. Re1 Bxe3 26. Rdxe3+ Kf5 27. Re7 Kf4 28. R1e3 a5\n"
-		      "29. h3 h5 30. R7e6 Kg5 31. Ra6 d4 32. f4+ Kf5 33. Rxa5+ Kxf4 34. Rd3 Ke4\n"
-		      "35. Rd2 g5 36. Ra6 f5 37. Re6+ Kf3 38. Re5 Kf4 39. Re6 h4 40. Rd3 g4\n"
-		      "41. Rh6 Kg5 42. Rh7 Rc6 43. a4 Rd5 44. a5 Rcd6 45. Ra7 gxh3 46. Rg7+ Kf4\n"
-		      "47. Rh7 Ke4 48. Rxh3 Rxa5 49. Kc2 Rb5 50. Re7+ Kf4 51. Rxh4+ Kf3\n"
-		      "52. Rh3+ Kxf2 53. Rd3 Rc6+ 54. Kb1 Rb4 55. b3 f4 56. Re4 Rf6 57. Kb2 f3\n"
-		      "58. Ka3 Rbb6 59. Rdxd4 Rg6 60. Rd2+ Kg3 61. Re3 Rbe6 62. Rc3 Ra6+\n"
-		      "63. Kb2 Rg4 64. Rd8 Rf6 65. Rd2 Rgf4 66. Ka3 Kg4 67. Rf2 Ra6+ 68. Kb2\n"
-		      "Rh6 69. Ka3 Rh1 70. Rd3 Kg3 71. Rc2 Rhh4 72. Re3 Rh2 73. Rc8 Kg2\n"
-		      "74. Rg8+ Kf1 75. b4 f2 76. Rb3 Rhh4 77. Rgg3 Rd4 78. Ka4 Rhe4 79. Ka5\n"
-		      "Rd2 80. Rh3 Ke2 81. Rh2 Ra2+ 82. Kb6 Re6+ 83. Kc5 Rc2+ 84. Kb5 Rh6\n"
-		      "85. Rg2 Rf6 86. Rh2 Rh6 87. Rg2 Kf1 88. Rg5 Rf6 89. Rc5 Rd2 90. Rc6 Rf4\n"
-		      "91. Rc1+ Kg2 92. Rbb1 Rf8 93. Ka5 Ra2+ 94. Kb6 Rf6+ 95. Kc5 Rf5+ 96. Kb6\n"
-		      "Re2 97. b5 Re6+ 98. Ka5 Rfe5 99. Ka4 Re4+ 1/2-1/2\n";
+	pgn = "[Event \"?\"]\n"
+	      "[Site \"Linares\"]\n"
+	      "[Date \"1993.??.??\"]\n"
+	      "[Round \"0.12\"]\n"
+	      "[White \"Karpov,An\"]\n"
+	      "[Black \"Kramnik,V\"]\n"
+	      "[Result \"1/2-1/2\"]\n"
+	      "[ECO \"B13\"]\n\n"
+	      "1. c4 c6 2. e4 d5 3. exd5 cxd5 4. d4 Nf6 5. Nc3 Nc6 6. Nf3 Bg4 7. cxd5\n"
+	      "Nxd5 8. Qb3 Bxf3 9. gxf3 e6 10. Qxb7 Nxd4 11. Bb5+ Nxb5 12. Qc6+ Ke7\n"
+	      "13. Qxb5 Qd7 14. Nxd5+ Qxd5 15. Bg5+ f6 16. Qxd5 exd5 17. Be3 Ke6\n"
+	      "18. O-O-O Bb4 19. Rd3 Rhd8 20. a3 Rac8+ 21. Kb1 Bc5 22. Re1 Kd6 23. Rg1\n"
+	      "g6 24. Rgd1 Ke6 25. Re1 Bxe3 26. Rdxe3+ Kf5 27. Re7 Kf4 28. R1e3 a5\n"
+	      "29. h3 h5 30. R7e6 Kg5 31. Ra6 d4 32. f4+ Kf5 33. Rxa5+ Kxf4 34. Rd3 Ke4\n"
+	      "35. Rd2 g5 36. Ra6 f5 37. Re6+ Kf3 38. Re5 Kf4 39. Re6 h4 40. Rd3 g4\n"
+	      "41. Rh6 Kg5 42. Rh7 Rc6 43. a4 Rd5 44. a5 Rcd6 45. Ra7 gxh3 46. Rg7+ Kf4\n"
+	      "47. Rh7 Ke4 48. Rxh3 Rxa5 49. Kc2 Rb5 50. Re7+ Kf4 51. Rxh4+ Kf3\n"
+	      "52. Rh3+ Kxf2 53. Rd3 Rc6+ 54. Kb1 Rb4 55. b3 f4 56. Re4 Rf6 57. Kb2 f3\n"
+	      "58. Ka3 Rbb6 59. Rdxd4 Rg6 60. Rd2+ Kg3 61. Re3 Rbe6 62. Rc3 Ra6+\n"
+	      "63. Kb2 Rg4 64. Rd8 Rf6 65. Rd2 Rgf4 66. Ka3 Kg4 67. Rf2 Ra6+ 68. Kb2\n"
+	      "Rh6 69. Ka3 Rh1 70. Rd3 Kg3 71. Rc2 Rhh4 72. Re3 Rh2 73. Rc8 Kg2\n"
+	      "74. Rg8+ Kf1 75. b4 f2 76. Rb3 Rhh4 77. Rgg3 Rd4 78. Ka4 Rhe4 79. Ka5\n"
+	      "Rd2 80. Rh3 Ke2 81. Rh2 Ra2+ 82. Kb6 Re6+ 83. Kc5 Rc2+ 84. Kb5 Rh6\n"
+	      "85. Rg2 Rf6 86. Rh2 Rh6 87. Rg2 Kf1 88. Rg5 Rf6 89. Rc5 Rd2 90. Rc6 Rf4\n"
+	      "91. Rc1+ Kg2 92. Rbb1 Rf8 93. Ka5 Ra2+ 94. Kb6 Rf6+ 95. Kc5 Rf5+ 96. Kb6\n"
+	      "Re2 97. b5 Re6+ 98. Ka5 Rfe5 99. Ka4 Re4+ 1/2-1/2\n";
 	QTest::newRow("game1") << pgn;
 
 	pgn = "[Event \"CCRL 40/40\"]\n"
@@ -87,7 +88,7 @@ void PgnGameBenchmark::parser_data() const
 
 void PgnGameBenchmark::parser()
 {
-	QFETCH(QString, pgn);
+	QFETCH(QByteArray, pgn);
 
 	PgnStream stream(&pgn);
 	PgnGame game;

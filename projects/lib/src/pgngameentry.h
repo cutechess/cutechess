@@ -37,7 +37,7 @@ class LIB_EXPORT PgnGameEntry
 {
 	public:
 		/*! Creates a new empty PgnGameEntry object. */
-		explicit PgnGameEntry(const QString& variant = "standard");
+		explicit PgnGameEntry(const QByteArray& variant = "standard");
 
 		/*! Resets the entry to an empty default. */
 		void clear();
@@ -68,16 +68,16 @@ class LIB_EXPORT PgnGameEntry
 		Chess::Result result() const;
 
 	private:
-		void addTag(const QString& tagName, const QString& tagValue);
+		void addTag(const QByteArray& tagName, const QByteArray& tagValue);
 
 		int m_round;
 		qint64 m_pos;
 		qint64 m_lineNumber;
-		QString m_event;
-		QString m_site;
-		QString m_white;
-		QString m_black;
-		QString m_variant;
+		QByteArray m_event;
+		QByteArray m_site;
+		QByteArray m_white;
+		QByteArray m_black;
+		QByteArray m_variant;
 		Chess::Result m_result;
 };
 

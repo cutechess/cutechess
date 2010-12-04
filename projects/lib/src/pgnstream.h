@@ -47,6 +47,36 @@ class LIB_EXPORT PgnStream
 			Ok,         //!< The stream is operating normally.
 			ReadPastEnd //!< The stream has read past the end of the data.
 		};
+		/*! The type of a PGN token. */
+		enum TokenType
+		{
+			/*! Empty token (ie. nothing was read). */
+			NoToken,
+			/*! Move string in Standard Algebraic Notation. */
+			PgnMove,
+			/*! Move number before a full move. */
+			PgnMoveNumber,
+			/*!
+			 * PGN tag.
+			 * \note The token string does NOT contain the opening
+			 * and closing square brackets.
+			 */
+			PgnTag,
+			/*!
+			 * PGN comment.
+			 * \note The token string does NOT contain the opening
+			 * and closing brackets.
+			 */
+			PgnComment,
+			/*! One-line PGN comment. */
+			PgnLineComment,
+			/*! NAG code (Numeric Annotation Glyph). */
+			PgnNag,
+			/*! Game result. */
+			PgnResult,
+			/*! Unknown token. */
+			Unknown
+		};
 
 		/*!
 		 * Creates a new PgnStream.
@@ -59,7 +89,7 @@ class LIB_EXPORT PgnStream
 		explicit PgnStream(QIODevice* device,
 				   const QString& variant = "standard");
 		/*! Creates a PgnStream that operates on \a string. */
-		explicit PgnStream(const QString* string,
+		explicit PgnStream(const QByteArray* string,
 				   const QString& variant = "standard");
 
 		/*! Destructs the PgnStream object. */
@@ -77,9 +107,9 @@ class LIB_EXPORT PgnStream
 		void setDevice(QIODevice* device);
 
 		/*! Returns the assigned string, or 0 if no string is in use. */
-		const QString* string() const;
+		const QByteArray* string() const;
 		/*! Sets the current string to \a string. */
-		void setString(const QString* string);
+		void setString(const QByteArray* string);
 
 		/*! Returns the chess variant. */
 		QString variant() const;
@@ -98,20 +128,11 @@ class LIB_EXPORT PgnStream
 		/*! Returns the current line number. */
 		qint64 lineNumber() const;
 
-		/*! Reads one character and returns it. */
-		QChar readChar();
-
-		/*! Reads one line of text and returns it. */
-		QString readLine();
-
 		/*! Resets the stream to its default state. */
 		void reset();
 
-		/*!
-		 * Rewinds back to the start of input.
-		 * This is equivalent to calling \a seek(0).
-		 */
-		void rewind();
+		/*! Reads one character and returns it. */
+		char readChar();
 		/*!
 		 * Rewinds the stream position by one character, which means that
 		 * the next time readChar() is called, nothing is read and the
@@ -123,28 +144,77 @@ class LIB_EXPORT PgnStream
 		 */
 		void rewindChar();
 		/*!
+		 * Rewinds back to the start of input.
+		 * This is equivalent to calling \a seek(0).
+		 */
+		void rewind();
+		/*!
 		 * Seeks to position \a pos in the device, and sets the current
 		 * line number to \a lineNumber.
 		 * Returns true if successfull.
 		 */
 		bool seek(qint64 pos, qint64 lineNumber = 1);
-		/*!
-		 * Reads and discards whitespace from the stream until either
-		 * a non-space character is read, or EOF is reached.
-		 */
-		void skipWhiteSpace();
 
 		/*! Returns the status of the stream. */
 		Status status() const;
 
+		/*!
+		 * Seeks to the next game in the stream. Returns true if a game
+		 * is available; otherwise returns false.
+		 *
+		 * This function must be called once for each new game, or
+		 * nothing can be parsed.
+		 *
+		 * \sa readNext()
+		 */
+		bool nextGame();
+		/*!
+		 * Reads the next token and returns its type.
+		 *
+		 * Returns PgnStream::NoToken if a token is not available.
+		 * \sa nextGame(), tokenType(), tokenString()
+		 */
+		TokenType readNext();
+
+		/*!
+		 * Returns the current token as string.
+		 * \sa tokenType()
+		 */
+		QByteArray tokenString() const;
+		/*!
+		 * Returns the type of the current token.
+		 * \sa tokenString()
+		 */
+		TokenType tokenType() const;
+
+		/*! Returns the name of the current PGN tag. */
+		QByteArray tagName() const;
+		/*! Returns the value of the current PGN tag. */
+		QByteArray tagValue() const;
 	private:
+		enum Phase
+		{
+			OutOfGame,
+			InTags,
+			InGame
+		};
+
+		void parseUntil(const char* chars);
+		void parseTag();
+		void parseComment(char opBracket);
+
 		Chess::Board* m_board;
 		qint64 m_pos;
 		qint64 m_lineNumber;
 		char m_lastChar;
+		QByteArray m_tokenString;
+		QByteArray m_tagName;
+		QByteArray m_tagValue;
+		TokenType m_tokenType;
 		QIODevice* m_device;
-		const QString* m_string;
+		const QByteArray* m_string;
 		Status m_status;
+		Phase m_phase;
 };
 
 #endif // PGNSTREAM_H

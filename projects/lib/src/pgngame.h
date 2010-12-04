@@ -159,19 +159,7 @@ class LIB_EXPORT PgnGame
 		void setResultDescription(const QString& description);
 
 	private:
-		enum PgnItem
-		{
-			PgnMove,
-			PgnMoveNumber,
-			PgnTag,
-			PgnComment,
-			PgnNag,
-			PgnResult,
-			PgnEmpty,
-			PgnError
-		};
-
-		PgnItem readItem(PgnStream& in);
+		bool parseMove(PgnStream& in);
 		
 		Chess::Side m_startingSide;
 		QMap<QString, QString> m_tags;

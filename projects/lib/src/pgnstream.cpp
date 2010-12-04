@@ -16,6 +16,8 @@
 */
 
 #include "pgnstream.h"
+#include <cctype>
+#include <cstring>
 #include <QIODevice>
 #include <board/boardfactory.h>
 
@@ -24,9 +26,11 @@ PgnStream::PgnStream(const QString& variant)
 	: m_board(0),
 	  m_pos(0),
 	  m_lineNumber(1),
+	  m_tokenType(NoToken),
 	  m_device(0),
 	  m_string(0),
-	  m_status(Ok)
+	  m_status(Ok),
+	  m_phase(OutOfGame)
 {
 	setVariant(variant);
 }
@@ -38,7 +42,7 @@ PgnStream::PgnStream(QIODevice* device, const QString& variant)
 	setDevice(device);
 }
 
-PgnStream::PgnStream(const QString* string, const QString& variant)
+PgnStream::PgnStream(const QByteArray* string, const QString& variant)
 	: m_board(0)
 {
 	setVariant(variant);
@@ -54,9 +58,14 @@ void PgnStream::reset()
 {
 	m_pos = 0;
 	m_lineNumber = 1;
+	m_tokenString.clear();
+	m_tagName.clear();
+	m_tagValue.clear();
+	m_tokenType = NoToken;
 	m_device = 0;
 	m_string = 0;
 	m_status = Ok;
+	m_phase = OutOfGame;
 }
 
 Chess::Board* PgnStream::board()
@@ -77,12 +86,12 @@ void PgnStream::setDevice(QIODevice* device)
 	m_device = device;
 }
 
-const QString* PgnStream::string() const
+const QByteArray* PgnStream::string() const
 {
 	return m_string;
 }
 
-void PgnStream::setString(const QString* string)
+void PgnStream::setString(const QByteArray* string)
 {
 	Q_ASSERT(string != 0);
 	reset();
@@ -124,17 +133,17 @@ qint64 PgnStream::lineNumber() const
 	return m_lineNumber;
 }
 
-QChar PgnStream::readChar()
+char PgnStream::readChar()
 {
-	QChar c;
+	char c;
 	if (m_device)
 	{
 		if (!m_device->getChar(&m_lastChar))
 		{
 			m_status = ReadPastEnd;
-			return QChar();
+			return 0;
 		}
-		c = QChar(m_lastChar);
+		c = m_lastChar;
 	}
 	else if (m_string && m_pos < m_string->size())
 	{
@@ -143,7 +152,7 @@ QChar PgnStream::readChar()
 	else
 	{
 		m_status = ReadPastEnd;
-		return QChar();
+		return 0;
 	}
 
 	m_pos++;
@@ -151,18 +160,6 @@ QChar PgnStream::readChar()
 		m_lineNumber++;
 
 	return c;
-}
-
-QString PgnStream::readLine()
-{
-	QString str;
-	QChar c;
-	while (!(c = readChar()).isNull() && c != '\n')
-		str += c;
-
-	if (c == '\n')
-		m_lineNumber++;
-	return str;
 }
 
 void PgnStream::rewind()
@@ -175,10 +172,10 @@ void PgnStream::rewindChar()
 	if (m_pos <= 0)
 		return;
 
-	QChar c;
+	char c;
 	if (m_device)
 	{
-		c = QChar(m_lastChar);
+		c = m_lastChar;
 		m_device->ungetChar(m_lastChar);
 		m_lastChar = 0;
 	}
@@ -209,22 +206,225 @@ bool PgnStream::seek(qint64 pos, qint64 lineNumber)
 	m_pos = pos;
 	m_lineNumber = lineNumber;
 	m_lastChar = 0;
+	m_phase = OutOfGame;
 
 	return true;
-}
-
-void PgnStream::skipWhiteSpace()
-{
-	QChar c;
-	do
-	{
-		c = readChar();
-	}
-	while (c.isSpace());
-	rewindChar();
 }
 
 PgnStream::Status PgnStream::status() const
 {
 	return m_status;
+}
+
+void PgnStream::parseUntil(const char* chars)
+{
+	Q_ASSERT(chars != 0);
+
+	char c;
+	while ((c = readChar()) != 0)
+	{
+		if (strchr(chars, c))
+			break;
+		m_tokenString.append(c);
+	}
+}
+
+void PgnStream::parseTag()
+{
+	bool inQuotes = false;
+	int phase = 0;
+	char c;
+
+	m_tagName.clear();
+	m_tagValue.clear();
+
+	while ((c = readChar()) != 0)
+	{
+		if (!inQuotes && c == ']')
+			break;
+		m_tokenString.append(c);
+
+		switch (phase)
+		{
+		case 0:
+			if (!isspace(c))
+			{
+				phase++;
+				m_tagName.append(c);
+			}
+			break;
+		case 1:
+			if (!isspace(c))
+				m_tagName.append(c);
+			else
+				phase++;
+			break;
+		case 2:
+			if (!isspace(c))
+			{
+				phase++;
+				if (c == '\"')
+					inQuotes = true;
+				else
+					m_tagValue.append(c);
+			}
+			break;
+		case 3:
+			if (inQuotes)
+			{
+				if (c == '\"')
+				{
+					inQuotes = false;
+					phase++;
+				}
+				else
+					m_tagValue.append(c);
+			}
+			else if (!isspace(c))
+				m_tagValue.append(c);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void PgnStream::parseComment(char opBracket)
+{
+	int level = 1;
+	char clBracket = (opBracket == '(') ? ')' : '}';
+
+	char c;
+	while ((c = readChar()) != 0)
+	{
+		if (c == opBracket)
+			level++;
+		else if (c == clBracket && --level <= 0)
+			break;
+
+		m_tokenString.append(c);
+	}
+}
+
+bool PgnStream::nextGame()
+{
+	char c;
+	while ((c = readChar()) != 0)
+	{
+		if (c == '[')
+		{
+			rewindChar();
+			m_phase = InTags;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+PgnStream::TokenType PgnStream::readNext()
+{
+	if (m_phase == OutOfGame)
+		return NoToken;
+
+	m_tokenType = NoToken;
+	m_tokenString.clear();
+
+	char c;
+	while ((c = readChar()) != 0)
+	{
+		switch (c)
+		{
+		case ' ':
+		case '\t':
+		case '\n':
+		case '\r':
+		case '.':
+			break;
+		case '%':
+			// Escape mechanism (skip this line)
+			parseUntil("\n\r");
+			m_tokenString.clear();
+			break;
+		case '[':
+			if (m_phase != InTags)
+			{
+				rewindChar();
+				m_phase = OutOfGame;
+				return NoToken;
+			}
+			m_tokenType = PgnTag;
+			parseTag();
+			return m_tokenType;
+		case '(':
+		case '{':
+			m_tokenType = PgnComment;
+			parseComment(c);
+			return m_tokenType;
+		case ';':
+			m_tokenType = PgnLineComment;
+			parseUntil("\n\r");
+			return m_tokenType;
+		case '$':
+			// NAG (Numeric Annotation Glyph)
+			m_tokenType = PgnNag;
+			parseUntil(" \t\n\r");
+			return m_tokenType;
+		case '*':
+			// Unfinished game
+			m_tokenType = PgnResult;
+			m_tokenString = "*";
+			m_phase = OutOfGame;
+			return m_tokenType;
+		case '1': case '2': case '3': case '4': case '5':
+		case '6': case '7': case '8': case '9': case '0':
+			// Move number or result
+			m_tokenString.append(c);
+			parseUntil(". \t\n\r");
+
+			if (m_tokenString == "1-0"
+			||  m_tokenString == "0-1"
+			||  m_tokenString == "1/2-1/2")
+			{
+				m_tokenType = PgnResult;
+				m_phase = OutOfGame;
+			}
+			else
+			{
+				if (m_tokenString.endsWith('.'))
+					m_tokenString.chop(1);
+				m_tokenType = PgnMoveNumber;
+				m_phase = InGame;
+			}
+			return m_tokenType;
+		default:
+			m_tokenType = PgnMove;
+			m_tokenString.append(c);
+			parseUntil(" \t\n\r");
+			m_phase = InGame;
+			return m_tokenType;
+		}
+	}
+
+	return NoToken;
+}
+
+QByteArray PgnStream::tokenString() const
+{
+	return m_tokenString;
+}
+
+PgnStream::TokenType PgnStream::tokenType() const
+{
+	return m_tokenType;
+}
+
+QByteArray PgnStream::tagName() const
+{
+	return m_tagName;
+}
+
+QByteArray PgnStream::tagValue() const
+{
+	return m_tagValue;
 }

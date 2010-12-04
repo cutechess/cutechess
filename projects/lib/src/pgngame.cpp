@@ -57,214 +57,112 @@ void PgnGame::addMove(const MoveData& data)
 	m_moves.append(data);
 }
 
-PgnGame::PgnItem PgnGame::readItem(PgnStream& in)
+bool PgnGame::parseMove(PgnStream& in)
 {
-	in.skipWhiteSpace();
-	PgnItem itemType = PgnMove;
-
-	QChar c;
-	QChar openingBracket;
-	QChar closingBracket;
-	int bracketLevel = 0;
-	QString str;
-	
-	while (in.status() == PgnStream::Ok)
+	if (m_tags.isEmpty())
 	{
-		c = in.readChar();
-		if (m_tags.isEmpty() && itemType != PgnTag && c != '[')
-			continue;
-		if ((c == '\n' || c == '\r') && itemType != PgnComment)
-			break;
-		
-		if (openingBracket.isNull())
-		{
-			if (str.isEmpty())
-			{
-				// "Rest of the line" comment
-				if (c == ';')
-				{
-					itemType = PgnComment;
-					str = in.readLine();
-					break;
-				}
-				// Escape mechanism (skip this line)
-				if (c == '%')
-				{
-					in.readLine();
-					continue;
-				}
-				// Skip leading periods
-				if (c == '.')
-				{
-					in.skipWhiteSpace();
-					continue;
-				}
-				// NAG (Numeric Annotation Glyph)
-				if (c == '$')
-				{
-					itemType = PgnNag;
-					continue;
-				}
-				// Move number
-				if (c.isDigit() && itemType == PgnMove)
-					itemType = PgnMoveNumber;
-			}
-			// Tag
-			if (c == '[')
-			{
-				// Disallow tags after moves have been read
-				if (m_moves.size() > 0)
-				{
-					// We may be reading the next game in
-					// the stream, so rewind by one character.
-					in.rewindChar();
-					qDebug() << "No termination marker";
-					return PgnError;
-				}
-				
-				itemType = PgnTag;
-				closingBracket = ']';
-			}
-			else if (c == '(')
-			{
-				itemType = PgnComment;
-				closingBracket = ')';
-			}
-			else if (c == '{')
-			{
-				itemType = PgnComment;
-				closingBracket = '}';
-			}
-			
-			if (!closingBracket.isNull())
-				openingBracket = c;
-		}
-		if (c == openingBracket)
-			bracketLevel++;
-		else if (c == closingBracket)
-		{
-			bracketLevel--;
-			if (bracketLevel <= 0)
-				break;
-		}
-		else if (itemType == PgnMove && c.isSpace())
-			break;
-		else if (itemType == PgnMoveNumber
-		     &&  (c.isSpace() || c == '.'))
-			break;
-		else if (itemType == PgnNag && c.isSpace())
-			break;
-		else
-			str += c;
+		qDebug() << "No tags found";
+		return false;
 	}
-	
-	str = str.trimmed();
-	if (str.isEmpty())
-		return PgnEmpty;
-	
-	if ((itemType == PgnMove || itemType == PgnMoveNumber)
-	&&  (str == "*" || str == "1/2-1/2" || str == "1-0" || str == "0-1"))
+
+	Chess::Board* board(in.board());
+
+	// If the FEN string wasn't already set by the FEN tag,
+	// set the board when we get the first move
+	if (m_moves.isEmpty())
 	{
-		QString& resultTag = m_tags["Result"];
-		if (!resultTag.isEmpty() && str != resultTag)
-			qDebug() << "Line" << in.lineNumber() << ": The termination "
-			            "marker is different from the result tag";
-		resultTag = str;
-		return PgnResult;
-	}
-	
-	if (itemType == PgnTag)
-	{
-		QString tag = str.section(' ', 0, 0);
-		QString param = str.section(' ', 1).replace('\"', "");
-		
-		m_tags[tag] = param;
-	}
-	else if (itemType == PgnMove)
-	{
-		if (m_tags.isEmpty())
+		QString tmp(m_tags.value("Variant"));
+
+		if (!tmp.isEmpty() && !in.setVariant(tmp))
 		{
-			qDebug() << "No tags found";
-			return PgnError;
+			qDebug() << "Unknown variant:" << tmp;
+			return false;
 		}
+		board = in.board();
+		if (tmp.isEmpty() && board->variant() != "standard")
+			m_tags["Variant"] = board->variant();
 
-		Chess::Board* board(in.board());
-
-		// If the FEN string wasn't already set by the FEN tag,
-		// set the board when we get the first move
-		if (m_moves.isEmpty())
+		tmp = m_tags.value("FEN");
+		if (tmp.isEmpty())
 		{
-			QString tmp(m_tags.value("Variant"));
-
-			if (!tmp.isEmpty() && !in.setVariant(tmp))
+			if (board->isRandomVariant())
 			{
-				qDebug() << "Unknown variant:" << tmp;
-				return PgnError;
+				qDebug() << "Missing FEN tag";
+				return false;
 			}
-			board = in.board();
-			if (tmp.isEmpty() && board->variant() != "standard")
-				m_tags["Variant"] = board->variant();
-
-			tmp = m_tags.value("FEN");
-			if (tmp.isEmpty())
-			{
-				if (board->isRandomVariant())
-				{
-					qDebug() << "Missing FEN tag";
-					return PgnError;
-				}
-				tmp = board->defaultFenString();
-			}
-			
-			if (!board->setFenString(tmp))
-			{
-				qDebug() << "Invalid FEN string:" << tmp;
-				return PgnError;
-			}
-			m_startingSide = board->startingSide();
+			tmp = board->defaultFenString();
 		}
 
-		Chess::Move move(board->moveFromString(str));
-		if (move.isNull())
+		if (!board->setFenString(tmp))
 		{
-			qDebug() << "Illegal move:" << str;
-			return PgnError;
+			qDebug() << "Invalid FEN string:" << tmp;
+			return false;
 		}
-
-		MoveData md = { board->key(), board->genericMove(move),
-				str, QString() };
-		addMove(md);
-
-		board->makeMove(move);
+		m_startingSide = board->startingSide();
 	}
-	else if (itemType == PgnNag)
+
+	const QString str(in.tokenString());
+	Chess::Move move(board->moveFromString(str));
+	if (move.isNull())
 	{
-		bool ok;
-		int nag = str.toInt(&ok);
-		if (!ok || nag < 0 || nag > 255)
-		{
-			qDebug() << "Invalid NAG:" << str;
-			return PgnError;
-		}
+		qDebug() << "Illegal move:" << str;
+		return false;
 	}
-	
-	return itemType;
+
+	MoveData md = { board->key(), board->genericMove(move),
+			str, QString() };
+	addMove(md);
+
+	board->makeMove(move);
+	return true;
 }
 
 bool PgnGame::read(PgnStream& in, int maxMoves)
 {
 	clear();
+	if (!in.nextGame())
+		return false;
 	
-	while (in.status() == PgnStream::Ok
-	   &&  m_moves.size() < maxMoves)
+	while (in.status() == PgnStream::Ok)
 	{
-		PgnItem item = readItem(in);
-		if (item == PgnError)
+		bool stop = false;
+
+		switch (in.readNext())
 		{
-			qDebug() << "PGN error on line" << in.lineNumber();
+		case PgnStream::PgnTag:
+			m_tags[in.tagName()] = in.tagValue();
+			break;
+		case PgnStream::PgnMove:
+			stop = !parseMove(in) || m_moves.size() >= maxMoves;
+			break;
+		case PgnStream::PgnResult:
+			{
+				const QString str(in.tokenString());
+				QString& tag = m_tags["Result"];
+
+				if (!tag.isEmpty() && str != tag)
+					qDebug() << "Line" << in.lineNumber() << ": The termination "
+						    "marker is different from the result tag";
+				tag = str;
+			}
+			stop = true;
+			break;
+		case PgnStream::PgnNag:
+			{
+				bool ok;
+				int nag = in.tokenString().toInt(&ok);
+				if (!ok || nag < 0 || nag > 255)
+					qDebug() << "Invalid NAG:" << in.tokenString();
+			}
+			break;
+		case PgnStream::NoToken:
+			stop = true;
+			break;
+		default:
 			break;
 		}
-		else if (item == PgnResult || item == PgnEmpty)
+
+		if (stop)
 			break;
 	}
 	if (m_tags.isEmpty())

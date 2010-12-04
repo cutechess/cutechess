@@ -16,10 +16,11 @@
 */
 
 #include "pgngameentry.h"
+#include <cctype>
 #include "pgnstream.h"
 
 
-PgnGameEntry::PgnGameEntry(const QString& variant)
+PgnGameEntry::PgnGameEntry(const QByteArray& variant)
 	: m_round(0),
 	  m_pos(0),
 	  m_lineNumber(1),
@@ -28,7 +29,7 @@ PgnGameEntry::PgnGameEntry(const QString& variant)
 
 }
 
-void PgnGameEntry::addTag(const QString& tagName, const QString& tagValue)
+void PgnGameEntry::addTag(const QByteArray& tagName, const QByteArray& tagValue)
 {
 	if (tagName.isEmpty() || tagValue.isEmpty())
 		return;
@@ -64,15 +65,15 @@ void PgnGameEntry::clear()
 
 bool PgnGameEntry::read(PgnStream& in)
 {
-	QChar c;
-	QString tagName;
-	QString tagValue;
+	char c;
+	QByteArray tagName;
+	QByteArray tagValue;
 	bool haveTagName = false;
 	bool foundTag = false;
 	bool inTag = false;
 	int bracketLevel = 0;
 
-	while (!(c = in.readChar()).isNull())
+	while ((c = in.readChar()) != 0)
 	{
 		if (!inTag)
 		{
@@ -86,14 +87,14 @@ bool PgnGameEntry::read(PgnStream& in)
 					m_lineNumber = in.lineNumber();
 				}
 			}
-			else if (foundTag && !c.isSpace())
+			else if (foundTag && !isspace(c))
 				return true;
 
 			continue;
 		}
 		if (bracketLevel > 0 && c == ']')
 			bracketLevel--;
-		else if (c == ']' || c == '\n')
+		else if (c == ']' || c == '\n' || c == '\r')
 		{
 			addTag(tagName, tagValue);
 			tagName.clear();
