@@ -32,8 +32,9 @@ class LIB_EXPORT OpeningBook
 		 * Imports a PGN game.
 		 *
 		 * \param pgn The game to import.
-		 * \param maxMoves The maximum number of halfmoves per game
-		 *                 that can be imported.
+		 * \param maxMoves The maximum number of halfmoves that
+		 * can be imported.
+		 *
 		 * Returns the number of moves imported.
 		 */
 		int import(const PgnGame& pgn, int maxMoves);
@@ -42,7 +43,8 @@ class LIB_EXPORT OpeningBook
 		 *
 		 * \param in The PGN stream that contains the games.
 		 * \param maxMoves The maximum number of halfmoves per game
-		 *                 that can be imported.
+		 * that can be imported.
+		 *
 		 * Returns the number of moves imported.
 		 */
 		int import(PgnStream& in, int maxMoves);
