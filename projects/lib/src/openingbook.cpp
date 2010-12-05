@@ -90,34 +90,36 @@ int OpeningBook::import(const PgnGame& pgn, int maxMoves)
 	int loserMod = -1;
 	int weight = 1;
 	maxMoves = qMin(maxMoves, pgn.moves().size());
+	int ret = maxMoves;
 
 	if (!winner.isNull())
 	{
 		loserMod = int(pgn.startingSide() == winner);
 		weight = 2;
+		ret = (ret - loserMod) / 2 + loserMod;
 	}
 
 	const QVector<PgnGame::MoveData>& moves = pgn.moves();
 	for (int i = 0; i < maxMoves; i++)
 	{
 		// Skip the loser's moves
-		if ((i % 2) == loserMod)
+		if ((i % 2) != loserMod)
 		{
 			Entry entry = { moves[i].move, weight };
 			addEntry(entry, moves[i].key);
 		}
 	}
 
-	return maxMoves;
+	return ret;
 }
 
 int OpeningBook::import(PgnStream& in, int maxMoves)
 {
 	Q_ASSERT(maxMoves > 0);
-	
+
 	if (!in.isOpen())
 		return 0;
-	
+
 	int moveCount = 0;
 	while (in.status() == PgnStream::Ok)
 	{
@@ -125,10 +127,10 @@ int OpeningBook::import(PgnStream& in, int maxMoves)
 		game.read(in, maxMoves);
 		if (game.moves().isEmpty())
 			break;
-				
+
 		moveCount += import(game, maxMoves);
 	}
-	
+
 	return moveCount;
 }
 
