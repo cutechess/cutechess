@@ -32,7 +32,7 @@ namespace Chess {
  * \note Rules: http://en.wikipedia.org/wiki/Crazyhouse
  * \sa ShogiBoard
  */
-class CrazyhouseBoard : public WesternBoard
+class LIB_EXPORT CrazyhouseBoard : public WesternBoard
 {
 	Q_OBJECT
 
