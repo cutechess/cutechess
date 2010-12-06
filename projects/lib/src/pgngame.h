@@ -166,6 +166,9 @@ class LIB_EXPORT PgnGame
 		QVector<MoveData > m_moves;
 };
 
+/*! Reads a PGN game from a PGN stream. */
+extern LIB_EXPORT PgnStream& operator>>(PgnStream& in, PgnGame& game);
+
 /*! Writes a PGN game in verbose mode to a text stream. */
 extern LIB_EXPORT QTextStream& operator<<(QTextStream& out, const PgnGame& game);
 

@@ -23,6 +23,12 @@
 #include "pgnstream.h"
 
 
+PgnStream& operator>>(PgnStream& in, PgnGame& game)
+{
+	game.read(in);
+	return in;
+}
+
 QTextStream& operator<<(QTextStream& out, const PgnGame& game)
 {
 	game.write(out);
