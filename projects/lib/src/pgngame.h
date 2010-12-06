@@ -167,6 +167,6 @@ class LIB_EXPORT PgnGame
 };
 
 /*! Writes a PGN game in verbose mode to a text stream. */
-extern LIB_EXPORT QTextStream& operator<<(QTextStream& out, const PgnGame* game);
+extern LIB_EXPORT QTextStream& operator<<(QTextStream& out, const PgnGame& game);
 
 #endif // PGNGAME_H

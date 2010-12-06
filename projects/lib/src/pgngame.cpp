@@ -23,9 +23,9 @@
 #include "pgnstream.h"
 
 
-QTextStream& operator<<(QTextStream& out, const PgnGame* game)
+QTextStream& operator<<(QTextStream& out, const PgnGame& game)
 {
-	game->write(out);
+	game.write(out);
 	return out;
 }
 
