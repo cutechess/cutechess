@@ -81,4 +81,7 @@ class LIB_EXPORT PgnGameEntry
 		Chess::Result m_result;
 };
 
+/*! Reads a PGN game entry from a PGN stream. */
+extern LIB_EXPORT PgnStream& operator>>(PgnStream& in, PgnGameEntry& entry);
+
 #endif // PGNGAMEENTRY_H

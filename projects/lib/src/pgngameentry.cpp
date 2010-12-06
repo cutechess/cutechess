@@ -20,6 +20,13 @@
 #include "pgnstream.h"
 
 
+PgnStream& operator>>(PgnStream& in, PgnGameEntry& entry)
+{
+	entry.read(in);
+	return in;
+}
+
+
 PgnGameEntry::PgnGameEntry(const QByteArray& variant)
 	: m_round(0),
 	  m_pos(0),
