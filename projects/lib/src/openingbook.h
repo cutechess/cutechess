@@ -97,27 +97,27 @@ class LIB_EXPORT OpeningBook
 			 */
 			quint16 weight;
 		};
-		
+
 		/*! The type of binary tree. */
 		typedef QMultiMap<quint64, Entry> Map;
-		
-		
+
+
 		/*! Adds a new entry to the book. */
 		void addEntry(const Entry& entry, quint64 key);
 		
-		/*! Loads a new book entry from \a in. */
-		virtual void loadEntry(QDataStream& in) = 0;
+		/*! Reads a new book entry from \a in. */
+		virtual void readEntry(QDataStream& in) = 0;
 		
-		/*! Saves the key and entry pointed to by \a it, to \a out. */
-		virtual void saveEntry(const Map::const_iterator& it,
-		                       QDataStream& out) const = 0;
+		/*! Writes the key and entry pointed to by \a it, to \a out. */
+		virtual void writeEntry(const Map::const_iterator& it,
+					QDataStream& out) const = 0;
 		
 		/*! The binary tree. */
 		Map m_map;
 };
 
 /*!
- * Loads a book from a data stream.
+ * Reads a book from a data stream.
  *
  * \note Multiple book files can be appended to the same
  * OpeningBook object.

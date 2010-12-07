@@ -50,7 +50,7 @@ static quint16 moveToBits(const Chess::GenericMove& move)
 	return target | source | promotion;
 }
 
-void PolyglotBook::loadEntry(QDataStream& in)
+void PolyglotBook::readEntry(QDataStream& in)
 {
 	quint64 key;
 	quint16 pgMove;
@@ -65,8 +65,8 @@ void PolyglotBook::loadEntry(QDataStream& in)
 	addEntry(entry, key);
 }
 
-void PolyglotBook::saveEntry(const Map::const_iterator& it,
-                             QDataStream& out) const
+void PolyglotBook::writeEntry(const Map::const_iterator& it,
+			      QDataStream& out) const
 {
 	quint32 learn = 0;
 	quint64 key = it.key();

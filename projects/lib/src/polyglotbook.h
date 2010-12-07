@@ -16,9 +16,9 @@ class LIB_EXPORT PolyglotBook: public OpeningBook
 {
 	protected:
 		// Inherited from OpeningBook
-		virtual void loadEntry(QDataStream& in);
-		virtual void saveEntry(const Map::const_iterator& it,
-		                       QDataStream& out) const;
+		virtual void readEntry(QDataStream& in);
+		virtual void writeEntry(const Map::const_iterator& it,
+					QDataStream& out) const;
 };
 
 #endif // POLYGLOT_BOOK_H

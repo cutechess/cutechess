@@ -26,7 +26,7 @@
 QDataStream& operator>>(QDataStream& in, OpeningBook* book)
 {
 	while (!in.status() != QDataStream::Ok)
-		book->loadEntry(in);
+		book->readEntry(in);
 
 	return in;
 }
@@ -35,7 +35,7 @@ QDataStream& operator<<(QDataStream& out, const OpeningBook* book)
 {
 	OpeningBook::Map::const_iterator it;
 	for (it = book->m_map.constBegin(); it != book->m_map.constEnd(); ++it)
-		book->saveEntry(it, out);
+		book->writeEntry(it, out);
 
 	return out;
 }
