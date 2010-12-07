@@ -111,8 +111,8 @@ class LIB_EXPORT OpeningBook
 		/*! Writes the key and entry pointed to by \a it, to \a out. */
 		virtual void writeEntry(const Map::const_iterator& it,
 					QDataStream& out) const = 0;
-		
-		/*! The binary tree. */
+
+	private:
 		Map m_map;
 };
 
