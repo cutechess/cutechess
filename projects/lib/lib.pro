@@ -4,9 +4,9 @@ QT = core
 DESTDIR = $$PWD
 
 win32:!static {
-    DEFINES += LIB_EXPORT=\"__declspec(dllexport)\"
+    DEFINES += LIB_EXPORT="__declspec(dllexport)"
 } else {
-    DEFINES += LIB_EXPORT=\"\"
+    DEFINES += LIB_EXPORT=""
 }
 
 include(src/src.pri)
