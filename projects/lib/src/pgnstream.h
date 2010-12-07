@@ -103,7 +103,7 @@ class LIB_EXPORT PgnStream
 
 		/*! Returns the assigned device, or 0 if no device is in use. */
 		QIODevice* device() const;
-		/*! Sets the current device to \ə device. */
+		/*! Sets the current device to \a device. */
 		void setDevice(QIODevice* device);
 
 		/*! Returns the assigned string, or 0 if no string is in use. */

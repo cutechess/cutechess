@@ -54,7 +54,7 @@ class LIB_EXPORT PgnGame
 			Verbose
 		};
 
-		/*! A struct for storing the game's move history. */
+		/*! \brief A struct for storing the game's move history. */
 		struct MoveData
 		{
 			/*! The zobrist position key before the move. */

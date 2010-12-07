@@ -63,7 +63,7 @@ class LIB_EXPORT OpeningBook
 		Chess::GenericMove move(quint64 key) const;
 
 		/*!
-		 * Reads a book from \ə filename.
+		 * Reads a book from \a filename.
 		 * Returns true if successfull.
 		 */
 		bool read(const QString& filename);
@@ -105,7 +105,12 @@ class LIB_EXPORT OpeningBook
 		/*! Adds a new entry to the book. */
 		void addEntry(const Entry& entry, quint64 key);
 		
-		/*! Reads a new book entry from \a in. */
+		/*!
+		 * Reads a new book entry from \a in.
+		 *
+		 * The implementation must call addEntry() to add the
+		 * entry to the book.
+		 */
 		virtual void readEntry(QDataStream& in) = 0;
 		
 		/*! Writes the key and entry pointed to by \a it, to \a out. */
