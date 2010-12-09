@@ -28,7 +28,7 @@
 
 - EPD tests for engines
 
-- Design an XML format for tournaments
+- Design a file format for tournaments
 
 - Provide code examples in documentation
 
@@ -51,3 +51,6 @@
 - Use SVG graphics to display piece symbols in PromotionDialog
 
 - Per window dialogs should use QDialog::open() instead of exec()
+
+- Apply for the Qt Ambassador program (application showcase) after first
+  public release: http://qt.nokia.com/qtambassador
