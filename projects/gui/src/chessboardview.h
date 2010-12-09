@@ -82,6 +82,7 @@ class ChessboardView : public QAbstractItemView
 		QRegion m_dragUpdateRegion;
 
 		int m_squareSize;
+		bool m_canPaint;
 		bool m_needsUpdate;
 		QTimer m_resizeTimer;
 		QColor m_lightSquareColor;

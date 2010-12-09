@@ -13,6 +13,7 @@ ChessboardView::ChessboardView(QWidget* parent)
 	: QAbstractItemView(parent),
 	  m_dragging(false),
 	  m_squareSize(40),
+	  m_canPaint(false),
 	  m_needsUpdate(true)
 {
 	setEnabled(false);
@@ -270,6 +271,7 @@ void ChessboardView::paintEvent(QPaintEvent* event)
 		return;
 	}
 	m_needsUpdate = false;
+	m_canPaint = true;
 
 	if (m_background.size() != m_squaresRect.size())
 		m_background = QPixmap(m_squaresRect.size());
@@ -332,6 +334,9 @@ QRegion ChessboardView::visualRegionForSelection(const QItemSelection& selection
 
 void ChessboardView::dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight)
 {
+	if (!m_canPaint)
+		return;
+
 	QPainter painter(&m_background);
 	painter.setBackgroundMode(Qt::OpaqueMode);
 
