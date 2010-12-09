@@ -40,12 +40,45 @@ class LIB_EXPORT GameManager : public QObject
 	Q_OBJECT
 
 	public:
+		/*! The mode for starting games. */
+		enum StartMode
+		{
+			/*! The game is started immediately. */
+			StartImmediately,
+			/*!
+			 * The game is added to a queue, and is started when
+			 * a game slot becomes free. This could be immediately.
+			 */
+			Enqueue
+		};
+
 		/*! Creates a new game manager. */
 		GameManager(QObject* parent = 0);
 
-		/*! Returns the maximum allowed number of concurrent games. */
+		/*!
+		 * Returns the number of active games.
+		 *
+		 * Any game that was started (ie. isn't waiting in the queue)
+		 * is considered active even if the game has ended. This is
+		 * because the game could still be used for analysis, etc.
+		 * The game loses its active status only when it's deleted.
+		 */
+		int activeGameCount() const;
+
+		/*!
+		 * Returns the maximum allowed number of concurrent games.
+		 *
+		 * The concurrency limit only affects games that are started
+		 * in Enqueue mode.
+		 *
+		 * \sa setConcurrency()
+		 */
 		int concurrency() const;
-		/*! Sets concurrency to \a concurrency. */
+		/*!
+		 * Sets the concurrency limit to \a concurrency.
+		 *
+		 * \sa concurrency()
+		 */
 		void setConcurrency(int concurrency);
 
 		/*!
@@ -56,33 +89,45 @@ class LIB_EXPORT GameManager : public QObject
 		void finish();
 
 		/*!
-		 * Adds \a game to the game queue.
+		 * Adds a new game to the game manager.
 		 *
-		 * The game is started in a separate thread as soon as a free
-		 * game slot is available. Construction of the players is delayed
-		 * to the moment when the game starts. Idle players from
-		 * a previous game are reused instead of constructing new players
-		 * if the same builders are used again.
+		 * This function gives control of \a game to the game manager,
+		 * which moves the game to its own thread and starts it. Because
+		 * the game is played in a separate thread, it must not have a
+		 * parent object. When it's not needed anymore, it must be
+		 * destroyed with the \a deleteLater() method. Only then will the
+		 * game manager free the game slot used by the game.
 		 *
-		 * When \a game isn't needed any more, it must be destroyed with
-		 * the \a deleteLater() method. Then the game slot is freed again
-		 * and ready for another game.
+		 * Construction of the players is delayed to the moment when the
+		 * game starts. If the same builder objects (\a white and \a black)
+		 * were used in a previous game, the players are reused instead of
+		 * constructing new players.
 		 *
-		 * Returns true if successfull.
+		 * If \a mode is StartImmediately, the game starts immediately
+		 * even if the number of active games is over the \a concurrency
+		 * limit. In \a Enqueue mode the game is started as soon as
+		 * a free game slot is available.
+		 *
+		 * Returns true if successfull (ie. the game was added to the queue
+		 * or it was started successfully); otherwise returns false.
+		 *
 		 * \note If there are still free game slots after starting this
 		 * game, the ready() signal is emitted immediately.
-		 * \note \a game must not have a parent.
 		 */
 		bool newGame(ChessGame* game,
 			     const PlayerBuilder* white,
-			     const PlayerBuilder* black);
+			     const PlayerBuilder* black,
+			     StartMode mode = StartImmediately);
 
 	signals:
 		/*!
-		 * The manager is ready to start a new game.
 		 * This signal is emitted after a game has started
 		 * or after a game has ended, if there are free
 		 * game slots.
+		 *
+		 * \note The signal is NOT emitted if a newly freed
+		 * game slot can be used by a game that was waiting in
+		 * the queue.
 		 */
 		void ready();
 		/*!
@@ -95,7 +140,7 @@ class LIB_EXPORT GameManager : public QObject
 		void debugMessage(const QString& data);
 
 	private slots:
-		void onThreadReady();
+		void onThreadReady(GameManager::StartMode mode);
 		void onThreadQuit();
 
 	private:
@@ -108,12 +153,14 @@ class LIB_EXPORT GameManager : public QObject
 
 		GameThread* getThread(const PlayerBuilder* white,
 				      const PlayerBuilder* black);
-		bool startGame();
+		bool startGame(const GameEntry& entry, StartMode mode);
+		bool startQueuedGame();
 		void cleanup();
 
 		bool m_finishing;
 		int m_concurrency;
 		int m_activeGameCount;
+		int m_activeQueuedGameCount;
 		QList<GameThread*> m_threads;
 		QList<GameEntry> m_gameEntries;
 };

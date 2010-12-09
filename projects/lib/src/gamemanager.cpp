@@ -35,6 +35,7 @@ class GameThread : public QThread
 
 		bool isReady() const;
 		bool newGame(ChessGame* game);
+		void setStartMode(GameManager::StartMode mode);
 		void swapSides();
 		void quitPlayers();
 
@@ -42,7 +43,7 @@ class GameThread : public QThread
 		const PlayerBuilder* blackBuilder() const;
 
 	signals:
-		void ready();
+		void ready(GameManager::StartMode mode);
 
 	private slots:
 		void onGameDestroyed();
@@ -50,6 +51,7 @@ class GameThread : public QThread
 
 	private:
 		bool m_ready;
+		GameManager::StartMode m_startMode;
 		int m_playerCount;
 		ChessGame* m_game;
 		ChessPlayer* m_player[2];
@@ -61,6 +63,7 @@ GameThread::GameThread(const PlayerBuilder* whiteBuilder,
 		       QObject* parent)
 	: QThread(parent),
 	  m_ready(true),
+	  m_startMode(GameManager::StartImmediately),
 	  m_playerCount(0),
 	  m_game(0)
 {
@@ -137,6 +140,11 @@ bool GameThread::newGame(ChessGame* game)
 	return true;
 }
 
+void GameThread::setStartMode(GameManager::StartMode mode)
+{
+	m_startMode = mode;
+}
+
 void GameThread::swapSides()
 {
 	qSwap(m_player[0], m_player[1]);
@@ -175,7 +183,7 @@ const PlayerBuilder* GameThread::blackBuilder() const
 void GameThread::onGameDestroyed()
 {
 	m_ready = true;
-	emit ready();
+	emit ready(m_startMode);
 }
 
 void GameThread::onPlayerQuit()
@@ -189,8 +197,14 @@ GameManager::GameManager(QObject* parent)
 	: QObject(parent),
 	  m_finishing(false),
 	  m_concurrency(1),
-	  m_activeGameCount(0)
+	  m_activeGameCount(0),
+	  m_activeQueuedGameCount(0)
 {
+}
+
+int GameManager::activeGameCount() const
+{
+	return m_activeGameCount;
 }
 
 int GameManager::concurrency() const
@@ -243,16 +257,21 @@ void GameManager::finish()
 
 bool GameManager::newGame(ChessGame* game,
 			  const PlayerBuilder* white,
-			  const PlayerBuilder* black)
+			  const PlayerBuilder* black,
+			  GameManager::StartMode mode)
 {
 	Q_ASSERT(game != 0);
 	Q_ASSERT(white != 0);
 	Q_ASSERT(black != 0);
+	Q_ASSERT(game->parent() == 0);
 
 	GameEntry entry = { game, white, black };
-	m_gameEntries << entry;
 
-	return startGame();
+	if (mode == StartImmediately)
+		return startGame(entry, StartImmediately);
+
+	m_gameEntries << entry;
+	return startQueuedGame();
 }
 
 void GameManager::onThreadQuit()
@@ -261,6 +280,7 @@ void GameManager::onThreadQuit()
 	Q_ASSERT(thread != 0);
 
 	m_threads.removeOne(thread);
+	thread->deleteLater();
 	if (m_threads.isEmpty())
 	{
 		m_finishing = false;
@@ -268,10 +288,15 @@ void GameManager::onThreadQuit()
 	}
 }
 
-void GameManager::onThreadReady()
+void GameManager::onThreadReady(GameManager::StartMode mode)
 {
 	m_activeGameCount--;
-	startGame();
+
+	if (mode == Enqueue)
+	{
+		m_activeQueuedGameCount--;
+		startQueuedGame();
+	}
 
 	if (m_finishing && m_activeGameCount == 0)
 		cleanup();
@@ -280,6 +305,9 @@ void GameManager::onThreadReady()
 GameThread* GameManager::getThread(const PlayerBuilder* white,
 				   const PlayerBuilder* black)
 {
+	Q_ASSERT(white != 0);
+	Q_ASSERT(black != 0);
+
 	foreach (GameThread* thread, m_threads)
 	{
 		if (!thread->isReady())
@@ -294,14 +322,37 @@ GameThread* GameManager::getThread(const PlayerBuilder* white,
 
 	GameThread* gameThread = new GameThread(white, black, this);
 	m_threads << gameThread;
-	connect(gameThread, SIGNAL(ready()), this, SLOT(onThreadReady()));
+	connect(gameThread, SIGNAL(ready(GameManager::StartMode)),
+		this, SLOT(onThreadReady(GameManager::StartMode)));
 
 	return gameThread;
 }
 
-bool GameManager::startGame()
+bool GameManager::startGame(const GameEntry& entry, StartMode mode)
 {
-	if (m_activeGameCount >= m_concurrency)
+	GameThread* gameThread = getThread(entry.white, entry.black);
+	Q_ASSERT(gameThread != 0);
+
+	gameThread->setStartMode(mode);
+	if (!gameThread->newGame(entry.game))
+	{
+		m_threads.removeOne(gameThread);
+		gameThread->deleteLater();
+		return false;
+	}
+	m_activeGameCount++;
+	if (mode == Enqueue)
+		m_activeQueuedGameCount++;
+
+	gameThread->start();
+	entry.game->start();
+
+	return true;
+}
+
+bool GameManager::startQueuedGame()
+{
+	if (m_activeQueuedGameCount >= m_concurrency)
 		return true;
 	if (m_gameEntries.isEmpty())
 	{
@@ -309,17 +360,10 @@ bool GameManager::startGame()
 		return true;
 	}
 
-	GameEntry entry = m_gameEntries.takeFirst();
-	GameThread* gameThread = getThread(entry.white, entry.black);
-
-	if (!gameThread->newGame(entry.game))
+	if (!startGame(m_gameEntries.takeFirst(), Enqueue))
 		return false;
-	m_activeGameCount++;
 
-	gameThread->start();
-	entry.game->start();
-
-	return startGame();
+	return startQueuedGame();
 }
 
 #include "gamemanager.moc"
