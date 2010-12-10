@@ -306,6 +306,7 @@ void GameManager::onThreadReady(GameManager::StartMode mode)
 		startQueuedGame();
 	}
 
+	emit gameDestroyed(thread->game());
 	if (m_finishing && m_activeGames.isEmpty())
 		cleanup();
 }
