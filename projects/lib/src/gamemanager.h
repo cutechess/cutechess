@@ -56,14 +56,14 @@ class LIB_EXPORT GameManager : public QObject
 		GameManager(QObject* parent = 0);
 
 		/*!
-		 * Returns the number of active games.
+		 * Returns the list of active games.
 		 *
 		 * Any game that was started (ie. isn't waiting in the queue)
 		 * is considered active even if the game has ended. This is
 		 * because the game could still be used for analysis, etc.
 		 * The game loses its active status only when it's deleted.
 		 */
-		int activeGameCount() const;
+		QList<ChessGame*> activeGames() const;
 
 		/*!
 		 * Returns the maximum allowed number of concurrent games.
@@ -161,10 +161,10 @@ class LIB_EXPORT GameManager : public QObject
 
 		bool m_finishing;
 		int m_concurrency;
-		int m_activeGameCount;
 		int m_activeQueuedGameCount;
 		QList<GameThread*> m_threads;
 		QList<GameEntry> m_gameEntries;
+		QList<ChessGame*> m_activeGames;
 };
 
 #endif // GAMEMANAGER_H

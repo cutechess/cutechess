@@ -39,6 +39,7 @@ class GameThread : public QThread
 		void swapSides();
 		void quitPlayers();
 
+		ChessGame* game() const;
 		const PlayerBuilder* whiteBuilder() const;
 		const PlayerBuilder* blackBuilder() const;
 
@@ -170,6 +171,11 @@ void GameThread::quitPlayers()
 	}
 }
 
+ChessGame* GameThread::game() const
+{
+	return m_game;
+}
+
 const PlayerBuilder* GameThread::whiteBuilder() const
 {
 	return m_builder[Chess::Side::White];
@@ -197,14 +203,13 @@ GameManager::GameManager(QObject* parent)
 	: QObject(parent),
 	  m_finishing(false),
 	  m_concurrency(1),
-	  m_activeGameCount(0),
 	  m_activeQueuedGameCount(0)
 {
 }
 
-int GameManager::activeGameCount() const
+QList<ChessGame*> GameManager::activeGames() const
 {
-	return m_activeGameCount;
+	return m_activeGames;
 }
 
 int GameManager::concurrency() const
@@ -249,7 +254,7 @@ void GameManager::cleanup()
 void GameManager::finish()
 {
 	m_gameEntries.clear();
-	if (m_activeGameCount == 0)
+	if (m_activeGames.isEmpty())
 		cleanup();
 	else
 		m_finishing = true;
@@ -290,7 +295,10 @@ void GameManager::onThreadQuit()
 
 void GameManager::onThreadReady(GameManager::StartMode mode)
 {
-	m_activeGameCount--;
+	GameThread* thread = qobject_cast<GameThread*>(QObject::sender());
+	Q_ASSERT(thread != 0);
+
+	m_activeGames.removeOne(thread->game());
 
 	if (mode == Enqueue)
 	{
@@ -298,7 +306,7 @@ void GameManager::onThreadReady(GameManager::StartMode mode)
 		startQueuedGame();
 	}
 
-	if (m_finishing && m_activeGameCount == 0)
+	if (m_finishing && m_activeGames.isEmpty())
 		cleanup();
 }
 
@@ -340,7 +348,7 @@ bool GameManager::startGame(const GameEntry& entry, StartMode mode)
 		gameThread->deleteLater();
 		return false;
 	}
-	m_activeGameCount++;
+	m_activeGames << entry.game;
 	if (mode == Enqueue)
 		m_activeQueuedGameCount++;
 
