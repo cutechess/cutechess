@@ -120,6 +120,8 @@ class LIB_EXPORT GameManager : public QObject
 			     StartMode mode = StartImmediately);
 
 	signals:
+		/*! This signal is emitted when chessgame \a game starts. */
+		void gameStarted(ChessGame* game);
 		/*!
 		 * This signal is emitted after a game has started
 		 * or after a game has ended, if there are free

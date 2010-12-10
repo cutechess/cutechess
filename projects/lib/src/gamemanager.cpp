@@ -346,6 +346,7 @@ bool GameManager::startGame(const GameEntry& entry, StartMode mode)
 
 	gameThread->start();
 	entry.game->start();
+	emit gameStarted(entry.game);
 
 	return true;
 }
