@@ -122,7 +122,12 @@ class LIB_EXPORT GameManager : public QObject
 	signals:
 		/*! This signal is emitted when a new game starts. */
 		void gameStarted(ChessGame* game);
-		/*! This signal is emitted when a game is destroyed. */
+		/*!
+		 * This signal is emitted when a game is destroyed.
+		 *
+		 * Dereferencing the \a game pointer results in undefined
+		 * behavior, so this signal should only be used for cleanup.
+		 */
 		void gameDestroyed(ChessGame* game);
 		/*!
 		 * This signal is emitted after a game has started
