@@ -32,13 +32,15 @@
 
 - Provide code examples in documentation
 
-- Add proper player killswitches for debugging purposes (GUI)
-
-  This could be expanded further to kill the underlying chess engine process
-  instead of using the library procedures to simulate how the gui reacts to
-  program crashes
-
 - Verify Qt version requirement before release
+
+- Use PgnStream for HTTP downloading
+
+- Apply for the Qt Ambassador program (application showcase) after first
+  public release: http://qt.nokia.com/qtambassador
+
+User Interface
+--------------
 
 - (Mac) dropping FEN on Cute Chess' icon in Dock
 
@@ -46,11 +48,10 @@
 
 - (Mac) provide global menubar
 
-- Use PgnStream for HTTP downloading
-
 - Use SVG graphics to display piece symbols in PromotionDialog
 
 - Per window dialogs should use QDialog::open() instead of exec()
 
-- Apply for the Qt Ambassador program (application showcase) after first
-  public release: http://qt.nokia.com/qtambassador
+- Highlight legal moves
+
+- Moving a piece by selecting a source and a destination squares
