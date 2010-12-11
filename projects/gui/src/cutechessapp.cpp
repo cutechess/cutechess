@@ -33,7 +33,9 @@
 
 
 CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
-	: QApplication(argc, argv), m_engineManager(0)
+	: QApplication(argc, argv),
+	  m_engineManager(0),
+	  m_gameManager(0)
 {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
