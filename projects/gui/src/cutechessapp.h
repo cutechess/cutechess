@@ -22,6 +22,7 @@
 #include <QPointer>
 
 class EngineManager;
+class GameManager;
 class MainWindow;
 
 class CuteChessApplication : public QApplication
@@ -34,6 +35,7 @@ class CuteChessApplication : public QApplication
 
 		QString configPath();
 		EngineManager* engineManager();
+		GameManager* gameManager();
 		QList<MainWindow*> gameWindows();
 		void showGameWindow(int index);
 		static CuteChessApplication* instance();
@@ -43,6 +45,7 @@ class CuteChessApplication : public QApplication
 
 	private:
 		EngineManager* m_engineManager;
+		GameManager* m_gameManager;
 		QList<QPointer<MainWindow> > m_gameWindows;
 		void cleanGameWindows();
 

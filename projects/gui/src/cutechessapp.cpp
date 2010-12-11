@@ -23,6 +23,7 @@
 #include <QFileInfo>
 
 #include <enginemanager.h>
+#include <gamemanager.h>
 #include <board/boardfactory.h>
 #include <chessgame.h>
 #include <chessplayer.h>
@@ -76,6 +77,14 @@ EngineManager* CuteChessApplication::engineManager()
 		m_engineManager = new EngineManager(this);
 
 	return m_engineManager;
+}
+
+GameManager* CuteChessApplication::gameManager()
+{
+	if (m_gameManager == 0)
+		m_gameManager = new GameManager(this);
+
+	return m_gameManager;
 }
 
 QList<MainWindow*> CuteChessApplication::gameWindows()
