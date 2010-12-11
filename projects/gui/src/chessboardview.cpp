@@ -151,7 +151,7 @@ QRect ChessboardView::visualRect(const QModelIndex& index) const
 }
 
 void ChessboardView::renderPiece(const QString& symbol,
-				 const QRectF& bounds,
+				 const QRect& bounds,
 				 QPainter& painter)
 {
 	Q_ASSERT(!symbol.isEmpty());
@@ -180,7 +180,7 @@ void ChessboardView::renderPiece(const QString& symbol,
 }
 
 void ChessboardView::renderPiece(const QModelIndex& index,
-				 const QRectF& bounds,
+				 const QRect& bounds,
 				 QPainter& painter)
 {
 	Q_ASSERT(index.isValid());
@@ -200,8 +200,8 @@ void ChessboardView::renderSquare(const QModelIndex& index, QPainter& painter)
 
 	int row = index.row();
 	int column = index.column();
-	QRectF sqBounds(column * m_squareSize, row * m_squareSize,
-			m_squareSize, m_squareSize);
+	QRect sqBounds(column * m_squareSize, row * m_squareSize,
+		       m_squareSize, m_squareSize);
 
 	QVariant data = model()->data(index);
 	SquareInfo squareInfo;
@@ -238,15 +238,15 @@ void ChessboardView::renderSquare(const QModelIndex& index, QPainter& painter)
 		if (count > 1)
 		{
 			// Display the piece count
-			QRectF textBounds(sqBounds);
+			QRect textBounds(sqBounds);
 			textBounds.setX(textBounds.x() + 2);
 			painter.setFont(m_font);
 			painter.drawText(textBounds, QString::number(count));
 		}
 		if (squareInfo.color() == SquareInfo::HoldingsColor)
 		{
-			qreal a = qreal(m_font.pixelSize()) / 2.0;
-			sqBounds.adjust(a, a, 0, 0);
+			int adjust = m_font.pixelSize();
+			sqBounds.adjust(adjust, adjust, 0, 0);
 		}
 		renderPiece(squareInfo.pieceSymbol(), sqBounds, painter);
 	}
