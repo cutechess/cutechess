@@ -367,7 +367,7 @@ void ChessboardView::resizeBoard(const QSize& size)
 	m_squaresRect.setHeight(rowCount * m_squareSize);
 	m_squaresRect.moveCenter(viewport()->rect().center());
 
-	m_font.setPixelSize(qMax(8, m_squareSize / 4));
+	m_font.setPixelSize(qMax(8, m_squareSize / 3));
 }
 
 void ChessboardView::onResizeTimeout()
