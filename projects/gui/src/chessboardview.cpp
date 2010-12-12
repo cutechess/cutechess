@@ -112,10 +112,8 @@ void ChessboardView::mouseReleaseEvent(QMouseEvent* event)
 
 void ChessboardView::leaveEvent(QEvent* event)
 {
-	Q_ASSERT(event != 0);
-
-	event->ignore();
 	setHighlightIndex(QModelIndex());
+	QAbstractItemView::leaveEvent(event);
 }
 
 void ChessboardView::startDrag()
