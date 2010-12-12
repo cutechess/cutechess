@@ -31,7 +31,7 @@ ChessboardModel::ChessboardModel(QObject* parent)
 
 Qt::ItemFlags ChessboardModel::flags(const QModelIndex& index) const
 {
-	if (m_selectable.contains(index))
+	if (m_highlightMap.contains(index))
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
 	return Qt::NoItemFlags;
@@ -49,6 +49,8 @@ void ChessboardModel::setBoard(Chess::Board* board)
 
 	m_board = board;
 	m_move = Chess::GenericMove();
+	m_highlightMap.clear();
+	m_highlightIndex = QModelIndex();
 	m_width = m_board->width();
 	m_height = m_board->height();
 	m_widthOffset = 0;
@@ -82,6 +84,33 @@ int ChessboardModel::columnCount(const QModelIndex& parent) const
 	return m_width;
 }
 
+void ChessboardModel::clearHighlights()
+{
+	if (!m_highlightIndex.isValid())
+		return;
+
+	QModelIndex old(m_highlightIndex);
+	m_highlightIndex = QModelIndex();
+
+	Q_ASSERT(m_highlightMap.contains(old));
+
+	foreach (const QModelIndex& index, m_highlightMap[old])
+		emit dataChanged(index, index);
+}
+
+void ChessboardModel::onMouseOver(const QModelIndex& index)
+{
+	if (!index.isValid())
+		return clearHighlights();
+
+	Q_ASSERT(m_highlightMap.contains(index));
+
+	clearHighlights();
+	m_highlightIndex = index;
+	foreach (const QModelIndex& target, m_highlightMap[index])
+		emit dataChanged(target, target);
+}
+
 QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 {
 	if (!index.isValid() || m_board == 0)
@@ -103,10 +132,15 @@ QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 			if ((piece = m_board->pieceAt(sq)).isValid())
 				squareInfo.setPieceCount(1);
 
+			int flags = SquareInfo::NormalSquare;
+			if (m_highlightMap.value(m_highlightIndex).contains(index))
+				flags |= SquareInfo::HighlightedSquare;
 			if (m_move.sourceSquare() == sq)
-				squareInfo.setType(SquareInfo::SourceSquare);
-			else if (m_move.targetSquare() == sq)
-				squareInfo.setType(SquareInfo::TargetSquare);
+				flags |= SquareInfo::SourceSquare;
+			if (m_move.targetSquare() == sq)
+				flags |= SquareInfo::TargetSquare;
+
+			squareInfo.setFlags(flags);
 		}
 		else if ((piece = indexToHandPiece(index)).isValid())
 		{
@@ -216,35 +250,36 @@ void ChessboardModel::updateSelectable()
 {
 	Q_ASSERT(m_board != 0);
 
-	m_selectable.clear();
+	clearHighlights();
+	m_highlightMap.clear();
 	Chess::Side side(m_board->sideToMove());
 
 	QVector<Chess::Move> moves(m_board->legalMoves());
 	foreach (const Chess::Move& move, moves)
 	{
-		QModelIndex index;
+		Chess::GenericMove gmove(m_board->genericMove(move));
+		QModelIndex source(squareToIndex(gmove.sourceSquare()));
+		QModelIndex target(squareToIndex(gmove.targetSquare()));
 		
-		if (move.sourceSquare() == 0) // piece drop
+		// Piece drop
+		if (move.sourceSquare() == 0)
 		{
 			Chess::Piece piece(side, move.promotion());
-			index = handPieceToIndex(piece);
-		}
-		else // normal move
-		{
-			Chess::GenericMove tmp(m_board->genericMove(move));
-			index = squareToIndex(tmp.sourceSquare());
+			source = handPieceToIndex(piece);
 		}
 
-		if (!m_selectable.contains(index))
-		{
-			m_selectable.append(index);
-			emit dataChanged(index, index);
-		}
+		m_highlightMap[source].append(target);
 	}
+
+	QMap<QModelIndex, QModelIndexList>::const_iterator it;
+	for (it = m_highlightMap.constBegin(); it != m_highlightMap.constEnd(); ++it)
+		emit dataChanged(it.key(), it.key());
 }
 
 void ChessboardModel::onHumanMove(const QModelIndex& source, const QModelIndex& target)
 {
+	clearHighlights();
+
 	Chess::Side side(m_board->sideToMove());
 	Chess::GenericMove move;
 	move.setTargetSquare(indexToSquare(target));

@@ -20,6 +20,7 @@
 
 #include <QAbstractItemView>
 #include <QTimer>
+#include <QPainter>
 class QSvgRenderer;
 namespace Chess { class GenericMove; }
 
@@ -35,12 +36,19 @@ class ChessboardView : public QAbstractItemView
 
 		void setLightSquareColor(const QColor& color);
 		void setDarkSquareColor(const QColor& color);
+		void setSourceSquareColor(const QColor& color);
+		void setTargetSquareColor(const QColor& color);
+		void setHighlightColor(const QColor& color);
 
 		QColor lightSquareColor() const;
 		QColor darkSquareColor() const;
+		QColor sourceSquareColor() const;
+		QColor targetSquareColor() const;
+		QColor highlightColor() const;
 
 	signals:
 		void humanMove(const QModelIndex& source, const QModelIndex& target) const;
+		void mouseOver(const QModelIndex& index);
 
 	public slots:
 		void reset();
@@ -57,6 +65,7 @@ class ChessboardView : public QAbstractItemView
 		void mouseMoveEvent(QMouseEvent* event);
 		void mousePressEvent(QMouseEvent* event);
 		void mouseReleaseEvent(QMouseEvent* event);
+		void leaveEvent(QEvent* event);
 		void paintEvent(QPaintEvent* event);
 		void resizeEvent(QResizeEvent* event);
 
@@ -69,28 +78,33 @@ class ChessboardView : public QAbstractItemView
 	private:
 		void renderPiece(const QString& symbol, const QRect& bounds, QPainter& painter);
 		void renderPiece(const QModelIndex& index, const QRect& bounds, QPainter& painter);
-		void renderSquare(const QModelIndex& index, QPainter& painter);
+		void renderSquare(const QModelIndex& index);
 		void resizeBoard(const QSize& size);
 		void startDrag();
+		void setHighlightIndex(const QModelIndex& index);
 
 		bool m_dragging;
 		QPoint m_dragStartPos;
 		QPoint m_dragOffset;
 		QModelIndex m_dragSquare;
+		QModelIndex m_highlightIndex;
 		QPixmap m_dragPixmap;
 		QRect m_dragRect;
 		QRegion m_dragUpdateRegion;
 
 		int m_squareSize;
-		bool m_canPaint;
 		bool m_needsUpdate;
 		QTimer m_resizeTimer;
 		QColor m_lightSquareColor;
 		QColor m_darkSquareColor;
-		QColor m_moveColor;
+		QColor m_sourceSquareColor;
+		QColor m_targetSquareColor;
+		QColor m_highlightColor;
+		QPen m_textPen;
+		QPen m_highlightPen;
 		QRect m_squaresRect;
 		QPixmap m_background;
-		QFont m_font;
+		QPainter m_bgPainter;
 		QSvgRenderer* m_pieceRenderer;
 };
 

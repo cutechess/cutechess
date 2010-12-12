@@ -63,6 +63,8 @@ MainWindow::MainWindow(ChessGame* game)
 	m_moveListModel = new MoveListModel(this);
 	connect(m_chessboardView, SIGNAL(humanMove(QModelIndex, QModelIndex)),
 		m_boardModel, SLOT(onHumanMove(QModelIndex, QModelIndex)));
+	connect(m_chessboardView, SIGNAL(mouseOver(QModelIndex)),
+		m_boardModel, SLOT(onMouseOver(QModelIndex)));
 	connect(m_boardModel, SIGNAL(promotionNeeded(const Chess::Board*, Chess::Move, QList<int>)),
 		this, SLOT(selectPromotion(const Chess::Board*, Chess::Move, QList<int>)));
 	connect(this, SIGNAL(promotionMove(Chess::Move, Chess::Side)),
@@ -110,6 +112,7 @@ MainWindow::MainWindow(ChessGame* game)
 	m_moveListModel->setGame(m_game);
 	m_boardModel->setBoard(m_game->board());
 	m_game->start();
+	m_chessboardView->setMouseTracking(true);
 
 	updateWindowTitle();
 }

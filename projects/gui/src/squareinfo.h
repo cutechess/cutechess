@@ -34,11 +34,12 @@ class SquareInfo
 {
 	public:
 		/*! The type of the square. */
-		enum Type
+		enum TypeFlag
 		{
-			NormalSquare,	 //!< Normal square (default)
-			SourceSquare,	 //!< Source square
-			TargetSquare	 //!< Target square
+			NormalSquare = 0,	//!< Normal square (default)
+			SourceSquare = 1,	//!< Source square
+			TargetSquare = 2,	//!< Target square
+			HighlightedSquare = 4	//!< Highlighted square
 		};
 
 		/*! The color of the square. */
@@ -53,13 +54,13 @@ class SquareInfo
 		/*! Creates a new SquareInfo object. */
 		SquareInfo();
 		/*! Creates a new SquareInfo object. */
-		SquareInfo(Type type,
+		SquareInfo(int flags,
 			   Color color,
 			   int pieceCount,
 			   const QString& pieceSymbol);
 
-		/*! Returns the type of the square. */
-		Type type() const;
+		/*! Returns the type flags of the square. */
+		int flags() const;
 		/*! Returns the color of the square. */
 		Color color() const;
 		/*!
@@ -70,8 +71,8 @@ class SquareInfo
 		/*! Returns the symbol of the piece(s). */
 		QString pieceSymbol() const;
 
-		/*! Sets the square's type to \a type. */
-		void setType(Type type);
+		/*! Sets the square's type flags to \a flags. */
+		void setFlags(int flags);
 		/*! Sets the square's color to \a color. */
 		void setColor(Color color);
 		/*!
@@ -83,7 +84,7 @@ class SquareInfo
 		void setPieceSymbol(const QString& symbol);
 
 	private:
-		Type m_type;
+		int m_flags;
 		Color m_color;
 		int m_pieceCount;
 		QString m_pieceSymbol;

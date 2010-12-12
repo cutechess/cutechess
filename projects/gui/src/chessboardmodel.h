@@ -19,6 +19,7 @@
 #define CHESSBOARD_MODEL_H
 
 #include <QAbstractTableModel>
+#include <QMap>
 #include <board/piece.h>
 #include <board/genericmove.h>
 
@@ -52,6 +53,7 @@ class ChessboardModel : public QAbstractTableModel
 		void onHandPieceChanged(Chess::Piece piece);
 		void boardReset();
 		void onHumanMove(const QModelIndex& source, const QModelIndex& target);
+		void onMouseOver(const QModelIndex& index);
 
 	private slots:
 		void onMoveMade(const Chess::GenericMove& move);
@@ -61,6 +63,7 @@ class ChessboardModel : public QAbstractTableModel
 		Chess::Square indexToSquare(const QModelIndex& index) const;
 		QModelIndex handPieceToIndex(Chess::Piece piece) const;
 		Chess::Piece indexToHandPiece(const QModelIndex& index) const;
+		void clearHighlights();
 		void updateSelectable();
 
 		Chess::Board* m_board;
@@ -68,7 +71,8 @@ class ChessboardModel : public QAbstractTableModel
 		int m_width;
 		int m_height;
 		int m_widthOffset;
-		QModelIndexList m_selectable;
+		QModelIndex m_highlightIndex;
+		QMap<QModelIndex, QModelIndexList> m_highlightMap;
 };
 
 #endif // CHESSBOARD_MODEL_H

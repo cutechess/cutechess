@@ -52,6 +52,4 @@ User Interface
 
 - Per window dialogs should use QDialog::open() instead of exec()
 
-- Highlight legal moves
-
 - Moving a piece by selecting a source and a destination squares
