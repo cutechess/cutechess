@@ -181,7 +181,13 @@ void ChessboardView::renderPiece(const QString& symbol,
 	Q_ASSERT(!symbol.isEmpty());
 	Q_ASSERT(bounds.isValid());
 
-	QRectF squareBounds(bounds);
+	if (m_pieceCache.contains(symbol))
+	{
+		painter.drawPixmap(bounds, m_pieceCache[symbol]);
+		return;
+	}
+
+	QRectF squareBounds(0, 0, m_squareSize, m_squareSize);
 	QRectF pieceBounds(m_pieceRenderer->boundsOnElement(symbol));
 
 	qreal aspect = pieceBounds.width() / pieceBounds.height();
@@ -200,7 +206,15 @@ void ChessboardView::renderPiece(const QString& symbol,
 	qreal a = squareBounds.width() / 10;
 	squareBounds.adjust(a, a, -a, -a);
 
-	m_pieceRenderer->render(&painter, symbol, squareBounds);
+	QPixmap pixmap(m_squareSize, m_squareSize);
+	pixmap.fill(Qt::transparent);
+	QPainter svgPainter(&pixmap);
+
+	m_pieceRenderer->render(&svgPainter, symbol, squareBounds);
+	svgPainter.end();
+	m_pieceCache[symbol] = pixmap;
+
+	painter.drawPixmap(bounds, pixmap);
 }
 
 void ChessboardView::renderPiece(const QModelIndex& index,
@@ -313,11 +327,14 @@ void ChessboardView::paintEvent(QPaintEvent* event)
 
 	if (m_background.size() != m_squaresRect.size())
 	{
+		m_pieceCache.clear();
+
 		if (m_bgPainter.isActive())
 			m_bgPainter.end();
 		m_background = QPixmap(m_squaresRect.size());
 		m_bgPainter.begin(&m_background);
 		m_bgPainter.setBackgroundMode(Qt::OpaqueMode);
+		m_bgPainter.setRenderHint(QPainter::SmoothPixmapTransform);
 
 		m_highlightPen.setWidth(m_squareSize / 15);
 

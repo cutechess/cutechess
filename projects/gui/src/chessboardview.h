@@ -21,6 +21,7 @@
 #include <QAbstractItemView>
 #include <QTimer>
 #include <QPainter>
+#include <QMap>
 class QSvgRenderer;
 namespace Chess { class GenericMove; }
 
@@ -106,6 +107,7 @@ class ChessboardView : public QAbstractItemView
 		QPixmap m_background;
 		QPainter m_bgPainter;
 		QSvgRenderer* m_pieceRenderer;
+		QMap<QString, QPixmap> m_pieceCache;
 };
 
 #endif // CHESSBOARDVIEW_H
