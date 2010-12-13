@@ -52,4 +52,11 @@ User Interface
 
 - Per window dialogs should use QDialog::open() instead of exec()
 
-- Moving a piece by selecting a source and a destination squares
+- Moving a piece by selecting (clicking with a mouse) a source and a
+  destination squares
+
+- Application icon that looks good on Win, Mac, GTK. Examples: Firefox, Arora.
+  Should have (at least) sizes of 512x512, 128x128, 32x32, 16x16
+
+- Analyzing feature. Probably should be placed in its own dock window with a
+  selectable list of engines.
