@@ -140,7 +140,9 @@ void UciEngine::startThinking()
 		qFatal("Player %s doesn't have a side", qPrintable(name()));
 	
 	QString command = "go";
-	if (myTc->timePerMove() > 0)
+	if (myTc->isInfinite())
+		command += " infinite";
+	else if (myTc->timePerMove() > 0)
 		command += QString(" movetime %1").arg(myTc->timeLeft());
 	else
 	{

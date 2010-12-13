@@ -30,7 +30,8 @@ TimeControl::TimeControl()
 	  m_nodeLimit(0),
 	  m_lastMoveTime(0),
 	  m_expiryMargin(0),
-	  m_expired(false)
+	  m_expired(false),
+	  m_infinite(false)
 {
 }
 
@@ -45,8 +46,15 @@ TimeControl::TimeControl(const QString& str)
 	  m_nodeLimit(0),
 	  m_lastMoveTime(0),
 	  m_expiryMargin(0),
-	  m_expired(false)
+	  m_expired(false),
+	  m_infinite(false)
 {
+	if (str == "inf")
+	{
+		setInfinity(true);
+		return;
+	}
+
 	QStringList list = str.split('+');
 
 	// increment
@@ -90,7 +98,8 @@ bool TimeControl::operator==(const TimeControl& other) const
 	&&  m_timePerMove == other.m_timePerMove
 	&&  m_increment == other.m_increment
 	&&  m_maxDepth == other.m_maxDepth
-	&&  m_nodeLimit == other.m_nodeLimit)
+	&&  m_nodeLimit == other.m_nodeLimit
+	&&  m_infinite == other.m_infinite)
 		return true;
 	return false;
 }
@@ -104,7 +113,7 @@ bool TimeControl::isValid() const
 	||  m_maxDepth < 0
 	||  m_nodeLimit < 0
 	||  m_expiryMargin < 0
-	||  (m_timePerTc == m_timePerMove))
+	||  (m_timePerTc == m_timePerMove && !m_infinite))
 		return false;
 	return true;
 }
@@ -113,6 +122,9 @@ QString TimeControl::toString() const
 {
 	if (!isValid())
 		return QString();
+
+	if (m_infinite)
+		return QString("inf");
 
 	if (m_timePerMove != 0)
 		return QString("%1/move").arg((double)m_timePerMove / 1000);
@@ -139,6 +151,11 @@ void TimeControl::initialize()
 	}
 	else if (m_timePerMove != 0)
 		m_timeLeft = m_timePerMove;
+}
+
+bool TimeControl::isInfinite() const
+{
+	return m_infinite;
 }
 
 int TimeControl::timePerTc() const
@@ -184,6 +201,11 @@ int TimeControl::nodeLimit() const
 int TimeControl::expiryMargin() const
 {
 	return m_expiryMargin;
+}
+
+void TimeControl::setInfinity(bool enabled)
+{
+	m_infinite = enabled;
 }
 
 void TimeControl::setTimePerTc(int timePerTc)
@@ -247,7 +269,8 @@ void TimeControl::startTimer()
 void TimeControl::update()
 {
 	m_lastMoveTime = m_time.elapsed();
-	if (m_lastMoveTime > m_timeLeft + m_expiryMargin)
+
+	if (!m_infinite && m_lastMoveTime > m_timeLeft + m_expiryMargin)
 		m_expired = true;
 
 	if (m_timePerMove != 0)

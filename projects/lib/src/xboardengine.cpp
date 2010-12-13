@@ -39,6 +39,7 @@ static QString msToXboardTime(int ms)
 	return number;
 }
 
+static const int s_infiniteSec = 86400;
 
 XboardEngine::XboardEngine(QObject* parent)
 	: ChessEngine(parent),
@@ -121,7 +122,9 @@ void XboardEngine::startGame()
 	
 	// Send the time controls
 	const TimeControl* myTc = timeControl();
-	if (myTc->timePerMove() > 0)
+	if (myTc->isInfinite())
+		write(QString("st %1").arg(s_infiniteSec));
+	else if (myTc->timePerMove() > 0)
 		write(QString("st %1").arg(myTc->timePerMove() / 1000));
 	else
 		write(QString("level %1 %2 %3")
@@ -186,6 +189,12 @@ void XboardEngine::sendTimeLeft()
 	if (!m_ftTime)
 		return;
 	
+	if (timeControl()->isInfinite())
+	{
+		write(QString("time %1").arg(s_infiniteSec));
+		return;
+	}
+
 	int csLeft = timeControl()->timeLeft() / 10;
 	int ocsLeft = opponent()->timeControl()->timeLeft() / 10;
 

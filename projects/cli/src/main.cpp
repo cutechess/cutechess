@@ -112,6 +112,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				return false;
 			}
 
+			data.tc.setInfinity(tc.isInfinite());
 			data.tc.setTimePerTc(tc.timePerTc());
 			data.tc.setMovesPerTc(tc.movesPerTc());
 			data.tc.setTimeIncrement(tc.timeIncrement());
@@ -435,7 +436,8 @@ int main(int argc, char* argv[])
 			       "			moves/time+increment, where 'moves' is the number of\n"
 			       "			moves per tc, 'time' is time per tc (either seconds or\n"
 			       "			minutes:seconds), and 'increment' is time increment\n"
-			       "			per move in seconds\n"
+			       "			per move in seconds.\n"
+			       "			Infinite time control can be set with 'tc=inf'.\n"
 			       "  st=<n>		Set the time limit for each move to <n> seconds.\n"
 			       "			This option can't be used in combination with \"tc\".\n"
 			       "  timemargin=<n>	Let engines go <n> milliseconds over the time limit.\n"

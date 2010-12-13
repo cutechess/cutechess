@@ -126,6 +126,7 @@ tc=<arg>::
 	moves per tc, 'time' is time per tc (either seconds or
 	minutes:seconds), and 'increment' is time increment
 	per move in seconds.
+	Infinite time control can be set with 'tc=inf'.
 
 st=<n>::
 	Set the time limit for each move to <n> seconds.

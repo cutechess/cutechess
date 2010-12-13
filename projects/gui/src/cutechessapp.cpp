@@ -107,10 +107,7 @@ MainWindow* CuteChessApplication::newGameWindow()
 	ChessPlayer* player[2] = { 0, 0 };
 	ChessGame* game = new ChessGame(Chess::BoardFactory::create("standard"), new PgnGame(), this);
 
-	TimeControl tc;
-	tc.setTimePerTc(180000);
-	tc.setMovesPerTc(40);
-	game->setTimeControl(tc);
+	game->setTimeControl(TimeControl("inf"));
 
 	for (int i = 0; i < 2; i++)
 	{

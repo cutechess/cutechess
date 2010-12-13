@@ -74,6 +74,9 @@ class LIB_EXPORT TimeControl
 		/*! Initializes the time control ready for a new game. */
 		void initialize();
 
+		/*! Returns true if the time control is infinite. */
+		bool isInfinite() const;
+
 		/*!
 		 * Returns the time per time control,
 		 * or 0 if there's no specified total time.
@@ -121,6 +124,12 @@ class LIB_EXPORT TimeControl
 		 */
 		int expiryMargin() const;
 
+
+		/*!
+		 * If \a enabled is true, infinite time control is enabled;
+		 * otherwise it is disabled.
+		 */
+		void setInfinity(bool enabled = true);
 
 		/*! Sets the time per time control. */
 		void setTimePerTc(int timePerTc);
@@ -174,6 +183,7 @@ class LIB_EXPORT TimeControl
 		int m_lastMoveTime;
 		int m_expiryMargin;
 		bool m_expired;
+		bool m_infinite;
 		QTime m_time;
 
 };
