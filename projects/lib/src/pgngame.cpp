@@ -19,7 +19,7 @@
 #include <QStringList>
 #include <QFile>
 #include <QtDebug>
-#include "board/board.h"
+#include "board/boardfactory.h"
 #include "pgnstream.h"
 
 
@@ -61,6 +61,31 @@ const QVector<PgnGame::MoveData>& PgnGame::moves() const
 void PgnGame::addMove(const MoveData& data)
 {
 	m_moves.append(data);
+}
+
+Chess::Board* PgnGame::createBoard(QObject* parent) const
+{
+	Chess::Board* board = Chess::BoardFactory::create(variant(), parent);
+	if (board == 0)
+		return 0;
+
+	bool ok = true;
+
+	QString fen(startingFenString());
+	if (!fen.isEmpty())
+		ok = board->setFenString(fen);
+	else
+	{
+		board->reset();
+		ok = !board->isRandomVariant();
+	}
+	if (!ok)
+	{
+		delete board;
+		return 0;
+	}
+
+	return board;
 }
 
 bool PgnGame::parseMove(PgnStream& in)

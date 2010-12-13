@@ -26,6 +26,7 @@
 #include "board/result.h"
 class QTextStream;
 class PgnStream;
+namespace Chess { class Board; }
 
 
 /*!
@@ -78,6 +79,14 @@ class LIB_EXPORT PgnGame
 		const QVector<MoveData>& moves() const;
 		/*! Adds a new move to the game. */
 		void addMove(const MoveData& data);
+
+		/*!
+		 * Creates a board object for viewing or analyzing the game.
+		 *
+		 * The board is set to the game's starting position.
+		 * Returns 0 on error.
+		 */
+		Chess::Board* createBoard(QObject* parent = 0) const;
 
 		/*!
 		 * Reads a game from a PGN text stream.
