@@ -270,7 +270,7 @@ void ChessboardView::renderSquare(const QModelIndex& index)
 		return;
 	}
 
-	int typeFlags(squareInfo.flags());
+	SquareInfo::TypeFlags typeFlags(squareInfo.flags());
 	if (typeFlags & SquareInfo::SourceSquare)
 		squareColor = mixColors(squareColor, m_sourceSquareColor);
 	if (typeFlags & SquareInfo::TargetSquare)

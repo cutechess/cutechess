@@ -132,7 +132,7 @@ QVariant ChessboardModel::data(const QModelIndex& index, int role) const
 			if ((piece = m_board->pieceAt(sq)).isValid())
 				squareInfo.setPieceCount(1);
 
-			int flags = SquareInfo::NormalSquare;
+			SquareInfo::TypeFlags flags = SquareInfo::NormalSquare;
 			if (m_highlightMap.value(m_highlightIndex).contains(index))
 				flags |= SquareInfo::HighlightedSquare;
 			if (m_move.sourceSquare() == sq)

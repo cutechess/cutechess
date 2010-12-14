@@ -24,7 +24,7 @@ SquareInfo::SquareInfo()
 {
 }
 
-SquareInfo::SquareInfo(int flags,
+SquareInfo::SquareInfo(TypeFlags flags,
 		       Color color,
 		       int pieceCount,
 		       const QString& pieceSymbol)
@@ -36,7 +36,7 @@ SquareInfo::SquareInfo(int flags,
 	Q_ASSERT(pieceCount >= 0);
 }
 
-int SquareInfo::flags() const
+SquareInfo::TypeFlags SquareInfo::flags() const
 {
 	return m_flags;
 }
@@ -56,7 +56,7 @@ QString SquareInfo::pieceSymbol() const
 	return m_pieceSymbol;
 }
 
-void SquareInfo::setFlags(int flags)
+void SquareInfo::setFlags(TypeFlags flags)
 {
 	m_flags = flags;
 }

@@ -20,6 +20,7 @@
 
 #include <QMetaType>
 #include <QString>
+#include <QFlags>
 
 
 /*!
@@ -41,6 +42,7 @@ class SquareInfo
 			TargetSquare = 2,	//!< Target square
 			HighlightedSquare = 4	//!< Highlighted square
 		};
+		Q_DECLARE_FLAGS(TypeFlags, TypeFlag)
 
 		/*! The color of the square. */
 		enum Color
@@ -54,13 +56,13 @@ class SquareInfo
 		/*! Creates a new SquareInfo object. */
 		SquareInfo();
 		/*! Creates a new SquareInfo object. */
-		SquareInfo(int flags,
+		SquareInfo(TypeFlags flags,
 			   Color color,
 			   int pieceCount,
 			   const QString& pieceSymbol);
 
 		/*! Returns the type flags of the square. */
-		int flags() const;
+		TypeFlags flags() const;
 		/*! Returns the color of the square. */
 		Color color() const;
 		/*!
@@ -72,7 +74,7 @@ class SquareInfo
 		QString pieceSymbol() const;
 
 		/*! Sets the square's type flags to \a flags. */
-		void setFlags(int flags);
+		void setFlags(TypeFlags flags);
 		/*! Sets the square's color to \a color. */
 		void setColor(Color color);
 		/*!
@@ -84,11 +86,12 @@ class SquareInfo
 		void setPieceSymbol(const QString& symbol);
 
 	private:
-		int m_flags;
+		TypeFlags m_flags;
 		Color m_color;
 		int m_pieceCount;
 		QString m_pieceSymbol;
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS(SquareInfo::TypeFlags)
 Q_DECLARE_METATYPE(SquareInfo)
 
 #endif // SQUAREINFO_H
