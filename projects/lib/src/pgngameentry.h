@@ -20,6 +20,7 @@
 
 #include "board/result.h"
 class PgnStream;
+class QDataStream;
 
 
 /*!
@@ -46,6 +47,17 @@ class LIB_EXPORT PgnGameEntry
 		 * Returns true if successfull.
 		 */
 		bool read(PgnStream& in);
+
+		/*!
+		 * Reads an entry from data stream.
+		 * Returns true if successfull.
+		 */
+		bool read(QDataStream& in);
+
+		/*!
+		 * Writes an entry to data stream.
+		 */
+		void write(QDataStream& out) const;
 
 		/*! Returns the stream position where the game begins. */
 		qint64 pos() const;
@@ -83,5 +95,12 @@ class LIB_EXPORT PgnGameEntry
 
 /*! Reads a PGN game entry from a PGN stream. */
 extern LIB_EXPORT PgnStream& operator>>(PgnStream& in, PgnGameEntry& entry);
+
+/*! Reads a PGN game entry from a data stream. */
+extern LIB_EXPORT QDataStream& operator>>(QDataStream& in, PgnGameEntry& entry);
+
+/*! Writes a PGN game entry to a data stream. */
+extern LIB_EXPORT QDataStream& operator<<(QDataStream& out,
+                                          const PgnGameEntry& entry);
 
 #endif // PGNGAMEENTRY_H

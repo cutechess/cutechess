@@ -18,6 +18,7 @@
 #include "pgngameentry.h"
 #include <cctype>
 #include "pgnstream.h"
+#include <QDataStream>
 
 
 PgnStream& operator>>(PgnStream& in, PgnGameEntry& entry)
@@ -26,6 +27,17 @@ PgnStream& operator>>(PgnStream& in, PgnGameEntry& entry)
 	return in;
 }
 
+QDataStream& operator>>(QDataStream& in, PgnGameEntry& entry)
+{
+	entry.read(in);
+	return in;
+}
+
+QDataStream& operator<<(QDataStream& out, const PgnGameEntry& entry)
+{
+	entry.write(out);
+	return out;
+}
 
 PgnGameEntry::PgnGameEntry(const QByteArray& variant)
 	: m_round(0),
@@ -126,6 +138,50 @@ bool PgnGameEntry::read(PgnStream& in)
 	}
 
 	return foundTag;
+}
+
+bool PgnGameEntry::read(QDataStream& in)
+{
+	// modifying this function can cause backward compatibility issues
+	// in other programs.
+
+	qint32 round;
+	in >> round;
+	m_round = round;
+
+	in >> m_pos;
+	in >> m_lineNumber;
+	in >> m_event;
+	in >> m_site;
+	in >> m_white;
+	in >> m_black;
+	in >> m_variant;
+
+	qint32 resultType;
+	qint32 resultWinner;
+
+	in >> resultType;
+	in >> resultWinner;
+	m_result = Chess::Result(Chess::Result::Type(resultType), Chess::Side::Type(resultWinner));
+
+	return in.status() == QDataStream::Ok;
+}
+
+void PgnGameEntry::write(QDataStream& out) const
+{
+	// modifying this function can cause backward compatibility issues
+	// in other programs.
+
+	out << (qint32)m_round;
+	out << m_pos;
+	out << m_lineNumber;
+	out << m_event;
+	out << m_site;
+	out << m_white;
+	out << m_black;
+	out << m_variant;
+	out << (qint32)m_result.type();
+	out << (qint32)m_result.winner();
 }
 
 qint64 PgnGameEntry::pos() const
