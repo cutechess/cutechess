@@ -39,6 +39,9 @@
 - Apply for the Qt Ambassador program (application showcase) after first
   public release: http://qt.nokia.com/qtambassador
 
+- Use model testing tools to check validity of all model classes
+  during runtime (http://developer.qt.nokia.com/wiki/Model_Test)
+
 User Interface
 --------------
 
@@ -54,6 +57,8 @@ User Interface
 
 - Moving a piece by selecting (clicking with a mouse) a source and a
   destination squares
+
+- Highlight attacked pieces
 
 - Application icon that looks good on Win, Mac, GTK. Examples: Firefox, Arora.
   Should have (at least) sizes of 512x512, 128x128, 32x32, 16x16
