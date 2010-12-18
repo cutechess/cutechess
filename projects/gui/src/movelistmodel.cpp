@@ -48,8 +48,6 @@ void MoveListModel::setGame(ChessGame* game)
 QModelIndex MoveListModel::index(int row, int column,
                                  const QModelIndex& parent) const
 {
-	Q_UNUSED(parent);
-
 	if (!hasIndex(row, column, parent))
 		return QModelIndex();
 
