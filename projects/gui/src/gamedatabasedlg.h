@@ -37,7 +37,8 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 		~GameDatabaseDialog();
 
 	private slots:
-		void showGameInformation();
+		void selectionChanged(const QModelIndex& current,
+		                      const QModelIndex& previous);
 		void viewNextMove();
 		void viewPreviousMove();
 

@@ -68,8 +68,8 @@ GameDatabaseDialog::GameDatabaseDialog(QWidget* parent)
 		SLOT(viewPreviousMove()));
 
 	connect(m_gameDatabaseView->selectionModel(),
-		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-		this, SLOT(showGameInformation()));
+		SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
+		this, SLOT(selectionChanged(const QModelIndex&, const QModelIndex&)));
 }
 
 GameDatabaseDialog::~GameDatabaseDialog()
@@ -78,13 +78,13 @@ GameDatabaseDialog::~GameDatabaseDialog()
 	m_chessboard = 0;
 }
 
-void GameDatabaseDialog::showGameInformation()
+void GameDatabaseDialog::selectionChanged(const QModelIndex& current,
+                                          const QModelIndex& previous)
 {
-	const QModelIndex selectedIndex =
-		m_gameDatabaseView->selectionModel()->currentIndex();
+	Q_UNUSED(previous);
 
 	const TreeViewItem* selectedItem =
-		static_cast<TreeViewItem*>(selectedIndex.internalPointer());
+		static_cast<TreeViewItem*>(current.internalPointer());
 	Q_ASSERT(selectedItem);
 
 	// selectedItem is database?
