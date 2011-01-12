@@ -91,6 +91,8 @@ MainWindow::MainWindow(ChessGame* game)
 	createDockWindows();
 
 	// Attach the game to the GUI
+	m_game->setParent(this);
+
 	connect(m_game, SIGNAL(humanEnabled(bool)),
 			m_chessboardView, SLOT(setEnabled(bool)));
 

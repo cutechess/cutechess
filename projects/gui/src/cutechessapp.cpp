@@ -125,17 +125,12 @@ MainWindow* CuteChessApplication::newDefaultGameWindow()
 {
 	// default game is a human versus human game using standard variant and
 	// infinite time control
-	ChessPlayer* player[2] = { 0, 0 };
-	ChessGame* game = new ChessGame(Chess::BoardFactory::create("standard"), new PgnGame(), this);
+	ChessGame* game = new ChessGame(Chess::BoardFactory::create("standard"),
+		new PgnGame());
 
 	game->setTimeControl(TimeControl("inf"));
-
-	for (int i = 0; i < 2; i++)
-	{
-		Chess::Side side = Chess::Side::Type(i);
-		player[i] = new HumanPlayer(this);
-		game->setPlayer(side, player[i]);
-	}
+	game->setPlayer(Chess::Side::White, new HumanPlayer(game));
+	game->setPlayer(Chess::Side::Black, new HumanPlayer(game));
 
 	return newGameWindow(game);
 }
