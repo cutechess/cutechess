@@ -163,8 +163,8 @@ QVariant GameDatabaseModel::data(const QModelIndex& index, int role) const
 	{
 		PgnDatabase* db = static_cast<PgnDatabase*>(item->data());
 
-		if (index.column() == 0 && role == Qt::DisplayRole ||
-		    role == Qt::EditRole)
+		if (index.column() == 0 && (role == Qt::DisplayRole ||
+		    role == Qt::EditRole))
 		{
 			return db->displayName();
 		}
