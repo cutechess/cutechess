@@ -121,21 +121,18 @@ void GameDatabaseDialog::selectionChanged(const QModelIndex& current,
 	m_chessboard = board;
 
 	m_previousMoveButton->setEnabled(false);
-	m_nextMoveButton->setEnabled(true);
+	m_nextMoveButton->setEnabled(!m_moves.isEmpty());
 }
 
 void GameDatabaseDialog::viewNextMove()
 {
-	m_moveIndex++;
-
-	if (m_moveIndex >= m_moves.count() - 1)
-		m_nextMoveButton->setEnabled(false);
-
-	Chess::GenericMove gmove = m_moves[m_moveIndex].move;
+	Chess::GenericMove gmove = m_moves[m_moveIndex++].move;
 	Chess::Move move = m_chessboard->moveFromGenericMove(gmove);
 	m_chessboard->makeMove(move, true);
 
 	m_previousMoveButton->setEnabled(true);
+	if (m_moveIndex >= m_moves.count())
+		m_nextMoveButton->setEnabled(false);
 }
 
 void GameDatabaseDialog::viewPreviousMove()
