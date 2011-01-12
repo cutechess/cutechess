@@ -112,10 +112,19 @@ QList<MainWindow*> CuteChessApplication::gameWindows()
 	return gameWindowList;
 }
 
-MainWindow* CuteChessApplication::newGameWindow()
+MainWindow* CuteChessApplication::newGameWindow(ChessGame* game)
 {
-	// TODO: This should be placed in a class that manages games
+	MainWindow* mainWindow = new MainWindow(game);
+	m_gameWindows.prepend(mainWindow);
+	mainWindow->show();
 
+	return mainWindow;
+}
+
+MainWindow* CuteChessApplication::newDefaultGameWindow()
+{
+	// default game is a human versus human game using standard variant and
+	// infinite time control
 	ChessPlayer* player[2] = { 0, 0 };
 	ChessGame* game = new ChessGame(Chess::BoardFactory::create("standard"), new PgnGame(), this);
 
@@ -128,12 +137,9 @@ MainWindow* CuteChessApplication::newGameWindow()
 		game->setPlayer(side, player[i]);
 	}
 
-	MainWindow* mainWindow = new MainWindow(game);
-	m_gameWindows.prepend(mainWindow);
-	mainWindow->show();
-
-	return mainWindow;
+	return newGameWindow(game);
 }
+
 
 void CuteChessApplication::cleanGameWindows()
 {

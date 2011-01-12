@@ -27,6 +27,7 @@ class MainWindow;
 class GameDatabaseManager;
 class GameDatabaseDialog;
 class PgnImporter;
+class ChessGame;
 
 class CuteChessApplication : public QApplication
 {
@@ -45,7 +46,8 @@ class CuteChessApplication : public QApplication
 		static CuteChessApplication* instance();
 
 	public slots:
-		MainWindow* newGameWindow();
+		MainWindow* newGameWindow(ChessGame* game);
+		MainWindow* newDefaultGameWindow();
 		void showGameDatabaseDialog();
 
 	private slots:

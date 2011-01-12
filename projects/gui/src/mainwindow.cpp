@@ -247,7 +247,7 @@ void MainWindow::selectPromotion(const Chess::Board* board,
 
 void MainWindow::newGame()
 {
-	CuteChessApplication::instance()->newGameWindow();
+	CuteChessApplication::instance()->newDefaultGameWindow();
 }
 
 void MainWindow::gameProperties()
