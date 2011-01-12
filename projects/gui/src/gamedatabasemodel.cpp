@@ -148,6 +148,8 @@ int GameDatabaseModel::rowCount(const QModelIndex& parent) const
 
 int GameDatabaseModel::columnCount(const QModelIndex& parent) const
 {
+	Q_UNUSED(parent);
+
 	return m_headers.count();
 }
 
