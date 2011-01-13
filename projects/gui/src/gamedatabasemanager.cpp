@@ -213,3 +213,8 @@ bool GameDatabaseManager::isModified() const
 {
 	return m_modified;
 }
+
+void GameDatabaseManager::setModified(bool modified)
+{
+	m_modified = modified;
+}

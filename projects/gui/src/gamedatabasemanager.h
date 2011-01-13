@@ -39,6 +39,7 @@ class GameDatabaseManager : public QObject
 		void importPgnFile(const QString& fileName);
 
 		bool isModified() const;
+		void setModified(bool modified);
 
 	public slots:
 		void addDatabase(PgnDatabase* database);

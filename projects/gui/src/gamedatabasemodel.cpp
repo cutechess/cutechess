@@ -267,6 +267,8 @@ bool GameDatabaseModel::setData(const QModelIndex& index, const QVariant& data,
 		PgnDatabase* db = static_cast<PgnDatabase*>(item->data());
 		db->setDisplayName(data.toString());
 
+		m_gameDatabaseManager->setModified(true);
+
 		return true;
 	}
 	return false;
