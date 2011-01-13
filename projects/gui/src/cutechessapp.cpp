@@ -177,7 +177,8 @@ void CuteChessApplication::showGameDatabaseDialog()
 
 void CuteChessApplication::onAboutToQuit()
 {
-	gameDatabaseManager()->writeState(configPath() + QLatin1String("/gamedb.bin"));
+	if (gameDatabaseManager()->isModified())
+		gameDatabaseManager()->writeState(configPath() + QLatin1String("/gamedb.bin"));
 }
 
 void CuteChessApplication::showImportProgressDialog(PgnImporter* importer)
