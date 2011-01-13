@@ -28,7 +28,7 @@ class ImportProgressDialog : public QDialog, private Ui::ImportProgressDialog
 	Q_OBJECT
 
 	public:
-		ImportProgressDialog(PgnImporter* pgnImporter, QWidget* parent = 0);
+		ImportProgressDialog(PgnImporter* pgnImporter);
 
 	private slots:
 		void abortImport();

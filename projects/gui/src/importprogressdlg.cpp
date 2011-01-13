@@ -20,13 +20,14 @@
 
 #include <QFileInfo>
 
-ImportProgressDialog::ImportProgressDialog(PgnImporter* pgnImporter,
-                                           QWidget* parent)
-	: QDialog(parent),
+ImportProgressDialog::ImportProgressDialog(PgnImporter* pgnImporter)
+	: QDialog(0),
 	  m_pgnImporter(pgnImporter),
 	  m_lastUpdateSecs(0)
 {
 	setupUi(this);
+
+	setAttribute(Qt::WA_DeleteOnClose, true);
 
 	QFileInfo info(m_pgnImporter->fileName());
 
