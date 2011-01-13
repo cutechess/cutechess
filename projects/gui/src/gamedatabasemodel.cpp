@@ -50,6 +50,8 @@ GameDatabaseModel::GameDatabaseModel(GameDatabaseManager* gameDatabaseManager,
 
 	connect(m_gameDatabaseManager, SIGNAL(databaseAdded(int)), this,
 		SLOT(onDatabaseAdded(int)));
+	connect(m_gameDatabaseManager, SIGNAL(databasesReset()), this,
+		SLOT(onDatabasesReset()));
 }
 
 GameDatabaseModel::~GameDatabaseModel()
@@ -104,6 +106,20 @@ void GameDatabaseModel::onDatabaseAdded(int index)
 	}
 
 	endInsertRows();
+}
+
+void GameDatabaseModel::onDatabasesReset()
+{
+	delete m_root;
+	m_root = new TreeViewItem();
+
+	for (int i = 0; i < m_gameDatabaseManager->databases().count(); i++)
+	{
+		m_root->addChild(
+			buildInternalTree(m_gameDatabaseManager->databases().at(i), i));
+	}
+
+	reset();
 }
 
 QModelIndex GameDatabaseModel::index(int row, int column,

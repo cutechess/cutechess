@@ -55,6 +55,7 @@ class GameDatabaseModel : public QAbstractItemModel
 
 	private slots:
 		void onDatabaseAdded(int index);
+		void onDatabasesReset();
 
 	private:
 		TreeViewItem* buildInternalTree(PgnDatabase* db, int row);
