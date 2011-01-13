@@ -28,7 +28,8 @@
 #define GAME_DATABASE_STATE_VERSION 1
 
 GameDatabaseManager::GameDatabaseManager(QObject* parent)
-	: QObject(parent)
+	: QObject(parent),
+	  m_modified(false)
 {
 }
 
@@ -88,6 +89,8 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 	qDebug() << "Writing done at"
 		<< QTime::currentTime().toString("hh:mm:ss");
 
+	m_modified = false;
+
 	return true;
 }
 
@@ -103,6 +106,7 @@ bool GameDatabaseManager::readState(const QString& fileName)
 
 	QDataStream in(&stateFile);
 	in.setVersion(QDataStream::Qt_4_6); // don't change
+	QList<PgnDatabase*> readDatabases;
 
 	// Read and verify the magic value
 	quint32 magic;
@@ -164,11 +168,18 @@ bool GameDatabaseManager::readState(const QString& fileName)
 		db->setLastModified(dbLastModified);
 		db->setDisplayName(dbDisplayName);
 
-		addDatabase(db);
+		readDatabases << db;
 	}
 
 	qDebug() << "Reading done at"
 		<< QTime::currentTime().toString("hh:mm:ss");
+
+	m_modified = false;
+
+	qDeleteAll(m_databases);
+	m_databases = readDatabases;
+
+	emit databasesReset();
 
 	return true;
 }
@@ -192,6 +203,13 @@ void GameDatabaseManager::addDatabase(PgnDatabase* database)
 {
 	qDebug() << "Importing finished at"
 		<< QTime::currentTime().toString("hh:mm:ss");
+
 	m_databases << database;
+	m_modified = true;
 	emit databaseAdded(m_databases.count() - 1);
+}
+
+bool GameDatabaseManager::isModified() const
+{
+	return m_modified;
 }

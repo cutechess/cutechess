@@ -38,17 +38,21 @@ class GameDatabaseManager : public QObject
 		bool readState(const QString& fileName);
 		void importPgnFile(const QString& fileName);
 
+		bool isModified() const;
+
 	public slots:
 		void addDatabase(PgnDatabase* database);
 
 	signals:
 		void databaseAdded(int index);
 		void databaseAboutToBeRemoved(int index);
+		void databasesReset();
 		void importStarted(PgnImporter* importer);
 
 	private:
 		QList<PgnImporter*> m_pgnImporters;
 		QList<PgnDatabase*> m_databases;
+		bool m_modified;
 
 };
 
