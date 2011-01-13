@@ -35,8 +35,8 @@
 #include <humanplayer.h>
 #include <QDebug>
 
-GameDatabaseDialog::GameDatabaseDialog(QWidget* parent)
-	: QDialog(parent),
+GameDatabaseDialog::GameDatabaseDialog()
+	: QDialog(0, Qt::Window),
 	  m_chessboardView(0),
 	  m_chessboardModel(0),
 	  m_chessboard(0)

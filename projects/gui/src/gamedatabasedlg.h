@@ -33,7 +33,7 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 	Q_OBJECT
 
 	public:
-		GameDatabaseDialog(QWidget* parent = 0);
+		GameDatabaseDialog();
 		~GameDatabaseDialog();
 
 	private slots:
