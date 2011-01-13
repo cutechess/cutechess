@@ -40,6 +40,8 @@ GameDatabaseManager::~GameDatabaseManager()
 		importer->disconnect();
 		importer->wait();
 	}
+
+	qDeleteAll(m_databases);
 }
 
 QList<PgnDatabase*> GameDatabaseManager::databases() const
