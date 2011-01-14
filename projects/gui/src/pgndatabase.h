@@ -18,11 +18,11 @@
 #ifndef PGN_DATABASE_H
 #define PGN_DATABASE_H
 
+#include <QObject>
 #include <QList>
 #include <QDateTime>
 #include <pgngame.h>
-
-class PgnGameEntry;
+#include <pgngameentry.h>
 
 class PgnDatabase : public QObject
 {
@@ -30,19 +30,18 @@ class PgnDatabase : public QObject
 
 	public:
 		PgnDatabase(const QString& fileName, QObject* parent = 0);
-		~PgnDatabase();
 
-		void setEntries(const QList<PgnGameEntry*> entries);
-		QList<PgnGameEntry*> entries() const;
+		void setEntries(const QList<PgnGameEntry>& entries);
+		QList<PgnGameEntry> entries() const;
 		QString fileName() const;
 		QDateTime lastModified() const;
 		void setLastModified(const QDateTime& lastModified);
 		QString displayName() const;
 		void setDisplayName(const QString& displayName);
-		bool game(const PgnGameEntry* entry, PgnGame* game);
+		bool game(const PgnGameEntry& entry, PgnGame* game);
 
 	private:
-		QList<PgnGameEntry*> m_entries;
+		QList<PgnGameEntry> m_entries;
 		QString m_fileName;
 		QDateTime m_lastModified;
 		QString m_displayName;

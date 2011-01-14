@@ -54,14 +54,12 @@ void PgnImporter::run()
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
 		PgnStream pgnStream(&file);
-		QList<PgnGameEntry*> games;
-		PgnGameEntry* game;
+		QList<PgnGameEntry> games;
+		PgnGameEntry game;
 
 		forever
 		{
-			game = new PgnGameEntry();
-
-			if (game->read(pgnStream))
+			if (game.read(pgnStream))
 			{
 				games << game;
 				numReadGames++;

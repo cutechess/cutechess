@@ -10,7 +10,6 @@ HEADERS += chessboardview.h \
     promotiondlg.h \
     chessboardmodel.h \
     movelistmodel.h \
-    gamedatabasemodel.h \
     cutechessapp.h \
     gamepropertiesdlg.h \
     squareinfo.h \
@@ -20,7 +19,8 @@ HEADERS += chessboardview.h \
     gamedatabasemanager.h \
     importprogressdlg.h \
     pgndatabase.h \
-    treeviewitem.h
+    pgngameentrymodel.h \
+    pgndatabasemodel.h
 SOURCES += main.cpp \
     chessboardview.cpp \
     chessclock.cpp \
@@ -33,7 +33,6 @@ SOURCES += main.cpp \
     promotiondlg.cpp \
     chessboardmodel.cpp \
     movelistmodel.cpp \
-    gamedatabasemodel.cpp \
     cutechessapp.cpp \
     gamepropertiesdlg.cpp \
     squareinfo.cpp \
@@ -43,4 +42,5 @@ SOURCES += main.cpp \
     gamedatabasemanager.cpp \
     importprogressdlg.cpp \
     pgndatabase.cpp \
-    treeviewitem.cpp
+    pgngameentrymodel.cpp \
+    pgndatabasemodel.cpp

@@ -16,8 +16,6 @@
 */
 
 #include "pgndatabase.h"
-#include <pgngameentry.h>
-#include <pgngameentry.h>
 #include <pgnstream.h>
 #include <QDebug>
 #include <QFileInfo>
@@ -29,17 +27,12 @@ PgnDatabase::PgnDatabase(const QString& fileName, QObject* parent)
 {
 }
 
-PgnDatabase::~PgnDatabase()
-{
-	qDeleteAll(m_entries);
-}
-
-void PgnDatabase::setEntries(const QList<PgnGameEntry*> entries)
+void PgnDatabase::setEntries(const QList<PgnGameEntry>& entries)
 {
 	m_entries = entries;
 }
 
-QList<PgnGameEntry*> PgnDatabase::entries() const
+QList<PgnGameEntry> PgnDatabase::entries() const
 {
 	return m_entries;
 }
@@ -69,9 +62,8 @@ void PgnDatabase::setDisplayName(const QString& displayName)
 	m_displayName = displayName;
 }
 
-bool PgnDatabase::game(const PgnGameEntry* entry, PgnGame* game)
+bool PgnDatabase::game(const PgnGameEntry& entry, PgnGame* game)
 {
-	Q_ASSERT(entry);
 	Q_ASSERT(game);
 
 	QFile file(m_fileName);
@@ -97,7 +89,7 @@ bool PgnDatabase::game(const PgnGameEntry* entry, PgnGame* game)
 
 	PgnStream pgnStream(&file);
 
-	if (!pgnStream.seek(entry->pos(), entry->lineNumber()))
+	if (!pgnStream.seek(entry.pos(), entry.lineNumber()))
 	{
 		qDebug() << "PGN database seek failed";
 		return false;

@@ -18,37 +18,43 @@
 #include "gamedatabasedlg.h"
 
 #include <QVBoxLayout>
+#include <QDebug>
 
-#include "gamedatabasemodel.h"
+#include <pgngame.h>
+#include <pgngameentry.h>
+#include <board/board.h>
+
+#include "pgndatabasemodel.h"
+#include "pgngameentrymodel.h"
 #include "cutechessapp.h"
 #include "gamedatabasemanager.h"
 #include "chessboardview.h"
 #include "chessboardmodel.h"
-#include "treeviewitem.h"
 #include "pgndatabase.h"
-#include <pgngame.h>
-#include <pgngameentry.h>
-#include <chessgame.h>
-#include <board/boardfactory.h>
-#include <timecontrol.h>
-#include <chessplayer.h>
-#include <humanplayer.h>
-#include <QDebug>
 
 GameDatabaseDialog::GameDatabaseDialog()
 	: QDialog(0, Qt::Window),
 	  m_chessboardView(0),
 	  m_chessboardModel(0),
-	  m_chessboard(0)
+	  m_chessboard(0),
+	  m_pgnDatabaseModel(0),
+	  m_pgnGameEntryModel(0),
+	  m_selectedDatabase(0)
 {
 	setupUi(this);
 
-	m_gameDatabaseModel = new GameDatabaseModel(
+	m_pgnDatabaseModel = new PgnDatabaseModel(
 		CuteChessApplication::instance()->gameDatabaseManager(), this);
 
-	m_gameDatabaseView->setModel(m_gameDatabaseModel);
-	m_gameDatabaseView->setAlternatingRowColors(true);
-	m_gameDatabaseView->setUniformRowHeights(true);
+	m_pgnGameEntryModel = new PgnGameEntryModel(this);
+
+	m_databasesListView->setModel(m_pgnDatabaseModel);
+	m_databasesListView->setAlternatingRowColors(true);
+	m_databasesListView->setUniformRowHeights(true);
+
+	m_gamesListView->setModel(m_pgnGameEntryModel);
+	m_gamesListView->setAlternatingRowColors(true);
+	m_gamesListView->setUniformRowHeights(true);
 
 	m_chessboardModel = new ChessboardModel(this);
 	m_chessboardView = new ChessboardView(this);
@@ -67,9 +73,14 @@ GameDatabaseDialog::GameDatabaseDialog()
 	connect(m_previousMoveButton, SIGNAL(clicked(bool)), this,
 		SLOT(viewPreviousMove()));
 
-	connect(m_gameDatabaseView->selectionModel(),
+	connect(m_databasesListView->selectionModel(),
 		SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
-		this, SLOT(selectionChanged(const QModelIndex&, const QModelIndex&)));
+		this, SLOT(databaseSelectionChanged(const QModelIndex&, const QModelIndex&)));
+
+	connect(m_gamesListView->selectionModel(),
+		SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
+		this, SLOT(gameSelectionChanged(const QModelIndex&, const QModelIndex&)));
+
 }
 
 GameDatabaseDialog::~GameDatabaseDialog()
@@ -78,44 +89,41 @@ GameDatabaseDialog::~GameDatabaseDialog()
 	m_chessboard = 0;
 }
 
-void GameDatabaseDialog::selectionChanged(const QModelIndex& current,
-                                          const QModelIndex& previous)
+void GameDatabaseDialog::databaseSelectionChanged(const QModelIndex& current,
+                                                  const QModelIndex& previous)
 {
 	Q_UNUSED(previous);
 
-	const TreeViewItem* selectedItem =
-		static_cast<TreeViewItem*>(current.internalPointer());
-	Q_ASSERT(selectedItem);
+	m_selectedDatabase =
+		CuteChessApplication::instance()->gameDatabaseManager()->databases().at(current.row());
 
-	// selectedItem is database?
-	if (selectedItem->parent() == m_gameDatabaseModel->root())
-		return;
+	m_pgnGameEntryModel->setEntries(m_selectedDatabase->entries());
+}
 
-	const PgnGameEntry* selectedGameEntry =
-		static_cast<PgnGameEntry*>(selectedItem->data());
-	Q_ASSERT(selectedGameEntry);
+void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
+                                              const QModelIndex& previous)
+{
+	Q_UNUSED(previous);
 
-	PgnDatabase* sourceDatabase =
-		static_cast<PgnDatabase*>(selectedItem->parent()->data());
-	Q_ASSERT(sourceDatabase);
+	const PgnGameEntry entry = m_selectedDatabase->entries().at(current.row());
 
-	m_whiteLabel->setText(selectedGameEntry->white());
-	m_blackLabel->setText(selectedGameEntry->black());
-	m_siteLabel->setText(selectedGameEntry->site());
-	m_eventLabel->setText(selectedGameEntry->event());
-	m_resultLabel->setText(selectedGameEntry->result().toShortString());
+	m_whiteLabel->setText(entry.white());
+	m_blackLabel->setText(entry.black());
+	m_siteLabel->setText(entry.site());
+	m_eventLabel->setText(entry.event());
+	m_resultLabel->setText(entry.result().toShortString());
 
-	PgnGame pgnGame;
-	if (!sourceDatabase->game(selectedGameEntry, &pgnGame))
+	PgnGame game;
+	if (!m_selectedDatabase->game(entry, &game))
 	{
 		qDebug() << "PGN database read failed";
 		return;
 	}
 
-	Chess::Board* board = pgnGame.createBoard();
+	Chess::Board* board = game.createBoard();
 	m_chessboardModel->setBoard(board);
 	m_moveIndex = 0;
-	m_moves = pgnGame.moves();
+	m_moves = game.moves();
 
 	delete m_chessboard;
 	m_chessboard = board;

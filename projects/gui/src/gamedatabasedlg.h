@@ -23,7 +23,9 @@
 
 #include <pgngame.h>
 
-class GameDatabaseModel;
+class PgnDatabaseModel;
+class PgnGameEntryModel;
+class PgnDatabase;
 class ChessboardView;
 class ChessboardModel;
 namespace Chess { class Board; }
@@ -37,18 +39,23 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 		~GameDatabaseDialog();
 
 	private slots:
-		void selectionChanged(const QModelIndex& current,
-		                      const QModelIndex& previous);
+		void databaseSelectionChanged(const QModelIndex& current,
+		                              const QModelIndex& previous);
+		void gameSelectionChanged(const QModelIndex& current,
+		                          const QModelIndex& previous);
 		void viewNextMove();
 		void viewPreviousMove();
 
 	private:
-		GameDatabaseModel* m_gameDatabaseModel;
 		ChessboardView* m_chessboardView;
 		ChessboardModel* m_chessboardModel;
 		Chess::Board* m_chessboard;
 		QVector<PgnGame::MoveData> m_moves;
 		int m_moveIndex;
+
+		PgnDatabaseModel* m_pgnDatabaseModel;
+		PgnGameEntryModel* m_pgnGameEntryModel;
+		PgnDatabase* m_selectedDatabase;
 
 };
 

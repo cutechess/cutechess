@@ -15,30 +15,28 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GAME_DATABASE_MODEL_H
-#define GAME_DATABASE_MODEL_H
+#ifndef PGN_GAME_ENTRY_MODEL_H
+#define PGN_GAME_ENTRY_MODEL_H
 
 #include <QAbstractItemModel>
 #include <QStringList>
+#include <QList>
 
-class GameDatabaseManager;
-class TreeViewItem;
-class PgnDatabase;
+#include <pgngameentry.h>
 
 /*!
- * \brief Supplies chess game database information to views.
+ * \brief Supplies PGN game entry information to views.
  */
-class GameDatabaseModel : public QAbstractItemModel
+class PgnGameEntryModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
 	public:
-		/*! Constructs a game database model with the given \a parent. */
-		GameDatabaseModel(GameDatabaseManager* gameDatabaseManager,
-		                  QObject* parent = 0);
-		~GameDatabaseModel();
+		/*! Constructs a PGN game entry model with the given \a parent. */
+		PgnGameEntryModel(QObject* parent = 0);
 
-		TreeViewItem* root() const;
+		/*! Associates a list of PGN game entris with this model. */
+		void setEntries(const QList<PgnGameEntry>& entries);
 
 		// Inherited from QAbstractItemModel
 		QModelIndex index(int row, int column,
@@ -49,22 +47,12 @@ class GameDatabaseModel : public QAbstractItemModel
 		QVariant data(const QModelIndex& index, int role) const;
 		QVariant headerData(int section, Qt::Orientation orientation,
 		                    int role = Qt::DisplayRole) const;
-		Qt::ItemFlags flags(const QModelIndex& index) const;
-		bool setData(const QModelIndex& index, const QVariant& value,
-		             int role = Qt::EditRole);
-
-	private slots:
-		void onDatabaseAdded(int index);
-		void onDatabasesReset();
 
 	private:
-		TreeViewItem* buildInternalTree(PgnDatabase* db, int row);
-
-		TreeViewItem* m_root;
-		static const QStringList m_headers;
-		GameDatabaseManager* m_gameDatabaseManager;
+		static const QStringList s_headers;
+		QList<PgnGameEntry> m_entries;
 
 };
 
-#endif // GAME_DATABASE_MODEL_H
+#endif // PGN_GAME_ENTRY_MODEL_H
 

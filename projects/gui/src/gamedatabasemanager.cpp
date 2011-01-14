@@ -82,8 +82,8 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 
 		qDebug() << "Writing" << db->entries().count() << "entries";
 
-		foreach (PgnGameEntry* entry, db->entries())
-			entry->write(out);
+		foreach (const PgnGameEntry& entry, db->entries())
+			entry.write(out);
 	}
 
 	qDebug() << "Writing done at"
@@ -106,7 +106,6 @@ bool GameDatabaseManager::readState(const QString& fileName)
 
 	QDataStream in(&stateFile);
 	in.setVersion(QDataStream::Qt_4_6); // don't change
-	QList<PgnDatabase*> readDatabases;
 
 	// Read and verify the magic value
 	quint32 magic;
@@ -140,6 +139,7 @@ bool GameDatabaseManager::readState(const QString& fileName)
 	QString dbFileName;
 	QDateTime dbLastModified;
 	QString dbDisplayName;
+	QList<PgnDatabase*> readDatabases;
 
 	for (int i = 0; i < dbCount; i++)
 	{
@@ -153,13 +153,12 @@ bool GameDatabaseManager::readState(const QString& fileName)
 		qDebug() << "Reading" << dbEntryCount << "entries";
 
 		// Read the entries
-		PgnGameEntry* entry = 0;
-		QList<PgnGameEntry*> entries;
+		PgnGameEntry entry;
+		QList<PgnGameEntry> entries;
 
 		for (int j = 0; j < dbEntryCount; j++)
 		{
-			entry = new PgnGameEntry();
-			entry->read(in);
+			entry.read(in);
 			entries << entry;
 		}
 
@@ -176,9 +175,7 @@ bool GameDatabaseManager::readState(const QString& fileName)
 
 	m_modified = false;
 
-	qDeleteAll(m_databases);
 	m_databases = readDatabases;
-
 	emit databasesReset();
 
 	return true;
