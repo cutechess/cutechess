@@ -59,8 +59,8 @@ GameDatabaseDialog::GameDatabaseDialog()
 
 	m_chessboardParentWidget->setLayout(chessboardViewLayout);
 
-	m_nextMoveButton->setIcon(QIcon(":/nextmove_small.png"));
-	m_previousMoveButton->setIcon(QIcon(":/prevmove_small.png"));
+	m_nextMoveButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
+	m_previousMoveButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
 
 	connect(m_nextMoveButton, SIGNAL(clicked(bool)), this,
 		SLOT(viewNextMove()));
