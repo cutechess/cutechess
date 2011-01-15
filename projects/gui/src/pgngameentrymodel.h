@@ -48,9 +48,14 @@ class PgnGameEntryModel : public QAbstractItemModel
 		QVariant headerData(int section, Qt::Orientation orientation,
 		                    int role = Qt::DisplayRole) const;
 
+	protected:
+		bool canFetchMore(const QModelIndex& parent) const;
+		void fetchMore(const QModelIndex& parent);
+
 	private:
 		static const QStringList s_headers;
 		QList<PgnGameEntry> m_entries;
+		int m_entryCount;
 
 };
 

@@ -21,13 +21,15 @@ const QStringList PgnGameEntryModel::s_headers = (QStringList() <<
 	tr("White") << tr("Black") << tr("Event") << tr("Site") << tr("Result"));
 
 PgnGameEntryModel::PgnGameEntryModel(QObject* parent)
-	: QAbstractItemModel(parent)
+	: QAbstractItemModel(parent),
+	  m_entryCount(0)
 {
 }
 
 void PgnGameEntryModel::setEntries(const QList<PgnGameEntry>& entries)
 {
 	m_entries = entries;
+	m_entryCount = 0;
 	reset();
 }
 
@@ -52,7 +54,7 @@ int PgnGameEntryModel::rowCount(const QModelIndex& parent) const
 	if (parent.isValid())
 		return 0;
 
-	return m_entries.count();
+	return m_entryCount;
 }
 
 int PgnGameEntryModel::columnCount(const QModelIndex& parent) const
@@ -100,4 +102,26 @@ QVariant PgnGameEntryModel::headerData(int section, Qt::Orientation orientation,
 		return s_headers.at(section);
 
 	return QVariant();
+}
+
+bool PgnGameEntryModel::canFetchMore(const QModelIndex& parent) const
+{
+	Q_UNUSED(parent);
+
+	if (m_entryCount < m_entries.count())
+		return true;
+
+	return false;
+}
+
+void PgnGameEntryModel::fetchMore(const QModelIndex& parent)
+{
+	Q_UNUSED(parent);
+
+	int remainder = m_entries.count() - m_entryCount;
+	int entriesToFetch = qMin(1024, remainder);
+
+	beginInsertRows(QModelIndex(), m_entryCount, m_entryCount + entriesToFetch - 1);
+	m_entryCount += entriesToFetch;
+	endInsertRows();
 }
