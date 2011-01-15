@@ -86,6 +86,9 @@ GameDatabaseDialog::GameDatabaseDialog()
 
 	connect(m_searchEdit, SIGNAL(textChanged(const QString&)),
 		this, SLOT(updateSearch(const QString&)));
+
+	m_searchTimer.setSingleShot(true);
+	connect(&m_searchTimer, SIGNAL(timeout()), this, SLOT(onSearchTimeout()));
 }
 
 GameDatabaseDialog::~GameDatabaseDialog()
@@ -160,6 +163,16 @@ void GameDatabaseDialog::viewPreviousMove()
 
 void GameDatabaseDialog::updateSearch(const QString& terms)
 {
-	m_filteredModel->setFilterWildcard(terms);
 	m_clearBtn->setEnabled(!terms.isEmpty());
+	m_searchTerms = terms;
+
+	if (m_searchTerms.isEmpty())
+		m_filteredModel->setFilterWildcard(terms);
+	else
+		m_searchTimer.start(300);
+}
+
+void GameDatabaseDialog::onSearchTimeout()
+{
+	m_filteredModel->setFilterWildcard(m_searchTerms);
 }

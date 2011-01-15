@@ -20,6 +20,7 @@
 
 #include "ui_gamedatabasedlg.h"
 #include <QDialog>
+#include <QTimer>
 
 #include <pgngame.h>
 
@@ -46,6 +47,7 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 		void viewNextMove();
 		void viewPreviousMove();
 		void updateSearch(const QString& terms);
+		void onSearchTimeout();
 
 	private:
 		BoardView* m_boardView;
@@ -58,6 +60,8 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 		PgnDatabase* m_selectedDatabase;
 
 		QSortFilterProxyModel* m_filteredModel;
+		QTimer m_searchTimer;
+		QString m_searchTerms;
 
 };
 
