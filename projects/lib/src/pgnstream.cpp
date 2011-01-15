@@ -81,8 +81,8 @@ QIODevice* PgnStream::device() const
 void PgnStream::setDevice(QIODevice* device)
 {
 	Q_ASSERT(device != 0);
+
 	reset();
-	m_pos = device->pos();
 	m_device = device;
 }
 
@@ -125,6 +125,8 @@ bool PgnStream::isOpen() const
 
 qint64 PgnStream::pos() const
 {
+	if (m_device)
+		return m_device->pos();
 	return m_pos;
 }
 
@@ -147,7 +149,7 @@ char PgnStream::readChar()
 	}
 	else if (m_string && m_pos < m_string->size())
 	{
-		c = m_string->at(m_pos);
+		c = m_string->at(m_pos++);
 	}
 	else
 	{
@@ -155,7 +157,6 @@ char PgnStream::readChar()
 		return 0;
 	}
 
-	m_pos++;
 	if (c == '\n')
 		m_lineNumber++;
 
@@ -169,8 +170,7 @@ void PgnStream::rewind()
 
 void PgnStream::rewindChar()
 {
-	if (m_pos <= 0)
-		return;
+	Q_ASSERT(pos() > 0);
 
 	char c;
 	if (m_device)
@@ -180,13 +180,12 @@ void PgnStream::rewindChar()
 		m_lastChar = 0;
 	}
 	else if (m_string)
-		c = m_string->at(m_pos);
+		c = m_string->at(m_pos--);
 	else
 		return;
 
 	if (c == '\n')
 		m_lineNumber--;
-	m_pos--;
 }
 
 bool PgnStream::seek(qint64 pos, qint64 lineNumber)
@@ -196,14 +195,19 @@ bool PgnStream::seek(qint64 pos, qint64 lineNumber)
 
 	bool ok = false;
 	if (m_device)
+	{
 		ok = m_device->seek(pos);
+		m_pos = 0;
+	}
 	else if (m_string)
+	{
 		ok = pos < m_string->size();
+		m_pos = pos;
+	}
 	if (!ok)
 		return false;
 
 	m_status = Ok;
-	m_pos = pos;
 	m_lineNumber = lineNumber;
 	m_lastChar = 0;
 	m_phase = OutOfGame;
