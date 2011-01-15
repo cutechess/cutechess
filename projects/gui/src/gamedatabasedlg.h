@@ -28,6 +28,7 @@ class PgnGameEntryModel;
 class PgnDatabase;
 class BoardView;
 class BoardScene;
+class QSortFilterProxyModel;
 
 class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 {
@@ -44,6 +45,7 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 		                          const QModelIndex& previous);
 		void viewNextMove();
 		void viewPreviousMove();
+		void updateSearch(const QString& terms);
 
 	private:
 		BoardView* m_boardView;
@@ -54,6 +56,8 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 		PgnDatabaseModel* m_pgnDatabaseModel;
 		PgnGameEntryModel* m_pgnGameEntryModel;
 		PgnDatabase* m_selectedDatabase;
+
+		QSortFilterProxyModel* m_filteredModel;
 
 };
 

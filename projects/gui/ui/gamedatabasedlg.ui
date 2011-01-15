@@ -346,5 +346,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>m_clearBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>m_searchEdit</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>481</x>
+     <y>27</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>434</x>
+     <y>24</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>

@@ -19,6 +19,7 @@
 
 #include <QVBoxLayout>
 #include <QDebug>
+#include <QSortFilterProxyModel>
 
 #include <pgngame.h>
 #include <pgngameentry.h>
@@ -44,13 +45,17 @@ GameDatabaseDialog::GameDatabaseDialog()
 	m_pgnDatabaseModel = new PgnDatabaseModel(
 		CuteChessApplication::instance()->gameDatabaseManager(), this);
 
+	// Setup a filtered model
 	m_pgnGameEntryModel = new PgnGameEntryModel(this);
+	m_filteredModel = new QSortFilterProxyModel(this);
+	m_filteredModel->setSourceModel(m_pgnGameEntryModel);
+	m_filteredModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
 	m_databasesListView->setModel(m_pgnDatabaseModel);
 	m_databasesListView->setAlternatingRowColors(true);
 	m_databasesListView->setUniformRowHeights(true);
 
-	m_gamesListView->setModel(m_pgnGameEntryModel);
+	m_gamesListView->setModel(m_filteredModel);
 	m_gamesListView->setAlternatingRowColors(true);
 	m_gamesListView->setUniformRowHeights(true);
 
@@ -79,6 +84,8 @@ GameDatabaseDialog::GameDatabaseDialog()
 		SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
 		this, SLOT(gameSelectionChanged(const QModelIndex&, const QModelIndex&)));
 
+	connect(m_searchEdit, SIGNAL(textChanged(const QString&)),
+		this, SLOT(updateSearch(const QString&)));
 }
 
 GameDatabaseDialog::~GameDatabaseDialog()
@@ -101,7 +108,12 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 {
 	Q_UNUSED(previous);
 
-	const PgnGameEntry entry = m_selectedDatabase->entries().at(current.row());
+	const QModelIndex selected = m_filteredModel->mapToSource(current);
+
+	if (!selected.isValid())
+		return;
+
+	const PgnGameEntry entry = m_selectedDatabase->entries().at(selected.row());
 
 	m_whiteLabel->setText(entry.white());
 	m_blackLabel->setText(entry.black());
@@ -144,4 +156,10 @@ void GameDatabaseDialog::viewPreviousMove()
 	m_boardScene->undoMove();
 
 	m_nextMoveButton->setEnabled(true);
+}
+
+void GameDatabaseDialog::updateSearch(const QString& terms)
+{
+	m_filteredModel->setFilterWildcard(terms);
+	m_clearBtn->setEnabled(!terms.isEmpty());
 }
