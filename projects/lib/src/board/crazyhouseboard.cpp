@@ -17,16 +17,35 @@
 
 #include "crazyhouseboard.h"
 #include "westernzobrist.h"
+#include "boardtransition.h"
 
 namespace Chess {
 
-CrazyhouseBoard::CrazyhouseBoard(QObject* parent)
-	: WesternBoard(new WesternZobrist(), parent)
+CrazyhouseBoard::CrazyhouseBoard()
+	: WesternBoard(new WesternZobrist())
 {
-	setPieceType(PromotedKnight, tr("promoted knight"), "N~", KnightMovement);
-	setPieceType(PromotedBishop, tr("promoted bishop"), "B~", BishopMovement);
-	setPieceType(PromotedRook, tr("promoted rook"), "R~", RookMovement);
-	setPieceType(PromotedQueen, tr("promoted queen"), "Q~", BishopMovement | RookMovement);
+	setPieceType(PromotedKnight, QObject::tr("promoted knight"), "N~", KnightMovement);
+	setPieceType(PromotedBishop, QObject::tr("promoted bishop"), "B~", BishopMovement);
+	setPieceType(PromotedRook, QObject::tr("promoted rook"), "R~", RookMovement);
+	setPieceType(PromotedQueen, QObject::tr("promoted queen"), "Q~", BishopMovement | RookMovement);
+}
+
+Board* CrazyhouseBoard::copy() const
+{
+	return new CrazyhouseBoard(*this);
+}
+
+QList<Piece> CrazyhouseBoard::reservePieceTypes() const
+{
+	QList<Piece> list;
+
+	for (int i = 0; i < 2; i++)
+	{
+		for (int type = Pawn; type <= Queen; type++)
+			list << Piece(Side::Type(i), type);
+	}
+
+	return list;
 }
 
 QString CrazyhouseBoard::variant() const
@@ -149,10 +168,8 @@ Move CrazyhouseBoard::moveFromSanString(const QString& str)
 	return WesternBoard::moveFromSanString(str);
 }
 
-void CrazyhouseBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSquares)
+void CrazyhouseBoard::vMakeMove(const Move& move, BoardTransition* transition)
 {
-	Q_UNUSED(changedSquares);
-
 	int source = move.sourceSquare();
 	int target = move.targetSquare();
 	int prom = move.promotion();
@@ -163,11 +180,16 @@ void CrazyhouseBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedS
 	
 	int ctype = captureType(move);
 	if (ctype != Piece::NoPiece)
-		addHandPiece(Piece(sideToMove(), handPieceType(ctype)));
+	{
+		Piece handPiece(sideToMove(), handPieceType(ctype));
+		addHandPiece(handPiece);
+		if (transition != 0)
+			transition->addReservePiece(handPiece);
+	}
 	else if (source == 0)
 		removeHandPiece(Piece(sideToMove(), prom));
 
-	return WesternBoard::vMakeMove(tmp, changedSquares);
+	return WesternBoard::vMakeMove(tmp, transition);
 }
 
 void CrazyhouseBoard::vUndoMove(const Move& move)

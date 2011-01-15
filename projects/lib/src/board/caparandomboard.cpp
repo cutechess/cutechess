@@ -41,9 +41,14 @@ static void addPiece(QVector<int>& pieces,
 
 namespace Chess {
 
-CaparandomBoard::CaparandomBoard(QObject* parent)
-	: CapablancaBoard(parent)
+CaparandomBoard::CaparandomBoard()
+	: CapablancaBoard()
 {
+}
+
+Board* CaparandomBoard::copy() const
+{
+	return new CaparandomBoard(*this);
 }
 
 QString CaparandomBoard::variant() const

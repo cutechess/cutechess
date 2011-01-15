@@ -63,9 +63,9 @@ void PgnGame::addMove(const MoveData& data)
 	m_moves.append(data);
 }
 
-Chess::Board* PgnGame::createBoard(QObject* parent) const
+Chess::Board* PgnGame::createBoard() const
 {
-	Chess::Board* board = Chess::BoardFactory::create(variant(), parent);
+	Chess::Board* board = Chess::BoardFactory::create(variant());
 	if (board == 0)
 		return 0;
 

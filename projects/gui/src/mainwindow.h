@@ -26,8 +26,8 @@ class QMenu;
 class QAction;
 class QTextEdit;
 class QCloseEvent;
-class ChessboardView;
-class ChessboardModel;
+class BoardScene;
+class QGraphicsView;
 class MoveListModel;
 class EngineConfigurationModel;
 class ChessClock;
@@ -48,14 +48,8 @@ class MainWindow : public QMainWindow
 	protected:
 		void closeEvent(QCloseEvent* event);
 
-	signals:
-		void promotionMove(const Chess::Move& move, Chess::Side side);
-
 	private slots:
 		void newGame();
-		void selectPromotion(const Chess::Board* board,
-				     const Chess::Move& move,
-				     const QList<int>& promotions);
 		void gameProperties();
 		void manageEngines();
 		void saveLogToFile();
@@ -82,8 +76,8 @@ class MainWindow : public QMainWindow
 		QMenu* m_windowMenu;
 		QMenu* m_helpMenu;
 
-		ChessboardView* m_chessboardView;
-		ChessboardModel* m_boardModel;
+		BoardScene* m_boardScene;
+		QGraphicsView* m_boardView;
 		MoveListModel* m_moveListModel;
 		ChessClock* m_chessClock[2];
 

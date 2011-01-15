@@ -16,6 +16,7 @@
 */
 
 #include "westernzobrist.h"
+#include <QMutexLocker>
 #include "piece.h"
 
 
@@ -31,6 +32,11 @@ WesternZobrist::WesternZobrist(const quint64* keys)
 void WesternZobrist::initialize(int squareCount,
 				int pieceTypeCount)
 {
+	QMutexLocker locker(&m_mutex);
+
+	if (isInitialized())
+		return;
+
 	Zobrist::initialize(squareCount, pieceTypeCount);
 
 	m_castlingIndex = 1 + squareCount;

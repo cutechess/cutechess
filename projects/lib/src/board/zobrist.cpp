@@ -56,10 +56,16 @@ int Zobrist::random32()
 
 
 Zobrist::Zobrist(const quint64* keys)
-	: m_squareCount(0),
+	: m_initialized(false),
+	  m_squareCount(0),
 	  m_pieceTypeCount(0),
 	  m_keys(keys)
 {
+}
+
+bool Zobrist::isInitialized() const
+{
+	return m_initialized;
 }
 
 void Zobrist::initialize(int squareCount,
@@ -68,14 +74,17 @@ void Zobrist::initialize(int squareCount,
 	Q_ASSERT(squareCount > 0);
 	Q_ASSERT(pieceTypeCount > 1);
 
+	QMutexLocker locker(&s_mutex);
+
+	if (m_initialized)
+		return;
+
 	m_squareCount = squareCount;
 	m_pieceTypeCount = pieceTypeCount;
 
 	if (m_keys == 0)
 	{
-		// Initialize the global zobrist array, and make sure
-		// only one thread is doing it.
-		QMutexLocker locker(&s_mutex);
+		// Initialize the global zobrist array
 		if (s_keys.isEmpty())
 		{
 			for (int i = 0; i < s_keys.capacity(); i++)
@@ -83,6 +92,7 @@ void Zobrist::initialize(int squareCount,
 		}
 		m_keys = s_keys.constData();
 	}
+	m_initialized = true;
 }
 
 quint64 Zobrist::side() const

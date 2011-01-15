@@ -26,9 +26,9 @@ ClassRegistry<Board>* BoardFactory::registry()
 	return registry;
 }
 
-Board* BoardFactory::create(const QString& variant, QObject* parent)
+Board* BoardFactory::create(const QString& variant)
 {
-	return registry()->create(variant, parent);
+	return registry()->create(variant);
 }
 
 QStringList BoardFactory::variants()

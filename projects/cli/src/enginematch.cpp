@@ -355,7 +355,6 @@ void EngineMatch::start()
 	Chess::Board* board = Chess::BoardFactory::create(m_variant);
 	Q_ASSERT(board != 0);
 	ChessGame* game = new ChessGame(board, new PgnGame);
-	board->setParent(game);
 	connect(this, SIGNAL(stopGame()), game, SLOT(kill()), Qt::QueuedConnection);
 
 	EngineData* white = 0;

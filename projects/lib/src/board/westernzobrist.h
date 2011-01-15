@@ -19,6 +19,7 @@
 #define WESTERNZOBRIST_H
 
 #include "zobrist.h"
+#include <QMutex>
 
 namespace Chess {
 
@@ -55,6 +56,7 @@ class LIB_EXPORT WesternZobrist : public Zobrist
 	private:
 		int m_castlingIndex;
 		int m_pieceIndex;
+		QMutex m_mutex;
 };
 
 } //namespace Chess

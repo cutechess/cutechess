@@ -1048,9 +1048,14 @@ static const quint64 s_keys[] = {
 
 namespace Chess {
 
-StandardBoard::StandardBoard(QObject* parent)
-	: WesternBoard(new WesternZobrist(s_keys), parent)
+StandardBoard::StandardBoard()
+	: WesternBoard(new WesternZobrist(s_keys))
 {
+}
+
+Board* StandardBoard::copy() const
+{
+	return new StandardBoard(*this);
 }
 
 QString StandardBoard::variant() const

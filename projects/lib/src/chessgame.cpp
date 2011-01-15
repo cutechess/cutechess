@@ -47,6 +47,11 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	emit humanEnabled(false);
 }
 
+ChessGame::~ChessGame()
+{
+	delete m_board;
+}
+
 ChessPlayer* ChessGame::player(Chess::Side side) const
 {
 	Q_ASSERT(!side.isNull());
@@ -255,7 +260,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	addPgnMove(move, evalString(sender->evaluation()));
 
 	// Get the result before sending the move to the opponent
-	m_board->makeMove(move, false);
+	m_board->makeMove(move);
 	m_result = m_board->result();
 	if (m_result.isNone())
 		adjudication(sender->evaluation());
@@ -263,7 +268,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 
 	ChessPlayer* player = playerToWait();
 	player->makeMove(move);
-	m_board->makeMove(move, true);
+	m_board->makeMove(move);
 
 	if (m_result.isNone())
 		startTurn();
@@ -542,6 +547,8 @@ void ChessGame::startGame()
 	
 	resetBoard();
 	initializePgn();
+	emit fenChanged(m_board->startingFenString());
+
 	for (int i = 0; i < 2; i++)
 	{
 		Chess::Side side = Chess::Side::Type(i);
@@ -561,7 +568,7 @@ void ChessGame::startGame()
 
 		playerToMove()->makeBookMove(move);
 		playerToWait()->makeMove(move);
-		m_board->makeMove(move, true);
+		m_board->makeMove(move);
 		
 		emit moveMade(move);
 

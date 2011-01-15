@@ -45,6 +45,9 @@ class LIB_EXPORT Zobrist
 		Zobrist(const quint64* keys = 0);
 		/*! Destroys the Zobrist object. */
 		virtual ~Zobrist() {}
+
+		/*! Returns true if the keys are initialized. */
+		bool isInitialized() const;
 		/*!
 		 * Initializes the zobrist numbers.
 		 *
@@ -74,9 +77,6 @@ class LIB_EXPORT Zobrist
 		 */
 		virtual quint64 handPiece(const Piece& piece, int slot) const;
 
-		/*! Returns an unsigned 64-bit pseudo-random number. */
-		static quint64 random64();
-
 	protected:
 		/*!
 		 * Returns the number of squares the board has, including the
@@ -91,10 +91,14 @@ class LIB_EXPORT Zobrist
 		/*! Returns the array of zobrist keys. */
 		const quint64* keys() const;
 
+		/*! Returns an unsigned 64-bit pseudo-random number. */
+		static quint64 random64();
+
 	private:
 		static int random32();
 		static int s_randomSeed;
 
+		bool m_initialized;
 		int m_squareCount;
 		int m_pieceTypeCount;
 		const quint64* m_keys;

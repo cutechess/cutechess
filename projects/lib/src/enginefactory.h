@@ -16,8 +16,7 @@ class LIB_EXPORT EngineFactory
 		 * Creates and returns a new engine that uses protocol \a protocol.
 		 * Returns 0 if no engine class is associated with \a protocol.
 		 */
-		static ChessEngine* create(const QString& protocol,
-					   QObject* parent = 0);
+		static ChessEngine* create(const QString& protocol);
 		/*! Returns a list of supported chess protocols. */
 		static QStringList protocols();
 

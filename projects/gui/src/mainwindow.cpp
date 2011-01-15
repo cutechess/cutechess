@@ -30,8 +30,8 @@
 #include <humanplayer.h>
 
 #include "cutechessapp.h"
-#include "chessboardview.h"
-#include "chessboardmodel.h"
+#include "boardview/boardscene.h"
+#include "boardview/boardview.h"
 #include "movelistmodel.h"
 #include "newgamedlg.h"
 #include "chessclock.h"
@@ -39,7 +39,6 @@
 #include "enginemanagementdlg.h"
 #include "plaintextlog.h"
 #include "gamepropertiesdlg.h"
-#include "promotiondlg.h"
 #include "autoverticalscroller.h"
 #include "gamedatabasemanager.h"
 
@@ -57,22 +56,19 @@ MainWindow::MainWindow(ChessGame* game)
 		clockLayout->addWidget(m_chessClock[i]);
 	}
 
-	m_boardModel = new ChessboardModel(this);
-	m_chessboardView = new ChessboardView(this);
-	m_chessboardView->setModel(m_boardModel);
+	m_boardScene = new BoardScene(this);
+	m_boardView = new BoardView(m_boardScene, this);
+
 	m_moveListModel = new MoveListModel(this);
-	connect(m_chessboardView, SIGNAL(humanMove(QModelIndex, QModelIndex)),
-		m_boardModel, SLOT(onHumanMove(QModelIndex, QModelIndex)));
-	connect(m_chessboardView, SIGNAL(mouseOver(QModelIndex)),
-		m_boardModel, SLOT(onMouseOver(QModelIndex)));
-	connect(m_boardModel, SIGNAL(promotionNeeded(const Chess::Board*, Chess::Move, QList<int>)),
-		this, SLOT(selectPromotion(const Chess::Board*, Chess::Move, QList<int>)));
-	connect(this, SIGNAL(promotionMove(Chess::Move, Chess::Side)),
-		m_boardModel, SIGNAL(humanMove(Chess::Move,Chess::Side)));
+
+	connect(game, SIGNAL(fenChanged(QString)),
+		m_boardScene, SLOT(setFenString(QString)));
+	connect(game, SIGNAL(moveMade(Chess::Move)),
+		m_boardScene, SLOT(makeMove(Chess::Move)));
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
-	mainLayout->addWidget(m_chessboardView);
+	mainLayout->addWidget(m_boardView);
 
 	// The content margins look stupid when used with dock widgets. Drop the
 	// margins except from the top so that the chess clocks have spacing
@@ -94,27 +90,27 @@ MainWindow::MainWindow(ChessGame* game)
 	m_game->setParent(this);
 
 	connect(m_game, SIGNAL(humanEnabled(bool)),
-			m_chessboardView, SLOT(setEnabled(bool)));
+			m_boardView, SLOT(setEnabled(bool)));
 
 	for (int i = 0; i < 2; i++)
 	{
-		Chess::Side side = Chess::Side::Type(i);
-		connect(m_game->player(side), SIGNAL(startedThinking(int)),
+		ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
+
+		connect(player, SIGNAL(startedThinking(int)),
 			m_chessClock[i], SLOT(start(int)));
-		connect(m_game->player(side), SIGNAL(stoppedThinking()),
+		connect(player, SIGNAL(stoppedThinking()),
 			m_chessClock[i], SLOT(stop()));
-		connect(m_game->player(side), SIGNAL(debugMessage(QString)),
+		connect(player, SIGNAL(debugMessage(QString)),
 			m_engineDebugLog, SLOT(appendPlainText(QString)));
 
-		if (m_game->player(side)->isHuman())
-			connect(m_boardModel, SIGNAL(humanMove(Chess::Move, Chess::Side)),
-				m_game->player(side), SLOT(onHumanMove(Chess::Move, Chess::Side)));
+		if (player->isHuman())
+			connect(m_boardScene, SIGNAL(humanMove(Chess::GenericMove, Chess::Side)),
+				player, SLOT(onHumanMove(Chess::GenericMove, Chess::Side)));
 	}
 
 	m_moveListModel->setGame(m_game);
-	m_boardModel->setBoard(m_game->board());
+	m_boardScene->setBoard(m_game->board()->copy());
 	m_game->start();
-	m_chessboardView->setMouseTracking(true);
 
 	updateWindowTitle();
 }
@@ -227,24 +223,6 @@ void MainWindow::createDockWindows()
 	// Add toggle view actions to the View menu
 	m_viewMenu->addAction(moveListDock->toggleViewAction());
 	m_viewMenu->addAction(engineDebugDock->toggleViewAction());
-}
-
-void MainWindow::selectPromotion(const Chess::Board* board,
-			      const Chess::Move& move,
-			      const QList<int>& promotions)
-{
-	Q_ASSERT(board != 0);
-	Q_ASSERT(!move.isNull());
-	Q_ASSERT(promotions.size() > 1);
-
-	PromotionDialog dlg(board, promotions, this);
-	if (dlg.exec() != QDialog::Accepted)
-		return;
-
-	Chess::Move newMove(move.sourceSquare(),
-			    move.targetSquare(),
-			    dlg.promotionType());
-	emit promotionMove(newMove, board->sideToMove());
 }
 
 void MainWindow::newGame()

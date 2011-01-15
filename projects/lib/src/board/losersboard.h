@@ -33,13 +33,12 @@ namespace Chess {
  */
 class LIB_EXPORT LosersBoard : public WesternBoard
 {
-	Q_OBJECT
-
 	public:
 		/*! Creates a new LosersBoard object. */
-		LosersBoard(QObject* parent = 0);
+		LosersBoard();
 
 		// Inherited from WesternBoard
+		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
 		virtual Result result();

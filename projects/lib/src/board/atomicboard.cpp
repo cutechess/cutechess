@@ -17,15 +17,21 @@
 
 #include "atomicboard.h"
 #include "westernzobrist.h"
+#include "boardtransition.h"
 
 
 namespace Chess {
 
-AtomicBoard::AtomicBoard(QObject* parent)
-	: WesternBoard(new WesternZobrist(), parent)
+AtomicBoard::AtomicBoard()
+	: WesternBoard(new WesternZobrist())
 {
 	for (int i = 0; i < 8; i++)
 		m_offsets[i] = 0;
+}
+
+Board* AtomicBoard::copy() const
+{
+	return new AtomicBoard(*this);
 }
 
 QString AtomicBoard::variant() const
@@ -110,13 +116,13 @@ bool AtomicBoard::vIsLegalMove(const Move& move)
 	return WesternBoard::vIsLegalMove(move);
 }
 
-void AtomicBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSquares)
+void AtomicBoard::vMakeMove(const Move& move, BoardTransition* transition)
 {
 	MoveData md;
 	md.isCapture = (captureType(move) != Piece::NoPiece);
 	md.piece = pieceAt(move.sourceSquare());
 
-	WesternBoard::vMakeMove(move, changedSquares);
+	WesternBoard::vMakeMove(move, transition);
 
 	if (md.isCapture)
 	{
@@ -132,7 +138,9 @@ void AtomicBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSquar
 			
 			removeCastlingRights(sq);
 			setSquare(sq, Piece::NoPiece);
-			changedSquares.append(sq);
+
+			if (transition != 0)
+				transition->addSquare(chessSquare(sq));
 		}
 	}
 	m_history << md;
@@ -166,7 +174,7 @@ Result AtomicBoard::result()
 	if (pieceAt(kingSquare(side)).isEmpty())
 	{
 		Side winner = side.opposite();
-		QString str = tr("%1's king exploded").arg(side.toString());
+		QString str = QObject::tr("%1's king exploded").arg(side.toString());
 		return Result(Result::Win, winner, str);
 	}
 

@@ -18,7 +18,7 @@ class LIB_EXPORT BoardFactory
 		 * Creates and returns a new Board of variant \a variant.
 		 * Returns 0 if \a variant is not supported.
 		 */
-		static Board* create(const QString& variant, QObject* parent = 0);
+		static Board* create(const QString& variant);
 		/*! Returns a list of supported chess variants. */
 		static QStringList variants();
 

@@ -36,13 +36,12 @@ namespace Chess {
  */
 class LIB_EXPORT FrcBoard : public StandardBoard
 {
-	Q_OBJECT
-
 	public:
 		/*! Creates a new FrcBoard object. */
-		FrcBoard(QObject* parent = 0);
+		FrcBoard();
 
 		// Inherited from StandardBoard
+		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual bool isRandomVariant() const;
 		/*!

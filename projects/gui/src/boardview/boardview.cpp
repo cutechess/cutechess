@@ -15,29 +15,27 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gothicboard.h"
+#include "boardview.h"
+#include <QResizeEvent>
 
 
-namespace Chess {
-
-GothicBoard::GothicBoard()
-	: CapablancaBoard()
+BoardView::BoardView(QGraphicsScene* scene, QWidget* parent)
+	: QGraphicsView(scene, parent)
 {
+	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+	connect(scene, SIGNAL(sceneRectChanged(QRectF)),
+		this, SLOT(fitToRect(QRectF)));
 }
 
-Board* GothicBoard::copy() const
+void BoardView::resizeEvent(QResizeEvent* event)
 {
-	return new GothicBoard(*this);
+	QGraphicsView::resizeEvent(event);
+	fitToRect(sceneRect());
 }
 
-QString GothicBoard::variant() const
+void BoardView::fitToRect(const QRectF& rect)
 {
-	return "gothic";
+	fitInView(rect, Qt::KeepAspectRatio);
 }
-
-QString GothicBoard::defaultFenString() const
-{
-	return "rnbqckabnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBQCKABNR w KQkq - 0 1";
-}
-
-} // namespace Chess

@@ -51,16 +51,15 @@ QDebug operator<<(QDebug dbg, const Board* board)
 }
 
 
-Board::Board(Zobrist* zobrist,
-	     QObject* parent)
-	: QObject(parent),
-	  m_initialized(false),
+Board::Board(Zobrist* zobrist)
+	: m_initialized(false),
 	  m_width(0),
 	  m_height(0),
 	  m_side(Side::White),
 	  m_startingSide(Side::White),
 	  m_key(0),
-	  m_zobrist(zobrist)
+	  m_zobrist(zobrist),
+	  m_sharedZobrist(zobrist)
 {
 	Q_ASSERT(zobrist != 0);
 
@@ -69,7 +68,6 @@ Board::Board(Zobrist* zobrist,
 
 Board::~Board()
 {
-	delete m_zobrist;
 }
 
 bool Board::isRandomVariant() const
@@ -80,6 +78,11 @@ bool Board::isRandomVariant() const
 bool Board::variantHasDrops() const
 {
 	return false;
+}
+
+QList<Piece> Board::reservePieceTypes() const
+{
+	return QList<Piece>();
 }
 
 Board::CoordinateSystem Board::coordinateSystem() const
@@ -586,7 +589,6 @@ bool Board::setFenString(const QString& fen)
 	if (!isLegalPosition())
 		return false;
 
-	emit boardReset();
 	return true;
 }
 
@@ -595,42 +597,18 @@ void Board::reset()
 	setFenString(defaultFenString());
 }
 
-void Board::makeMove(const Move& move, bool sendSignal)
+void Board::makeMove(const Move& move, BoardTransition* transition)
 {
 	Q_ASSERT(!m_side.isNull());
 	Q_ASSERT(!move.isNull());
 
 	MoveData md = { move, m_key };
-	int handPieceType = Piece::NoPiece;
-	if (sendSignal)
-		handPieceType = this->handPieceType(captureType(move));
 
-	QVarLengthArray<int> squares;
-	vMakeMove(move, squares);
+	vMakeMove(move, transition);
 
 	xorKey(m_zobrist->side());
 	m_side = m_side.opposite();
 	m_moveHistory << md;
-
-	if (sendSignal)
-	{
-		Chess::Side side(m_side.opposite());
-		int source = move.sourceSquare();
-		int target = move.targetSquare();
-
-		if (source != 0)
-			squares.append(source);
-		squares.append(target);
-
-		emit moveMade(genericMove(move));
-		for (int i = 0; i < squares.size(); i++)
-			emit squareChanged(chessSquare(squares[i]));
-
-		if (move.sourceSquare() == 0)
-			emit handPieceChanged(Piece(side, move.promotion()));
-		if (handPieceType != Piece::NoPiece && variantHasDrops())
-			emit handPieceChanged(Piece(side, handPieceType));
-	}
 }
 
 void Board::undoMove()

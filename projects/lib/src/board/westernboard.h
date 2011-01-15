@@ -39,12 +39,9 @@ class WesternZobrist;
  */
 class LIB_EXPORT WesternBoard : public Board
 {
-	Q_OBJECT
-
 	public:
 		/*! Creates a new WesternBoard object. */
-		WesternBoard(WesternZobrist* zobrist,
-			     QObject* parent);
+		WesternBoard(WesternZobrist* zobrist);
 
 		// Inherited from Board
 		virtual int width() const;
@@ -114,7 +111,7 @@ class LIB_EXPORT WesternBoard : public Board
 		virtual Move moveFromLanString(const QString& str);
 		virtual Move moveFromSanString(const QString& str);
 		virtual void vMakeMove(const Move& move,
-				       QVarLengthArray<int>& changedSquares);
+				       BoardTransition* transition);
 		virtual void vUndoMove(const Move& move);
 		virtual void generateMovesForPiece(QVarLengthArray<Move>& moves,
 						   int pieceType,

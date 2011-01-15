@@ -20,11 +20,16 @@
 
 namespace Chess {
 
-CapablancaBoard::CapablancaBoard(QObject* parent)
-	: WesternBoard(new WesternZobrist(), parent)
+CapablancaBoard::CapablancaBoard()
+	: WesternBoard(new WesternZobrist())
 {
-	setPieceType(Archbishop, tr("archbishop"), "A", KnightMovement | BishopMovement);
-	setPieceType(Chancellor, tr("chancellor"), "C", KnightMovement | RookMovement);
+	setPieceType(Archbishop, QObject::tr("archbishop"), "A", KnightMovement | BishopMovement);
+	setPieceType(Chancellor, QObject::tr("chancellor"), "C", KnightMovement | RookMovement);
+}
+
+Board* CapablancaBoard::copy() const
+{
+	return new CapablancaBoard(*this);
 }
 
 QString CapablancaBoard::variant() const

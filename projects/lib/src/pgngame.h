@@ -86,7 +86,7 @@ class LIB_EXPORT PgnGame
 		 * The board is set to the game's starting position.
 		 * Returns 0 on error.
 		 */
-		Chess::Board* createBoard(QObject* parent = 0) const;
+		Chess::Board* createBoard() const;
 
 		/*!
 		 * Reads a game from a PGN text stream.

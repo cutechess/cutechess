@@ -12,9 +12,9 @@ ClassRegistry<ChessEngine>* EngineFactory::registry()
 	return registry;
 }
 
-ChessEngine* EngineFactory::create(const QString& protocol, QObject* parent)
+ChessEngine* EngineFactory::create(const QString& protocol)
 {
-	return registry()->create(protocol, parent);
+	return registry()->create(protocol);
 }
 
 QStringList EngineFactory::protocols()

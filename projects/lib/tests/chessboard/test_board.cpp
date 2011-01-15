@@ -19,6 +19,8 @@ class TestBoard: public QObject
 		
 		void perft_data() const;
 		void perft();
+
+		void cleanupTestCase();
 	
 	private:
 		void setVariant(const QString& variant);
@@ -31,12 +33,17 @@ TestBoard::TestBoard()
 {
 }
 
+void TestBoard::cleanupTestCase()
+{
+	delete m_board;
+}
+
 void TestBoard::setVariant(const QString& variant)
 {
 	if (m_board == 0 || m_board->variant() != variant)
 	{
 		delete m_board;
-		m_board = Chess::BoardFactory::create(variant, this);
+		m_board = Chess::BoardFactory::create(variant);
 	}
 	QVERIFY(m_board != 0);
 }
@@ -63,9 +70,8 @@ static quint64 perftRoot(const Chess::Board* board,
 			 const Chess::Move& move,
 			 int depth)
 {
-	Chess::Board* tmp = Chess::BoardFactory::create(board->variant());
+	Chess::Board* tmp = board->copy();
 	Q_ASSERT(tmp != 0);
-	tmp->setFenString(board->fenString());
 	tmp->makeMove(move);
 
 	quint64 val = perftVal(tmp, depth - 1);

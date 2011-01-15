@@ -30,17 +30,16 @@ namespace Chess {
  * similar to Shogi.
  *
  * \note Rules: http://en.wikipedia.org/wiki/Crazyhouse
- * \sa ShogiBoard
  */
 class LIB_EXPORT CrazyhouseBoard : public WesternBoard
 {
-	Q_OBJECT
-
 	public:
 		/*! Creates a new CrazyhouseBoard object. */
-		CrazyhouseBoard(QObject* parent = 0);
+		CrazyhouseBoard();
 
 		// Inherited from WesternBoard
+		virtual Board* copy() const;
+		virtual QList<Piece> reservePieceTypes() const;
 		virtual QString variant() const;
 		virtual bool variantHasDrops() const;
 		virtual QString defaultFenString() const;
@@ -65,7 +64,7 @@ class LIB_EXPORT CrazyhouseBoard : public WesternBoard
 		virtual QString sanMoveString(const Move& move);
 		virtual Move moveFromSanString(const QString& str);
 		virtual void vMakeMove(const Move& move,
-				       QVarLengthArray<int>& changedSquares);
+				       BoardTransition* transition);
 		virtual void vUndoMove(const Move& move);
 		virtual void generateMovesForPiece(QVarLengthArray<Move>& moves,
 						   int pieceType,

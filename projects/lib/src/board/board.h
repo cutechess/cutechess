@@ -18,10 +18,10 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <QObject>
 #include <QString>
 #include <QVector>
 #include <QVarLengthArray>
+#include <QSharedPointer>
 #include <QDebug>
 #include "square.h"
 #include "piece.h"
@@ -34,6 +34,8 @@ class QStringList;
 
 namespace Chess {
 
+class BoardTransition;
+
 /*!
  * \brief An internal chessboard class.
  *
@@ -43,17 +45,15 @@ namespace Chess {
  * - verifying the legality of moves played
  * - parsing and generating strings for moves and positions in notations
  *   such as FEN, SAN, and Coordinate notation
- * - sending information (signals) about a game to a graphical board widget
+ * - providing information about a game to a graphical board widget
  *
  * \internal
  * The board representation is (width + 2) x (height + 4), so a
  * traditional 8x8 board would be 10x12, and stored in a one-dimensional
  * vector with 10 * 12 = 120 elements.
  */
-class LIB_EXPORT Board : public QObject
+class LIB_EXPORT Board
 {
-	Q_OBJECT
-
 	public:
 		/*! Coordinate system for the notation of the squares. */
 		enum CoordinateSystem
@@ -104,10 +104,11 @@ class LIB_EXPORT Board : public QObject
 		 * and comparing positions. The Board class takes ownership of
 		 * the zobrist object and takes care of deleting it.
 		 */
-		Board(Zobrist* zobrist,
-		      QObject* parent);
+		Board(Zobrist* zobrist);
 		/*! Destructs the Board object. */
 		virtual ~Board();
+		/*! Creates and returns a deep copy of this board. */
+		virtual Board* copy() const = 0;
 
 		/*! Returns the name of the chess variant. */
 		virtual QString variant() const = 0;
@@ -120,10 +121,16 @@ class LIB_EXPORT Board : public QObject
 		 * Returns true if the variant allows piece drops.
 		 * The default value is false.
 		 *
-		 * \sa ShogiBoard
 		 * \sa CrazyhouseBoard
 		 */
 		virtual bool variantHasDrops() const;
+		/*!
+		 * Returns a list of piece types that can be in the reserve,
+		 * ie. captured pieces that can be dropped on the board.
+		 *
+		 * The default implementation returns an empty list.
+		 */
+		virtual QList<Piece> reservePieceTypes() const;
 		/*! Returns the coordinate system used in the variant. */
 		virtual CoordinateSystem coordinateSystem() const;
 		/*! Returns the width of the board in squares. */
@@ -197,13 +204,12 @@ class LIB_EXPORT Board : public QObject
 		/*!
 		 * Makes a chess move on the board.
 		 *
-		 * If \a sendSignal is true, the \a moveMade signal is emitted
-		 * once, and the \a squareChanged signal for every changed square.
-		 *
-		 * \sa moveMade()
-		 * \sa squareChanged()
+		 * All details about piece movement, promotions, captures,
+		 * drops, etc. are stored in \a transition. These details are
+		 * useful mainly for updating a graphical representation of
+		 * the board.
 		 */
-		void makeMove(const Move& move, bool sendSignal = false);
+		void makeMove(const Move& move, BoardTransition* transition = 0);
 		/*! Reverses the last move. */
 		void undoMove();
 
@@ -253,29 +259,6 @@ class LIB_EXPORT Board : public QObject
 		 */
 		virtual Result result() = 0;
 
-	signals:
-		/*!
-		 * This signal is emitted when a move is made on the board.
-		 * \sa makeMove()
-		 */
-		void moveMade(const Chess::GenericMove& move);
-		/*!
-		 * This signal is emitted for every changed square when
-		 * a move is made on the board.
-		 * \sa makeMove()
-		 */
-		void squareChanged(const Chess::Square& square);
-		/*!
-		 * This signal is emitted by makeMove() when the number of
-		 * hand pieces of type \a piece changes.
-		 */
-		void handPieceChanged(Chess::Piece piece);
-		/*!
-		 * This signal is emitted when the board's contents are reset.
-		 * \sa setFenString()
-		 */
-		void boardReset();
-
 	protected:
 		/*!
 		 * Initializes the variant.
@@ -307,15 +290,16 @@ class LIB_EXPORT Board : public QObject
 		/*!
 		 * Makes \a move on the board.
 		 *
-		 * This function is called by makeMove() before changing the
-		 * side to move.
+		 * This function is called by makeMove(), and should take care
+		 * of everything except changing the side to move and updating
+		 * the move history.
 		 *
-		 * \param changedSquares An array of squares that are changed
-		 * by the move. The source and target squares are added to
-		 * the array by the base class, subclasses should add the rest.
+		 * Details about piece movement, promotions, captures, drops,
+		 * etc. should be stored in \a transition. If \a transition is
+		 * 0 then it should be ignored.
 		 */
 		virtual void vMakeMove(const Move& move,
-				       QVarLengthArray<int>& changedSquares) = 0;
+				       BoardTransition* transition) = 0;
 		/*!
 		 * Reverses \a move on the board.
 		 *
@@ -513,6 +497,7 @@ class LIB_EXPORT Board : public QObject
 		QString m_startingFen;
 		quint64 m_key;
 		Zobrist* m_zobrist;
+		QSharedPointer<Zobrist> m_sharedZobrist;
 		QVarLengthArray<PieceData> m_pieceData;
 		QVarLengthArray<Piece> m_squares;
 		QVector<MoveData> m_moveHistory;

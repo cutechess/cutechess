@@ -18,13 +18,13 @@
 #include "westernboard.h"
 #include <QStringList>
 #include "westernzobrist.h"
+#include "boardtransition.h"
 
 
 namespace Chess {
 
-WesternBoard::WesternBoard(WesternZobrist* zobrist,
-			   QObject* parent)
-	: Board(zobrist, parent),
+WesternBoard::WesternBoard(WesternZobrist* zobrist)
+	: Board(zobrist),
 	  m_arwidth(0),
 	  m_sign(1),
 	  m_enpassantSquare(0),
@@ -32,12 +32,12 @@ WesternBoard::WesternBoard(WesternZobrist* zobrist,
 	  m_kingCanCapture(true),
 	  m_zobrist(zobrist)
 {
-	setPieceType(Pawn, tr("pawn"), "P");
-	setPieceType(Knight, tr("knight"), "N", KnightMovement);
-	setPieceType(Bishop, tr("bishop"), "B", BishopMovement);
-	setPieceType(Rook, tr("rook"), "R", RookMovement);
-	setPieceType(Queen, tr("queen"), "Q", BishopMovement | RookMovement);
-	setPieceType(King, tr("king"), "K");
+	setPieceType(Pawn, QObject::tr("pawn"), "P");
+	setPieceType(Knight, QObject::tr("knight"), "N", KnightMovement);
+	setPieceType(Bishop, QObject::tr("bishop"), "B", BishopMovement);
+	setPieceType(Rook, QObject::tr("rook"), "R", RookMovement);
+	setPieceType(Queen, QObject::tr("queen"), "Q", BishopMovement | RookMovement);
+	setPieceType(King, QObject::tr("king"), "K");
 }
 
 int WesternBoard::width() const
@@ -706,7 +706,7 @@ void WesternBoard::removeCastlingRights(int square)
 		setCastlingSquare(side, KingSide, 0);
 }
 
-void WesternBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSquares)
+void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 {
 	Side side = sideToMove();
 	int source = move.sourceSquare();
@@ -753,9 +753,11 @@ void WesternBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSqua
 			Piece rook = Piece(side, Rook);
 			setSquare(rookSource, Piece::NoPiece);
 			setSquare(rookTarget, rook);
-			changedSquares.append(target);
-			changedSquares.append(rookTarget);
 			isReversible = false;
+
+			if (transition != 0)
+				transition->addMove(chessSquare(rookSource),
+						    chessSquare(rookTarget));
 		}
 		m_kingSquare[side] = target;
 		// Any king move removes all castling rights
@@ -771,7 +773,9 @@ void WesternBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSqua
 		{
 			int epTarget = target + m_arwidth * m_sign;
 			setSquare(epTarget, Piece::NoPiece);
-			changedSquares.append(epTarget);
+
+			if (transition != 0)
+				transition->addSquare(chessSquare(epTarget));
 		}
 		// Push a pawn two squares ahead, creating an en-passant
 		// opportunity for the opponent.
@@ -803,6 +807,16 @@ void WesternBoard::vMakeMove(const Move& move, QVarLengthArray<int>& changedSqua
 	{
 		removeCastlingRights(target);
 		isReversible = false;
+	}
+
+	if (transition != 0)
+	{
+		if (source != 0)
+			transition->addMove(chessSquare(source),
+					    chessSquare(target));
+		else
+			transition->addDrop(Piece(side, pieceType),
+					    chessSquare(target));
 	}
 
 	setSquare(target, Piece(side, pieceType));
@@ -1166,13 +1180,13 @@ Result WesternBoard::result()
 		if (inCheck(sideToMove()))
 		{
 			Side winner = sideToMove().opposite();
-			str = tr("%1 mates").arg(winner.toString());
+			str = QObject::tr("%1 mates").arg(winner.toString());
 
 			return Result(Result::Win, winner, str);
 		}
 		else
 		{
-			str = tr("Draw by stalemate");
+			str = QObject::tr("Draw by stalemate");
 			return Result(Result::Draw, Side::NoSide, str);
 		}
 	}
@@ -1192,21 +1206,21 @@ Result WesternBoard::result()
 	}
 	if (material[Side::White] <= 3 && material[Side::Black] <= 3)
 	{
-		str = tr("Draw by insufficient mating material");
+		str = QObject::tr("Draw by insufficient mating material");
 		return Result(Result::Draw, Side::NoSide, str);
 	}
 
 	// 50 move rule
 	if (m_reversibleMoveCount >= 100)
 	{
-		str = tr("Draw by fifty moves rule");
+		str = QObject::tr("Draw by fifty moves rule");
 		return Result(Result::Draw, Side::NoSide, str);
 	}
 
 	// 3-fold repetition
 	if (repeatCount() >= 2)
 	{
-		str = tr("Draw by 3-fold repetition");
+		str = QObject::tr("Draw by 3-fold repetition");
 		return Result(Result::Draw, Side::NoSide, str);
 	}
 

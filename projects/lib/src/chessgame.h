@@ -38,6 +38,7 @@ class LIB_EXPORT ChessGame : public QObject
 
 	public:
 		ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent = 0);
+		virtual ~ChessGame();
 		
 		ChessPlayer* player(Chess::Side side) const;
 
@@ -69,6 +70,7 @@ class LIB_EXPORT ChessGame : public QObject
 
 	signals:
 		void humanEnabled(bool);
+		void fenChanged(const QString& fenString);
 		void moveMade(const Chess::Move& move);
 		void gameEnded();
 		void playersReady();

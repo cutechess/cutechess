@@ -15,7 +15,8 @@ SOURCES += board.cpp \
     losersboard.cpp \
     gothicboard.cpp \
     crazyhouseboard.cpp \
-    boardfactory.cpp
+    boardfactory.cpp \
+    boardtransition.cpp
 HEADERS += board.h \
     move.h \
     piece.h \
@@ -34,4 +35,5 @@ HEADERS += board.h \
     losersboard.h \
     gothicboard.h \
     crazyhouseboard.h \
-    boardfactory.h
+    boardfactory.h \
+    boardtransition.h

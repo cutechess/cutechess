@@ -34,13 +34,12 @@ namespace Chess {
  */
 class LIB_EXPORT CaparandomBoard : public CapablancaBoard
 {
-	Q_OBJECT
-
 	public:
 		/*! Creates a new CaparandomBoard object. */
-		CaparandomBoard(QObject* parent = 0);
+		CaparandomBoard();
 
 		// Inherited from CapablancaBoard
+		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual bool isRandomVariant() const;
 		/*!

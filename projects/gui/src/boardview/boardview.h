@@ -15,29 +15,33 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gothicboard.h"
+#ifndef BOARDVIEW_H
+#define BOARDVIEW_H
+
+#include <QGraphicsView>
 
 
-namespace Chess {
-
-GothicBoard::GothicBoard()
-	: CapablancaBoard()
+/*!
+ * \brief A view widget for displaying a QGraphicsScene.
+ *
+ * BoardView is meant for visualizing the contents of a BoardScene.
+ * Unlike a pure QGraphicsView, BoardView doesn't use scrollbars and
+ * always keeps the view fitted to the entire scene.
+ */
+class BoardView : public QGraphicsView
 {
-}
+	Q_OBJECT
 
-Board* GothicBoard::copy() const
-{
-	return new GothicBoard(*this);
-}
+	public:
+		/*! Creates a new BoardView object that displays \a scene. */
+		explicit BoardView(QGraphicsScene* scene, QWidget* parent = 0);
 
-QString GothicBoard::variant() const
-{
-	return "gothic";
-}
+	protected:
+		// Inherited from QGraphicsView
+		virtual void resizeEvent(QResizeEvent* event);
 
-QString GothicBoard::defaultFenString() const
-{
-	return "rnbqckabnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBQCKABNR w KQkq - 0 1";
-}
+	private slots:
+		void fitToRect(const QRectF& rect);
+};
 
-} // namespace Chess
+#endif // BOARDVIEW_H

@@ -26,9 +26,8 @@
 class PgnDatabaseModel;
 class PgnGameEntryModel;
 class PgnDatabase;
-class ChessboardView;
-class ChessboardModel;
-namespace Chess { class Board; }
+class BoardView;
+class BoardScene;
 
 class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 {
@@ -47,9 +46,8 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 		void viewPreviousMove();
 
 	private:
-		ChessboardView* m_chessboardView;
-		ChessboardModel* m_chessboardModel;
-		Chess::Board* m_chessboard;
+		BoardView* m_boardView;
+		BoardScene* m_boardScene;
 		QVector<PgnGame::MoveData> m_moves;
 		int m_moveIndex;
 
@@ -60,4 +58,3 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 };
 
 #endif // GAME_DATABASE_DIALOG_H
-

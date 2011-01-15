@@ -32,13 +32,12 @@ namespace Chess {
  */
 class LIB_EXPORT AtomicBoard : public WesternBoard
 {
-	Q_OBJECT
-
 	public:
 		/*! Creates a new AtomicBoard object. */
-		AtomicBoard(QObject* parent = 0);
+		AtomicBoard();
 
 		// Inherited from WesternBoard
+		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
 		virtual Result result();
@@ -51,7 +50,7 @@ class LIB_EXPORT AtomicBoard : public WesternBoard
 		virtual bool vSetFenString(const QStringList& fen);
 		virtual bool vIsLegalMove(const Move& move);
 		virtual void vMakeMove(const Move& move,
-				       QVarLengthArray<int>& changedSquares);
+				       BoardTransition* transition);
 		virtual void vUndoMove(const Move& move);
 
 	private:

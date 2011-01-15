@@ -53,6 +53,10 @@ class Piece
 		bool operator==(const Piece& other) const;
 		/*! Returns true if \a other is different from this piece. */
 		bool operator!=(const Piece& other) const;
+		/*! Returns true if this piece is less than \a other. */
+		bool operator<(const Piece& other) const;
+		/*! Returns true if this piece is more than \a other. */
+		bool operator>(const Piece& other) const;
 
 		/*! Returns true if the piece is empty (type is NoPiece). */
 		bool isEmpty() const;
@@ -97,6 +101,16 @@ inline bool Piece::operator==(const Piece& other) const
 inline bool Piece::operator!=(const Piece& other) const
 {
 	return m_data != other.m_data;
+}
+
+inline bool Piece::operator<(const Piece& other) const
+{
+	return m_data < other.m_data;
+}
+
+inline bool Piece::operator>(const Piece& other) const
+{
+	return m_data > other.m_data;
 }
 
 inline bool Piece::isEmpty() const

@@ -19,6 +19,7 @@
 #define HUMANPLAYER_H
 
 #include "chessplayer.h"
+namespace Chess { class GenericMove; }
 
 
 class LIB_EXPORT HumanPlayer : public ChessPlayer
@@ -40,7 +41,8 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		void startThinking();
 
 	public slots:
-		void onHumanMove(const Chess::Move& move, Chess::Side side);
+		void onHumanMove(const Chess::GenericMove& move,
+				 const Chess::Side& side);
 };
 
 #endif // HUMANPLAYER_H

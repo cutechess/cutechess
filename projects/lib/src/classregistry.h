@@ -20,7 +20,6 @@
 
 #include <QString>
 #include <QMap>
-class QObject;
 
 /*!
  * Registers a new class.
@@ -40,8 +39,7 @@ class QObject;
  * \brief A class for creating objects based on the class'
  * runtime name or key (a string).
  *
- * The created objects of a registry must have the same base
- * class, and they must be derived from QObject.
+ * The created objects of a registry must have the same base class.
  */
 template<class T>
 class ClassRegistry
@@ -74,16 +72,13 @@ class ClassRegistry
 		 * Creates and returns an object whose type is associated with \a key.
 		 *
 		 * Returns 0 if there is no type that matches \a key.
-		 * Sets the created object's parent to \a parent.
 		 */
-		T* create(const QString& key, QObject* parent = 0)
+		T* create(const QString& key)
 		{
 			if (!m_items.contains(key))
 				return 0;
 
-			T* ptr = m_items[key]();
-			ptr->setParent(parent);
-			return ptr;
+			return m_items[key]();
 		}
 
 	private:

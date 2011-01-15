@@ -22,21 +22,19 @@
 
 #include <pgngame.h>
 #include <pgngameentry.h>
-#include <board/board.h>
 
 #include "pgndatabasemodel.h"
 #include "pgngameentrymodel.h"
 #include "cutechessapp.h"
 #include "gamedatabasemanager.h"
-#include "chessboardview.h"
-#include "chessboardmodel.h"
+#include "boardview/boardview.h"
+#include "boardview/boardscene.h"
 #include "pgndatabase.h"
 
 GameDatabaseDialog::GameDatabaseDialog()
 	: QDialog(0, Qt::Window),
-	  m_chessboardView(0),
-	  m_chessboardModel(0),
-	  m_chessboard(0),
+	  m_boardView(0),
+	  m_boardScene(0),
 	  m_pgnDatabaseModel(0),
 	  m_pgnGameEntryModel(0),
 	  m_selectedDatabase(0)
@@ -56,12 +54,12 @@ GameDatabaseDialog::GameDatabaseDialog()
 	m_gamesListView->setAlternatingRowColors(true);
 	m_gamesListView->setUniformRowHeights(true);
 
-	m_chessboardModel = new ChessboardModel(this);
-	m_chessboardView = new ChessboardView(this);
-	m_chessboardView->setModel(m_chessboardModel);
+	m_boardScene = new BoardScene(this);
+	m_boardView = new BoardView(m_boardScene, this);
+	m_boardView->setEnabled(false);
 
 	QVBoxLayout* chessboardViewLayout = new QVBoxLayout();
-	chessboardViewLayout->addWidget(m_chessboardView);
+	chessboardViewLayout->addWidget(m_boardView);
 
 	m_chessboardParentWidget->setLayout(chessboardViewLayout);
 
@@ -85,8 +83,6 @@ GameDatabaseDialog::GameDatabaseDialog()
 
 GameDatabaseDialog::~GameDatabaseDialog()
 {
-	delete m_chessboard;
-	m_chessboard = 0;
 }
 
 void GameDatabaseDialog::databaseSelectionChanged(const QModelIndex& current,
@@ -120,13 +116,10 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 		return;
 	}
 
-	Chess::Board* board = game.createBoard();
-	m_chessboardModel->setBoard(board);
+	m_boardScene->setBoard(game.createBoard());
+	m_boardScene->populate();
 	m_moveIndex = 0;
 	m_moves = game.moves();
-
-	delete m_chessboard;
-	m_chessboard = board;
 
 	m_previousMoveButton->setEnabled(false);
 	m_nextMoveButton->setEnabled(!m_moves.isEmpty());
@@ -134,9 +127,7 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 
 void GameDatabaseDialog::viewNextMove()
 {
-	Chess::GenericMove gmove = m_moves[m_moveIndex++].move;
-	Chess::Move move = m_chessboard->moveFromGenericMove(gmove);
-	m_chessboard->makeMove(move, true);
+	m_boardScene->makeMove(m_moves[m_moveIndex++].move);
 
 	m_previousMoveButton->setEnabled(true);
 	if (m_moveIndex >= m_moves.count())
@@ -150,8 +141,7 @@ void GameDatabaseDialog::viewPreviousMove()
 	if (m_moveIndex == 0)
 		m_previousMoveButton->setEnabled(false);
 
-	m_chessboard->undoMove();
-	m_chessboardModel->boardReset();
+	m_boardScene->undoMove();
 
 	m_nextMoveButton->setEnabled(true);
 }

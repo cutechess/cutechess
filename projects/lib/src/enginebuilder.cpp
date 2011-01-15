@@ -65,8 +65,9 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		return 0;
 	}
 
-	ChessEngine* engine = EngineFactory::create(m_config.protocol(), parent);
+	ChessEngine* engine = EngineFactory::create(m_config.protocol());
 	Q_ASSERT(engine != 0);
+	engine->setParent(parent);
 	if (receiver != 0 && method != 0)
 		QObject::connect(engine, SIGNAL(debugMessage(QString)),
 				 receiver, method);

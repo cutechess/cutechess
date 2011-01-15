@@ -20,11 +20,16 @@
 
 namespace Chess {
 
-LosersBoard::LosersBoard(QObject* parent)
-	: WesternBoard(new WesternZobrist(), parent),
+LosersBoard::LosersBoard()
+	: WesternBoard(new WesternZobrist()),
 	  m_canCapture(false),
 	  m_captureKey(0)
 {
+}
+
+Board* LosersBoard::copy() const
+{
+	return new LosersBoard(*this);
 }
 
 QString LosersBoard::variant() const
@@ -81,7 +86,7 @@ Result LosersBoard::result()
 	if (!canMove())
 	{
 		winner = sideToMove();
-		str = tr("%1 gets mated").arg(winner.toString());
+		str = QObject::tr("%1 gets mated").arg(winner.toString());
 		return Result(Result::Win, winner, str);
 	}
 
@@ -96,21 +101,21 @@ Result LosersBoard::result()
 	if (pieceCount <= 1)
 	{
 		winner = sideToMove();
-		str = tr("%1 lost all pieces").arg(winner.toString());
+		str = QObject::tr("%1 lost all pieces").arg(winner.toString());
 		return Result(Result::Win, winner, str);
 	}
 
 	// 50 move rule
 	if (reversibleMoveCount() >= 100)
 	{
-		str = tr("Draw by fifty moves rule");
+		str = QObject::tr("Draw by fifty moves rule");
 		return Result(Result::Draw, Side::NoSide, str);
 	}
 
 	// 3-fold repetition
 	if (repeatCount() >= 2)
 	{
-		str = tr("Draw by 3-fold repetition");
+		str = QObject::tr("Draw by 3-fold repetition");
 		return Result(Result::Draw, Side::NoSide, str);
 	}
 

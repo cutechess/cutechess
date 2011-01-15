@@ -42,9 +42,14 @@ static void addPiece(QVector<int>& pieces,
 
 namespace Chess {
 
-FrcBoard::FrcBoard(QObject* parent)
-	: StandardBoard(parent)
+FrcBoard::FrcBoard()
+	: StandardBoard()
 {
+}
+
+Board* FrcBoard::copy() const
+{
+	return new FrcBoard(*this);
 }
 
 QString FrcBoard::variant() const
