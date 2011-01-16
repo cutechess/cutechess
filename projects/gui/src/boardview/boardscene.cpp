@@ -18,7 +18,6 @@
 #include "boardscene.h"
 #include <QSvgRenderer>
 #include <QGraphicsSceneMouseEvent>
-#include <QCursor>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <board/board.h>
@@ -162,7 +161,6 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 	if (m_targets.contains(piece))
 	{
 		m_sourcePos = piece->scenePos();
-		piece->setCursor(Qt::DragMoveCursor);
 		piece->setParentItem(0);
 		piece->setPos(m_sourcePos);
 
@@ -179,7 +177,6 @@ void BoardScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 	{
 		QPointF targetPos(m_squares->mapFromScene(event->scenePos()));
 		tryMove(piece, targetPos);
-		piece->setCursor(Qt::ArrowCursor);
 	}
 
 	QGraphicsScene::mouseReleaseEvent(event);

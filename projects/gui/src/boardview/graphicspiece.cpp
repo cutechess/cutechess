@@ -16,8 +16,6 @@
 */
 
 #include "graphicspiece.h"
-#include <QPainter>
-#include <QCursor>
 #include <QSvgRenderer>
 
 
