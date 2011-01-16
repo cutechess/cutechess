@@ -21,7 +21,7 @@
 #include <windows.h>
 #include <QThread>
 #include <QMutex>
-#include <QWaitCondition>
+#include <QSemaphore>
 
 
 /*!
@@ -62,21 +62,21 @@ class LIB_EXPORT PipeReader : public QThread
 		void readyRead();
 		
 	protected:
-		void run();
+		virtual void run();
 
 	private:
+		bool findLastNewline(const char* end, int size);
 		static const int BufSize = 0x8000;
 
-		bool findLastNewline(const char* end, int size);
-
 		HANDLE m_pipe;
-		char m_data[BufSize];
+		char m_buf[BufSize];
+		const char* m_bufEnd;
 		char* m_start;
 		char* m_end;
-		qint64 m_bytesLeft;
 		mutable QMutex m_mutex;
-		QWaitCondition m_cond;
-		int m_lastLineBreak;
+		QSemaphore m_freeBytes;
+		QSemaphore m_usedBytes;
+		int m_lastNewLine;
 };
 
 #endif // PIPEREADER_WIN_H
