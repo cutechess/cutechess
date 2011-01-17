@@ -147,6 +147,23 @@ bool GameDatabaseManager::readState(const QString& fileName)
 		in >> dbLastModified;
 		in >> dbDisplayName;
 
+		// Check if the database exists
+		QFileInfo fileInfo(dbFileName);
+		if (!fileInfo.exists())
+		{
+			qDebug() << "GameDatabaseManager:" << dbDisplayName << "does not exists and will be removed";
+			break;
+		}
+
+		// Check if the database has been modified
+		if (fileInfo.lastModified() > dbLastModified)
+		{
+			qDebug() << "GameDatabaseManager:" << dbDisplayName << "has been modified and will be re-imported";
+
+			importPgnFile(dbFileName);
+			break;
+		}
+
 		qint32 dbEntryCount;
 		in >> dbEntryCount;
 
