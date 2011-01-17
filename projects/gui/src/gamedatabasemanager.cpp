@@ -152,6 +152,7 @@ bool GameDatabaseManager::readState(const QString& fileName)
 		if (!fileInfo.exists())
 		{
 			qDebug() << "GameDatabaseManager:" << dbDisplayName << "does not exists and will be removed";
+			m_modified = true;
 			continue;
 		}
 
@@ -160,6 +161,7 @@ bool GameDatabaseManager::readState(const QString& fileName)
 		{
 			qDebug() << "GameDatabaseManager:" << dbDisplayName << "has been modified and will be re-imported";
 
+			m_modified = true;
 			importPgnFile(dbFileName);
 			continue;
 		}
