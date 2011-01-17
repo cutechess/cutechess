@@ -29,6 +29,8 @@ PgnDatabaseModel::PgnDatabaseModel(GameDatabaseManager* gameDatabaseManager,
 
 	connect(m_gameDatabaseManager, SIGNAL(databaseAdded(int)), this,
 		SLOT(onDatabaseAdded(int)));
+	connect(m_gameDatabaseManager, SIGNAL(databaseAboutToBeRemoved(int)), this,
+		SLOT(onDatabaseAboutToBeRemoved(int)));
 	connect(m_gameDatabaseManager, SIGNAL(databasesReset()), this,
 		SLOT(onDatabasesReset()));
 }
@@ -37,6 +39,12 @@ void PgnDatabaseModel::onDatabaseAdded(int index)
 {
 	beginInsertRows(QModelIndex(), index, index);
 	endInsertRows();
+}
+
+void PgnDatabaseModel::onDatabaseAboutToBeRemoved(int index)
+{
+	beginRemoveRows(QModelIndex(), index, index);
+	endRemoveRows();
 }
 
 void PgnDatabaseModel::onDatabasesReset()

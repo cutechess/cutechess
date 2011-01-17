@@ -54,6 +54,7 @@ class PgnDatabaseModel : public QAbstractItemModel
 
 	private slots:
 		void onDatabaseAdded(int index);
+		void onDatabaseAboutToBeRemoved(int index);
 		void onDatabasesReset();
 
 	private:
