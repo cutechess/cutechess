@@ -20,6 +20,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QSortFilterProxyModel>
+#include <QMessageBox>
 
 #include <pgngame.h>
 #include <pgngameentry.h>
@@ -100,6 +101,13 @@ void GameDatabaseDialog::databaseSelectionChanged(const QModelIndex& current,
 {
 	Q_UNUSED(previous);
 
+	if (!current.isValid())
+	{
+		QList<PgnGameEntry> emptyList;
+		m_pgnGameEntryModel->setEntries(emptyList);
+		return;
+	}
+
 	m_selectedDatabase =
 		CuteChessApplication::instance()->gameDatabaseManager()->databases().at(current.row());
 
@@ -125,10 +133,64 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 	m_resultLabel->setText(entry.result().toShortString());
 
 	PgnGame game;
-	if (!m_selectedDatabase->game(entry, &game))
+	PgnDatabase::PgnDatabaseError error;
+	if ((error = m_selectedDatabase->game(entry, &game)) !=
+		PgnDatabase::NoError)
 	{
-		qDebug() << "PGN database read failed";
-		return;
+		if (error == PgnDatabase::DatabaseDoesNotExist)
+		{
+			// Ask the user if the database should be deleted from the
+			// list
+			QMessageBox msgBox(this);
+			QPushButton* removeDbButton = msgBox.addButton(tr("Remove"),
+				QMessageBox::ActionRole);
+			msgBox.addButton(QMessageBox::Cancel);
+
+			msgBox.setText("PGN database does not exist.");
+			msgBox.setInformativeText(QString("Remove %1 from the list of databases?").arg(m_selectedDatabase->displayName()));
+			msgBox.setDefaultButton(removeDbButton);
+			msgBox.setIcon(QMessageBox::Warning);
+
+			msgBox.exec();
+
+			if (msgBox.clickedButton() == removeDbButton)
+			{
+				QItemSelectionModel* selection = m_databasesListView->selectionModel();
+				if (selection->hasSelection())
+					CuteChessApplication::instance()->gameDatabaseManager()->removeDatabase(selection->currentIndex().row());
+			}
+		}
+		else
+		{
+			// Ask the user to re-import the database
+			QMessageBox msgBox(this);
+			QPushButton* importDbButton = msgBox.addButton(tr("Import"),
+				QMessageBox::ActionRole);
+			msgBox.addButton(QMessageBox::Cancel);
+
+			if (error == PgnDatabase::DatabaseModified)
+			{
+				msgBox.setText("PGN database has been modified since the last import.");
+				msgBox.setInformativeText("The database must be imported again to read it.");
+			}
+			else
+			{
+				msgBox.setText("Error occured while trying to read the PGN database.");
+				msgBox.setInformativeText("Importing the database again may fix this problem.");
+			}
+
+			msgBox.setDefaultButton(importDbButton);
+			msgBox.setIcon(QMessageBox::Warning);
+
+			msgBox.exec();
+
+			if (msgBox.clickedButton() == importDbButton)
+			{
+				QItemSelectionModel* selection = m_databasesListView->selectionModel();
+				if (selection->hasSelection())
+					CuteChessApplication::instance()->gameDatabaseManager()->importDatabaseAgain(selection->currentIndex().row());
+			}
+		}
 	}
 
 	m_boardScene->setBoard(game.createBoard());

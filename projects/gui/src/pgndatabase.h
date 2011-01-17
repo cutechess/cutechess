@@ -29,6 +29,15 @@ class PgnDatabase : public QObject
 	Q_OBJECT
 
 	public:
+		enum PgnDatabaseError
+		{
+			NoError,
+			DatabaseModified,
+			DatabaseDoesNotExist,
+			IoDeviceError,
+			StreamError
+		};
+
 		PgnDatabase(const QString& fileName, QObject* parent = 0);
 
 		void setEntries(const QList<PgnGameEntry>& entries);
@@ -38,7 +47,7 @@ class PgnDatabase : public QObject
 		void setLastModified(const QDateTime& lastModified);
 		QString displayName() const;
 		void setDisplayName(const QString& displayName);
-		bool game(const PgnGameEntry& entry, PgnGame* game);
+		PgnDatabaseError game(const PgnGameEntry& entry, PgnGame* game);
 
 	private:
 		QList<PgnGameEntry> m_entries;

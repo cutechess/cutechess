@@ -62,7 +62,7 @@ void PgnDatabase::setDisplayName(const QString& displayName)
 	m_displayName = displayName;
 }
 
-bool PgnDatabase::game(const PgnGameEntry& entry, PgnGame* game)
+PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry& entry, PgnGame* game)
 {
 	Q_ASSERT(game);
 
@@ -70,35 +70,29 @@ bool PgnDatabase::game(const PgnGameEntry& entry, PgnGame* game)
 	QFileInfo fileInfo(m_fileName);
 
 	if (!fileInfo.exists())
-	{
-		qDebug() << "PGN database does not exist";
-		return false;
-	}
+		return DatabaseDoesNotExist;
 
 	if (fileInfo.lastModified() != m_lastModified)
-	{
-		qDebug() << "PGN database last modified does not match";
-		return false;
-	}
+		return DatabaseModified;
 
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
-		qDebug() << "Cannot open PNG database file";
-		return false;
+		qDebug() << "PgnDatabase::game(): QIODevice error:" << file.error();
+		return IoDeviceError;
 	}
 
 	PgnStream pgnStream(&file);
 
 	if (!pgnStream.seek(entry.pos(), entry.lineNumber()))
 	{
-		qDebug() << "PGN database seek failed";
-		return false;
+		qDebug() << "PgnDatabase::game(): PgnStream error: seek() failed";
+		return StreamError;
 	}
 
 	if (!game->read(pgnStream))
 	{
-		qDebug() << "PGN database read failed";
-		return false;
+		qDebug() << "PgnDatabase::game(): PgnGame error: read() failed";
+		return StreamError;
 	}
-	return true;
+	return NoError;
 }
