@@ -206,6 +206,13 @@ void GameDatabaseManager::addDatabase(PgnDatabase* database)
 	emit databaseAdded(m_databases.count() - 1);
 }
 
+void GameDatabaseManager::removeDatabase(int index)
+{
+	emit databaseAboutToBeRemoved(index);
+	m_databases.removeAt(index);
+	m_modified = true;
+}
+
 bool GameDatabaseManager::isModified() const
 {
 	return m_modified;

@@ -43,6 +43,7 @@ class GameDatabaseManager : public QObject
 
 	public slots:
 		void addDatabase(PgnDatabase* database);
+		void removeDatabase(int index);
 
 	signals:
 		void databaseAdded(int index);
