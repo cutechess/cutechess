@@ -213,6 +213,14 @@ void GameDatabaseManager::removeDatabase(int index)
 	m_modified = true;
 }
 
+void GameDatabaseManager::importDatabaseAgain(int index)
+{
+	const QString fileName = m_databases.at(index)->fileName();
+
+	removeDatabase(index);
+	importPgnFile(fileName);
+}
+
 bool GameDatabaseManager::isModified() const
 {
 	return m_modified;
