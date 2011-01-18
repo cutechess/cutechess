@@ -18,7 +18,7 @@
 #include "pgndatabasemodel.h"
 
 const QStringList PgnDatabaseModel::s_headers = (QStringList() <<
-	tr("Name") << tr("File name"));
+	tr("Name"));
 
 PgnDatabaseModel::PgnDatabaseModel(GameDatabaseManager* gameDatabaseManager,
                                    QObject* parent)
@@ -97,9 +97,6 @@ QVariant PgnDatabaseModel::data(const QModelIndex& index, int role) const
 		{
 			case 0:
 				return db->displayName();
-
-			case 1:
-				return db->fileName();
 
 			default:
 				return QVariant();
