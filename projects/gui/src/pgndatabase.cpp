@@ -22,9 +22,10 @@
 
 PgnDatabase::PgnDatabase(const QString& fileName, QObject* parent)
 	: QObject(parent),
-	  m_fileName(fileName),
-	  m_displayName(fileName)
+	  m_fileName(fileName)
 {
+	QFileInfo fileInfo(m_fileName);
+	m_displayName = fileInfo.fileName();
 }
 
 void PgnDatabase::setEntries(const QList<PgnGameEntry>& entries)
