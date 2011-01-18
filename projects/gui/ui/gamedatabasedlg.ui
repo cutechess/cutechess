@@ -57,6 +57,9 @@
             <height>0</height>
            </size>
           </property>
+          <property name="rootIsDecorated">
+           <bool>false</bool>
+          </property>
          </widget>
          <widget class="QTreeView" name="m_gamesListView">
           <property name="minimumSize">
@@ -64,6 +67,9 @@
             <width>100</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="rootIsDecorated">
+           <bool>false</bool>
           </property>
          </widget>
          <widget class="QScrollArea" name="scrollArea">
