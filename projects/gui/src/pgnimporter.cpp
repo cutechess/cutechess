@@ -19,8 +19,6 @@
 
 #include <QFile>
 #include <QFileInfo>
-#include <QDebug>
-#include <QMutexLocker>
 
 #include <pgnstream.h>
 #include <pgngameentry.h>
@@ -39,7 +37,6 @@ QString PgnImporter::fileName() const
 
 void PgnImporter::abort()
 {
-	QMutexLocker locker(&m_mutex);
 	m_abort = true;
 }
 
@@ -59,21 +56,14 @@ void PgnImporter::run()
 
 		forever
 		{
-			if (game.read(pgnStream))
-			{
-				games << game;
-				numReadGames++;
-
-				if (numReadGames % updateInterval == 0)
-					emit databaseReadStatus(startTime, numReadGames);
-			}
-			else
+			if (m_abort || !game.read(pgnStream))
 				break;
 
-			QMutexLocker locker(&m_mutex);
-			if (m_abort)
-				break;
-			locker.unlock();
+			games << game;
+			numReadGames++;
+
+			if (numReadGames % updateInterval == 0)
+				emit databaseReadStatus(startTime, numReadGames);
 		}
 		PgnDatabase* db = new PgnDatabase(m_fileName);
 		db->setEntries(games);

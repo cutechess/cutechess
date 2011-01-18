@@ -20,7 +20,6 @@
 
 #include <QThread>
 #include <QString>
-#include <QMutex>
 #include <QTime>
 
 class PgnDatabase;
@@ -44,7 +43,6 @@ class PgnImporter : public QThread
 	private:
 		QString m_fileName;
 		bool m_abort;
-		QMutex m_mutex;
 
 };
 
