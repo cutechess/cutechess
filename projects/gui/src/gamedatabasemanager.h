@@ -24,32 +24,95 @@
 class PgnImporter;
 class PgnDatabase;
 
+/*!
+ * \brief Manages chess game databases.
+ *
+ * \sa PgnImporter
+ * \sa PgnDatabase
+ */
 class GameDatabaseManager : public QObject
 {
 	Q_OBJECT
 
 	public:
+		/*! Constructs an empty GameDatabaseManager with \a parent. */
 		GameDatabaseManager(QObject* parent = 0);
 		~GameDatabaseManager();
 
+		/*!
+		 * Returns the list of currently managed databases.
+		 */
 		QList<PgnDatabase*> databases() const;
 
+		/*!
+		 * Writes the state to a file pointed by \a fileName.
+		 *
+		 * \sa readState
+		 */
 		bool writeState(const QString& fileName);
+		/*!
+		 * Reads the state from a file pointed by \a fileName.
+		 *
+		 * \sa writeState
+		 */
 		bool readState(const QString& fileName);
+
+		/*!
+		 * Imports a game database pointed by \a fileName in PGN format.
+		 *
+		 * This function is asynchronous and thus returns immediately.
+		 *
+		 * \sa importStarted
+		 */
 		void importPgnFile(const QString& fileName);
 
+		/*! Returns true if the current state has been modified. */
 		bool isModified() const;
+
+		/*! Sets the state modified flag to \modified. */
 		void setModified(bool modified);
 
 	public slots:
+		/*! Adds \a database to the list of managed databases. */
 		void addDatabase(PgnDatabase* database);
+		/*!
+		 * Remove database at \a index from the list of managed
+		 * databases.
+		 */
 		void removeDatabase(int index);
+		/*!
+		 * Re-imports database at \a index from the list of managed
+		 * databases.
+		 */
 		void importDatabaseAgain(int index);
 
 	signals:
+		/*!
+		 * Emitted when database is added at \a index.
+		 *
+		 * \sa databases()
+		 */
 		void databaseAdded(int index);
+		/*!
+		 * Emitted when a database is about to be removed at \a index.
+		 *
+		 * \note The index value is valid when this signal is emitted.
+		 *
+		 * \sa databases()
+		 */
 		void databaseAboutToBeRemoved(int index);
+		/*!
+		 * Emitted when all previously queried database information is now
+		 * invalid and must be queried again.
+		 *
+		 * \sa databases()
+		 */
 		void databasesReset();
+		/*!
+		 * Emitted when database import is started using \a importer.
+		 *
+		 * \sa importPgnFile
+		 */
 		void importStarted(PgnImporter* importer);
 
 	private:
