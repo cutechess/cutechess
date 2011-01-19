@@ -23,11 +23,17 @@
 
 class PgnImporter;
 
+/*!
+ * \brief Dialog for PGN database import progress.
+ *
+ * \sa PgnImporter
+ */
 class ImportProgressDialog : public QDialog, private Ui::ImportProgressDialog
 {
 	Q_OBJECT
 
 	public:
+		/*! Constructs a new ImportProgressDialog with \a importer. */
 		ImportProgressDialog(PgnImporter* pgnImporter);
 
 	private slots:
