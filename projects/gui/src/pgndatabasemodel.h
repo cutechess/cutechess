@@ -35,7 +35,10 @@ class PgnDatabaseModel : public QAbstractItemModel
 	Q_OBJECT
 
 	public:
-		/*! Constructs a PGN database model with the give \a parent. */
+		/*!
+		 * Constructs a PGN database model with the give \a parent and
+		 * \a gameDatabaseManager.
+		 */
 		PgnDatabaseModel(GameDatabaseManager* gameDatabaseManager,
 		                 QObject* parent = 0);
 
