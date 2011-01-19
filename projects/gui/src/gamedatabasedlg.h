@@ -31,11 +31,17 @@ class BoardView;
 class BoardScene;
 class QSortFilterProxyModel;
 
+/*!
+ * \brief Dialog for viewing game databases.
+ *
+ * \sa GameDatabaseManager
+ */
 class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 {
 	Q_OBJECT
 
 	public:
+		/*! Constructs a new GameDatabaseDialog. */
 		GameDatabaseDialog();
 		~GameDatabaseDialog();
 
