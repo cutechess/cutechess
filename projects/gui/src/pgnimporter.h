@@ -24,29 +24,53 @@
 
 class PgnDatabase;
 
+/*!
+ * \brief Reads PGN database in a separate thread.
+ *
+ * \sa PgnDatabase
+ */
 class PgnImporter : public QThread
 {
 	Q_OBJECT
 
 	public:
+		/*! Import error. */
 		enum Error
 		{
-			FileDoesNotExist,
-			IoError
+			FileDoesNotExist, //!< The PGN file was not found
+			IoError           //!< A generic I/O error
 		};
 
+		/*!
+		 * Constructs a PgnImporter with \a parent and \a fileName as
+		 * database to be imported.
+		 */
 		PgnImporter(const QString& fileName, QObject* parent = 0);
+		/*! Returns the file name of the database to be imported. */
 		QString fileName() const;
 
 		// Inherited from QThread
 		void run();
 
 	public slots:
+		/*! Aborts the import. */
 		void abort();
 
 	signals:
+		/*! Emitted when \a database is read. */
 		void databaseRead(PgnDatabase* database);
+		/*!
+		 * Emitted periodically to give progress information about the import.
+		 *
+		 * The import was initiated at \a started and so far \a numReadGames have
+		 * been read.
+		 */
 		void databaseReadStatus(const QTime& started, int numReadGames);
+		/*!
+		 * Emitted when an error is encountered during the import.
+		 *
+		 * \sa Error
+		 */
 		void error(int error);
 
 	private:
