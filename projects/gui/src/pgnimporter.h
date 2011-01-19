@@ -29,16 +29,25 @@ class PgnImporter : public QThread
 	Q_OBJECT
 
 	public:
+		enum Error
+		{
+			FileDoesNotExist,
+			IoError
+		};
+
 		PgnImporter(const QString& fileName, QObject* parent = 0);
 		QString fileName() const;
-		void abort();
 
 		// Inherited from QThread
 		void run();
 
+	public slots:
+		void abort();
+
 	signals:
 		void databaseRead(PgnDatabase* database);
 		void databaseReadStatus(const QTime& started, int numReadGames);
+		void error(int error);
 
 	private:
 		QString m_fileName;

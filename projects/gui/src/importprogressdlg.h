@@ -31,12 +31,14 @@ class ImportProgressDialog : public QDialog, private Ui::ImportProgressDialog
 		ImportProgressDialog(PgnImporter* pgnImporter);
 
 	private slots:
-		void abortImport();
+		void onImporterFinished();
+		void onImportError(int error);
 		void updateImportStatus(const QTime& startTime, int numReadGames);
 
 	private:
 		PgnImporter* m_pgnImporter;
 		int m_lastUpdateSecs;
+		bool m_importError;
 
 };
 

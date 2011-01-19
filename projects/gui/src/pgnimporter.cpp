@@ -48,27 +48,36 @@ void PgnImporter::run()
 	static const int updateInterval = 1024;
 	int numReadGames = 0;
 
-	if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+	if (!fileInfo.exists())
 	{
-		PgnStream pgnStream(&file);
-		QList<PgnGameEntry> games;
-		PgnGameEntry game;
-
-		forever
-		{
-			if (m_abort || !game.read(pgnStream))
-				break;
-
-			games << game;
-			numReadGames++;
-
-			if (numReadGames % updateInterval == 0)
-				emit databaseReadStatus(startTime, numReadGames);
-		}
-		PgnDatabase* db = new PgnDatabase(m_fileName);
-		db->setEntries(games);
-		db->setLastModified(fileInfo.lastModified());
-
-		emit databaseRead(db);
+		emit error(PgnImporter::FileDoesNotExist);
+		return;
 	}
+
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		emit error(PgnImporter::IoError);
+		return;
+	}
+
+	PgnStream pgnStream(&file);
+	QList<PgnGameEntry> games;
+	PgnGameEntry game;
+
+	forever
+	{
+		if (m_abort || !game.read(pgnStream))
+			break;
+
+		games << game;
+		numReadGames++;
+
+		if (numReadGames % updateInterval == 0)
+			emit databaseReadStatus(startTime, numReadGames);
+	}
+	PgnDatabase* db = new PgnDatabase(m_fileName);
+	db->setEntries(games);
+	db->setLastModified(fileInfo.lastModified());
+
+	emit databaseRead(db);
 }
