@@ -19,7 +19,6 @@
 
 #include <QVBoxLayout>
 #include <QDebug>
-#include <QSortFilterProxyModel>
 #include <QMessageBox>
 
 #include <pgngame.h>
@@ -48,15 +47,12 @@ GameDatabaseDialog::GameDatabaseDialog()
 
 	// Setup a filtered model
 	m_pgnGameEntryModel = new PgnGameEntryModel(this);
-	m_filteredModel = new QSortFilterProxyModel(this);
-	m_filteredModel->setSourceModel(m_pgnGameEntryModel);
-	m_filteredModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
 	m_databasesListView->setModel(m_pgnDatabaseModel);
 	m_databasesListView->setAlternatingRowColors(true);
 	m_databasesListView->setUniformRowHeights(true);
 
-	m_gamesListView->setModel(m_filteredModel);
+	m_gamesListView->setModel(m_pgnGameEntryModel);
 	m_gamesListView->setAlternatingRowColors(true);
 	m_gamesListView->setUniformRowHeights(true);
 
@@ -119,12 +115,7 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 {
 	Q_UNUSED(previous);
 
-	const QModelIndex selected = m_filteredModel->mapToSource(current);
-
-	if (!selected.isValid())
-		return;
-
-	const PgnGameEntry entry = m_selectedDatabase->entries().at(selected.row());
+	const PgnGameEntry entry = m_pgnGameEntryModel->entryAt(current.row());
 
 	m_whiteLabel->setText(entry.white());
 	m_blackLabel->setText(entry.black());
@@ -232,5 +223,5 @@ void GameDatabaseDialog::updateSearch(const QString& terms)
 
 void GameDatabaseDialog::onSearchTimeout()
 {
-	m_filteredModel->setFilterWildcard(m_searchTerms);
+	m_pgnGameEntryModel->setFilterWildcard(m_searchTerms);
 }

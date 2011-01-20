@@ -21,7 +21,8 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QList>
-
+#include <QFuture>
+#include <QFutureWatcher>
 #include <pgngameentry.h>
 
 /*!
@@ -35,6 +36,8 @@ class PgnGameEntryModel : public QAbstractItemModel
 		/*! Constructs a PGN game entry model with the given \a parent. */
 		PgnGameEntryModel(QObject* parent = 0);
 
+		/*! Returns the PGN entry at \a row. */
+		PgnGameEntry entryAt(int row) const;
 		/*! Associates a list of PGN game entris with this model. */
 		void setEntries(const QList<PgnGameEntry>& entries);
 
@@ -48,15 +51,28 @@ class PgnGameEntryModel : public QAbstractItemModel
 		QVariant headerData(int section, Qt::Orientation orientation,
 		                    int role = Qt::DisplayRole) const;
 
+	public slots:
+		/*! Sets the wildcard expression used to filter the contents. */
+		void setFilterWildcard(const QString& pattern);
+
 	protected:
+		// Inherited from QAbstractItemModel
 		bool canFetchMore(const QModelIndex& parent) const;
 		void fetchMore(const QModelIndex& parent);
 
+	private slots:
+		void onResultsReady();
+
 	private:
+		void applyFilter();
+
 		static const QStringList s_headers;
+
 		QList<PgnGameEntry> m_entries;
 		int m_entryCount;
-
+		QString m_pattern;
+		QFuture<PgnGameEntry> m_filtered;
+		QFutureWatcher<PgnGameEntry> m_watcher;
 };
 
 #endif // PGN_GAME_ENTRY_MODEL_H

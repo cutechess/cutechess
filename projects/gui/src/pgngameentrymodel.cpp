@@ -16,6 +16,26 @@
 */
 
 #include "pgngameentrymodel.h"
+#include <QtConcurrentFilter>
+
+struct EntryContains
+{
+	EntryContains(const QString &pattern)
+		: m_pattern(pattern) { }
+
+	typedef bool result_type;
+
+	bool operator()(const PgnGameEntry& entry)
+	{
+		return entry.white().contains(m_pattern, Qt::CaseInsensitive) ||
+		       entry.black().contains(m_pattern, Qt::CaseInsensitive) ||
+		       entry.event().contains(m_pattern, Qt::CaseInsensitive) ||
+		       entry.site().contains(m_pattern, Qt::CaseInsensitive);
+	}
+
+	QString m_pattern;
+};
+
 
 const QStringList PgnGameEntryModel::s_headers = (QStringList() <<
 	tr("White") << tr("Black") << tr("Event") << tr("Site") << tr("Result"));
@@ -24,13 +44,46 @@ PgnGameEntryModel::PgnGameEntryModel(QObject* parent)
 	: QAbstractItemModel(parent),
 	  m_entryCount(0)
 {
+	connect(&m_watcher, SIGNAL(resultsReadyAt(int,int)),
+		this, SLOT(onResultsReady()));
+}
+
+PgnGameEntry PgnGameEntryModel::entryAt(int row) const
+{
+	return m_filtered.resultAt(row);
 }
 
 void PgnGameEntryModel::setEntries(const QList<PgnGameEntry>& entries)
 {
+	m_watcher.cancel();
+	m_watcher.waitForFinished();
+
 	m_entries = entries;
+	applyFilter();
+}
+
+void PgnGameEntryModel::onResultsReady()
+{
+	if (m_entryCount < 1024)
+		fetchMore(QModelIndex());
+}
+
+void PgnGameEntryModel::applyFilter()
+{
+	beginResetModel();
 	m_entryCount = 0;
-	reset();
+	m_filtered = QtConcurrent::filtered(m_entries, EntryContains(m_pattern));
+	m_watcher.setFuture(m_filtered);
+	endResetModel();
+}
+
+void PgnGameEntryModel::setFilterWildcard(const QString& pattern)
+{
+	m_pattern = pattern;
+
+	m_watcher.cancel();
+	m_watcher.waitForFinished();
+	applyFilter();
 }
 
 QModelIndex PgnGameEntryModel::index(int row, int column,
@@ -69,7 +122,7 @@ QVariant PgnGameEntryModel::data(const QModelIndex& index, int role) const
 {
 	if (index.isValid() && role == Qt::DisplayRole)
 	{
-		const PgnGameEntry entry = m_entries.at(index.row());
+		const PgnGameEntry entry = m_filtered.resultAt(index.row());
 
 		switch (index.column())
 		{
@@ -108,17 +161,14 @@ bool PgnGameEntryModel::canFetchMore(const QModelIndex& parent) const
 {
 	Q_UNUSED(parent);
 
-	if (m_entryCount < m_entries.count())
-		return true;
-
-	return false;
+	return m_entryCount < m_filtered.resultCount();
 }
 
 void PgnGameEntryModel::fetchMore(const QModelIndex& parent)
 {
 	Q_UNUSED(parent);
 
-	int remainder = m_entries.count() - m_entryCount;
+	int remainder = m_filtered.resultCount() - m_entryCount;
 	int entriesToFetch = qMin(1024, remainder);
 
 	beginInsertRows(QModelIndex(), m_entryCount, m_entryCount + entriesToFetch - 1);

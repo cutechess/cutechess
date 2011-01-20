@@ -29,7 +29,6 @@ class PgnGameEntryModel;
 class PgnDatabase;
 class BoardView;
 class BoardScene;
-class QSortFilterProxyModel;
 
 /*!
  * \brief Dialog for viewing game databases.
@@ -65,7 +64,6 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 		PgnGameEntryModel* m_pgnGameEntryModel;
 		PgnDatabase* m_selectedDatabase;
 
-		QSortFilterProxyModel* m_filteredModel;
 		QTimer m_searchTimer;
 		QString m_searchTerms;
 
