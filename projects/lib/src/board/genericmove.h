@@ -18,6 +18,7 @@
 #ifndef GENERICMOVE_H
 #define GENERICMOVE_H
 
+#include <QMetaType>
 #include "square.h"
 
 namespace Chess {
@@ -68,4 +69,7 @@ class LIB_EXPORT GenericMove
 };
 
 } // namespace Chess
+
+Q_DECLARE_METATYPE(Chess::GenericMove)
+
 #endif // GENERICMOVE_H

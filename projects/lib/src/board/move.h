@@ -19,6 +19,7 @@
 #define MOVE_H
 
 #include <QtGlobal>
+#include <QMetaType>
 
 namespace Chess {
 
@@ -128,4 +129,7 @@ inline int Move::promotion() const
 }
 
 } // namespace Chess
+
+Q_DECLARE_METATYPE(Chess::Move)
+
 #endif // MOVE_H
