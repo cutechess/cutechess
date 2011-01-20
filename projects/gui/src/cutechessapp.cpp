@@ -16,6 +16,7 @@
 */
 
 #include "cutechessapp.h"
+
 #include <QCoreApplication>
 #include <QDir>
 #include <QTime>
@@ -26,9 +27,9 @@
 #include <gamemanager.h>
 #include <board/boardfactory.h>
 #include <chessgame.h>
-#include <chessplayer.h>
 #include <timecontrol.h>
-#include <humanplayer.h>
+#include <humanbuilder.h>
+
 #include "mainwindow.h"
 #include "gamedatabasedlg.h"
 #include "gamedatabasemanager.h"
@@ -57,6 +58,9 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 
 	// Read the game database state
 	gameDatabaseManager()->readState(configPath() + QLatin1String("/gamedb.bin"));
+
+	connect(gameManager(), SIGNAL(gameStarted(ChessGame*)), this,
+		SLOT(newGameWindow(ChessGame*)));
 
 	connect(this, SIGNAL(aboutToQuit()), this, SLOT(onAboutToQuit()));
 }
@@ -121,7 +125,7 @@ MainWindow* CuteChessApplication::newGameWindow(ChessGame* game)
 	return mainWindow;
 }
 
-MainWindow* CuteChessApplication::newDefaultGameWindow()
+void CuteChessApplication::newDefaultGame()
 {
 	// default game is a human versus human game using standard variant and
 	// infinite time control
@@ -129,10 +133,8 @@ MainWindow* CuteChessApplication::newDefaultGameWindow()
 		new PgnGame());
 
 	game->setTimeControl(TimeControl("inf"));
-	game->setPlayer(Chess::Side::White, new HumanPlayer(game));
-	game->setPlayer(Chess::Side::Black, new HumanPlayer(game));
 
-	return newGameWindow(game);
+	gameManager()->newGame(game, new HumanBuilder(), new HumanBuilder());
 }
 
 

@@ -43,6 +43,7 @@ class MainWindow : public QMainWindow
 
 	public:
 		MainWindow(ChessGame* game);
+		~MainWindow();
 		QString windowListTitle() const;
 
 	protected:

@@ -47,7 +47,7 @@ class CuteChessApplication : public QApplication
 
 	public slots:
 		MainWindow* newGameWindow(ChessGame* game);
-		MainWindow* newDefaultGameWindow();
+		void newDefaultGame();
 		void showGameDatabaseDialog();
 
 	private slots:

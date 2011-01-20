@@ -15,13 +15,23 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QTextStream>
 #include "cutechessapp.h"
-#include "mainwindow.h"
 
+#include <QTextStream>
+#include <QStringList>
+#include <QMetaType>
+
+#include <board/genericmove.h>
+#include <board/move.h>
+#include <board/side.h>
 
 int main(int argc, char* argv[])
 {
+	// Register types for signal / slot connections
+	qRegisterMetaType<Chess::GenericMove>("Chess::GenericMove");
+	qRegisterMetaType<Chess::Move>("Chess::Move");
+	qRegisterMetaType<Chess::Side>("Chess::Side");
+
 	CuteChessApplication app(argc, argv);
 
 	QStringList arguments = app.arguments();
@@ -36,7 +46,7 @@ int main(int argc, char* argv[])
 		{
 			out << "Cute Chess " << CUTECHESS_VERSION << endl;
 			out << "Using Qt version " << qVersion() << endl << endl;
-			out << "Copyright (C) 2008-2010 Ilari Pihlajisto and Arto Jonsson" << endl;
+			out << "Copyright (C) 2008-2011 Ilari Pihlajisto and Arto Jonsson" << endl;
 			out << "This is free software; see the source for copying ";
 			out << "conditions.  There is NO" << endl << "warranty; not even for ";
 			out << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
@@ -50,6 +60,6 @@ int main(int argc, char* argv[])
 		}
 		arguments.takeFirst();
 	}
-	app.newDefaultGameWindow();
+	app.newDefaultGame();
 	return app.exec();
 }

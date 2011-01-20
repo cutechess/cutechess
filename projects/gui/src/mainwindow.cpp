@@ -86,9 +86,6 @@ MainWindow::MainWindow(ChessGame* game)
 	createToolBars();
 	createDockWindows();
 
-	// Attach the game to the GUI
-	m_game->setParent(this);
-
 	connect(m_game, SIGNAL(humanEnabled(bool)),
 			m_boardView, SLOT(setEnabled(bool)));
 
@@ -110,9 +107,14 @@ MainWindow::MainWindow(ChessGame* game)
 
 	m_moveListModel->setGame(m_game);
 	m_boardScene->setBoard(m_game->board()->copy());
-	m_game->start();
+	m_boardScene->populate();
 
 	updateWindowTitle();
+}
+
+MainWindow::~MainWindow()
+{
+	m_game->deleteLater();
 }
 
 void MainWindow::createActions()
@@ -227,7 +229,7 @@ void MainWindow::createDockWindows()
 
 void MainWindow::newGame()
 {
-	CuteChessApplication::instance()->newDefaultGameWindow();
+	CuteChessApplication::instance()->newDefaultGame();
 }
 
 void MainWindow::gameProperties()
