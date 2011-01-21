@@ -17,8 +17,9 @@
 
 #include "pgngameentry.h"
 #include <cctype>
-#include "pgnstream.h"
 #include <QDataStream>
+#include <QMap>
+#include "pgnstream.h"
 
 
 PgnStream& operator>>(PgnStream& in, PgnGameEntry& entry)
@@ -39,47 +40,25 @@ QDataStream& operator<<(QDataStream& out, const PgnGameEntry& entry)
 	return out;
 }
 
-PgnGameEntry::PgnGameEntry(const QByteArray& variant)
-	: m_round(0),
-	  m_pos(0),
-	  m_lineNumber(1),
-	  m_variant(variant)
+PgnGameEntry::PgnGameEntry()
+	: m_pos(0),
+	  m_lineNumber(1)
 {
-
 }
 
-void PgnGameEntry::addTag(const QByteArray& tagName, const QByteArray& tagValue)
+void PgnGameEntry::addTag(const QByteArray& tagValue)
 {
-	if (tagName.isEmpty() || tagValue.isEmpty())
-		return;
+	int size = qMin(127, tagValue.size());
 
-	if (tagName == "White")
-		m_white = tagValue;
-	else if (tagName == "Black")
-		m_black = tagValue;
-	else if (tagName == "Event")
-		m_event = tagValue;
-	else if (tagName == "Site")
-		m_site = tagValue;
-	else if (tagName == "Result")
-		m_result = Chess::Result(tagValue);
-	else if (tagName == "Variant")
-		m_variant = tagValue;
-	else if (tagName == "Round")
-		m_round = tagValue.toInt();
+	m_data.append(char(size));
+	m_data.append(tagValue.constData(), size);
 }
 
 void PgnGameEntry::clear()
 {
 	m_pos = 0;
 	m_lineNumber = 1;
-	m_round = 0;
-	m_event.clear();
-	m_site.clear();
-	m_white.clear();
-	m_black.clear();
-	m_result = Chess::Result();
-	m_variant = "standard";
+	m_data.clear();
 }
 
 bool PgnGameEntry::read(PgnStream& in)
@@ -87,11 +66,13 @@ bool PgnGameEntry::read(PgnStream& in)
 	char c;
 	QByteArray tagName;
 	QByteArray tagValue;
+	QMap<QByteArray, QByteArray> tags;
 	bool haveTagName = false;
 	bool foundTag = false;
 	bool inTag = false;
 	int bracketLevel = 0;
 
+	clear();
 	while ((c = in.readChar()) != 0)
 	{
 		if (!inTag)
@@ -107,7 +88,7 @@ bool PgnGameEntry::read(PgnStream& in)
 				}
 			}
 			else if (foundTag && !isspace(c))
-				return true;
+				break;
 
 			continue;
 		}
@@ -115,7 +96,7 @@ bool PgnGameEntry::read(PgnStream& in)
 			bracketLevel--;
 		else if (c == ']' || c == '\n' || c == '\r')
 		{
-			addTag(tagName, tagValue);
+			tags[tagName] = tagValue;
 			tagName.clear();
 			tagValue.clear();
 			inTag = false;
@@ -137,6 +118,15 @@ bool PgnGameEntry::read(PgnStream& in)
 			bracketLevel++;
 	}
 
+	addTag(tags["Event"]);
+	addTag(tags["Site"]);
+	addTag(tags["Date"]);
+	addTag(tags["Round"]);
+	addTag(tags["White"]);
+	addTag(tags["Black"]);
+	addTag(tags["Result"]);
+	addTag(tags["Variant"]);
+
 	return foundTag;
 }
 
@@ -145,24 +135,9 @@ bool PgnGameEntry::read(QDataStream& in)
 	// modifying this function can cause backward compatibility issues
 	// in other programs.
 
-	qint32 round;
-	in >> round;
-	m_round = round;
-
 	in >> m_pos;
 	in >> m_lineNumber;
-	in >> m_event;
-	in >> m_site;
-	in >> m_white;
-	in >> m_black;
-	in >> m_variant;
-
-	qint32 resultType;
-	qint32 resultWinner;
-
-	in >> resultType;
-	in >> resultWinner;
-	m_result = Chess::Result(Chess::Result::Type(resultType), Chess::Side::Type(resultWinner));
+	in >> m_data;
 
 	return in.status() == QDataStream::Ok;
 }
@@ -172,16 +147,9 @@ void PgnGameEntry::write(QDataStream& out) const
 	// modifying this function can cause backward compatibility issues
 	// in other programs.
 
-	out << (qint32)m_round;
 	out << m_pos;
 	out << m_lineNumber;
-	out << m_event;
-	out << m_site;
-	out << m_white;
-	out << m_black;
-	out << m_variant;
-	out << (qint32)m_result.type();
-	out << (qint32)m_result.winner();
+	out << m_data;
 }
 
 qint64 PgnGameEntry::pos() const
@@ -194,37 +162,52 @@ qint64 PgnGameEntry::lineNumber() const
 	return m_lineNumber;
 }
 
+QString PgnGameEntry::tagValue(TagType type) const
+{
+	int i = 0;
+	for (int j = 0; j < type; j++)
+		i += m_data[i] + 1;
+
+	int size = m_data[i];
+	if (size == 0)
+		return QString();
+	return m_data.mid(i + 1, size);
+}
+
 QString PgnGameEntry::event() const
 {
-	return m_event;
+	return tagValue(EventTag);
 }
 
 QString PgnGameEntry::site() const
 {
-	return m_site;
+	return tagValue(SiteTag);
 }
 
 int PgnGameEntry::round() const
 {
-	return m_round;
+	return tagValue(RoundTag).toInt();
 }
 
 QString PgnGameEntry::white() const
 {
-	return m_white;
+	return tagValue(WhiteTag);
 }
 
 QString PgnGameEntry::black() const
 {
-	return m_black;
+	return tagValue(BlackTag);
 }
 
 Chess::Result PgnGameEntry::result() const
 {
-	return m_result;
+	return Chess::Result(tagValue(ResultTag));
 }
 
 QString PgnGameEntry::variant() const
 {
-	return m_variant;
+	QString str = tagValue(VariantTag);
+	if (str.isEmpty())
+		return QString("standard");
+	return str;
 }

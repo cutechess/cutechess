@@ -38,7 +38,7 @@ class LIB_EXPORT PgnGameEntry
 {
 	public:
 		/*! Creates a new empty PgnGameEntry object. */
-		explicit PgnGameEntry(const QByteArray& variant = "standard");
+		explicit PgnGameEntry();
 
 		/*! Resets the entry to an empty default. */
 		void clear();
@@ -80,17 +80,25 @@ class LIB_EXPORT PgnGameEntry
 		Chess::Result result() const;
 
 	private:
-		void addTag(const QByteArray& tagName, const QByteArray& tagValue);
+		enum TagType
+		{
+			EventTag,
+			SiteTag,
+			DateTag,
+			RoundTag,
+			WhiteTag,
+			BlackTag,
+			ResultTag,
+			VariantTag
+		};
 
-		int m_round;
+		QString tagValue(TagType type) const;
+		void addTag(const QByteArray& tagValue);
+
+		QByteArray m_data;
+
 		qint64 m_pos;
 		qint64 m_lineNumber;
-		QByteArray m_event;
-		QByteArray m_site;
-		QByteArray m_white;
-		QByteArray m_black;
-		QByteArray m_variant;
-		Chess::Result m_result;
 };
 
 /*! Reads a PGN game entry from a PGN stream. */
