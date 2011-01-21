@@ -184,6 +184,11 @@ QString PgnGameEntry::site() const
 	return tagValue(SiteTag);
 }
 
+QDate PgnGameEntry::date() const
+{
+	return QDate::fromString(tagValue(DateTag), "yyyy.MM.dd");
+}
+
 int PgnGameEntry::round() const
 {
 	return tagValue(RoundTag).toInt();

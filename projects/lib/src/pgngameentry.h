@@ -18,6 +18,7 @@
 #ifndef PGNGAMEENTRY_H
 #define PGNGAMEENTRY_H
 
+#include <QDate>
 #include "board/result.h"
 class PgnStream;
 class QDataStream;
@@ -68,6 +69,8 @@ class LIB_EXPORT PgnGameEntry
 		QString event() const;
 		/*! Returns the site/location where the game was played. */
 		QString site() const;
+		/*! Returns the starting date of the game. */
+		QDate date() const;
 		/*! Returns the round number of a match or tournament. */
 		int round() const;
 		/*! Returns the name of the white player. */
