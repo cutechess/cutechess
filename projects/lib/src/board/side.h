@@ -19,6 +19,7 @@
 #define SIDE_H
 
 #include <QString>
+#include <QMetaType>
 
 namespace Chess {
 
@@ -98,5 +99,7 @@ inline Side Side::opposite() const
 }
 
 } // namespace Chess
+
+Q_DECLARE_METATYPE(Chess::Side)
 
 #endif // SIDE_H
