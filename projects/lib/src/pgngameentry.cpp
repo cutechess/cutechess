@@ -61,6 +61,35 @@ void PgnGameEntry::clear()
 	m_data.clear();
 }
 
+static void skipSection(PgnStream& in, char type)
+{
+	char end;
+	switch (type)
+	{
+	case '[':
+		end = ']';
+		break;
+	case '(':
+		end = ')';
+		break;
+	case '{':
+		end = '}';
+		break;
+	default:
+		return;
+	}
+
+	int level = 1;
+	char c;
+	while ((c = in.readChar()) != 0)
+	{
+		if (c == end && --level == 0)
+			break;
+		if (c == type)
+			level++;
+	}
+}
+
 bool PgnGameEntry::read(PgnStream& in)
 {
 	char c;
@@ -70,7 +99,7 @@ bool PgnGameEntry::read(PgnStream& in)
 	bool haveTagName = false;
 	bool foundTag = false;
 	bool inTag = false;
-	int bracketLevel = 0;
+	bool inQuotes = false;
 
 	clear();
 	while ((c = in.readChar()) != 0)
@@ -89,19 +118,20 @@ bool PgnGameEntry::read(PgnStream& in)
 			}
 			else if (foundTag && !isspace(c))
 				break;
+			else
+				skipSection(in, c);
 
 			continue;
 		}
-		if (bracketLevel > 0 && c == ']')
-			bracketLevel--;
-		else if (c == ']' || c == '\n' || c == '\r')
+
+		if ((c == ']' && !inQuotes) || c == '\n' || c == '\r')
 		{
 			tags[tagName] = tagValue;
 			tagName.clear();
 			tagValue.clear();
 			inTag = false;
+			inQuotes = false;
 			haveTagName = false;
-			bracketLevel = 0;
 			continue;
 		}
 
@@ -112,10 +142,10 @@ bool PgnGameEntry::read(PgnStream& in)
 			else
 				tagName += c;
 		}
-		else if (c != '\"')
+		else if (c == '\"')
+			inQuotes = !inQuotes;
+		else if (inQuotes)
 			tagValue += c;
-		if (c == '[')
-			bracketLevel++;
 	}
 
 	addTag(tags["Event"]);
