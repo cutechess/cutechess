@@ -302,3 +302,8 @@ bool TimeControl::expired() const
 {
 	return m_expired;
 }
+
+int TimeControl::activeTimeLeft() const
+{
+	return m_timeLeft - m_time.elapsed();
+}

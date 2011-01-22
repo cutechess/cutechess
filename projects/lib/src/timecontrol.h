@@ -171,6 +171,15 @@ class LIB_EXPORT TimeControl
 		/*! Returns true if the allotted time has expired. */
 		bool expired() const;
 
+		/*!
+		 * Returns the time left in an active clock.
+		 *
+		 * The TimeControl object doesn't know whether the clock is
+		 * active or not. It's recommended to check the player's
+		 * state first to verify that it's in the thinking state.
+		 */
+		int activeTimeLeft() const;
+
 	private:
 		int m_movesPerTc;
 		int m_timePerTc;

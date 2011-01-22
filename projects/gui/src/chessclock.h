@@ -32,6 +32,7 @@ class ChessClock: public QLCDNumber
 		ChessClock(QWidget* parent = 0);
 	
 	public slots:	
+		void setTime(int totalTime);
 		void start(int totalTime);
 		void stop();
 	
@@ -39,12 +40,9 @@ class ChessClock: public QLCDNumber
 		void timerEvent(QTimerEvent* event);
 	
 	private:
-		void updateDisplay();
-		
 		int m_totalTime;
 		int m_timerId;
 		QTime m_time;
 };
-
 
 #endif // CHESSCLOCK

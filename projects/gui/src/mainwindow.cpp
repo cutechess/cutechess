@@ -93,6 +93,11 @@ MainWindow::MainWindow(ChessGame* game)
 	{
 		ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
 
+		if (player->state() == ChessPlayer::Thinking)
+			m_chessClock[i]->start(player->timeControl()->activeTimeLeft());
+		else
+			m_chessClock[i]->setTime(player->timeControl()->timeLeft());
+
 		connect(player, SIGNAL(startedThinking(int)),
 			m_chessClock[i], SLOT(start(int)));
 		connect(player, SIGNAL(stoppedThinking()),

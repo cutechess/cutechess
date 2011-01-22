@@ -28,37 +28,37 @@ ChessClock::ChessClock(QWidget* parent)
 	setSegmentStyle(QLCDNumber::Flat);
 }
 
-void ChessClock::start(int totalTime)
+void ChessClock::setTime(int totalTime)
 {
-	m_time.start();
-	m_totalTime = totalTime;
-	m_timerId = startTimer(1000);
-	updateDisplay();
-}
-
-void ChessClock::stop()
-{
-	killTimer(m_timerId);
-	updateDisplay();
-}
-
-void ChessClock::updateDisplay()
-{
-	int msLeft = m_totalTime - m_time.elapsed() - 500;
-	QTime timeLeft = QTime().addMSecs(abs(msLeft));
+	totalTime -= 500;
+	QTime timeLeft = QTime().addMSecs(abs(totalTime));
 
 	QString format;
 	if (timeLeft.hour() > 0)
 		format = "hh:mm:ss";
 	else
 		format = "mm:ss";
-	
+
 	QString str;
-	if (msLeft < 0)
+	if (totalTime < 0)
 		str += "-";
 	str += timeLeft.toString(format);
 	setNumDigits(str.length());
 	display(str);
+}
+
+void ChessClock::start(int totalTime)
+{
+	m_time.start();
+	m_totalTime = totalTime;
+	m_timerId = startTimer(1000);
+	setTime(totalTime);
+}
+
+void ChessClock::stop()
+{
+	killTimer(m_timerId);
+	setTime(m_totalTime - m_time.elapsed());
 }
 
 void ChessClock::timerEvent(QTimerEvent* event)
@@ -67,6 +67,5 @@ void ChessClock::timerEvent(QTimerEvent* event)
 		return;
 	
 	if (event->timerId() == m_timerId)
-		updateDisplay();
+		setTime(m_totalTime - m_time.elapsed());
 }
-
