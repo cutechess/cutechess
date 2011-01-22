@@ -66,9 +66,6 @@ static void skipSection(PgnStream& in, char type)
 	char end;
 	switch (type)
 	{
-	case '[':
-		end = ']';
-		break;
 	case '(':
 		end = ')';
 		break;
