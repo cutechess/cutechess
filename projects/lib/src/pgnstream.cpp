@@ -246,6 +246,8 @@ void PgnStream::parseTag()
 	{
 		if (!inQuotes && c == ']')
 			break;
+		if (c == '\n' || c == '\r')
+			break;
 		m_tokenString.append(c);
 
 		switch (phase)
