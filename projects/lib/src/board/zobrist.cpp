@@ -111,7 +111,7 @@ quint64 Zobrist::piece(const Piece& piece, int square) const
 	return m_keys[i];
 }
 
-quint64 Zobrist::handPiece(const Piece& piece, int slot) const
+quint64 Zobrist::reservePiece(const Piece& piece, int slot) const
 {
 	Q_ASSERT(slot >= 0);
 

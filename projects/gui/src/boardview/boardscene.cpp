@@ -83,7 +83,7 @@ void BoardScene::populate()
 		QList<Chess::Piece> types(m_board->reservePieceTypes());
 		foreach (const Chess::Piece& piece, types)
 		{
-			int count = m_board->handPieceCount(piece);
+			int count = m_board->reserveCount(piece);
 			for (int i = 0; i < count; i++)
 				m_reserve->addPiece(createPiece(piece));
 		}
@@ -211,7 +211,7 @@ void BoardScene::onTransitionFinished()
 	foreach (const Chess::Piece& piece, m_transition.reserve())
 	{
 		int count = m_reserve->pieceCount(piece);
-		int newCount = m_board->handPieceCount(piece);
+		int newCount = m_board->reserveCount(piece);
 
 		while (newCount > count)
 		{

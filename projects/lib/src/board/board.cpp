@@ -172,41 +172,41 @@ QString Board::pieceString(int pieceType) const
 	return m_pieceData[pieceType].name;
 }
 
-int Board::handPieceType(int pieceType) const
+int Board::reserveType(int pieceType) const
 {
 	return pieceType;
 }
 
-int Board::handPieceCount(Piece piece) const
+int Board::reserveCount(Piece piece) const
 {
 	if (!piece.isValid()
-	||  piece.type() >= m_handPieces[piece.side()].size())
+	||  piece.type() >= m_reserve[piece.side()].size())
 		return 0;
-	return m_handPieces[piece.side()][piece.type()];
+	return m_reserve[piece.side()][piece.type()];
 }
 
-void Board::addHandPiece(const Piece& piece, int count)
+void Board::addToReserve(const Piece& piece, int count)
 {
 	Q_ASSERT(piece.isValid());
 	Q_ASSERT(count > 0);
 
 	Side side(piece.side());
 	int type(piece.type());
-	if (type >= m_handPieces[side].size())
-		m_handPieces[side].resize(type + 1);
+	if (type >= m_reserve[side].size())
+		m_reserve[side].resize(type + 1);
 
-	int& oldCount = m_handPieces[side][type];
+	int& oldCount = m_reserve[side][type];
 	for (int i = 1; i <= count; i++)
-		xorKey(m_zobrist->handPiece(piece, oldCount++));
+		xorKey(m_zobrist->reservePiece(piece, oldCount++));
 }
 
-void Board::removeHandPiece(const Piece& piece)
+void Board::removeFromReserve(const Piece& piece)
 {
 	Q_ASSERT(piece.isValid());
-	Q_ASSERT(piece.type() < m_handPieces[piece.side()].size());
+	Q_ASSERT(piece.type() < m_reserve[piece.side()].size());
 
-	int& count = m_handPieces[piece.side()][piece.type()];
-	xorKey(m_zobrist->handPiece(piece, --count));
+	int& count = m_reserve[piece.side()][piece.type()];
+	xorKey(m_zobrist->reservePiece(piece, --count));
 }
 
 Square Board::chessSquare(int index) const
@@ -434,9 +434,9 @@ QString Board::fenString(FenNotation notation) const
 		for (int i = Side::White; i <= Side::Black; i++)
 		{
 			Side side = Side::Type(i);
-			for (int j = m_handPieces[i].size() - 1; j >= 1; j--)
+			for (int j = m_reserve[i].size() - 1; j >= 1; j--)
 			{
-				int count = m_handPieces[i][j];
+				int count = m_reserve[i][j];
 				if (count <= 0)
 					continue;
 
@@ -547,8 +547,8 @@ bool Board::setFenString(const QString& fen)
 		return false;
 
 	// Hand pieces
-	m_handPieces[Side::White].clear();
-	m_handPieces[Side::Black].clear();
+	m_reserve[Side::White].clear();
+	m_reserve[Side::Black].clear();
 	if (variantHasDrops()
 	&&  ++token != strList.end()
 	&&  *token != "-")
@@ -569,7 +569,7 @@ bool Board::setFenString(const QString& fen)
 			Piece tmp = pieceFromSymbol(*it);
 			if (!tmp.isValid())
 				return false;
-			addHandPiece(tmp, count);
+			addToReserve(tmp, count);
 		}
 	}
 
@@ -646,7 +646,7 @@ void Board::generateMoves(QVarLengthArray<Move>& moves, int pieceType) const
 
 void Board::generateDropMoves(QVarLengthArray<Move>& moves, int pieceType) const
 {
-	const QVector<int>& pieces(m_handPieces[m_side]);
+	const QVector<int>& pieces(m_reserve[m_side]);
 	if (pieces.isEmpty())
 		return;
 

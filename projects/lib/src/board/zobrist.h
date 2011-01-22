@@ -70,12 +70,12 @@ class LIB_EXPORT Zobrist
 		/*! Returns the zobrist value for \a piece at \a square. */
 		virtual quint64 piece(const Piece& piece, int square) const;
 		/*!
-		 * Returns the zobrist value for hand piece \a piece at \a slot.
+		 * Returns the zobrist value for reserve piece \a piece at \a slot.
 		 *
 		 * \note \a slot is zero-based, so the first piece of type
 		 * \a piece is at slot 0.
 		 */
-		virtual quint64 handPiece(const Piece& piece, int slot) const;
+		virtual quint64 reservePiece(const Piece& piece, int slot) const;
 
 	protected:
 		/*!

@@ -63,7 +63,7 @@ QString CrazyhouseBoard::defaultFenString() const
 	return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - KQkq - 0 1";
 }
 
-int CrazyhouseBoard::handPieceType(int pieceType) const
+int CrazyhouseBoard::reserveType(int pieceType) const
 {
 	if (pieceType >= PromotedKnight && pieceType <= PromotedQueen)
 		return Pawn;
@@ -181,13 +181,13 @@ void CrazyhouseBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	int ctype = captureType(move);
 	if (ctype != Piece::NoPiece)
 	{
-		Piece handPiece(sideToMove(), handPieceType(ctype));
-		addHandPiece(handPiece);
+		Piece reservePiece(sideToMove(), reserveType(ctype));
+		addToReserve(reservePiece);
 		if (transition != 0)
-			transition->addReservePiece(handPiece);
+			transition->addReservePiece(reservePiece);
 	}
 	else if (source == 0)
-		removeHandPiece(Piece(sideToMove(), prom));
+		removeFromReserve(Piece(sideToMove(), prom));
 
 	return WesternBoard::vMakeMove(tmp, transition);
 }
@@ -206,9 +206,9 @@ void CrazyhouseBoard::vUndoMove(const Move& move)
 
 	int ctype = captureType(move);
 	if (ctype != Piece::NoPiece)
-		removeHandPiece(Piece(sideToMove(), handPieceType(ctype)));
+		removeFromReserve(Piece(sideToMove(), reserveType(ctype)));
 	else if (source == 0)
-		addHandPiece(Piece(sideToMove(), prom));
+		addToReserve(Piece(sideToMove(), prom));
 }
 
 void CrazyhouseBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,

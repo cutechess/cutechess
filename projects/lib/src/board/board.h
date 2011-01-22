@@ -188,12 +188,12 @@ class LIB_EXPORT Board
 		/*! Returns the piece at \a square. */
 		Piece pieceAt(const Square& square) const;
 		/*!
-		 * Returns the number of held pieces of type \a piece.
+		 * Returns the number of reserve pieces of type \a piece.
 		 *
 		 * On variants that don't have piece drops this function
 		 * always returns 0.
 		 */
-		int handPieceCount(Piece piece) const;
+		int reserveCount(Piece piece) const;
 		/*! Converts \a piece into a piece symbol. */
 		QString pieceSymbol(Piece piece) const;
 		/*! Converts \a pieceSymbol into a Piece object. */
@@ -461,7 +461,7 @@ class LIB_EXPORT Board
 		/*! Returns the last move made in the game. */
 		const Move& lastMove() const;
 		/*!
-		 * Returns the hand piece type corresponding to \a pieceType.
+		 * Returns the reserve piece type corresponding to \a pieceType.
 		 *
 		 * The returned value is the type of piece a player receives
 		 * (in variants that have piece drops) when he captures a piece of
@@ -469,11 +469,11 @@ class LIB_EXPORT Board
 		 *
 		 * The default value is \a pieceType.
 		 */
-		virtual int handPieceType(int pieceType) const;
-		/*! Adds \a count hand pieces of type \a piece. */
-		void addHandPiece(const Piece& piece, int count = 1);
-		/*! Removes a hand piece of type \a piece. */
-		void removeHandPiece(const Piece& piece);
+		virtual int reserveType(int pieceType) const;
+		/*! Adds \a count pieces of type \a piece to the reserve. */
+		void addToReserve(const Piece& piece, int count = 1);
+		/*! Removes a piece of type \a piece from the reserve. */
+		void removeFromReserve(const Piece& piece);
 
 	private:
 		struct PieceData
@@ -501,7 +501,7 @@ class LIB_EXPORT Board
 		QVarLengthArray<PieceData> m_pieceData;
 		QVarLengthArray<Piece> m_squares;
 		QVector<MoveData> m_moveHistory;
-		QVector<int> m_handPieces[2];
+		QVector<int> m_reserve[2];
 };
 
 

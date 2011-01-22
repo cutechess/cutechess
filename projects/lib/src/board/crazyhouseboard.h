@@ -60,7 +60,7 @@ class LIB_EXPORT CrazyhouseBoard : public WesternBoard
 		};
 
 		// Inherited from WesternBoard
-		virtual int handPieceType(int pieceType) const;
+		virtual int reserveType(int pieceType) const;
 		virtual QString sanMoveString(const Move& move);
 		virtual Move moveFromSanString(const QString& str);
 		virtual void vMakeMove(const Move& move,
