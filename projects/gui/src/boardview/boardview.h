@@ -19,7 +19,8 @@
 #define BOARDVIEW_H
 
 #include <QGraphicsView>
-
+#include <QPixmap>
+class QTimer;
 
 /*!
  * \brief A view widget for displaying a QGraphicsScene.
@@ -39,9 +40,14 @@ class BoardView : public QGraphicsView
 	protected:
 		// Inherited from QGraphicsView
 		virtual void resizeEvent(QResizeEvent* event);
+		virtual void paintEvent(QPaintEvent* event);
 
 	private slots:
-		void fitToRect(const QRectF& rect);
+		void fitToRect();
+
+	private:
+		QTimer* m_resizeTimer;
+		QPixmap m_resizePixmap;
 };
 
 #endif // BOARDVIEW_H
