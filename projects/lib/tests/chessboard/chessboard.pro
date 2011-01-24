@@ -1,9 +1,4 @@
-TEMPLATE = app
-TARGET = test_board
-
 include(../tests.pri)
 
+TARGET = test_board
 SOURCES += test_board.cpp
-
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
