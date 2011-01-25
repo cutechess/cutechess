@@ -46,6 +46,7 @@ class BoardView : public QGraphicsView
 		void fitToRect();
 
 	private:
+		bool m_initialized;
 		QTimer* m_resizeTimer;
 		QPixmap m_resizePixmap;
 };

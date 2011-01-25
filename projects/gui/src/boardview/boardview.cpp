@@ -23,6 +23,7 @@
 
 BoardView::BoardView(QGraphicsScene* scene, QWidget* parent)
 	: QGraphicsView(scene, parent),
+	  m_initialized(false),
 	  m_resizeTimer(new QTimer(this))
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -61,6 +62,8 @@ void BoardView::paintEvent(QPaintEvent* event)
 void BoardView::resizeEvent(QResizeEvent* event)
 {
 	QGraphicsView::resizeEvent(event);
+	if (!m_initialized)
+		return;
 
 	if (m_resizePixmap.isNull())
 	{
@@ -74,6 +77,7 @@ void BoardView::resizeEvent(QResizeEvent* event)
 
 void BoardView::fitToRect()
 {
+	m_initialized = true;
 	m_resizePixmap = QPixmap();
 	fitInView(sceneRect(), Qt::KeepAspectRatio);
 }
