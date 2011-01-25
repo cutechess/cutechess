@@ -67,11 +67,17 @@ GameDatabaseDialog::GameDatabaseDialog()
 
 	m_nextMoveButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
 	m_previousMoveButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
+	m_skipToFirstMoveButton->setIcon(style()->standardIcon(QStyle::SP_MediaSkipBackward));
+	m_skipToLastMoveButton->setIcon(style()->standardIcon(QStyle::SP_MediaSkipForward));
 
 	connect(m_nextMoveButton, SIGNAL(clicked(bool)), this,
 		SLOT(viewNextMove()));
 	connect(m_previousMoveButton, SIGNAL(clicked(bool)), this,
 		SLOT(viewPreviousMove()));
+	connect(m_skipToFirstMoveButton, SIGNAL(clicked(bool)), this,
+		SLOT(viewFirstMove()));
+	connect(m_skipToLastMoveButton, SIGNAL(clicked(bool)), this,
+		SLOT(viewLastMove()));
 
 	connect(m_databasesListView->selectionModel(),
 		SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
@@ -191,6 +197,8 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 
 	m_previousMoveButton->setEnabled(false);
 	m_nextMoveButton->setEnabled(!m_moves.isEmpty());
+	m_skipToFirstMoveButton->setEnabled(false);
+	m_skipToLastMoveButton->setEnabled(!m_moves.isEmpty());
 }
 
 void GameDatabaseDialog::viewNextMove()
@@ -198,8 +206,13 @@ void GameDatabaseDialog::viewNextMove()
 	m_boardScene->makeMove(m_moves[m_moveIndex++].move);
 
 	m_previousMoveButton->setEnabled(true);
+	m_skipToFirstMoveButton->setEnabled(true);
+
 	if (m_moveIndex >= m_moves.count())
+	{
 		m_nextMoveButton->setEnabled(false);
+		m_skipToLastMoveButton->setEnabled(false);
+	}
 }
 
 void GameDatabaseDialog::viewPreviousMove()
@@ -207,11 +220,27 @@ void GameDatabaseDialog::viewPreviousMove()
 	m_moveIndex--;
 
 	if (m_moveIndex == 0)
+	{
 		m_previousMoveButton->setEnabled(false);
+		m_skipToFirstMoveButton->setEnabled(false);
+	}
 
 	m_boardScene->undoMove();
 
 	m_nextMoveButton->setEnabled(true);
+	m_skipToLastMoveButton->setEnabled(true);
+}
+
+void GameDatabaseDialog::viewFirstMove()
+{
+	while (m_moveIndex > 0)
+		viewPreviousMove();
+}
+
+void GameDatabaseDialog::viewLastMove()
+{
+	while (m_moveIndex < m_moves.count())
+		viewNextMove();
 }
 
 void GameDatabaseDialog::updateSearch(const QString& terms)

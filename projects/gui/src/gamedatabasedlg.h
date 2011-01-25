@@ -51,6 +51,8 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 		                          const QModelIndex& previous);
 		void viewNextMove();
 		void viewPreviousMove();
+		void viewFirstMove();
+		void viewLastMove();
 		void updateSearch(const QString& terms);
 		void onSearchTimeout();
 
