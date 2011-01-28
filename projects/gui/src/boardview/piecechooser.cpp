@@ -45,7 +45,6 @@ void PieceChooser::paint(QPainter* painter,
 	Q_UNUSED(option);
 	Q_UNUSED(widget);
 
-	painter->setRenderHint(QPainter::Antialiasing);
 	painter->setBrush(QColor(Qt::white));
 
 	QPen pen(painter->pen());

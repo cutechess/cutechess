@@ -28,6 +28,7 @@ BoardView::BoardView(QGraphicsScene* scene, QWidget* parent)
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setRenderHint(QPainter::Antialiasing);
 	setMouseTracking(true);
 
 	m_resizeTimer->setSingleShot(true);

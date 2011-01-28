@@ -55,8 +55,6 @@ void GraphicsPieceReserve::paint(QPainter* painter,
 	font.setPixelSize(m_tileHeight / 2);
 	painter->setFont(font);
 
-	painter->setRenderHint(QPainter::Antialiasing);
-
 	painter->drawRoundedRect(m_rect, 15.0, 15.0);
 	painter->drawLine(0, m_rect.top(), 0, m_rect.bottom());
 
