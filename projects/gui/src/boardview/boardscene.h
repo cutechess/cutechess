@@ -100,6 +100,7 @@ class BoardScene : public QGraphicsScene
 
 	protected:
 		// Inherited from QGraphicsScene
+		virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
 		virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 		virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
@@ -114,6 +115,7 @@ class BoardScene : public QGraphicsScene
 			Backward
 		};
 
+		GraphicsPiece* pieceAt(const QPointF& pos) const;
 		GraphicsPiece* createPiece(const Chess::Piece& piece);
 		QPropertyAnimation* pieceAnimation(GraphicsPiece* piece,
 						   const QPointF& endPoint) const;
@@ -140,6 +142,7 @@ class BoardScene : public QGraphicsScene
 		QMultiMap<GraphicsPiece*, Chess::Square> m_targets;
 		QList<Chess::GenericMove> m_moves;
 		Chess::GenericMove m_promotionMove;
+		GraphicsPiece* m_highlightPiece;
 };
 
 #endif // BOARDSCENE_H

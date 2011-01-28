@@ -37,7 +37,8 @@ BoardScene::BoardScene(QObject* parent)
 	  m_reserve(0),
 	  m_chooser(0),
 	  m_anim(0),
-	  m_renderer(new QSvgRenderer(QString(":/default.svg"), this))
+	  m_renderer(new QSvgRenderer(QString(":/default.svg"), this)),
+	  m_highlightPiece(0)
 {
 }
 
@@ -54,6 +55,7 @@ void BoardScene::setBoard(Chess::Board* board)
 	m_squares = 0;
 	m_reserve = 0;
 	m_chooser = 0;
+	m_highlightPiece = 0;
 	m_board = board;
 }
 
@@ -67,6 +69,7 @@ void BoardScene::populate()
 	m_squares = 0;
 	m_reserve = 0;
 	m_chooser = 0;
+	m_highlightPiece = 0;
 
 	m_squares = new GraphicsBoard(m_board->width(),
 				      m_board->height(),
@@ -139,6 +142,26 @@ void BoardScene::undoMove()
 	applyTransition(m_history.takeLast(), Backward);
 }
 
+void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+{
+	GraphicsPiece* piece = pieceAt(event->scenePos());
+	if (piece == m_highlightPiece || m_anim != 0 || m_chooser != 0)
+		return QGraphicsScene::mouseMoveEvent(event);
+
+	if (m_targets.contains(piece))
+	{
+		m_highlightPiece = piece;
+		m_squares->setHighlights(m_targets.values(piece));
+	}
+	else
+	{
+		m_highlightPiece = 0;
+		m_squares->clearHighlights();
+	}
+
+	QGraphicsScene::mouseMoveEvent(event);
+}
+
 void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
 	stopAnimation();
@@ -156,8 +179,7 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 		return;
 	}
 
-	QGraphicsItem* item = itemAt(event->scenePos());
-	GraphicsPiece* piece = qgraphicsitem_cast<GraphicsPiece*>(item);
+	GraphicsPiece* piece = pieceAt(event->scenePos());
 	if (m_targets.contains(piece))
 	{
 		m_sourcePos = piece->scenePos();
@@ -242,6 +264,18 @@ void BoardScene::onPromotionChosen(const Chess::Piece& promotion)
 		m_promotionMove.setPromotion(promotion.type());
 		emit humanMove(m_promotionMove, m_board->sideToMove());
 	}
+}
+
+GraphicsPiece* BoardScene::pieceAt(const QPointF& pos) const
+{
+	foreach (QGraphicsItem* item, items(pos))
+	{
+		GraphicsPiece* piece = qgraphicsitem_cast<GraphicsPiece*>(item);
+		if (piece != 0)
+			return piece;
+	}
+
+	return 0;
 }
 
 GraphicsPiece* BoardScene::createPiece(const Chess::Piece& piece)
@@ -341,6 +375,9 @@ void BoardScene::tryMove(GraphicsPiece* piece, const QPointF& targetPos)
 					piece->pieceType().type());
 		emit humanMove(move, m_board->sideToMove());
 	}
+
+	m_highlightPiece = 0;
+	m_squares->clearHighlights();
 }
 
 void BoardScene::selectPiece(const QList<Chess::Piece>& types,

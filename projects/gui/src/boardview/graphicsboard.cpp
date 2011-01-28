@@ -17,9 +17,32 @@
 
 #include "graphicsboard.h"
 #include <QPainter>
+#include <QPropertyAnimation>
 #include <board/square.h>
 #include "graphicspiece.h"
 
+
+class TargetHighlights : public QGraphicsObject
+{
+	public:
+		TargetHighlights(QGraphicsItem* parentItem = 0)
+			: QGraphicsObject(parentItem)
+		{
+			setFlag(ItemHasNoContents);
+		}
+		virtual QRectF boundingRect() const
+		{
+			return QRectF();
+		}
+		virtual void paint(QPainter* painter,
+				   const QStyleOptionGraphicsItem* option,
+				   QWidget* widget)
+		{
+			Q_UNUSED(painter);
+			Q_UNUSED(option);
+			Q_UNUSED(widget);
+		}
+};
 
 GraphicsBoard::GraphicsBoard(int files,
 			     int ranks,
@@ -31,7 +54,8 @@ GraphicsBoard::GraphicsBoard(int files,
 	  m_squareSize(squareSize),
 	  m_lightColor(QColor("#ffce9e")),
 	  m_darkColor(QColor("#d18b47")),
-	  m_squares(files * ranks)
+	  m_squares(files * ranks),
+	  m_highlightAnim(0)
 {
 	Q_ASSERT(files > 0);
 	Q_ASSERT(ranks > 0);
@@ -177,4 +201,47 @@ int GraphicsBoard::squareIndex(const Chess::Square& square) const
 		return -1;
 
 	return square.rank() * m_files + square.file();
+}
+
+void GraphicsBoard::clearHighlights()
+{
+	if (m_highlightAnim != 0)
+	{
+		m_highlightAnim->setDirection(QAbstractAnimation::Backward);
+		m_highlightAnim->start(QAbstractAnimation::DeleteWhenStopped);
+		m_highlightAnim = 0;
+	}
+}
+
+void GraphicsBoard::setHighlights(const QList<Chess::Square>& squares)
+{
+	clearHighlights();
+	if (squares.isEmpty())
+		return;
+
+	TargetHighlights* targets = new TargetHighlights(this);
+
+	QRectF rect;
+	rect.setSize(QSizeF(m_squareSize / 3, m_squareSize / 3));
+	rect.moveCenter(QPointF(0, 0));
+	QPen pen(Qt::white, m_squareSize / 20);
+	QBrush brush(Qt::black);
+
+	foreach (const Chess::Square& sq, squares)
+	{
+		QGraphicsEllipseItem* dot = new QGraphicsEllipseItem(rect, targets);
+
+		dot->setPen(pen);
+		dot->setBrush(brush);
+		dot->setPos(squarePos(sq));
+	}
+
+	m_highlightAnim = new QPropertyAnimation(targets, "opacity");
+	targets->setParent(m_highlightAnim);
+
+	m_highlightAnim->setStartValue(0.0);
+	m_highlightAnim->setEndValue(1.0);
+	m_highlightAnim->setDuration(500);
+	m_highlightAnim->setEasingCurve(QEasingCurve::InOutQuad);
+	m_highlightAnim->start(QAbstractAnimation::KeepWhenStopped);
 }

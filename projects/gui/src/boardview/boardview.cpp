@@ -28,6 +28,7 @@ BoardView::BoardView(QGraphicsScene* scene, QWidget* parent)
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setMouseTracking(true);
 
 	m_resizeTimer->setSingleShot(true);
 	m_resizeTimer->setInterval(300);

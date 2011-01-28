@@ -24,6 +24,7 @@
 #include <board/square.h>
 #include <board/piece.h>
 class GraphicsPiece;
+class QPropertyAnimation;
 
 
 /*!
@@ -111,6 +112,16 @@ class GraphicsBoard : public QGraphicsItem
 		void makeMove(const Chess::Square& source,
 			      const Chess::Square& target);
 
+		/*! Clears all highlights. */
+		void clearHighlights();
+		/*!
+		 * Highlights squares.
+		 *
+		 * This function clears all previous highlights and marks the
+		 * squares in \a squares as possible target squares of a chess move.
+		 */
+		void setHighlights(const QList<Chess::Square>& squares);
+
 	private:
 		int squareIndex(const Chess::Square& square) const;
 
@@ -121,6 +132,7 @@ class GraphicsBoard : public QGraphicsItem
 		QColor m_lightColor;
 		QColor m_darkColor;
 		QVector<GraphicsPiece*> m_squares;
+		QPropertyAnimation* m_highlightAnim;
 };
 
 #endif // GRAPHICSBOARD_H
