@@ -70,6 +70,7 @@ void BoardView::resizeEvent(QResizeEvent* event)
 	if (m_resizePixmap.isNull())
 	{
 		m_resizePixmap = QPixmap(sceneRect().toRect().size());
+		m_resizePixmap.fill(Qt::transparent);
 		QPainter painter(&m_resizePixmap);
 		scene()->render(&painter);
 	}
