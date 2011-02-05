@@ -60,6 +60,12 @@ class LIB_EXPORT PgnGameEntry
 		 */
 		void write(QDataStream& out) const;
 
+		/*!
+		 * Returns true if the PGN tags match the wildcard \a pattern.
+		 * The matching is case insensitive.
+		 */
+		bool match(const QByteArray& pattern) const;
+
 		/*! Returns the stream position where the game begins. */
 		qint64 pos() const;
 		/*! Returns the line number where the game begins. */

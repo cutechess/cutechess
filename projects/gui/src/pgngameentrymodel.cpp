@@ -20,20 +20,17 @@
 
 struct EntryContains
 {
-	EntryContains(const QString &pattern)
-		: m_pattern(pattern) { }
+	EntryContains(const QString& pattern)
+		: m_pattern(pattern.toLatin1()) { }
 
 	typedef bool result_type;
 
-	bool operator()(const PgnGameEntry& entry)
+	inline bool operator()(const PgnGameEntry& entry)
 	{
-		return entry.white().contains(m_pattern, Qt::CaseInsensitive) ||
-		       entry.black().contains(m_pattern, Qt::CaseInsensitive) ||
-		       entry.event().contains(m_pattern, Qt::CaseInsensitive) ||
-		       entry.site().contains(m_pattern, Qt::CaseInsensitive);
+		return entry.match(m_pattern);
 	}
 
-	QString m_pattern;
+	QByteArray m_pattern;
 };
 
 

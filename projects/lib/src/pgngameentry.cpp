@@ -46,6 +46,42 @@ PgnGameEntry::PgnGameEntry()
 {
 }
 
+static bool s_stringContains(const char* s1, const char* s2)
+{
+	Q_ASSERT(s1 != 0);
+	Q_ASSERT(s2 != 0);
+
+	if (!*s2)
+		return true;
+
+	while (*s1)
+	{
+		if (toupper(*s1) == toupper(*s2))
+		{
+			const char* a = s1;
+			const char* b = s2;
+
+			while (*a && *b)
+			{
+				if (toupper(*a) != toupper(*b))
+					break;
+				a++;
+				b++;
+			}
+			if (!*b)
+				return true;
+		}
+		s1++;
+	}
+
+	return false;
+}
+
+bool PgnGameEntry::match(const QByteArray& pattern) const
+{
+	return s_stringContains(m_data.constData(), pattern.constData());
+}
+
 void PgnGameEntry::addTag(const QByteArray& tagValue)
 {
 	int size = qMin(127, tagValue.size());
