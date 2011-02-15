@@ -32,11 +32,6 @@ PlainTextLog::PlainTextLog(const QString& text, QWidget* parent)
 	setReadOnly(true);
 }
 
-void PlainTextLog::saveLogToFile()
-{
-	emit saveLogToFileRequest();
-}
-
 void PlainTextLog::contextMenuEvent(QContextMenuEvent* event)
 {
 	QMenu* menu = createStandardContextMenu();
@@ -45,7 +40,7 @@ void PlainTextLog::contextMenuEvent(QContextMenuEvent* event)
 	menu->addAction(tr("Clear Log"), this, SLOT(clear()));
 
 	menu->addSeparator();
-	menu->addAction(tr("Save Log to File..."), this, SLOT(saveLogToFile()));
+	menu->addAction(tr("Save Log to File..."), this, SIGNAL(saveLogToFileRequest()));
 
 	menu->exec(event->globalPos());
 	delete menu;

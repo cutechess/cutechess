@@ -50,9 +50,6 @@ class PlainTextLog : public QPlainTextEdit
 		// Inherited from QPlainTextEdit
 		virtual void contextMenuEvent(QContextMenuEvent* event);
 
-	private slots:
-		void saveLogToFile();
-
 };
 
 #endif // PLAIN_TEXT_LOG_H
