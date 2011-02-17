@@ -21,13 +21,14 @@
 
 #include <board/boardfactory.h>
 #include <chessgame.h>
-#include <chessplayer.h>
 #include <timecontrol.h>
 #include <engineconfiguration.h>
 #include <enginemanager.h>
-#include <enginefactory.h>
-#include <engineprocess.h>
-#include <humanplayer.h>
+#include <gamemanager.h>
+#include <playerbuilder.h>
+#include <humanbuilder.h>
+#include <enginebuilder.h>
+#include <chessplayer.h>
 
 #include "cutechessapp.h"
 #include "boardview/boardscene.h"
@@ -234,7 +235,36 @@ void MainWindow::createDockWindows()
 
 void MainWindow::newGame()
 {
-	CuteChessApplication::instance()->newDefaultGame();
+	NewGameDialog dlg(this);
+	if (dlg.exec() != QDialog::Accepted)
+		return;
+
+	PlayerBuilder* player[2] = { 0, 0 };
+	ChessGame* game = new ChessGame(Chess::BoardFactory::create(dlg.selectedVariant()),
+		new PgnGame());
+
+	TimeControl tc;
+	tc.setTimePerTc(180000);
+	tc.setMovesPerTc(40);
+	game->setTimeControl(tc);
+
+	for (int i = 0; i < 2; i++)
+	{
+		Chess::Side side = Chess::Side::Type(i);
+
+		if (dlg.playerType(side) == NewGameDialog::CPU)
+		{
+			EngineConfiguration config =
+				CuteChessApplication::instance()->engineManager()->engines().at(dlg.selectedEngineIndex(side));
+
+			player[i] = new EngineBuilder(config);
+		}
+		else
+			player[i] = new HumanBuilder();
+	}
+
+	CuteChessApplication::instance()->gameManager()->newGame(game,
+		player[0], player[1]);
 }
 
 void MainWindow::gameProperties()
