@@ -168,6 +168,10 @@ void PgnGameEntryModel::fetchMore(const QModelIndex& parent)
 	int remainder = m_filtered.resultCount() - m_entryCount;
 	int entriesToFetch = qMin(1024, remainder);
 
+	Q_ASSERT(entriesToFetch >= 0);
+	if (entriesToFetch == 0)
+		return;
+
 	beginInsertRows(QModelIndex(), m_entryCount, m_entryCount + entriesToFetch - 1);
 	m_entryCount += entriesToFetch;
 	endInsertRows();
