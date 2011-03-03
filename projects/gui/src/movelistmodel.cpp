@@ -37,11 +37,14 @@ void MoveListModel::setGame(ChessGame* game)
 		disconnect(m_game);
 		m_game->disconnect(this);
 	}
-
 	m_game = game;
-	connect(m_game, SIGNAL(moveMade(Chess::Move)),
-		this, SLOT(onMoveMade()));
 
+	m_moveList.clear();
+	foreach (const PgnGame::MoveData& md, m_game->pgn()->moves())
+		m_moveList.append(qMakePair(md.moveString, md.comment));
+
+	connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
+		this, SLOT(onMoveMade(Chess::GenericMove, QString, QString)));
 	reset();
 }
 
@@ -68,7 +71,7 @@ int MoveListModel::rowCount(const QModelIndex& parent) const
 
 	if (m_game)
 	{
-		int movesCount = m_game->moves().size();
+		int movesCount = m_moveList.size();
 
 		if (movesCount % 2 == 0)
 		{
@@ -98,16 +101,16 @@ QVariant MoveListModel::data(const QModelIndex& index, int role) const
 		if (index.column() == 0)
 			return QString::number(index.row() + 1);
 
-		const QVector<PgnGame::MoveData> moves = m_game->pgn()->moves();
-
-		if (moves.size() > ((index.row() * 2) + index.column() - 1))
+		if (m_moveList.size() > ((index.row() * 2) + index.column() - 1))
 		{
-			const PgnGame::MoveData move = moves.at((index.row() * 2) + index.column() - 1);
 
-			if (move.comment.isEmpty())
-				return move.moveString;
+			int i = (index.row() * 2) + index.column() - 1;
+			const QPair<QString, QString> pair(m_moveList.at(i));
+
+			if (pair.second.isEmpty())
+				return pair.first;
 			else
-				return move.moveString + " {" + move.comment + " }";
+				return pair.first + " {" + pair.second + " }";
 		}
 	}
 
@@ -123,14 +126,14 @@ QVariant MoveListModel::headerData(int section, Qt::Orientation orientation,
 	return QVariant();
 }
 
-void MoveListModel::boardReset()
+void MoveListModel::onMoveMade(const Chess::GenericMove& move,
+			       const QString& sanString,
+			       const QString& comment)
 {
-	reset();
-}
+	Q_UNUSED(move);
 
-void MoveListModel::onMoveMade()
-{
-	int movesCount = m_game->moves().size();
+	m_moveList.append(qMakePair(sanString, comment));
+	int movesCount = m_moveList.size();
 
 	if (movesCount % 2 == 0)
 	{

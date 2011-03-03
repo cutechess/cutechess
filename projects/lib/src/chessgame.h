@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QVector>
 #include <QStringList>
+#include <QSemaphore>
 #include "pgngame.h"
 #include "board/result.h"
 #include "board/move.h"
@@ -62,6 +63,9 @@ class LIB_EXPORT ChessGame : public QObject
 
 		void generateOpening();
 
+		void lockThread();
+		void unlockThread();
+
 	public slots:
 		void start();
 		void stop();
@@ -71,7 +75,9 @@ class LIB_EXPORT ChessGame : public QObject
 	signals:
 		void humanEnabled(bool);
 		void fenChanged(const QString& fenString);
-		void moveMade(const Chess::Move& move);
+		void moveMade(const Chess::GenericMove& move,
+			      const QString& sanString,
+			      const QString& comment);
 		void gameEnded();
 		void playersReady();
 
@@ -81,6 +87,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void onForfeit(const Chess::Result& result);
 		void onPlayerReady();
 		void syncPlayers();
+		void pauseThread();
 
 	private:
 		void adjudication(const MoveEvaluation& eval);
@@ -91,6 +98,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void resetBoard();
 		void initializePgn();
 		void addPgnMove(const Chess::Move& move, const QString& comment);
+		void emitLastMove();
 		
 		Chess::Board* m_board;
 		ChessPlayer* m_player[2];
@@ -109,6 +117,8 @@ class LIB_EXPORT ChessGame : public QObject
 		Chess::Result m_result;
 		QVector<Chess::Move> m_moves;
 		PgnGame* m_pgn;
+		QSemaphore m_pauseSem;
+		QSemaphore m_resumeSem;
 };
 
 #endif // CHESSGAME_H

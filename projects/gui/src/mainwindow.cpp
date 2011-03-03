@@ -62,11 +62,6 @@ MainWindow::MainWindow(ChessGame* game)
 
 	m_moveListModel = new MoveListModel(this);
 
-	connect(game, SIGNAL(fenChanged(QString)),
-		m_boardScene, SLOT(setFenString(QString)));
-	connect(game, SIGNAL(moveMade(Chess::Move)),
-		m_boardScene, SLOT(makeMove(Chess::Move)));
-
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
 	mainLayout->addWidget(m_boardView);
@@ -87,6 +82,11 @@ MainWindow::MainWindow(ChessGame* game)
 	createToolBars();
 	createDockWindows();
 
+	m_game->lockThread();
+	connect(m_game, SIGNAL(fenChanged(QString)),
+		m_boardScene, SLOT(setFenString(QString)));
+	connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
+		m_boardScene, SLOT(makeMove(Chess::GenericMove)));
 	connect(m_game, SIGNAL(humanEnabled(bool)),
 			m_boardView, SLOT(setEnabled(bool)));
 
@@ -112,10 +112,11 @@ MainWindow::MainWindow(ChessGame* game)
 	}
 
 	m_moveListModel->setGame(m_game);
-	m_boardScene->setBoard(m_game->board()->copy());
+	m_boardScene->setBoard(m_game->pgn()->createBoard());
 	m_boardScene->populate();
 
 	updateWindowTitle();
+	game->unlockThread();
 }
 
 MainWindow::~MainWindow()
@@ -271,16 +272,20 @@ void MainWindow::gameProperties()
 {
 	GamePropertiesDialog dlg(this);
 
+	m_game->lockThread();
 	dlg.setEvent(m_game->pgn()->event());
 	dlg.setSite(m_game->pgn()->site());
 	dlg.setRound(m_game->pgn()->round());
+	m_game->unlockThread();
 
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
+	m_game->lockThread();
 	m_game->pgn()->setEvent(dlg.event());
 	m_game->pgn()->setSite(dlg.site());
 	m_game->pgn()->setRound(dlg.round());
+	m_game->unlockThread();
 
 	setWindowModified(true);
 }
@@ -432,7 +437,11 @@ bool MainWindow::saveAs()
 
 bool MainWindow::saveGame(const QString& fileName)
 {
-	if (!m_game->pgn()->write(fileName))
+	m_game->lockThread();
+	bool ok = m_game->pgn()->write(fileName);
+	m_game->unlockThread();
+
+	if (!ok)
 		return false;
 
 	m_currentFile = fileName;

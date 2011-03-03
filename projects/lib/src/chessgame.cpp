@@ -16,6 +16,7 @@
 */
 
 #include "chessgame.h"
+#include <QThread>
 #include <QtDebug>
 #include "board/board.h"
 #include "chessplayer.h"
@@ -243,6 +244,12 @@ void ChessGame::addPgnMove(const Chess::Move& move, const QString& comment)
 	m_pgn->addMove(md);
 }
 
+void ChessGame::emitLastMove()
+{
+	PgnGame::MoveData md(m_pgn->moves().last());
+	emit moveMade(md.move, md.moveString, md.comment);
+}
+
 void ChessGame::onMoveMade(const Chess::Move& move)
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
@@ -275,7 +282,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	else
 		stop();
 
-	emit moveMade(move);
+	emitLastMove();
 }
 
 void ChessGame::startTurn()
@@ -428,6 +435,29 @@ void ChessGame::generateOpening()
 	}
 }
 
+void ChessGame::pauseThread()
+{
+	m_pauseSem.release();
+	m_resumeSem.acquire();
+}
+
+void ChessGame::lockThread()
+{
+	if (QThread::currentThread() == thread())
+		return;
+
+	QMetaObject::invokeMethod(this, "pauseThread", Qt::QueuedConnection);
+	m_pauseSem.acquire();
+}
+
+void ChessGame::unlockThread()
+{
+	if (QThread::currentThread() == thread())
+		return;
+
+	m_resumeSem.release();
+}
+
 void ChessGame::setDrawThreshold(int moveNumber, int score)
 {
 	m_drawMoveNum = moveNumber;
@@ -557,7 +587,7 @@ void ChessGame::startGame()
 		m_player[side]->setTimeControl(m_timeControl[side]);
 		m_player[side]->newGame(side, m_player[side.opposite()], m_board);
 	}
-	
+
 	// Play the forced opening moves first
 	for (int i = 0; i < m_moves.size(); i++)
 	{
@@ -570,7 +600,7 @@ void ChessGame::startGame()
 		playerToWait()->makeMove(move);
 		m_board->makeMove(move);
 		
-		emit moveMade(move);
+		emitLastMove();
 
 		if (!m_board->result().isNone())
 		{

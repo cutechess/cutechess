@@ -20,8 +20,10 @@
 
 #include <QAbstractItemModel>
 #include <QStringList>
+#include <QPair>
 
 class ChessGame;
+namespace Chess { class GenericMove; }
 
 /*!
  * \brief Supplies chess move information to views.
@@ -46,14 +48,14 @@ class MoveListModel : public QAbstractItemModel
 		QVariant headerData(int section, Qt::Orientation orientation,
 		                    int role = Qt::DisplayRole) const;
 	private slots:
-		void boardReset();
-		void onMoveMade();
+		void onMoveMade(const Chess::GenericMove& move,
+				const QString& sanString,
+				const QString& comment);
 
 	private:
 		static const QStringList m_headers;
 		ChessGame* m_game;
-
+		QList< QPair<QString, QString> > m_moveList;
 };
 
 #endif // MOVE_LIST_MODEL_H
-
