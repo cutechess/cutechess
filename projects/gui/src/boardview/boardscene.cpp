@@ -182,6 +182,7 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 	GraphicsPiece* piece = pieceAt(event->scenePos());
 	if (m_targets.contains(piece))
 	{
+		piece->setFlag(QGraphicsItem::ItemIsMovable, true);
 		m_sourcePos = piece->scenePos();
 		piece->setParentItem(0);
 		piece->setPos(m_sourcePos);
@@ -189,7 +190,10 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 		QGraphicsScene::mousePressEvent(event);
 	}
 	else
+	{
+		piece->setFlag(QGraphicsItem::ItemIsMovable, false);
 		event->ignore();
+	}
 }
 
 void BoardScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)

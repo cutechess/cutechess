@@ -33,7 +33,6 @@ GraphicsPiece::GraphicsPiece(const Chess::Piece& piece,
 	  m_container(0)
 {
 	setAcceptedMouseButtons(Qt::LeftButton);
-	setFlag(ItemIsMovable);
 	setCacheMode(DeviceCoordinateCache);
 }
 
