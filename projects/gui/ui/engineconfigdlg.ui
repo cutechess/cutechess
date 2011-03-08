@@ -6,128 +6,150 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>355</height>
+    <width>436</width>
+    <height>425</height>
    </rect>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QGroupBox" name="groupBox">
-       <property name="title">
-        <string>Engine Configuration</string>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-       <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
-         <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>&amp;Name:</string>
-            </property>
-            <property name="buddy">
-             <cstring>m_nameEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="m_nameEdit"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Co&amp;mmand:</string>
-            </property>
-            <property name="buddy">
-             <cstring>m_commandEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLineEdit" name="m_commandEdit"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="m_browseCmdBtn">
-              <property name="text">
-               <string>Browse...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Working &amp;Directory:</string>
-            </property>
-            <property name="buddy">
-             <cstring>m_workingDirEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QLineEdit" name="m_workingDirEdit"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="m_browseWorkingDirBtn">
-              <property name="toolTip">
-               <string>Browse working directory.</string>
-              </property>
-              <property name="text">
-               <string>Browse...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>&amp;Protocol:</string>
-            </property>
-            <property name="buddy">
-             <cstring>m_protocolCombo</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QComboBox" name="m_protocolCombo"/>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>&amp;Init Strings:</string>
-            </property>
-            <property name="buddy">
-             <cstring>m_initStringEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QPlainTextEdit" name="m_initStringEdit">
-            <property name="lineWrapMode">
-             <enum>QPlainTextEdit::NoWrap</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QCheckBox" name="m_whitePovCheck">
-            <property name="text">
-             <string>Scores from &amp;white's perspective</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Basic</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <layout class="QFormLayout" name="formLayout">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>&amp;Name:</string>
+             </property>
+             <property name="buddy">
+              <cstring>m_nameEdit</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="m_nameEdit"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Co&amp;mmand:</string>
+             </property>
+             <property name="buddy">
+              <cstring>m_commandEdit</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLineEdit" name="m_commandEdit"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="m_browseCmdBtn">
+               <property name="text">
+                <string>Browse...</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Working &amp;Directory:</string>
+             </property>
+             <property name="buddy">
+              <cstring>m_workingDirEdit</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLineEdit" name="m_workingDirEdit"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="m_browseWorkingDirBtn">
+               <property name="toolTip">
+                <string>Browse working directory.</string>
+               </property>
+               <property name="text">
+                <string>Browse...</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>&amp;Protocol:</string>
+             </property>
+             <property name="buddy">
+              <cstring>m_protocolCombo</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QComboBox" name="m_protocolCombo"/>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>&amp;Init Strings:</string>
+             </property>
+             <property name="buddy">
+              <cstring>m_initStringEdit</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QPlainTextEdit" name="m_initStringEdit">
+             <property name="lineWrapMode">
+              <enum>QPlainTextEdit::NoWrap</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QCheckBox" name="m_whitePovCheck">
+             <property name="text">
+              <string>Scores from &amp;white's perspective</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Advanced</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QTreeView" name="m_optionsView">
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
+           <property name="rootIsDecorated">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
      <item>
@@ -144,15 +166,6 @@
    </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>m_nameEdit</tabstop>
-  <tabstop>m_commandEdit</tabstop>
-  <tabstop>m_browseCmdBtn</tabstop>
-  <tabstop>m_workingDirEdit</tabstop>
-  <tabstop>m_browseWorkingDirBtn</tabstop>
-  <tabstop>m_protocolCombo</tabstop>
-  <tabstop>buttonBox</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>
