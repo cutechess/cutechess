@@ -18,7 +18,8 @@ HEADERS += chessclock.h \
     pgndatabase.h \
     pgngameentrymodel.h \
     pgndatabasemodel.h \
-    engineoptiondelegate.h
+    engineoptiondelegate.h \
+    engineoptionmodel.h
 SOURCES += main.cpp \
     chessclock.cpp \
     engineconfigurationmodel.cpp \
@@ -38,4 +39,5 @@ SOURCES += main.cpp \
     pgndatabase.cpp \
     pgngameentrymodel.cpp \
     pgndatabasemodel.cpp \
-    engineoptiondelegate.cpp
+    engineoptiondelegate.cpp \
+    engineoptionmodel.cpp
