@@ -17,7 +17,8 @@ HEADERS += chessclock.h \
     importprogressdlg.h \
     pgndatabase.h \
     pgngameentrymodel.h \
-    pgndatabasemodel.h
+    pgndatabasemodel.h \
+    engineoptiondelegate.h
 SOURCES += main.cpp \
     chessclock.cpp \
     engineconfigurationmodel.cpp \
@@ -36,4 +37,5 @@ SOURCES += main.cpp \
     importprogressdlg.cpp \
     pgndatabase.cpp \
     pgngameentrymodel.cpp \
-    pgndatabasemodel.cpp
+    pgndatabasemodel.cpp \
+    engineoptiondelegate.cpp
