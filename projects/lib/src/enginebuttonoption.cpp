@@ -14,3 +14,8 @@ bool EngineButtonOption::isValid(const QVariant& value) const
 {
 	return value.isNull();
 }
+
+QVariant EngineButtonOption::toQVariant() const
+{
+	return QVariant::fromValue(*this);
+}

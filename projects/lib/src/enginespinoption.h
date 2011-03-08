@@ -21,6 +21,8 @@ class LIB_EXPORT EngineSpinOption : public EngineOption
 		void setMin(int min);
 		void setMax(int max);
 
+		QVariant toQVariant() const;
+
 	private:
 		int m_min;
 		int m_max;

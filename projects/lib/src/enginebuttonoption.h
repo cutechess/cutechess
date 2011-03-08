@@ -10,6 +10,7 @@ class LIB_EXPORT EngineButtonOption : public EngineOption
 		EngineButtonOption(const QString& name);
 
 		bool isValid(const QVariant& value) const;
+		QVariant toQVariant() const;
 };
 
 Q_DECLARE_METATYPE(EngineButtonOption)

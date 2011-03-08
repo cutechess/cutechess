@@ -16,3 +16,13 @@ bool EngineCheckOption::isValid(const QVariant& value) const
 	}
 	return false;
 }
+
+QVariant EngineCheckOption::toQVariant() const
+{
+	if (isValid(value()))
+		return value();
+	else if (isValid(defaultValue()))
+		return defaultValue();
+	else
+		return false;
+}

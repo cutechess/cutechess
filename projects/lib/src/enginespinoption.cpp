@@ -49,3 +49,8 @@ void EngineSpinOption::setMax(int max)
 {
 	m_max = max;
 }
+
+QVariant EngineSpinOption::toQVariant() const
+{
+	return QVariant::fromValue(*this);
+}

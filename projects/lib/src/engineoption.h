@@ -23,6 +23,8 @@ class LIB_EXPORT EngineOption
 		void setValue(const QVariant& value);
 		void setDefaultValue(const QVariant& value);
 
+		virtual QVariant toQVariant() const = 0;
+
 	private:
 		QString m_name;
 		QVariant m_value;
