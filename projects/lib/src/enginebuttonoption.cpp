@@ -1,5 +1,10 @@
 #include "enginebuttonoption.h"
 
+EngineButtonOption::EngineButtonOption()
+	: EngineOption(QString())
+{
+}
+
 EngineButtonOption::EngineButtonOption(const QString& name)
 	: EngineOption(name)
 {

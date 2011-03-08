@@ -1,5 +1,10 @@
 #include "enginecombooption.h"
 
+EngineComboOption::EngineComboOption()
+	: EngineOption(QString())
+{
+}
+
 EngineComboOption::EngineComboOption(const QString& name,
 				     const QVariant& value,
 				     const QVariant& defaultValue,

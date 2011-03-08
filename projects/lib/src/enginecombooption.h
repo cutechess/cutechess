@@ -7,6 +7,7 @@
 class LIB_EXPORT EngineComboOption : public EngineOption
 {
 	public:
+		EngineComboOption();
 		EngineComboOption(const QString& name,
 				  const QVariant& value = QVariant(),
 				  const QVariant& defaultValue = QVariant(),
@@ -20,5 +21,7 @@ class LIB_EXPORT EngineComboOption : public EngineOption
 	private:
 		QStringList m_choices;
 };
+
+Q_DECLARE_METATYPE(EngineComboOption)
 
 #endif // ENGINECOMBOOPTION_H

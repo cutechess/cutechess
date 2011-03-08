@@ -1,5 +1,10 @@
 #include "enginespinoption.h"
 
+EngineSpinOption::EngineSpinOption()
+	: EngineOption(QString())
+{
+}
+
 EngineSpinOption::EngineSpinOption(const QString& name,
 				   const QVariant& value,
 				   const QVariant& defaultValue,
