@@ -114,6 +114,9 @@ void PieceChooser::destroy()
 
 void PieceChooser::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
+	if (event->button() != Qt::LeftButton)
+		return;
+
 	event->setAccepted(true);
 	QPointF pos(mapFromScene(event->scenePos()));
 

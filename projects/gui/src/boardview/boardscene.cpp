@@ -166,12 +166,6 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
 	stopAnimation();
 
-	if (event->button() != Qt::LeftButton)
-	{
-		event->ignore();
-		return;
-	}
-
 	if (m_chooser != 0)
 	{
 		bool ok = sendEvent(m_chooser, event);
@@ -180,6 +174,9 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 	}
 
 	GraphicsPiece* piece = pieceAt(event->scenePos());
+	if (piece == 0 || event->button() != Qt::LeftButton)
+		return;
+
 	if (m_targets.contains(piece))
 	{
 		piece->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -190,10 +187,7 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 		QGraphicsScene::mousePressEvent(event);
 	}
 	else
-	{
 		piece->setFlag(QGraphicsItem::ItemIsMovable, false);
-		event->ignore();
-	}
 }
 
 void BoardScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
