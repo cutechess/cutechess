@@ -12,6 +12,9 @@ class LIB_EXPORT EngineOption
 				      const QVariant& defaultValue = QVariant());
 		virtual ~EngineOption() {}
 
+		/*! Creates and returns a deep copy of this option. */
+		virtual EngineOption* copy() const = 0;
+
 		bool isValid() const;
 		virtual bool isValid(const QVariant& value) const = 0;
 

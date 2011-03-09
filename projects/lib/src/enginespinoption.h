@@ -13,6 +13,8 @@ class LIB_EXPORT EngineSpinOption : public EngineOption
 				 int min = 0,
 				 int max = 0);
 
+		EngineOption* copy() const;
+
 		bool isValid(const QVariant& value) const;
 
 		int min() const;

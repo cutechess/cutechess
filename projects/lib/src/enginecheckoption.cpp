@@ -7,6 +7,11 @@ EngineCheckOption::EngineCheckOption(const QString& name,
 {
 }
 
+EngineOption* EngineCheckOption::copy() const
+{
+	return new EngineCheckOption(*this);
+}
+
 bool EngineCheckOption::isValid(const QVariant& value) const
 {
 	if (value.canConvert(QVariant::Bool))

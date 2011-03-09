@@ -14,6 +14,11 @@ EngineComboOption::EngineComboOption(const QString& name,
 {
 }
 
+EngineOption* EngineComboOption::copy() const
+{
+	return new EngineComboOption(*this);
+}
+
 bool EngineComboOption::isValid(const QVariant& value) const
 {
 	return m_choices.contains(value.toString());

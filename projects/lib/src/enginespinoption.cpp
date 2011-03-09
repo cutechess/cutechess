@@ -16,6 +16,11 @@ EngineSpinOption::EngineSpinOption(const QString& name,
 {
 }
 
+EngineOption* EngineSpinOption::copy() const
+{
+	return new EngineSpinOption(*this);
+}
+
 bool EngineSpinOption::isValid(const QVariant& value) const
 {
 	if (m_min > m_max)

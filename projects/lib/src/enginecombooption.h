@@ -13,6 +13,8 @@ class LIB_EXPORT EngineComboOption : public EngineOption
 				  const QVariant& defaultValue = QVariant(),
 				  const QStringList& choices = QStringList());
 
+		EngineOption* copy() const;
+
 		bool isValid(const QVariant& value) const;
 
 		QStringList choices() const;

@@ -10,6 +10,11 @@ EngineButtonOption::EngineButtonOption(const QString& name)
 {
 }
 
+EngineOption* EngineButtonOption::copy() const
+{
+	return new EngineButtonOption(*this);
+}
+
 bool EngineButtonOption::isValid(const QVariant& value) const
 {
 	return value.isNull();

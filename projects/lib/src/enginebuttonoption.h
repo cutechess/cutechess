@@ -9,6 +9,8 @@ class LIB_EXPORT EngineButtonOption : public EngineOption
 		EngineButtonOption();
 		EngineButtonOption(const QString& name);
 
+		EngineOption* copy() const;
+
 		bool isValid(const QVariant& value) const;
 		QVariant toQVariant() const;
 };

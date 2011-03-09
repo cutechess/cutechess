@@ -7,6 +7,11 @@ EngineTextOption::EngineTextOption(const QString& name,
 {
 }
 
+EngineOption* EngineTextOption::copy() const
+{
+	return new EngineTextOption(*this);
+}
+
 bool EngineTextOption::isValid(const QVariant& value) const
 {
 	return value.canConvert(QVariant::String);
