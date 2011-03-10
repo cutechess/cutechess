@@ -97,6 +97,8 @@ Qt::ItemFlags EngineOptionModel::flags(const QModelIndex& index) const
 bool EngineOptionModel::setData(const QModelIndex& index, const QVariant& data,
                                 int role)
 {
+	Q_UNUSED(role);
+
 	if (!index.isValid())
 		return false;
 
