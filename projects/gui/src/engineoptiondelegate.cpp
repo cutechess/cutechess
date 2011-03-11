@@ -16,7 +16,7 @@ QWidget* EngineOptionDelegate::createEditor(QWidget* parent,
                                             const QModelIndex& index) const
 {
 	// only combo option and spin option require a custom editor
-	if (index.data().canConvert<EngineComboOption>())
+	if (index.data(Qt::EditRole).canConvert<EngineComboOption>())
 	{
 		EngineComboOption comboOption = index.data().value<EngineComboOption>();
 
@@ -25,7 +25,7 @@ QWidget* EngineOptionDelegate::createEditor(QWidget* parent,
 
 		return editor;
 	}
-	else if (index.data().canConvert<EngineSpinOption>())
+	else if (index.data(Qt::EditRole).canConvert<EngineSpinOption>())
 	{
 		EngineSpinOption spinOption = index.data().value<EngineSpinOption>();
 
