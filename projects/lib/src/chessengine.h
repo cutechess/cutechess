@@ -108,6 +108,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * nothing happens.
 		 */
 		void setOption(const QString& name, const QVariant& value);
+
+		/*! Returns a list of supported options and their values. */
+		QList<EngineOption*> options() const;
 		
 	public slots:
 		// Inherited from ChessPlayer
@@ -179,7 +182,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Supported variants. */
 		QStringList m_variants;
 
-		QVector<EngineOption*> m_options;
+		QList<EngineOption*> m_options;
 		
 	protected slots:
 		// Inherited from ChessPlayer

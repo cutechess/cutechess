@@ -20,8 +20,8 @@
 
 #include <QString>
 #include <QStringList>
-#include <QVariant>
-#include <QMap>
+
+class EngineOption;
 
 /*!
  * \brief The EngineConfiguration class defines a chess engine configuration.
@@ -43,6 +43,10 @@ class LIB_EXPORT EngineConfiguration
 				    const QString& protocol);
 		/*! Creates a new chess engine configuration from a QVariant. */
 		EngineConfiguration(const QVariant& variant);
+		/*! Creates a new chess engine configuration from \a other. */
+		EngineConfiguration(const EngineConfiguration& other);
+
+		~EngineConfiguration();
 
 		/*!
 		 * Converts the object into a QVariant.
@@ -116,17 +120,19 @@ class LIB_EXPORT EngineConfiguration
 		/*! Adds new initialization string. */
 		void addInitString(const QString& initString);
 
-		/*! Returns the custom options sent to the engine. */
-		QMap<QString, QVariant> customOptions() const;
-		/*! Sets the custom options sent to the engine. */
-		void setCustomOptions(const QMap<QString, QVariant>& options);
-		/*! Adds new custom option. */
-		void addCustomOption(const QString& name, const QVariant& value);
+		/*! Returns the options sent to the engine. */
+		QList<EngineOption*> options() const;
+		/*! Sets the options sent to the engine. */
+		void setOptions(const QList<EngineOption*>& options);
+		/*! Adds new option. */
+		void addOption(EngineOption* option);
 
 		/*! Returns true if evaluation is from white's point of view. */
 		bool whiteEvalPov() const;
 		/*! Sets white evaluation point of view. */
 		void setWhiteEvalPov(bool whiteEvalPov);
+
+		EngineConfiguration& operator=(const EngineConfiguration& other);
 
 	private:
 		QString m_name;
@@ -135,7 +141,7 @@ class LIB_EXPORT EngineConfiguration
 		QString m_protocol;
 		QStringList m_arguments;
 		QStringList m_initStrings;
-		QMap<QString, QVariant> m_customOptions;
+		QList<EngineOption*> m_options;
 		bool m_whiteEvalPov;
 
 };

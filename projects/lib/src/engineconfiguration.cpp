@@ -17,6 +17,9 @@
 
 #include "engineconfiguration.h"
 
+#include "engineoption.h"
+#include "engineoptionfactory.h"
+
 EngineConfiguration::EngineConfiguration()
 	: m_whiteEvalPov(false)
 {
@@ -46,6 +49,37 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 		setInitStrings(map["initStrings"].toStringList());
 	if (map.contains("whitepov"))
 		setWhiteEvalPov(map["whitepov"].toBool());
+
+	if (map.contains("options"))
+	{
+		const QVariantList optionsList = map["options"].toList();
+		EngineOption* option = 0;
+
+		foreach (const QVariant& optionVariant, optionsList)
+		{
+			if ((option = EngineOptionFactory::create(optionVariant.toMap())) != 0)
+				addOption(option);
+		}
+	}
+}
+
+EngineConfiguration::~EngineConfiguration()
+{
+	qDeleteAll(m_options);
+}
+
+EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
+{
+	setName(other.name());
+	setCommand(other.command());
+	setProtocol(other.protocol());
+	setWorkingDirectory(other.workingDirectory());
+	setArguments(other.arguments());
+	setInitStrings(other.initStrings());
+	setWhiteEvalPov(other.whiteEvalPov());
+
+	foreach (EngineOption* option, other.options())
+		addOption(option->copy());
 }
 
 QVariant EngineConfiguration::toVariant() const
@@ -61,6 +95,13 @@ QVariant EngineConfiguration::toVariant() const
 		map.insert("initStrings", m_initStrings);
 	if (m_whiteEvalPov)
 		map.insert("whitepov", true);
+
+	QVariantList optionsList;
+
+	foreach (EngineOption* option, m_options)
+		optionsList.append(option->toVariant());
+
+	map.insert("options", optionsList);
 
 	return map;
 }
@@ -135,19 +176,24 @@ void EngineConfiguration::addInitString(const QString& initString)
 	m_initStrings << initString.split('\n');
 }
 
-QMap<QString, QVariant> EngineConfiguration::customOptions() const
+QList<EngineOption*> EngineConfiguration::options() const
 {
-	return m_customOptions;
+	return m_options;
 }
 
-void EngineConfiguration::setCustomOptions(const QMap<QString, QVariant>& customOptions)
+void EngineConfiguration::setOptions(const QList<EngineOption*>& options)
 {
-	m_customOptions = customOptions;
+	qDeleteAll(m_options);
+	m_options.clear();
+
+	m_options = options;
 }
 
-void EngineConfiguration::addCustomOption(const QString& name, const QVariant& value)
+void EngineConfiguration::addOption(EngineOption* option)
 {
-	m_customOptions[name] = value;
+	Q_ASSERT(option != 0);
+
+	m_options << option;
 }
 
 bool EngineConfiguration::whiteEvalPov() const
@@ -158,4 +204,25 @@ bool EngineConfiguration::whiteEvalPov() const
 void EngineConfiguration::setWhiteEvalPov(bool whiteEvalPov)
 {
 	m_whiteEvalPov = whiteEvalPov;
+}
+
+EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& other)
+{
+	if (this != &other)
+	{
+		setName(other.name());
+		setCommand(other.command());
+		setProtocol(other.protocol());
+		setWorkingDirectory(other.workingDirectory());
+		setArguments(other.arguments());
+		setInitStrings(other.initStrings());
+		setWhiteEvalPov(other.whiteEvalPov());
+
+		qDeleteAll(m_options);
+		m_options.clear();
+
+		foreach (EngineOption* option, other.options())
+			addOption(option->copy());
+	}
+	return *this;
 }

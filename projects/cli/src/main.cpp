@@ -24,6 +24,7 @@
 #include <enginemanager.h>
 #include <board/boardfactory.h>
 #include <enginefactory.h>
+#include <enginetextoption.h>
 #include "cutechesscoreapp.h"
 #include "matchparser.h"
 #include "enginematch.h"
@@ -176,7 +177,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 		}
 		// Custom engine option
 		else if (name.startsWith("option."))
-			data.config.addCustomOption(name.section('.', 1), val);
+			data.config.addOption(new EngineTextOption(name.section('.', 1), val, val));
 		else
 		{
 			qWarning() << "Invalid engine option:" << name;

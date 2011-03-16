@@ -27,7 +27,8 @@ HEADERS += chessengine.h \
     enginebuilder.h \
     classregistry.h \
     enginefactory.h \
-    humanbuilder.h
+    humanbuilder.h \
+    engineoptionfactory.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -52,7 +53,8 @@ SOURCES += chessengine.cpp \
     gamemanager.cpp \
     enginebuilder.cpp \
     enginefactory.cpp \
-    humanbuilder.cpp
+    humanbuilder.cpp \
+    engineoptionfactory.cpp
 win32 { 
     HEADERS += engineprocess_win.h \
         pipereader_win.h

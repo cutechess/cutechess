@@ -116,13 +116,8 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 	foreach (const QString& str, configuration.initStrings())
 		write(str);
 
-	QMap<QString, QVariant>::const_iterator i =
-		configuration.customOptions().constBegin();
-	while (i != configuration.customOptions().constEnd())
-	{
-		setOption(i.key(), i.value());
-		++i;
-	}
+	foreach (EngineOption* option, configuration.options())
+		setOption(option->name(), option->value());
 
 	m_whiteEvalPov = configuration.whiteEvalPov();
 }
@@ -162,6 +157,11 @@ void ChessEngine::setOption(const QString& name, const QVariant& value)
 
 	option->setValue(value);
 	sendOption(name, value.toString());
+}
+
+QList<EngineOption*> ChessEngine::options() const
+{
+	return m_options;
 }
 
 void ChessEngine::start()
