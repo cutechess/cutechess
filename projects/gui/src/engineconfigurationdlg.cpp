@@ -16,11 +16,16 @@
 */
 
 #include "engineconfigurationdlg.h"
+
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QDir>
-#include <enginefactory.h>
 
+#include <enginefactory.h>
+#include <engineoption.h>
+
+#include "engineoptionmodel.h"
+#include "engineoptiondelegate.h"
 
 EngineConfigurationDialog::EngineConfigurationDialog(
 	EngineConfigurationDialog::DialogMode mode, QWidget* parent)
@@ -34,6 +39,10 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 		setWindowTitle(tr("Configure Engine"));
 
 	m_protocolCombo->addItems(EngineFactory::protocols());
+
+	m_engineOptionModel = new EngineOptionModel(this);
+	m_optionsView->setModel(m_engineOptionModel);
+	m_optionsView->setItemDelegate(new EngineOptionDelegate());
 
 	connect(m_browseCmdBtn, SIGNAL(clicked(bool)), this, SLOT(browseCommand()));
 	connect(m_browseWorkingDirBtn, SIGNAL(clicked(bool)), this,
@@ -54,6 +63,10 @@ void EngineConfigurationDialog::applyEngineInformation(
 
 	if (engine.whiteEvalPov())
 		m_whitePovCheck->setCheckState(Qt::Checked);
+
+	foreach (EngineOption* option, engine.options())
+		m_options << option->copy();
+	m_engineOptionModel->setOptions(m_options);
 }
 
 EngineConfiguration EngineConfigurationDialog::engineConfiguration()
@@ -69,6 +82,8 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 		engine.setInitStrings(initStr.split('\n'));
 
 	engine.setWhiteEvalPov(m_whitePovCheck->checkState() == Qt::Checked);
+
+	engine.setOptions(m_options);  // takes ownership of option pointers
 
 	return engine;
 }

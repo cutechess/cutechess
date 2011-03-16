@@ -22,6 +22,8 @@
 #include <QDialog>
 #include <engineconfiguration.h>
 
+class EngineOption;
+class EngineOptionModel;
 
 /*!
  * \brief The EngineConfigurationDialog class provides a dialog for chess engine
@@ -58,6 +60,10 @@ class EngineConfigurationDialog : public QDialog, private Ui::EngineConfiguratio
 	private slots:
 		void browseCommand();
 		void browseWorkingDir();
+
+	private:
+		EngineOptionModel* m_engineOptionModel;
+		QList<EngineOption*> m_options;
 
 };
 
