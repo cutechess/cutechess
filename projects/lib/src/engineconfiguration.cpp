@@ -20,7 +20,6 @@
 EngineConfiguration::EngineConfiguration()
 	: m_whiteEvalPov(false)
 {
-
 }
 
 EngineConfiguration::EngineConfiguration(const QString& name,
@@ -31,7 +30,6 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 	  m_protocol(protocol),
 	  m_whiteEvalPov(false)
 {
-
 }
 
 EngineConfiguration::EngineConfiguration(const QVariant& variant)
