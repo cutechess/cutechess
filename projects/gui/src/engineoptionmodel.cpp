@@ -72,8 +72,20 @@ QVariant EngineOptionModel::data(const QModelIndex& index, int role) const
 				return QVariant();
 		}
 	}
-	else if (role == Qt::EditRole && index.column() == 1)
-		return option->toVariant();
+	else if (role == Qt::EditRole)
+	{
+		switch (index.column())
+		{
+			case 0:
+				return option->name();
+
+			case 1:
+				return option->toVariant();
+
+			default:
+				return QVariant();
+		}
+	}
 
 	return QVariant();
 }
@@ -95,8 +107,7 @@ Qt::ItemFlags EngineOptionModel::flags(const QModelIndex& index) const
 	Qt::ItemFlags defaultFlags =
 		Qt::ItemFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
-	// option values are editable
-	if (index.column() == 1)
+	if (index.column() == 0 || index.column() == 1)
 		return Qt::ItemFlags(defaultFlags | Qt::ItemIsEditable);
 
 	return defaultFlags;
@@ -110,10 +121,18 @@ bool EngineOptionModel::setData(const QModelIndex& index, const QVariant& data,
 	if (!index.isValid())
 		return false;
 
-	// only option's value should be editable
-	if (index.column() == 1)
+	EngineOption* option = m_options.at(index.row());
+	if (index.column() == 0)
 	{
-		EngineOption* option = m_options.at(index.row());
+		const QString stringData = data.toString();
+		if (stringData.isEmpty())
+			return false;
+
+		option->setName(stringData);
+		return true;
+	}
+	else if (index.column() == 1)
+	{
 		if (option->isValid(data))
 		{
 			option->setValue(data);
