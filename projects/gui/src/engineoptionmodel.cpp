@@ -56,9 +56,6 @@ int EngineOptionModel::columnCount(const QModelIndex& parent) const
 
 QVariant EngineOptionModel::data(const QModelIndex& index, int role) const
 {
-	Q_UNUSED(index);
-	Q_UNUSED(role);
-
 	const EngineOption* option = m_options.at(index.row());
 
 	if (role == Qt::DisplayRole)
