@@ -12,7 +12,7 @@ class LIB_EXPORT EngineButtonOption : public EngineOption
 		EngineOption* copy() const;
 
 		bool isValid(const QVariant& value) const;
-		QVariant toQVariant() const;
+		QVariant toVariant() const;
 };
 
 Q_DECLARE_METATYPE(EngineButtonOption)

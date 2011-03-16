@@ -20,7 +20,7 @@ class LIB_EXPORT EngineComboOption : public EngineOption
 		QStringList choices() const;
 		void setChoices(const QStringList& choices);
 
-		QVariant toQVariant() const;
+		QVariant toVariant() const;
 
 	private:
 		QStringList m_choices;

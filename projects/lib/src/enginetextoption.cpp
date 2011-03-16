@@ -17,7 +17,7 @@ bool EngineTextOption::isValid(const QVariant& value) const
 	return value.canConvert(QVariant::String);
 }
 
-QVariant EngineTextOption::toQVariant() const
+QVariant EngineTextOption::toVariant() const
 {
 	if (isValid(value()))
 		return value();

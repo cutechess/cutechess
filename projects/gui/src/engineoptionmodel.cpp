@@ -65,7 +65,7 @@ QVariant EngineOptionModel::data(const QModelIndex& index, int role) const
 		}
 	}
 	else if (role == Qt::EditRole && index.column() == 1)
-		return option->toQVariant();
+		return option->toVariant();
 
 	return QVariant();
 }

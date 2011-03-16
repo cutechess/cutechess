@@ -14,7 +14,7 @@ class LIB_EXPORT EngineCheckOption : public EngineOption
 
 		bool isValid(const QVariant& value) const;
 
-		QVariant toQVariant() const;
+		QVariant toVariant() const;
 };
 
 #endif // ENGINECHECKOPTION_H

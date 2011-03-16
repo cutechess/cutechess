@@ -14,7 +14,7 @@ class LIB_EXPORT EngineTextOption : public EngineOption
 
 		bool isValid(const QVariant& value) const;
 
-		QVariant toQVariant() const;
+		QVariant toVariant() const;
 };
 
 #endif // ENGINETEXTOPTION_H

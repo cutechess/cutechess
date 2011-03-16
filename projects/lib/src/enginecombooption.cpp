@@ -34,7 +34,7 @@ void EngineComboOption::setChoices(const QStringList& choices)
 	m_choices = choices;
 }
 
-QVariant EngineComboOption::toQVariant() const
+QVariant EngineComboOption::toVariant() const
 {
 	return QVariant::fromValue(*this);
 }

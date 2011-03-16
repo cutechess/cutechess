@@ -22,7 +22,7 @@ bool EngineCheckOption::isValid(const QVariant& value) const
 	return false;
 }
 
-QVariant EngineCheckOption::toQVariant() const
+QVariant EngineCheckOption::toVariant() const
 {
 	if (isValid(value()))
 		return value();
