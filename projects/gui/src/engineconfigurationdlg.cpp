@@ -29,13 +29,9 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	setupUi(this);
 
 	if (mode == EngineConfigurationDialog::AddEngine)
-	{
 		setWindowTitle(tr("Add Engine"));
-	}
 	else
-	{
 		setWindowTitle(tr("Configure Engine"));
-	}
 
 	m_protocolCombo->addItems(EngineFactory::protocols());
 
@@ -88,19 +84,16 @@ void EngineConfigurationDialog::browseCommand()
 
 	QString fileName = QFileDialog::getOpenFileName(this,
 		tr("Select Engine Executable"), m_commandEdit->text(), filter);
+
 	if (fileName.isEmpty())
 		return;
 
 	if (m_workingDirEdit->text().isEmpty())
-	{
 		m_workingDirEdit->setText(QDir::toNativeSeparators(
 			QFileInfo(fileName).absolutePath()));
-	}
 
 	if (m_nameEdit->text().isEmpty())
-	{
 		m_nameEdit->setText(QFileInfo(fileName).baseName());
-	}
 
 	// Paths with spaces must be wrapped in quotes
 	if (fileName.contains(' '))
@@ -115,6 +108,7 @@ void EngineConfigurationDialog::browseWorkingDir()
 {
 	const QString directory = QFileDialog::getExistingDirectory(this,
 		tr("Select Engine Working Directory"), m_workingDirEdit->text());
+
 	if (directory.isEmpty())
 		return;
 
