@@ -5,6 +5,11 @@
 const QStringList EngineOptionModel::s_headers = (QStringList() <<
 	tr("Name") << tr("Value"));
 
+EngineOptionModel::EngineOptionModel(QObject* parent)
+	: QAbstractItemModel(parent)
+{
+}
+
 EngineOptionModel::EngineOptionModel(QList<EngineOption*> options, QObject* parent)
 	: QAbstractItemModel(parent),
 	  m_options(options)

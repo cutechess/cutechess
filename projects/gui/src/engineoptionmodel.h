@@ -11,6 +11,7 @@ class EngineOptionModel : public QAbstractItemModel
 	Q_OBJECT
 
 	public:
+		EngineOptionModel(QObject* parent = 0);
 		EngineOptionModel(QList<EngineOption*> options, QObject* parent = 0);
 
 		// Inherited from QAbstractItemModel
