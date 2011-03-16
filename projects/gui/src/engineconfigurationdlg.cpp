@@ -23,6 +23,8 @@
 
 #include <enginefactory.h>
 #include <engineoption.h>
+#include <chessplayer.h>
+#include <enginebuilder.h>
 
 #include "engineoptionmodel.h"
 #include "engineoptiondelegate.h"
@@ -117,6 +119,10 @@ void EngineConfigurationDialog::browseCommand()
 		fileName.append('\"');
 	}
 	m_commandEdit->setText(QDir::toNativeSeparators(fileName));
+
+	EngineBuilder builder(engineConfiguration());
+	ChessPlayer* engine = builder.create(0, 0, this);
+	connect(engine, SIGNAL(ready()), this, SLOT(onEngineReady()));
 }
 
 void EngineConfigurationDialog::browseWorkingDir()
@@ -130,3 +136,15 @@ void EngineConfigurationDialog::browseWorkingDir()
 	m_workingDirEdit->setText(QDir::toNativeSeparators(directory));
 }
 
+void EngineConfigurationDialog::onEngineReady()
+{
+	ChessEngine* engine = qobject_cast<ChessEngine*>(QObject::sender());
+	Q_ASSERT(engine != 0);
+
+	// make copies of the engine options
+	foreach (EngineOption* option, engine->options())
+		m_options << option->copy();
+
+	engine->quit();
+	m_engineOptionModel->setOptions(m_options);
+}

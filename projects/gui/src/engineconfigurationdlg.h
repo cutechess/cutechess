@@ -60,6 +60,7 @@ class EngineConfigurationDialog : public QDialog, private Ui::EngineConfiguratio
 	private slots:
 		void browseCommand();
 		void browseWorkingDir();
+		void onEngineReady();
 
 	private:
 		EngineOptionModel* m_engineOptionModel;
