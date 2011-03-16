@@ -6,7 +6,6 @@
 class LIB_EXPORT EngineSpinOption : public EngineOption
 {
 	public:
-		EngineSpinOption();
 		EngineSpinOption(const QString& name,
 				 const QVariant& value = QVariant(),
 				 const QVariant& defaultValue = QVariant(),
@@ -29,7 +28,5 @@ class LIB_EXPORT EngineSpinOption : public EngineOption
 		int m_min;
 		int m_max;
 };
-
-Q_DECLARE_METATYPE(EngineSpinOption)
 
 #endif // ENGINESPINOPTION_H

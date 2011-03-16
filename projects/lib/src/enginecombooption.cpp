@@ -1,10 +1,5 @@
 #include "enginecombooption.h"
 
-EngineComboOption::EngineComboOption()
-	: EngineOption(QString())
-{
-}
-
 EngineComboOption::EngineComboOption(const QString& name,
 				     const QVariant& value,
 				     const QVariant& defaultValue,
@@ -36,5 +31,15 @@ void EngineComboOption::setChoices(const QStringList& choices)
 
 QVariant EngineComboOption::toVariant() const
 {
-	return QVariant::fromValue(*this);
+	QVariantMap map;
+
+	map.insert("type", "combo");
+
+	map.insert("name", name());
+	map.insert("value", value());
+	map.insert("default", defaultValue());
+
+	map.insert("choices", choices());
+
+	return map;
 }

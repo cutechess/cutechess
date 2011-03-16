@@ -2,9 +2,8 @@
 
 #include <QSpinBox>
 #include <QComboBox>
-
-#include <enginecombooption.h>
-#include <enginespinoption.h>
+#include <QCheckBox>
+#include <QLineEdit>
 
 EngineOptionDelegate::EngineOptionDelegate(QWidget* parent)
 	: QStyledItemDelegate(parent)
@@ -15,78 +14,131 @@ QWidget* EngineOptionDelegate::createEditor(QWidget* parent,
                                             const QStyleOptionViewItem& option,
                                             const QModelIndex& index) const
 {
-	// only combo option and spin option require a custom editor
-	if (index.data(Qt::EditRole).canConvert<EngineComboOption>())
+	if (index.data(Qt::EditRole).canConvert(QVariant::Map))
 	{
-		EngineComboOption comboOption = index.data().value<EngineComboOption>();
+		const QVariantMap map = index.data(Qt::EditRole).toMap();
 
-		QComboBox* editor = new QComboBox(parent);
-		editor->addItems(comboOption.choices());
+		if (!map.isEmpty())
+		{
+			const QString optionType = map.value("type").toString();
 
-		return editor;
+			if (optionType == "combo")
+			{
+				QComboBox* editor = new QComboBox(parent);
+				editor->addItems(map.value("choises").toStringList());
+
+				return editor;
+			}
+			else if (optionType == "spin")
+			{
+				QSpinBox* editor = new QSpinBox(parent);
+
+				bool ok;
+				int minValue = map.value("min").toInt(&ok);
+				if (ok)
+					editor->setMinimum(minValue);
+
+				int maxValue = map.value("max").toInt(&ok);
+				if (ok)
+					editor->setMaximum(maxValue);
+
+				return editor;
+			}
+			else if (optionType == "check")
+			{
+				QCheckBox* editor = new QCheckBox(parent);
+				return editor;
+			}
+			else if (optionType == "text")
+			{
+				QLineEdit* editor = new QLineEdit(parent);
+				return editor;
+			}
+		}
 	}
-	else if (index.data(Qt::EditRole).canConvert<EngineSpinOption>())
-	{
-		EngineSpinOption spinOption = index.data().value<EngineSpinOption>();
-
-		QSpinBox* editor = new QSpinBox(parent);
-		editor->setMinimum(spinOption.min());
-		editor->setMaximum(spinOption.max());
-
-		return editor;
-	}
-	else
-		return QStyledItemDelegate::createEditor(parent, option, index);
+	return QStyledItemDelegate::createEditor(parent, option, index);
 }
 
 void EngineOptionDelegate::setEditorData(QWidget* editor,
                                          const QModelIndex& index) const
 {
-	if (index.data().canConvert<EngineComboOption>())
-	{
-		EngineComboOption comboOption = index.data().value<EngineComboOption>();
-		QComboBox* optionEditor = qobject_cast<QComboBox*>(editor);
+	// TODO: default options
 
-		if (comboOption.isValid(comboOption.value()))
-			optionEditor->setCurrentIndex(comboOption.choices().indexOf(comboOption.value().toString()));
-		else if (comboOption.isValid(comboOption.defaultValue()))
-			optionEditor->setCurrentIndex(comboOption.choices().indexOf(comboOption.defaultValue().toString()));
-		else
+	if (index.data(Qt::EditRole).canConvert(QVariant::Map))
+	{
+		const QVariantMap map = index.data(Qt::EditRole).toMap();
+
+		if (!map.isEmpty())
 		{
-			if (optionEditor->count() > 0)
-				optionEditor->setCurrentIndex(0);
+			const QString optionType = map.value("type").toString();
+
+			if (optionType == "combo")
+			{
+				QComboBox* optionEditor = qobject_cast<QComboBox*>(editor);
+				optionEditor->setCurrentIndex(
+					map.value("choises").toStringList().indexOf(map.value("value").toString()));
+			}
+			else if (optionType == "spin")
+			{
+				QSpinBox* optionEditor = qobject_cast<QSpinBox*>(editor);
+
+				bool ok;
+				int intValue = map.value("value").toInt(&ok);
+
+				if (ok)
+					optionEditor->setValue(intValue);
+				else
+					optionEditor->setValue(0);
+			}
+			else if (optionType == "check")
+			{
+				QCheckBox* optionEditor = qobject_cast<QCheckBox*>(editor);
+				optionEditor->setChecked(map.value("value").toBool());
+			}
+			else if (optionType == "text")
+			{
+				QLineEdit* optionEditor = qobject_cast<QLineEdit*>(editor);
+				optionEditor->setText(map.value("value").toString());
+			}
 		}
 	}
-	else if (index.data().canConvert<EngineSpinOption>())
-	{
-		EngineSpinOption spinOption = index.data().value<EngineSpinOption>();
-		QSpinBox* optionEditor = qobject_cast<QSpinBox*>(editor);
-
-		if (spinOption.isValid(spinOption.value()))
-			optionEditor->setValue(spinOption.value().toInt());
-		else if (spinOption.isValid(spinOption.defaultValue()))
-			optionEditor->setValue(spinOption.defaultValue().toInt());
-		else
-			optionEditor->setValue(optionEditor->minimum());
-	}
-	else
-		QStyledItemDelegate::setEditorData(editor, index);
+	QStyledItemDelegate::setEditorData(editor, index);
 }
 
 void EngineOptionDelegate::setModelData(QWidget* editor,
                                         QAbstractItemModel* model,
                                         const QModelIndex& index) const
 {
-	if (index.data().canConvert<EngineComboOption>())
+	if (index.data(Qt::EditRole).canConvert(QVariant::Map))
 	{
-		QComboBox* optionEditor = qobject_cast<QComboBox*>(editor);
-		model->setData(index, optionEditor->currentText());
+		const QVariantMap map = index.data(Qt::EditRole).toMap();
+
+		if (!map.isEmpty())
+		{
+			const QString optionType = map.value("type").toString();
+
+			if (optionType == "combo")
+			{
+				QComboBox* optionEditor = qobject_cast<QComboBox*>(editor);
+				model->setData(index, optionEditor->currentText());
+			}
+			else if (optionType == "spin")
+			{
+				QSpinBox* optionEditor = qobject_cast<QSpinBox*>(editor);
+				optionEditor->interpretText();
+				model->setData(index, optionEditor->value());
+			}
+			else if (optionType == "check")
+			{
+				QCheckBox* optionEditor = qobject_cast<QCheckBox*>(editor);
+				model->setData(index, optionEditor->isChecked());
+			}
+			else if (optionType == "text")
+			{
+				QLineEdit* optionEditor = qobject_cast<QLineEdit*>(editor);
+				model->setData(index, optionEditor->text());
+			}
+		}
 	}
-	else if (index.data().canConvert<EngineSpinOption>())
-	{
-		QSpinBox* optionEditor = qobject_cast<QSpinBox*>(editor);
-		model->setData(index, optionEditor->value());
-	}
-	else
-		QStyledItemDelegate::setModelData(editor, model, index);
+	QStyledItemDelegate::setModelData(editor, model, index);
 }

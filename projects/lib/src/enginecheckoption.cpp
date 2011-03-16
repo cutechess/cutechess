@@ -24,10 +24,13 @@ bool EngineCheckOption::isValid(const QVariant& value) const
 
 QVariant EngineCheckOption::toVariant() const
 {
-	if (isValid(value()))
-		return value();
-	else if (isValid(defaultValue()))
-		return defaultValue();
-	else
-		return false;
+	QVariantMap map;
+
+	map.insert("type", "check");
+
+	map.insert("name", name());
+	map.insert("value", value());
+	map.insert("default", defaultValue());
+
+	return map;
 }
