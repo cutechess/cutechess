@@ -1,6 +1,7 @@
 #include "engineoptionmodel.h"
 
 #include <engineoption.h>
+#include <enginebuttonoption.h>
 
 const QStringList EngineOptionModel::s_headers = (QStringList() <<
 	tr("Name") << tr("Value"));
@@ -107,8 +108,20 @@ Qt::ItemFlags EngineOptionModel::flags(const QModelIndex& index) const
 	Qt::ItemFlags defaultFlags =
 		Qt::ItemFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
-	if (index.column() == 0 || index.column() == 1)
+	if (index.column() == 0)
 		return Qt::ItemFlags(defaultFlags | Qt::ItemIsEditable);
+
+	// option values are editable except button options
+	if (index.column() == 1)
+	{
+		EngineButtonOption* buttonOption =
+			dynamic_cast<EngineButtonOption*>(m_options.at(index.row()));
+
+		if (buttonOption)
+			return defaultFlags;
+		else
+			return Qt::ItemFlags(defaultFlags | Qt::ItemIsEditable);
+	}
 
 	return defaultFlags;
 }
