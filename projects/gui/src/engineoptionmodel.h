@@ -14,6 +14,8 @@ class EngineOptionModel : public QAbstractItemModel
 		EngineOptionModel(QObject* parent = 0);
 		EngineOptionModel(QList<EngineOption*> options, QObject* parent = 0);
 
+		void setOptions(const QList<EngineOption*>& options);
+
 		// Inherited from QAbstractItemModel
 		QModelIndex index(int row, int column,
                           const QModelIndex& parent = QModelIndex()) const;
