@@ -411,11 +411,16 @@ EngineOption* UciEngine::parseOption(const QStringRef& line)
 	if (type == "button")
 		return new EngineButtonOption(name);
 	else if (type == "check")
-		return new EngineCheckOption(name, value, value);
+	{
+		if (value == "true")
+			return new EngineCheckOption(name, true, true);
+		else
+			return new EngineCheckOption(name, false, false);
+	}
 	else if (type == "combo")
 		return new EngineComboOption(name, value, value, choices);
 	else if (type == "spin")
-		return new EngineSpinOption(name, value, value, min, max);
+		return new EngineSpinOption(name, value.toInt(), value.toInt(), min, max);
 	else if (type == "string")
 		return new EngineTextOption(name, value, value);
 
