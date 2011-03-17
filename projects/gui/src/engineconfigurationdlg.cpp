@@ -122,7 +122,8 @@ void EngineConfigurationDialog::browseCommand()
 
 	EngineBuilder builder(engineConfiguration());
 	ChessPlayer* engine = builder.create(0, 0, this);
-	connect(engine, SIGNAL(ready()), this, SLOT(onEngineReady()));
+	if (engine != 0)
+		connect(engine, SIGNAL(ready()), this, SLOT(onEngineReady()));
 }
 
 void EngineConfigurationDialog::browseWorkingDir()
