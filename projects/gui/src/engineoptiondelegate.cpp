@@ -2,7 +2,6 @@
 
 #include <QSpinBox>
 #include <QComboBox>
-#include <QCheckBox>
 #include <QLineEdit>
 
 EngineOptionDelegate::EngineOptionDelegate(QWidget* parent)
@@ -42,11 +41,6 @@ QWidget* EngineOptionDelegate::createEditor(QWidget* parent,
 				if (ok)
 					editor->setMaximum(maxValue);
 
-				return editor;
-			}
-			else if (optionType == "check")
-			{
-				QCheckBox* editor = new QCheckBox(parent);
 				return editor;
 			}
 			else if (optionType == "text")
@@ -90,11 +84,6 @@ void EngineOptionDelegate::setEditorData(QWidget* editor,
 				else
 					optionEditor->setValue(0);
 			}
-			else if (optionType == "check")
-			{
-				QCheckBox* optionEditor = qobject_cast<QCheckBox*>(editor);
-				optionEditor->setChecked(map.value("value").toBool());
-			}
 			else if (optionType == "text")
 			{
 				QLineEdit* optionEditor = qobject_cast<QLineEdit*>(editor);
@@ -127,11 +116,6 @@ void EngineOptionDelegate::setModelData(QWidget* editor,
 				QSpinBox* optionEditor = qobject_cast<QSpinBox*>(editor);
 				optionEditor->interpretText();
 				model->setData(index, optionEditor->value());
-			}
-			else if (optionType == "check")
-			{
-				QCheckBox* optionEditor = qobject_cast<QCheckBox*>(editor);
-				model->setData(index, optionEditor->isChecked());
 			}
 			else if (optionType == "text")
 			{
