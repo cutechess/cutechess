@@ -4,7 +4,7 @@
 #include <enginebuttonoption.h>
 
 const QStringList EngineOptionModel::s_headers = (QStringList() <<
-	tr("Name") << tr("Value"));
+	tr("Name") << tr("Value") << tr("Alias"));
 
 EngineOptionModel::EngineOptionModel(QObject* parent)
 	: QAbstractItemModel(parent)
@@ -69,6 +69,9 @@ QVariant EngineOptionModel::data(const QModelIndex& index, int role) const
 			case 1:
 				return option->value();
 
+			case 2:
+				return option->alias();
+
 			default:
 				return QVariant();
 		}
@@ -82,6 +85,9 @@ QVariant EngineOptionModel::data(const QModelIndex& index, int role) const
 
 			case 1:
 				return option->toVariant();
+
+			case 2:
+				return option->alias();
 
 			default:
 				return QVariant();
@@ -108,7 +114,7 @@ Qt::ItemFlags EngineOptionModel::flags(const QModelIndex& index) const
 	Qt::ItemFlags defaultFlags =
 		Qt::ItemFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
-	if (index.column() == 0)
+	if (index.column() == 0 || index.column() == 2)
 		return Qt::ItemFlags(defaultFlags | Qt::ItemIsEditable);
 
 	// option values are editable except button options
@@ -151,6 +157,11 @@ bool EngineOptionModel::setData(const QModelIndex& index, const QVariant& data,
 			option->setValue(data);
 			return true;
 		}
+	}
+	else if (index.column() == 2)
+	{
+		option->setAlias(data.toString());
+		return true;
 	}
 	return false;
 }

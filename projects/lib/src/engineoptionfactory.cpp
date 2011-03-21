@@ -17,6 +17,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 	const QString type = map["type"].toString();
 	const QVariant value = map["value"];
 	const QVariant defaultValue = map["default"];
+	const QString alias = map["alias"].toString();
 
 	if (name.isEmpty())
 	{
@@ -49,17 +50,17 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 	if (type.isEmpty())
 	{
 		return new EngineTextOption(name, value.toString(),
-			defaultValue.toString());
+			defaultValue.toString(), alias);
 	}
 	else if (type == "text")
 	{
 		return new EngineTextOption(name, value.toString(),
-			defaultValue.toString());
+			defaultValue.toString(), alias);
 	}
 	else if (type == "check")
 	{
 		return new EngineCheckOption(name, value.toBool(),
-			defaultValue.toBool());
+			defaultValue.toBool(), alias);
 	}
 	else if (type == "combo")
 	{
@@ -68,7 +69,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 			return 0;
 
 		return new EngineComboOption(name, value.toString(),
-			defaultValue.toString(), choises.toStringList());
+			defaultValue.toString(), choises.toStringList(), alias);
 	}
 	else if (type == "spin")
 	{
@@ -92,7 +93,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 			return 0;
 
 		return new EngineSpinOption(name, intValue, defaultIntValue,
-			minValue, maxValue);
+			minValue, maxValue, alias);
 	}
 
 	return 0;

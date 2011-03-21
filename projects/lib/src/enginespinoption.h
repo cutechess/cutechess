@@ -7,10 +7,11 @@ class LIB_EXPORT EngineSpinOption : public EngineOption
 {
 	public:
 		EngineSpinOption(const QString& name,
-				 const QVariant& value = QVariant(),
-				 const QVariant& defaultValue = QVariant(),
-				 int min = 0,
-				 int max = 0);
+		                 const QVariant& value = QVariant(),
+		                 const QVariant& defaultValue = QVariant(),
+		                 int min = 0,
+		                 int max = 0,
+		                 const QString& alias = QString());
 
 		EngineOption* copy() const;
 

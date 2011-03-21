@@ -7,8 +7,9 @@ class LIB_EXPORT EngineTextOption : public EngineOption
 {
 	public:
 		EngineTextOption(const QString& name,
-				 const QVariant& value = QVariant(),
-				 const QVariant& defaultValue = QVariant());
+		                 const QVariant& value = QVariant(),
+		                 const QVariant& defaultValue = QVariant(),
+		                 const QString& alias = QString());
 
 		EngineOption* copy() const;
 

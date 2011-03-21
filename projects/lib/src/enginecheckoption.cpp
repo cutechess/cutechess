@@ -1,9 +1,10 @@
 #include "enginecheckoption.h"
 
 EngineCheckOption::EngineCheckOption(const QString& name,
-				     const QVariant& value,
-				     const QVariant& defaultValue)
-	: EngineOption(name, value, defaultValue)
+                                     const QVariant& value,
+                                     const QVariant& defaultValue,
+                                     const QString& alias)
+	: EngineOption(name, value, defaultValue, alias)
 {
 }
 
@@ -31,6 +32,7 @@ QVariant EngineCheckOption::toVariant() const
 	map.insert("name", name());
 	map.insert("value", value());
 	map.insert("default", defaultValue());
+	map.insert("alias", alias());
 
 	return map;
 }

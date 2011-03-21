@@ -1,11 +1,12 @@
 #include "enginespinoption.h"
 
 EngineSpinOption::EngineSpinOption(const QString& name,
-				   const QVariant& value,
-				   const QVariant& defaultValue,
-				   int min,
-				   int max)
-	: EngineOption(name, value, defaultValue),
+                                   const QVariant& value,
+                                   const QVariant& defaultValue,
+                                   int min,
+                                   int max,
+                                   const QString& alias)
+	: EngineOption(name, value, defaultValue, alias),
 	  m_min(min),
 	  m_max(max)
 {
@@ -59,6 +60,7 @@ QVariant EngineSpinOption::toVariant() const
 	map.insert("name", name());
 	map.insert("value", value());
 	map.insert("default", defaultValue());
+	map.insert("alias", alias());
 
 	map.insert("min", min());
 	map.insert("max", max());

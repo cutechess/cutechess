@@ -8,9 +8,10 @@ class LIB_EXPORT EngineComboOption : public EngineOption
 {
 	public:
 		EngineComboOption(const QString& name,
-				  const QVariant& value = QVariant(),
-				  const QVariant& defaultValue = QVariant(),
-				  const QStringList& choices = QStringList());
+		                  const QVariant& value = QVariant(),
+		                  const QVariant& defaultValue = QVariant(),
+		                  const QStringList& choices = QStringList(),
+		                  const QString& alias = QString());
 
 		EngineOption* copy() const;
 
