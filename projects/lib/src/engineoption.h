@@ -31,7 +31,7 @@ class LIB_EXPORT EngineOption
 
 		virtual QVariant toVariant() const = 0;
 
-	protected:
+	private:
 		QString m_name;
 		QVariant m_value;
 		QVariant m_defaultValue;
