@@ -126,7 +126,7 @@ EngineOption* ChessEngine::getOption(const QString& name) const
 {
 	foreach (EngineOption* option, m_options)
 	{
-		if (option->name() == name)
+		if (option->alias() == name || option->name() == name)
 			return option;
 	}
 
@@ -156,7 +156,7 @@ void ChessEngine::setOption(const QString& name, const QVariant& value)
 	}
 
 	option->setValue(value);
-	sendOption(name, value.toString());
+	sendOption(option->name(), value.toString());
 }
 
 QList<EngineOption*> ChessEngine::options() const
