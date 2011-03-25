@@ -65,3 +65,5 @@ User Interface
 
 - Analyzing feature. Probably should be placed in its own dock window with a
   selectable list of engines.
+
+- All game information should be editable in Game|Properties.
