@@ -49,6 +49,7 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	connect(m_browseCmdBtn, SIGNAL(clicked(bool)), this, SLOT(browseCommand()));
 	connect(m_browseWorkingDirBtn, SIGNAL(clicked(bool)), this,
 		SLOT(browseWorkingDir()));
+	connect(m_detectBtn, SIGNAL(clicked(bool)), this, SLOT(detectEngineOptions()));
 }
 
 void EngineConfigurationDialog::applyEngineInformation(
@@ -120,10 +121,7 @@ void EngineConfigurationDialog::browseCommand()
 	}
 	m_commandEdit->setText(QDir::toNativeSeparators(fileName));
 
-	EngineBuilder builder(engineConfiguration());
-	ChessPlayer* engine = builder.create(0, 0, this);
-	if (engine != 0)
-		connect(engine, SIGNAL(ready()), this, SLOT(onEngineReady()));
+	detectEngineOptions();
 }
 
 void EngineConfigurationDialog::browseWorkingDir()
@@ -137,15 +135,34 @@ void EngineConfigurationDialog::browseWorkingDir()
 	m_workingDirEdit->setText(QDir::toNativeSeparators(directory));
 }
 
+void EngineConfigurationDialog::detectEngineOptions()
+{
+	m_detectBtn->setEnabled(false);
+
+	EngineBuilder builder(engineConfiguration());
+	ChessPlayer* engine = builder.create(0, 0, this);
+	if (engine != 0)
+		connect(engine, SIGNAL(ready()), this, SLOT(onEngineReady()));
+	else
+		m_detectBtn->setEnabled(true);
+}
+
 void EngineConfigurationDialog::onEngineReady()
 {
 	ChessEngine* engine = qobject_cast<ChessEngine*>(QObject::sender());
 	Q_ASSERT(engine != 0);
 
+	QList<EngineOption*> detectedOptions;
+
 	// make copies of the engine options
 	foreach (EngineOption* option, engine->options())
-		m_options << option->copy();
+		detectedOptions << option->copy();
 
 	engine->quit();
-	m_engineOptionModel->setOptions(m_options);
+	m_engineOptionModel->setOptions(detectedOptions);
+
+	qDeleteAll(m_options);
+
+	m_options = detectedOptions;
+	m_detectBtn->setEnabled(true);
 }
