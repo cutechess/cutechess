@@ -48,6 +48,9 @@ class EngineConfigurationDialog : public QDialog, private Ui::EngineConfiguratio
 		 * parent
 		*/
 		EngineConfigurationDialog(DialogMode mode, QWidget* parent = 0);
+
+		~EngineConfigurationDialog();
+
 		/*!
 		 * Applies the information of \a engine to the dialog.
 		*/

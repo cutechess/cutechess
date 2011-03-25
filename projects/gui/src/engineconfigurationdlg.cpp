@@ -52,6 +52,11 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	connect(m_detectBtn, SIGNAL(clicked(bool)), this, SLOT(detectEngineOptions()));
 }
 
+EngineConfigurationDialog::~EngineConfigurationDialog()
+{
+	qDeleteAll(m_options);
+}
+
 void EngineConfigurationDialog::applyEngineInformation(
 	const EngineConfiguration& engine)
 {
@@ -86,7 +91,11 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 
 	engine.setWhiteEvalPov(m_whitePovCheck->checkState() == Qt::Checked);
 
-	engine.setOptions(m_options);  // takes ownership of option pointers
+	QList<EngineOption*> optionCopies;
+	foreach (EngineOption* option, m_options)
+		optionCopies << option->copy();
+
+	engine.setOptions(optionCopies);
 
 	return engine;
 }
@@ -139,8 +148,13 @@ void EngineConfigurationDialog::detectEngineOptions()
 {
 	m_detectBtn->setEnabled(false);
 
-	EngineBuilder builder(engineConfiguration());
+	EngineConfiguration config = engineConfiguration();
+	// don't send options to the engine when detecting
+	config.setOptions(QList<EngineOption*>());
+
+	EngineBuilder builder(config);
 	ChessPlayer* engine = builder.create(0, 0, this);
+
 	if (engine != 0)
 		connect(engine, SIGNAL(ready()), this, SLOT(onEngineReady()));
 	else
