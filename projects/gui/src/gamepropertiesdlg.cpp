@@ -23,6 +23,16 @@ GamePropertiesDialog::GamePropertiesDialog(QWidget* parent)
 	setupUi(this);
 }
 
+void GamePropertiesDialog::setWhite(const QString& white)
+{
+	m_whiteEdit->setText(white);
+}
+
+void GamePropertiesDialog::setBlack(const QString& black)
+{
+	m_blackEdit->setText(black);
+}
+
 void GamePropertiesDialog::setEvent(const QString& event)
 {
 	m_eventEdit->setText(event);
@@ -36,6 +46,16 @@ void GamePropertiesDialog::setSite(const QString& site)
 void GamePropertiesDialog::setRound(int round)
 {
 	m_roundSpin->setValue(round);
+}
+
+QString GamePropertiesDialog::white() const
+{
+	return m_whiteEdit->text();
+}
+
+QString GamePropertiesDialog::black() const
+{
+	return m_blackEdit->text();
 }
 
 QString GamePropertiesDialog::event() const

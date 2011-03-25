@@ -29,10 +29,14 @@ class GamePropertiesDialog : public QDialog, private Ui::GamePropertiesDialog
 	public:
 		GamePropertiesDialog(QWidget* parent = 0);
 
+		void setWhite(const QString& white);
+		void setBlack(const QString& black);
 		void setEvent(const QString& event);
 		void setSite(const QString& site);
 		void setRound(int round);
 
+		QString white() const;
+		QString black() const;
 		QString event() const;
 		QString site() const;
 		int round() const;

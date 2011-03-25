@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>292</width>
-    <height>168</height>
+    <height>190</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,10 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </property>
+       <item row="2" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
           <string>&amp;Event:</string>
@@ -28,7 +31,10 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="m_eventEdit"/>
+       </item>
+       <item row="3" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>&amp;Site:</string>
@@ -38,7 +44,10 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="m_siteEdit"/>
+       </item>
+       <item row="4" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
           <string>&amp;Round:</string>
@@ -48,14 +57,34 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="1">
+        <widget class="QSpinBox" name="m_roundSpin"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>&amp;Black:</string>
+         </property>
+         <property name="buddy">
+          <cstring>m_blackEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>&amp;White:</string>
+         </property>
+         <property name="buddy">
+          <cstring>m_whiteEdit</cstring>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="m_eventEdit"/>
+        <widget class="QLineEdit" name="m_whiteEdit"/>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="m_siteEdit"/>
-       </item>
-       <item row="2" column="1">
-        <widget class="QSpinBox" name="m_roundSpin"/>
+        <widget class="QLineEdit" name="m_blackEdit"/>
        </item>
       </layout>
      </item>
@@ -74,6 +103,8 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>m_whiteEdit</tabstop>
+  <tabstop>m_blackEdit</tabstop>
   <tabstop>m_eventEdit</tabstop>
   <tabstop>m_siteEdit</tabstop>
   <tabstop>m_roundSpin</tabstop>

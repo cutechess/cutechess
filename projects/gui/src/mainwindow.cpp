@@ -273,6 +273,8 @@ void MainWindow::gameProperties()
 	GamePropertiesDialog dlg(this);
 
 	m_game->lockThread();
+	dlg.setWhite(m_game->pgn()->playerName(Chess::Side::White));
+	dlg.setBlack(m_game->pgn()->playerName(Chess::Side::Black));
 	dlg.setEvent(m_game->pgn()->event());
 	dlg.setSite(m_game->pgn()->site());
 	dlg.setRound(m_game->pgn()->round());
@@ -282,9 +284,13 @@ void MainWindow::gameProperties()
 		return;
 
 	m_game->lockThread();
+	m_game->pgn()->setPlayerName(Chess::Side::White, dlg.white());
+	m_game->pgn()->setPlayerName(Chess::Side::Black, dlg.black());
 	m_game->pgn()->setEvent(dlg.event());
 	m_game->pgn()->setSite(dlg.site());
 	m_game->pgn()->setRound(dlg.round());
+
+	updateWindowTitle();
 	m_game->unlockThread();
 
 	setWindowModified(true);
@@ -412,8 +418,8 @@ QString MainWindow::windowListTitle() const
 QString MainWindow::genericWindowTitle() const
 {
 	return QString("%1 - %2")
-		.arg(m_game->player(Chess::Side::White)->name())
-			.arg(m_game->player(Chess::Side::Black)->name());
+		.arg(m_game->pgn()->playerName(Chess::Side::White))
+			.arg(m_game->pgn()->playerName(Chess::Side::Black));
 }
 
 bool MainWindow::save()
