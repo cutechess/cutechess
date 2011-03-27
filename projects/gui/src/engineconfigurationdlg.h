@@ -22,6 +22,7 @@
 #include <QDialog>
 #include <engineconfiguration.h>
 
+class QTimer;
 class EngineOption;
 class EngineOptionModel;
 
@@ -69,6 +70,7 @@ class EngineConfigurationDialog : public QDialog, private Ui::EngineConfiguratio
 	private:
 		EngineOptionModel* m_engineOptionModel;
 		QList<EngineOption*> m_options;
+		QTimer* m_optionDetectionTimer;
 
 };
 

@@ -20,6 +20,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QDir>
+#include <QTimer>
 
 #include <enginefactory.h>
 #include <engineoption.h>
@@ -45,6 +46,10 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	m_engineOptionModel = new EngineOptionModel(this);
 	m_optionsView->setModel(m_engineOptionModel);
 	m_optionsView->setItemDelegate(new EngineOptionDelegate());
+
+	m_optionDetectionTimer = new QTimer(this);
+	m_optionDetectionTimer->setSingleShot(true);
+	m_optionDetectionTimer->setInterval(5000);
 
 	connect(m_browseCmdBtn, SIGNAL(clicked(bool)), this, SLOT(browseCommand()));
 	connect(m_browseWorkingDirBtn, SIGNAL(clicked(bool)), this,
@@ -156,7 +161,12 @@ void EngineConfigurationDialog::detectEngineOptions()
 	ChessPlayer* engine = builder.create(0, 0, this);
 
 	if (engine != 0)
+	{
 		connect(engine, SIGNAL(ready()), this, SLOT(onEngineReady()));
+		connect(m_optionDetectionTimer, SIGNAL(timeout()), engine, SLOT(quit()));
+
+		m_optionDetectionTimer->start();
+	}
 	else
 		m_detectBtn->setEnabled(true);
 }
@@ -165,6 +175,9 @@ void EngineConfigurationDialog::onEngineReady()
 {
 	ChessEngine* engine = qobject_cast<ChessEngine*>(QObject::sender());
 	Q_ASSERT(engine != 0);
+
+	disconnect(m_optionDetectionTimer, 0, engine, 0);
+	m_optionDetectionTimer->stop();
 
 	QList<EngineOption*> detectedOptions;
 
