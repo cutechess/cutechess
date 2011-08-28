@@ -404,7 +404,41 @@ void XboardEngine::parseLine(const QString& line)
 	if (command.isEmpty())
 		return;
 
-	if (command.at(0).isDigit()) // principal variation
+	if (command == "1-0" || command == "0-1"
+	||  command == "1/2-1/2" || command == "resign")
+	{
+		if ((state() != Thinking && state() != Observing)
+		||  !board()->result().isNone())
+		{
+			finishGame();
+			return;
+		}
+
+		if (command == "1/2-1/2")
+		{
+			if (state() == Thinking)
+				// The engine claims that its next move will draw the game
+				m_drawOnNextMove = true;
+			else
+			{
+				qDebug("%s forfeits by invalid draw claim",
+				       qPrintable(name()));
+				emitForfeit(Chess::Result::Adjudication);
+			}
+			return;
+		}
+
+		if ((command == "1-0" && side() == Chess::Side::White)
+		||  (command == "0-1" && side() == Chess::Side::Black))
+		{
+			qDebug("%s forfeits by invalid victory claim",
+			       qPrintable(name()));
+			emitForfeit(Chess::Result::Adjudication);
+		}
+		else
+			emitForfeit(Chess::Result::Resignation);
+	}
+	else if (command.at(0).isDigit()) // principal variation
 	{
 		bool ok = false;
 		int val = 0;
@@ -494,40 +528,6 @@ void XboardEngine::parseLine(const QString& line)
 	{
 		if (args.toInt() == m_lastPing)
 			pong();
-	}
-	else if (command == "1-0" || command == "0-1"
-	     ||  command == "1/2-1/2" || command == "resign")
-	{
-		if ((state() != Thinking && state() != Observing)
-		||  !board()->result().isNone())
-		{
-			finishGame();
-			return;
-		}
-
-		if (command == "1/2-1/2")
-		{
-			if (state() == Thinking)
-				// The engine claims that its next move will draw the game
-				m_drawOnNextMove = true;
-			else
-			{
-				qDebug("%s forfeits by invalid draw claim",
-				       qPrintable(name()));
-				emitForfeit(Chess::Result::Adjudication);
-			}
-			return;
-		}
-		
-		if ((command == "1-0" && side() == Chess::Side::White)
-		||  (command == "0-1" && side() == Chess::Side::Black))
-		{
-			qDebug("%s forfeits by invalid victory claim",
-			       qPrintable(name()));
-			emitForfeit(Chess::Result::Adjudication);
-		}
-		else
-			emitForfeit(Chess::Result::Resignation);
 	}
 	else if (command == "feature")
 	{
