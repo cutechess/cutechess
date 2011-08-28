@@ -17,6 +17,7 @@
 
 #include "chessgame.h"
 #include <QThread>
+#include <QTimer>
 #include <QtDebug>
 #include "board/board.h"
 #include "chessplayer.h"
@@ -516,8 +517,16 @@ void ChessGame::syncPlayers()
 		emit playersReady();
 }
 
-void ChessGame::start()
+void ChessGame::start(int delay)
 {
+	Q_ASSERT(delay >= 0);
+
+	if (delay > 0)
+	{
+		QTimer::singleShot(delay, this, SLOT(start()));
+		return;
+	}
+
 	for (int i = 0; i < 2; i++)
 	{
 		connect(m_player[i], SIGNAL(forfeit(Chess::Result)),

@@ -263,14 +263,16 @@ void GameManager::finish()
 bool GameManager::newGame(ChessGame* game,
 			  const PlayerBuilder* white,
 			  const PlayerBuilder* black,
-			  GameManager::StartMode mode)
+			  GameManager::StartMode mode,
+			  int delay)
 {
 	Q_ASSERT(game != 0);
 	Q_ASSERT(white != 0);
 	Q_ASSERT(black != 0);
 	Q_ASSERT(game->parent() == 0);
+	Q_ASSERT(delay >= 0);
 
-	GameEntry entry = { game, white, black };
+	GameEntry entry = { game, white, black, delay };
 
 	if (mode == StartImmediately)
 		return startGame(entry, StartImmediately);
@@ -354,7 +356,7 @@ bool GameManager::startGame(const GameEntry& entry, StartMode mode)
 		m_activeQueuedGameCount++;
 
 	gameThread->start();
-	entry.game->start();
+	entry.game->start(entry.delay);
 	emit gameStarted(entry.game);
 
 	return true;

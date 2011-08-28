@@ -339,12 +339,7 @@ void EngineMatch::onGameEnded()
 void EngineMatch::onManagerReady()
 {
 	if (!m_finishing && m_currentGame < m_gameCount)
-	{
-		if (m_wait <= 0)
-			start();
-		else
-			QTimer::singleShot(m_wait, this, SLOT(start()));
-	}
+		start();
 }
 
 void EngineMatch::start()
@@ -418,7 +413,8 @@ void EngineMatch::start()
 	connect(game, SIGNAL(gameEnded()), this, SLOT(onGameEnded()));
 	if (!m_manager.newGame(game,
 			       white->builder, black->builder,
-			       GameManager::Enqueue))
+			       GameManager::Enqueue,
+			       m_wait))
 		stop();
 }
 

@@ -67,7 +67,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void unlockThread();
 
 	public slots:
-		void start();
+		void start(int delay = 0);
 		void stop();
 		void kill();
 		void onMoveMade(const Chess::Move& move);
