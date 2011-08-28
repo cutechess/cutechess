@@ -123,12 +123,6 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 
 	const PgnGameEntry entry = m_pgnGameEntryModel->entryAt(current.row());
 
-	m_whiteLabel->setText(entry.white());
-	m_blackLabel->setText(entry.black());
-	m_siteLabel->setText(entry.site());
-	m_eventLabel->setText(entry.event());
-	m_resultLabel->setText(entry.result().toShortString());
-
 	PgnGame game;
 	PgnDatabase::PgnDatabaseError error;
 	if ((error = m_selectedDatabase->game(entry, &game)) !=
@@ -189,6 +183,12 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 			}
 		}
 	}
+
+	m_whiteLabel->setText(game.tagValue("White"));
+	m_blackLabel->setText(game.tagValue("Black"));
+	m_siteLabel->setText(game.tagValue("Site"));
+	m_eventLabel->setText(game.tagValue("Event"));
+	m_resultLabel->setText(game.tagValue("Result"));
 
 	m_boardScene->setBoard(game.createBoard());
 	m_boardScene->populate();

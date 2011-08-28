@@ -38,6 +38,19 @@ class QDataStream;
 class LIB_EXPORT PgnGameEntry
 {
 	public:
+		/*! A PGN tag's type. */
+		enum TagType
+		{
+			EventTag,	//!< The name of the tournament or match event
+			SiteTag,	//!< The location of the event
+			DateTag,	//!< The starting date of the game
+			RoundTag,	//!< The playing round ordinal of the game
+			WhiteTag,	//!< The player of the white pieces
+			BlackTag,	//!< The player of the black pieces
+			ResultTag,	//!< The result of the game
+			VariantTag	//!< The chess variant of the game
+		};
+
 		/*! Creates a new empty PgnGameEntry object. */
 		explicit PgnGameEntry();
 
@@ -71,37 +84,10 @@ class LIB_EXPORT PgnGameEntry
 		/*! Returns the line number where the game begins. */
 		qint64 lineNumber() const;
 
-		/*! Returns the event/tournament name. */
-		QString event() const;
-		/*! Returns the site/location where the game was played. */
-		QString site() const;
-		/*! Returns the starting date of the game. */
-		QDate date() const;
-		/*! Returns the round number of a match or tournament. */
-		int round() const;
-		/*! Returns the name of the white player. */
-		QString white() const;
-		/*! Returns the name of the black player. */
-		QString black() const;
-		/*! Returns the game's chess variant. */
-		QString variant() const;
-		/*! Returns the game result. */
-		Chess::Result result() const;
+		/*! Returns the tag value corresponding to \a type. */
+		QString tagValue(TagType type) const;
 
 	private:
-		enum TagType
-		{
-			EventTag,
-			SiteTag,
-			DateTag,
-			RoundTag,
-			WhiteTag,
-			BlackTag,
-			ResultTag,
-			VariantTag
-		};
-
-		QString tagValue(TagType type) const;
 		void addTag(const QByteArray& tagValue);
 
 		QByteArray m_data;

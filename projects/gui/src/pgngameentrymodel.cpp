@@ -35,7 +35,8 @@ struct EntryContains
 
 
 const QStringList PgnGameEntryModel::s_headers = (QStringList() <<
-	tr("White") << tr("Black") << tr("Event") << tr("Site") << tr("Result"));
+	tr("Event") << tr("Site") << tr("Date") << tr("Round") <<
+	tr("White") << tr("Black") << tr("Result") << tr("Variant"));
 
 PgnGameEntryModel::PgnGameEntryModel(QObject* parent)
 	: QAbstractItemModel(parent),
@@ -119,28 +120,8 @@ QVariant PgnGameEntryModel::data(const QModelIndex& index, int role) const
 {
 	if (index.isValid() && role == Qt::DisplayRole)
 	{
-		const PgnGameEntry entry = m_filtered.resultAt(index.row());
-
-		switch (index.column())
-		{
-			case 0:
-				return entry.white();
-
-			case 1:
-				return entry.black();
-
-			case 2:
-				return entry.event();
-
-			case 3:
-				return entry.site();
-
-			case 4:
-				return entry.result().toShortString();
-
-			default:
-				return QVariant();
-		}
+		PgnGameEntry::TagType tagType = PgnGameEntry::TagType(index.column());
+		return m_filtered.resultAt(index.row()).tagValue(tagType);
 	}
 	return QVariant();
 }
