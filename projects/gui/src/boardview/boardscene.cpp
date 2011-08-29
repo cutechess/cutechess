@@ -207,9 +207,9 @@ void BoardScene::onTransitionFinished()
 	foreach (const Chess::BoardTransition::Move& move, m_transition.moves())
 	{
 		if (m_direction == Forward)
-			m_squares->makeMove(move.source, move.target);
+			m_squares->movePiece(move.source, move.target);
 		else
-			m_squares->makeMove(move.target, move.source);
+			m_squares->movePiece(move.target, move.source);
 	}
 
 	foreach (const Chess::BoardTransition::Drop& drop, m_transition.drops())

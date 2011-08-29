@@ -185,8 +185,8 @@ void GraphicsBoard::setSquare(const Chess::Square& square, GraphicsPiece* piece)
 	}
 }
 
-void GraphicsBoard::makeMove(const Chess::Square& source,
-			     const Chess::Square& target)
+void GraphicsBoard::movePiece(const Chess::Square& source,
+			      const Chess::Square& target)
 {
 	GraphicsPiece* piece = pieceAt(source);
 	Q_ASSERT(piece != 0);

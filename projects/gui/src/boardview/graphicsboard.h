@@ -109,8 +109,8 @@ class GraphicsBoard : public QGraphicsItem
 		 *
 		 * If \a target already contains a piece, it is deleted.
 		 */
-		void makeMove(const Chess::Square& source,
-			      const Chess::Square& target);
+		void movePiece(const Chess::Square& source,
+			       const Chess::Square& target);
 
 		/*! Clears all highlights. */
 		void clearHighlights();
