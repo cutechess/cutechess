@@ -300,10 +300,13 @@ void EngineMatch::onGameEnded()
 		m_engines[wIndex ^ result.winner()].wins++;
 	}
 
-	qDebug("Score of %s vs %s: %d - %d - %d",
+	int totalResults = m_engines[0].wins + m_engines[1].wins + m_drawCount;
+	qDebug("Score of %s vs %s: %d - %d - %d  [%.2f] %d",
 	       qPrintable(pgn->playerName(Chess::Side::Type(wIndex))),
 	       qPrintable(pgn->playerName(Chess::Side::Type(!wIndex))),
-	       m_engines[0].wins, m_engines[1].wins, m_drawCount);
+	       m_engines[0].wins, m_engines[1].wins, m_drawCount,
+	       double(m_engines[0].wins * 2 + m_drawCount) / (totalResults * 2),
+	       totalResults);
 
 	m_games[gameId] = pgn;
 	while (m_games.contains(m_finishedGames + 1))
