@@ -26,7 +26,7 @@
 #include <QtTest/QtTest>
 #include <jsonparser.h>
 
-class TestParser: public QObject
+class tst_JsonParser: public QObject
 {
 	Q_OBJECT
 
@@ -48,7 +48,7 @@ Q_DECLARE_METATYPE(QVariant)
 Q_DECLARE_METATYPE(QVariant::Type)
 
 
-void TestParser::basics_data() const
+void tst_JsonParser::basics_data() const
 {
 	QTest::addColumn<QString>("input");
 	QTest::addColumn<QVariant::Type>("type");
@@ -184,7 +184,7 @@ void TestParser::basics_data() const
 		<< QVariant(list);
 }
 
-void TestParser::basics() const
+void tst_JsonParser::basics() const
 {
 	QFETCH(QString, input);
 	QFETCH(QVariant::Type, type);
@@ -198,7 +198,7 @@ void TestParser::basics() const
 	QCOMPARE(data, expected);
 }
 
-void TestParser::invalid_data() const
+void tst_JsonParser::invalid_data() const
 {
 	QTest::addColumn<QString>("input");
 
@@ -225,7 +225,7 @@ void TestParser::invalid_data() const
 	QTest::newRow("invalid #21") << "[ null, ]";
 }
 
-void TestParser::invalid() const
+void tst_JsonParser::invalid() const
 {
 	QFETCH(QString, input);
 
@@ -237,7 +237,7 @@ void TestParser::invalid() const
 	QVERIFY(parser.hasError());
 }
 
-QVariant TestParser::sample1() const
+QVariant tst_JsonParser::sample1() const
 {
 	QVariantList list;
 	list << "GML" << "XML";
@@ -273,7 +273,7 @@ QVariant TestParser::sample1() const
 	return QVariant(map);
 }
 
-QVariant TestParser::sample2() const
+QVariant tst_JsonParser::sample2() const
 {
 	QVariantList list;
 
@@ -343,7 +343,7 @@ QVariant TestParser::sample2() const
 	return QVariant(list);
 }
 
-void TestParser::complex_data() const
+void tst_JsonParser::complex_data() const
 {
 	QTest::addColumn<QString>("filename");
 	QTest::addColumn<QVariant::Type>("type");
@@ -359,7 +359,7 @@ void TestParser::complex_data() const
 		<< sample2();
 }
 
-void TestParser::complex() const
+void tst_JsonParser::complex() const
 {
 	QFETCH(QString, filename);
 	QFETCH(QVariant::Type, type);
@@ -375,5 +375,5 @@ void TestParser::complex() const
 	QCOMPARE(data, expected);
 }
 
-QTEST_MAIN(TestParser)
-#include "test_parser.moc"
+QTEST_MAIN(tst_JsonParser)
+#include "tst_jsonparser.moc"

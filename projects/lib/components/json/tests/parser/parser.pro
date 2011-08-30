@@ -1,4 +1,4 @@
-TARGET = test_parser
+TARGET = tst_jsonparser
 
 include(../tests.pri)
-SOURCES += test_parser.cpp
+SOURCES += tst_jsonparser.cpp

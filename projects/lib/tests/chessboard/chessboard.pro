@@ -1,4 +1,4 @@
 include(../tests.pri)
 
-TARGET = test_board
-SOURCES += test_board.cpp
+TARGET = tst_board
+SOURCES += tst_board.cpp

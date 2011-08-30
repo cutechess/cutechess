@@ -3,7 +3,7 @@
 #include <pgngame.h>
 
 
-class PgnGameBenchmark: public QObject
+class tst_PgnGame: public QObject
 {
 	Q_OBJECT
 	
@@ -12,7 +12,7 @@ class PgnGameBenchmark: public QObject
 		void parser();
 };
 
-void PgnGameBenchmark::parser_data() const
+void tst_PgnGame::parser_data() const
 {
 	QTest::addColumn<QByteArray>("pgn");
 	QByteArray pgn;
@@ -86,7 +86,7 @@ void PgnGameBenchmark::parser_data() const
 	QTest::newRow("game2") << pgn;
 }
 
-void PgnGameBenchmark::parser()
+void tst_PgnGame::parser()
 {
 	QFETCH(QByteArray, pgn);
 
@@ -99,5 +99,5 @@ void PgnGameBenchmark::parser()
 	}
 }
 
-QTEST_MAIN(PgnGameBenchmark)
-#include "pgngame.moc"
+QTEST_MAIN(tst_PgnGame)
+#include "tst_pgngame.moc"

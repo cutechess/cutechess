@@ -3,12 +3,12 @@
 #include <board/boardfactory.h>
 
 
-class TestBoard: public QObject
+class tst_Board: public QObject
 {
 	Q_OBJECT
 
 	public:
-		TestBoard();
+		tst_Board();
 	
 	private slots:
 		void zobristKeys_data() const;
@@ -28,17 +28,17 @@ class TestBoard: public QObject
 };
 
 
-TestBoard::TestBoard()
+tst_Board::tst_Board()
 	: m_board(0)
 {
 }
 
-void TestBoard::cleanupTestCase()
+void tst_Board::cleanupTestCase()
 {
 	delete m_board;
 }
 
-void TestBoard::setVariant(const QString& variant)
+void tst_Board::setVariant(const QString& variant)
 {
 	if (m_board == 0 || m_board->variant() != variant)
 	{
@@ -97,7 +97,7 @@ static quint64 smpPerft(Chess::Board* board, int depth)
 }
 
 
-void TestBoard::zobristKeys_data() const
+void tst_Board::zobristKeys_data() const
 {
 	QTest::addColumn<QString>("variant");
 	QTest::addColumn<QString>("fen");
@@ -143,7 +143,7 @@ void TestBoard::zobristKeys_data() const
 		<< Q_UINT64_C(0x5c3f9b829b279560);
 }
 
-void TestBoard::zobristKeys()
+void tst_Board::zobristKeys()
 {
 	QFETCH(QString, variant);
 	QFETCH(QString, fen);
@@ -154,7 +154,7 @@ void TestBoard::zobristKeys()
 	QCOMPARE(m_board->key(), key);
 }
 
-void TestBoard::moveStrings_data() const
+void tst_Board::moveStrings_data() const
 {
 	QTest::addColumn<QString>("variant");
 	QTest::addColumn<QString>("moves");
@@ -176,7 +176,7 @@ void TestBoard::moveStrings_data() const
 		<< "5bnr/1Nk1pppp/p1B5/8/8/5N2/RPP2PPP/1N3K2 w - - 1 13";
 }
 
-void TestBoard::moveStrings()
+void tst_Board::moveStrings()
 {
 	QFETCH(QString, variant);
 	QFETCH(QString, moves);
@@ -200,7 +200,7 @@ void TestBoard::moveStrings()
 	QCOMPARE(m_board->fenString(), startfen);
 }
 
-void TestBoard::perft_data() const
+void tst_Board::perft_data() const
 {
 	QTest::addColumn<QString>("variant");
 	QTest::addColumn<QString>("fen");
@@ -272,7 +272,7 @@ void TestBoard::perft_data() const
 		<< Q_UINT64_C(4888832);
 }
 
-void TestBoard::perft()
+void tst_Board::perft()
 {
 	QFETCH(QString, variant);
 	QFETCH(QString, fen);
@@ -284,5 +284,5 @@ void TestBoard::perft()
 	QCOMPARE(smpPerft(m_board, depth), nodecount);
 }
 
-QTEST_MAIN(TestBoard)
-#include "test_board.moc"
+QTEST_MAIN(tst_Board)
+#include "tst_board.moc"

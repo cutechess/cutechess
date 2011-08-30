@@ -27,7 +27,7 @@
 #include <jsonparser.h>
 #include <jsonserializer.h>
 
-class TestSerializer: public QObject
+class tst_JsonSerializer: public QObject
 {
 	Q_OBJECT
 
@@ -42,7 +42,7 @@ class TestSerializer: public QObject
 Q_DECLARE_METATYPE(QVariant)
 
 
-QVariant TestSerializer::sample1() const
+QVariant tst_JsonSerializer::sample1() const
 {
 	QVariantList list;
 	list << "GML" << "XML";
@@ -78,7 +78,7 @@ QVariant TestSerializer::sample1() const
 	return QVariant(map);
 }
 
-QVariant TestSerializer::sample2() const
+QVariant tst_JsonSerializer::sample2() const
 {
 	QVariantList list;
 
@@ -148,7 +148,7 @@ QVariant TestSerializer::sample2() const
 	return QVariant(list);
 }
 
-void TestSerializer::test_data() const
+void tst_JsonSerializer::test_data() const
 {
 	QTest::addColumn<QVariant>("input");
 
@@ -215,7 +215,7 @@ void TestSerializer::test_data() const
 	QTest::newRow("complex #2") << sample2();
 }
 
-void TestSerializer::test() const
+void tst_JsonSerializer::test() const
 {
 	QFETCH(QVariant, input);
 
@@ -233,5 +233,5 @@ void TestSerializer::test() const
 	QCOMPARE(result, input);
 }
 
-QTEST_MAIN(TestSerializer)
-#include "test_serializer.moc"
+QTEST_MAIN(tst_JsonSerializer)
+#include "tst_jsonserializer.moc"

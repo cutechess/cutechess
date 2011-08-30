@@ -1,4 +1,4 @@
-TARGET = test_serializer
+TARGET = tst_jsonserializer
 
 include(../tests.pri)
-SOURCES += test_serializer.cpp
+SOURCES += tst_jsonserializer.cpp

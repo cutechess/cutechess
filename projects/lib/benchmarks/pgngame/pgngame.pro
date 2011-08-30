@@ -1,4 +1,4 @@
 include(../benchmarks.pri)
 
-TARGET = pgngame
-SOURCES += pgngame.cpp
+TARGET = tst_pgngame
+SOURCES += tst_pgngame.cpp
