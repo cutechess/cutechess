@@ -339,6 +339,14 @@ GameThread* GameManager::getThread(const PlayerBuilder* white,
 	return gameThread;
 }
 
+void GameManager::onGameStarted()
+{
+	ChessGame* game = qobject_cast<ChessGame*>(QObject::sender());
+	Q_ASSERT(game != 0);
+
+	emit gameStarted(game);
+}
+
 bool GameManager::startGame(const GameEntry& entry, StartMode mode)
 {
 	GameThread* gameThread = getThread(entry.white, entry.black);
@@ -355,9 +363,10 @@ bool GameManager::startGame(const GameEntry& entry, StartMode mode)
 	if (mode == Enqueue)
 		m_activeQueuedGameCount++;
 
+	connect(entry.game, SIGNAL(started()), this, SLOT(onGameStarted()),
+		Qt::QueuedConnection);
 	gameThread->start();
 	entry.game->start(entry.delay);
-	emit gameStarted(entry.game);
 
 	return true;
 }
