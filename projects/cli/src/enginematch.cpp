@@ -413,7 +413,7 @@ void EngineMatch::start()
 	game->setDrawThreshold(m_drawMoveNum, m_drawScore);
 	game->setResignThreshold(m_resignMoveCount, m_resignScore);
 
-	connect(game, SIGNAL(gameEnded()), this, SLOT(onGameEnded()));
+	connect(game, SIGNAL(finished()), this, SLOT(onGameEnded()));
 	if (!m_manager.newGame(game,
 			       white->builder, black->builder,
 			       GameManager::Enqueue,

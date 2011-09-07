@@ -79,7 +79,7 @@ class LIB_EXPORT ChessGame : public QObject
 			      const QString& sanString,
 			      const QString& comment);
 		void started();
-		void gameEnded();
+		void finished();
 		void playersReady();
 
 	private slots:
@@ -106,7 +106,7 @@ class LIB_EXPORT ChessGame : public QObject
 		TimeControl m_timeControl[2];
                 const OpeningBook* m_book[2];
 		int m_bookDepth[2];
-		bool m_gameEnded;
+		bool m_finished;
 		bool m_gameInProgress;
 		int m_drawMoveNum;
 		int m_drawScore;

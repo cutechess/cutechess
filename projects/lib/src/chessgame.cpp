@@ -27,7 +27,7 @@
 ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	: QObject(parent),
 	  m_board(board),
-	  m_gameEnded(false),
+	  m_finished(false),
 	  m_gameInProgress(false),
 	  m_drawMoveNum(0),
 	  m_drawScore(0),
@@ -101,10 +101,10 @@ ChessPlayer* ChessGame::playerToWait()
 
 void ChessGame::stop()
 {
-	if (m_gameEnded)
+	if (m_finished)
 		return;
 
-	m_gameEnded = true;
+	m_finished = true;
 	emit humanEnabled(false);
 	if (!m_gameInProgress)
 	{
@@ -134,7 +134,7 @@ void ChessGame::finish()
 			m_player[i]->disconnect(this);
 	}
 
-	emit gameEnded();
+	emit finished();
 }
 
 void ChessGame::kill()
@@ -302,7 +302,7 @@ void ChessGame::startTurn()
 
 void ChessGame::onForfeit(const Chess::Result& result)
 {
-	if (m_gameEnded)
+	if (m_finished)
 		return;
 
 	if (!m_gameInProgress && result.winner().isNull())
@@ -562,7 +562,7 @@ void ChessGame::startGame()
 	emit humanEnabled(false);
 
 	disconnect(this, SIGNAL(playersReady()), this, SLOT(startGame()));
-	if (m_gameEnded)
+	if (m_finished)
 		return;
 
 	m_gameInProgress = true;
