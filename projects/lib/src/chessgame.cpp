@@ -586,6 +586,7 @@ void ChessGame::startGame()
 	
 	resetBoard();
 	initializePgn();
+	emit started();
 	emit fenChanged(m_board->startingFenString());
 
 	for (int i = 0; i < 2; i++)
