@@ -57,6 +57,9 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 
 	if (m_engines->rowCount() > 0)
 	{
+		m_whitePlayerCpuRadio->setEnabled(true);
+		m_blackPlayerCpuRadio->setEnabled(true);
+
 		// TODO: The selected engine is not remembered
 		m_whiteEngineComboBox->setCurrentIndex(0);
 		m_blackEngineComboBox->setCurrentIndex(0);

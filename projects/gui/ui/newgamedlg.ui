@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>514</width>
+    <width>522</width>
     <height>223</height>
    </rect>
   </property>
@@ -38,6 +38,9 @@
             </item>
             <item>
              <widget class="QRadioButton" name="m_whitePlayerCpuRadio">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>CPU</string>
               </property>
@@ -124,6 +127,9 @@
             </item>
             <item>
              <widget class="QRadioButton" name="m_blackPlayerCpuRadio">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>CPU</string>
               </property>
