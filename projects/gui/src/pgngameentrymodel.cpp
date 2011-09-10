@@ -17,22 +17,23 @@
 
 #include "pgngameentrymodel.h"
 #include <QtConcurrentFilter>
+#include <pgngamefilter.h>
+
 
 struct EntryContains
 {
-	EntryContains(const QString& pattern)
-		: m_pattern(pattern.toLatin1()) { }
+	EntryContains(const PgnGameFilter& filter)
+		: m_filter(filter) { }
 
 	typedef bool result_type;
 
 	inline bool operator()(const PgnGameEntry& entry)
 	{
-		return entry.match(m_pattern);
+		return entry.match(m_filter);
 	}
 
-	QByteArray m_pattern;
+	PgnGameFilter m_filter;
 };
-
 
 const QStringList PgnGameEntryModel::s_headers = (QStringList() <<
 	tr("Event") << tr("Site") << tr("Date") << tr("Round") <<
@@ -57,7 +58,7 @@ void PgnGameEntryModel::setEntries(const QList<PgnGameEntry>& entries)
 	m_watcher.waitForFinished();
 
 	m_entries = entries;
-	applyFilter();
+	applyFilter(QString());
 }
 
 void PgnGameEntryModel::onResultsReady()
@@ -66,22 +67,22 @@ void PgnGameEntryModel::onResultsReady()
 		fetchMore(QModelIndex());
 }
 
-void PgnGameEntryModel::applyFilter()
+void PgnGameEntryModel::applyFilter(const PgnGameFilter& filter)
 {
 	beginResetModel();
 	m_entryCount = 0;
-	m_filtered = QtConcurrent::filtered(m_entries, EntryContains(m_pattern));
+
+	m_filtered = QtConcurrent::filtered(m_entries, EntryContains(filter));
+
 	m_watcher.setFuture(m_filtered);
 	endResetModel();
 }
 
-void PgnGameEntryModel::setFilterWildcard(const QString& pattern)
+void PgnGameEntryModel::setFilter(const PgnGameFilter& filter)
 {
-	m_pattern = pattern;
-
 	m_watcher.cancel();
 	m_watcher.waitForFinished();
-	applyFilter();
+	applyFilter(filter);
 }
 
 QModelIndex PgnGameEntryModel::index(int row, int column,

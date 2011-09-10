@@ -24,6 +24,7 @@
 #include <QFuture>
 #include <QFutureWatcher>
 #include <pgngameentry.h>
+class PgnGameFilter;
 
 /*!
  * \brief Supplies PGN game entry information to views.
@@ -52,8 +53,8 @@ class PgnGameEntryModel : public QAbstractItemModel
 		                    int role = Qt::DisplayRole) const;
 
 	public slots:
-		/*! Sets the wildcard expression used to filter the contents. */
-		void setFilterWildcard(const QString& pattern);
+		/*! Sets the filter for filtering the contents of the database. */
+		void setFilter(const PgnGameFilter& filter);
 
 	protected:
 		// Inherited from QAbstractItemModel
@@ -64,13 +65,12 @@ class PgnGameEntryModel : public QAbstractItemModel
 		void onResultsReady();
 
 	private:
-		void applyFilter();
+		void applyFilter(const PgnGameFilter& filter);
 
 		static const QStringList s_headers;
 
 		QList<PgnGameEntry> m_entries;
 		int m_entryCount;
-		QString m_pattern;
 		QFuture<PgnGameEntry> m_filtered;
 		QFutureWatcher<PgnGameEntry> m_watcher;
 };

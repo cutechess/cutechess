@@ -41,6 +41,16 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="3">
+        <widget class="QPushButton" name="m_advancedSearchBtn">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Advanced...</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>

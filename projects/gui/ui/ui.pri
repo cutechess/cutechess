@@ -5,4 +5,5 @@ FORMS += engineconfigdlg.ui \
          newgamedlg.ui \
          gamepropertiesdlg.ui \
          gamedatabasedlg.ui \
-         importprogressdlg.ui
+         importprogressdlg.ui \
+	 gamedatabasesearchdlg.ui

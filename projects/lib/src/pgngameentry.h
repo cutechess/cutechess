@@ -21,6 +21,7 @@
 #include <QDate>
 #include "board/result.h"
 class PgnStream;
+class PgnGameFilter;
 class QDataStream;
 
 
@@ -74,10 +75,10 @@ class LIB_EXPORT PgnGameEntry
 		void write(QDataStream& out) const;
 
 		/*!
-		 * Returns true if the PGN tags match the wildcard \a pattern.
+		 * Returns true if the PGN tags match \a filter.
 		 * The matching is case insensitive.
 		 */
-		bool match(const QByteArray& pattern) const;
+		bool match(const PgnGameFilter& filter) const;
 
 		/*! Returns the stream position where the game begins. */
 		qint64 pos() const;

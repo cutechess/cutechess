@@ -53,8 +53,9 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 		void viewPreviousMove();
 		void viewFirstMove();
 		void viewLastMove();
-		void updateSearch(const QString& terms);
+		void updateSearch(const QString& terms = QString());
 		void onSearchTimeout();
+		void onAdvancedSearch();
 
 	private:
 		BoardView* m_boardView;

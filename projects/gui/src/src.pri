@@ -19,7 +19,8 @@ HEADERS += chessclock.h \
     pgngameentrymodel.h \
     pgndatabasemodel.h \
     engineoptiondelegate.h \
-    engineoptionmodel.h
+    engineoptionmodel.h \
+    gamedatabasesearchdlg.h
 SOURCES += main.cpp \
     chessclock.cpp \
     engineconfigurationmodel.cpp \
@@ -40,4 +41,5 @@ SOURCES += main.cpp \
     pgngameentrymodel.cpp \
     pgndatabasemodel.cpp \
     engineoptiondelegate.cpp \
-    engineoptionmodel.cpp
+    engineoptionmodel.cpp \
+    gamedatabasesearchdlg.cpp

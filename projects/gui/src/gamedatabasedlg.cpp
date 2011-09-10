@@ -31,6 +31,7 @@
 #include "boardview/boardview.h"
 #include "boardview/boardscene.h"
 #include "pgndatabase.h"
+#include "gamedatabasesearchdlg.h"
 
 GameDatabaseDialog::GameDatabaseDialog()
 	: QDialog(0, Qt::Window),
@@ -87,8 +88,14 @@ GameDatabaseDialog::GameDatabaseDialog()
 		SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
 		this, SLOT(gameSelectionChanged(const QModelIndex&, const QModelIndex&)));
 
-	connect(m_searchEdit, SIGNAL(textChanged(const QString&)),
+	connect(m_searchEdit, SIGNAL(textEdited(const QString&)),
 		this, SLOT(updateSearch(const QString&)));
+
+	connect(m_clearBtn, SIGNAL(clicked()),
+		this, SLOT(updateSearch()));
+
+	connect(m_advancedSearchBtn, SIGNAL(clicked()),
+		this, SLOT(onAdvancedSearch()));
 
 	m_searchTimer.setSingleShot(true);
 	connect(&m_searchTimer, SIGNAL(timeout()), this, SLOT(onSearchTimeout()));
@@ -114,6 +121,7 @@ void GameDatabaseDialog::databaseSelectionChanged(const QModelIndex& current,
 		CuteChessApplication::instance()->gameDatabaseManager()->databases().at(current.row());
 
 	m_pgnGameEntryModel->setEntries(m_selectedDatabase->entries());
+	m_advancedSearchBtn->setEnabled(true);
 }
 
 void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
@@ -252,5 +260,16 @@ void GameDatabaseDialog::updateSearch(const QString& terms)
 
 void GameDatabaseDialog::onSearchTimeout()
 {
-	m_pgnGameEntryModel->setFilterWildcard(m_searchTerms);
+	m_pgnGameEntryModel->setFilter(m_searchTerms);
+}
+
+void GameDatabaseDialog::onAdvancedSearch()
+{
+	GameDatabaseSearchDialog dlg;
+	if (dlg.exec() != QDialog::Accepted)
+		return;
+
+	m_searchEdit->clear();
+	m_pgnGameEntryModel->setFilter(dlg.filter());
+	m_clearBtn->setEnabled(true);
 }
