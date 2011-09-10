@@ -255,7 +255,7 @@ void GameDatabaseDialog::updateSearch(const QString& terms)
 {
 	m_clearBtn->setEnabled(!terms.isEmpty());
 	m_searchTerms = terms;
-	m_searchTimer.start(300);
+	m_searchTimer.start(500);
 }
 
 void GameDatabaseDialog::onSearchTimeout()
