@@ -359,7 +359,7 @@ int main(int argc, char* argv[])
 		{
 			out << "cutechess-cli " << CUTECHESS_CLI_VERSION << endl;
 			out << "Using Qt version " << qVersion() << endl << endl;
-			out << "Copyright (C) 2008-2010 Ilari Pihlajisto and Arto Jonsson" << endl;
+			out << "Copyright (C) 2008-2011 Ilari Pihlajisto and Arto Jonsson" << endl;
 			out << "This is free software; see the source for copying ";
 			out << "conditions.  There is NO" << endl << "warranty; not even for ";
 			out << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
