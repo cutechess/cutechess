@@ -16,7 +16,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 	const QString name = map["name"].toString();
 	const QString type = map["type"].toString();
 	const QVariant value = map["value"];
-	const QVariant defaultValue = map["default"];
+	QVariant defaultValue = map["default"];
 	const QString alias = map["alias"].toString();
 
 	if (name.isEmpty())
@@ -37,7 +37,9 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 		return 0;
 	}
 
-	if (defaultValue.type() != QVariant::Bool &&
+	if (defaultValue.isNull())
+		defaultValue = value;
+	else if (defaultValue.type() != QVariant::Bool &&
 		defaultValue.type() != QVariant::String &&
 		defaultValue.type() != QVariant::Int)
 	{
