@@ -51,8 +51,6 @@ User Interface
 
 - (Mac) provide global menubar
 
-- Use SVG graphics to display piece symbols in PromotionDialog
-
 - Per window dialogs should use QDialog::open() instead of exec()
 
 - Moving a piece by selecting (clicking with a mouse) a source and a
