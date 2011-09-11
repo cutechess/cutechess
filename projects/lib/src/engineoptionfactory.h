@@ -5,7 +5,7 @@
 
 class EngineOption;
 
-class EngineOptionFactory
+class LIB_EXPORT EngineOptionFactory
 {
 	public:
 		static EngineOption* create(const QVariantMap& map);
