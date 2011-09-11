@@ -37,7 +37,7 @@ class ChessClock: public QLCDNumber
 		void stop();
 	
 	protected:
-		void timerEvent(QTimerEvent* event);
+		virtual void timerEvent(QTimerEvent* event);
 	
 	private:
 		int m_totalTime;

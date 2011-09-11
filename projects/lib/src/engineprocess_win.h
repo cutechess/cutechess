@@ -58,10 +58,10 @@ class LIB_EXPORT EngineProcess : public QIODevice
 		virtual ~EngineProcess();
 
 		// Inherited from QIODevice
-		qint64 bytesAvailable() const;
-		bool canReadLine() const;
-		void close();
-		bool isSequential() const;
+		virtual qint64 bytesAvailable() const;
+		virtual bool canReadLine() const;
+		virtual void close();
+		virtual bool isSequential() const;
 
 		/*! Returns the exit code of the last process that finished. */
 		int exitCode() const;
@@ -130,8 +130,8 @@ class LIB_EXPORT EngineProcess : public QIODevice
 
 	protected:
 		// Inherited from QIODevice
-		qint64 readData(char* data, qint64 maxSize);
-		qint64 writeData(const char* data, qint64 maxSize);
+		virtual qint64 readData(char* data, qint64 maxSize);
+		virtual qint64 writeData(const char* data, qint64 maxSize);
 
 	private slots:
 		void onFinished();

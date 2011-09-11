@@ -30,15 +30,15 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		HumanPlayer(QObject* parent = 0);
 
 		// Inherted from ChessPlayer
-		void endGame(const Chess::Result& result);
-		void makeMove(const Chess::Move& move);
-		bool supportsVariant(const QString& variant) const;
-		bool isHuman() const;
+		virtual void endGame(const Chess::Result& result);
+		virtual void makeMove(const Chess::Move& move);
+		virtual bool supportsVariant(const QString& variant) const;
+		virtual bool isHuman() const;
 		
 	protected:
 		// Inherited from ChessPlayer
-		void startGame();
-		void startThinking();
+		virtual void startGame();
+		virtual void startThinking();
 
 	public slots:
 		void onHumanMove(const Chess::GenericMove& move,

@@ -11,11 +11,10 @@ class LIB_EXPORT EngineCheckOption : public EngineOption
 		                  const QVariant& defaultValue = QVariant(),
 		                  const QString& alias = QString());
 
-		EngineOption* copy() const;
-
-		bool isValid(const QVariant& value) const;
-
-		QVariant toVariant() const;
+		// Inherited from EngineOption
+		virtual EngineOption* copy() const;
+		virtual bool isValid(const QVariant& value) const;
+		virtual QVariant toVariant() const;
 };
 
 #endif // ENGINECHECKOPTION_H

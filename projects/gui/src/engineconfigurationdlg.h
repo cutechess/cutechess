@@ -50,7 +50,7 @@ class EngineConfigurationDialog : public QDialog, private Ui::EngineConfiguratio
 		*/
 		EngineConfigurationDialog(DialogMode mode, QWidget* parent = 0);
 
-		~EngineConfigurationDialog();
+		virtual ~EngineConfigurationDialog();
 
 		/*!
 		 * Applies the information of \a engine to the dialog.

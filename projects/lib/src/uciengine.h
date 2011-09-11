@@ -36,20 +36,20 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		UciEngine(QObject* parent = 0);
 
 		// Inherited from ChessEngine
-		void endGame(const Chess::Result& result);
-		void makeMove(const Chess::Move& move);
-		QString protocol() const;
+		virtual void endGame(const Chess::Result& result);
+		virtual void makeMove(const Chess::Move& move);
+		virtual QString protocol() const;
 
 	protected:
 		// Inherited from ChessEngine
-		bool sendPing();
-		void sendStop();
-		void sendQuit();
-		void startProtocol();
-		void startGame();
-		void startThinking();
-		void parseLine(const QString& line);
-		void sendOption(const QString& name, const QString& value);
+		virtual bool sendPing();
+		virtual void sendStop();
+		virtual void sendQuit();
+		virtual void startProtocol();
+		virtual void startGame();
+		virtual void startThinking();
+		virtual void parseLine(const QString& line);
+		virtual void sendOption(const QString& name, const QString& value);
 		
 	private:
 		void addVariants();

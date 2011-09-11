@@ -31,7 +31,7 @@ class GameThread : public QThread
 		GameThread(const PlayerBuilder* whiteBuilder,
 			   const PlayerBuilder* blackBuilder,
 			   QObject* parent);
-		~GameThread();
+		virtual ~GameThread();
 
 		bool isReady() const;
 		bool newGame(ChessGame* game);

@@ -63,12 +63,12 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void setDevice(QIODevice* device);
 
 		// Inherited from ChessPlayer
-		void closeConnection();
-		void quit();
+		virtual void closeConnection();
+		virtual void quit();
 		virtual void endGame(const Chess::Result& result);
-		bool isHuman() const;
-		bool isReady() const;
-		bool supportsVariant(const QString& variant) const;
+		virtual bool isHuman() const;
+		virtual bool isReady() const;
+		virtual bool supportsVariant(const QString& variant) const;
 
 		/*!
 		 * Starts communicating with the engine.
@@ -114,7 +114,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		
 	public slots:
 		// Inherited from ChessPlayer
-		void go();
+		virtual void go();
 		
 	protected:
 		/*!
@@ -186,7 +186,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		
 	protected slots:
 		// Inherited from ChessPlayer
-		void onTimeout();
+		virtual void onTimeout();
 
 		/*! Reads input from the engine. */
 		void onReadyRead();

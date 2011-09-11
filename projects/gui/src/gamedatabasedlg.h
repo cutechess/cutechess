@@ -42,7 +42,7 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 	public:
 		/*! Constructs a new GameDatabaseDialog. */
 		GameDatabaseDialog();
-		~GameDatabaseDialog();
+		virtual ~GameDatabaseDialog();
 
 	private slots:
 		void databaseSelectionChanged(const QModelIndex& current,

@@ -43,11 +43,11 @@ class MainWindow : public QMainWindow
 
 	public:
 		MainWindow(ChessGame* game);
-		~MainWindow();
+		virtual ~MainWindow();
 		QString windowListTitle() const;
 
 	protected:
-		void closeEvent(QCloseEvent* event);
+		virtual void closeEvent(QCloseEvent* event);
 
 	private slots:
 		void newGame();

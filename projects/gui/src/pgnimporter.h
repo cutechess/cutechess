@@ -50,7 +50,7 @@ class PgnImporter : public QThread
 		QString fileName() const;
 
 		// Inherited from QThread
-		void run();
+		virtual void run();
 
 	public slots:
 		/*! Aborts the import. */

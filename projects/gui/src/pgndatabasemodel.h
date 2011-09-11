@@ -43,17 +43,17 @@ class PgnDatabaseModel : public QAbstractItemModel
 		                 QObject* parent = 0);
 
 		// Inherited from QAbstractItemModel
-		QModelIndex index(int row, int column,
-		                  const QModelIndex& parent = QModelIndex()) const;
-		QModelIndex parent(const QModelIndex& index) const;
-		int rowCount(const QModelIndex& parent = QModelIndex()) const;
-		int columnCount(const QModelIndex& parent = QModelIndex()) const;
-		QVariant data(const QModelIndex& index, int role) const;
-		QVariant headerData(int section, Qt::Orientation orientation,
-		                    int role = Qt::DisplayRole) const;
-		Qt::ItemFlags flags(const QModelIndex& index) const;
-		bool setData(const QModelIndex& index, const QVariant& value,
-		             int role = Qt::EditRole);
+		virtual QModelIndex index(int row, int column,
+					  const QModelIndex& parent = QModelIndex()) const;
+		virtual QModelIndex parent(const QModelIndex& index) const;
+		virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+		virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+		virtual QVariant data(const QModelIndex& index, int role) const;
+		virtual QVariant headerData(int section, Qt::Orientation orientation,
+					    int role = Qt::DisplayRole) const;
+		virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+		virtual bool setData(const QModelIndex& index, const QVariant& value,
+				     int role = Qt::EditRole);
 
 	private slots:
 		void onDatabaseAdded(int index);

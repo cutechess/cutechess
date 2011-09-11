@@ -34,7 +34,7 @@ class GameDatabaseSearchDialog : public QDialog, private Ui::GameDatabaseSearchD
 	public:
 		/*! Constructs a new GameDatabaseSearchDialog. */
 		GameDatabaseSearchDialog(QWidget* parent = 0);
-		~GameDatabaseSearchDialog();
+		virtual ~GameDatabaseSearchDialog();
 
 		/*! Returns the PGN filter. */
 		PgnGameFilter filter() const;

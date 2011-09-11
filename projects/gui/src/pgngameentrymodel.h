@@ -43,14 +43,14 @@ class PgnGameEntryModel : public QAbstractItemModel
 		void setEntries(const QList<PgnGameEntry>& entries);
 
 		// Inherited from QAbstractItemModel
-		QModelIndex index(int row, int column,
-		                  const QModelIndex& parent = QModelIndex()) const;
-		QModelIndex parent(const QModelIndex& index) const;
-		int rowCount(const QModelIndex& parent = QModelIndex()) const;
-		int columnCount(const QModelIndex& parent = QModelIndex()) const;
-		QVariant data(const QModelIndex& index, int role) const;
-		QVariant headerData(int section, Qt::Orientation orientation,
-		                    int role = Qt::DisplayRole) const;
+		virtual QModelIndex index(int row, int column,
+					  const QModelIndex& parent = QModelIndex()) const;
+		virtual QModelIndex parent(const QModelIndex& index) const;
+		virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+		virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+		virtual QVariant data(const QModelIndex& index, int role) const;
+		virtual QVariant headerData(int section, Qt::Orientation orientation,
+					    int role = Qt::DisplayRole) const;
 
 	public slots:
 		/*! Sets the filter for filtering the contents of the database. */
@@ -58,8 +58,8 @@ class PgnGameEntryModel : public QAbstractItemModel
 
 	protected:
 		// Inherited from QAbstractItemModel
-		bool canFetchMore(const QModelIndex& parent) const;
-		void fetchMore(const QModelIndex& parent);
+		virtual bool canFetchMore(const QModelIndex& parent) const;
+		virtual void fetchMore(const QModelIndex& parent);
 
 	private slots:
 		void onResultsReady();
@@ -76,4 +76,3 @@ class PgnGameEntryModel : public QAbstractItemModel
 };
 
 #endif // PGN_GAME_ENTRY_MODEL_H
-

@@ -42,7 +42,7 @@ class EngineMatch : public QObject
 
 	public:
 		EngineMatch(QObject* parent = 0);
-		~EngineMatch();
+		virtual ~EngineMatch();
 
 		void addEngine(const EngineConfiguration& config,
 			       const TimeControl& timeControl,

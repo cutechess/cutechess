@@ -13,17 +13,16 @@ class LIB_EXPORT EngineSpinOption : public EngineOption
 		                 int max = 0,
 		                 const QString& alias = QString());
 
-		EngineOption* copy() const;
-
-		bool isValid(const QVariant& value) const;
+		// Inherited from EngineOption
+		virtual EngineOption* copy() const;
+		virtual bool isValid(const QVariant& value) const;
+		virtual QVariant toVariant() const;
 
 		int min() const;
 		int max() const;
 
 		void setMin(int min);
 		void setMax(int max);
-
-		QVariant toVariant() const;
 
 	private:
 		int m_min;

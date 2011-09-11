@@ -13,14 +13,13 @@ class LIB_EXPORT EngineComboOption : public EngineOption
 		                  const QStringList& choices = QStringList(),
 		                  const QString& alias = QString());
 
-		EngineOption* copy() const;
-
-		bool isValid(const QVariant& value) const;
+		// Inherited from EngineOption
+		virtual EngineOption* copy() const;
+		virtual bool isValid(const QVariant& value) const;
+		virtual QVariant toVariant() const;
 
 		QStringList choices() const;
 		void setChoices(const QStringList& choices);
-
-		QVariant toVariant() const;
 
 	private:
 		QStringList m_choices;

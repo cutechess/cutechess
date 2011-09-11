@@ -28,7 +28,7 @@ class CuteChessCoreApplication : public QCoreApplication
 
 	public:
 		CuteChessCoreApplication(int& argc, char* argv[]);
-		~CuteChessCoreApplication();
+		virtual ~CuteChessCoreApplication();
 
 		QString configPath();
 		EngineManager* engineManager();

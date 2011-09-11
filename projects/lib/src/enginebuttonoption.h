@@ -8,10 +8,10 @@ class LIB_EXPORT EngineButtonOption : public EngineOption
 	public:
 		EngineButtonOption(const QString& name);
 
-		EngineOption* copy() const;
-
-		bool isValid(const QVariant& value) const;
-		QVariant toVariant() const;
+		// Inherited from EngineOption
+		virtual EngineOption* copy() const;
+		virtual bool isValid(const QVariant& value) const;
+		virtual QVariant toVariant() const;
 };
 
 #endif // ENGINEBUTTONOPTION_H

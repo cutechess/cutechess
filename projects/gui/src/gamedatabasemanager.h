@@ -37,7 +37,7 @@ class GameDatabaseManager : public QObject
 	public:
 		/*! Constructs an empty GameDatabaseManager with \a parent. */
 		GameDatabaseManager(QObject* parent = 0);
-		~GameDatabaseManager();
+		virtual ~GameDatabaseManager();
 
 		/*!
 		 * Returns the list of currently managed databases.

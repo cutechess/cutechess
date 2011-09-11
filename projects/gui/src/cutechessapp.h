@@ -35,7 +35,7 @@ class CuteChessApplication : public QApplication
 
 	public:
 		CuteChessApplication(int& argc, char* argv[]);
-		~CuteChessApplication();
+		virtual ~CuteChessApplication();
 
 		QString configPath();
 		EngineManager* engineManager();
