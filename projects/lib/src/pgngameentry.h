@@ -53,7 +53,7 @@ class LIB_EXPORT PgnGameEntry
 		};
 
 		/*! Creates a new empty PgnGameEntry object. */
-		explicit PgnGameEntry();
+		PgnGameEntry();
 
 		/*! Resets the entry to an empty default. */
 		void clear();
