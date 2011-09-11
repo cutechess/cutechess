@@ -38,7 +38,8 @@ class LIB_EXPORT TimeControl
 		/*!
 		 * Creates a new time control from a string.
 		 *
-		 * \a str must use this format: movesPerTc/timePerTc+timeIncrement
+		 * \a str must either be "inf" for infinite time, or it can use
+		 * the format: movesPerTc/timePerTc+timeIncrement
 		 * - timePerTc is time in seconds if it's a single value.
 		 *   It can also use the form minutes:seconds.
 		 * - if movesPerTc is 0, it should be left out, and the slash
@@ -54,6 +55,9 @@ class LIB_EXPORT TimeControl
 		 *
 		 * Example 3 (whole game in 2.5 minutes plus 5 sec increment):
 		 *   TimeControl("2:30+5");
+		 *
+		 * Example 4 (infinite thinking time):
+		 *   TimeControl("inf");
 		 */
 		TimeControl(const QString& str);
 
