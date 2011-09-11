@@ -198,6 +198,6 @@ RESOURCES
 
 COPYING
 -------
-Copyright \(C) 2008-2010 Ilari Pihlajisto and Arto Jonsson. Free use of this
+Copyright \(C) 2008-2011 Ilari Pihlajisto and Arto Jonsson. Free use of this
 software is granted under the terms of GNU General Public License (GPL).
 
