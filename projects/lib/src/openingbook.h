@@ -76,8 +76,8 @@ class LIB_EXPORT OpeningBook
 
 
 	protected:
-		friend QDataStream& operator>>(QDataStream& in, OpeningBook* book);
-		friend QDataStream& operator<<(QDataStream& out, const OpeningBook* book);
+		friend LIB_EXPORT QDataStream& operator>>(QDataStream& in, OpeningBook* book);
+		friend LIB_EXPORT QDataStream& operator<<(QDataStream& out, const OpeningBook* book);
 
 		/*!
 		 * \brief An entry in the opening book.

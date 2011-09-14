@@ -487,7 +487,7 @@ class LIB_EXPORT Board
 			Move move;
 			quint64 key;
 		};
-		friend QDebug operator<<(QDebug dbg, const Board* board);
+		friend LIB_EXPORT QDebug operator<<(QDebug dbg, const Board* board);
 
 		bool m_initialized;
 		int m_width;
