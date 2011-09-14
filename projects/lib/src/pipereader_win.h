@@ -65,12 +65,11 @@ class LIB_EXPORT PipeReader : public QThread
 		virtual void run();
 
 	private:
-		bool findLastNewline(const char* end, int size);
 		static const int BufSize = 0x8000;
 
 		HANDLE m_pipe;
 		char m_buf[BufSize];
-		const char* m_bufEnd;
+		const char* const m_bufEnd;
 		char* m_start;
 		char* m_end;
 		mutable QMutex m_mutex;

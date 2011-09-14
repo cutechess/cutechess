@@ -27,7 +27,7 @@ PipeReader::PipeReader(HANDLE pipe, QObject* parent)
 	  m_end(m_buf),
 	  m_freeBytes(BufSize),
 	  m_usedBytes(0),
-	  m_lastNewLine(0)
+	  m_lastNewLine(1)
 {
 	Q_ASSERT(m_pipe != INVALID_HANDLE_VALUE);
 }
@@ -40,14 +40,15 @@ qint64 PipeReader::bytesAvailable() const
 bool PipeReader::canReadLine() const
 {
 	QMutexLocker locker(&m_mutex);
-	return m_lastNewLine > 0;
+	return m_lastNewLine <= m_usedBytes.available();
 }
 
 qint64 PipeReader::readData(char* data, qint64 maxSize)
 {
 	int n = qMin(int(maxSize), m_usedBytes.available());
-	if (n <= 0 || !m_usedBytes.tryAcquire(n))
+	if (n <= 0)
 		return -1;
+	m_usedBytes.acquire(n);
 
 	// Copy the first (possibly the only) block of data
 	int size1 = qMin(m_bufEnd - m_start, n);
@@ -71,33 +72,8 @@ qint64 PipeReader::readData(char* data, qint64 maxSize)
 	}
 	Q_ASSERT(n == size1 + size2);
 
-	m_mutex.lock();
-	m_lastNewLine -= n;
-	m_mutex.unlock();
-
 	m_freeBytes.release(n);
 	return n;
-}
-
-// Finds the last newline character in a block of 'size' bytes which ends
-// at 'end'. Keeping track of the last newline allows us to quickly tell if
-// a whole line can be read.
-//
-// Sets 'm_lastNewLine' to a new value and returns true if successfull.
-bool PipeReader::findLastNewline(const char* end, int size)
-{
-	for (int i = 0; i < size; i++)
-	{
-		if (*end == '\n')
-		{
-			QMutexLocker locker(&m_mutex);
-			m_lastNewLine = m_usedBytes.available() + size - i;
-			return true;
-		}
-		end--;
-	}
-
-	return false;
 }
 
 void PipeReader::run()
@@ -121,7 +97,19 @@ void PipeReader::run()
 
 		m_end += dwRead;
 		Q_ASSERT(m_end <= m_bufEnd);
-		bool sendReady = findLastNewline(m_end - 1, dwRead);
+
+		QMutexLocker locker(&m_mutex);
+
+		m_lastNewLine += dwRead;
+		for (int i = 1; i <= int(dwRead); i++)
+		{
+			if (*(m_end - i) == '\n')
+			{
+				m_lastNewLine = i;
+				break;
+			}
+		}
+
 		if (m_end == m_bufEnd)
 			m_end = m_buf;
 
@@ -130,7 +118,7 @@ void PipeReader::run()
 
 		// To avoid signal spam, send the 'readyRead' signal only
 		// if we have a whole line of new data
-		if (sendReady)
+		if (m_lastNewLine <= int(dwRead))
 			emit readyRead();
 	}
 }
