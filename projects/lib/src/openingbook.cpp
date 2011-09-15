@@ -134,6 +134,15 @@ int OpeningBook::import(PgnStream& in, int maxMoves)
 	return moveCount;
 }
 
+static quint32 s_rand32()
+{
+	const quint32 random1 = quint32(qrand());
+	const quint32 random2 = quint32(qrand());
+	const quint32 random3 = quint32(qrand());
+
+	return random1 ^ (random2 << 15) ^ (random3 << 30);
+}
+
 Chess::GenericMove OpeningBook::move(quint64 key) const
 {
 	Chess::GenericMove move;
@@ -153,7 +162,7 @@ Chess::GenericMove OpeningBook::move(quint64 key) const
 
 	// Pick a move randomly, with the highest-weighted move having
 	// the highest probability of getting picked.
-	int pick = qrand() % totalWeight;
+	int pick = s_rand32() % totalWeight;
 	int currentWeight = 0;
 	foreach (const Entry& entry, entries)
 	{
