@@ -327,14 +327,19 @@ Chess::Move ChessGame::bookMove(Chess::Side side)
 
 	Chess::GenericMove bookMove = m_book[side]->move(m_board->key());
 	Chess::Move move = m_board->moveFromGenericMove(bookMove);
+	if (move.isNull())
+		return Chess::Move();
 
-	if (!move.isNull() && !m_board->isLegalMove(move))
+	if (!m_board->isLegalMove(move))
 	{
 		qWarning("Illegal opening book move for %s: %s",
 			 qPrintable(side.toString()),
 			 qPrintable(m_board->moveString(move, Chess::Board::LongAlgebraic)));
-		move = Chess::Move();
+		return Chess::Move();
 	}
+
+	if (m_board->isRepeatMove(move))
+		return Chess::Move();
 
 	return move;
 }
@@ -425,7 +430,7 @@ void ChessGame::generateOpening()
 	forever
 	{
 		Chess::Move move = bookMove(m_board->sideToMove());
-		if (!m_board->isLegalMove(move) || m_board->isRepeatMove(move))
+		if (move.isNull())
 			break;
 
 		m_board->makeMove(move);
