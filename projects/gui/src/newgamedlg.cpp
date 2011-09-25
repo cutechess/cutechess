@@ -49,6 +49,7 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 
 	m_proxyModel = new QSortFilterProxyModel(this);
 	m_proxyModel->setSourceModel(m_engines);
+	m_proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 	m_proxyModel->sort(0);
 	m_proxyModel->setDynamicSortFilter(true);
 

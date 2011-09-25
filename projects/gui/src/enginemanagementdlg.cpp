@@ -38,9 +38,10 @@ EngineManagementDialog::EngineManagementDialog(QWidget* parent)
 	// Set up a filtered model
 	m_filteredModel->setSourceModel(new EngineConfigurationModel(
 		m_engineManager, this));
-
 	m_filteredModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-
+	m_filteredModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+	m_filteredModel->sort(0);
+	m_filteredModel->setDynamicSortFilter(true);
 	m_enginesList->setModel(m_filteredModel);
 
 	connect(m_searchEngineEdit, SIGNAL(textChanged(QString)),
