@@ -6,333 +6,329 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
-    <height>343</height>
+    <width>394</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Advanced Search</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Event:</string>
        </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Event:</string>
-         </property>
-         <property name="buddy">
-          <cstring>m_eventEdit</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="m_eventEdit">
-         <property name="toolTip">
-          <string>The name of the tournament or match event</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Site:</string>
-         </property>
-         <property name="buddy">
-          <cstring>m_siteEdit</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="m_siteEdit">
-         <property name="toolTip">
-          <string>The location of the event</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Date:</string>
-         </property>
-         <property name="buddy">
-          <cstring>m_minDateCheck</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QCheckBox" name="m_minDateCheck">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Enable minimum date</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDateEdit" name="m_minDateEdit">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="toolTip">
-            <string>Minimum starting date of the games</string>
-           </property>
-           <property name="date">
-            <date>
-             <year>1900</year>
-             <month>1</month>
-             <day>1</day>
-            </date>
-           </property>
-           <property name="displayFormat">
-            <string>M/d/yyyy</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>-</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="m_maxDateCheck">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Enable maximum date</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDateEdit" name="m_maxDateEdit">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="toolTip">
-            <string>Maximum starting date of the games</string>
-           </property>
-           <property name="displayFormat">
-            <string>M/d/yyyy</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Round:</string>
-         </property>
-         <property name="buddy">
-          <cstring>m_minRoundSpin</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Player:</string>
-         </property>
-         <property name="buddy">
-          <cstring>m_playerSideCombo</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QComboBox" name="m_playerSideCombo">
-           <property name="toolTip">
-            <string>The side the player plays on</string>
-           </property>
-           <item>
-            <property name="text">
-             <string extracomment="This player may play either white or black pieces">Any side</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string extracomment="This player plays white pieces">White</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string extracomment="This player plays black pieces">Black</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="m_playerEdit">
-           <property name="toolTip">
-            <string>The first player's name, in &quot;lastname, firstname&quot; format</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>Opponent:</string>
-         </property>
-         <property name="buddy">
-          <cstring>m_opponentEdit</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="m_opponentEdit">
-         <property name="toolTip">
-          <string>The second player's name, in &quot;lastname, firstname&quot; format</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Result:</string>
-         </property>
-         <property name="buddy">
-          <cstring>m_resultCombo</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QComboBox" name="m_resultCombo">
-         <property name="toolTip">
-          <string>The result of the games</string>
-         </property>
-         <item>
-          <property name="text">
-           <string extracomment="Any result">Any result</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string extracomment="Any player wins">Any player wins</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string extracomment="The player with white pieces wins">White wins</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string extracomment="The player with black pieces wins">Black wins</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string extracomment="The first player wins">First player wins</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string extracomment="The first player loses">First player loses</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string extracomment="The game is a draw">Draw</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string extracomment="The game is in progress or the result is unknown">Unfinished</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QSpinBox" name="m_minRoundSpin">
-           <property name="toolTip">
-            <string>The minimum round ordinal of the games within the event</string>
-           </property>
-           <property name="specialValueText">
-            <string>null</string>
-           </property>
-           <property name="maximum">
-            <number>100000</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>-</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="m_maxRoundSpin">
-           <property name="toolTip">
-            <string>The maximum round ordinal of the games within the event</string>
-           </property>
-           <property name="specialValueText">
-            <string>null</string>
-           </property>
-           <property name="suffix">
-            <string/>
-           </property>
-           <property name="maximum">
-            <number>100000</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       <property name="buddy">
+        <cstring>m_eventEdit</cstring>
        </property>
       </widget>
      </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="m_eventEdit">
+       <property name="toolTip">
+        <string>The name of the tournament or match event</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Site:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_siteEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="m_siteEdit">
+       <property name="toolTip">
+        <string>The location of the event</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Date:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_minDateCheck</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QCheckBox" name="m_minDateCheck">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Enable minimum date</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateEdit" name="m_minDateEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="toolTip">
+          <string>Minimum starting date of the games</string>
+         </property>
+         <property name="date">
+          <date>
+           <year>1900</year>
+           <month>1</month>
+           <day>1</day>
+          </date>
+         </property>
+         <property name="displayFormat">
+          <string>M/d/yyyy</string>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>-</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="m_maxDateCheck">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Enable maximum date</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateEdit" name="m_maxDateEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="toolTip">
+          <string>Maximum starting date of the games</string>
+         </property>
+         <property name="displayFormat">
+          <string>M/d/yyyy</string>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Round:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_minRoundSpin</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Player:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_playerSideCombo</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QComboBox" name="m_playerSideCombo">
+         <property name="toolTip">
+          <string>The side the player plays on</string>
+         </property>
+         <item>
+          <property name="text">
+           <string extracomment="This player may play either white or black pieces">Any side</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string extracomment="This player plays white pieces">White</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string extracomment="This player plays black pieces">Black</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="m_playerEdit">
+         <property name="toolTip">
+          <string>The first player's name, in &quot;lastname, firstname&quot; format</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Opponent:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_opponentEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="m_opponentEdit">
+       <property name="toolTip">
+        <string>The second player's name, in &quot;lastname, firstname&quot; format</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Result:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_resultCombo</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QComboBox" name="m_resultCombo">
+       <property name="toolTip">
+        <string>The result of the games</string>
+       </property>
+       <item>
+        <property name="text">
+         <string extracomment="Any result">Any result</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string extracomment="Any player wins">Any player wins</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string extracomment="The player with white pieces wins">White wins</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string extracomment="The player with black pieces wins">Black wins</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string extracomment="The first player wins">First player wins</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string extracomment="The first player loses">First player loses</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string extracomment="The game is a draw">Draw</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string extracomment="The game is in progress or the result is unknown">Unfinished</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QSpinBox" name="m_minRoundSpin">
+         <property name="toolTip">
+          <string>The minimum round ordinal of the games within the event</string>
+         </property>
+         <property name="specialValueText">
+          <string>null</string>
+         </property>
+         <property name="maximum">
+          <number>100000</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>-</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="m_maxRoundSpin">
+         <property name="toolTip">
+          <string>The maximum round ordinal of the games within the event</string>
+         </property>
+         <property name="specialValueText">
+          <string>null</string>
+         </property>
+         <property name="suffix">
+          <string/>
+         </property>
+         <property name="maximum">
+          <number>100000</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
