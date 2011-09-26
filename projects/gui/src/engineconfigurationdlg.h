@@ -18,7 +18,6 @@
 #ifndef ENGINECONFIGURATIONDIALOG_H
 #define ENGINECONFIGURATIONDIALOG_H
 
-#include "ui_engineconfigdlg.h"
 #include <QDialog>
 #include <engineconfiguration.h>
 
@@ -26,11 +25,15 @@ class QTimer;
 class EngineOption;
 class EngineOptionModel;
 
+namespace Ui {
+	class EngineConfigurationDialog;
+}
+
 /*!
  * \brief The EngineConfigurationDialog class provides a dialog for chess engine
  * configuration.
 */
-class EngineConfigurationDialog : public QDialog, private Ui::EngineConfigurationDialog
+class EngineConfigurationDialog : public QDialog
 {
 	Q_OBJECT
 
@@ -49,7 +52,7 @@ class EngineConfigurationDialog : public QDialog, private Ui::EngineConfiguratio
 		 * parent
 		*/
 		EngineConfigurationDialog(DialogMode mode, QWidget* parent = 0);
-
+		/*! Destroys the dialog. */
 		virtual ~EngineConfigurationDialog();
 
 		/*!
@@ -71,8 +74,7 @@ class EngineConfigurationDialog : public QDialog, private Ui::EngineConfiguratio
 		EngineOptionModel* m_engineOptionModel;
 		QList<EngineOption*> m_options;
 		QTimer* m_optionDetectionTimer;
-
+		Ui::EngineConfigurationDialog* ui;
 };
 
 #endif // ENGINECONFIGURATIONDIALOG_H
-

@@ -16,59 +16,66 @@
 */
 
 #include "gamepropertiesdlg.h"
+#include "ui_gamepropertiesdlg.h"
 
 GamePropertiesDialog::GamePropertiesDialog(QWidget* parent)
-	: QDialog(parent)
+	: QDialog(parent),
+	  ui(new Ui::GamePropertiesDialog)
 {
-	setupUi(this);
+	ui->setupUi(this);
+}
+
+GamePropertiesDialog::~GamePropertiesDialog()
+{
+	delete ui;
 }
 
 void GamePropertiesDialog::setWhite(const QString& white)
 {
-	m_whiteEdit->setText(white);
+	ui->m_whiteEdit->setText(white);
 }
 
 void GamePropertiesDialog::setBlack(const QString& black)
 {
-	m_blackEdit->setText(black);
+	ui->m_blackEdit->setText(black);
 }
 
 void GamePropertiesDialog::setEvent(const QString& event)
 {
-	m_eventEdit->setText(event);
+	ui->m_eventEdit->setText(event);
 }
 
 void GamePropertiesDialog::setSite(const QString& site)
 {
-	m_siteEdit->setText(site);
+	ui->m_siteEdit->setText(site);
 }
 
 void GamePropertiesDialog::setRound(int round)
 {
-	m_roundSpin->setValue(round);
+	ui->m_roundSpin->setValue(round);
 }
 
 QString GamePropertiesDialog::white() const
 {
-	return m_whiteEdit->text();
+	return ui->m_whiteEdit->text();
 }
 
 QString GamePropertiesDialog::black() const
 {
-	return m_blackEdit->text();
+	return ui->m_blackEdit->text();
 }
 
 QString GamePropertiesDialog::event() const
 {
-	return m_eventEdit->text();
+	return ui->m_eventEdit->text();
 }
 
 QString GamePropertiesDialog::site() const
 {
-	return m_siteEdit->text();
+	return ui->m_siteEdit->text();
 }
 
 int GamePropertiesDialog::round() const
 {
-	return m_roundSpin->value();
+	return ui->m_roundSpin->value();
 }

@@ -16,6 +16,7 @@
 */
 
 #include "newgamedlg.h"
+#include "ui_newgamedlg.h"
 
 #include <QAbstractItemView>
 #include <QSortFilterProxyModel>
@@ -30,22 +31,23 @@
 
 
 NewGameDialog::NewGameDialog(QWidget* parent)
-	: QDialog(parent)
+	: QDialog(parent),
+	  ui(new Ui::NewGameDialog)
 {
-	setupUi(this);
+	ui->setupUi(this);
 
 	m_engines = new EngineConfigurationModel(
 		CuteChessApplication::instance()->engineManager(), this);
 
 	// Add Start button to the standard button box at the bottom
-	m_buttonBox->addButton(tr("Start"), QDialogButtonBox::AcceptRole);
+	ui->m_buttonBox->addButton(tr("Start"), QDialogButtonBox::AcceptRole);
 
-	connect(m_configureWhiteEngineButton, SIGNAL(clicked(bool)), this,
+	connect(ui->m_configureWhiteEngineButton, SIGNAL(clicked(bool)), this,
 		SLOT(configureWhiteEngine()));
-	connect(m_configureBlackEngineButton, SIGNAL(clicked(bool)), this,
+	connect(ui->m_configureBlackEngineButton, SIGNAL(clicked(bool)), this,
 		SLOT(configureBlackEngine()));
 
-	connect(m_timeControlBtn, SIGNAL(clicked()),
+	connect(ui->m_timeControlBtn, SIGNAL(clicked()),
 		this, SLOT(showTimeControlDialog()));
 
 	m_proxyModel = new QSortFilterProxyModel(this);
@@ -54,26 +56,31 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 	m_proxyModel->sort(0);
 	m_proxyModel->setDynamicSortFilter(true);
 
-	m_whiteEngineComboBox->setModel(m_proxyModel);
-	m_blackEngineComboBox->setModel(m_proxyModel);
+	ui->m_whiteEngineComboBox->setModel(m_proxyModel);
+	ui->m_blackEngineComboBox->setModel(m_proxyModel);
 
 	if (m_engines->rowCount() > 0)
 	{
-		m_whitePlayerCpuRadio->setEnabled(true);
-		m_blackPlayerCpuRadio->setEnabled(true);
+		ui->m_whitePlayerCpuRadio->setEnabled(true);
+		ui->m_blackPlayerCpuRadio->setEnabled(true);
 
 		// TODO: The selected engine is not remembered
-		m_whiteEngineComboBox->setCurrentIndex(0);
-		m_blackEngineComboBox->setCurrentIndex(0);
+		ui->m_whiteEngineComboBox->setCurrentIndex(0);
+		ui->m_blackEngineComboBox->setCurrentIndex(0);
 	}
 
-	m_variantComboBox->addItems(Chess::BoardFactory::variants());
-	int index = m_variantComboBox->findText("standard");
-	m_variantComboBox->setCurrentIndex(index);
+	ui->m_variantComboBox->addItems(Chess::BoardFactory::variants());
+	int index = ui->m_variantComboBox->findText("standard");
+	ui->m_variantComboBox->setCurrentIndex(index);
 
 	m_timeControl.setMovesPerTc(40);
 	m_timeControl.setTimePerTc(300000);
-	m_timeControlBtn->setText(m_timeControl.toVerboseString());
+	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
+}
+
+NewGameDialog::~NewGameDialog()
+{
+	delete ui;
 }
 
 NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
@@ -81,9 +88,9 @@ NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
 	Q_ASSERT(!side.isNull());
 
 	if (side == Chess::Side::White)
-		return (m_whitePlayerHumanRadio->isChecked()) ? Human : CPU;
+		return (ui->m_whitePlayerHumanRadio->isChecked()) ? Human : CPU;
 	else
-		return (m_blackPlayerHumanRadio->isChecked()) ? Human : CPU;
+		return (ui->m_blackPlayerHumanRadio->isChecked()) ? Human : CPU;
 }
 
 int NewGameDialog::selectedEngineIndex(Chess::Side side) const
@@ -92,16 +99,16 @@ int NewGameDialog::selectedEngineIndex(Chess::Side side) const
 
 	int i;
 	if (side == Chess::Side::White)
-		i = m_whiteEngineComboBox->currentIndex();
+		i = ui->m_whiteEngineComboBox->currentIndex();
 	else
-		i = m_blackEngineComboBox->currentIndex();
+		i = ui->m_blackEngineComboBox->currentIndex();
 
 	return m_proxyModel->mapToSource(m_proxyModel->index(i, 0)).row();
 }
 
 QString NewGameDialog::selectedVariant() const
 {
-	return m_variantComboBox->currentText();
+	return ui->m_variantComboBox->currentText();
 }
 
 TimeControl NewGameDialog::timeControl() const
@@ -145,6 +152,6 @@ void NewGameDialog::showTimeControlDialog()
 	if (dlg.exec() == QDialog::Accepted)
 	{
 		m_timeControl = dlg.timeControl();
-		m_timeControlBtn->setText(m_timeControl.toVerboseString());
+		ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
 	}
 }

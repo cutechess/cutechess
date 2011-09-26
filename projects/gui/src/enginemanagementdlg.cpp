@@ -16,8 +16,12 @@
 */
 
 #include "enginemanagementdlg.h"
+#include "ui_enginemanagementdlg.h"
+
 #include <QSortFilterProxyModel>
+
 #include <enginemanager.h>
+
 #include "cutechessapp.h"
 #include "engineconfigurationmodel.h"
 #include "engineconfigurationdlg.h"
@@ -25,9 +29,10 @@
 
 EngineManagementDialog::EngineManagementDialog(QWidget* parent)
 	: QDialog(parent),
-	  m_filteredModel(new QSortFilterProxyModel(this))
+	  m_filteredModel(new QSortFilterProxyModel(this)),
+	  ui(new Ui::EngineManagementDialog)
 {
-	setupUi(this);
+	ui->setupUi(this);
 
 	// Setup a copy of the Engine Manager to manage adding, deleting and
 	// configuring engines _within_ this dialog.
@@ -42,41 +47,46 @@ EngineManagementDialog::EngineManagementDialog(QWidget* parent)
 	m_filteredModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 	m_filteredModel->sort(0);
 	m_filteredModel->setDynamicSortFilter(true);
-	m_enginesList->setModel(m_filteredModel);
+	ui->m_enginesList->setModel(m_filteredModel);
 
-	connect(m_searchEngineEdit, SIGNAL(textChanged(QString)),
+	connect(ui->m_searchEngineEdit, SIGNAL(textChanged(QString)),
 		this, SLOT(updateSearch(QString)));
 	
 	// Signals for updating the UI
-	connect(m_enginesList->selectionModel(),
+	connect(ui->m_enginesList->selectionModel(),
 		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
 		this, SLOT(updateUi()));
 	
 	// Add button
-	connect(m_addBtn, SIGNAL(clicked(bool)), this, SLOT(addEngine()));
+	connect(ui->m_addBtn, SIGNAL(clicked(bool)), this, SLOT(addEngine()));
 
 	// Configure button
-	connect(m_configureBtn, SIGNAL(clicked(bool)), this,
+	connect(ui->m_configureBtn, SIGNAL(clicked(bool)), this,
 		SLOT(configureEngine()));
 	
 	// Remove button
-	connect(m_removeBtn, SIGNAL(clicked(bool)), this, SLOT(removeEngine()));
+	connect(ui->m_removeBtn, SIGNAL(clicked(bool)), this, SLOT(removeEngine()));
+}
+
+EngineManagementDialog::~EngineManagementDialog()
+{
+	delete ui;
 }
 
 void EngineManagementDialog::updateUi()
 {
 	// Enable buttons depending on item selections
-	m_configureBtn->setEnabled(
-		m_enginesList->selectionModel()->hasSelection());
+	ui->m_configureBtn->setEnabled(
+		ui->m_enginesList->selectionModel()->hasSelection());
 
-	m_removeBtn->setEnabled(
-		m_enginesList->selectionModel()->hasSelection());
+	ui->m_removeBtn->setEnabled(
+		ui->m_enginesList->selectionModel()->hasSelection());
 }
 
 void EngineManagementDialog::updateSearch(const QString& terms)
 {
 	m_filteredModel->setFilterWildcard(terms);
-	m_clearBtn->setEnabled(!terms.isEmpty());
+	ui->m_clearBtn->setEnabled(!terms.isEmpty());
 }
 
 void EngineManagementDialog::addEngine()
@@ -90,7 +100,7 @@ void EngineManagementDialog::configureEngine()
 {
 	// Map the index from the filtered model to the original model
 	int index = m_filteredModel->mapToSource(
-		m_enginesList->selectionModel()->currentIndex()).row();
+		ui->m_enginesList->selectionModel()->currentIndex()).row();
 
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 	dlg.applyEngineInformation(m_engineManager->engines().at(index));
@@ -102,7 +112,7 @@ void EngineManagementDialog::configureEngine()
 void EngineManagementDialog::removeEngine()
 {
 	const QList<QModelIndex> selected =
-		m_enginesList->selectionModel()->selectedIndexes();
+		ui->m_enginesList->selectionModel()->selectedIndexes();
 
 	foreach (const QModelIndex& index, selected)
 	{

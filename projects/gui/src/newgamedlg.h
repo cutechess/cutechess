@@ -18,7 +18,6 @@
 #ifndef NEWGAMEDIALOG_H
 #define NEWGAMEDIALOG_H
 
-#include "ui_newgamedlg.h"
 #include <QDialog>
 #include <board/side.h>
 #include <timecontrol.h>
@@ -26,10 +25,14 @@
 class EngineConfigurationModel;
 class QSortFilterProxyModel;
 
+namespace Ui {
+	class NewGameDialog;
+}
+
 /*!
  * \brief The NewGameDialog class provides a dialog for creating a new game.
 */
-class NewGameDialog : public QDialog, private Ui::NewGameDialog
+class NewGameDialog : public QDialog
 {
 	Q_OBJECT
 
@@ -48,6 +51,8 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 		 * list of chess engines and given \a parent.
 		*/
 		NewGameDialog(QWidget* parent = 0);
+		/*! Destroys the dialog. */
+		virtual ~NewGameDialog();
 
 		/*! Returns the user selected player type for \a side. */
 		PlayerType playerType(Chess::Side side) const;
@@ -74,6 +79,7 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 		EngineConfigurationModel* m_engines;
 		QSortFilterProxyModel* m_proxyModel;
 		TimeControl m_timeControl;
+		Ui::NewGameDialog* ui;
 };
 
 #endif // NEWGAMEDIALOG_H

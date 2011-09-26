@@ -18,30 +18,35 @@
 #ifndef GAME_DATABASE_DIALOG_H
 #define GAME_DATABASE_DIALOG_H
 
-#include "ui_gamedatabasedlg.h"
 #include <QDialog>
 #include <QTimer>
 
 #include <pgngame.h>
 
+class QModelIndex;
 class PgnDatabaseModel;
 class PgnGameEntryModel;
 class PgnDatabase;
 class BoardView;
 class BoardScene;
 
+namespace Ui {
+	class GameDatabaseDialog;
+}
+
 /*!
  * \brief Dialog for viewing game databases.
  *
  * \sa GameDatabaseManager
  */
-class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
+class GameDatabaseDialog : public QDialog
 {
 	Q_OBJECT
 
 	public:
 		/*! Constructs a new GameDatabaseDialog. */
-		GameDatabaseDialog();
+		GameDatabaseDialog(QWidget* parent = 0);
+		/*! Destroys the dialog. */
 		virtual ~GameDatabaseDialog();
 
 	private slots:
@@ -69,7 +74,7 @@ class GameDatabaseDialog : public QDialog, private Ui::GameDatabaseDialog
 
 		QTimer m_searchTimer;
 		QString m_searchTerms;
-
+		Ui::GameDatabaseDialog* ui;
 };
 
 #endif // GAME_DATABASE_DIALOG_H

@@ -18,26 +18,33 @@
 #ifndef GAMEDATABASESEARCHDIALOG_H
 #define GAMEDATABASESEARCHDIALOG_H
 
-#include "ui_gamedatabasesearchdlg.h"
 #include <QDialog>
 #include <pgngamefilter.h>
+
+namespace Ui {
+	class GameDatabaseSearchDialog;
+}
 
 /*!
  * \brief Dialog for searching and filtering game databases.
  *
  * \sa GameDatabaseDialog
  */
-class GameDatabaseSearchDialog : public QDialog, private Ui::GameDatabaseSearchDialog
+class GameDatabaseSearchDialog : public QDialog
 {
 	Q_OBJECT
 
 	public:
 		/*! Constructs a new GameDatabaseSearchDialog. */
 		GameDatabaseSearchDialog(QWidget* parent = 0);
+		/*! Destroys the dialog. */
 		virtual ~GameDatabaseSearchDialog();
 
 		/*! Returns the PGN filter. */
 		PgnGameFilter filter() const;
+
+	private:
+		Ui::GameDatabaseSearchDialog* ui;
 };
 
 #endif // GAMEDATABASESEARCHDIALOG_H

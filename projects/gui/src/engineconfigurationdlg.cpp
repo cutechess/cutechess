@@ -16,6 +16,7 @@
 */
 
 #include "engineconfigurationdlg.h"
+#include "ui_engineconfigdlg.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
@@ -32,50 +33,52 @@
 
 EngineConfigurationDialog::EngineConfigurationDialog(
 	EngineConfigurationDialog::DialogMode mode, QWidget* parent)
-	: QDialog(parent)
+	: QDialog(parent),
+	  ui(new Ui::EngineConfigurationDialog)
 {
-	setupUi(this);
+	ui->setupUi(this);
 
 	if (mode == EngineConfigurationDialog::AddEngine)
 		setWindowTitle(tr("Add Engine"));
 	else
 		setWindowTitle(tr("Configure Engine"));
 
-	m_protocolCombo->addItems(EngineFactory::protocols());
+	ui->m_protocolCombo->addItems(EngineFactory::protocols());
 
 	m_engineOptionModel = new EngineOptionModel(this);
-	m_optionsView->setModel(m_engineOptionModel);
-	m_optionsView->setItemDelegate(new EngineOptionDelegate());
+	ui->m_optionsView->setModel(m_engineOptionModel);
+	ui->m_optionsView->setItemDelegate(new EngineOptionDelegate());
 
 	m_optionDetectionTimer = new QTimer(this);
 	m_optionDetectionTimer->setSingleShot(true);
 	m_optionDetectionTimer->setInterval(5000);
 
-	connect(m_browseCmdBtn, SIGNAL(clicked(bool)), this, SLOT(browseCommand()));
-	connect(m_browseWorkingDirBtn, SIGNAL(clicked(bool)), this,
+	connect(ui->m_browseCmdBtn, SIGNAL(clicked(bool)), this, SLOT(browseCommand()));
+	connect(ui->m_browseWorkingDirBtn, SIGNAL(clicked(bool)), this,
 		SLOT(browseWorkingDir()));
-	connect(m_detectBtn, SIGNAL(clicked(bool)), this, SLOT(detectEngineOptions()));
+	connect(ui->m_detectBtn, SIGNAL(clicked(bool)), this, SLOT(detectEngineOptions()));
 }
 
 EngineConfigurationDialog::~EngineConfigurationDialog()
 {
 	qDeleteAll(m_options);
+	delete ui;
 }
 
 void EngineConfigurationDialog::applyEngineInformation(
 	const EngineConfiguration& engine)
 {
-	m_nameEdit->setText(engine.name());
-	m_commandEdit->setText(engine.command());
-	m_workingDirEdit->setText(engine.workingDirectory());
+	ui->m_nameEdit->setText(engine.name());
+	ui->m_commandEdit->setText(engine.command());
+	ui->m_workingDirEdit->setText(engine.workingDirectory());
 
-	int i = m_protocolCombo->findText(engine.protocol());
-	m_protocolCombo->setCurrentIndex(i);
+	int i = ui->m_protocolCombo->findText(engine.protocol());
+	ui->m_protocolCombo->setCurrentIndex(i);
 
-	m_initStringEdit->setPlainText(engine.initStrings().join("\n"));
+	ui->m_initStringEdit->setPlainText(engine.initStrings().join("\n"));
 
 	if (engine.whiteEvalPov())
-		m_whitePovCheck->setCheckState(Qt::Checked);
+		ui->m_whitePovCheck->setCheckState(Qt::Checked);
 
 	foreach (EngineOption* option, engine.options())
 		m_options << option->copy();
@@ -85,16 +88,16 @@ void EngineConfigurationDialog::applyEngineInformation(
 EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 {
 	EngineConfiguration engine;
-	engine.setName(m_nameEdit->text());
-	engine.setCommand(m_commandEdit->text());
-	engine.setWorkingDirectory(m_workingDirEdit->text());
-	engine.setProtocol(m_protocolCombo->currentText());
+	engine.setName(ui->m_nameEdit->text());
+	engine.setCommand(ui->m_commandEdit->text());
+	engine.setWorkingDirectory(ui->m_workingDirEdit->text());
+	engine.setProtocol(ui->m_protocolCombo->currentText());
 
-	QString initStr(m_initStringEdit->toPlainText());
+	QString initStr(ui->m_initStringEdit->toPlainText());
 	if (!initStr.isEmpty())
 		engine.setInitStrings(initStr.split('\n'));
 
-	engine.setWhiteEvalPov(m_whitePovCheck->checkState() == Qt::Checked);
+	engine.setWhiteEvalPov(ui->m_whitePovCheck->checkState() == Qt::Checked);
 
 	QList<EngineOption*> optionCopies;
 	foreach (EngineOption* option, m_options)
@@ -115,17 +118,17 @@ void EngineConfigurationDialog::browseCommand()
 	#endif
 
 	QString fileName = QFileDialog::getOpenFileName(this,
-		tr("Select Engine Executable"), m_commandEdit->text(), filter);
+		tr("Select Engine Executable"), ui->m_commandEdit->text(), filter);
 
 	if (fileName.isEmpty())
 		return;
 
-	if (m_workingDirEdit->text().isEmpty())
-		m_workingDirEdit->setText(QDir::toNativeSeparators(
+	if (ui->m_workingDirEdit->text().isEmpty())
+		ui->m_workingDirEdit->setText(QDir::toNativeSeparators(
 			QFileInfo(fileName).absolutePath()));
 
-	if (m_nameEdit->text().isEmpty())
-		m_nameEdit->setText(QFileInfo(fileName).baseName());
+	if (ui->m_nameEdit->text().isEmpty())
+		ui->m_nameEdit->setText(QFileInfo(fileName).baseName());
 
 	// Paths with spaces must be wrapped in quotes
 	if (fileName.contains(' '))
@@ -133,7 +136,7 @@ void EngineConfigurationDialog::browseCommand()
 		fileName.prepend('\"');
 		fileName.append('\"');
 	}
-	m_commandEdit->setText(QDir::toNativeSeparators(fileName));
+	ui->m_commandEdit->setText(QDir::toNativeSeparators(fileName));
 
 	detectEngineOptions();
 }
@@ -141,17 +144,17 @@ void EngineConfigurationDialog::browseCommand()
 void EngineConfigurationDialog::browseWorkingDir()
 {
 	const QString directory = QFileDialog::getExistingDirectory(this,
-		tr("Select Engine Working Directory"), m_workingDirEdit->text());
+		tr("Select Engine Working Directory"), ui->m_workingDirEdit->text());
 
 	if (directory.isEmpty())
 		return;
 
-	m_workingDirEdit->setText(QDir::toNativeSeparators(directory));
+	ui->m_workingDirEdit->setText(QDir::toNativeSeparators(directory));
 }
 
 void EngineConfigurationDialog::detectEngineOptions()
 {
-	m_detectBtn->setEnabled(false);
+	ui->m_detectBtn->setEnabled(false);
 
 	EngineConfiguration config = engineConfiguration();
 	// don't send options to the engine when detecting
@@ -168,7 +171,7 @@ void EngineConfigurationDialog::detectEngineOptions()
 		m_optionDetectionTimer->start();
 	}
 	else
-		m_detectBtn->setEnabled(true);
+		ui->m_detectBtn->setEnabled(true);
 }
 
 void EngineConfigurationDialog::onEngineReady()
@@ -191,5 +194,5 @@ void EngineConfigurationDialog::onEngineReady()
 	qDeleteAll(m_options);
 
 	m_options = detectedOptions;
-	m_detectBtn->setEnabled(true);
+	ui->m_detectBtn->setEnabled(true);
 }

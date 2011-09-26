@@ -16,27 +16,30 @@
 */
 
 #include "importprogressdlg.h"
+#include "ui_importprogressdlg.h"
 #include "pgnimporter.h"
 
 #include <QFileInfo>
 
-ImportProgressDialog::ImportProgressDialog(PgnImporter* pgnImporter)
-	: QDialog(0),
+ImportProgressDialog::ImportProgressDialog(PgnImporter* pgnImporter,
+					   QWidget* parent)
+	: QDialog(parent),
 	  m_pgnImporter(pgnImporter),
 	  m_lastUpdateSecs(0),
-	  m_importError(false)
+	  m_importError(false),
+	  ui(new Ui::ImportProgressDialog)
 {
-	setupUi(this);
+	ui->setupUi(this);
 
 	setAttribute(Qt::WA_DeleteOnClose, true);
 
 	QFileInfo info(m_pgnImporter->fileName());
 
-	m_fileNameLabel->setText(info.fileName());
-	m_statusLabel->setText(tr("Importing"));
-	m_totalGamesLabel->setText(tr("0 games imported"));
+	ui->m_fileNameLabel->setText(info.fileName());
+	ui->m_statusLabel->setText(tr("Importing"));
+	ui->m_totalGamesLabel->setText(tr("0 games imported"));
 
-	connect(m_buttonBox, SIGNAL(rejected()), m_pgnImporter,
+	connect(ui->m_buttonBox, SIGNAL(rejected()), m_pgnImporter,
 		SLOT(abort()));
 	connect(m_pgnImporter, SIGNAL(finished()), this,
 		SLOT(onImporterFinished()));
@@ -44,6 +47,11 @@ ImportProgressDialog::ImportProgressDialog(PgnImporter* pgnImporter)
 		SLOT(onImportError(int)));
 	connect(m_pgnImporter, SIGNAL(databaseReadStatus(const QTime&, int)),
 		this, SLOT(updateImportStatus(const QTime&, int)));
+}
+
+ImportProgressDialog::~ImportProgressDialog()
+{
+	delete ui;
 }
 
 void ImportProgressDialog::updateImportStatus(const QTime& startTime,
@@ -59,9 +67,9 @@ void ImportProgressDialog::updateImportStatus(const QTime& startTime,
 
 	m_lastUpdateSecs = elapsed;
 
-	m_statusLabel->setText(
+	ui->m_statusLabel->setText(
 		QString(tr("Importing, %1 games/sec")).arg((int)numReadGames / elapsed));
-	m_totalGamesLabel->setText(
+	ui->m_totalGamesLabel->setText(
 		QString(tr("%1 games imported")).arg(numReadGames));
 }
 
@@ -79,20 +87,20 @@ void ImportProgressDialog::onImportError(int error)
 	switch (error)
 	{
 		case PgnImporter::FileDoesNotExist:
-			m_statusLabel->setText(tr("Import failed: file does not exist"));
+			ui->m_statusLabel->setText(tr("Import failed: file does not exist"));
 			break;
 
 		case PgnImporter::IoError:
-			m_statusLabel->setText(tr("Import failed: I/O error"));
+			ui->m_statusLabel->setText(tr("Import failed: I/O error"));
 			break;
 
 		default:
-			m_statusLabel->setText(tr("Import failed: unknown error"));
+			ui->m_statusLabel->setText(tr("Import failed: unknown error"));
 			break;
 	}
 
 	// replace the cancel button with close button because the
 	// the import operation is already finished
-	m_buttonBox->clear();
-	m_buttonBox->addButton(QDialogButtonBox::Close);
+	ui->m_buttonBox->clear();
+	ui->m_buttonBox->addButton(QDialogButtonBox::Close);
 }

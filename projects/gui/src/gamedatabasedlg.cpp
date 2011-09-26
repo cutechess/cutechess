@@ -16,6 +16,7 @@
 */
 
 #include "gamedatabasedlg.h"
+#include "ui_gamedatabasedlg.h"
 
 #include <QVBoxLayout>
 #include <QDebug>
@@ -33,15 +34,16 @@
 #include "pgndatabase.h"
 #include "gamedatabasesearchdlg.h"
 
-GameDatabaseDialog::GameDatabaseDialog()
-	: QDialog(0, Qt::Window),
+GameDatabaseDialog::GameDatabaseDialog(QWidget* parent)
+	: QDialog(parent, Qt::Window),
 	  m_boardView(0),
 	  m_boardScene(0),
 	  m_pgnDatabaseModel(0),
 	  m_pgnGameEntryModel(0),
-	  m_selectedDatabase(0)
+	  m_selectedDatabase(0),
+	  ui(new Ui::GameDatabaseDialog)
 {
-	setupUi(this);
+	ui->setupUi(this);
 
 	m_pgnDatabaseModel = new PgnDatabaseModel(
 		CuteChessApplication::instance()->gameDatabaseManager(), this);
@@ -49,13 +51,13 @@ GameDatabaseDialog::GameDatabaseDialog()
 	// Setup a filtered model
 	m_pgnGameEntryModel = new PgnGameEntryModel(this);
 
-	m_databasesListView->setModel(m_pgnDatabaseModel);
-	m_databasesListView->setAlternatingRowColors(true);
-	m_databasesListView->setUniformRowHeights(true);
+	ui->m_databasesListView->setModel(m_pgnDatabaseModel);
+	ui->m_databasesListView->setAlternatingRowColors(true);
+	ui->m_databasesListView->setUniformRowHeights(true);
 
-	m_gamesListView->setModel(m_pgnGameEntryModel);
-	m_gamesListView->setAlternatingRowColors(true);
-	m_gamesListView->setUniformRowHeights(true);
+	ui->m_gamesListView->setModel(m_pgnGameEntryModel);
+	ui->m_gamesListView->setAlternatingRowColors(true);
+	ui->m_gamesListView->setUniformRowHeights(true);
 
 	m_boardScene = new BoardScene(this);
 	m_boardView = new BoardView(m_boardScene, this);
@@ -64,37 +66,37 @@ GameDatabaseDialog::GameDatabaseDialog()
 	QVBoxLayout* chessboardViewLayout = new QVBoxLayout();
 	chessboardViewLayout->addWidget(m_boardView);
 
-	m_chessboardParentWidget->setLayout(chessboardViewLayout);
+	ui->m_chessboardParentWidget->setLayout(chessboardViewLayout);
 
-	m_nextMoveButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
-	m_previousMoveButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
-	m_skipToFirstMoveButton->setIcon(style()->standardIcon(QStyle::SP_MediaSkipBackward));
-	m_skipToLastMoveButton->setIcon(style()->standardIcon(QStyle::SP_MediaSkipForward));
+	ui->m_nextMoveButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
+	ui->m_previousMoveButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
+	ui->m_skipToFirstMoveButton->setIcon(style()->standardIcon(QStyle::SP_MediaSkipBackward));
+	ui->m_skipToLastMoveButton->setIcon(style()->standardIcon(QStyle::SP_MediaSkipForward));
 
-	connect(m_nextMoveButton, SIGNAL(clicked(bool)), this,
+	connect(ui->m_nextMoveButton, SIGNAL(clicked(bool)), this,
 		SLOT(viewNextMove()));
-	connect(m_previousMoveButton, SIGNAL(clicked(bool)), this,
+	connect(ui->m_previousMoveButton, SIGNAL(clicked(bool)), this,
 		SLOT(viewPreviousMove()));
-	connect(m_skipToFirstMoveButton, SIGNAL(clicked(bool)), this,
+	connect(ui->m_skipToFirstMoveButton, SIGNAL(clicked(bool)), this,
 		SLOT(viewFirstMove()));
-	connect(m_skipToLastMoveButton, SIGNAL(clicked(bool)), this,
+	connect(ui->m_skipToLastMoveButton, SIGNAL(clicked(bool)), this,
 		SLOT(viewLastMove()));
 
-	connect(m_databasesListView->selectionModel(),
+	connect(ui->m_databasesListView->selectionModel(),
 		SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
 		this, SLOT(databaseSelectionChanged(const QModelIndex&, const QModelIndex&)));
 
-	connect(m_gamesListView->selectionModel(),
+	connect(ui->m_gamesListView->selectionModel(),
 		SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
 		this, SLOT(gameSelectionChanged(const QModelIndex&, const QModelIndex&)));
 
-	connect(m_searchEdit, SIGNAL(textEdited(const QString&)),
+	connect(ui->m_searchEdit, SIGNAL(textEdited(const QString&)),
 		this, SLOT(updateSearch(const QString&)));
 
-	connect(m_clearBtn, SIGNAL(clicked()),
+	connect(ui->m_clearBtn, SIGNAL(clicked()),
 		this, SLOT(updateSearch()));
 
-	connect(m_advancedSearchBtn, SIGNAL(clicked()),
+	connect(ui->m_advancedSearchBtn, SIGNAL(clicked()),
 		this, SLOT(onAdvancedSearch()));
 
 	m_searchTimer.setSingleShot(true);
@@ -103,6 +105,7 @@ GameDatabaseDialog::GameDatabaseDialog()
 
 GameDatabaseDialog::~GameDatabaseDialog()
 {
+	delete ui;
 }
 
 void GameDatabaseDialog::databaseSelectionChanged(const QModelIndex& current,
@@ -121,7 +124,7 @@ void GameDatabaseDialog::databaseSelectionChanged(const QModelIndex& current,
 		CuteChessApplication::instance()->gameDatabaseManager()->databases().at(current.row());
 
 	m_pgnGameEntryModel->setEntries(m_selectedDatabase->entries());
-	m_advancedSearchBtn->setEnabled(true);
+	ui->m_advancedSearchBtn->setEnabled(true);
 }
 
 void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
@@ -154,7 +157,7 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 
 			if (msgBox.clickedButton() == removeDbButton)
 			{
-				QItemSelectionModel* selection = m_databasesListView->selectionModel();
+				QItemSelectionModel* selection = ui->m_databasesListView->selectionModel();
 				if (selection->hasSelection())
 					CuteChessApplication::instance()->gameDatabaseManager()->removeDatabase(selection->currentIndex().row());
 			}
@@ -185,41 +188,41 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 
 			if (msgBox.clickedButton() == importDbButton)
 			{
-				QItemSelectionModel* selection = m_databasesListView->selectionModel();
+				QItemSelectionModel* selection = ui->m_databasesListView->selectionModel();
 				if (selection->hasSelection())
 					CuteChessApplication::instance()->gameDatabaseManager()->importDatabaseAgain(selection->currentIndex().row());
 			}
 		}
 	}
 
-	m_whiteLabel->setText(game.tagValue("White"));
-	m_blackLabel->setText(game.tagValue("Black"));
-	m_siteLabel->setText(game.tagValue("Site"));
-	m_eventLabel->setText(game.tagValue("Event"));
-	m_resultLabel->setText(game.tagValue("Result"));
+	ui->m_whiteLabel->setText(game.tagValue("White"));
+	ui->m_blackLabel->setText(game.tagValue("Black"));
+	ui->m_siteLabel->setText(game.tagValue("Site"));
+	ui->m_eventLabel->setText(game.tagValue("Event"));
+	ui->m_resultLabel->setText(game.tagValue("Result"));
 
 	m_boardScene->setBoard(game.createBoard());
 	m_boardScene->populate();
 	m_moveIndex = 0;
 	m_moves = game.moves();
 
-	m_previousMoveButton->setEnabled(false);
-	m_nextMoveButton->setEnabled(!m_moves.isEmpty());
-	m_skipToFirstMoveButton->setEnabled(false);
-	m_skipToLastMoveButton->setEnabled(!m_moves.isEmpty());
+	ui->m_previousMoveButton->setEnabled(false);
+	ui->m_nextMoveButton->setEnabled(!m_moves.isEmpty());
+	ui->m_skipToFirstMoveButton->setEnabled(false);
+	ui->m_skipToLastMoveButton->setEnabled(!m_moves.isEmpty());
 }
 
 void GameDatabaseDialog::viewNextMove()
 {
 	m_boardScene->makeMove(m_moves[m_moveIndex++].move);
 
-	m_previousMoveButton->setEnabled(true);
-	m_skipToFirstMoveButton->setEnabled(true);
+	ui->m_previousMoveButton->setEnabled(true);
+	ui->m_skipToFirstMoveButton->setEnabled(true);
 
 	if (m_moveIndex >= m_moves.count())
 	{
-		m_nextMoveButton->setEnabled(false);
-		m_skipToLastMoveButton->setEnabled(false);
+		ui->m_nextMoveButton->setEnabled(false);
+		ui->m_skipToLastMoveButton->setEnabled(false);
 	}
 }
 
@@ -229,14 +232,14 @@ void GameDatabaseDialog::viewPreviousMove()
 
 	if (m_moveIndex == 0)
 	{
-		m_previousMoveButton->setEnabled(false);
-		m_skipToFirstMoveButton->setEnabled(false);
+		ui->m_previousMoveButton->setEnabled(false);
+		ui->m_skipToFirstMoveButton->setEnabled(false);
 	}
 
 	m_boardScene->undoMove();
 
-	m_nextMoveButton->setEnabled(true);
-	m_skipToLastMoveButton->setEnabled(true);
+	ui->m_nextMoveButton->setEnabled(true);
+	ui->m_skipToLastMoveButton->setEnabled(true);
 }
 
 void GameDatabaseDialog::viewFirstMove()
@@ -253,7 +256,7 @@ void GameDatabaseDialog::viewLastMove()
 
 void GameDatabaseDialog::updateSearch(const QString& terms)
 {
-	m_clearBtn->setEnabled(!terms.isEmpty());
+	ui->m_clearBtn->setEnabled(!terms.isEmpty());
 	m_searchTerms = terms;
 	m_searchTimer.start(500);
 }
@@ -269,7 +272,7 @@ void GameDatabaseDialog::onAdvancedSearch()
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
-	m_searchEdit->clear();
+	ui->m_searchEdit->clear();
 	m_pgnGameEntryModel->setFilter(dlg.filter());
-	m_clearBtn->setEnabled(true);
+	ui->m_clearBtn->setEnabled(true);
 }

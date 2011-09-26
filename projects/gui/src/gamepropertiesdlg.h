@@ -18,16 +18,19 @@
 #ifndef GAME_PROPERTIES_DIALOG_H
 #define GAME_PROPERTIES_DIALOG_H
 
-#include "ui_gamepropertiesdlg.h"
 #include <QDialog>
 
+namespace Ui {
+	class GamePropertiesDialog;
+}
 
-class GamePropertiesDialog : public QDialog, private Ui::GamePropertiesDialog
+class GamePropertiesDialog : public QDialog
 {
 	Q_OBJECT
 
 	public:
 		GamePropertiesDialog(QWidget* parent = 0);
+		virtual ~GamePropertiesDialog();
 
 		void setWhite(const QString& white);
 		void setBlack(const QString& black);
@@ -41,7 +44,8 @@ class GamePropertiesDialog : public QDialog, private Ui::GamePropertiesDialog
 		QString site() const;
 		int round() const;
 
+	private:
+		Ui::GamePropertiesDialog* ui;
 };
 
 #endif // GAME_PROPERTIES_DIALOG_H
-

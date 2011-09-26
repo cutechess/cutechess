@@ -16,41 +16,44 @@
 */
 
 #include "gamedatabasesearchdlg.h"
+#include "ui_gamedatabasesearchdlg.h"
 
 GameDatabaseSearchDialog::GameDatabaseSearchDialog(QWidget* parent)
-	: QDialog(parent, Qt::Window)
+	: QDialog(parent, Qt::Window),
+	  ui(new Ui::GameDatabaseSearchDialog)
 {
-	setupUi(this);
+	ui->setupUi(this);
 
-	m_maxDateEdit->setDate(QDate::currentDate());
+	ui->m_maxDateEdit->setDate(QDate::currentDate());
 }
 
 GameDatabaseSearchDialog::~GameDatabaseSearchDialog()
 {
+	delete ui;
 }
 
 PgnGameFilter GameDatabaseSearchDialog::filter() const
 {
 	PgnGameFilter filter;
 
-	filter.setEvent(m_eventEdit->text());
-	filter.setSite(m_siteEdit->text());
+	filter.setEvent(ui->m_eventEdit->text());
+	filter.setSite(ui->m_siteEdit->text());
 
-	if (m_minDateCheck->isChecked())
-		filter.setMinDate(m_minDateEdit->date());
-	if (m_maxDateCheck->isChecked())
-		filter.setMaxDate(m_maxDateEdit->date());
+	if (ui->m_minDateCheck->isChecked())
+		filter.setMinDate(ui->m_minDateEdit->date());
+	if (ui->m_maxDateCheck->isChecked())
+		filter.setMaxDate(ui->m_maxDateEdit->date());
 
-	filter.setMinRound(m_minRoundSpin->value());
-	filter.setMaxRound(m_maxRoundSpin->value());
+	filter.setMinRound(ui->m_minRoundSpin->value());
+	filter.setMaxRound(ui->m_maxRoundSpin->value());
 
-	filter.setResult(PgnGameFilter::Result(m_resultCombo->currentIndex()));
+	filter.setResult(PgnGameFilter::Result(ui->m_resultCombo->currentIndex()));
 
-	int side = m_playerSideCombo->currentIndex() - 1;
+	int side = ui->m_playerSideCombo->currentIndex() - 1;
 	if (side == -1)
 		side = Chess::Side::NoSide;
-	filter.setPlayer(m_playerEdit->text(), Chess::Side::Type(side));
-	filter.setOpponent(m_opponentEdit->text());
+	filter.setPlayer(ui->m_playerEdit->text(), Chess::Side::Type(side));
+	filter.setOpponent(ui->m_opponentEdit->text());
 
 	return filter;
 }

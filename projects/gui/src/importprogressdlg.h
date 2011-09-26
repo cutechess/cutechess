@@ -18,23 +18,29 @@
 #ifndef IMPORT_PROGRESS_DIALOG_H
 #define IMPORT_PROGRESS_DIALOG_H
 
-#include "ui_importprogressdlg.h"
 #include <QDialog>
 
 class PgnImporter;
+
+namespace Ui {
+	class ImportProgressDialog;
+}
 
 /*!
  * \brief Dialog for PGN database import progress.
  *
  * \sa PgnImporter
  */
-class ImportProgressDialog : public QDialog, private Ui::ImportProgressDialog
+class ImportProgressDialog : public QDialog
 {
 	Q_OBJECT
 
 	public:
 		/*! Constructs a new ImportProgressDialog with \a importer. */
-		ImportProgressDialog(PgnImporter* pgnImporter);
+		ImportProgressDialog(PgnImporter* pgnImporter,
+				     QWidget* parent = 0);
+		/*! Destroys the dialog. */
+		virtual ~ImportProgressDialog();
 
 	private slots:
 		void onImporterFinished();
@@ -45,8 +51,7 @@ class ImportProgressDialog : public QDialog, private Ui::ImportProgressDialog
 		PgnImporter* m_pgnImporter;
 		int m_lastUpdateSecs;
 		bool m_importError;
-
+		Ui::ImportProgressDialog* ui;
 };
 
 #endif // IMPORT_PROGRESS_DIALOG_H
-

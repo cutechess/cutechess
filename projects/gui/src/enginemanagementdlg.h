@@ -18,19 +18,21 @@
 #ifndef ENGINEMANAGEMENTDIALOG_H
 #define ENGINEMANAGEMENTDIALOG_H
 
-#include "ui_enginemanagementdlg.h"
 #include <QDialog>
 #include <engineconfiguration.h>
 
 class EngineManager;
 class QSortFilterProxyModel;
 
+namespace Ui {
+	class EngineManagementDialog;
+}
 
 /*!
  * \brief The EngineManagementDialog class provides a dialog for chess engine
  * management.
 */
-class EngineManagementDialog : public QDialog, private Ui::EngineManagementDialog
+class EngineManagementDialog : public QDialog
 {
 	Q_OBJECT
 
@@ -40,6 +42,8 @@ class EngineManagementDialog : public QDialog, private Ui::EngineManagementDialo
 		 * and \a parent as parent.
 		*/
 		EngineManagementDialog(QWidget* parent = 0);
+		/*! Destroys the dialog. */
+		virtual ~EngineManagementDialog();
 
 		QList<EngineConfiguration> engines() const;
 	
@@ -53,8 +57,7 @@ class EngineManagementDialog : public QDialog, private Ui::EngineManagementDialo
 	private:
 		EngineManager* m_engineManager;
 		QSortFilterProxyModel* m_filteredModel;
-
+		Ui::EngineManagementDialog* ui;
 };
 
 #endif // ENGINEMANAGEMENTDIALOG_H
-
