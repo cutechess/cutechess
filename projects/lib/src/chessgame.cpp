@@ -338,7 +338,7 @@ Chess::Move ChessGame::bookMove(Chess::Side side)
 		return Chess::Move();
 	}
 
-	if (m_board->isRepeatMove(move))
+	if (m_board->isRepetition(move))
 		return Chess::Move();
 
 	return move;

@@ -250,7 +250,7 @@ class LIB_EXPORT Board
 		 * Returns true if \a move repeats a position that was
 		 * reached earlier in the game.
 		 */
-		bool isRepeatMove(const Move& move);
+		bool isRepetition(const Move& move);
 		/*! Returns a vector of legal moves in the current position. */
 		QVector<Move> legalMoves();
 		/*!

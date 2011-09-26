@@ -764,7 +764,7 @@ int Board::repeatCount() const
 	return repeatCount;
 }
 
-bool Board::isRepeatMove(const Chess::Move& move)
+bool Board::isRepetition(const Chess::Move& move)
 {
 	Q_ASSERT(!move.isNull());
 
