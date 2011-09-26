@@ -57,7 +57,7 @@ TimeControlDialog::TimeControlDialog(const TimeControl& tc,
 	}
 
 	ui->m_nodesSpin->setValue(tc.nodeLimit());
-	ui->m_pliesSpin->setValue(tc.maxDepth());
+	ui->m_pliesSpin->setValue(tc.plyLimit());
 	ui->m_marginSpin->setValue(tc.expiryMargin());
 }
 
@@ -144,7 +144,7 @@ TimeControl TimeControlDialog::timeControl() const
 	}
 
 	tc.setNodeLimit(ui->m_nodesSpin->value());
-	tc.setMaxDepth(ui->m_pliesSpin->value());
+	tc.setPlyLimit(ui->m_pliesSpin->value());
 	tc.setExpiryMargin(ui->m_marginSpin->value());
 
 	return tc;

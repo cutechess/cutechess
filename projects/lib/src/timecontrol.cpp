@@ -27,7 +27,7 @@ TimeControl::TimeControl()
 	  m_increment(0),
 	  m_timeLeft(0),
 	  m_movesLeft(0),
-	  m_maxDepth(0),
+	  m_plyLimit(0),
 	  m_nodeLimit(0),
 	  m_lastMoveTime(0),
 	  m_expiryMargin(0),
@@ -43,7 +43,7 @@ TimeControl::TimeControl(const QString& str)
 	  m_increment(0),
 	  m_timeLeft(0),
 	  m_movesLeft(0),
-	  m_maxDepth(0),
+	  m_plyLimit(0),
 	  m_nodeLimit(0),
 	  m_lastMoveTime(0),
 	  m_expiryMargin(0),
@@ -98,7 +98,7 @@ bool TimeControl::operator==(const TimeControl& other) const
 	&&  m_timePerTc == other.m_timePerTc
 	&&  m_timePerMove == other.m_timePerMove
 	&&  m_increment == other.m_increment
-	&&  m_maxDepth == other.m_maxDepth
+	&&  m_plyLimit == other.m_plyLimit
 	&&  m_nodeLimit == other.m_nodeLimit
 	&&  m_infinite == other.m_infinite)
 		return true;
@@ -111,7 +111,7 @@ bool TimeControl::isValid() const
 	||  m_timePerTc < 0
 	||  m_timePerMove < 0
 	||  m_increment < 0
-	||  m_maxDepth < 0
+	||  m_plyLimit < 0
 	||  m_nodeLimit < 0
 	||  m_expiryMargin < 0
 	||  (m_timePerTc == m_timePerMove && !m_infinite))
@@ -183,8 +183,8 @@ QString TimeControl::toVerboseString() const
 	if (m_nodeLimit != 0)
 		str += QObject::tr(", %1 nodes")
 			.arg(s_nodeString(m_nodeLimit));
-	if (m_maxDepth != 0)
-		str += QObject::tr(", %1 plies").arg(m_maxDepth);
+	if (m_plyLimit != 0)
+		str += QObject::tr(", %1 plies").arg(m_plyLimit);
 	if (m_expiryMargin != 0)
 		str += QObject::tr(", %1 msec margin").arg(m_expiryMargin);
 
@@ -240,9 +240,9 @@ int TimeControl::movesLeft() const
 	return m_movesLeft;
 }
 
-int TimeControl::maxDepth() const
+int TimeControl::plyLimit() const
 {
-	return m_maxDepth;
+	return m_plyLimit;
 }
 
 int TimeControl::nodeLimit() const
@@ -295,16 +295,16 @@ void TimeControl::setMovesLeft(int movesLeft)
 	m_movesLeft = movesLeft;
 }
 
-void TimeControl::setMaxDepth(int maxDepth)
+void TimeControl::setPlyLimit(int plies)
 {
-	Q_ASSERT(maxDepth >= 0);
-	m_maxDepth = maxDepth;
+	Q_ASSERT(plies >= 0);
+	m_plyLimit = plies;
 }
 
-void TimeControl::setNodeLimit(int limit)
+void TimeControl::setNodeLimit(int nodes)
 {
-	Q_ASSERT(limit >= 0);
-	m_nodeLimit = limit;
+	Q_ASSERT(nodes >= 0);
+	m_nodeLimit = nodes;
 }
 
 void TimeControl::setExpiryMargin(int expiryMargin)

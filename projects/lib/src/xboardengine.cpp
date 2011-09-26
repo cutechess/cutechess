@@ -134,8 +134,8 @@ void XboardEngine::startGame()
 		      .arg(msToXboardTime(myTc->timePerTc()))
 		      .arg(myTc->timeIncrement() / 1000));
 
-	if (myTc->maxDepth() > 0)
-		write(QString("sd %1").arg(myTc->maxDepth()));
+	if (myTc->plyLimit() > 0)
+		write(QString("sd %1").arg(myTc->plyLimit()));
 
 	// Show thinking
 	write("post");

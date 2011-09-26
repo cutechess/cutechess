@@ -164,7 +164,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				qWarning() << "Invalid depth limit:" << val;
 				return false;
 			}
-			data.tc.setMaxDepth(val.toInt());
+			data.tc.setPlyLimit(val.toInt());
 		}
 		else if (name == "nodes")
 		{

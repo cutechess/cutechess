@@ -116,8 +116,8 @@ class LIB_EXPORT TimeControl
 		 */
 		int movesLeft() const;
 
-		/*! Returns the maximum search depth. */
-		int maxDepth() const;
+		/*! Returns the maximum search depth in plies. */
+		int plyLimit() const;
 
 		/*! Returns the node limit for each move. */
 		int nodeLimit() const;
@@ -156,11 +156,11 @@ class LIB_EXPORT TimeControl
 		/*! Sets the number of full moves left in the time control. */
 		void setMovesLeft(int movesLeft);
 
-		/*! Sets the maximum search depth. */
-		void setMaxDepth(int maxDepth);
+		/*! Sets the maximum search depth in plies. */
+		void setPlyLimit(int plies);
 
 		/*! Sets the node limit. */
-		void setNodeLimit(int limit);
+		void setNodeLimit(int nodes);
 
 		/*! Sets the expiry margin. */
 		void setExpiryMargin(int expiryMargin);
@@ -194,7 +194,7 @@ class LIB_EXPORT TimeControl
 		int m_increment;
 		int m_timeLeft;
 		int m_movesLeft;
-		int m_maxDepth;
+		int m_plyLimit;
 		int m_nodeLimit;
 		int m_lastMoveTime;
 		int m_expiryMargin;

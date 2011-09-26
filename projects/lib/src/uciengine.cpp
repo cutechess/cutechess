@@ -155,8 +155,8 @@ void UciEngine::startThinking()
 		if (myTc->movesLeft() > 0)
 			command += QString(" movestogo %1").arg(myTc->movesLeft());
 	}
-	if (myTc->maxDepth() > 0)
-		command += QString(" depth %1").arg(myTc->maxDepth());
+	if (myTc->plyLimit() > 0)
+		command += QString(" depth %1").arg(myTc->plyLimit());
 	if (myTc->nodeLimit() > 0)
 		command += QString(" nodes %1").arg(myTc->nodeLimit());
 
