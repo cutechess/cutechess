@@ -244,10 +244,7 @@ void MainWindow::newGame()
 	ChessGame* game = new ChessGame(Chess::BoardFactory::create(dlg.selectedVariant()),
 		new PgnGame());
 
-	TimeControl tc;
-	tc.setTimePerTc(180000);
-	tc.setMovesPerTc(40);
-	game->setTimeControl(tc);
+	game->setTimeControl(dlg.timeControl());
 
 	for (int i = 0; i < 2; i++)
 	{

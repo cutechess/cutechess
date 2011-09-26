@@ -26,6 +26,7 @@
 #include "cutechessapp.h"
 #include "engineconfigurationmodel.h"
 #include "engineconfigurationdlg.h"
+#include "timecontroldlg.h"
 
 
 NewGameDialog::NewGameDialog(QWidget* parent)
@@ -37,15 +38,15 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 		CuteChessApplication::instance()->engineManager(), this);
 
 	// Add Start button to the standard button box at the bottom
-	QPushButton* startButton = new QPushButton(tr("Start"));
-	m_buttonBox->addButton(startButton, QDialogButtonBox::AcceptRole);
-
-	connect(startButton, SIGNAL(clicked(bool)), this, SLOT(accept()));
+	m_buttonBox->addButton(tr("Start"), QDialogButtonBox::AcceptRole);
 
 	connect(m_configureWhiteEngineButton, SIGNAL(clicked(bool)), this,
 		SLOT(configureWhiteEngine()));
 	connect(m_configureBlackEngineButton, SIGNAL(clicked(bool)), this,
 		SLOT(configureBlackEngine()));
+
+	connect(m_timeControlBtn, SIGNAL(clicked()),
+		this, SLOT(showTimeControlDialog()));
 
 	m_proxyModel = new QSortFilterProxyModel(this);
 	m_proxyModel->setSourceModel(m_engines);
@@ -69,6 +70,10 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 	m_variantComboBox->addItems(Chess::BoardFactory::variants());
 	int index = m_variantComboBox->findText("standard");
 	m_variantComboBox->setCurrentIndex(index);
+
+	m_timeControl.setMovesPerTc(40);
+	m_timeControl.setTimePerTc(300000);
+	m_timeControlBtn->setText(m_timeControl.toVerboseString());
 }
 
 NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
@@ -99,6 +104,11 @@ QString NewGameDialog::selectedVariant() const
 	return m_variantComboBox->currentText();
 }
 
+TimeControl NewGameDialog::timeControl() const
+{
+	return m_timeControl;
+}
+
 void NewGameDialog::configureWhiteEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
@@ -126,5 +136,15 @@ void NewGameDialog::configureBlackEngine()
 	{
 		CuteChessApplication::instance()->engineManager()->updateEngineAt(i,
 			dlg.engineConfiguration());
+	}
+}
+
+void NewGameDialog::showTimeControlDialog()
+{
+	TimeControlDialog dlg(m_timeControl);
+	if (dlg.exec() == QDialog::Accepted)
+	{
+		m_timeControl = dlg.timeControl();
+		m_timeControlBtn->setText(m_timeControl.toVerboseString());
 	}
 }

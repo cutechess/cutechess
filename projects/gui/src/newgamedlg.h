@@ -21,6 +21,7 @@
 #include "ui_newgamedlg.h"
 #include <QDialog>
 #include <board/side.h>
+#include <timecontrol.h>
 
 class EngineConfigurationModel;
 class QSortFilterProxyModel;
@@ -61,14 +62,18 @@ class NewGameDialog : public QDialog, private Ui::NewGameDialog
 		/*! Returns the user-selected chess variant. */
 		QString selectedVariant() const;
 
+		/*! Returns the chosen time control. */
+		TimeControl timeControl() const;
+
 	private slots:
 		void configureWhiteEngine();
 		void configureBlackEngine();
+		void showTimeControlDialog();
 
 	private:
 		EngineConfigurationModel* m_engines;
 		QSortFilterProxyModel* m_proxyModel;
-
+		TimeControl m_timeControl;
 };
 
 #endif // NEWGAMEDIALOG_H
