@@ -6,4 +6,5 @@ FORMS += engineconfigdlg.ui \
          gamepropertiesdlg.ui \
          gamedatabasedlg.ui \
          importprogressdlg.ui \
-	 gamedatabasesearchdlg.ui
+         gamedatabasesearchdlg.ui \
+         timecontroldlg.ui
