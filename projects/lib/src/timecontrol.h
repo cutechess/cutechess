@@ -75,6 +75,7 @@ class LIB_EXPORT TimeControl
 		/*! Returns the time control string in PGN format. */
 		QString toString() const;
 
+		/*! Returns a verbose description of the time control. */
 		QString toVerboseString() const;
 
 		/*! Initializes the time control ready for a new game. */
