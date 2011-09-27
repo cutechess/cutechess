@@ -115,16 +115,17 @@ class BoardScene : public QGraphicsScene
 			Backward
 		};
 
+		QPointF squarePos(const Chess::Square& square) const;
 		GraphicsPiece* pieceAt(const QPointF& pos) const;
 		GraphicsPiece* createPiece(const Chess::Piece& piece);
 		QPropertyAnimation* pieceAnimation(GraphicsPiece* piece,
 						   const QPointF& endPoint) const;
-		QPropertyAnimation* pieceAnimation(GraphicsPiece* piece,
-						   const Chess::Square& target) const;
 		void stopAnimation();
 		void tryMove(GraphicsPiece* piece, const QPointF& targetPos);
 		void selectPiece(const QList<Chess::Piece>& types,
 				 const char* member);
+		void addMoveHighlight(const QPointF& sourcePos,
+				      const QPointF& targetPos);
 		void applyTransition(const Chess::BoardTransition& transition,
 				     MoveDirection direction);
 		void updateMoves();
@@ -143,6 +144,7 @@ class BoardScene : public QGraphicsScene
 		QList<Chess::GenericMove> m_moves;
 		Chess::GenericMove m_promotionMove;
 		GraphicsPiece* m_highlightPiece;
+		QGraphicsItemGroup* m_moveHighlights;
 };
 
 #endif // BOARDSCENE_H

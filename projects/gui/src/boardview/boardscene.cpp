@@ -20,6 +20,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
+#include <QGraphicsPolygonItem>
+#include <QGraphicsOpacityEffect>
 #include <board/board.h>
 #include "graphicsboard.h"
 #include "graphicspiecereserve.h"
@@ -38,7 +40,8 @@ BoardScene::BoardScene(QObject* parent)
 	  m_chooser(0),
 	  m_anim(0),
 	  m_renderer(new QSvgRenderer(QString(":/default.svg"), this)),
-	  m_highlightPiece(0)
+	  m_highlightPiece(0),
+	  m_moveHighlights(0)
 {
 }
 
@@ -56,6 +59,7 @@ void BoardScene::setBoard(Chess::Board* board)
 	m_reserve = 0;
 	m_chooser = 0;
 	m_highlightPiece = 0;
+	m_moveHighlights = 0;
 	m_board = board;
 }
 
@@ -70,6 +74,7 @@ void BoardScene::populate()
 	m_reserve = 0;
 	m_chooser = 0;
 	m_highlightPiece = 0;
+	m_moveHighlights = 0;
 
 	m_squares = new GraphicsBoard(m_board->width(),
 				      m_board->height(),
@@ -122,6 +127,9 @@ void BoardScene::setFenString(const QString& fenString)
 void BoardScene::makeMove(const Chess::Move& move)
 {
 	stopAnimation();
+	delete m_moveHighlights;
+	m_moveHighlights = new QGraphicsItemGroup(m_squares, this);
+	m_moveHighlights->setZValue(-1);
 
 	Chess::BoardTransition transition;
 	m_board->makeMove(move, &transition);
@@ -137,6 +145,8 @@ void BoardScene::makeMove(const Chess::GenericMove& move)
 void BoardScene::undoMove()
 {
 	stopAnimation();
+	delete m_moveHighlights;
+	m_moveHighlights = 0;
 
 	m_board->undoMove();
 	applyTransition(m_history.takeLast(), Backward);
@@ -264,6 +274,11 @@ void BoardScene::onPromotionChosen(const Chess::Piece& promotion)
 	}
 }
 
+QPointF BoardScene::squarePos(const Chess::Square& square) const
+{
+	return m_squares->mapToScene(m_squares->squarePos(square));
+}
+
 GraphicsPiece* BoardScene::pieceAt(const QPointF& pos) const
 {
 	foreach (QGraphicsItem* item, items(pos))
@@ -309,13 +324,6 @@ QPropertyAnimation* BoardScene::pieceAnimation(GraphicsPiece* piece,
 	piece->setPos(startPoint);
 
 	return anim;
-}
-
-QPropertyAnimation* BoardScene::pieceAnimation(GraphicsPiece* piece,
-					       const Chess::Square& target) const
-{
-	QPointF point(m_squares->mapToScene(m_squares->squarePos(target)));
-	return pieceAnimation(piece, point);
 }
 
 void BoardScene::stopAnimation()
@@ -391,6 +399,43 @@ void BoardScene::selectPiece(const QList<Chess::Piece>& types,
 	m_chooser->reveal();
 }
 
+void BoardScene::addMoveHighlight(const QPointF& sourcePos,
+				  const QPointF& targetPos)
+{
+	Q_ASSERT(m_moveHighlights != 0);
+
+	QLineF l1(sourcePos, targetPos);
+	QLineF l2(l1.normalVector());
+	l2.setLength(s_squareSize / 3.0);
+	l2.translate(l2.dx() / -2.0, l2.dy() / -2.0);
+
+	QPolygonF polygon;
+	polygon << l2.p1() << l1.p2() << l2.p2();
+
+	QGraphicsPolygonItem* item = new QGraphicsPolygonItem(polygon);
+
+	if (m_board->sideToMove() == Chess::Side::White)
+	{
+		item->setPen(QPen(Qt::white, 2));
+		item->setBrush(Qt::black);
+	}
+	else
+	{
+		item->setPen(QPen(Qt::black, 2));
+		item->setBrush(Qt::white);
+	}
+
+	QLinearGradient omask(sourcePos, targetPos);
+	omask.setColorAt(0.0, Qt::transparent);
+	omask.setColorAt(0.5, Qt::black);
+
+	QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect;
+	effect->setOpacityMask(omask);
+	item->setGraphicsEffect(effect);
+
+	m_moveHighlights->addToGroup(item);
+}
+
 void BoardScene::applyTransition(const Chess::BoardTransition& transition,
 				 MoveDirection direction)
 {
@@ -405,8 +450,12 @@ void BoardScene::applyTransition(const Chess::BoardTransition& transition,
 	{
 		Chess::Square source = move.source;
 		Chess::Square target = move.target;
+
 		if (direction == Backward)
 			qSwap(source, target);
+		else
+			addMoveHighlight(m_squares->squarePos(source),
+					 m_squares->squarePos(target));
 
 		GraphicsPiece* piece = m_squares->pieceAt(source);
 		if (piece == 0)
@@ -414,15 +463,18 @@ void BoardScene::applyTransition(const Chess::BoardTransition& transition,
 			piece = createPiece(m_board->pieceAt(target));
 			m_squares->setSquare(source, piece);
 		}
-		group->addAnimation(pieceAnimation(piece, target));
+		group->addAnimation(pieceAnimation(piece, squarePos(target)));
 	}
 
 	foreach (const Chess::BoardTransition::Drop& drop, transition.drops())
 	{
 		if (direction == Forward)
 		{
+			addMoveHighlight(m_squares->mapFromItem(m_reserve, QPointF()),
+					 m_squares->squarePos(drop.target));
+
 			GraphicsPiece* piece = m_reserve->piece(drop.piece);
-			group->addAnimation(pieceAnimation(piece, drop.target));
+			group->addAnimation(pieceAnimation(piece, squarePos(drop.target)));
 		}
 		else
 		{
