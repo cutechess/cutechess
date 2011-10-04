@@ -107,11 +107,11 @@ GameManager* CuteChessApplication::gameManager()
 
 QList<MainWindow*> CuteChessApplication::gameWindows()
 {
-	cleanGameWindows();
+	m_gameWindows.removeAll(0);
 
 	QList<MainWindow*> gameWindowList;
-	for (int i = 0; i < m_gameWindows.size(); i++)
-		gameWindowList.append(m_gameWindows.at(i));
+	foreach (const QPointer<MainWindow>& window, m_gameWindows)
+		gameWindowList << window.data();
 
 	return gameWindowList;
 }
@@ -135,16 +135,6 @@ void CuteChessApplication::newDefaultGame()
 	game->setTimeControl(TimeControl("inf"));
 
 	gameManager()->newGame(game, new HumanBuilder(), new HumanBuilder());
-}
-
-
-void CuteChessApplication::cleanGameWindows()
-{
-	for (int i = m_gameWindows.size() - 1; i >= 0; i--)
-	{
-		if (m_gameWindows.at(i).isNull())
-			m_gameWindows.removeAt(i);
-	}
 }
 
 void CuteChessApplication::showGameWindow(int index)

@@ -116,7 +116,7 @@ MainWindow::MainWindow(ChessGame* game)
 	m_boardScene->populate();
 
 	updateWindowTitle();
-	game->unlockThread();
+	m_game->unlockThread();
 }
 
 MainWindow::~MainWindow()

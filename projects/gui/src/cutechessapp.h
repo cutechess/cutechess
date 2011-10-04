@@ -58,7 +58,6 @@ class CuteChessApplication : public QApplication
 		GameManager* m_gameManager;
 		GameDatabaseManager* m_gameDatabaseManager;
 		QList<QPointer<MainWindow> > m_gameWindows;
-		void cleanGameWindows();
 		GameDatabaseDialog* m_gameDatabaseDialog;
 
 	private slots:
