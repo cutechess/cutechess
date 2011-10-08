@@ -123,6 +123,7 @@ MainWindow::MainWindow(ChessGame* game)
 
 MainWindow::~MainWindow()
 {
+	m_game->deleteLater();
 	delete m_pgn;
 }
 
@@ -459,14 +460,14 @@ void MainWindow::closeEvent(QCloseEvent* event)
 {
 	if (askToSave())
 	{
-		if (!m_game->isFinished())
-		{
-			connect(m_game, SIGNAL(finished()), m_game, SLOT(deleteLater()));
-			QMetaObject::invokeMethod(m_game, "stop", Qt::QueuedConnection);
-		}
+		if (m_game->isFinished())
+			event->accept();
 		else
-			m_game->deleteLater();
-		event->accept();
+		{
+			connect(m_game, SIGNAL(finished()), this, SLOT(close()));
+			QMetaObject::invokeMethod(m_game, "stop", Qt::QueuedConnection);
+			event->ignore();
+		}
 	}
 	else
 		event->ignore();
