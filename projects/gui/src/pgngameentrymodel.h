@@ -23,7 +23,7 @@
 #include <QList>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <pgngameentry.h>
+class PgnGameEntry;
 class PgnGameFilter;
 
 /*!
@@ -38,9 +38,9 @@ class PgnGameEntryModel : public QAbstractItemModel
 		PgnGameEntryModel(QObject* parent = 0);
 
 		/*! Returns the PGN entry at \a row. */
-		PgnGameEntry entryAt(int row) const;
+		const PgnGameEntry* entryAt(int row) const;
 		/*! Associates a list of PGN game entris with this model. */
-		void setEntries(const QList<PgnGameEntry>& entries);
+		void setEntries(const QList<const PgnGameEntry*>& entries);
 
 		// Inherited from QAbstractItemModel
 		virtual QModelIndex index(int row, int column,
@@ -69,10 +69,10 @@ class PgnGameEntryModel : public QAbstractItemModel
 
 		static const QStringList s_headers;
 
-		QList<PgnGameEntry> m_entries;
+		QList<const PgnGameEntry*> m_entries;
 		int m_entryCount;
-		QFuture<PgnGameEntry> m_filtered;
-		QFutureWatcher<PgnGameEntry> m_watcher;
+		QFuture<const PgnGameEntry*> m_filtered;
+		QFutureWatcher<const PgnGameEntry*> m_watcher;
 };
 
 #endif // PGN_GAME_ENTRY_MODEL_H

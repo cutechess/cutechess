@@ -61,13 +61,16 @@ void PgnImporter::run()
 	}
 
 	PgnStream pgnStream(&file);
-	QList<PgnGameEntry> games;
-	PgnGameEntry game;
+	QList<const PgnGameEntry*> games;
 
 	forever
 	{
-		if (m_abort || !game.read(pgnStream))
+		PgnGameEntry* game = new PgnGameEntry;
+		if (m_abort || !game->read(pgnStream))
+		{
+			delete game;
 			break;
+		}
 
 		games << game;
 		numReadGames++;

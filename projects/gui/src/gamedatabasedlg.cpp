@@ -115,8 +115,7 @@ void GameDatabaseDialog::databaseSelectionChanged(const QModelIndex& current,
 
 	if (!current.isValid())
 	{
-		QList<PgnGameEntry> emptyList;
-		m_pgnGameEntryModel->setEntries(emptyList);
+		m_pgnGameEntryModel->setEntries(QList<const PgnGameEntry*>());
 		return;
 	}
 
@@ -132,7 +131,7 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 {
 	Q_UNUSED(previous);
 
-	const PgnGameEntry entry = m_pgnGameEntryModel->entryAt(current.row());
+	const PgnGameEntry* entry = m_pgnGameEntryModel->entryAt(current.row());
 
 	PgnGame game;
 	PgnDatabase::PgnDatabaseError error;

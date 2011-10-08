@@ -17,6 +17,7 @@
 
 #include "pgngameentrymodel.h"
 #include <QtConcurrentFilter>
+#include <pgngameentry.h>
 #include <pgngamefilter.h>
 
 
@@ -27,9 +28,9 @@ struct EntryContains
 
 	typedef bool result_type;
 
-	inline bool operator()(const PgnGameEntry& entry)
+	inline bool operator()(const PgnGameEntry* entry)
 	{
-		return entry.match(m_filter);
+		return entry->match(m_filter);
 	}
 
 	PgnGameFilter m_filter;
@@ -47,12 +48,12 @@ PgnGameEntryModel::PgnGameEntryModel(QObject* parent)
 		this, SLOT(onResultsReady()));
 }
 
-PgnGameEntry PgnGameEntryModel::entryAt(int row) const
+const PgnGameEntry* PgnGameEntryModel::entryAt(int row) const
 {
 	return m_filtered.resultAt(row);
 }
 
-void PgnGameEntryModel::setEntries(const QList<PgnGameEntry>& entries)
+void PgnGameEntryModel::setEntries(const QList<const PgnGameEntry*>& entries)
 {
 	m_watcher.cancel();
 	m_watcher.waitForFinished();
@@ -122,7 +123,7 @@ QVariant PgnGameEntryModel::data(const QModelIndex& index, int role) const
 	if (index.isValid() && role == Qt::DisplayRole)
 	{
 		PgnGameEntry::TagType tagType = PgnGameEntry::TagType(index.column());
-		return m_filtered.resultAt(index.row()).tagValue(tagType);
+		return m_filtered.resultAt(index.row())->tagValue(tagType);
 	}
 	return QVariant();
 }

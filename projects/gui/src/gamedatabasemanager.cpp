@@ -82,8 +82,8 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 
 		qDebug() << "Writing" << db->entries().count() << "entries";
 
-		foreach (const PgnGameEntry& entry, db->entries())
-			entry.write(out);
+		foreach (const PgnGameEntry* entry, db->entries())
+			entry->write(out);
 	}
 
 	qDebug() << "Writing done at"
@@ -172,12 +172,11 @@ bool GameDatabaseManager::readState(const QString& fileName)
 		qDebug() << "Reading" << dbEntryCount << "entries";
 
 		// Read the entries
-		PgnGameEntry entry;
-		QList<PgnGameEntry> entries;
-
+		QList<const PgnGameEntry*> entries;
 		for (int j = 0; j < dbEntryCount; j++)
 		{
-			entry.read(in);
+			PgnGameEntry* entry = new PgnGameEntry;
+			entry->read(in);
 			entries << entry;
 		}
 

@@ -28,12 +28,18 @@ PgnDatabase::PgnDatabase(const QString& fileName, QObject* parent)
 	m_displayName = fileInfo.fileName();
 }
 
-void PgnDatabase::setEntries(const QList<PgnGameEntry>& entries)
+PgnDatabase::~PgnDatabase()
 {
+	qDeleteAll(m_entries);
+}
+
+void PgnDatabase::setEntries(const QList<const PgnGameEntry*>& entries)
+{
+	qDeleteAll(m_entries);
 	m_entries = entries;
 }
 
-QList<PgnGameEntry> PgnDatabase::entries() const
+QList<const PgnGameEntry*> PgnDatabase::entries() const
 {
 	return m_entries;
 }
@@ -63,9 +69,10 @@ void PgnDatabase::setDisplayName(const QString& displayName)
 	m_displayName = displayName;
 }
 
-PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry& entry, PgnGame* game)
+PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry* entry, PgnGame* game)
 {
-	Q_ASSERT(game);
+	Q_ASSERT(entry != 0);
+	Q_ASSERT(game != 0);
 
 	QFile file(m_fileName);
 	QFileInfo fileInfo(m_fileName);
@@ -84,7 +91,7 @@ PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry& entry, PgnGa
 
 	PgnStream pgnStream(&file);
 
-	if (!pgnStream.seek(entry.pos(), entry.lineNumber()))
+	if (!pgnStream.seek(entry->pos(), entry->lineNumber()))
 	{
 		qDebug() << "PgnDatabase::game(): PgnStream error: seek() failed";
 		return StreamError;

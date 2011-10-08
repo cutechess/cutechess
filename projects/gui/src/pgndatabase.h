@@ -51,9 +51,16 @@ class PgnDatabase : public QObject
 		 * the underlying database.
 		 */
 		PgnDatabase(const QString& fileName, QObject* parent = 0);
+		/*! Destroys the database and the game entries it contains. */
+		virtual ~PgnDatabase();
 
-		/*! Set the game entries found in this database to \a entries. */
-		void setEntries(const QList<PgnGameEntry>& entries);
+		/*!
+		 * Set the game entries found in this database to \a entries.
+		 *
+		 * The database takes ownership of the PgnGameEntry objects
+		 * in \a entries.
+		 */
+		void setEntries(const QList<const PgnGameEntry*>& entries);
 		/*!
 		 * Returns the list of game entries in this database.
 		 *
@@ -62,7 +69,7 @@ class PgnDatabase : public QObject
 		 *
 		 * \sa game()
 		 */
-		QList<PgnGameEntry> entries() const;
+		QList<const PgnGameEntry*> entries() const;
 
 		/*! Returns the file name of this database. */
 		QString fileName() const;
@@ -106,10 +113,10 @@ class PgnDatabase : public QObject
 		 *
 		 * \note \a game must be allocated by the caller and must not be NULL.
 		 */
-		PgnDatabaseError game(const PgnGameEntry& entry, PgnGame* game);
+		PgnDatabaseError game(const PgnGameEntry* entry, PgnGame* game);
 
 	private:
-		QList<PgnGameEntry> m_entries;
+		QList<const PgnGameEntry*> m_entries;
 		QString m_fileName;
 		QDateTime m_lastModified;
 		QString m_displayName;
