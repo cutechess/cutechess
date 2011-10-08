@@ -61,8 +61,8 @@ class CuteChessApplication : public QApplication
 		GameDatabaseDialog* m_gameDatabaseDialog;
 
 	private slots:
+		void onLastWindowClosed();
 		void onAboutToQuit();
-
 };
 
 #endif // CUTE_CHESS_APPLICATION_H

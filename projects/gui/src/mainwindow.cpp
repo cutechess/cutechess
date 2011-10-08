@@ -44,7 +44,8 @@
 #include "gamedatabasemanager.h"
 
 MainWindow::MainWindow(ChessGame* game)
-	: m_game(game)
+	: m_game(game),
+	  m_pgn(0)
 {
 	Q_ASSERT(m_game != 0);
 
@@ -111,8 +112,9 @@ MainWindow::MainWindow(ChessGame* game)
 				player, SLOT(onHumanMove(Chess::GenericMove, Chess::Side)));
 	}
 
+	m_pgn = m_game->pgn();
 	m_moveListModel->setGame(m_game);
-	m_boardScene->setBoard(m_game->pgn()->createBoard());
+	m_boardScene->setBoard(m_pgn->createBoard());
 	m_boardScene->populate();
 
 	updateWindowTitle();
@@ -121,7 +123,7 @@ MainWindow::MainWindow(ChessGame* game)
 
 MainWindow::~MainWindow()
 {
-	m_game->deleteLater();
+	delete m_pgn;
 }
 
 void MainWindow::createActions()
@@ -270,22 +272,22 @@ void MainWindow::gameProperties()
 	GamePropertiesDialog dlg(this);
 
 	m_game->lockThread();
-	dlg.setWhite(m_game->pgn()->playerName(Chess::Side::White));
-	dlg.setBlack(m_game->pgn()->playerName(Chess::Side::Black));
-	dlg.setEvent(m_game->pgn()->event());
-	dlg.setSite(m_game->pgn()->site());
-	dlg.setRound(m_game->pgn()->round());
+	dlg.setWhite(m_pgn->playerName(Chess::Side::White));
+	dlg.setBlack(m_pgn->playerName(Chess::Side::Black));
+	dlg.setEvent(m_pgn->event());
+	dlg.setSite(m_pgn->site());
+	dlg.setRound(m_pgn->round());
 	m_game->unlockThread();
 
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
 	m_game->lockThread();
-	m_game->pgn()->setPlayerName(Chess::Side::White, dlg.white());
-	m_game->pgn()->setPlayerName(Chess::Side::Black, dlg.black());
-	m_game->pgn()->setEvent(dlg.event());
-	m_game->pgn()->setSite(dlg.site());
-	m_game->pgn()->setRound(dlg.round());
+	m_pgn->setPlayerName(Chess::Side::White, dlg.white());
+	m_pgn->setPlayerName(Chess::Side::Black, dlg.black());
+	m_pgn->setEvent(dlg.event());
+	m_pgn->setSite(dlg.site());
+	m_pgn->setRound(dlg.round());
 
 	updateWindowTitle();
 	m_game->unlockThread();
@@ -415,8 +417,8 @@ QString MainWindow::windowListTitle() const
 QString MainWindow::genericWindowTitle() const
 {
 	return QString("%1 - %2")
-		.arg(m_game->pgn()->playerName(Chess::Side::White))
-			.arg(m_game->pgn()->playerName(Chess::Side::Black));
+		.arg(m_pgn->playerName(Chess::Side::White))
+		.arg(m_pgn->playerName(Chess::Side::Black));
 }
 
 bool MainWindow::save()
@@ -441,7 +443,7 @@ bool MainWindow::saveAs()
 bool MainWindow::saveGame(const QString& fileName)
 {
 	m_game->lockThread();
-	bool ok = m_game->pgn()->write(fileName);
+	bool ok = m_pgn->write(fileName);
 	m_game->unlockThread();
 
 	if (!ok)
@@ -456,7 +458,16 @@ bool MainWindow::saveGame(const QString& fileName)
 void MainWindow::closeEvent(QCloseEvent* event)
 {
 	if (askToSave())
+	{
+		if (!m_game->isFinished())
+		{
+			connect(m_game, SIGNAL(finished()), m_game, SLOT(deleteLater()));
+			QMetaObject::invokeMethod(m_game, "stop", Qt::QueuedConnection);
+		}
+		else
+			m_game->deleteLater();
 		event->accept();
+	}
 	else
 		event->ignore();
 }

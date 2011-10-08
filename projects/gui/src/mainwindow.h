@@ -33,6 +33,7 @@ class EngineConfigurationModel;
 class ChessClock;
 class PlainTextLog;
 class ChessGame;
+class PgnGame;
 
 /**
  * MainWindow
@@ -95,6 +96,7 @@ class MainWindow : public QMainWindow
 		PlainTextLog* m_engineDebugLog;
 
 		ChessGame* m_game;
+		PgnGame* m_pgn;
 
 		QString m_currentFile;
 

@@ -46,6 +46,8 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
+	setQuitOnLastWindowClosed(false);
+
 	QCoreApplication::setOrganizationName("cutechess");
 	QCoreApplication::setOrganizationDomain("cutechess.org");
 	QCoreApplication::setApplicationName("cutechess");
@@ -62,6 +64,7 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	connect(gameManager(), SIGNAL(gameStarted(ChessGame*)), this,
 		SLOT(newGameWindow(ChessGame*)));
 
+	connect(this, SIGNAL(lastWindowClosed()), this, SLOT(onLastWindowClosed()));
 	connect(this, SIGNAL(aboutToQuit()), this, SLOT(onAboutToQuit()));
 }
 
@@ -165,6 +168,17 @@ void CuteChessApplication::showGameDatabaseDialog()
 	m_gameDatabaseDialog->show();
 	m_gameDatabaseDialog->raise();
 	m_gameDatabaseDialog->activateWindow();
+}
+
+void CuteChessApplication::onLastWindowClosed()
+{
+	if (m_gameManager != 0)
+	{
+		connect(m_gameManager, SIGNAL(finished()), this, SLOT(quit()));
+		m_gameManager->finish();
+	}
+	else
+		quit();
 }
 
 void CuteChessApplication::onAboutToQuit()

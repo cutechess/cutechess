@@ -42,6 +42,7 @@ class LIB_EXPORT ChessGame : public QObject
 		virtual ~ChessGame();
 		
 		ChessPlayer* player(Chess::Side side) const;
+		bool isFinished() const;
 
 		PgnGame* pgn() const;
 		Chess::Board* board() const;

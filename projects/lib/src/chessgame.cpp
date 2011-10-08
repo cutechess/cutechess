@@ -60,6 +60,11 @@ ChessPlayer* ChessGame::player(Chess::Side side) const
 	return m_player[side];
 }
 
+bool ChessGame::isFinished() const
+{
+	return m_finished;
+}
+
 PgnGame* ChessGame::pgn() const
 {
 	return m_pgn;
