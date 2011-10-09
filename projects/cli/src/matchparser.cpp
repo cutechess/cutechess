@@ -51,8 +51,17 @@ bool MatchParser::parse()
 		PrivateOption& option = m_validOptions[name];
 
 		QStringList list;
-		for (++it; it != m_args.constEnd() && !it->startsWith('-'); ++it)
+		while (++it != m_args.constEnd())
+		{
+			if (it->size() > 1 && it->startsWith('-'))
+			{
+				bool ok = false;
+				it->toDouble(&ok);
+				if (!ok)
+					break;
+			}
 			list << *it;
+		}
 		--it;
 		
 		if (m_options.contains(name))
