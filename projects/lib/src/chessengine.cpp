@@ -77,7 +77,8 @@ ChessEngine::ChessEngine(QObject* parent)
 	  m_pingTimer(new QTimer(this)),
 	  m_quitTimer(new QTimer(this)),
 	  m_idleTimer(new QTimer(this)),
-	  m_ioDevice(0)
+	  m_ioDevice(0),
+	  m_restartMode(EngineConfiguration::RestartAuto)
 {
 	m_pingTimer->setSingleShot(true);
 	m_pingTimer->setInterval(10000);
@@ -120,6 +121,7 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 		setOption(option->name(), option->value());
 
 	m_whiteEvalPov = configuration.whiteEvalPov();
+	m_restartMode = configuration.restartMode();
 }
 
 EngineOption* ChessEngine::getOption(const QString& name) const
@@ -202,10 +204,24 @@ void ChessEngine::go()
 	ChessPlayer::go();
 }
 
+EngineConfiguration::RestartMode ChessEngine::restartMode() const
+{
+	return m_restartMode;
+}
+
+bool ChessEngine::restartsBetweenGames() const
+{
+	return m_restartMode == EngineConfiguration::RestartOn;
+}
+
 void ChessEngine::endGame(const Chess::Result& result)
 {
 	ChessPlayer::endGame(result);
-	ping();
+
+	if (restartsBetweenGames())
+		quit();
+	else
+		ping();
 }
 
 bool ChessEngine::isHuman() const

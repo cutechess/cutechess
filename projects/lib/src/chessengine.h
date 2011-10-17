@@ -176,6 +176,17 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		virtual void sendOption(const QString& name, const QString& value) = 0;
 
+		/*!
+		 * Returns the restart mode.
+		 * The default value is \a EngineConfiguration::RestartAuto.
+		 */
+		EngineConfiguration::RestartMode restartMode() const;
+		/*!
+		 * Returns true if the engine restarts between games; otherwise
+		 * returns false.
+		 */
+		virtual bool restartsBetweenGames() const;
+
 		/*! Are evaluation scores from white's point of view? */
 		bool m_whiteEvalPov;
 
@@ -228,6 +239,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
 		QMap<QString, QVariant> m_optionBuffer;
+		EngineConfiguration::RestartMode m_restartMode;
 };
 
 #endif // CHESSENGINE_H

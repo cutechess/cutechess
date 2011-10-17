@@ -31,6 +31,16 @@ class EngineOption;
 class LIB_EXPORT EngineConfiguration
 {
 	public:
+		/*!
+		 * The modes that determine whether the engine
+		 * will be restarted between games.
+		 */
+		enum RestartMode
+		{
+			RestartAuto,	//!< The engine decides whether to restart
+			RestartOn,	//!< The engine is always restarted between games
+			RestartOff	//!< The engine is never restarted between games
+		};
 
 		/*! Creates an empty chess engine configuration. */
 		EngineConfiguration();
@@ -132,6 +142,18 @@ class LIB_EXPORT EngineConfiguration
 		/*! Sets white evaluation point of view. */
 		void setWhiteEvalPov(bool whiteEvalPov);
 
+		/*!
+		 * Returns the restart mode.
+		 * The default value is \a RestartAuto.
+		 */
+		RestartMode restartMode() const;
+		/*! Sets the restart mode to \a mode. */
+		void setRestartMode(RestartMode mode);
+
+		/*!
+		 * Assigns \a other to this engine configuration and returns
+		 * a reference to this object.
+		 */
 		EngineConfiguration& operator=(const EngineConfiguration& other);
 
 	private:
@@ -143,7 +165,7 @@ class LIB_EXPORT EngineConfiguration
 		QStringList m_initStrings;
 		QList<EngineOption*> m_options;
 		bool m_whiteEvalPov;
-
+		RestartMode m_restartMode;
 };
 
 #endif // ENGINE_CONFIGURATION_H

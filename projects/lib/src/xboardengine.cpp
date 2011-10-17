@@ -52,6 +52,7 @@ XboardEngine::XboardEngine(QObject* parent)
 	  m_ftSetboard(false),
 	  m_ftTime(true),
 	  m_ftUsermove(false),
+	  m_ftReuse(true),
 	  m_gotResult(false),
 	  m_lastPing(0),
 	  m_notation(Chess::Board::LongAlgebraic),
@@ -150,6 +151,13 @@ void XboardEngine::startGame()
 			write("computer");
 		write("name " + opponent()->name());
 	}
+}
+
+bool XboardEngine::restartsBetweenGames() const
+{
+	if (restartMode() == EngineConfiguration::RestartAuto)
+		return !m_ftReuse;
+	return ChessEngine::restartsBetweenGames();
 }
 
 void XboardEngine::endGame(const Chess::Result& result)
@@ -343,6 +351,8 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 		m_ftUsermove = (val == "1");
 	else if (name == "time")
 		m_ftTime = (val == "1");
+	else if (name == "reuse")
+		m_ftReuse = (val == "1");
 	else if (name == "myname")
 	{
 		if (this->name() == "XboardEngine")

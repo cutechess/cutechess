@@ -117,6 +117,12 @@ arg=<arg>::
 initstr=<arg>::
 	Send <arg> to the engine's standard input at startup.
 
+restart=<arg>::
+	Set the restart mode to <arg> which can be:
+	'auto': the engine decides whether to restart (default)
+	'on': the engine is always restarted between games
+	'off': the engine is never restarted between games
+
 proto=<arg>::
 	Set the chess protocol to <arg>.
 

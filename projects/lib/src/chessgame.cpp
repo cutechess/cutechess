@@ -499,13 +499,20 @@ void ChessGame::onPlayerReady()
 {
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
-	Q_ASSERT(sender->isReady());
 
-	disconnect(sender, SIGNAL(ready()), this, SLOT(onPlayerReady()));
+	disconnect(sender, SIGNAL(ready()),
+		   this, SLOT(onPlayerReady()));
+	disconnect(sender, SIGNAL(disconnected()),
+		   this, SLOT(onPlayerReady()));
 
-	if (m_player[Chess::Side::White]->isReady()
-	&&  m_player[Chess::Side::Black]->isReady())
-		emit playersReady();
+	for (int i = 0; i < 2; i++)
+	{
+		if (!m_player[i]->isReady()
+		&&  m_player[i]->state() != ChessPlayer::Disconnected)
+			return;
+	}
+
+	emit playersReady();
 }
 
 void ChessGame::syncPlayers()
@@ -517,10 +524,14 @@ void ChessGame::syncPlayers()
 		ChessPlayer* player = m_player[i];
 		Q_ASSERT(player != 0);
 
-		if (!player->isReady())
+		if (!player->isReady()
+		&&  player->state() != ChessPlayer::Disconnected)
 		{
 			ready = false;
-			connect(player, SIGNAL(ready()), this, SLOT(onPlayerReady()));
+			connect(player, SIGNAL(ready()),
+				this, SLOT(onPlayerReady()));
+			connect(player, SIGNAL(disconnected()),
+				this, SLOT(onPlayerReady()));
 		}
 	}
 	if (ready)

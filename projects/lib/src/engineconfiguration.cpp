@@ -31,12 +31,14 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 	: m_name(name),
 	  m_command(command),
 	  m_protocol(protocol),
-	  m_whiteEvalPov(false)
+	  m_whiteEvalPov(false),
+	  m_restartMode(RestartAuto)
 {
 }
 
 EngineConfiguration::EngineConfiguration(const QVariant& variant)
-	: m_whiteEvalPov(false)
+	: m_whiteEvalPov(false),
+	  m_restartMode(RestartAuto)
 {
 	const QVariantMap map = variant.toMap();
 
@@ -49,6 +51,16 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 		setInitStrings(map["initStrings"].toStringList());
 	if (map.contains("whitepov"))
 		setWhiteEvalPov(map["whitepov"].toBool());
+	if (map.contains("restart"))
+	{
+		const QString val(map["restart"].toString());
+		if (val == "auto")
+			setRestartMode(RestartAuto);
+		else if (val == "on")
+			setRestartMode(RestartOn);
+		else if (val == "off")
+			setRestartMode(RestartOff);
+	}
 
 	if (map.contains("options"))
 	{
@@ -77,6 +89,7 @@ EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
 	setArguments(other.arguments());
 	setInitStrings(other.initStrings());
 	setWhiteEvalPov(other.whiteEvalPov());
+	setRestartMode(other.restartMode());
 
 	foreach (EngineOption* option, other.options())
 		addOption(option->copy());
@@ -95,6 +108,19 @@ QVariant EngineConfiguration::toVariant() const
 		map.insert("initStrings", m_initStrings);
 	if (m_whiteEvalPov)
 		map.insert("whitepov", true);
+
+	switch (m_restartMode)
+	{
+	case RestartAuto:
+		map.insert("restart", "auto");
+		break;
+	case RestartOn:
+		map.insert("restart", "on");
+		break;
+	case RestartOff:
+		map.insert("restart", "off");
+		break;
+	}
 
 	QVariantList optionsList;
 
@@ -206,6 +232,16 @@ void EngineConfiguration::setWhiteEvalPov(bool whiteEvalPov)
 	m_whiteEvalPov = whiteEvalPov;
 }
 
+EngineConfiguration::RestartMode EngineConfiguration::restartMode() const
+{
+	return m_restartMode;
+}
+
+void EngineConfiguration::setRestartMode(RestartMode mode)
+{
+	m_restartMode = mode;
+}
+
 EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& other)
 {
 	if (this != &other)
@@ -217,6 +253,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		setArguments(other.arguments());
 		setInitStrings(other.initStrings());
 		setWhiteEvalPov(other.whiteEvalPov());
+		setRestartMode(other.restartMode());
 
 		qDeleteAll(m_options);
 		m_options.clear();

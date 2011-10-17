@@ -49,6 +49,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		virtual void startThinking();
 		virtual void parseLine(const QString& line);
 		virtual void sendOption(const QString& name, const QString& value);
+		virtual bool restartsBetweenGames() const;
 
 	protected slots:
 		// Inherited from ChessEngine
@@ -74,6 +75,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		bool m_ftSetboard;
 		bool m_ftTime;
 		bool m_ftUsermove;
+		bool m_ftReuse;
 		
 		bool m_gotResult;
 		int m_lastPing;

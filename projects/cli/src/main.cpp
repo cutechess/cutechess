@@ -101,8 +101,28 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 				return false;
 			}
 		}
+		// Line that are sent to the engine at startup, ie. before
+		// starting the chess protocol.
 		else if (name == "initstr")
 			data.config.addInitString(val.replace("\\n", "\n"));
+		// Should the engine be restarted after each game?
+		else if (name == "restart")
+		{
+			EngineConfiguration::RestartMode mode;
+			if (val == "auto")
+				mode = EngineConfiguration::RestartAuto;
+			else if (val == "on")
+				mode = EngineConfiguration::RestartOn;
+			else if (val == "off")
+				mode = EngineConfiguration::RestartOff;
+			else
+			{
+				qWarning() << "Invalid restart mode:" << val;
+				return false;
+			}
+
+			data.config.setRestartMode(mode);
+		}
 		// Time control (moves/time+increment)
 		else if (name == "tc")
 		{
@@ -432,6 +452,10 @@ int main(int argc, char* argv[])
 			       "  dir=<arg>		Set the working directory to <arg>\n"
 			       "  arg=<arg>		Pass <arg> to the engine as a command line argument\n"
 			       "  initstr=<arg>		Send <arg> to the engine's standard input at startup\n"
+			       "  restart=<arg>		Set the restart mode to <arg> which can be:\n"
+			       "			'auto': the engine decides whether to restart (default)\n"
+			       "			'on': the engine is always restarted between games\n"
+			       "			'off': the engine is never restarted between games\n"
 			       "  proto=<arg>		Set the chess protocol to <arg>\n"
 			       "  tc=<arg>		Set the time control to <arg>. The format is\n"
 			       "			moves/time+increment, where 'moves' is the number of\n"
