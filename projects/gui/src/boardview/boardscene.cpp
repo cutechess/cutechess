@@ -21,7 +21,6 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QGraphicsPolygonItem>
-#include <QGraphicsOpacityEffect>
 #include <board/board.h>
 #include "graphicsboard.h"
 #include "graphicspiecereserve.h"
@@ -414,24 +413,17 @@ void BoardScene::addMoveHighlight(const QPointF& sourcePos,
 
 	QGraphicsPolygonItem* item = new QGraphicsPolygonItem(polygon);
 
-	if (m_board->sideToMove() == Chess::Side::White)
-	{
-		item->setPen(QPen(Qt::white, 2));
-		item->setBrush(Qt::black);
-	}
-	else
-	{
-		item->setPen(QPen(Qt::black, 2));
-		item->setBrush(Qt::white);
-	}
+	Qt::GlobalColor penColor = Qt::white;
+	Qt::GlobalColor brushColor = Qt::black;
+	if (m_board->sideToMove() == Chess::Side::Black)
+		qSwap(penColor, brushColor);
 
-	QLinearGradient omask(sourcePos, targetPos);
-	omask.setColorAt(0.0, Qt::transparent);
-	omask.setColorAt(0.5, Qt::black);
+	QLinearGradient gradient(sourcePos, targetPos);
+	gradient.setColorAt(0.0, Qt::transparent);
+	gradient.setColorAt(0.5, brushColor);
 
-	QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect;
-	effect->setOpacityMask(omask);
-	item->setGraphicsEffect(effect);
+	item->setPen(QPen(penColor, 2));
+	item->setBrush(gradient);
 
 	m_moveHighlights->addToGroup(item);
 }
