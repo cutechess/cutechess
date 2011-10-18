@@ -56,6 +56,7 @@ class LIB_EXPORT EngineConfiguration
 		/*! Creates a new chess engine configuration from \a other. */
 		EngineConfiguration(const EngineConfiguration& other);
 
+		/*! Destroys the engine configuration. */
 		~EngineConfiguration();
 
 		/*!

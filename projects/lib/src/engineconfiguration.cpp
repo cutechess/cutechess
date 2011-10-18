@@ -21,7 +21,8 @@
 #include "engineoptionfactory.h"
 
 EngineConfiguration::EngineConfiguration()
-	: m_whiteEvalPov(false)
+	: m_whiteEvalPov(false),
+	  m_restartMode(RestartAuto)
 {
 }
 
@@ -75,24 +76,23 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 	}
 }
 
+EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
+	: m_name(other.m_name),
+	  m_command(other.m_command),
+	  m_workingDirectory(other.m_workingDirectory),
+	  m_protocol(other.m_protocol),
+	  m_arguments(other.m_arguments),
+	  m_initStrings(other.m_initStrings),
+	  m_whiteEvalPov(other.m_whiteEvalPov),
+	  m_restartMode(other.m_restartMode)
+{
+	foreach (const EngineOption* option, other.options())
+		addOption(option->copy());
+}
+
 EngineConfiguration::~EngineConfiguration()
 {
 	qDeleteAll(m_options);
-}
-
-EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
-{
-	setName(other.name());
-	setCommand(other.command());
-	setProtocol(other.protocol());
-	setWorkingDirectory(other.workingDirectory());
-	setArguments(other.arguments());
-	setInitStrings(other.initStrings());
-	setWhiteEvalPov(other.whiteEvalPov());
-	setRestartMode(other.restartMode());
-
-	foreach (EngineOption* option, other.options())
-		addOption(option->copy());
 }
 
 QVariant EngineConfiguration::toVariant() const
@@ -210,8 +210,6 @@ QList<EngineOption*> EngineConfiguration::options() const
 void EngineConfiguration::setOptions(const QList<EngineOption*>& options)
 {
 	qDeleteAll(m_options);
-	m_options.clear();
-
 	m_options = options;
 }
 
@@ -258,7 +256,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		qDeleteAll(m_options);
 		m_options.clear();
 
-		foreach (EngineOption* option, other.options())
+		foreach (const EngineOption* option, other.options())
 			addOption(option->copy());
 	}
 	return *this;
