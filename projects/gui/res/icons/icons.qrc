@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>cutechess_16x16.png</file>
+        <file>cutechess_24x24.png</file>
+        <file>cutechess_32x32.png</file>
+        <file>cutechess_64x64.png</file>
+        <file>cutechess_128x128.png</file>
+        <file>cutechess_256x256.png</file>
+        <file>cutechess_512x512.png</file>
+    </qresource>
+</RCC>

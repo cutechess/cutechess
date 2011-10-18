@@ -20,9 +20,16 @@ macx-xcode {
 
 QT += svg
 
-win32 : debug {
-        CONFIG += console
+win32 {
+    debug {
+	CONFIG += console
     }
+    RC_FILE = res/icons/cutechess_win.rc
+}
+
+macx {
+    ICON = res/icons/cutechess_mac.icns
+}
 
 # Components
 include(components/hintlineedit/src/hintlineedit.pri)

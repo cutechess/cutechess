@@ -46,6 +46,17 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
+	// Set the application icon
+	QIcon icon;
+	icon.addFile(":/icons/cutechess_512x512.png");
+	icon.addFile(":/icons/cutechess_256x256.png");
+	icon.addFile(":/icons/cutechess_128x128.png");
+	icon.addFile(":/icons/cutechess_64x64.png");
+	icon.addFile(":/icons/cutechess_32x32.png");
+	icon.addFile(":/icons/cutechess_24x24.png");
+	icon.addFile(":/icons/cutechess_16x16.png");
+	setWindowIcon(icon);
+
 	setQuitOnLastWindowClosed(false);
 
 	QCoreApplication::setOrganizationName("cutechess");
