@@ -166,6 +166,17 @@ QList<EngineOption*> ChessEngine::options() const
 	return m_options;
 }
 
+void ChessEngine::addVariant(const QString& variant)
+{
+	if (!m_variants.contains(variant))
+		m_variants << variant;
+}
+
+void ChessEngine::clearVariants()
+{
+	m_variants.clear();
+}
+
 void ChessEngine::start()
 {
 	if (state() != NotStarted)

@@ -62,7 +62,7 @@ XboardEngine::XboardEngine(QObject* parent)
 	m_initTimer->setInterval(2000);
 	connect(m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
 
-	m_variants.append("standard");
+	addVariant("standard");
 	setName("XboardEngine");
 }
 
@@ -360,13 +360,13 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	}
 	else if (name == "variants")
 	{
-		m_variants.clear();
+		clearVariants();
 		QStringList variants = val.split(',');
 		foreach (const QString& str, variants)
 		{
 			QString variant = variantFromXboard(str.trimmed());
 			if (!variant.isEmpty())
-				m_variants.append(variant);
+				addVariant(variant);
 		}
 	}
 	else if (name == "name")

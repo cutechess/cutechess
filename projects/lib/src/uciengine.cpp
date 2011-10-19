@@ -22,6 +22,7 @@
 #include <QDebug>
 
 #include "board/board.h"
+#include "board/boardfactory.h"
 #include "timecontrol.h"
 
 #include "enginebuttonoption.h"
@@ -34,8 +35,7 @@
 UciEngine::UciEngine(QObject* parent)
 	: ChessEngine(parent)
 {
-	m_variants.append("standard");
-	
+	addVariant("standard");
 	setName("UciEngine");
 }
 
@@ -62,15 +62,19 @@ void UciEngine::sendPosition()
 
 static QString variantFromUci(const QString& str)
 {
-	if (!str.startsWith("UCI_"))
+	if (str.size() < 5 || !str.startsWith("UCI_"))
 		return QString();
 
-	if (str == "UCI_Chess960")
-		return "fischerandom";
-	if (str == "UCI_CapaRandom")
-		return "caparandom";
+	QString variant;
 
-	return str.mid(4).toLower();
+	if (str == "UCI_Chess960")
+		variant = "fischerandom";
+	else
+		variant = str.mid(4).toLower();
+
+	if (!Chess::BoardFactory::variants().contains(variant))
+		return QString();
+	return variant;
 }
 
 static QString variantToUci(const QString& str)
@@ -190,7 +194,7 @@ void UciEngine::addVariants()
 	{
 		QString variant(variantFromUci(option->name()));
 		if (!variant.isEmpty())
-			m_variants.append(variant);
+			addVariant(variant);
 	}
 }
 

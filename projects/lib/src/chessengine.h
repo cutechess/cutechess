@@ -176,6 +176,11 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		virtual void sendOption(const QString& name, const QString& value) = 0;
 
+		/*! Adds \a variant to the list of supported variants. */
+		void addVariant(const QString& variant);
+		/*! Clears the list of supported variants. */
+		void clearVariants();
+
 		/*!
 		 * Returns the restart mode.
 		 * The default value is \a EngineConfiguration::RestartAuto.
@@ -189,9 +194,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		/*! Are evaluation scores from white's point of view? */
 		bool m_whiteEvalPov;
-
-		/*! Supported variants. */
-		QStringList m_variants;
 
 		QList<EngineOption*> m_options;
 		
@@ -238,6 +240,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		QTimer* m_idleTimer;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
+		QStringList m_variants;
 		QMap<QString, QVariant> m_optionBuffer;
 		EngineConfiguration::RestartMode m_restartMode;
 };
