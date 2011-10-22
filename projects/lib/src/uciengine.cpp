@@ -80,7 +80,7 @@ static QString variantFromUci(const QString& str)
 
 static QString variantToUci(const QString& str)
 {
-	if (str.isEmpty())
+	if (str.isEmpty() || str == "standard")
 		return QString();
 
 	if (str == "fischerandom")
@@ -95,8 +95,7 @@ static QString variantToUci(const QString& str)
 
 void UciEngine::startGame()
 {
-	QString variant(board()->variant());
-	Q_ASSERT(supportsVariant(variant));
+	Q_ASSERT(supportsVariant(board()->variant()));
 
 	m_moveStrings.clear();
 	if (board()->isRandomVariant())
@@ -104,8 +103,16 @@ void UciEngine::startGame()
 	else
 		m_startFen = board()->fenString(Chess::Board::XFen);
 	
-	if (variant != "standard")
-		sendOption(variantToUci(variant), "true");
+	QString uciVariant(variantToUci(board()->variant()));
+	if (uciVariant != m_variantOption)
+	{
+		if (!m_variantOption.isEmpty())
+			sendOption(m_variantOption, "false");
+		m_variantOption = uciVariant;
+	}
+	if (!m_variantOption.isEmpty())
+		sendOption(m_variantOption, "true");
+
 	write("ucinewgame");
 
 	if (m_sendOpponentsName)

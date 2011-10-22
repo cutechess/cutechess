@@ -63,6 +63,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		EngineOption* parseOption(const QStringRef& line);
 		void sendPosition();
 		
+		QString m_variantOption;
 		QString m_startFen;
 		QString m_moveStrings;
 		bool m_sendOpponentsName;
