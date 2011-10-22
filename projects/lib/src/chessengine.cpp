@@ -50,7 +50,8 @@ QStringRef ChessEngine::nextToken(const QStringRef& previous, bool untilEnd)
 			if (untilEnd)
 			{
 				int end = str->size();
-				while (str->at(--end).isSpace()) ;
+				while (str->at(--end).isSpace())
+					;
 				i = end + 1;
 				break;
 			}
