@@ -52,7 +52,6 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		virtual void sendOption(const QString& name, const QString& value);
 		
 	private:
-		void addVariants();
 		static QStringRef parseUciTokens(const QStringRef& first,
 						 const QString* types,
 						 int typeCount,
@@ -66,6 +65,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		
 		QString m_startFen;
 		QString m_moveStrings;
+		bool m_sendOpponentsName;
 };
 
 #endif // UCIENGINE_H

@@ -33,7 +33,8 @@
 
 
 UciEngine::UciEngine(QObject* parent)
-	: ChessEngine(parent)
+	: ChessEngine(parent),
+	  m_sendOpponentsName(false)
 {
 	addVariant("standard");
 	setName("UciEngine");
@@ -104,11 +105,11 @@ void UciEngine::startGame()
 		m_startFen = board()->fenString(Chess::Board::XFen);
 	
 	if (variant != "standard")
-		setOption(variantToUci(variant), "true");
+		sendOption(variantToUci(variant), "true");
 	write("ucinewgame");
 
-	if (getOption("UCI_Opponent") != 0)
-		setOption("UCI_Opponent", opponent()->name());
+	if (m_sendOpponentsName)
+		sendOption("UCI_Opponent", opponent()->name());
 
 	sendPosition();
 }
@@ -186,16 +187,6 @@ bool UciEngine::sendPing()
 void UciEngine::sendQuit()
 {
 	write("quit");
-}
-
-void UciEngine::addVariants()
-{
-	foreach (const EngineOption* option, m_options)
-	{
-		QString variant(variantFromUci(option->name()));
-		if (!variant.isEmpty())
-			addVariant(variant);
-	}
 }
 
 QStringRef UciEngine::parseUciTokens(const QStringRef& first,
@@ -468,7 +459,6 @@ void UciEngine::parseLine(const QString& line)
 		if (state() == Starting)
 		{
 			onProtocolStart();
-			addVariants();
 			ping();
 		}
 	}
@@ -489,12 +479,30 @@ void UciEngine::parseLine(const QString& line)
 	else if (command == "option")
 	{
 		EngineOption* option = parseOption(command);
+		QString variant;
 
 		if (option == 0 || !option->isValid())
 			qDebug() << "Invalid UCI option from" << name() << ":"
 				 << line;
+		else if (!(variant = variantFromUci(option->name())).isEmpty())
+			addVariant(variant);
+		else if (option->name() == "UCI_Opponent")
+			m_sendOpponentsName = true;
+		else if (option->name() == "Ponder"
+		     ||  option->name() == "UCI_ShowCurrLine"
+		     ||  option->name() == "UCI_ShowRefutations"
+		     ||  option->name() == "UCI_AnalyseMode"
+		     ||  option->name() == "UCI_EngineAbout")
+		{
+			// TODO: Deal with UCI features
+		}
 		else
+		{
 			m_options.append(option);
+			return;
+		}
+
+		delete option;
 	}
 }
 
