@@ -131,6 +131,15 @@ class LIB_EXPORT EngineConfiguration
 		/*! Adds new initialization string. */
 		void addInitString(const QString& initString);
 
+		/*!
+		 * Returns a list of the chess variants the engine can play.
+		 *
+		 * Returns a list containing variant \a "standard" by default.
+		 */
+		QStringList supportedVariants() const;
+		/*! Sets the list of supported variants to \a variants. */
+		void setSupportedVariants(const QStringList& variants);
+
 		/*! Returns the options sent to the engine. */
 		QList<EngineOption*> options() const;
 		/*! Sets the options sent to the engine. */
@@ -164,6 +173,7 @@ class LIB_EXPORT EngineConfiguration
 		QString m_protocol;
 		QStringList m_arguments;
 		QStringList m_initStrings;
+		QStringList m_variants;
 		QList<EngineOption*> m_options;
 		bool m_whiteEvalPov;
 		RestartMode m_restartMode;

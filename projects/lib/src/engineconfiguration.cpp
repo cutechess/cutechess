@@ -21,7 +21,8 @@
 #include "engineoptionfactory.h"
 
 EngineConfiguration::EngineConfiguration()
-	: m_whiteEvalPov(false),
+	: m_variants(QStringList() << "standard"),
+	  m_whiteEvalPov(false),
 	  m_restartMode(RestartAuto)
 {
 }
@@ -32,13 +33,15 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 	: m_name(name),
 	  m_command(command),
 	  m_protocol(protocol),
+	  m_variants(QStringList() << "standard"),
 	  m_whiteEvalPov(false),
 	  m_restartMode(RestartAuto)
 {
 }
 
 EngineConfiguration::EngineConfiguration(const QVariant& variant)
-	: m_whiteEvalPov(false),
+	: m_variants(QStringList() << "standard"),
+	  m_whiteEvalPov(false),
 	  m_restartMode(RestartAuto)
 {
 	const QVariantMap map = variant.toMap();
@@ -52,6 +55,7 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 		setInitStrings(map["initStrings"].toStringList());
 	if (map.contains("whitepov"))
 		setWhiteEvalPov(map["whitepov"].toBool());
+
 	if (map.contains("restart"))
 	{
 		const QString val(map["restart"].toString());
@@ -62,6 +66,9 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 		else if (val == "off")
 			setRestartMode(RestartOff);
 	}
+
+	if (map.contains("variants"))
+		setSupportedVariants(map["variants"].toStringList());
 
 	if (map.contains("options"))
 	{
@@ -83,6 +90,7 @@ EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
 	  m_protocol(other.m_protocol),
 	  m_arguments(other.m_arguments),
 	  m_initStrings(other.m_initStrings),
+	  m_variants(other.m_variants),
 	  m_whiteEvalPov(other.m_whiteEvalPov),
 	  m_restartMode(other.m_restartMode)
 {
@@ -113,6 +121,9 @@ QVariant EngineConfiguration::toVariant() const
 		map.insert("restart", "on");
 	else if (m_restartMode == RestartOff)
 		map.insert("restart", "off");
+
+	if (m_variants.count("standard") != m_variants.count())
+		map.insert("variants", m_variants);
 
 	if (!m_options.isEmpty())
 	{
@@ -196,6 +207,16 @@ void EngineConfiguration::addInitString(const QString& initString)
 	m_initStrings << initString.split('\n');
 }
 
+QStringList EngineConfiguration::supportedVariants() const
+{
+	return m_variants;
+}
+
+void EngineConfiguration::setSupportedVariants(const QStringList& variants)
+{
+	m_variants = variants;
+}
+
 QList<EngineOption*> EngineConfiguration::options() const
 {
 	return m_options;
@@ -244,6 +265,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		setWorkingDirectory(other.workingDirectory());
 		setArguments(other.arguments());
 		setInitStrings(other.initStrings());
+		setSupportedVariants(other.supportedVariants());
 		setWhiteEvalPov(other.whiteEvalPov());
 		setRestartMode(other.restartMode());
 
