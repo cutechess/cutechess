@@ -109,7 +109,13 @@ void UciEngine::startGame()
 	write("ucinewgame");
 
 	if (m_sendOpponentsName)
-		sendOption("UCI_Opponent", opponent()->name());
+	{
+		QString opType = opponent()->isHuman() ? "human" : "computer";
+		QString value = QString("none none %1 %2")
+				.arg(opType)
+				.arg(opponent()->name());
+		sendOption("UCI_Opponent", value);
+	}
 
 	sendPosition();
 }
