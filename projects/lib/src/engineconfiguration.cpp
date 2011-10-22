@@ -109,25 +109,19 @@ QVariant EngineConfiguration::toVariant() const
 	if (m_whiteEvalPov)
 		map.insert("whitepov", true);
 
-	switch (m_restartMode)
-	{
-	case RestartAuto:
-		map.insert("restart", "auto");
-		break;
-	case RestartOn:
+	if (m_restartMode == RestartOn)
 		map.insert("restart", "on");
-		break;
-	case RestartOff:
+	else if (m_restartMode == RestartOff)
 		map.insert("restart", "off");
-		break;
+
+	if (!m_options.isEmpty())
+	{
+		QVariantList optionsList;
+		foreach (const EngineOption* option, m_options)
+			optionsList.append(option->toVariant());
+
+		map.insert("options", optionsList);
 	}
-
-	QVariantList optionsList;
-
-	foreach (EngineOption* option, m_options)
-		optionsList.append(option->toVariant());
-
-	map.insert("options", optionsList);
 
 	return map;
 }
