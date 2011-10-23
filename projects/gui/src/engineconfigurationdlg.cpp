@@ -137,8 +137,6 @@ void EngineConfigurationDialog::browseCommand()
 		fileName.append('\"');
 	}
 	ui->m_commandEdit->setText(QDir::toNativeSeparators(fileName));
-
-	detectEngineOptions();
 }
 
 void EngineConfigurationDialog::browseWorkingDir()
