@@ -25,11 +25,24 @@ GameDatabaseSearchDialog::GameDatabaseSearchDialog(QWidget* parent)
 	ui->setupUi(this);
 
 	ui->m_maxDateEdit->setDate(QDate::currentDate());
+	connect(ui->m_resultCombo, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onResultChanged(int)));
 }
 
 GameDatabaseSearchDialog::~GameDatabaseSearchDialog()
 {
 	delete ui;
+}
+
+void GameDatabaseSearchDialog::onResultChanged(int index)
+{
+	if (index == PgnGameFilter::AnyResult)
+	{
+		ui->m_invertResultCheck->setCheckState(Qt::Unchecked);
+		ui->m_invertResultCheck->setEnabled(false);
+	}
+	else
+		ui->m_invertResultCheck->setEnabled(true);
 }
 
 PgnGameFilter GameDatabaseSearchDialog::filter() const
@@ -48,6 +61,7 @@ PgnGameFilter GameDatabaseSearchDialog::filter() const
 	filter.setMaxRound(ui->m_maxRoundSpin->value());
 
 	filter.setResult(PgnGameFilter::Result(ui->m_resultCombo->currentIndex()));
+	filter.setResultInverted(ui->m_invertResultCheck->isChecked());
 
 	int side = ui->m_playerSideCombo->currentIndex() - 1;
 	if (side == -1)

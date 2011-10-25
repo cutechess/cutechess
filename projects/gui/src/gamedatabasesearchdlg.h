@@ -43,6 +43,9 @@ class GameDatabaseSearchDialog : public QDialog
 		/*! Returns the PGN filter. */
 		PgnGameFilter filter() const;
 
+	private slots:
+		void onResultChanged(int index);
+
 	private:
 		Ui::GameDatabaseSearchDialog* ui;
 };

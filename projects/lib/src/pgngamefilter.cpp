@@ -6,7 +6,8 @@ PgnGameFilter::PgnGameFilter()
 	: m_type(Advanced),
 	  m_minRound(0),
 	  m_maxRound(0),
-	  m_result(AnyResult)
+	  m_result(AnyResult),
+	  m_resultInverted(false)
 {
 }
 
@@ -15,7 +16,8 @@ PgnGameFilter::PgnGameFilter(const QString& pattern)
 	  m_pattern(pattern.toLatin1()),
 	  m_minRound(0),
 	  m_maxRound(0),
-	  m_result(AnyResult)
+	  m_result(AnyResult),
+	  m_resultInverted(false)
 {
 }
 
@@ -69,4 +71,9 @@ void PgnGameFilter::setMaxRound(int round)
 void PgnGameFilter::setResult(Result result)
 {
 	m_result = result;
+}
+
+void PgnGameFilter::setResultInverted(bool invert)
+{
+	m_resultInverted = invert;
 }

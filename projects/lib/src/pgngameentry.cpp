@@ -205,39 +205,37 @@ bool PgnGameEntry::match(const PgnGameFilter& filter) const
 				}
 			}
 
+			bool ok;
 			switch (filter.result())
 			{
 			case PgnGameFilter::EitherPlayerWins:
-				if (result.winner().isNull())
-					return false;
+				ok = !result.winner().isNull();
 				break;
 			case PgnGameFilter::WhiteWins:
-				if (result.winner() != Chess::Side::White)
-					return false;
+				ok = result.winner() == Chess::Side::White;
 				break;
 			case PgnGameFilter::BlackWins:
-				if (result.winner() != Chess::Side::Black)
-					return false;
+				ok = result.winner() == Chess::Side::Black;
 				break;
 			case PgnGameFilter::FirstPlayerWins:
-				if (winner != 1)
-					return false;
+				ok = winner == 1;
 				break;
 			case PgnGameFilter::FirstPlayerLoses:
-				if (winner != 2)
-					return false;
+				ok = winner == 2;
 				break;
 			case PgnGameFilter::Draw:
-				if (!result.isDraw())
-					return false;
+				ok = result.isDraw();
 				break;
 			case PgnGameFilter::Unfinished:
-				if (!result.isNone())
-					return false;
+				ok = result.isNone();
 				break;
 			default:
+				ok = true;
 				break;
 			}
+
+			if (ok == filter.isResultInverted())
+				return false;
 		}
 			break;
 		default:

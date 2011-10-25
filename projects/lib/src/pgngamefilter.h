@@ -112,6 +112,11 @@ class LIB_EXPORT PgnGameFilter
 		int maxRound() const;
 		/*! Returns the filter for the \a Result tag. */
 		Result result() const;
+		/*!
+		 * Returns true if the filter is looking for the inverse
+		 * of \a result(); otherwise returns false.
+		 */
+		bool isResultInverted() const;
 
 		/*!
 		 * Sets the \a FixedString pattern to \a pattern.
@@ -138,6 +143,8 @@ class LIB_EXPORT PgnGameFilter
 		void setOpponent(const QString& name);
 		/*! Sets the \a Result tag filter to \a result. */
 		void setResult(Result result);
+		/*! Sets the \a resultInverted value to \a invert. */
+		void setResultInverted(bool invert);
 
 	private:
 		Type m_type;
@@ -152,6 +159,7 @@ class LIB_EXPORT PgnGameFilter
 		int m_minRound;
 		int m_maxRound;
 		Result m_result;
+		bool m_resultInverted;
 };
 
 inline PgnGameFilter::Type PgnGameFilter::type() const
@@ -197,6 +205,11 @@ inline int PgnGameFilter::maxRound() const
 inline PgnGameFilter::Result PgnGameFilter::result() const
 {
 	return m_result;
+}
+
+inline bool PgnGameFilter::isResultInverted() const
+{
+	return m_resultInverted;
 }
 
 inline const char* PgnGameFilter::player() const

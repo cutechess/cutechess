@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>394</width>
-    <height>300</height>
+    <height>296</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -158,6 +158,49 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QSpinBox" name="m_minRoundSpin">
+         <property name="toolTip">
+          <string>The minimum round ordinal of the games within the event</string>
+         </property>
+         <property name="specialValueText">
+          <string>null</string>
+         </property>
+         <property name="maximum">
+          <number>100000</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>-</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="m_maxRoundSpin">
+         <property name="toolTip">
+          <string>The maximum round ordinal of the games within the event</string>
+         </property>
+         <property name="specialValueText">
+          <string>null</string>
+         </property>
+         <property name="suffix">
+          <string/>
+         </property>
+         <property name="maximum">
+          <number>100000</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
@@ -229,91 +272,71 @@
       </widget>
      </item>
      <item row="6" column="1">
-      <widget class="QComboBox" name="m_resultCombo">
-       <property name="toolTip">
-        <string>The result of the games</string>
-       </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <property name="text">
-         <string extracomment="Any result">Any result</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string extracomment="Any player wins">Any player wins</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string extracomment="The player with white pieces wins">White wins</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string extracomment="The player with black pieces wins">Black wins</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string extracomment="The first player wins">First player wins</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string extracomment="The first player loses">First player loses</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string extracomment="The game is a draw">Draw</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string extracomment="The game is in progress or the result is unknown">Unfinished</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QSpinBox" name="m_minRoundSpin">
+        <widget class="QCheckBox" name="m_invertResultCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="toolTip">
-          <string>The minimum round ordinal of the games within the event</string>
+          <string>Search for the inverse of the chosen result</string>
          </property>
-         <property name="specialValueText">
-          <string>null</string>
-         </property>
-         <property name="maximum">
-          <number>100000</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_9">
          <property name="text">
-          <string>-</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <string>Not</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="m_maxRoundSpin">
+        <widget class="QComboBox" name="m_resultCombo">
          <property name="toolTip">
-          <string>The maximum round ordinal of the games within the event</string>
+          <string>The result of the games</string>
          </property>
-         <property name="specialValueText">
-          <string>null</string>
-         </property>
-         <property name="suffix">
-          <string/>
-         </property>
-         <property name="maximum">
-          <number>100000</number>
-         </property>
+         <item>
+          <property name="text">
+           <string extracomment="Any result">Any result</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string extracomment="Any player wins">Any player wins</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string extracomment="The player with white pieces wins">White wins</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string extracomment="The player with black pieces wins">Black wins</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string extracomment="The first player wins">First player wins</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string extracomment="The first player loses">First player loses</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string extracomment="The game is a draw">Draw</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string extracomment="The game is in progress or the result is unknown">Unfinished</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -332,6 +355,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>m_eventEdit</tabstop>
+  <tabstop>m_siteEdit</tabstop>
+  <tabstop>m_minDateCheck</tabstop>
+  <tabstop>m_minDateEdit</tabstop>
+  <tabstop>m_maxDateCheck</tabstop>
+  <tabstop>m_maxDateEdit</tabstop>
+  <tabstop>m_minRoundSpin</tabstop>
+  <tabstop>m_maxRoundSpin</tabstop>
+  <tabstop>m_playerSideCombo</tabstop>
+  <tabstop>m_playerEdit</tabstop>
+  <tabstop>m_opponentEdit</tabstop>
+  <tabstop>m_invertResultCheck</tabstop>
+  <tabstop>m_resultCombo</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -341,8 +380,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>249</x>
-     <y>408</y>
+     <x>258</x>
+     <y>290</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -357,8 +396,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>317</x>
-     <y>408</y>
+     <x>326</x>
+     <y>290</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
