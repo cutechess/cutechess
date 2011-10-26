@@ -33,6 +33,16 @@ EngineManager::~EngineManager()
 {
 }
 
+int EngineManager::engineCount() const
+{
+	return m_engines.count();
+}
+
+EngineConfiguration EngineManager::engineAt(int index) const
+{
+	return m_engines.at(index);
+}
+
 void EngineManager::addEngine(const EngineConfiguration& engine)
 {
 	m_engines << engine;

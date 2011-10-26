@@ -34,6 +34,11 @@ class LIB_EXPORT EngineManager : public QObject
 		EngineManager(QObject* parent = 0);
 		virtual ~EngineManager();
 
+		/*! Returns the number of available engines. */
+		int engineCount() const;
+		/*! Returns the engine at \a index. */
+		EngineConfiguration engineAt(int index) const;
+
 		/*! Adds \a engine to the list of available engines. */
 		void addEngine(const EngineConfiguration& engine);
 		/*! Updates the engine at \a index with \a engine. */
