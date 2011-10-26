@@ -19,13 +19,13 @@
 #include "ui_newgamedlg.h"
 
 #include <QAbstractItemView>
-#include <QSortFilterProxyModel>
 
 #include <board/boardfactory.h>
 #include <enginemanager.h>
 
 #include "cutechessapp.h"
 #include "engineconfigurationmodel.h"
+#include "engineconfigproxymodel.h"
 #include "engineconfigurationdlg.h"
 #include "timecontroldlg.h"
 
@@ -50,7 +50,7 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 	connect(ui->m_timeControlBtn, SIGNAL(clicked()),
 		this, SLOT(showTimeControlDialog()));
 
-	m_proxyModel = new QSortFilterProxyModel(this);
+	m_proxyModel = new EngineConfigurationProxyModel(this);
 	m_proxyModel->setSourceModel(m_engines);
 	m_proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
 	m_proxyModel->sort(0);
@@ -59,17 +59,10 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 	ui->m_whiteEngineComboBox->setModel(m_proxyModel);
 	ui->m_blackEngineComboBox->setModel(m_proxyModel);
 
-	if (m_engines->rowCount() > 0)
-	{
-		ui->m_whitePlayerCpuRadio->setEnabled(true);
-		ui->m_blackPlayerCpuRadio->setEnabled(true);
-
-		// TODO: The selected engine is not remembered
-		ui->m_whiteEngineComboBox->setCurrentIndex(0);
-		ui->m_blackEngineComboBox->setCurrentIndex(0);
-	}
-
 	ui->m_variantComboBox->addItems(Chess::BoardFactory::variants());
+	connect(ui->m_variantComboBox, SIGNAL(currentIndexChanged(QString)),
+		this, SLOT(onVariantChanged(QString)));
+
 	int index = ui->m_variantComboBox->findText("standard");
 	ui->m_variantComboBox->setCurrentIndex(index);
 
@@ -154,4 +147,19 @@ void NewGameDialog::showTimeControlDialog()
 		m_timeControl = dlg.timeControl();
 		ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
 	}
+}
+
+void NewGameDialog::onVariantChanged(const QString& variant)
+{
+	m_proxyModel->setFilterVariant(variant);
+
+	bool empty = m_proxyModel->rowCount() == 0;
+	if (empty)
+	{
+		ui->m_whitePlayerHumanRadio->setChecked(true);
+		ui->m_blackPlayerHumanRadio->setChecked(true);
+	}
+
+	ui->m_whitePlayerCpuRadio->setDisabled(empty);
+	ui->m_blackPlayerCpuRadio->setDisabled(empty);
 }

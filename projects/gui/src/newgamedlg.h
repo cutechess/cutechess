@@ -23,7 +23,7 @@
 #include <timecontrol.h>
 
 class EngineConfigurationModel;
-class QSortFilterProxyModel;
+class EngineConfigurationProxyModel;
 
 namespace Ui {
 	class NewGameDialog;
@@ -74,10 +74,11 @@ class NewGameDialog : public QDialog
 		void configureWhiteEngine();
 		void configureBlackEngine();
 		void showTimeControlDialog();
+		void onVariantChanged(const QString& variant);
 
 	private:
 		EngineConfigurationModel* m_engines;
-		QSortFilterProxyModel* m_proxyModel;
+		EngineConfigurationProxyModel* m_proxyModel;
 		TimeControl m_timeControl;
 		Ui::NewGameDialog* ui;
 };
