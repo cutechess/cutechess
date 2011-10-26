@@ -258,7 +258,7 @@
  <connections>
   <connection>
    <sender>m_blackPlayerCpuRadio</sender>
-   <signal>clicked(bool)</signal>
+   <signal>toggled(bool)</signal>
    <receiver>m_configureBlackEngineButton</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
@@ -273,30 +273,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_blackPlayerHumanRadio</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>m_configureBlackEngineButton</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>371</x>
-     <y>55</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>407</x>
-     <y>119</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>m_buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>NewGameDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>448</x>
-     <y>167</y>
+     <x>457</x>
+     <y>232</y>
     </hint>
     <hint type="destinationlabel">
      <x>479</x>
@@ -306,7 +290,7 @@
   </connection>
   <connection>
    <sender>m_blackPlayerCpuRadio</sender>
-   <signal>clicked(bool)</signal>
+   <signal>toggled(bool)</signal>
    <receiver>m_blackEngineComboBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
@@ -315,8 +299,8 @@
      <y>84</y>
     </hint>
     <hint type="destinationlabel">
-     <x>298</x>
-     <y>115</y>
+     <x>388</x>
+     <y>118</y>
     </hint>
    </hints>
   </connection>
@@ -327,8 +311,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>260</x>
-     <y>199</y>
+     <x>269</x>
+     <y>232</y>
     </hint>
     <hint type="destinationlabel">
      <x>260</x>
@@ -337,24 +321,8 @@
    </hints>
   </connection>
   <connection>
-   <sender>m_blackPlayerHumanRadio</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>m_blackEngineComboBox</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>293</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>335</x>
-     <y>115</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>m_whitePlayerCpuRadio</sender>
-   <signal>clicked(bool)</signal>
+   <signal>toggled(bool)</signal>
    <receiver>m_whiteEngineComboBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
@@ -370,7 +338,7 @@
   </connection>
   <connection>
    <sender>m_whitePlayerCpuRadio</sender>
-   <signal>clicked(bool)</signal>
+   <signal>toggled(bool)</signal>
    <receiver>m_configureWhiteEngineButton</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
@@ -381,38 +349,6 @@
     <hint type="destinationlabel">
      <x>181</x>
      <y>118</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_whitePlayerHumanRadio</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>m_configureWhiteEngineButton</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>203</x>
-     <y>55</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>198</x>
-     <y>116</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_whitePlayerHumanRadio</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>m_whiteEngineComboBox</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>75</x>
-     <y>51</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>92</x>
-     <y>119</y>
     </hint>
    </hints>
   </connection>
