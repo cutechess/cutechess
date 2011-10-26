@@ -16,11 +16,16 @@
 */
 
 #include "engineconfigurationmodel.h"
+#include <QStringList>
 #include <enginemanager.h>
 
 
-const QStringList EngineConfigurationModel::m_headers = (QStringList() <<
-	tr("Name") << tr("Command") << tr("Working Directory") << tr("Protocol"));
+static const QStringList s_headers = QStringList() <<
+				     QObject::tr("Name") <<
+				     QObject::tr("Command") <<
+				     QObject::tr("Working Directory") <<
+				     QObject::tr("Protocol") <<
+				     QObject::tr("Variants");
 
 EngineConfigurationModel::EngineConfigurationModel(EngineManager* engineManager, QObject* parent)
 	: QAbstractListModel(parent), m_engineManager(engineManager)
@@ -41,36 +46,39 @@ int EngineConfigurationModel::rowCount(const QModelIndex& parent) const
 {
 	Q_UNUSED(parent)
 
-	return m_engineManager->engines().count();
+	return m_engineManager->engineCount();
 }
 
 int EngineConfigurationModel::columnCount(const QModelIndex& parent) const
 {
 	Q_UNUSED(parent)
 
-	return m_headers.count();
+	return s_headers.count();
 }
 
 QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) const
 {
-	if (index.isValid() && role == Qt::DisplayRole)
+	if (!index.isValid())
+		return QVariant();
+
+	if (role == Qt::DisplayRole)
 	{
+		const EngineConfiguration engine(m_engineManager->engineAt(index.row()));
+
 		switch (index.column())
 		{
-			case 0:
-				return m_engineManager->engines().at(index.row()).name();
-
-			case 1:
-				return m_engineManager->engines().at(index.row()).command();
-
-			case 2:
-				return m_engineManager->engines().at(index.row()).workingDirectory();
-
-			case 3:
-				return m_engineManager->engines().at(index.row()).protocol();
-
-			default:
-				return QVariant();
+		case 0:
+			return engine.name();
+		case 1:
+			return engine.command();
+		case 2:
+			return engine.workingDirectory();
+		case 3:
+			return engine.protocol();
+		case 4:
+			return engine.supportedVariants();
+		default:
+			return QVariant();
 		}
 	}
 
@@ -81,7 +89,7 @@ QVariant EngineConfigurationModel::headerData(int section, Qt::Orientation orien
                                               int role) const
 {
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
-		return m_headers.at(section);
+		return s_headers.at(section);
 
 	return QVariant();
 }

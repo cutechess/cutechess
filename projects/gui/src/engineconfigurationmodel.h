@@ -19,7 +19,6 @@
 #define ENGINE_CONFIGURATION_MODEL_H
 
 #include <QAbstractListModel>
-#include <QStringList>
 class EngineManager;
 
 
@@ -64,9 +63,7 @@ class EngineConfigurationModel : public QAbstractListModel
 		void onEnginesReset();
 
 	private:
-		static const QStringList m_headers;
 		EngineManager* m_engineManager;
-
 };
 
 #endif // ENGINE_CONFIGURATION_MODEL_H
