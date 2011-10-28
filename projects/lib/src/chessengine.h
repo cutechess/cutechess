@@ -111,6 +111,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		/*! Returns a list of supported options and their values. */
 		QList<EngineOption*> options() const;
+
+		/*! Returns a list of supported chess variants. */
+		QStringList variants() const;
 		
 	public slots:
 		// Inherited from ChessPlayer
