@@ -59,6 +59,8 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 		this, SLOT(browseWorkingDir()));
 	connect(ui->m_detectBtn, SIGNAL(clicked()),
 		this, SLOT(detectEngineOptions()));
+	connect(ui->m_restoreBtn, SIGNAL(clicked()),
+		this, SLOT(restoreDefaults()));
 	connect(ui->m_tabs, SIGNAL(currentChanged(int)),
 		this, SLOT(onTabChanged(int)));
 	connect(ui->m_buttonBox, SIGNAL(accepted()),
@@ -89,6 +91,7 @@ void EngineConfigurationDialog::applyEngineInformation(
 	foreach (EngineOption* option, engine.options())
 		m_options << option->copy();
 	m_engineOptionModel->setOptions(m_options);
+	ui->m_restoreBtn->setDisabled(m_options.isEmpty());
 
 	m_variants = engine.supportedVariants();
 
@@ -197,6 +200,7 @@ void EngineConfigurationDialog::detectEngineOptions()
 			engine, SLOT(quit()));
 
 		ui->m_detectBtn->setEnabled(false);
+		ui->m_restoreBtn->setEnabled(false);
 		m_optionDetectionTimer->start();
 	}
 	else
@@ -226,6 +230,8 @@ void EngineConfigurationDialog::onEngineReady()
 	m_engineOptionModel->setOptions(m_options);
 	m_variants = engine->variants();
 
+	ui->m_restoreBtn->setDisabled(m_options.isEmpty());
+
 	engine->quit();
 }
 
@@ -240,4 +246,12 @@ void EngineConfigurationDialog::onAccepted()
 	connect(this, SIGNAL(detectionFinished()),
 		this, SLOT(accept()));
 	detectEngineOptions();
+}
+
+void EngineConfigurationDialog::restoreDefaults()
+{
+	foreach (EngineOption* option, m_options)
+		option->setValue(option->defaultValue());
+
+	m_engineOptionModel->setOptions(m_options);
 }

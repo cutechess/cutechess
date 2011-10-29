@@ -71,6 +71,7 @@ class EngineConfigurationDialog : public QDialog
 		void browseCommand();
 		void browseWorkingDir();
 		void detectEngineOptions();
+		void restoreDefaults();
 		void onEngineReady();
 		void onTabChanged(int index);
 		void onAccepted();
