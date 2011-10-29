@@ -502,10 +502,9 @@ void UciEngine::parseLine(const QString& line)
 		else if (option->name() == "UCI_Opponent")
 			m_sendOpponentsName = true;
 		else if (option->name() == "Ponder"
-		     ||  option->name() == "UCI_ShowCurrLine"
-		     ||  option->name() == "UCI_ShowRefutations"
-		     ||  option->name() == "UCI_AnalyseMode"
-		     ||  option->name() == "UCI_EngineAbout")
+		     ||  (option->name().startsWith("UCI_") &&
+			  option->name() != "UCI_LimitStrength" &&
+			  option->name() != "UCI_Elo"))
 		{
 			// TODO: Deal with UCI features
 		}
