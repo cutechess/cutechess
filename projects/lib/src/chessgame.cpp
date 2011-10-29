@@ -147,7 +147,7 @@ void ChessGame::kill()
 	for (int i = 0; i < 2; i++)
 	{
 		if (m_player[i] != 0)
-			m_player[i]->closeConnection();
+			m_player[i]->kill();
 	}
 
 	stop();

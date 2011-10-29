@@ -85,7 +85,7 @@ GameThread::~GameThread()
 		if (m_player[i] == 0)
 			continue;
 
-		m_player[i]->closeConnection();
+		m_player[i]->kill();
 		delete m_player[i];
 	}
 }
@@ -124,7 +124,7 @@ bool GameThread::newGame(ChessGame* game)
 				int j = !i;
 				if (m_player[j] != 0)
 				{
-					m_player[j]->closeConnection();
+					m_player[j]->kill();
 					delete m_player[j];
 					m_player[j] = 0;
 				}

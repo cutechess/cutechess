@@ -56,14 +56,6 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual ~ChessPlayer();
 		
 		/*!
-		 * Closes the player's connection to the operator.
-		 *
-		 * \note Subclasses that reimplement this function must call
-		 * the base implementation.
-		 */
-		virtual void closeConnection();
-
-		/*!
 		 * Returns true if the player is ready for input.
 		 *
 		 * \note When the player's state is \a Disconnected, this
@@ -145,6 +137,17 @@ class LIB_EXPORT ChessPlayer : public QObject
 
 		/*! Terminates the player non-violently. */
 		virtual void quit();
+
+		/*!
+		 * Kills the player process or connection, causing it to
+		 * exit immediately.
+		 *
+		 * The player's state is set to \a Disconnected.
+		 *
+		 * \note Subclasses that reimplement this function must call
+		 * the base implementation.
+		 */
+		virtual void kill();
 
 	signals:
 		/*! This signal is emitted when the player disconnects. */

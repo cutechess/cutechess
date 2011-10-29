@@ -63,7 +63,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		void setDevice(QIODevice* device);
 
 		// Inherited from ChessPlayer
-		virtual void closeConnection();
 		virtual void endGame(const Chess::Result& result);
 		virtual bool isHuman() const;
 		virtual bool isReady() const;
@@ -118,6 +117,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		// Inherited from ChessPlayer
 		virtual void go();
 		virtual void quit();
+		virtual void kill();
 		
 	protected:
 		/*!

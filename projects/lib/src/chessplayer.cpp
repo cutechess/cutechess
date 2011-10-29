@@ -226,14 +226,14 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 	emit moveMade(move);
 }
 
-void ChessPlayer::closeConnection()
+void ChessPlayer::kill()
 {
 	setState(Disconnected);
 }
 
 void ChessPlayer::onDisconnect()
 {
-	closeConnection();
+	kill();
 	emitForfeit(Chess::Result::Disconnection);
 	emit disconnected();
 }

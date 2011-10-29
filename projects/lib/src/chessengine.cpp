@@ -276,16 +276,16 @@ void ChessEngine::onIdleTimeout()
 		return;
 
 	m_writeBuffer.clear();
-	closeConnection();
+	kill();
 
 	emitForfeit(Chess::Result::StalledConnection);
 }
 
-void ChessEngine::closeConnection()
+void ChessEngine::kill()
 {
 	if (state() == Disconnected)
 		return;
-	ChessPlayer::closeConnection();
+	ChessPlayer::kill();
 
 	m_pinging = false;
 	m_pingTimer->stop();
@@ -349,7 +349,7 @@ void ChessEngine::onPingTimeout()
 
 	m_pinging = false;
 	m_writeBuffer.clear();
-	closeConnection();
+	kill();
 
 	emitForfeit(Chess::Result::StalledConnection);
 }
@@ -413,7 +413,7 @@ void ChessEngine::onQuitTimeout()
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onQuitTimeout()));
 
 	if (!m_quitTimer->isActive())
-		closeConnection();
+		kill();
 	else
 		m_quitTimer->stop();
 
