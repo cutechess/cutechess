@@ -109,6 +109,8 @@ void ChessEngine::setDevice(QIODevice* device)
 	Q_ASSERT(device != 0);
 
 	m_ioDevice = device;
+	m_ioDevice->setParent(this);
+
 	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
 }

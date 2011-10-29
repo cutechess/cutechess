@@ -72,7 +72,6 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		QObject::connect(engine, SIGNAL(debugMessage(QString)),
 				 receiver, method);
 	engine->setDevice(process);
-	process->setParent(engine);
 
 	if (!m_config.name().isEmpty())
 		engine->setName(m_config.name());
