@@ -229,13 +229,13 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 void ChessPlayer::kill()
 {
 	setState(Disconnected);
+	emit disconnected();
 }
 
-void ChessPlayer::onDisconnect()
+void ChessPlayer::onCrashed()
 {
 	kill();
 	emitForfeit(Chess::Result::Disconnection);
-	emit disconnected();
 }
 
 void ChessPlayer::onTimeout()

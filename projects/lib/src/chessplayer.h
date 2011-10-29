@@ -185,10 +185,12 @@ class LIB_EXPORT ChessPlayer : public QObject
 
 	protected slots:
 		/*!
-		 * Called when the player disconnects.
-		 * Sets the state to \a Disconnected and forfeits the game.
+		 * Called when the player's process or connection
+		 * crashes unexpectedly.
+		 *
+		 * Forfeits the game.
 		 */
-		virtual void onDisconnect();
+		virtual void onCrashed();
 
 		/*!
 		 * Called when the player's flag falls.

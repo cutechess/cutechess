@@ -24,6 +24,7 @@
 class QTimer;
 class EngineOption;
 class EngineOptionModel;
+class ChessEngine;
 
 namespace Ui {
 	class EngineConfigurationDialog;
@@ -73,6 +74,7 @@ class EngineConfigurationDialog : public QDialog
 		void detectEngineOptions();
 		void restoreDefaults();
 		void onEngineReady();
+		void onEngineQuit();
 		void onTabChanged(int index);
 		void onAccepted();
 
@@ -84,6 +86,7 @@ class EngineConfigurationDialog : public QDialog
 		QList<EngineOption*> m_options;
 		QStringList m_variants;
 		QTimer* m_optionDetectionTimer;
+		ChessEngine* m_engine;
 		Ui::EngineConfigurationDialog* ui;
 };
 

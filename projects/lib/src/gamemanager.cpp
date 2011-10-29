@@ -85,6 +85,7 @@ GameThread::~GameThread()
 		if (m_player[i] == 0)
 			continue;
 
+		m_player[i]->disconnect();
 		m_player[i]->kill();
 		delete m_player[i];
 	}

@@ -112,7 +112,7 @@ void ChessEngine::setDevice(QIODevice* device)
 	m_ioDevice->setParent(this);
 
 	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
-	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
+	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onCrashed()));
 }
 
 void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
@@ -285,16 +285,16 @@ void ChessEngine::kill()
 {
 	if (state() == Disconnected)
 		return;
-	ChessPlayer::kill();
 
 	m_pinging = false;
 	m_pingTimer->stop();
 	m_writeBuffer.clear();
-	emit ready();
 
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()),
-		   this, SLOT(onDisconnect()));
+		   this, SLOT(onCrashed()));
 	m_ioDevice->close();
+
+	ChessPlayer::kill();
 }
 
 void ChessEngine::onTimeout()
@@ -425,7 +425,7 @@ void ChessEngine::quit()
 	if (!m_ioDevice || !m_ioDevice->isOpen() || state() == Disconnected)
 		return ChessPlayer::quit();
 
-	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onDisconnect()));
+	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onCrashed()));
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onQuitTimeout()));
 	sendQuit();
 	m_quitTimer->start();
