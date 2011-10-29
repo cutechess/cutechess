@@ -24,7 +24,7 @@ QWidget* EngineOptionDelegate::createEditor(QWidget* parent,
 			if (optionType == "combo")
 			{
 				QComboBox* editor = new QComboBox(parent);
-				editor->addItems(map.value("choises").toStringList());
+				editor->addItems(map.value("choices").toStringList());
 
 				return editor;
 			}
@@ -70,7 +70,7 @@ void EngineOptionDelegate::setEditorData(QWidget* editor,
 			{
 				QComboBox* optionEditor = qobject_cast<QComboBox*>(editor);
 				optionEditor->setCurrentIndex(
-					map.value("choises").toStringList().indexOf(map.value("value").toString()));
+					map.value("choices").toStringList().indexOf(map.value("value").toString()));
 			}
 			else if (optionType == "spin")
 			{
