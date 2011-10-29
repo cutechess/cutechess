@@ -19,8 +19,9 @@ EngineOptionModel::EngineOptionModel(QList<EngineOption*> options, QObject* pare
 
 void EngineOptionModel::setOptions(const QList<EngineOption*>& options)
 {
+	beginResetModel();
 	m_options = options;
-	reset();
+	endResetModel();
 }
 
 QModelIndex EngineOptionModel::index(int row, int column,
