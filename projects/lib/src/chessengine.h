@@ -64,7 +64,6 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		// Inherited from ChessPlayer
 		virtual void closeConnection();
-		virtual void quit();
 		virtual void endGame(const Chess::Result& result);
 		virtual bool isHuman() const;
 		virtual bool isReady() const;
@@ -118,6 +117,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 	public slots:
 		// Inherited from ChessPlayer
 		virtual void go();
+		virtual void quit();
 		
 	protected:
 		/*!
