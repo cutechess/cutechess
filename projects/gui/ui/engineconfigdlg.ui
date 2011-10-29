@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>456</width>
-    <height>440</height>
+    <width>480</width>
+    <height>400</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="m_tabs">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -20,114 +20,107 @@
       <attribute name="title">
        <string>Basic</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0">
-        <layout class="QFormLayout" name="formLayout">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>&amp;Name:</string>
          </property>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label">
+         <property name="buddy">
+          <cstring>m_nameEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="m_nameEdit"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Co&amp;mmand:</string>
+         </property>
+         <property name="buddy">
+          <cstring>m_commandEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLineEdit" name="m_commandEdit"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_browseCmdBtn">
            <property name="text">
-            <string>&amp;Name:</string>
-           </property>
-           <property name="buddy">
-            <cstring>m_nameEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="m_nameEdit"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Co&amp;mmand:</string>
-           </property>
-           <property name="buddy">
-            <cstring>m_commandEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QLineEdit" name="m_commandEdit"/>
-           </item>
-           <item>
-            <widget class="QPushButton" name="m_browseCmdBtn">
-             <property name="text">
-              <string>Browse...</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Working &amp;Directory:</string>
-           </property>
-           <property name="buddy">
-            <cstring>m_workingDirEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QLineEdit" name="m_workingDirEdit"/>
-           </item>
-           <item>
-            <widget class="QPushButton" name="m_browseWorkingDirBtn">
-             <property name="toolTip">
-              <string>Browse working directory.</string>
-             </property>
-             <property name="text">
-              <string>Browse...</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>&amp;Protocol:</string>
-           </property>
-           <property name="buddy">
-            <cstring>m_protocolCombo</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QComboBox" name="m_protocolCombo"/>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>&amp;Init Strings:</string>
-           </property>
-           <property name="buddy">
-            <cstring>m_initStringEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QPlainTextEdit" name="m_initStringEdit">
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QCheckBox" name="m_whitePovCheck">
-           <property name="text">
-            <string>Scores from &amp;white's perspective</string>
+            <string>Browse...</string>
            </property>
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Working &amp;Directory:</string>
+         </property>
+         <property name="buddy">
+          <cstring>m_workingDirEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLineEdit" name="m_workingDirEdit"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_browseWorkingDirBtn">
+           <property name="toolTip">
+            <string>Browse working directory.</string>
+           </property>
+           <property name="text">
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>&amp;Protocol:</string>
+         </property>
+         <property name="buddy">
+          <cstring>m_protocolCombo</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="m_protocolCombo"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>&amp;Init Strings:</string>
+         </property>
+         <property name="buddy">
+          <cstring>m_initStringEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QPlainTextEdit" name="m_initStringEdit">
+         <property name="lineWrapMode">
+          <enum>QPlainTextEdit::NoWrap</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QCheckBox" name="m_whitePovCheck">
+         <property name="text">
+          <string>Scores from &amp;white's perspective</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -135,42 +128,38 @@
       <attribute name="title">
        <string>Advanced</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTreeView" name="m_optionsView">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QTreeView" name="m_optionsView">
-           <property name="alternatingRowColors">
-            <bool>true</bool>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
-           <property name="rootIsDecorated">
-            <bool>false</bool>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
            </property>
-          </widget>
+          </spacer>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="m_detectBtn">
-             <property name="text">
-              <string>Detect</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QPushButton" name="m_detectBtn">
+           <property name="text">
+            <string>Detect</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -179,7 +168,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="m_buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -193,23 +182,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>EngineConfigurationDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>268</x>
-     <y>222</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>196</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
+   <sender>m_buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>EngineConfigurationDialog</receiver>
    <slot>reject()</slot>

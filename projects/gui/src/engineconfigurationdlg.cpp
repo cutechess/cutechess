@@ -34,6 +34,7 @@
 EngineConfigurationDialog::EngineConfigurationDialog(
 	EngineConfigurationDialog::DialogMode mode, QWidget* parent)
 	: QDialog(parent),
+	  m_engineOptionModel(new EngineOptionModel(this)),
 	  ui(new Ui::EngineConfigurationDialog)
 {
 	ui->setupUi(this);
@@ -45,7 +46,6 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 
 	ui->m_protocolCombo->addItems(EngineFactory::protocols());
 
-	m_engineOptionModel = new EngineOptionModel(this);
 	ui->m_optionsView->setModel(m_engineOptionModel);
 	ui->m_optionsView->setItemDelegate(new EngineOptionDelegate());
 
@@ -53,10 +53,16 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	m_optionDetectionTimer->setSingleShot(true);
 	m_optionDetectionTimer->setInterval(5000);
 
-	connect(ui->m_browseCmdBtn, SIGNAL(clicked(bool)), this, SLOT(browseCommand()));
-	connect(ui->m_browseWorkingDirBtn, SIGNAL(clicked(bool)), this,
-		SLOT(browseWorkingDir()));
-	connect(ui->m_detectBtn, SIGNAL(clicked(bool)), this, SLOT(detectEngineOptions()));
+	connect(ui->m_browseCmdBtn, SIGNAL(clicked(bool)),
+		this, SLOT(browseCommand()));
+	connect(ui->m_browseWorkingDirBtn, SIGNAL(clicked(bool)),
+		this, SLOT(browseWorkingDir()));
+	connect(ui->m_detectBtn, SIGNAL(clicked()),
+		this, SLOT(detectEngineOptions()));
+	connect(ui->m_tabs, SIGNAL(currentChanged(int)),
+		this, SLOT(onTabChanged(int)));
+	connect(ui->m_buttonBox, SIGNAL(accepted()),
+		this, SLOT(onAccepted()));
 }
 
 EngineConfigurationDialog::~EngineConfigurationDialog()
@@ -83,6 +89,12 @@ void EngineConfigurationDialog::applyEngineInformation(
 	foreach (EngineOption* option, engine.options())
 		m_options << option->copy();
 	m_engineOptionModel->setOptions(m_options);
+
+	m_variants = engine.supportedVariants();
+
+	m_oldCommand = engine.command();
+	m_oldPath = engine.workingDirectory();
+	m_oldProtocol = engine.protocol();
 }
 
 EngineConfiguration EngineConfigurationDialog::engineConfiguration()
@@ -104,6 +116,8 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 		optionCopies << option->copy();
 
 	engine.setOptions(optionCopies);
+
+	engine.setSupportedVariants(m_variants);
 
 	return engine;
 }
@@ -152,24 +166,41 @@ void EngineConfigurationDialog::browseWorkingDir()
 
 void EngineConfigurationDialog::detectEngineOptions()
 {
-	ui->m_detectBtn->setEnabled(false);
+	if (m_optionDetectionTimer->isActive())
+		return;
 
-	EngineConfiguration config = engineConfiguration();
-	// don't send options to the engine when detecting
-	config.setOptions(QList<EngineOption*>());
+	if (QObject::sender() != ui->m_detectBtn
+	&&  ui->m_commandEdit->text() == m_oldCommand
+	&&  ui->m_workingDirEdit->text() == m_oldPath
+	&&  ui->m_protocolCombo->currentText() == m_oldProtocol)
+	{
+		emit detectionFinished();
+		return;
+	}
 
-	EngineBuilder builder(config);
+	m_oldCommand = ui->m_commandEdit->text();
+	m_oldPath = ui->m_workingDirEdit->text();
+	m_oldProtocol = ui->m_protocolCombo->currentText();
+
+	EngineBuilder builder(engineConfiguration());
 	ChessPlayer* engine = builder.create(0, 0, this);
 
 	if (engine != 0)
 	{
-		connect(engine, SIGNAL(ready()), this, SLOT(onEngineReady()));
-		connect(m_optionDetectionTimer, SIGNAL(timeout()), engine, SLOT(quit()));
+		connect(engine, SIGNAL(ready()),
+			this, SLOT(onEngineReady()));
+		connect(engine, SIGNAL(disconnected()),
+			engine, SLOT(deleteLater()));
+		connect(engine, SIGNAL(destroyed()),
+			this, SIGNAL(detectionFinished()));
+		connect(m_optionDetectionTimer, SIGNAL(timeout()),
+			engine, SLOT(quit()));
 
+		ui->m_detectBtn->setEnabled(false);
 		m_optionDetectionTimer->start();
 	}
 	else
-		ui->m_detectBtn->setEnabled(true);
+		emit detectionFinished();
 }
 
 void EngineConfigurationDialog::onEngineReady()
@@ -180,17 +211,33 @@ void EngineConfigurationDialog::onEngineReady()
 	disconnect(m_optionDetectionTimer, 0, engine, 0);
 	m_optionDetectionTimer->stop();
 
-	QList<EngineOption*> detectedOptions;
+	ui->m_detectBtn->setEnabled(true);
 
-	// make copies of the engine options
-	foreach (EngineOption* option, engine->options())
-		detectedOptions << option->copy();
-
-	engine->quit();
-	m_engineOptionModel->setOptions(detectedOptions);
+	if (engine->state() == ChessPlayer::Disconnected)
+		return;
 
 	qDeleteAll(m_options);
+	m_options.clear();
 
-	m_options = detectedOptions;
-	ui->m_detectBtn->setEnabled(true);
+	// Make copies of the engine options
+	foreach (const EngineOption* option, engine->options())
+		m_options << option->copy();
+
+	m_engineOptionModel->setOptions(m_options);
+	m_variants = engine->variants();
+
+	engine->quit();
+}
+
+void EngineConfigurationDialog::onTabChanged(int index)
+{
+	if (index == 1)
+		detectEngineOptions();
+}
+
+void EngineConfigurationDialog::onAccepted()
+{
+	connect(this, SIGNAL(detectionFinished()),
+		this, SLOT(accept()));
+	detectEngineOptions();
 }

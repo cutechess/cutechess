@@ -63,16 +63,25 @@ class EngineConfigurationDialog : public QDialog
 		 * Returns an engine based on the information user selected.
 		*/
 		EngineConfiguration engineConfiguration();
+
+	signals:
+		void detectionFinished();
 	
 	private slots:
 		void browseCommand();
 		void browseWorkingDir();
 		void detectEngineOptions();
 		void onEngineReady();
+		void onTabChanged(int index);
+		void onAccepted();
 
 	private:
 		EngineOptionModel* m_engineOptionModel;
+		QString m_oldCommand;
+		QString m_oldPath;
+		QString m_oldProtocol;
 		QList<EngineOption*> m_options;
+		QStringList m_variants;
 		QTimer* m_optionDetectionTimer;
 		Ui::EngineConfigurationDialog* ui;
 };
