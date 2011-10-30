@@ -20,18 +20,31 @@
 
 
 ChessClock::ChessClock(QWidget* parent)
-	: QLCDNumber(parent),
+	: QLabel(parent),
+	  m_infiniteTime(false),
 	  m_totalTime(0),
 	  m_timerId(-1)
 {
-	setFrameShape(QFrame::NoFrame);
-	setSegmentStyle(QLCDNumber::Flat);
+	setTextFormat(Qt::RichText);
+	setAlignment(Qt::AlignHCenter);
+}
+
+void ChessClock::setPlayerName(const QString& name)
+{
+	m_playerName = name;
+	setTime(m_totalTime);
+}
+
+void ChessClock::setInfiniteTime(bool infinite)
+{
+	killTimer(m_timerId);
+	m_infiniteTime = infinite;
+	setText(QString("<h2>%1</h2>").arg(m_playerName));
 }
 
 void ChessClock::setTime(int totalTime)
 {
-	totalTime -= 500;
-	QTime timeLeft = QTime().addMSecs(abs(totalTime));
+	QTime timeLeft = QTime().addMSecs(abs(totalTime + 500));
 
 	QString format;
 	if (timeLeft.hour() > 0)
@@ -40,11 +53,13 @@ void ChessClock::setTime(int totalTime)
 		format = "mm:ss";
 
 	QString str;
-	if (totalTime < 0)
-		str += "-";
-	str += timeLeft.toString(format);
-	setNumDigits(str.length());
-	display(str);
+	if (!m_playerName.isEmpty())
+		str.append(m_playerName).append(": ");
+	if (totalTime <= -500)
+		str.append("-");
+	str.append(timeLeft.toString(format));
+
+	setText(QString("<h2>%1</h2>").arg(str));
 }
 
 void ChessClock::start(int totalTime)

@@ -56,7 +56,11 @@ MainWindow::MainWindow(ChessGame* game)
 	{
 		m_chessClock[i] = new ChessClock();
 		clockLayout->addWidget(m_chessClock[i]);
+
+		Chess::Side side = Chess::Side::Type(i);
+		m_chessClock[i]->setPlayerName(side.toString());
 	}
+	clockLayout->insertSpacing(1, 20);
 
 	m_boardScene = new BoardScene(this);
 	m_boardView = new BoardView(m_boardScene, this);
@@ -95,21 +99,33 @@ MainWindow::MainWindow(ChessGame* game)
 	{
 		ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
 
-		if (player->state() == ChessPlayer::Thinking)
-			m_chessClock[i]->start(player->timeControl()->activeTimeLeft());
-		else
-			m_chessClock[i]->setTime(player->timeControl()->timeLeft());
-
-		connect(player, SIGNAL(startedThinking(int)),
-			m_chessClock[i], SLOT(start(int)));
-		connect(player, SIGNAL(stoppedThinking()),
-			m_chessClock[i], SLOT(stop()));
-		connect(player, SIGNAL(debugMessage(QString)),
-			m_engineDebugLog, SLOT(appendPlainText(QString)));
-
 		if (player->isHuman())
 			connect(m_boardScene, SIGNAL(humanMove(Chess::GenericMove, Chess::Side)),
 				player, SLOT(onHumanMove(Chess::GenericMove, Chess::Side)));
+		connect(player, SIGNAL(debugMessage(QString)),
+			m_engineDebugLog, SLOT(appendPlainText(QString)));
+
+		ChessClock* clock(m_chessClock[i]);
+
+		clock->setPlayerName(player->name());
+		connect(player, SIGNAL(nameChanged(QString)),
+			clock, SLOT(setPlayerName(QString)));
+
+		if (player->timeControl()->isInfinite())
+		{
+			clock->setInfiniteTime(true);
+			continue;
+		}
+
+		if (player->state() == ChessPlayer::Thinking)
+			clock->start(player->timeControl()->activeTimeLeft());
+		else
+			clock->setTime(player->timeControl()->timeLeft());
+
+		connect(player, SIGNAL(startedThinking(int)),
+			clock, SLOT(start(int)));
+		connect(player, SIGNAL(stoppedThinking()),
+			clock, SLOT(stop()));
 	}
 
 	m_pgn = m_game->pgn();

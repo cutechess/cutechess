@@ -23,7 +23,7 @@ HumanPlayer::HumanPlayer(QObject* parent)
 	: ChessPlayer(parent)
 {
 	setState(Idle);
-	setName("HumanPlayer");
+	setName("Human");
 }
 
 void HumanPlayer::startGame()
