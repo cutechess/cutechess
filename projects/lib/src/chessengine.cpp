@@ -117,6 +117,9 @@ void ChessEngine::setDevice(QIODevice* device)
 
 void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 {
+	if (!configuration.name().isEmpty())
+		setName(configuration.name());
+
 	foreach (const QString& str, configuration.initStrings())
 		write(str);
 
