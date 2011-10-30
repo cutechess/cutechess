@@ -64,7 +64,7 @@ void GraphicsPieceReserve::paint(QPainter* painter,
 		const QList<Chess::Piece>& list(m_tiles[i]);
 		for (int j = 0; j < list.size(); j++)
 		{
-			int count = m_pieces.count(list[j]);
+			int count = m_pieces.count(list.at(j));
 			if (count < 1)
 				continue;
 

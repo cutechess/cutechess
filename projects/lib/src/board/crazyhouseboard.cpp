@@ -132,7 +132,7 @@ void CrazyhouseBoard::restorePieces(Piece piece, const QVarLengthArray<int>& squ
 
 	Piece prom(piece.side(), promotedPieceType(piece.type()));
 	for (int i = 0; i < squares.size(); i++)
-		setSquare(squares[i], prom);
+		setSquare(squares.at(i), prom);
 }
 
 QString CrazyhouseBoard::sanMoveString(const Move& move)

@@ -73,7 +73,7 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 	qDebug() << m_databases.count() << "databases";
 
 	// Write the contents of the databases
-	foreach (PgnDatabase* db, m_databases)
+	foreach (const PgnDatabase* db, m_databases)
 	{
 		out << db->fileName();
 		out << db->lastModified();

@@ -213,7 +213,7 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 
 void GameDatabaseDialog::viewNextMove()
 {
-	m_boardScene->makeMove(m_moves[m_moveIndex++].move);
+	m_boardScene->makeMove(m_moves.at(m_moveIndex++).move);
 
 	ui->m_previousMoveButton->setEnabled(true);
 	ui->m_skipToFirstMoveButton->setEnabled(true);

@@ -273,8 +273,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			QStringList list = value.toStringList();
 			bool numOk = false;
 			bool scoreOk = false;
-			int moveNumber = list[0].toInt(&numOk);
-			int score = list[1].toInt(&scoreOk);
+			int moveNumber = list.at(0).toInt(&numOk);
+			int score = list.at(1).toInt(&scoreOk);
 
 			ok = (numOk && scoreOk);
 			if (ok)
@@ -286,8 +286,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			QStringList list = value.toStringList();
 			bool countOk = false;
 			bool scoreOk = false;
-			int moveCount = list[0].toInt(&countOk);
-			int score = list[1].toInt(&scoreOk);
+			int moveCount = list.at(0).toInt(&countOk);
+			int score = list.at(1).toInt(&scoreOk);
 
 			ok = (countOk && scoreOk);
 			if (ok)
@@ -321,7 +321,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 					ok = false;
 			}
 			if (ok)
-				match->setPgnOutput(list[0], mode);
+				match->setPgnOutput(list.at(0), mode);
 		}
 		// Play every opening twice, just switch the players' sides
 		else if (name == "-repeat")

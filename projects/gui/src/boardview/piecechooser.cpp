@@ -66,7 +66,7 @@ void PieceChooser::reveal()
 
 		for (int j = 0; j < m_pieces[i].size(); j++)
 		{
-			GraphicsPiece* piece = m_pieces[i][j];
+			GraphicsPiece* piece = m_pieces[i].at(j);
 			piece->setParentItem(this);
 
 			QPropertyAnimation* posAnim = new QPropertyAnimation(piece, "pos");

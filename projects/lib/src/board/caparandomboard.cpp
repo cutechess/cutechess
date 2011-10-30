@@ -27,7 +27,7 @@ static void addPiece(QVector<int>& pieces,
 	int i = 0;
 	for (int j = start; j < pieces.size(); j += step)
 	{
-		if (pieces[j] != Chess::Piece::NoPiece)
+		if (pieces.at(j) != Chess::Piece::NoPiece)
 			continue;
 		if (i == pos)
 		{
@@ -73,18 +73,18 @@ bool CaparandomBoard::pawnsAreSafe(const QVector<int>& pieces) const
 		{
 			if (j < 0 || j >= size)
 				continue;
-			if (pieceHasMovement(pieces[j], KnightMovement))
+			if (pieceHasMovement(pieces.at(j), KnightMovement))
 				safe = true;
 		}
 		for (int j = i - 1; j <= i + 1; j += 2)
 		{
 			if (j < 0 || j >= size)
 				continue;
-			if (pieceHasMovement(pieces[j], BishopMovement)
-			||  pieces[j] == King)
+			if (pieceHasMovement(pieces.at(j), BishopMovement)
+			||  pieces.at(j) == King)
 				safe = true;
 		}
-		if (pieceHasMovement(pieces[i], RookMovement) || pieces[i] == King)
+		if (pieceHasMovement(pieces.at(i), RookMovement) || pieces.at(i) == King)
 			safe = true;
 
 		if (!safe)

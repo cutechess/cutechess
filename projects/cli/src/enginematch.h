@@ -110,6 +110,8 @@ class EngineMatch : public QObject
 		bool m_repeatOpening;
 		QString m_variant;
 		QVector<EngineData> m_engines;
+		EngineData* m_fcp;
+		EngineData* m_scp;
 		QVector<Chess::Move> m_openingMoves;
 		QList<OpeningBook*> m_books;
 		QList<EngineBuilder*> m_builders;

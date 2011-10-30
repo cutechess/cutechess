@@ -160,7 +160,7 @@ QString Result::description() const
 	}
 
 	Q_ASSERT(!str.isEmpty());
-	str[0] = str[0].toUpper();
+	str[0] = str.at(0).toUpper();
 	return str;
 }
 

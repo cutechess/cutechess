@@ -44,7 +44,9 @@ EngineMatch::EngineMatch(QObject* parent)
 	  m_finishing(false),
 	  m_pgnMode(PgnGame::Verbose),
 	  m_repeatOpening(false),
-	  m_variant("standard")
+	  m_variant("standard"),
+	  m_fcp(0),
+	  m_scp(0)
 {
 	m_startTime.start();
 }
@@ -210,6 +212,8 @@ bool EngineMatch::initialize()
 		return false;
 	}
 
+	m_fcp = &m_engines[0];
+	m_scp = &m_engines[1];
 	m_finishing = false;
 	m_currentGame = 0;
 	m_finishedGames = 0;
@@ -218,12 +222,12 @@ bool EngineMatch::initialize()
 
 	QVector<EngineData>::iterator it;
 
-	if (m_engines[0].bookFile == m_engines[1].bookFile
-	&&  !m_engines[0].bookFile.isEmpty())
+	if (m_fcp->bookFile == m_scp->bookFile
+	&&  !m_fcp->bookFile.isEmpty())
 	{
-		if (!loadOpeningBook(m_engines[0].bookFile, &m_engines[0].book))
+		if (!loadOpeningBook(m_fcp->bookFile, &m_fcp->book))
 			return false;
-		m_engines[1].book = m_engines[0].book;
+		m_scp->book = m_fcp->book;
 	}
 	else
 	{
@@ -300,12 +304,12 @@ void EngineMatch::onGameEnded()
 		m_engines[wIndex ^ result.winner()].wins++;
 	}
 
-	int totalResults = m_engines[0].wins + m_engines[1].wins + m_drawCount;
+	int totalResults = m_fcp->wins + m_scp->wins + m_drawCount;
 	qDebug("Score of %s vs %s: %d - %d - %d  [%.2f] %d",
 	       qPrintable(pgn->playerName(Chess::Side::Type(wIndex))),
 	       qPrintable(pgn->playerName(Chess::Side::Type(!wIndex))),
-	       m_engines[0].wins, m_engines[1].wins, m_drawCount,
-	       double(m_engines[0].wins * 2 + m_drawCount) / (totalResults * 2),
+	       m_fcp->wins, m_scp->wins, m_drawCount,
+	       double(m_fcp->wins * 2 + m_drawCount) / (totalResults * 2),
 	       totalResults);
 
 	m_games[gameId] = pgn;
@@ -326,8 +330,8 @@ void EngineMatch::onGameEnded()
 	     (result.type() == Chess::Result::Disconnection ||
 	      result.type() == Chess::Result::StalledConnection)))
 	{
-		int score = m_engines[0].wins * 2 + m_drawCount;
-		int total = (m_engines[0].wins + m_engines[1].wins + m_drawCount) * 2;
+		int score = m_fcp->wins * 2 + m_drawCount;
+		int total = (m_fcp->wins + m_scp->wins + m_drawCount) * 2;
 		if (total > 0)
 		{
 			double ratio = double(score) / double(total);
@@ -355,18 +359,10 @@ void EngineMatch::start()
 	ChessGame* game = new ChessGame(board, new PgnGame);
 	connect(this, SIGNAL(stopGame()), game, SLOT(kill()), Qt::QueuedConnection);
 
-	EngineData* white = 0;
-	EngineData* black = 0;
-	if ((m_currentGame % 2) != 0)
-	{
-		white = &m_engines[0];
-		black = &m_engines[1];
-	}
-	else
-	{
-		white = &m_engines[1];
-		black = &m_engines[0];
-	}
+	EngineData* white = m_fcp;
+	EngineData* black = m_scp;
+	if ((m_currentGame % 2) == 0)
+		qSwap(white, black);
 
 	game->setTimeControl(white->tc, Chess::Side::White);
 	game->setTimeControl(black->tc, Chess::Side::Black);

@@ -139,7 +139,7 @@ GraphicsPiece* GraphicsBoard::pieceAt(const Chess::Square& square) const
 	if (!square.isValid())
 		return 0;
 
-	GraphicsPiece* piece = m_squares[squareIndex(square)];
+	GraphicsPiece* piece = m_squares.at(squareIndex(square));
 	Q_ASSERT(piece == 0 || piece->container() == this);
 	return piece;
 }
@@ -150,7 +150,7 @@ GraphicsPiece* GraphicsBoard::takePieceAt(const Chess::Square& square)
 	if (index == -1)
 		return 0;
 
-	GraphicsPiece* piece = m_squares[index];
+	GraphicsPiece* piece = m_squares.at(index);
 	if (piece == 0)
 		return 0;
 

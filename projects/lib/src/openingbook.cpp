@@ -105,8 +105,8 @@ int OpeningBook::import(const PgnGame& pgn, int maxMoves)
 		// Skip the loser's moves
 		if ((i % 2) != loserMod)
 		{
-			Entry entry = { moves[i].move, weight };
-			addEntry(entry, moves[i].key);
+			Entry entry = { moves.at(i).move, weight };
+			addEntry(entry, moves.at(i).key);
 		}
 	}
 

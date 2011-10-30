@@ -89,7 +89,7 @@ static QString variantToUci(const QString& str)
 		return "UCI_CapaRandom";
 
 	QString tmp = QString("UCI_%1").arg(str);
-	tmp[4] = tmp[4].toUpper();
+	tmp[4] = tmp.at(4).toUpper();
 	return tmp;
 }
 

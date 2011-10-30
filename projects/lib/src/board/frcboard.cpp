@@ -28,7 +28,7 @@ static void addPiece(QVector<int>& pieces,
 	int i = 0;
 	for (int j = start; j < pieces.size(); j += step)
 	{
-		if (pieces[j] != Chess::Piece::NoPiece)
+		if (pieces.at(j) != Chess::Piece::NoPiece)
 			continue;
 		if (i == pos)
 		{

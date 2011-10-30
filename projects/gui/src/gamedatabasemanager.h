@@ -69,7 +69,7 @@ class GameDatabaseManager : public QObject
 		/*! Returns true if the current state has been modified. */
 		bool isModified() const;
 
-		/*! Sets the state modified flag to \modified. */
+		/*! Sets the state modified flag to \a modified. */
 		void setModified(bool modified);
 
 	public slots:

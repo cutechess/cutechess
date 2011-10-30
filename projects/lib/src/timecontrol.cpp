@@ -61,32 +61,32 @@ TimeControl::TimeControl(const QString& str)
 	// increment
 	if (list.size() == 2)
 	{
-		int inc = (int)(list[1].toDouble() * 1000);
+		int inc = (int)(list.at(1).toDouble() * 1000);
 		if (inc >= 0)
 			setTimeIncrement(inc);
 	}
 
-	list = list[0].split('/');
+	list = list.at(0).split('/');
 	QString strTime;
 
 	// moves per tc
 	if (list.size() == 2)
 	{
-		int nmoves = list[0].toInt();
+		int nmoves = list.at(0).toInt();
 		if (nmoves >= 0)
 			setMovesPerTc(nmoves);
-		strTime = list[1];
+		strTime = list.at(1);
 	}
 	else
-		strTime = list[0];
+		strTime = list.at(0);
 
 	// time per tc
 	int ms = 0;
 	list = strTime.split(':');
 	if (list.size() == 2)
-		ms = (int)(list[0].toDouble() * 60000 + list[1].toDouble() * 1000);
+		ms = (int)(list.at(0).toDouble() * 60000 + list.at(1).toDouble() * 1000);
 	else
-		ms = (int)(list[0].toDouble() * 1000);
+		ms = (int)(list.at(0).toDouble() * 1000);
 
 	if (ms > 0)
 		setTimePerTc(ms);

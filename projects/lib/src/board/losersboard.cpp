@@ -63,8 +63,8 @@ bool LosersBoard::vIsLegalMove(const Move& move)
 
 		for (int i = 0; i < moves.size(); i++)
 		{
-			if (captureType(moves[i]) != Piece::NoPiece
-			&&  WesternBoard::vIsLegalMove(moves[i]))
+			if (captureType(moves.at(i)) != Piece::NoPiece
+			&&  WesternBoard::vIsLegalMove(moves.at(i)))
 			{
 				m_canCapture = true;
 				break;
