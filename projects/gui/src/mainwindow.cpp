@@ -111,11 +111,7 @@ MainWindow::MainWindow(ChessGame* game)
 		connect(player, SIGNAL(nameChanged(QString)),
 			clock, SLOT(setPlayerName(QString)));
 
-		if (player->timeControl()->isInfinite())
-		{
-			clock->setInfiniteTime(true);
-			continue;
-		}
+		clock->setInfiniteTime(player->timeControl()->isInfinite());
 
 		if (player->state() == ChessPlayer::Thinking)
 			clock->start(player->timeControl()->activeTimeLeft());

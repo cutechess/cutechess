@@ -18,13 +18,13 @@
 #ifndef CHESSCLOCK_H
 #define CHESSCLOCK_H
 
-#include <QLabel>
+#include <QWidget>
 #include <QTime>
 
 class QTimerEvent;
+class QLabel;
 
-
-class ChessClock: public QLabel
+class ChessClock: public QWidget
 {
 	Q_OBJECT
 	
@@ -42,11 +42,13 @@ class ChessClock: public QLabel
 		virtual void timerEvent(QTimerEvent* event);
 	
 	private:
-		bool m_infiniteTime;
 		int m_totalTime;
 		int m_timerId;
+		bool m_infiniteTime;
 		QTime m_time;
-		QString m_playerName;
+		QLabel* m_nameLabel;
+		QLabel* m_timeLabel;
+		QPalette m_defaultPalette;
 };
 
 #endif // CHESSCLOCK
