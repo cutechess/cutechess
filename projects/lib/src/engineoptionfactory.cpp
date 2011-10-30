@@ -66,12 +66,12 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 	}
 	else if (type == "combo")
 	{
-		const QVariant choises = map["choises"];
-		if (choises.type() != QVariant::StringList)
+		const QVariant choices = map["choices"];
+		if (choices.type() != QVariant::StringList)
 			return 0;
 
 		return new EngineComboOption(name, value.toString(),
-			defaultValue.toString(), choises.toStringList(), alias);
+			defaultValue.toString(), choices.toStringList(), alias);
 	}
 	else if (type == "spin")
 	{
