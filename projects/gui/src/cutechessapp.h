@@ -43,7 +43,9 @@ class CuteChessApplication : public QApplication
 		QList<MainWindow*> gameWindows();
 		void showGameWindow(int index);
 		GameDatabaseManager* gameDatabaseManager();
+
 		static CuteChessApplication* instance();
+		static QString userName();
 
 	public slots:
 		MainWindow* newGameWindow(ChessGame* game);

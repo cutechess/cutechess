@@ -273,7 +273,7 @@ void MainWindow::newGame()
 			player[i] = new EngineBuilder(config);
 		}
 		else
-			player[i] = new HumanBuilder();
+			player[i] = new HumanBuilder(CuteChessApplication::userName());
 	}
 
 	CuteChessApplication::instance()->gameManager()->newGame(game,

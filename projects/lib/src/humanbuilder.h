@@ -19,16 +19,28 @@
 #define HUMANBUILDER_H
 
 #include "playerbuilder.h"
+#include <QString>
 
 
 /*! \brief A class for constructing human players. */
 class LIB_EXPORT HumanBuilder : public PlayerBuilder
 {
 	public:
+		/*!
+		 * Creates a new HumanBuilder.
+		 *
+		 * Any created players will have the name \a playerName,
+		 * unless it's an empty string.
+		 */
+		HumanBuilder(const QString& playerName = QString());
+
 		// Inherited from PlayerBuilder
 		virtual ChessPlayer* create(QObject* receiver,
 					    const char* method,
 					    QObject* parent) const;
+
+	private:
+		QString m_playerName;
 };
 
 #endif // HUMANBUILDER_H

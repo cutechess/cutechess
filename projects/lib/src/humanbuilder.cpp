@@ -18,11 +18,18 @@
 #include "humanbuilder.h"
 #include "humanplayer.h"
 
+HumanBuilder::HumanBuilder(const QString& playerName)
+	: m_playerName(playerName)
+{
+}
+
 ChessPlayer* HumanBuilder::create(QObject *receiver,
 				  const char *method,
 				  QObject *parent) const
 {
 	ChessPlayer* player = new HumanPlayer(parent);
+	if (!m_playerName.isEmpty())
+		player->setName(m_playerName);
 
 	if (receiver != 0 && method != 0)
 		QObject::connect(player, SIGNAL(debugMessage(QString)),

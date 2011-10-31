@@ -89,6 +89,31 @@ CuteChessApplication* CuteChessApplication::instance()
 	return static_cast<CuteChessApplication*>(QApplication::instance());
 }
 
+QString CuteChessApplication::userName()
+{
+#ifdef Q_WS_WIN
+
+	char* name;
+	size_t len;
+	errno_t err = _dupenv_s(&name, &len, "USERNAME");
+	if (err)
+		return QString();
+
+	QString ret = QString::fromLocal8Bit(name, len);
+	free(name);
+	return ret;
+
+#else // not Q_WS_WIN
+
+	char* name = getenv("USER");
+
+	if (name != 0)
+		return QString(name);
+	return QString();
+
+#endif // not Q_WS_WIN
+}
+
 QString CuteChessApplication::configPath()
 {
 	// We want to have the exact same config path in "gui" and
@@ -148,7 +173,8 @@ void CuteChessApplication::newDefaultGame()
 
 	game->setTimeControl(TimeControl("inf"));
 
-	gameManager()->newGame(game, new HumanBuilder(), new HumanBuilder());
+	gameManager()->newGame(game, new HumanBuilder(userName()),
+			       new HumanBuilder(userName()));
 }
 
 void CuteChessApplication::showGameWindow(int index)
