@@ -58,7 +58,7 @@ void ChessClock::setInfiniteTime(bool infinite)
 	if (!infinite)
 		return;
 
-	killTimer(m_timerId);
+	stopTimer();
 	m_timeLabel->setText(QString("<h1>%1</h1>").arg("inf"));
 }
 
@@ -105,7 +105,7 @@ void ChessClock::stop()
 {
 	m_timeLabel->setPalette(m_defaultPalette);
 
-	killTimer(m_timerId);
+	stopTimer();
 	if (!m_infiniteTime)
 		setTime(m_totalTime - m_time.elapsed());
 }
@@ -117,4 +117,13 @@ void ChessClock::timerEvent(QTimerEvent* event)
 	
 	if (event->timerId() == m_timerId)
 		setTime(m_totalTime - m_time.elapsed());
+}
+
+void ChessClock::stopTimer()
+{
+	if (m_timerId != -1)
+	{
+		killTimer(m_timerId);
+		m_timerId = -1;
+	}
 }

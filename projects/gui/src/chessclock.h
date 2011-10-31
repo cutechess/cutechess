@@ -42,6 +42,8 @@ class ChessClock: public QWidget
 		virtual void timerEvent(QTimerEvent* event);
 	
 	private:
+		void stopTimer();
+
 		int m_totalTime;
 		int m_timerId;
 		bool m_infiniteTime;
