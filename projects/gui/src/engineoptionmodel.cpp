@@ -126,7 +126,9 @@ Qt::ItemFlags EngineOptionModel::flags(const QModelIndex& index) const
 	Qt::ItemFlags defaultFlags =
 		Qt::ItemFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
-	if (index.column() == 0 || index.column() == 2)
+	if (index.column() == 0)
+		return defaultFlags;
+	if (index.column() == 2)
 		return Qt::ItemFlags(defaultFlags | Qt::ItemIsEditable);
 
 	if (index.column() == 1)
