@@ -19,7 +19,7 @@
 #define HUMANPLAYER_H
 
 #include "chessplayer.h"
-namespace Chess { class GenericMove; }
+#include "board/genericmove.h"
 
 
 class LIB_EXPORT HumanPlayer : public ChessPlayer
@@ -34,15 +34,21 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		virtual void makeMove(const Chess::Move& move);
 		virtual bool supportsVariant(const QString& variant) const;
 		virtual bool isHuman() const;
+
+	public slots:
+		void onHumanMove(const Chess::GenericMove& move,
+				 const Chess::Side& side);
+
+	signals:
+		void wokeUp();
 		
 	protected:
 		// Inherited from ChessPlayer
 		virtual void startGame();
 		virtual void startThinking();
 
-	public slots:
-		void onHumanMove(const Chess::GenericMove& move,
-				 const Chess::Side& side);
+	private:
+		Chess::GenericMove m_bufferMove;
 };
 
 #endif // HUMANPLAYER_H

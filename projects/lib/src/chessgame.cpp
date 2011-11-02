@@ -29,6 +29,7 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	  m_board(board),
 	  m_finished(false),
 	  m_gameInProgress(false),
+	  m_paused(false),
 	  m_drawMoveNum(0),
 	  m_drawScore(0),
 	  m_drawScoreCount(0),
@@ -293,6 +294,9 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 
 void ChessGame::startTurn()
 {
+	if (m_paused)
+		return;
+
 	Chess::Side side(m_board->sideToMove());
 	Q_ASSERT(!side.isNull());
 
@@ -559,6 +563,20 @@ void ChessGame::start(int delay)
 	QMetaObject::invokeMethod(this, "syncPlayers", Qt::QueuedConnection);
 }
 
+void ChessGame::pause()
+{
+	m_paused = true;
+}
+
+void ChessGame::resume()
+{
+	if (!m_paused)
+		return;
+	m_paused = false;
+
+	QMetaObject::invokeMethod(this, "startTurn", Qt::QueuedConnection);
+}
+
 void ChessGame::initializePgn()
 {
 	m_pgn->setVariant(m_board->variant());
@@ -592,7 +610,7 @@ void ChessGame::startGame()
 		ChessPlayer* player = m_player[i];
 		Q_ASSERT(player != 0);
 		Q_ASSERT(player->isReady());
-		
+
 		if (player->state() == ChessPlayer::Disconnected)
 			return;
 		if (!player->supportsVariant(m_board->variant()))
@@ -604,7 +622,7 @@ void ChessGame::startGame()
 			return;
 		}
 	}
-	
+
 	resetBoard();
 	initializePgn();
 	emit started();
@@ -646,6 +664,9 @@ void ChessGame::startGame()
 	{
 		connect(m_player[i], SIGNAL(moveMade(Chess::Move)),
 			this, SLOT(onMoveMade(Chess::Move)));
+		if (m_player[i]->isHuman())
+			connect(m_player[i], SIGNAL(wokeUp()),
+				this, SLOT(resume()));
 	}
 	
 	startTurn();

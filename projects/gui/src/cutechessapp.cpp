@@ -172,6 +172,7 @@ void CuteChessApplication::newDefaultGame()
 		new PgnGame());
 
 	game->setTimeControl(TimeControl("inf"));
+	game->pause();
 
 	gameManager()->newGame(game, new HumanBuilder(userName()),
 			       new HumanBuilder(userName()));

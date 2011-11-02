@@ -273,7 +273,11 @@ void MainWindow::newGame()
 			player[i] = new EngineBuilder(config);
 		}
 		else
+		{
 			player[i] = new HumanBuilder(CuteChessApplication::userName());
+			if (side == Chess::Side::White)
+				game->pause();
+		}
 	}
 
 	CuteChessApplication::instance()->gameManager()->newGame(game,

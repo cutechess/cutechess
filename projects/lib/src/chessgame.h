@@ -69,6 +69,8 @@ class LIB_EXPORT ChessGame : public QObject
 
 	public slots:
 		void start(int delay = 0);
+		void pause();
+		void resume();
 		void stop();
 		void kill();
 		void onMoveMade(const Chess::Move& move);
@@ -85,6 +87,7 @@ class LIB_EXPORT ChessGame : public QObject
 
 	private slots:
 		void startGame();
+		void startTurn();
 		void finish();
 		void onForfeit(const Chess::Result& result);
 		void onPlayerReady();
@@ -94,7 +97,6 @@ class LIB_EXPORT ChessGame : public QObject
 	private:
 		void adjudication(const MoveEvaluation& eval);
 		Chess::Move bookMove(Chess::Side side);
-		void startTurn();
 		ChessPlayer* playerToMove();
 		ChessPlayer* playerToWait();
 		void resetBoard();
@@ -109,6 +111,7 @@ class LIB_EXPORT ChessGame : public QObject
 		int m_bookDepth[2];
 		bool m_finished;
 		bool m_gameInProgress;
+		bool m_paused;
 		int m_drawMoveNum;
 		int m_drawScore;
 		int m_drawScoreCount;
