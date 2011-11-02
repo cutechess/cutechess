@@ -39,9 +39,6 @@ NewGameDialog::NewGameDialog(QWidget* parent)
 	m_engines = new EngineConfigurationModel(
 		CuteChessApplication::instance()->engineManager(), this);
 
-	// Add Start button to the standard button box at the bottom
-	ui->m_buttonBox->addButton(tr("Start"), QDialogButtonBox::AcceptRole);
-
 	connect(ui->m_configureWhiteEngineButton, SIGNAL(clicked(bool)), this,
 		SLOT(configureWhiteEngine()));
 	connect(ui->m_configureBlackEngineButton, SIGNAL(clicked(bool)), this,
