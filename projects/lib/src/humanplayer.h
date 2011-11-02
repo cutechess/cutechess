@@ -22,11 +22,22 @@
 #include "board/genericmove.h"
 
 
+/*!
+ * \brief A chess player controlled by a human user.
+ *
+ * A HumanPlayer object works between a graphical chessboard
+ * and a ChessGame object by forwarding the user's moves to the
+ * game.
+ *
+ * Typically human players are created by using a HumanBuilder
+ * object.
+ */
 class LIB_EXPORT HumanPlayer : public ChessPlayer
 {
 	Q_OBJECT
 
 	public:
+		/*! Creates a new human player. */
 		HumanPlayer(QObject* parent = 0);
 
 		// Inherted from ChessPlayer
@@ -36,10 +47,27 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		virtual bool isHuman() const;
 
 	public slots:
+		/*!
+		 * Plays \a move as the human player's next move if
+		 * \a side is the player's side and the move is legal;
+		 * otherwise does nothing.
+		 *
+		 * If the player is in \a Thinking state, it plays
+		 * the move immediately. If its in \a Observing state,
+		 * it saves the move for later, emits the wokeUp() signal,
+		 * and plays the move when it gets its turn.
+		 */
 		void onHumanMove(const Chess::GenericMove& move,
 				 const Chess::Side& side);
 
 	signals:
+		/*!
+		 * This signal is emitted when the player receives a
+		 * user-made move in \a Observing state.
+		 *
+		 * Normally this signal is connected to ChessGame::resume()
+		 * to resume a paused game when the user makes a move.
+		 */
 		void wokeUp();
 		
 	protected:
