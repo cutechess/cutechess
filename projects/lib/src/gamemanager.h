@@ -108,10 +108,6 @@ class LIB_EXPORT GameManager : public QObject
 		 * limit. In \a Enqueue mode the game is started as soon as
 		 * a free game slot is available.
 		 *
-		 * \a delay is the time in milliseconds that should be waited
-		 * between calling \a game's start method and actually starting
-		 * the game. The default value is 0.
-		 *
 		 * Returns true if successfull (ie. the game was added to the queue
 		 * or it was started successfully); otherwise returns false.
 		 *
@@ -121,8 +117,7 @@ class LIB_EXPORT GameManager : public QObject
 		bool newGame(ChessGame* game,
 			     const PlayerBuilder* white,
 			     const PlayerBuilder* black,
-			     StartMode mode = StartImmediately,
-			     int delay = 0);
+			     StartMode mode = StartImmediately);
 
 	signals:
 		/*! This signal is emitted when a new game starts. */
@@ -164,7 +159,6 @@ class LIB_EXPORT GameManager : public QObject
 			ChessGame* game;
 			const PlayerBuilder* white;
 			const PlayerBuilder* black;
-			int delay;
 		};
 
 		GameThread* getThread(const PlayerBuilder* white,

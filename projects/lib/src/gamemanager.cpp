@@ -264,16 +264,14 @@ void GameManager::finish()
 bool GameManager::newGame(ChessGame* game,
 			  const PlayerBuilder* white,
 			  const PlayerBuilder* black,
-			  GameManager::StartMode mode,
-			  int delay)
+			  GameManager::StartMode mode)
 {
 	Q_ASSERT(game != 0);
 	Q_ASSERT(white != 0);
 	Q_ASSERT(black != 0);
 	Q_ASSERT(game->parent() == 0);
-	Q_ASSERT(delay >= 0);
 
-	GameEntry entry = { game, white, black, delay };
+	GameEntry entry = { game, white, black };
 
 	if (mode == StartImmediately)
 		return startGame(entry, StartImmediately);
@@ -367,7 +365,7 @@ bool GameManager::startGame(const GameEntry& entry, StartMode mode)
 	connect(entry.game, SIGNAL(started()), this, SLOT(onGameStarted()),
 		Qt::QueuedConnection);
 	gameThread->start();
-	entry.game->start(entry.delay);
+	entry.game->start();
 
 	return true;
 }

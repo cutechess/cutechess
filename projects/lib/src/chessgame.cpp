@@ -27,6 +27,7 @@
 ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	: QObject(parent),
 	  m_board(board),
+	  m_startDelay(0),
 	  m_finished(false),
 	  m_gameInProgress(false),
 	  m_paused(false),
@@ -450,6 +451,12 @@ void ChessGame::generateOpening()
 	}
 }
 
+void ChessGame::setStartDelay(int time)
+{
+	Q_ASSERT(time >= 0);
+	m_startDelay = time;
+}
+
 void ChessGame::pauseThread()
 {
 	m_pauseSem.release();
@@ -542,13 +549,12 @@ void ChessGame::syncPlayers()
 		emit playersReady();
 }
 
-void ChessGame::start(int delay)
+void ChessGame::start()
 {
-	Q_ASSERT(delay >= 0);
-
-	if (delay > 0)
+	if (m_startDelay > 0)
 	{
-		QTimer::singleShot(delay, this, SLOT(start()));
+		QTimer::singleShot(m_startDelay, this, SLOT(start()));
+		m_startDelay = 0;
 		return;
 	}
 

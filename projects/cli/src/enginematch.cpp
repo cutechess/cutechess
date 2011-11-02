@@ -359,6 +359,8 @@ void EngineMatch::start()
 	ChessGame* game = new ChessGame(board, new PgnGame);
 	connect(this, SIGNAL(stopGame()), game, SLOT(kill()), Qt::QueuedConnection);
 
+	game->setStartDelay(m_wait);
+
 	EngineData* white = m_fcp;
 	EngineData* black = m_scp;
 	if ((m_currentGame % 2) == 0)
@@ -412,8 +414,7 @@ void EngineMatch::start()
 	connect(game, SIGNAL(finished()), this, SLOT(onGameEnded()));
 	if (!m_manager.newGame(game,
 			       white->builder, black->builder,
-			       GameManager::Enqueue,
-			       m_wait))
+			       GameManager::Enqueue))
 		stop();
 }
 

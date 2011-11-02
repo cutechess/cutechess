@@ -61,6 +61,7 @@ class LIB_EXPORT ChessGame : public QObject
 				    int depth = 1000);
 		void setDrawThreshold(int moveNumber, int score);
 		void setResignThreshold(int moveCount, int score);
+		void setStartDelay(int time);
 
 		void generateOpening();
 
@@ -68,7 +69,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void unlockThread();
 
 	public slots:
-		void start(int delay = 0);
+		void start();
 		void pause();
 		void resume();
 		void stop();
@@ -109,6 +110,7 @@ class LIB_EXPORT ChessGame : public QObject
 		TimeControl m_timeControl[2];
                 const OpeningBook* m_book[2];
 		int m_bookDepth[2];
+		int m_startDelay;
 		bool m_finished;
 		bool m_gameInProgress;
 		bool m_paused;
