@@ -45,6 +45,9 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	else
 		setWindowTitle(tr("Configure Engine"));
 
+	ui->m_progressBar->setRange(0, 0);
+	ui->m_progressBar->hide();
+
 	ui->m_protocolCombo->addItems(EngineFactory::protocols());
 
 	ui->m_optionsView->setModel(m_engineOptionModel);
@@ -186,6 +189,10 @@ void EngineConfigurationDialog::detectEngineOptions()
 	m_oldPath = ui->m_workingDirEdit->text();
 	m_oldProtocol = ui->m_protocolCombo->currentText();
 
+	ui->m_detectBtn->setEnabled(false);
+	ui->m_restoreBtn->setEnabled(false);
+	ui->m_progressBar->show();
+
 	EngineBuilder builder(engineConfiguration());
 	m_engine = qobject_cast<ChessEngine*>(builder.create(0, 0, this));
 
@@ -200,12 +207,15 @@ void EngineConfigurationDialog::detectEngineOptions()
 		connect(m_optionDetectionTimer, SIGNAL(timeout()),
 			m_engine, SLOT(kill()));
 
-		ui->m_detectBtn->setEnabled(false);
-		ui->m_restoreBtn->setEnabled(false);
 		m_optionDetectionTimer->start();
 	}
 	else
+	{
+		ui->m_detectBtn->setEnabled(true);
+		ui->m_restoreBtn->setEnabled(true);
+		ui->m_progressBar->hide();
 		emit detectionFinished();
+	}
 }
 
 void EngineConfigurationDialog::onEngineReady()
@@ -239,6 +249,7 @@ void EngineConfigurationDialog::onEngineQuit()
 
 	ui->m_detectBtn->setEnabled(true);
 	ui->m_restoreBtn->setDisabled(m_options.isEmpty());
+	ui->m_progressBar->hide();
 }
 
 void EngineConfigurationDialog::onTabChanged(int index)
