@@ -413,8 +413,10 @@ void EngineMatch::start()
 
 	connect(game, SIGNAL(finished()), this, SLOT(onGameEnded()));
 	if (!m_manager.newGame(game,
-			       white->builder, black->builder,
-			       GameManager::Enqueue))
+			       white->builder,
+			       black->builder,
+			       GameManager::Enqueue,
+			       GameManager::ReusePlayers))
 		stop();
 }
 

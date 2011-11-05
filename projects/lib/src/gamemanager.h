@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QPointer>
 class ChessGame;
 class ChessPlayer;
 class PlayerBuilder;
@@ -50,6 +51,21 @@ class LIB_EXPORT GameManager : public QObject
 			 * a game slot becomes free. This could be immediately.
 			 */
 			Enqueue
+		};
+		/*! The mode for cleaning up after deleted games. */
+		enum CleanupMode
+		{
+			/*!
+			 * The players and their builder objects are deleted
+			 * when the game object is deleted.
+			 */
+			DeletePlayers,
+			/*!
+			 * The players are left alive after the game is deleted.
+			 * If a new game with the same builder objects is started,
+			 * the players are reused for that game.
+			 */
+			ReusePlayers
 		};
 
 		/*! Creates a new game manager. */
@@ -108,6 +124,9 @@ class LIB_EXPORT GameManager : public QObject
 		 * limit. In \a Enqueue mode the game is started as soon as
 		 * a free game slot is available.
 		 *
+		 * \a cleanupMode determines whether the players and their builder
+		 * objects are destroyed or reused after the game.
+		 *
 		 * Returns true if successfull (ie. the game was added to the queue
 		 * or it was started successfully); otherwise returns false.
 		 *
@@ -117,7 +136,8 @@ class LIB_EXPORT GameManager : public QObject
 		bool newGame(ChessGame* game,
 			     const PlayerBuilder* white,
 			     const PlayerBuilder* black,
-			     StartMode mode = StartImmediately);
+			     StartMode startMode = StartImmediately,
+			     CleanupMode cleanupMode = DeletePlayers);
 
 	signals:
 		/*! This signal is emitted when a new game starts. */
@@ -150,7 +170,7 @@ class LIB_EXPORT GameManager : public QObject
 
 	private slots:
 		void onGameStarted();
-		void onThreadReady(GameManager::StartMode mode);
+		void onThreadReady();
 		void onThreadQuit();
 
 	private:
@@ -159,18 +179,21 @@ class LIB_EXPORT GameManager : public QObject
 			ChessGame* game;
 			const PlayerBuilder* white;
 			const PlayerBuilder* black;
+			StartMode startMode;
+			CleanupMode cleanupMode;
 		};
 
 		GameThread* getThread(const PlayerBuilder* white,
 				      const PlayerBuilder* black);
-		bool startGame(const GameEntry& entry, StartMode mode);
+		bool startGame(const GameEntry& entry);
 		bool startQueuedGame();
 		void cleanup();
 
 		bool m_finishing;
 		int m_concurrency;
 		int m_activeQueuedGameCount;
-		QList<GameThread*> m_threads;
+		QList< QPointer<GameThread> > m_threads;
+		QList<GameThread*> m_activeThreads;
 		QList<GameEntry> m_gameEntries;
 		QList<ChessGame*> m_activeGames;
 };
