@@ -175,8 +175,14 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Tells the engine to stop thinking and move now. */
 		void stopThinking();
 
+		/*! Adds \a option to the engine options list. */
+		void addOption(EngineOption* option);
+		/*!
+		 * Returns the option that matches \a name.
+		 * Returns 0 if an option with that name doesn't exist.
+		 */
 		EngineOption* getOption(const QString& name) const;
-
+		/*! Tells the engine to set option \a name's value to \a value. */
 		virtual void sendOption(const QString& name, const QString& value) = 0;
 
 		/*! Adds \a variant to the list of supported variants. */
@@ -196,10 +202,8 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		virtual bool restartsBetweenGames() const;
 
 		/*! Are evaluation scores from white's point of view? */
-		bool m_whiteEvalPov;
+		bool whiteEvalPov() const;
 
-		QList<EngineOption*> m_options;
-		
 	protected slots:
 		// Inherited from ChessPlayer
 		virtual void onTimeout();
@@ -238,12 +242,14 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		int m_id;
 		State m_pingState;
 		bool m_pinging;
+		bool m_whiteEvalPov;
 		QTimer* m_pingTimer;
 		QTimer* m_quitTimer;
 		QTimer* m_idleTimer;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
 		QStringList m_variants;
+		QList<EngineOption*> m_options;
 		QMap<QString, QVariant> m_optionBuffer;
 		EngineConfiguration::RestartMode m_restartMode;
 };

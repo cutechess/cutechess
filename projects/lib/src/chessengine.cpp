@@ -71,10 +71,10 @@ QStringRef ChessEngine::firstToken(const QString& str, bool untilEnd)
 
 ChessEngine::ChessEngine(QObject* parent)
 	: ChessPlayer(parent),
-	  m_whiteEvalPov(false),
 	  m_id(s_count++),
 	  m_pingState(NotStarted),
 	  m_pinging(false),
+	  m_whiteEvalPov(false),
 	  m_pingTimer(new QTimer(this)),
 	  m_quitTimer(new QTimer(this)),
 	  m_idleTimer(new QTimer(this)),
@@ -128,6 +128,12 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 
 	m_whiteEvalPov = configuration.whiteEvalPov();
 	m_restartMode = configuration.restartMode();
+}
+
+void ChessEngine::addOption(EngineOption* option)
+{
+	Q_ASSERT(option != 0);
+	m_options.append(option);
 }
 
 EngineOption* ChessEngine::getOption(const QString& name) const
@@ -234,6 +240,11 @@ EngineConfiguration::RestartMode ChessEngine::restartMode() const
 bool ChessEngine::restartsBetweenGames() const
 {
 	return m_restartMode == EngineConfiguration::RestartOn;
+}
+
+bool ChessEngine::whiteEvalPov() const
+{
+	return m_whiteEvalPov;
 }
 
 void ChessEngine::endGame(const Chess::Result& result)

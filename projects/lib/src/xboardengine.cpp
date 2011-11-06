@@ -374,12 +374,12 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	else if (name == "memory")
 	{
 		if (val == "1")
-			m_options.append(new EngineSpinOption("memory", 32, 32, 0, INT_MAX - 1));
+			addOption(new EngineSpinOption("memory", 32, 32, 0, INT_MAX - 1));
 	}
 	else if (name == "smp")
 	{
 		if (val == "1")
-			m_options.append(new EngineSpinOption("cores", 1, 1, 0, INT_MAX - 1));
+			addOption(new EngineSpinOption("cores", 1, 1, 0, INT_MAX - 1));
 	}
 	else if (name == "egt")
 	{
@@ -387,7 +387,7 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 		foreach (const QString& str, list)
 		{
 			QString egtType = QString("egtpath %1").arg(str.trimmed());
-			m_options.append(new EngineTextOption(egtType, QString(), QString()));
+			addOption(new EngineTextOption(egtType, QString(), QString()));
 		}
 	}
 	else if (name == "done")
@@ -466,7 +466,7 @@ void XboardEngine::parseLine(const QString& line)
 		val = ref.toString().toInt(&ok);
 		if (ok)
 		{
-			if (m_whiteEvalPov && side() == Chess::Side::Black)
+			if (whiteEvalPov() && side() == Chess::Side::Black)
 				val = -val;
 			m_eval.setScore(val);
 		}

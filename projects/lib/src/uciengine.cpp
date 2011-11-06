@@ -293,7 +293,7 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 				if (tokens[i - 1] == "cp")
 				{
 					score = tokens[i].toString().toInt();
-					if (m_whiteEvalPov
+					if (whiteEvalPov()
 					&&  side() == Chess::Side::Black)
 						score = -score;
 				}
@@ -510,7 +510,7 @@ void UciEngine::parseLine(const QString& line)
 		}
 		else
 		{
-			m_options.append(option);
+			addOption(option);
 			return;
 		}
 
