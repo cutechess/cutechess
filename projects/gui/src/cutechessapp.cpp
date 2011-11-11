@@ -17,6 +17,8 @@
 
 #include "cutechessapp.h"
 
+#include <cstdlib>
+
 #include <QCoreApplication>
 #include <QDir>
 #include <QTime>
@@ -91,7 +93,7 @@ CuteChessApplication* CuteChessApplication::instance()
 
 QString CuteChessApplication::userName()
 {
-#ifdef Q_WS_WIN
+#ifdef Q_CC_MSVC
 
 	char* name;
 	size_t len;
@@ -103,15 +105,19 @@ QString CuteChessApplication::userName()
 	free(name);
 	return ret;
 
-#else // not Q_WS_WIN
+#else // not Q_CC_MSVC
 
+  #ifdef Q_WS_WIN
+	char* name = getenv("USERNAME");
+  #else
 	char* name = getenv("USER");
+  #endif
 
 	if (name != 0)
-		return QString(name);
+		return QString::fromLocal8Bit(name);
 	return QString();
 
-#endif // not Q_WS_WIN
+#endif // not Q_CC_MSVC
 }
 
 QString CuteChessApplication::configPath()
