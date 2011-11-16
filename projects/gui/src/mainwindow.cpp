@@ -316,8 +316,7 @@ void MainWindow::setCurrentGame(ChessGame* game)
 	foreach (const Chess::Move& move, m_game->moves())
 		m_boardScene->makeMove(move);
 
-	ChessPlayer* movingPlayer = m_game->player(m_game->board()->sideToMove());
-	m_boardView->setEnabled(movingPlayer->isHuman());
+	m_boardView->setEnabled(m_game->playerToMove()->isHuman());
 
 	updateWindowTitle();
 	m_game->unlockThread();

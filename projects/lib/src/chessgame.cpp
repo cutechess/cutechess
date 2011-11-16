@@ -92,14 +92,14 @@ Chess::Result ChessGame::result() const
 	return m_result;
 }
 
-ChessPlayer* ChessGame::playerToMove()
+ChessPlayer* ChessGame::playerToMove() const
 {
 	if (m_board->sideToMove().isNull())
 		return 0;
 	return m_player[m_board->sideToMove()];
 }
 
-ChessPlayer* ChessGame::playerToWait()
+ChessPlayer* ChessGame::playerToWait() const
 {
 	if (m_board->sideToMove().isNull())
 		return 0;

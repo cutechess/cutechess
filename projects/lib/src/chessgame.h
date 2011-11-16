@@ -42,6 +42,8 @@ class LIB_EXPORT ChessGame : public QObject
 		virtual ~ChessGame();
 		
 		ChessPlayer* player(Chess::Side side) const;
+		ChessPlayer* playerToMove() const;
+		ChessPlayer* playerToWait() const;
 		bool isFinished() const;
 
 		PgnGame* pgn() const;
@@ -98,8 +100,6 @@ class LIB_EXPORT ChessGame : public QObject
 	private:
 		void adjudication(const MoveEvaluation& eval);
 		Chess::Move bookMove(Chess::Side side);
-		ChessPlayer* playerToMove();
-		ChessPlayer* playerToWait();
 		void resetBoard();
 		void initializePgn();
 		void addPgnMove(const Chess::Move& move, const QString& comment);
