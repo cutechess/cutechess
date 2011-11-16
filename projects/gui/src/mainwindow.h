@@ -26,14 +26,14 @@ class QMenu;
 class QAction;
 class QTextEdit;
 class QCloseEvent;
-class BoardScene;
 class QGraphicsView;
+class QTabBar;
+class BoardScene;
 class MoveListModel;
 class EngineConfigurationModel;
 class ChessClock;
 class PlainTextLog;
 class ChessGame;
-class PgnGame;
 
 /**
  * MainWindow
@@ -46,6 +46,9 @@ class MainWindow : public QMainWindow
 		MainWindow(ChessGame* game);
 		virtual ~MainWindow();
 		QString windowListTitle() const;
+
+	public slots:
+		void addGame(ChessGame* game);
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);
@@ -61,6 +64,9 @@ class MainWindow : public QMainWindow
 		bool save();
 		bool saveAs();
 		void import();
+		void onTabChanged(int index);
+		void onTabCloseRequested(int index);
+		void removeGame(ChessGame* game = 0);
 
 	private:
 		void createActions();
@@ -68,15 +74,18 @@ class MainWindow : public QMainWindow
 		void createToolBars();
 		void createDockWindows();
 		void readSettings();
-		QString genericWindowTitle() const;
+		QString genericTitle(ChessGame* game) const;
 		bool saveGame(const QString& fileName);
 		bool askToSave();
+		void setCurrentGame(ChessGame* game);
 
 		QMenu* m_gameMenu;
 		QMenu* m_viewMenu;
 		QMenu* m_enginesMenu;
 		QMenu* m_windowMenu;
 		QMenu* m_helpMenu;
+
+		QTabBar* m_tabs;
 
 		BoardScene* m_boardScene;
 		QGraphicsView* m_boardView;
@@ -96,7 +105,7 @@ class MainWindow : public QMainWindow
 		PlainTextLog* m_engineDebugLog;
 
 		ChessGame* m_game;
-		PgnGame* m_pgn;
+		QList<ChessGame*> m_games;
 
 		QString m_currentFile;
 
