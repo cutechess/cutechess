@@ -47,8 +47,6 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 		m_book[i] = 0;
 		m_bookDepth[i] = 0;
 	}
-
-	emit humanEnabled(false);
 }
 
 ChessGame::~ChessGame()
@@ -301,13 +299,13 @@ void ChessGame::startTurn()
 	Chess::Side side(m_board->sideToMove());
 	Q_ASSERT(!side.isNull());
 
+	emit humanEnabled(m_player[side]->isHuman());
+
 	Chess::Move move(bookMove(side));
 	if (move.isNull())
 		m_player[side]->go();
 	else
 		m_player[side]->makeBookMove(move);
-
-	emit humanEnabled(m_player[side]->isHuman());
 }
 
 void ChessGame::onForfeit(const Chess::Result& result)
