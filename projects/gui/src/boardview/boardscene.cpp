@@ -51,6 +51,9 @@ BoardScene::~BoardScene()
 
 void BoardScene::setBoard(Chess::Board* board)
 {
+	if (m_board != board)
+		delete m_board;
+
 	clear();
 	m_history.clear();
 	m_transition.clear();
