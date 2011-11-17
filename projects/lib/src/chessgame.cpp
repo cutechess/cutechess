@@ -139,7 +139,7 @@ void ChessGame::finish()
 			m_player[i]->disconnect(this);
 	}
 
-	emit finished();
+	emit finished(this);
 }
 
 void ChessGame::kill()
@@ -629,7 +629,7 @@ void ChessGame::startGame()
 
 	resetBoard();
 	initializePgn();
-	emit started();
+	emit started(this);
 	emit fenChanged(m_board->startingFenString());
 
 	for (int i = 0; i < 2; i++)

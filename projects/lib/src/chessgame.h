@@ -84,8 +84,8 @@ class LIB_EXPORT ChessGame : public QObject
 		void moveMade(const Chess::GenericMove& move,
 			      const QString& sanString,
 			      const QString& comment);
-		void started();
-		void finished();
+		void started(ChessGame* game = 0);
+		void finished(ChessGame* game = 0);
 		void playersReady();
 
 	private slots:

@@ -169,7 +169,6 @@ class LIB_EXPORT GameManager : public QObject
 		void debugMessage(const QString& data);
 
 	private slots:
-		void onGameStarted();
 		void onThreadReady();
 		void onThreadQuit();
 
