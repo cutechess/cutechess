@@ -43,7 +43,7 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 	public:
-		MainWindow(ChessGame* game);
+		explicit MainWindow(ChessGame* game);
 		virtual ~MainWindow();
 		QString windowListTitle() const;
 

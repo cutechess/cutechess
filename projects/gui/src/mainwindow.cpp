@@ -372,6 +372,9 @@ void MainWindow::newGame()
 		}
 	}
 
+	// Start the game in a new tab
+	connect(game, SIGNAL(started(ChessGame*)),
+		this, SLOT(addGame(ChessGame*)));
 	CuteChessApplication::instance()->gameManager()->newGame(game,
 		player[0], player[1]);
 }

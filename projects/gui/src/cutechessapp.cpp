@@ -74,9 +74,6 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	// Read the game database state
 	gameDatabaseManager()->readState(configPath() + QLatin1String("/gamedb.bin"));
 
-	connect(gameManager(), SIGNAL(gameStarted(ChessGame*)), this,
-		SLOT(newGameWindow(ChessGame*)));
-
 	connect(this, SIGNAL(lastWindowClosed()), this, SLOT(onLastWindowClosed()));
 	connect(this, SIGNAL(aboutToQuit()), this, SLOT(onAboutToQuit()));
 }
@@ -179,6 +176,9 @@ void CuteChessApplication::newDefaultGame()
 
 	game->setTimeControl(TimeControl("inf"));
 	game->pause();
+
+	connect(game, SIGNAL(started(ChessGame*)),
+		this, SLOT(newGameWindow(ChessGame*)));
 
 	gameManager()->newGame(game,
 			       new HumanBuilder(userName()),
