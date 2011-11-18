@@ -51,6 +51,7 @@ class CuteChessApplication : public QApplication
 		MainWindow* newGameWindow(ChessGame* game);
 		void newDefaultGame();
 		void showGameDatabaseDialog();
+		void showGameWall();
 
 	private slots:
 		void showImportProgressDialog(PgnImporter* importer);

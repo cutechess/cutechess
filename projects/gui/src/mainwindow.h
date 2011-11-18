@@ -101,6 +101,7 @@ class MainWindow : public QMainWindow
 		QAction* m_importGameAct;
 		QAction* m_manageEnginesAct;
 		QAction* m_showGameDatabaseWindowAct;
+		QAction* m_showGameWallAct;
 
 		PlainTextLog* m_engineDebugLog;
 

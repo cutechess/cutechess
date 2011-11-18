@@ -22,7 +22,8 @@ HEADERS += chessclock.h \
     engineoptionmodel.h \
     gamedatabasesearchdlg.h \
     timecontroldlg.h \
-    engineconfigproxymodel.h
+    engineconfigproxymodel.h \
+    gamewall.h
 SOURCES += main.cpp \
     chessclock.cpp \
     engineconfigurationmodel.cpp \
@@ -46,4 +47,5 @@ SOURCES += main.cpp \
     engineoptionmodel.cpp \
     gamedatabasesearchdlg.cpp \
     timecontroldlg.cpp \
-    engineconfigproxymodel.cpp
+    engineconfigproxymodel.cpp \
+    gamewall.cpp

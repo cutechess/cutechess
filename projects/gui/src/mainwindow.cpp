@@ -139,6 +139,8 @@ void MainWindow::createActions()
 
 	m_showGameDatabaseWindowAct = new QAction(tr("&Game Database"), this);
 
+	m_showGameWallAct = new QAction(tr("Game Wall"), this);
+
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
 	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
 	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
@@ -152,6 +154,9 @@ void MainWindow::createActions()
 
 	connect(m_showGameDatabaseWindowAct, SIGNAL(triggered(bool)),
 		CuteChessApplication::instance(), SLOT(showGameDatabaseDialog()));
+
+	connect(m_showGameWallAct, SIGNAL(triggered()),
+		CuteChessApplication::instance(), SLOT(showGameWall()));
 }
 
 void MainWindow::createMenus()
@@ -486,6 +491,7 @@ void MainWindow::onWindowMenuAboutToShow()
 {
 	m_windowMenu->clear();
 
+	m_windowMenu->addAction(m_showGameWallAct);
 	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
 	m_windowMenu->addSeparator();
 

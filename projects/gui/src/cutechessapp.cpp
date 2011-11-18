@@ -37,6 +37,7 @@
 #include "gamedatabasemanager.h"
 #include "importprogressdlg.h"
 #include "pgnimporter.h"
+#include "gamewall.h"
 
 
 CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
@@ -213,6 +214,12 @@ void CuteChessApplication::showGameDatabaseDialog()
 	m_gameDatabaseDialog->show();
 	m_gameDatabaseDialog->raise();
 	m_gameDatabaseDialog->activateWindow();
+}
+
+void CuteChessApplication::showGameWall()
+{
+	GameWall* gameWall = new GameWall(gameManager());
+	gameWall->show();
 }
 
 void CuteChessApplication::onLastWindowClosed()
