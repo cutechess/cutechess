@@ -587,7 +587,11 @@ void MainWindow::closeEvent(QCloseEvent* event)
 		{
 			for (int i = m_games.size() - 1; i >= 0; i--)
 				onTabCloseRequested(i);
-			event->ignore();
+
+			if (m_games.isEmpty())
+				event->accept();
+			else
+				event->ignore();
 		}
 	}
 	else
