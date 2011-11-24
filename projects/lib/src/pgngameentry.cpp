@@ -58,16 +58,16 @@ static int s_stringContains(const char* s1, const char* s2, int size)
 	if (size == 0)
 		return -1;
 
-	const char* s1_begin = s1;
+	const char* s1_end = s1 + size;
 
-	while (s1 - s1_begin < size)
+	while (s1 < s1_end)
 	{
 		if (toupper(*s1) == toupper(*s2))
 		{
-			const char* a = s1;
-			const char* b = s2;
+			const char* a = s1 + 1;
+			const char* b = s2 + 1;
 
-			while (*b && a - s1_begin < size - 1)
+			while (*b && a < s1_end)
 			{
 				if (toupper(*a) != toupper(*b))
 					break;
@@ -76,6 +76,8 @@ static int s_stringContains(const char* s1, const char* s2, int size)
 			}
 			if (!*b)
 				return b - s2;
+			if (a == s1_end)
+				return -1;
 		}
 		s1++;
 	}
