@@ -17,12 +17,11 @@
 
 #include "gamewall.h"
 
-#include <QHBoxLayout>
-
 #include <chessplayer.h>
 #include <chessgame.h>
 #include <gamemanager.h>
 
+#include "tilelayout.h"
 #include "boardview/boardscene.h"
 #include "boardview/boardview.h"
 #include "chessclock.h"
@@ -32,7 +31,7 @@ GameWall::GameWall(GameManager* manager, QWidget *parent)
 {
 	setAttribute(Qt::WA_DeleteOnClose, true);
 	setWindowTitle(tr("Game Wall"));
-	setLayout(new QHBoxLayout());
+	setLayout(new TileLayout());
 
 	foreach (ChessGame* game, manager->activeGames())
 		addGame(game);
