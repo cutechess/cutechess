@@ -159,7 +159,10 @@ void UciEngine::startThinking()
 	
 	QString command = "go";
 	if (myTc->isInfinite())
-		command += " infinite";
+	{
+		if (myTc->plyLimit() == 0 && myTc->nodeLimit() == 0)
+			command += " infinite";
+	}
 	else if (myTc->timePerMove() > 0)
 		command += QString(" movetime %1").arg(myTc->timeLeft());
 	else
