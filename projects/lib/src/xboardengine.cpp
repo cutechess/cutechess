@@ -53,6 +53,7 @@ XboardEngine::XboardEngine(QObject* parent)
 	  m_ftTime(true),
 	  m_ftUsermove(false),
 	  m_ftReuse(true),
+	  m_ftNps(false),
 	  m_gotResult(false),
 	  m_lastPing(0),
 	  m_notation(Chess::Board::LongAlgebraic),
@@ -126,7 +127,10 @@ void XboardEngine::startGame()
 	// Send the time controls
 	const TimeControl* myTc = timeControl();
 	if (myTc->isInfinite())
-		write(QString("st %1").arg(s_infiniteSec));
+	{
+		if (myTc->plyLimit() == 0 && myTc->nodeLimit() == 0)
+			write(QString("st %1").arg(s_infiniteSec));
+	}
 	else if (myTc->timePerMove() > 0)
 		write(QString("st %1").arg(myTc->timePerMove() / 1000));
 	else
@@ -137,6 +141,13 @@ void XboardEngine::startGame()
 
 	if (myTc->plyLimit() > 0)
 		write(QString("sd %1").arg(myTc->plyLimit()));
+	if (myTc->nodeLimit() > 0)
+	{
+		if (m_ftNps)
+			write(QString("st 1\nnps %1").arg(myTc->nodeLimit()));
+		else
+			qDebug() << name() << "doesn't support the nps command.";
+	}
 
 	// Show thinking
 	write("post");
@@ -349,6 +360,8 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	}
 	else if (name == "usermove")
 		m_ftUsermove = (val == "1");
+	else if (name == "nps")
+		m_ftNps = (val == "1");
 	else if (name == "time")
 		m_ftTime = (val == "1");
 	else if (name == "reuse")

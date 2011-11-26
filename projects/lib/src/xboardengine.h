@@ -76,6 +76,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		bool m_ftTime;
 		bool m_ftUsermove;
 		bool m_ftReuse;
+		bool m_ftNps;
 		
 		bool m_gotResult;
 		int m_lastPing;
