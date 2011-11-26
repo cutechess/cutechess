@@ -35,8 +35,16 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 	EngineProcess* process = new EngineProcess();
 
 	QString workDir = m_config.workingDirectory();
+	QString cmd = m_config.command();
+
 	if (workDir.isEmpty())
+	{
 		process->setWorkingDirectory(QDir::tempPath());
+
+		QFileInfo cmdInfo(cmd);
+		if (cmdInfo.isFile())
+			cmd = cmdInfo.absoluteFilePath();
+	}
 	else
 	{
 		// Make sure the path to the executable is resolved
@@ -51,9 +59,9 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 	}
 
 	if (!m_config.arguments().isEmpty())
-		process->start(m_config.command(), m_config.arguments());
+		process->start(cmd, m_config.arguments());
 	else
-		process->start(m_config.command());
+		process->start(cmd);
 	bool ok = process->waitForStarted();
 
 	if (!workDir.isEmpty())
