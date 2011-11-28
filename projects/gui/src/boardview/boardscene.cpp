@@ -51,6 +51,7 @@ BoardScene::~BoardScene()
 
 void BoardScene::setBoard(Chess::Board* board)
 {
+	stopAnimation();
 	if (m_board != board)
 		delete m_board;
 
@@ -69,6 +70,7 @@ void BoardScene::populate()
 {
 	Q_ASSERT(m_board != 0);
 
+	stopAnimation();
 	clear();
 	m_history.clear();
 	m_transition.clear();
