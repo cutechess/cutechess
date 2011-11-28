@@ -21,6 +21,7 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QPair>
+#include <QPointer>
 
 class ChessGame;
 namespace Chess { class GenericMove; }
@@ -54,7 +55,7 @@ class MoveListModel : public QAbstractItemModel
 
 	private:
 		static const QStringList m_headers;
-		ChessGame* m_game;
+		QPointer<ChessGame> m_game;
 		QList< QPair<QString, QString> > m_moveList;
 };
 
