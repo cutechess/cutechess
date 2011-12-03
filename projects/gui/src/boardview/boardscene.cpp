@@ -135,6 +135,9 @@ void BoardScene::makeMove(const Chess::Move& move)
 	m_moveHighlights = new QGraphicsItemGroup(m_squares, this);
 	m_moveHighlights->setZValue(-1);
 
+	Q_ASSERT(!move.isNull());
+	Q_ASSERT(m_board->isLegalMove(move));
+
 	Chess::BoardTransition transition;
 	m_board->makeMove(move, &transition);
 	m_history << transition;
