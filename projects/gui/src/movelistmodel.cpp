@@ -33,10 +33,7 @@ void MoveListModel::setGame(ChessGame* game)
 	Q_ASSERT(game != 0);
 
 	if (m_game != 0)
-	{
-		disconnect(m_game);
 		m_game->disconnect(this);
-	}
 	m_game = game;
 
 	m_moveList.clear();
