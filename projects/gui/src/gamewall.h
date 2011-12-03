@@ -20,6 +20,8 @@
 
 #include <QWidget>
 #include <QMap>
+#include <QList>
+class QTimer;
 class ChessGame;
 class GameManager;
 
@@ -35,8 +37,13 @@ class GameWall : public QWidget
 		void addGame(ChessGame* game);
 		void removeGame(ChessGame* game);
 
+	private slots:
+		void cleanupWidgets();
+
 	private:
 		QMap<ChessGame*, QWidget*> m_games;
+		QList<QWidget*> m_gamesToRemove;
+		QTimer* m_timer;
 };
 
 #endif // GAMEWALL_H

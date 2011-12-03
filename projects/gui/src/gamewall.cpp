@@ -17,6 +17,8 @@
 
 #include "gamewall.h"
 
+#include <QTimer>
+
 #include <chessplayer.h>
 #include <chessgame.h>
 #include <gamemanager.h>
@@ -27,7 +29,8 @@
 #include "chessclock.h"
 
 GameWall::GameWall(GameManager* manager, QWidget *parent)
-	: QWidget(parent)
+	: QWidget(parent),
+	  m_timer(new QTimer(this))
 {
 	setAttribute(Qt::WA_DeleteOnClose, true);
 	setWindowTitle(tr("Game Wall"));
@@ -40,6 +43,10 @@ GameWall::GameWall(GameManager* manager, QWidget *parent)
 		this, SLOT(addGame(ChessGame*)));
 	connect(manager, SIGNAL(gameDestroyed(ChessGame*)),
 		this, SLOT(removeGame(ChessGame*)));
+
+	m_timer->setSingleShot(true);
+	m_timer->setInterval(2000);
+	connect(m_timer, SIGNAL(timeout()), this, SLOT(cleanupWidgets()));
 }
 
 void GameWall::addGame(ChessGame* game)
@@ -108,12 +115,27 @@ void GameWall::addGame(ChessGame* game)
 
 	view->setEnabled(false);
 	m_games[game] = widget;
+
+	cleanupWidgets();
 }
 
 void GameWall::removeGame(ChessGame* game)
 {
 	Q_ASSERT(m_games.contains(game));
-	delete m_games.take(game);
+	m_gamesToRemove.append(m_games.take(game));
+
+	if (!m_timer->isActive())
+		m_timer->start();
+}
+
+void GameWall::cleanupWidgets()
+{
+	m_timer->stop();
+	if (m_gamesToRemove.isEmpty())
+		return;
+
+	qDeleteAll(m_gamesToRemove);
+	m_gamesToRemove.clear();
 
 	if (m_games.isEmpty())
 		close();
