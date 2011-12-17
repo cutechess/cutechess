@@ -15,25 +15,23 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "humanbuilder.h"
-#include "humanplayer.h"
+#include "playerbuilder.h"
 
-HumanBuilder::HumanBuilder(const QString& name)
-	: PlayerBuilder(name)
+PlayerBuilder::PlayerBuilder(const QString& name)
+	: m_name(name)
 {
 }
 
-ChessPlayer* HumanBuilder::create(QObject *receiver,
-				  const char *method,
-				  QObject *parent) const
+PlayerBuilder::~PlayerBuilder()
 {
-	ChessPlayer* player = new HumanPlayer(parent);
-	if (!name().isEmpty())
-		player->setName(name());
+}
 
-	if (receiver != 0 && method != 0)
-		QObject::connect(player, SIGNAL(debugMessage(QString)),
-				 receiver, method);
+QString PlayerBuilder::name() const
+{
+	return m_name;
+}
 
-	return player;
+void PlayerBuilder::setName(const QString& name)
+{
+	m_name = name;
 }

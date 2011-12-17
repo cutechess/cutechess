@@ -18,6 +18,7 @@
 #ifndef PLAYERBUILDER_H
 #define PLAYERBUILDER_H
 
+#include <QString>
 class QObject;
 class ChessPlayer;
 
@@ -36,7 +37,15 @@ class ChessPlayer;
 class LIB_EXPORT PlayerBuilder
 {
 	public:
-		virtual ~PlayerBuilder() {}
+		/*! Creates a new player builder with name \a name. */
+		PlayerBuilder(const QString& name);
+		/*! Destroys the player builder. */
+		virtual ~PlayerBuilder();
+
+		/*! Returns the player's name. */
+		QString name() const;
+		/*! Sets the player's name to \a name. */
+		void setName(const QString& name);
 		/*!
 		 * Creates a new player and sets its parent to \a parent.
 		 *
@@ -48,6 +57,9 @@ class LIB_EXPORT PlayerBuilder
 		virtual ChessPlayer* create(QObject* receiver = 0,
 					    const char* method = 0,
 					    QObject* parent = 0) const = 0;
+
+	private:
+		QString m_name;
 };
 
 #endif // PLAYERBUILDER_H

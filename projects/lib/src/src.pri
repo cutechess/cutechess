@@ -52,6 +52,7 @@ SOURCES += chessengine.cpp \
     enginebuttonoption.cpp \
     pgngameentry.cpp \
     gamemanager.cpp \
+    playerbuilder.cpp \
     enginebuilder.cpp \
     enginefactory.cpp \
     humanbuilder.cpp \

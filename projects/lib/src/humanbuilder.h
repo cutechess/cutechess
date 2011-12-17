@@ -38,9 +38,6 @@ class LIB_EXPORT HumanBuilder : public PlayerBuilder
 		virtual ChessPlayer* create(QObject* receiver,
 					    const char* method,
 					    QObject* parent) const;
-
-	private:
-		QString m_playerName;
 };
 
 #endif // HUMANBUILDER_H

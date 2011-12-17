@@ -23,7 +23,8 @@
 
 
 EngineBuilder::EngineBuilder(const EngineConfiguration& config)
-	: m_config(config)
+	: PlayerBuilder(config.name()),
+	  m_config(config)
 {
 }
 
