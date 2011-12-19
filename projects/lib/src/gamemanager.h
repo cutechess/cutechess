@@ -98,6 +98,18 @@ class LIB_EXPORT GameManager : public QObject
 		void setConcurrency(int concurrency);
 
 		/*!
+		 * Cleans up and deletes all idle game threads
+		 *
+		 * This function cleans up and removes all resources used by
+		 * game threads that are waiting for new games. The resources
+		 * include the players and the thread they're living in. The
+		 * PlayerBuilder objects will not be deleted.
+		 *
+		 * Generally this function should be called after a tournament
+		 * has ended.
+		 */
+		void cleanupIdleThreads();
+		/*!
 		 * Removes all future games from the queue, waits for
 		 * ongoing games to end, and deletes all idle players.
 		 * Emits the finished() signal when done.

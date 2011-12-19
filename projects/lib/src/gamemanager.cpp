@@ -250,6 +250,26 @@ void GameManager::setConcurrency(int concurrency)
 	m_concurrency = concurrency;
 }
 
+void GameManager::cleanupIdleThreads()
+{
+	QList<GameThread*>::iterator it = m_activeThreads.begin();
+	while (it != m_activeThreads.end())
+	{
+		GameThread* thread = *it;
+		Q_ASSERT(thread != 0);
+
+		if (thread->isReady())
+		{
+			it = m_activeThreads.erase(it);
+
+			connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+			thread->quitPlayers();
+		}
+		else
+			++it;
+	}
+}
+
 void GameManager::cleanup()
 {
 	m_finishing = false;
@@ -397,7 +417,10 @@ bool GameManager::startGame(const GameEntry& entry)
 	}
 	m_activeGames << entry.game;
 	if (entry.startMode == Enqueue)
+	{
 		m_activeQueuedGameCount++;
+		cleanupIdleThreads();
+	}
 
 	connect(entry.game, SIGNAL(started(ChessGame*)),
 		this, SIGNAL(gameStarted(ChessGame*)),
