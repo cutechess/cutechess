@@ -66,23 +66,6 @@ MainWindow::MainWindow(ChessGame* game)
 
 	m_moveListModel = new MoveListModel(this);
 
-	m_tabs = new QTabBar();
-	m_tabs->setDocumentMode(true);
-	m_tabs->setTabsClosable(true);
-	m_tabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-	connect(m_tabs, SIGNAL(currentChanged(int)),
-		this, SLOT(onTabChanged(int)));
-	connect(m_tabs, SIGNAL(tabCloseRequested(int)),
-		this, SLOT(onTabCloseRequested(int)));
-
-	QToolBar* toolBar = new QToolBar(tr("Game Tabs"));
-	toolBar->setFloatable(false);
-	toolBar->setMovable(false);
-	toolBar->setAllowedAreas(Qt::TopToolBarArea);
-	toolBar->addWidget(m_tabs);
-	addToolBar(toolBar);
-
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
 	mainLayout->addWidget(m_boardView);
@@ -190,6 +173,23 @@ void MainWindow::createToolBars()
 {
 	// Create tool bars here, use actions from createActions()
 	// See: createActions(), QToolBar documentation
+
+	m_tabs = new QTabBar();
+	m_tabs->setDocumentMode(true);
+	m_tabs->setTabsClosable(true);
+	m_tabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+	connect(m_tabs, SIGNAL(currentChanged(int)),
+		this, SLOT(onTabChanged(int)));
+	connect(m_tabs, SIGNAL(tabCloseRequested(int)),
+		this, SLOT(onTabCloseRequested(int)));
+
+	QToolBar* toolBar = new QToolBar(tr("Game Tabs"));
+	toolBar->setFloatable(false);
+	toolBar->setMovable(false);
+	toolBar->setAllowedAreas(Qt::TopToolBarArea);
+	toolBar->addWidget(m_tabs);
+	addToolBar(toolBar);
 }
 
 void MainWindow::createDockWindows()
