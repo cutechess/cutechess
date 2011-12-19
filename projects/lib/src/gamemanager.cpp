@@ -274,7 +274,7 @@ void GameManager::cleanup()
 {
 	m_finishing = false;
 
-	// Remove idle threads from the list
+	// Remove terminated threads from the list
 	QList< QPointer<GameThread> >::iterator it = m_threads.begin();
 	while (it != m_threads.end())
 	{
