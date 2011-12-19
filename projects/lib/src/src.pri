@@ -29,7 +29,9 @@ HEADERS += chessengine.h \
     enginefactory.h \
     humanbuilder.h \
     engineoptionfactory.h \
-    pgngamefilter.h
+    pgngamefilter.h \
+    tournament.h \
+    roundrobintournament.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -57,7 +59,9 @@ SOURCES += chessengine.cpp \
     enginefactory.cpp \
     humanbuilder.cpp \
     engineoptionfactory.cpp \
-    pgngamefilter.cpp
+    pgngamefilter.cpp \
+    tournament.cpp \
+    roundrobintournament.cpp
 win32 { 
     HEADERS += engineprocess_win.h \
         pipereader_win.h

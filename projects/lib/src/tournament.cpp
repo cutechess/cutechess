@@ -1,0 +1,461 @@
+/*
+    This file is part of Cute Chess.
+
+    Cute Chess is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Cute Chess is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+#include "tournament.h"
+#include <QFile>
+#include <gamemanager.h>
+#include <playerbuilder.h>
+#include <board/boardfactory.h>
+#include <chessplayer.h>
+#include <chessgame.h>
+#include <pgnstream.h>
+
+Tournament::Tournament(GameManager* gameManager, QObject *parent)
+	: QObject(parent),
+	  m_gameManager(gameManager),
+	  m_lastGame(0),
+	  m_variant("standard"),
+	  m_round(0),
+	  m_nextGameNumber(0),
+	  m_finishedGameCount(0),
+	  m_savedGameCount(0),
+	  m_finalGameCount(0),
+	  m_gamesPerEncounter(1),
+	  m_roundMultiplier(1),
+	  m_startDelay(0),
+	  m_drawMoveNumber(0),
+	  m_drawScore(0),
+	  m_resignMoveCount(0),
+	  m_resignScore(0),
+	  m_pgnInputDepth(256),
+	  m_pgnGamesRead(0),
+	  m_stopping(false),
+	  m_repeatOpening(false),
+	  m_cleanupPgnin(false),
+	  m_recover(false),
+	  m_pgnin(0),
+	  m_pgnOutMode(PgnGame::Verbose),
+	  m_pair(QPair<int, int>(-1, -1))
+{
+	Q_ASSERT(gameManager != 0);
+}
+
+Tournament::~Tournament()
+{
+	if (!m_gameData.isEmpty())
+		qWarning("Tournament: Destroyed while games are still running.");
+
+	qDeleteAll(m_pgnGames);
+	qDeleteAll(m_gameData);
+	foreach (const PlayerData& data, m_players)
+		delete data.builder;
+
+	if (m_cleanupPgnin && m_pgnin != 0)
+	{
+		delete m_pgnin->device();
+		delete m_pgnin;
+	}
+}
+
+QString Tournament::name() const
+{
+	return m_name;
+}
+
+QString Tournament::site() const
+{
+	return m_site;
+}
+
+QString Tournament::variant() const
+{
+	return m_variant;
+}
+
+int Tournament::currentRound() const
+{
+	return m_round;
+}
+
+int Tournament::gamesPerEncounter() const
+{
+	return m_gamesPerEncounter;
+}
+
+int Tournament::roundMultiplier() const
+{
+	return m_roundMultiplier;
+}
+
+int Tournament::finishedGameCount() const
+{
+	return m_finishedGameCount;
+}
+
+int Tournament::finalGameCount() const
+{
+	return m_finalGameCount;
+}
+
+Tournament::PlayerData Tournament::playerAt(int index) const
+{
+	return m_players.at(index);
+}
+
+int Tournament::playerCount() const
+{
+	return m_players.size();
+}
+
+void Tournament::setName(const QString& name)
+{
+	m_name = name;
+}
+
+void Tournament::setSite(const QString& site)
+{
+	m_site = site;
+}
+
+void Tournament::setVariant(const QString& variant)
+{
+	m_variant = variant;
+}
+
+void Tournament::setCurrentRound(int round)
+{
+	Q_ASSERT(round >= 1);
+	m_round = round;
+}
+
+void Tournament::setGamesPerEncounter(int count)
+{
+	Q_ASSERT(count > 0);
+	m_gamesPerEncounter = count;
+}
+
+void Tournament::setRoundMultiplier(int factor)
+{
+	Q_ASSERT(factor > 0);
+	m_roundMultiplier = factor;
+}
+
+void Tournament::setConcurrency(int concurrency)
+{
+	Q_ASSERT(concurrency > 0);
+	m_gameManager->setConcurrency(concurrency);
+}
+
+void Tournament::setStartDelay(int delay)
+{
+	Q_ASSERT(delay >= 0);
+	m_startDelay = delay;
+}
+
+void Tournament::setRecoveryMode(bool recover)
+{
+	m_recover = recover;
+}
+
+void Tournament::setDrawThreshold(int moveNumber, int score)
+{
+	Q_ASSERT(moveNumber >= 0);
+	Q_ASSERT(score >= 0);
+
+	m_drawMoveNumber = moveNumber;
+	m_drawScore = score;
+}
+
+void Tournament::setResignTreshold(int moveCount, int score)
+{
+	Q_ASSERT(moveCount >= 0);
+	Q_ASSERT(score >= 0);
+
+	m_resignMoveCount = moveCount;
+	m_resignScore = score;
+}
+
+void Tournament::setPgnInput(PgnStream* stream)
+{
+	if (m_cleanupPgnin && m_pgnin != 0)
+	{
+		delete m_pgnin->device();
+		delete m_pgnin;
+	}
+	m_cleanupPgnin = false;
+
+	m_startFen.clear();
+	m_openingMoves.clear();
+	m_pgnin = stream;
+}
+
+void Tournament::setPgnInput(const QString& fileName)
+{
+	QFile* file = new QFile(fileName);
+	if (!file->open(QIODevice::ReadOnly))
+	{
+		qWarning("Can't open PGN file %s", qPrintable(fileName));
+		delete file;
+	}
+	else
+	{
+		setPgnInput(new PgnStream(file));
+		m_cleanupPgnin = true;
+	}
+}
+
+void Tournament::setPgnInputDepth(int plies)
+{
+	m_pgnInputDepth = plies;
+}
+
+void Tournament::setPgnOutput(const QString& fileName, PgnGame::PgnMode mode)
+{
+	m_pgnout = fileName;
+	m_pgnOutMode = mode;
+}
+
+void Tournament::setOpeningRepetition(bool repeat)
+{
+	m_repeatOpening = repeat;
+}
+
+void Tournament::addPlayer(PlayerBuilder* builder,
+			   const TimeControl& timeControl,
+			   const OpeningBook* book,
+			   int bookDepth)
+{
+	Q_ASSERT(builder != 0);
+
+	PlayerData data = { builder, timeControl, book, bookDepth, 0, 0, 0 };
+	m_players.append(data);
+}
+
+void Tournament::startNextGame()
+{
+	if (m_stopping || m_nextGameNumber >= m_finalGameCount)
+		return;
+
+	if (m_nextGameNumber % m_gamesPerEncounter == 0)
+	{
+		m_pair = nextPair();
+		m_startFen.clear();
+		m_openingMoves.clear();
+	}
+	else
+		m_pair = qMakePair(m_pair.second, m_pair.first);
+
+	PlayerData& white = m_players[m_pair.first];
+	PlayerData& black = m_players[m_pair.second];
+
+	Chess::Board* board = Chess::BoardFactory::create(m_variant);
+	Q_ASSERT(board != 0);
+	ChessGame* game = new ChessGame(board, new PgnGame());
+
+	connect(game, SIGNAL(started(ChessGame*)),
+		this, SLOT(onGameStarted(ChessGame*)));
+	connect(game, SIGNAL(finished(ChessGame*)),
+		this, SLOT(onGameFinished(ChessGame*)));
+
+	game->setTimeControl(white.timeControl, Chess::Side::White);
+	game->setTimeControl(black.timeControl, Chess::Side::Black);
+
+	game->setOpeningBook(white.book, Chess::Side::White, white.bookDepth);
+	game->setOpeningBook(black.book, Chess::Side::Black, black.bookDepth);
+
+	bool isRepeat = false;
+	if (!m_startFen.isEmpty() || !m_openingMoves.isEmpty())
+	{
+		game->setStartingFen(m_startFen);
+		game->setMoves(m_openingMoves);
+		m_startFen.clear();
+		m_openingMoves.clear();
+		isRepeat = true;
+	}
+	else if (m_pgnin != 0 && m_pgnin->isOpen())
+	{
+		PgnGame pgn;
+		if (pgn.read(*m_pgnin, m_pgnInputDepth))
+			m_pgnGamesRead++;
+		// Rewind the PGN input file
+		else if (m_pgnGamesRead > 0)
+		{
+			m_pgnin->rewind();
+			bool ok = pgn.read(*m_pgnin, m_pgnInputDepth);
+			Q_ASSERT(ok);
+			Q_UNUSED(ok);
+			m_pgnGamesRead++;
+		}
+		game->setMoves(pgn);
+	}
+
+	game->generateOpening();
+	if (m_repeatOpening && !isRepeat)
+	{
+		m_startFen = game->startingFen();
+		m_openingMoves = game->moves();
+	}
+
+	game->pgn()->setEvent(m_name);
+	game->pgn()->setSite(m_site);
+	game->pgn()->setRound(m_round);
+
+	game->setStartDelay(m_startDelay);
+
+	game->setDrawThreshold(m_drawMoveNumber, m_drawScore);
+	game->setResignThreshold(m_resignMoveCount, m_resignScore);
+
+	GameData* data = new GameData;
+	data->number = m_nextGameNumber++;
+	data->white = &white;
+	data->black = &black;
+	m_gameData[game] = data;
+
+	qDebug("Started tournament game %d of %d", m_nextGameNumber, m_finalGameCount);
+	m_gameManager->newGame(game,
+			       white.builder,
+			       black.builder,
+			       GameManager::Enqueue,
+			       GameManager::ReusePlayers);
+}
+
+void Tournament::onGameStarted(ChessGame* game)
+{
+	Q_ASSERT(game != 0);
+	Q_ASSERT(m_gameData.contains(game));
+
+	GameData* data = m_gameData[game];
+	data->white->builder->setName(game->player(Chess::Side::White)->name());
+	data->black->builder->setName(game->player(Chess::Side::Black)->name());
+
+	emit gameStarted(game, data->number);
+}
+
+void Tournament::onGameFinished(ChessGame* game)
+{
+	Q_ASSERT(game != 0);
+
+	PgnGame* pgn(game->pgn());
+	Chess::Result result(game->result());
+
+	m_finishedGameCount++;
+
+	Q_ASSERT(m_gameData.contains(game));
+	GameData* data = m_gameData.take(game);
+	int gameNumber = data->number;
+
+	switch (game->result().winner())
+	{
+	case Chess::Side::White:
+		data->white->wins++;
+		data->black->losses++;
+		break;
+	case Chess::Side::Black:
+		data->black->wins++;
+		data->white->losses++;
+		break;
+	default:
+		if (game->result().isDraw())
+		{
+			data->white->draws++;
+			data->black->draws++;
+		}
+		break;
+	}
+	delete data;
+
+	if (!m_pgnout.isEmpty())
+	{
+		m_pgnGames[gameNumber] = pgn;
+		while (m_pgnGames.contains(m_savedGameCount))
+		{
+			pgn = m_pgnGames.take(m_savedGameCount++);
+			pgn->write(m_pgnout, m_pgnOutMode);
+			delete pgn;
+		}
+	}
+
+	Chess::Result::Type resultType(game->result().type());
+	bool crashed = (resultType == Chess::Result::Disconnection ||
+			resultType == Chess::Result::StalledConnection);
+	if (!m_recover && crashed)
+		stop();
+
+	emit gameFinished(game, gameNumber);
+
+	if (m_finishedGameCount == m_finalGameCount
+	||  (m_stopping && m_gameData.isEmpty()))
+	{
+		m_stopping = false;
+		m_lastGame = game;
+		connect(m_gameManager, SIGNAL(gameDestroyed(ChessGame*)),
+			this, SLOT(onGameDestroyed(ChessGame*)));
+	}
+
+	game->deleteLater();
+}
+
+void Tournament::onGameDestroyed(ChessGame* game)
+{
+	if (game != m_lastGame)
+		return;
+
+	m_lastGame = 0;
+	m_gameManager->cleanupIdleThreads();
+	emit finished();
+}
+
+void Tournament::start()
+{
+	Q_ASSERT(m_players.size() > 1);
+
+	m_round = 1;
+	m_nextGameNumber = 0;
+	m_finishedGameCount = 0;
+	m_savedGameCount = 0;
+	m_finalGameCount = 0;
+	m_pgnGamesRead = 0;
+	m_stopping = false;
+
+	qDeleteAll(m_pgnGames);
+	m_gameData.clear();
+	m_pgnGames.clear();
+	m_startFen.clear();
+	m_openingMoves.clear();
+
+	connect(m_gameManager, SIGNAL(ready()),
+		this, SLOT(startNextGame()));
+
+	initializePairing();
+	m_finalGameCount = gamesPerCycle() * gamesPerEncounter() * roundMultiplier();
+
+	startNextGame();
+}
+
+void Tournament::stop()
+{
+	if (m_stopping)
+		return;
+
+	m_stopping = true;
+	disconnect(m_gameManager, SIGNAL(ready()),
+		   this, SLOT(startNextGame()));
+
+	foreach (ChessGame* game, m_gameData.keys())
+		QMetaObject::invokeMethod(game, "stop", Qt::QueuedConnection);
+}
