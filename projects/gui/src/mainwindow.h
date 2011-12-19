@@ -19,7 +19,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <board/side.h>
+#include <QPointer>
 
 namespace Chess { class Board; class Move; }
 class QMenu;
@@ -66,7 +66,8 @@ class MainWindow : public QMainWindow
 		void import();
 		void onTabChanged(int index);
 		void onTabCloseRequested(int index);
-		void removeGame(ChessGame* game = 0);
+		void removeGame(ChessGame* game);
+		void destroyGame(ChessGame* game);
 
 	private:
 		void createActions();
@@ -105,11 +106,11 @@ class MainWindow : public QMainWindow
 
 		PlainTextLog* m_engineDebugLog;
 
-		ChessGame* m_game;
+		QPointer<ChessGame> m_game;
 		QList<ChessGame*> m_games;
 
 		QString m_currentFile;
-
+		bool m_closing;
 };
 
 #endif // MAINWINDOW_H

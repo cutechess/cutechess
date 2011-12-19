@@ -29,6 +29,7 @@
 #include <humanbuilder.h>
 #include <enginebuilder.h>
 #include <chessplayer.h>
+#include <pgnstream.h>
 
 #include "cutechessapp.h"
 #include "boardview/boardscene.h"
@@ -44,7 +45,8 @@
 #include "gamedatabasemanager.h"
 
 MainWindow::MainWindow(ChessGame* game)
-	: m_game(0)
+	: m_game(0),
+	  m_closing(false)
 {
 	setAttribute(Qt::WA_DeleteOnClose, true);
 
@@ -229,8 +231,6 @@ void MainWindow::addGame(ChessGame* game)
 
 void MainWindow::removeGame(ChessGame* game)
 {
-	if (game == 0)
-		game = qobject_cast<ChessGame*>(sender());
 	Q_ASSERT(game != 0);
 
 	int index = m_games.indexOf(game);
@@ -238,7 +238,13 @@ void MainWindow::removeGame(ChessGame* game)
 
 	m_games.removeAt(index);
 	m_tabs->removeTab(index);
+}
 
+void MainWindow::destroyGame(ChessGame* game)
+{
+	Q_ASSERT(game != 0);
+
+	removeGame(game);
 	game->deleteLater();
 	delete game->pgn();
 
@@ -255,19 +261,37 @@ void MainWindow::setCurrentGame(ChessGame* game)
 
 	if (m_game != 0)
 	{
-		m_game->disconnect(m_boardScene);
-		m_game->disconnect(m_boardView);
+		disconnect(m_game, 0, m_boardScene, 0);
+		disconnect(m_game, 0, m_boardView, 0);
+		disconnect(m_game, 0, m_moveListModel, 0);
 
 		for (int i = 0; i < 2; i++)
 		{
 			ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
 			if (player != 0)
 			{
-				m_boardScene->disconnect(player);
-				player->disconnect(m_engineDebugLog);
-				player->disconnect(m_chessClock[i]);
+				disconnect(m_boardScene, 0, player, 0);
+				disconnect(player, 0, m_engineDebugLog, 0);
+				disconnect(player, 0, m_chessClock[0], 0);
+				disconnect(player, 0, m_chessClock[1], 0);
 			}
 		}
+
+		ChessGame* tmp = m_game;
+		m_game = 0;
+
+		// QObject::disconnect() is not atomic, so we need to flush
+		// all pending events from the previous game before switching
+		// to the next one.
+		tmp->lockThread();
+		CuteChessApplication::processEvents();
+		tmp->unlockThread();
+
+		// If the call to CuteChessApplication::processEvents() caused
+		// a new game to be selected as the current game, then our
+		// work here is done.
+		if (m_game != 0)
+			return;
 	}
 
 	m_game = game;
@@ -278,7 +302,7 @@ void MainWindow::setCurrentGame(ChessGame* game)
 	connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
 		m_boardScene, SLOT(makeMove(Chess::GenericMove)));
 	connect(m_game, SIGNAL(humanEnabled(bool)),
-			m_boardView, SLOT(setEnabled(bool)));
+		m_boardView, SLOT(setEnabled(bool)));
 
 	m_engineDebugLog->clear();
 
@@ -327,7 +351,7 @@ void MainWindow::setCurrentGame(ChessGame* game)
 
 void MainWindow::onTabChanged(int index)
 {
-	if (index == -1)
+	if (index == -1 || m_closing)
 		m_game = 0;
 	else
 		setCurrentGame(m_games.at(index));
@@ -338,10 +362,11 @@ void MainWindow::onTabCloseRequested(int index)
 	ChessGame* game = m_games.at(index);
 
 	if (game->isFinished())
-		removeGame(game);
+		destroyGame(game);
 	else
 	{
-		connect(game, SIGNAL(finished()), this, SLOT(removeGame()));
+		connect(game, SIGNAL(finished(ChessGame*)),
+			this, SLOT(destroyGame(ChessGame*)));
 		QMetaObject::invokeMethod(game, "stop", Qt::QueuedConnection);
 	}
 }
@@ -581,6 +606,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 {
 	if (askToSave())
 	{
+		m_closing = true;
 		if (m_games.isEmpty())
 			event->accept();
 		else
