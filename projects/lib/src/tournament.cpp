@@ -331,11 +331,18 @@ void Tournament::startNextGame()
 	m_gameData[game] = data;
 
 	qDebug("Started tournament game %d of %d", m_nextGameNumber, m_finalGameCount);
-	m_gameManager->newGame(game,
-			       white.builder,
-			       black.builder,
-			       GameManager::Enqueue,
-			       GameManager::ReusePlayers);
+	if (!m_gameManager->newGame(game,
+				    white.builder,
+				    black.builder,
+				    GameManager::Enqueue,
+				    GameManager::ReusePlayers))
+	{
+		delete game->pgn();
+		game->deleteLater();
+		m_gameData.remove(game);
+
+		stop();
+	}
 }
 
 void Tournament::onGameStarted(ChessGame* game)
@@ -456,10 +463,17 @@ void Tournament::stop()
 	if (m_stopping)
 		return;
 
-	m_stopping = true;
 	disconnect(m_gameManager, SIGNAL(ready()),
 		   this, SLOT(startNextGame()));
 
+	if (m_gameData.isEmpty())
+	{
+		m_gameManager->cleanupIdleThreads();
+		emit finished();
+		return;
+	}
+
+	m_stopping = true;
 	foreach (ChessGame* game, m_gameData.keys())
 		QMetaObject::invokeMethod(game, "stop", Qt::QueuedConnection);
 }
