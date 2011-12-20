@@ -21,12 +21,15 @@
 #include <QFileInfo>
 #include <QDir>
 #include <enginemanager.h>
+#include <gamemanager.h>
 #include <cstdlib>
 #include <cstdio>
 
 
 CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
-	: QCoreApplication(argc, argv), m_engineManager(0)
+	: QCoreApplication(argc, argv),
+	  m_engineManager(0),
+	  m_gameManager(0)
 {
 	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
@@ -92,6 +95,14 @@ EngineManager* CuteChessCoreApplication::engineManager()
 		m_engineManager = new EngineManager(this);
 
 	return m_engineManager;
+}
+
+GameManager* CuteChessCoreApplication::gameManager()
+{
+	if (m_gameManager == 0)
+		m_gameManager = new GameManager(this);
+
+	return m_gameManager;
 }
 
 CuteChessCoreApplication* CuteChessCoreApplication::instance()

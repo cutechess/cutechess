@@ -21,6 +21,7 @@
 #include <QCoreApplication>
 
 class EngineManager;
+class GameManager;
 
 class CuteChessCoreApplication : public QCoreApplication
 {
@@ -32,12 +33,13 @@ class CuteChessCoreApplication : public QCoreApplication
 
 		QString configPath();
 		EngineManager* engineManager();
+		GameManager* gameManager();
 		static CuteChessCoreApplication* instance();
 
 		static void messageHandler(QtMsgType type, const char* message);
 	private:
 		EngineManager* m_engineManager;
-
+		GameManager* m_gameManager;
 };
 
 #endif  // CUTE_CHESS_CORE_APPLICATION_H
