@@ -109,12 +109,6 @@ class LIB_EXPORT GameManager : public QObject
 		 * has ended.
 		 */
 		void cleanupIdleThreads();
-		/*!
-		 * Removes all future games from the queue, waits for
-		 * ongoing games to end, and deletes all idle players.
-		 * Emits the finished() signal when done.
-		 */
-		void finish();
 
 		/*!
 		 * Adds a new game to the game manager.
@@ -150,6 +144,14 @@ class LIB_EXPORT GameManager : public QObject
 			     const PlayerBuilder* black,
 			     StartMode startMode = StartImmediately,
 			     CleanupMode cleanupMode = DeletePlayers);
+
+	public slots:
+		/*!
+		 * Removes all future games from the queue, waits for
+		 * ongoing games to end, and deletes all idle players.
+		 * Emits the finished() signal when done.
+		 */
+		void finish();
 
 	signals:
 		/*! This signal is emitted when a new game starts. */
