@@ -189,7 +189,6 @@ void Tournament::setDrawThreshold(int moveNumber, int score)
 void Tournament::setResignThreshold(int moveCount, int score)
 {
 	Q_ASSERT(moveCount >= 0);
-	Q_ASSERT(score >= 0);
 
 	m_resignMoveCount = moveCount;
 	m_resignScore = score;
