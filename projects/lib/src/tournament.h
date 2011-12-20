@@ -145,7 +145,7 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		void setRecoveryMode(bool recover);
 		/*!
-		 * Sets the draw adjudication treshold for each game.
+		 * Sets the draw adjudication threshold for each game.
 		 *
 		 * A game will be adjudicated as a draw if both players report
 		 * a score that's within \a score centipawns from zero after
@@ -153,14 +153,14 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		void setDrawThreshold(int moveNumber, int score);
 		/*!
-		 * Sets the resign adjudication treshold for each game.
+		 * Sets the resign adjudication threshold for each game.
 		 *
 		 * A game will be adjudicated as a loss for the player that
 		 * made the last move if it reports a score that's at least
 		 * \a score centipawns below zero for at least \a moveCount
 		 * consecutive moves.
 		 */
-		void setResignTreshold(int moveCount, int score);
+		void setResignThreshold(int moveCount, int score);
 		/*!
 		 * Sets \a stream as the PGN-formatted opening book.
 		 *
