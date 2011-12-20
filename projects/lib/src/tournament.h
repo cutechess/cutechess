@@ -76,6 +76,8 @@ class LIB_EXPORT Tournament : public QObject
 
 		/*! Returns the tournament type (eg. "round-robin" or "gauntlet"). */
 		virtual QString type() const = 0;
+		/*! Returns the GameManager that manages the tournament's games. */
+		GameManager* gameManager() const;
 		/*!
 		 * Returns the name of the tournament.
 		 *

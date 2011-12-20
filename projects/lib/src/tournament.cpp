@@ -72,6 +72,11 @@ Tournament::~Tournament()
 	}
 }
 
+GameManager* Tournament::gameManager() const
+{
+	return m_gameManager;
+}
+
 QString Tournament::name() const
 {
 	return m_name;
