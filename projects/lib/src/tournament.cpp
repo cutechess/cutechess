@@ -139,6 +139,7 @@ void Tournament::setSite(const QString& site)
 
 void Tournament::setVariant(const QString& variant)
 {
+	Q_ASSERT(Chess::BoardFactory::variants().contains(variant));
 	m_variant = variant;
 }
 
@@ -396,7 +397,8 @@ void Tournament::onGameFinished(ChessGame* game)
 		while (m_pgnGames.contains(m_savedGameCount))
 		{
 			pgn = m_pgnGames.take(m_savedGameCount++);
-			pgn->write(m_pgnout, m_pgnOutMode);
+			if (!pgn->write(m_pgnout, m_pgnOutMode))
+				qWarning("Can't write to PGN file %s", qPrintable(m_pgnout));
 			delete pgn;
 		}
 	}
