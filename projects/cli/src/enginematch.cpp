@@ -17,84 +17,68 @@
 
 #include "enginematch.h"
 #include <cmath>
-#include <QTimer>
-#include <QtDebug>
-#include <board/boardfactory.h>
 #include <chessplayer.h>
+#include <playerbuilder.h>
 #include <chessgame.h>
-#include <enginebuilder.h>
 #include <polyglotbook.h>
+#include <tournament.h>
+#include <gamemanager.h>
 
 
-EngineMatch::EngineMatch(QObject* parent)
+EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
 	: QObject(parent),
-	  m_gameCount(1),
-	  m_drawCount(0),
-	  m_currentGame(0),
-	  m_finishedGames(0),
-	  m_pgnDepth(1000),
-	  m_pgnGamesRead(0),
-	  m_drawMoveNum(0),
-	  m_drawScore(0),
-	  m_resignMoveCount(0),
-	  m_resignScore(0),
-	  m_wait(0),
-	  m_debug(false),
-	  m_recover(false),
-	  m_finishing(false),
-	  m_pgnMode(PgnGame::Verbose),
-	  m_repeatOpening(false),
-	  m_variant("standard"),
-	  m_fcp(0),
-	  m_scp(0)
+	  m_tournament(tournament),
+	  m_debug(false)
 {
+	Q_ASSERT(tournament != 0);
+
 	m_startTime.start();
 }
 
 EngineMatch::~EngineMatch()
 {
 	qDeleteAll(m_books);
-	qDeleteAll(m_builders);
+}
+
+OpeningBook* EngineMatch::addOpeningBook(const QString& fileName)
+{
+	if (fileName.isEmpty())
+		return 0;
+
+	if (m_books.contains(fileName))
+		return m_books[fileName];
+
+	PolyglotBook* book = new PolyglotBook;
+	if (!book->read(fileName))
+	{
+		delete book;
+		qWarning("Can't read opening book file %s", qPrintable(fileName));
+		return 0;
+	}
+
+	m_books[fileName] = book;
+	return book;
+}
+
+void EngineMatch::start()
+{
+	connect(m_tournament, SIGNAL(finished()),
+		this, SLOT(onTournamentFinished()));
+	connect(m_tournament, SIGNAL(gameStarted(ChessGame*, int, int, int)),
+		this, SLOT(onGameStarted(ChessGame*, int)));
+	connect(m_tournament, SIGNAL(gameFinished(ChessGame*, int, int, int)),
+		this, SLOT(onGameFinished(ChessGame*, int)));
+
+	if (m_debug)
+		connect(m_tournament->gameManager(), SIGNAL(debugMessage(QString)),
+			this, SLOT(print(QString)));
+
+	QMetaObject::invokeMethod(m_tournament, "start", Qt::QueuedConnection);
 }
 
 void EngineMatch::stop()
 {
-	if (m_finishing)
-		return;
-
-	m_finishing = true;
-	disconnect(&m_manager, SIGNAL(ready()), this, SLOT(onManagerReady()));
-	m_manager.finish();
-
-	emit stopGame();
-}
-
-void EngineMatch::addEngine(const EngineConfiguration& engineConfig,
-			    const TimeControl& timeControl,
-			    const QString& book,
-			    int bookDepth)
-{
-	// We don't allow more than 2 engines at this point
-	if (m_engines.size() >= 2)
-	{
-		qWarning() << "Only two engines can be added";
-		return;
-	}
-	if (engineConfig.command().isEmpty())
-		return;
-	EngineData data = { engineConfig, timeControl, 0, book, bookDepth, 0, 0 };
-	m_engines.append(data);
-}
-
-bool EngineMatch::setConcurrency(int concurrency)
-{
-	if (concurrency <= 0)
-	{
-		qWarning() << "Concurrency must be bigger than zero";
-		return false;
-	}
-	m_manager.setConcurrency(concurrency);
-	return true;
+	QMetaObject::invokeMethod(m_tournament, "stop", Qt::QueuedConnection);
 }
 
 void EngineMatch::setDebugMode(bool debug)
@@ -102,322 +86,54 @@ void EngineMatch::setDebugMode(bool debug)
 	m_debug = debug;
 }
 
-void EngineMatch::setDrawThreshold(int moveNumber, int score)
+void EngineMatch::onGameStarted(ChessGame* game, int number)
 {
-	m_drawMoveNum = moveNumber;
-	m_drawScore = score;
-}
-
-void EngineMatch::setEvent(const QString& event)
-{
-	m_event = event;
-}
-
-bool EngineMatch::setGameCount(int gameCount)
-{
-	if (gameCount <= 0)
-		return false;
-	m_gameCount = gameCount;
-	return true;
-}
-
-bool EngineMatch::setPgnDepth(int depth)
-{
-	if (depth <= 0)
-		return false;
-
-	m_pgnDepth = depth;
-	return true;
-}
-
-bool EngineMatch::setPgnInput(const QString& filename)
-{
-	m_pgnInputFile.setFileName(filename);
-	if (!m_pgnInputFile.open(QIODevice::ReadOnly))
-	{
-		qWarning() << "Can't open PGN file:" << filename;
-		return false;
-	}
-
-	m_pgnInputStream.setDevice(&m_pgnInputFile);
-	return true;
-}
-
-void EngineMatch::setPgnOutput(const QString& filename,
-			       PgnGame::PgnMode mode)
-{
-	m_pgnOutput = filename;
-	m_pgnMode = mode;
-}
-
-void EngineMatch::setRecoveryMode(bool recover)
-{
-	m_recover = recover;
-}
-
-void EngineMatch::setRepeatOpening(bool repeatOpening)
-{
-	m_repeatOpening = repeatOpening;
-}
-
-void EngineMatch::setResignThreshold(int moveCount, int score)
-{
-	m_resignMoveCount = moveCount;
-	m_resignScore = score;
-}
-
-void EngineMatch::setSite(const QString& site)
-{
-	m_site = site;
-}
-
-bool EngineMatch::setVariant(const QString& variant)
-{
-	if (!Chess::BoardFactory::variants().contains(variant))
-		return false;
-
-	m_variant = variant;
-	return true;
-}
-
-bool EngineMatch::setWait(int msecs)
-{
-	if (msecs < 0)
-		return false;
-	m_wait = msecs;
-	return true;
-}
-
-bool EngineMatch::loadOpeningBook(const QString& filename,
-				  OpeningBook** book)
-{
-	*book = new PolyglotBook;
-	if (!(*book)->read(filename))
-	{
-		delete *book;
-		*book = 0;
-		qWarning() << "Can't open book file" << filename;
-		return false;
-	}
-
-	m_books << *book;
-	return true;
-}
-
-bool EngineMatch::initialize()
-{
-	if (m_engines.size() < 2)
-	{
-		qWarning() << "Two engines are needed";
-		return false;
-	}
-
-	m_fcp = &m_engines[0];
-	m_scp = &m_engines[1];
-	m_finishing = false;
-	m_currentGame = 0;
-	m_finishedGames = 0;
-	m_drawCount = 0;
-	m_games.clear();
-
-	QVector<EngineData>::iterator it;
-
-	if (m_fcp->bookFile == m_scp->bookFile
-	&&  !m_fcp->bookFile.isEmpty())
-	{
-		if (!loadOpeningBook(m_fcp->bookFile, &m_fcp->book))
-			return false;
-		m_scp->book = m_fcp->book;
-	}
-	else
-	{
-		for (it = m_engines.begin(); it != m_engines.end(); ++it)
-		{
-			if (it->bookFile.isEmpty())
-				continue;
-			if (!loadOpeningBook(it->bookFile, &it->book))
-				return false;
-		}
-	}
-
-	for (it = m_engines.begin(); it != m_engines.end(); ++it)
-	{
-		if (!it->tc.isValid())
-		{
-			qWarning() << "Invalid or missing time control";
-			return false;
-		}
-		if (it->config.protocol().isEmpty())
-		{
-			qWarning() << "Missing chess protocol";
-			return false;
-		}
-
-		it->wins = 0;
-		it->builder = new EngineBuilder(it->config);
-		m_builders << it->builder;
-	}
-
-	connect(&m_manager, SIGNAL(ready()), this, SLOT(onManagerReady()));
-	connect(&m_manager, SIGNAL(finished()), this, SIGNAL(finished()),
-		Qt::QueuedConnection);
-
-	if (m_debug)
-		connect(&m_manager, SIGNAL(debugMessage(QString)),
-			this, SLOT(print(QString)));
-
-	return true;
-}
-
-void EngineMatch::onGameEnded()
-{
-	ChessGame* game = qobject_cast<ChessGame*>(QObject::sender());
 	Q_ASSERT(game != 0);
 
-	PgnGame* pgn(game->pgn());
+	qDebug("Started game %d of %d",
+	       number,
+	       m_tournament->finalGameCount());
+}
+
+void EngineMatch::onGameFinished(ChessGame* game, int number)
+{
+	Q_ASSERT(game != 0);
+
 	Chess::Result result(game->result());
-	bool playerMissing(game->player(Chess::Side::White) == 0 ||
-			   game->player(Chess::Side::Black) == 0);
-
-	game->deleteLater();
-	game = 0;
-
-	if (playerMissing || result.type() == Chess::Result::ResultError)
-	{
-		delete pgn;
-		m_finishedGames++;
-		stop();
-		return;
-	}
-
-	int gameId = pgn->round();
-	int wIndex = !(gameId % 2);
-
-	qDebug("Game %d ended: %s", gameId, qPrintable(result.toVerboseString()));
-	if (result.isDraw())
-		m_drawCount++;
-	else if (!result.isNone())
-	{
+	qDebug("Game %d ended: %s", number, qPrintable(result.toVerboseString()));
+	if (!result.winner().isNull())
 		qDebug("%s wins the game as %s",
-		       qPrintable(pgn->playerName(result.winner())),
+		       qPrintable(game->player(result.winner())->name()),
 		       qPrintable(result.winner().toString()));
-		m_engines[wIndex ^ result.winner()].wins++;
-	}
 
-	int totalResults = m_fcp->wins + m_scp->wins + m_drawCount;
+	Tournament::PlayerData fcp = m_tournament->playerAt(0);
+	Tournament::PlayerData scp = m_tournament->playerAt(1);
+	int totalResults = fcp.wins + fcp.losses + fcp.draws;
 	qDebug("Score of %s vs %s: %d - %d - %d  [%.2f] %d",
-	       qPrintable(pgn->playerName(Chess::Side::Type(wIndex))),
-	       qPrintable(pgn->playerName(Chess::Side::Type(!wIndex))),
-	       m_fcp->wins, m_scp->wins, m_drawCount,
-	       double(m_fcp->wins * 2 + m_drawCount) / (totalResults * 2),
+	       qPrintable(fcp.builder->name()),
+	       qPrintable(scp.builder->name()),
+	       fcp.wins, scp.wins, fcp.draws,
+	       double(fcp.wins * 2 + fcp.draws) / (totalResults * 2),
 	       totalResults);
-
-	m_games[gameId] = pgn;
-	while (m_games.contains(m_finishedGames + 1))
-	{
-		m_finishedGames++;
-		pgn = m_games.take(m_finishedGames);
-
-		if (!m_pgnOutput.isEmpty())
-			pgn->write(m_pgnOutput, m_pgnMode);
-
-		delete pgn;
-	}
-
-	if (m_finishedGames >= m_gameCount
-	||  result.type() == Chess::Result::NoResult
-	||  (!m_recover &&
-	     (result.type() == Chess::Result::Disconnection ||
-	      result.type() == Chess::Result::StalledConnection)))
-	{
-		int score = m_fcp->wins * 2 + m_drawCount;
-		int total = (m_fcp->wins + m_scp->wins + m_drawCount) * 2;
-		if (total > 0)
-		{
-			double ratio = double(score) / double(total);
-			double eloDiff = -400.0 * std::log(1.0 / ratio - 1.0) / std::log(10.0);
-			qDebug("ELO difference: %.0f", eloDiff);
-		}
-
-		stop();
-	}
 }
 
-void EngineMatch::onManagerReady()
+void EngineMatch::onTournamentFinished()
 {
-	if (!m_finishing && m_currentGame < m_gameCount)
-		start();
-}
+	Tournament::PlayerData fcp = m_tournament->playerAt(0);
 
-void EngineMatch::start()
-{
-	m_currentGame++;
-	qDebug() << "Started game" << m_currentGame << "of" << m_gameCount;
-
-	Chess::Board* board = Chess::BoardFactory::create(m_variant);
-	Q_ASSERT(board != 0);
-	ChessGame* game = new ChessGame(board, new PgnGame);
-	connect(this, SIGNAL(stopGame()), game, SLOT(kill()), Qt::QueuedConnection);
-
-	game->setStartDelay(m_wait);
-
-	EngineData* white = m_fcp;
-	EngineData* black = m_scp;
-	if ((m_currentGame % 2) == 0)
-		qSwap(white, black);
-
-	game->setTimeControl(white->tc, Chess::Side::White);
-	game->setTimeControl(black->tc, Chess::Side::Black);
-
-	game->setOpeningBook(white->book, Chess::Side::White, white->bookDepth);
-	game->setOpeningBook(black->book, Chess::Side::Black, black->bookDepth);
-
-	if (!m_fen.isEmpty() || !m_openingMoves.isEmpty())
+	int score = fcp.wins * 2 + fcp.draws;
+	int total = (fcp.wins + fcp.losses + fcp.draws) * 2;
+	if (total > 0)
 	{
-		game->setStartingFen(m_fen);
-		m_fen.clear();
-		game->setMoves(m_openingMoves);
-		m_openingMoves.clear();
-	}
-	else if (m_pgnInputStream.isOpen())
-	{
-		PgnGame pgn;
-		if (pgn.read(m_pgnInputStream, m_pgnDepth))
-			m_pgnGamesRead++;
-		// Rewind the PGN input file
-		else if (m_pgnGamesRead > 0)
-		{
-			m_pgnInputStream.rewind();
-			bool ok = pgn.read(m_pgnInputStream, m_pgnDepth);
-			Q_ASSERT(ok);
-			Q_UNUSED(ok);
-			m_pgnGamesRead++;
-		}
-		game->setMoves(pgn);
+		double ratio = double(score) / double(total);
+		double eloDiff = -400.0 * std::log(1.0 / ratio - 1.0) / std::log(10.0);
+		qDebug("ELO difference: %.0f", eloDiff);
 	}
 
-	game->generateOpening();
-
-	if (m_repeatOpening && (m_currentGame % 2) != 0)
-	{
-		m_fen = game->startingFen();
-		m_openingMoves = game->moves();
-	}
-
-	game->pgn()->setRound(m_currentGame);
-	game->pgn()->setEvent(m_event);
-	game->pgn()->setSite(m_site);
-
-	game->setDrawThreshold(m_drawMoveNum, m_drawScore);
-	game->setResignThreshold(m_resignMoveCount, m_resignScore);
-
-	connect(game, SIGNAL(finished()), this, SLOT(onGameEnded()));
-	if (!m_manager.newGame(game,
-			       white->builder,
-			       black->builder,
-			       GameManager::Enqueue,
-			       GameManager::ReusePlayers))
-		stop();
+	qDebug("Finished match");
+	connect(m_tournament->gameManager(), SIGNAL(finished()),
+		this, SIGNAL(finished()));
+	m_tournament->gameManager()->finish();
 }
 
 void EngineMatch::print(const QString& msg)

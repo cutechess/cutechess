@@ -17,14 +17,21 @@
 
 #include <csignal>
 #include <cstdlib>
+
 #include <QtGlobal>
 #include <QDebug>
 #include <QTextStream>
 #include <QStringList>
+#include <QFile>
+
 #include <enginemanager.h>
+#include <enginebuilder.h>
+#include <tournament.h>
+#include <tournamentfactory.h>
 #include <board/boardfactory.h>
 #include <enginefactory.h>
 #include <enginetextoption.h>
+
 #include "cutechesscoreapp.h"
 #include "matchparser.h"
 #include "enginematch.h"
@@ -234,7 +241,9 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	if (!parser.parse())
 		return 0;
 
-	EngineMatch* match = new EngineMatch(parent);
+	GameManager* manager = CuteChessCoreApplication::instance()->gameManager();
+	Tournament* tournament = TournamentFactory::create("round-robin", manager, parent);
+	EngineMatch* match = new EngineMatch(tournament, parent);
 	EngineData fcp;
 	EngineData scp;
 
@@ -264,9 +273,17 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		}
 		// Chess variant (default: standard chess)
 		else if (name == "-variant")
-			ok = match->setVariant(value.toString());
+		{
+			ok = Chess::BoardFactory::variants().contains(value.toString());
+			if (ok)
+				tournament->setVariant(value.toString());
+		}
 		else if (name == "-concurrency")
-			ok = match->setConcurrency(value.toInt());
+		{
+			ok = value.toInt() > 0;
+			if (ok)
+				tournament->setConcurrency(value.toInt());
+		}
 		// Threshold for draw adjudication
 		else if (name == "-draw")
 		{
@@ -278,7 +295,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 			ok = (numOk && scoreOk);
 			if (ok)
-				match->setDrawThreshold(moveNumber, score);
+				tournament->setDrawThreshold(moveNumber, score);
 		}
 		// Threshold for resign adjudication
 		else if (name == "-resign")
@@ -291,23 +308,35 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 			ok = (countOk && scoreOk);
 			if (ok)
-				match->setResignThreshold(moveCount, -score);
+				tournament->setResignThreshold(moveCount, -score);
 		}
 		// Event name
 		else if (name == "-event")
-			match->setEvent(value.toString());
+			tournament->setName(value.toString());
 		// Number of games to play
 		else if (name == "-games")
-			ok = match->setGameCount(value.toInt());
+		{
+			ok = value.toInt() > 0;
+			if (ok)
+				tournament->setRoundMultiplier(value.toInt());
+		}
 		// Debugging mode. Prints all engine input and output.
 		else if (name == "-debug")
 			match->setDebugMode(true);
 		// PGN input depth in plies
 		else if (name == "-pgndepth")
-			ok = match->setPgnDepth(value.toInt());
+		{
+			ok = value.toInt() > 0;
+			if (ok)
+				tournament->setPgnInputDepth(value.toInt());
+		}
 		// Use a PGN file as the opening book
 		else if (name == "-pgnin")
-			ok = match->setPgnInput(value.toString());
+		{
+			ok = QFile::exists(value.toString());
+			if (ok)
+				tournament->setPgnInput(value.toString());
+		}
 		// PGN file where the games should be saved
 		else if (name == "-pgnout")
 		{
@@ -321,23 +350,27 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 					ok = false;
 			}
 			if (ok)
-				match->setPgnOutput(list.at(0), mode);
+				tournament->setPgnOutput(list.at(0), mode);
 		}
 		// Play every opening twice, just switch the players' sides
 		else if (name == "-repeat")
-			match->setRepeatOpening(true);
+			tournament->setOpeningRepetition(true);
 		// Recover crashed/stalled engines
 		else if (name == "-recover")
-			match->setRecoveryMode(true);
+			tournament->setRecoveryMode(true);
 		// Site/location name
 		else if (name == "-site")
-			match->setSite(value.toString());
+			tournament->setSite(value.toString());
 		// Set the random seed manually
 		else if (name == "-srand")
 			qsrand(value.toUInt());
 		// Delay between games
 		else if (name == "-wait")
-			ok = match->setWait(value.toInt());
+		{
+			ok = value.toInt() >= 0;
+			if (ok)
+				tournament->setStartDelay(value.toInt());
+		}
 		else
 			qFatal("Unknown argument: \"%s\"", qPrintable(name));
 
@@ -352,12 +385,35 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 				 qPrintable(name), qPrintable(val));
 
 			delete match;
+			delete tournament;
 			return 0;
 		}
 	}
 
-	match->addEngine(fcp.config, fcp.tc, fcp.book, fcp.bookDepth);
-	match->addEngine(scp.config, scp.tc, scp.book, scp.bookDepth);
+	if (!fcp.tc.isValid() || !scp.tc.isValid())
+	{
+		qWarning("Invalid or missing time control");
+		delete match;
+		delete tournament;
+		return 0;
+	}
+
+	if (fcp.config.protocol().isEmpty() || scp.config.protocol().isEmpty())
+	{
+		qWarning("Missing chess protocol");
+		delete match;
+		delete tournament;
+		return 0;
+	}
+
+	tournament->addPlayer(new EngineBuilder(fcp.config),
+			      fcp.tc,
+			      match->addOpeningBook(fcp.book),
+			      fcp.bookDepth);
+	tournament->addPlayer(new EngineBuilder(scp.config),
+			      scp.tc,
+			      match->addOpeningBook(scp.book),
+			      scp.bookDepth);
 
 	return match;
 }
@@ -483,11 +539,6 @@ int main(int argc, char* argv[])
 		return 1;
 	QObject::connect(match, SIGNAL(finished()), &app, SLOT(quit()));
 
-	if (!match->initialize())
-		return 1;
 	match->start();
-
-	int ret = app.exec();
-	qDebug() << "Finished match";
-	return ret;
+	return app.exec();
 }
