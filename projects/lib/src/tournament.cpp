@@ -331,7 +331,6 @@ void Tournament::startNextGame()
 	data->blackIndex = m_pair.second;
 	m_gameData[game] = data;
 
-	qDebug("Started tournament game %d of %d", m_nextGameNumber, m_finalGameCount);
 	if (!m_gameManager->newGame(game,
 				    white.builder,
 				    black.builder,
