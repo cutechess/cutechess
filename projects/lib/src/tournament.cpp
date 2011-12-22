@@ -327,8 +327,8 @@ void Tournament::startNextGame()
 
 	GameData* data = new GameData;
 	data->number = m_nextGameNumber++;
-	data->white = &white;
-	data->black = &black;
+	data->whiteIndex = m_pair.first;
+	data->blackIndex = m_pair.second;
 	m_gameData[game] = data;
 
 	qDebug("Started tournament game %d of %d", m_nextGameNumber, m_finalGameCount);
@@ -352,10 +352,10 @@ void Tournament::onGameStarted(ChessGame* game)
 	Q_ASSERT(m_gameData.contains(game));
 
 	GameData* data = m_gameData[game];
-	data->white->builder->setName(game->player(Chess::Side::White)->name());
-	data->black->builder->setName(game->player(Chess::Side::Black)->name());
+	m_players[data->whiteIndex].builder->setName(game->player(Chess::Side::White)->name());
+	m_players[data->blackIndex].builder->setName(game->player(Chess::Side::Black)->name());
 
-	emit gameStarted(game, data->number);
+	emit gameStarted(game, data->number, data->whiteIndex, data->blackIndex);
 }
 
 void Tournament::onGameFinished(ChessGame* game)
@@ -374,22 +374,21 @@ void Tournament::onGameFinished(ChessGame* game)
 	switch (game->result().winner())
 	{
 	case Chess::Side::White:
-		data->white->wins++;
-		data->black->losses++;
+		m_players[data->whiteIndex].wins++;
+		m_players[data->blackIndex].losses++;
 		break;
 	case Chess::Side::Black:
-		data->black->wins++;
-		data->white->losses++;
+		m_players[data->blackIndex].wins++;
+		m_players[data->whiteIndex].losses++;
 		break;
 	default:
 		if (game->result().isDraw())
 		{
-			data->white->draws++;
-			data->black->draws++;
+			m_players[data->whiteIndex].draws++;
+			m_players[data->blackIndex].draws++;
 		}
 		break;
 	}
-	delete data;
 
 	if (!m_pgnout.isEmpty())
 	{
@@ -409,7 +408,7 @@ void Tournament::onGameFinished(ChessGame* game)
 	if (!m_recover && crashed)
 		stop();
 
-	emit gameFinished(game, gameNumber);
+	emit gameFinished(game, gameNumber, data->whiteIndex, data->blackIndex);
 
 	if (m_finishedGameCount == m_finalGameCount
 	||  (m_stopping && m_gameData.isEmpty()))
@@ -420,6 +419,7 @@ void Tournament::onGameFinished(ChessGame* game)
 			this, SLOT(onGameDestroyed(ChessGame*)));
 	}
 
+	delete data;
 	game->deleteLater();
 }
 

@@ -226,9 +226,14 @@ class LIB_EXPORT Tournament : public QObject
 		 * This signal is emitted when game \a game with ordering
 		 * number \a number is started.
 		 *
-		 * \note The numbering starts at 1.
+		 * \a whiteIndex is the index to the white player's data
+		 * \a blackIndex is the index to the black player's data
+		 * \note The game numbers start at 1.
 		 */
-		void gameStarted(ChessGame* game, int number);
+		void gameStarted(ChessGame* game,
+				 int number,
+				 int whiteIndex,
+				 int blackIndex);
 		/*!
 		 * This signal is emitted when game \a game with ordering
 		 * number \a number is finished.
@@ -236,10 +241,16 @@ class LIB_EXPORT Tournament : public QObject
 		 * The Tournament object deletes the game right after
 		 * emitting this signal.
 		 *
+		 * \a whiteIndex is the index to the white player's data
+		 * \a blackIndex is the index to the black player's data
+		 * \note The game numbers start at 1.
 		 * \note The games may not finish in the same order they
 		 * are started.
 		 */
-		void gameFinished(ChessGame* game, int number);
+		void gameFinished(ChessGame* game,
+				  int number,
+				  int whiteIndex,
+				  int blackIndex);
 		/*!
 		 * This signal is emitted when all of the tournament's games
 		 * have been played or after the tournament was stopped.
@@ -292,8 +303,8 @@ class LIB_EXPORT Tournament : public QObject
 		struct GameData
 		{
 			int number;
-			PlayerData* white;
-			PlayerData* black;
+			int whiteIndex;
+			int blackIndex;
 		};
 
 		GameManager* m_gameManager;
