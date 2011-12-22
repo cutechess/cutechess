@@ -259,8 +259,12 @@ void Tournament::startNextGame()
 	if (m_nextGameNumber % m_gamesPerEncounter == 0)
 	{
 		m_pair = nextPair();
-		m_startFen.clear();
-		m_openingMoves.clear();
+
+		if (m_players.size() > 2)
+		{
+			m_startFen.clear();
+			m_openingMoves.clear();
+		}
 	}
 	else
 		m_pair = qMakePair(m_pair.second, m_pair.first);
