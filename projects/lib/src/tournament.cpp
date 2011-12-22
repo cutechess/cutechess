@@ -326,7 +326,7 @@ void Tournament::startNextGame()
 	game->setResignThreshold(m_resignMoveCount, m_resignScore);
 
 	GameData* data = new GameData;
-	data->number = m_nextGameNumber++;
+	data->number = ++m_nextGameNumber;
 	data->whiteIndex = m_pair.first;
 	data->blackIndex = m_pair.second;
 	m_gameData[game] = data;
@@ -392,9 +392,9 @@ void Tournament::onGameFinished(ChessGame* game)
 	if (!m_pgnout.isEmpty())
 	{
 		m_pgnGames[gameNumber] = pgn;
-		while (m_pgnGames.contains(m_savedGameCount))
+		while (m_pgnGames.contains(m_savedGameCount + 1))
 		{
-			pgn = m_pgnGames.take(m_savedGameCount++);
+			pgn = m_pgnGames.take(++m_savedGameCount);
 			if (!pgn->write(m_pgnout, m_pgnOutMode))
 				qWarning("Can't write to PGN file %s", qPrintable(m_pgnout));
 			delete pgn;
