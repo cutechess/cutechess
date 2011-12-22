@@ -331,10 +331,11 @@ bool GameManager::newGame(ChessGame* game,
 void GameManager::onThreadQuit()
 {
 	GameThread* thread = qobject_cast<GameThread*>(QObject::sender());
-	Q_ASSERT(thread != 0);
-
 	m_threads.removeOne(thread);
-	thread->deleteLater();
+
+	if (thread != 0)
+		thread->deleteLater();
+
 	if (m_threads.isEmpty())
 	{
 		m_finishing = false;
