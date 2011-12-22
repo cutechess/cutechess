@@ -18,7 +18,7 @@
 #ifndef MATCHPARSER_H
 #define MATCHPARSER_H
 
-#include <QMap>
+#include <QMultiMap>
 #include <QStringList>
 #include <QVariant>
 
@@ -44,13 +44,16 @@ class MatchParser
 		 * \param minArgs The minimum number of arguments.
 		 * \param maxArgs The maximum number of arguments. A value
 		 *                of -1 represents infinity.
+		 * \param duplicates If true, there can be multiple
+		 *                   instances of this option.
 		 */
 		void addOption(const QString& name,
 			       QVariant::Type type,
 			       int minArgs = 0,
-			       int maxArgs = -1);
+			       int maxArgs = -1,
+			       bool duplicates = false);
 		/*! Returns the options parsed by \a parse(). */
-		QMap<QString, QVariant> options() const;
+		QMultiMap<QString, QVariant> options() const;
 		/*!
 		 * Parses the command line arguments.
 		 * Returns true if successfull.
@@ -63,10 +66,11 @@ class MatchParser
 			QVariant::Type type;
 			int minArgs;
 			int maxArgs;
+			bool duplicates;
 		};
 
 		QStringList m_args;
-		QMap<QString, QVariant> m_options;
+		QMultiMap<QString, QVariant> m_options;
 		QMap<QString, PrivateOption> m_validOptions;
 };
 
