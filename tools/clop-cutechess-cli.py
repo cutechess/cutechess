@@ -57,7 +57,7 @@ opponents = [
 ]
 
 # Additional cutechess-cli options, eg. time control and opening book
-options = '-both tc=40/1+0.05 -draw 80 1 -resign 5 500'
+options = '-each tc=40/1+0.05 -draw 80 1 -resign 5 500'
 
 
 def main(argv = None):
@@ -100,7 +100,7 @@ def main(argv = None):
     if clop_seed % 2 != 0:
         fcp, scp = scp, fcp
     
-    cutechess_args = '-fcp %s -scp %s %s' % (fcp, scp, options)
+    cutechess_args = '-engine %s -engine %s %s' % (fcp, scp, options)
     command = '%s %s' % (cutechess_cli_path, cutechess_args)
     
     # Run cutechess-cli and wait for it to finish
@@ -114,19 +114,24 @@ def main(argv = None):
     # Note that only one game should be played
     result = -1
     for line in output.splitlines():
-        if line.startswith('Game 1 ended:'):
-            if line.find("1-0") != -1:
+        if line.startswith('Finished game'):
+            if line.find(": 1-0") != -1:
                 result = clop_seed % 2
-            elif line.find("0-1") != -1:
+            elif line.find(": 0-1") != -1:
                 result = (clop_seed % 2) ^ 1
+            elif line.find(": 1/2-1/2") != -1:
+                result = 2;
+            else
+                print 'The game did not terminate properly'
+                return 2
             break
     
-    if result == -1:
-        print 'D'
-    elif result == 0:
+    if result == 0:
         print 'W'
     elif result == 1:
         print 'L'
+    elif result == 2:
+        print 'D'
 
 if __name__ == "__main__":
     sys.exit(main())
