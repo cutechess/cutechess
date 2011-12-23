@@ -8,9 +8,7 @@ cutechess-cli - A command-line tool for chess engines matches
 
 SYNOPSIS
 --------
-*cutechess-cli* -fcp ['ENGINE OPTIONS'] -scp ['ENGINE OPTIONS'] ['OPTIONS']
-
-*cutechess-cli* -both ['ENGINE OPTIONS'] ['OPTIONS']
+*cutechess-cli* -engine ['ENGINE OPTIONS'] -engine ['ENGINE OPTIONS']... ['OPTIONS']
 
 DESCRIPTION
 -----------
@@ -35,14 +33,11 @@ OPTIONS
 \--variants::
 	Display a list of supported chess variants and exit.
 
--fcp <options>::
-	Apply <options> to the first engine.
+-engine <options>::
+	Add an engine defined by <options> to the tournament.
 
--scp <options>::
-	Apply <options> to the second engine.
-
--both <options>::
-	Apply <options> to both engines.
+-each <options>::
+	Apply <options> to each engine in the tournament.
 
 -variant <arg>::
 	Set chess variant to <arg>.
@@ -63,7 +58,18 @@ OPTIONS
 	Set the event name to <arg>.
 
 -games <n>::
-	Play <n> games.
+	Play <n> games per encounter. This value should be set to an even
+	number in tournaments with more than two players to make sure
+	that each player plays an equal number of games with white and
+	black pieces.
+
+-rounds <n>::
+	Multiply the number of rounds to play by <n>. For two-player
+	tournaments this option should be used to set the total number of
+	games to play.
+
+-ratinginterval <n>::
+	Set the interval for printing the ratings to <n> games.
 
 -debug::
 	Display all engine input and output.
@@ -169,7 +175,7 @@ EXAMPLES
 control of 40 moves in 60 seconds.
 
 -----------
-$ cutechess-cli -both cmd=sloppy proto=xboard tc=40/60 -games 10
+$ cutechess-cli -engine name=Sloppy -engine name=Sloppy -each cmd=sloppy proto=xboard tc=40/60 -rounds 10
 -----------
 
 * Use the 'name=Atak' parameter because it's a Xboard
@@ -187,7 +193,21 @@ so only the command is needed.
 seconds with a one second increment.
 
 -----------
-$ cutechess-cli -fcp name=Atak cmd=Atak32.exe dir=C:\atak proto=xboard -scp cmd=glaurung proto=uci option.Threads=1 -both tc=40/1:30+1
+$ cutechess-cli -engine name=Atak cmd=Atak32.exe dir=C:\atak proto=xboard -engine cmd=glaurung proto=uci option.Threads=1 -both tc=40/1:30+1
+-----------
+
+* Play a Round-Robin tournament between Fruit, Crafty, Stockfish and Sloppy.
+
+* Play two games per encounter, effectively multiplying the number of games by 2.
+
+* Play 10 times the minimum amount of rounds (3). So the total number of rounds
+to play will be 30, and the total number of games 120.
+
+* In each two-game encounter colors are switched between games and the same
+opening line is played in both games.
+
+-----------
+$ cutechess-cli -engine conf=Fruit -engine conf=Crafty -engine conf=Stockfish -engine conf=Sloppy -each tc=4 book=book.bin -games 2 -rounds 10 -repeat
 -----------
 
 AUTHOR

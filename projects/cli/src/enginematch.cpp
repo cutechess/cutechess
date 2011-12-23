@@ -17,6 +17,7 @@
 
 #include "enginematch.h"
 #include <cmath>
+#include <QMultiMap>
 #include <chessplayer.h>
 #include <playerbuilder.h>
 #include <chessgame.h>
@@ -28,7 +29,8 @@
 EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
 	: QObject(parent),
 	  m_tournament(tournament),
-	  m_debug(false)
+	  m_debug(false),
+	  m_ratingInterval(0)
 {
 	Q_ASSERT(tournament != 0);
 
@@ -86,13 +88,21 @@ void EngineMatch::setDebugMode(bool debug)
 	m_debug = debug;
 }
 
+void EngineMatch::setRatingInterval(int interval)
+{
+	Q_ASSERT(interval >= 0);
+	m_ratingInterval = interval;
+}
+
 void EngineMatch::onGameStarted(ChessGame* game, int number)
 {
 	Q_ASSERT(game != 0);
 
-	qDebug("Started game %d of %d",
+	qDebug("Started game %d of %d (%s vs %s)",
 	       number,
-	       m_tournament->finalGameCount());
+	       m_tournament->finalGameCount(),
+	       qPrintable(game->player(Chess::Side::White)->name()),
+	       qPrintable(game->player(Chess::Side::Black)->name()));
 }
 
 void EngineMatch::onGameFinished(ChessGame* game, int number)
@@ -100,35 +110,35 @@ void EngineMatch::onGameFinished(ChessGame* game, int number)
 	Q_ASSERT(game != 0);
 
 	Chess::Result result(game->result());
-	qDebug("Game %d ended: %s", number, qPrintable(result.toVerboseString()));
-	if (!result.winner().isNull())
-		qDebug("%s wins the game as %s",
-		       qPrintable(game->player(result.winner())->name()),
-		       qPrintable(result.winner().toString()));
+	qDebug("Finished game %d (%s vs %s): %s",
+	       number,
+	       qPrintable(game->player(Chess::Side::White)->name()),
+	       qPrintable(game->player(Chess::Side::Black)->name()),
+	       qPrintable(result.toVerboseString()));
 
-	Tournament::PlayerData fcp = m_tournament->playerAt(0);
-	Tournament::PlayerData scp = m_tournament->playerAt(1);
-	int totalResults = fcp.wins + fcp.losses + fcp.draws;
-	qDebug("Score of %s vs %s: %d - %d - %d  [%.2f] %d",
-	       qPrintable(fcp.builder->name()),
-	       qPrintable(scp.builder->name()),
-	       fcp.wins, scp.wins, fcp.draws,
-	       double(fcp.wins * 2 + fcp.draws) / (totalResults * 2),
-	       totalResults);
+	if (m_tournament->playerCount() == 2)
+	{
+		Tournament::PlayerData fcp = m_tournament->playerAt(0);
+		Tournament::PlayerData scp = m_tournament->playerAt(1);
+		int totalResults = fcp.wins + fcp.losses + fcp.draws;
+		qDebug("Score of %s vs %s: %d - %d - %d  [%.2f] %d",
+		       qPrintable(fcp.builder->name()),
+		       qPrintable(scp.builder->name()),
+		       fcp.wins, scp.wins, fcp.draws,
+		       double(fcp.wins * 2 + fcp.draws) / (totalResults * 2),
+		       totalResults);
+	}
+
+	if (m_ratingInterval != 0
+	&&  (m_tournament->finishedGameCount() % m_ratingInterval) == 0)
+		printRanking();
 }
 
 void EngineMatch::onTournamentFinished()
 {
-	Tournament::PlayerData fcp = m_tournament->playerAt(0);
-
-	int score = fcp.wins * 2 + fcp.draws;
-	int total = (fcp.wins + fcp.losses + fcp.draws) * 2;
-	if (total > 0)
-	{
-		double ratio = double(score) / double(total);
-		double eloDiff = -400.0 * std::log(1.0 / ratio - 1.0) / std::log(10.0);
-		qDebug("ELO difference: %.0f", eloDiff);
-	}
+	if (m_ratingInterval == 0
+	||  m_tournament->finishedGameCount() % m_ratingInterval != 0)
+		printRanking();
 
 	qDebug("Finished match");
 	connect(m_tournament->gameManager(), SIGNAL(finished()),
@@ -139,4 +149,60 @@ void EngineMatch::onTournamentFinished()
 void EngineMatch::print(const QString& msg)
 {
 	qDebug("%d %s", m_startTime.elapsed(), qPrintable(msg));
+}
+
+struct RankingData
+{
+	QString name;
+	int games;
+	qreal score;
+	qreal draws;
+};
+
+void EngineMatch::printRanking()
+{
+	QMultiMap<qreal, RankingData> ranking;
+
+	for (int i = 0; i < m_tournament->playerCount(); i++)
+	{
+		Tournament::PlayerData player(m_tournament->playerAt(i));
+
+		int score = player.wins * 2 + player.draws;
+		int total = (player.wins + player.losses + player.draws) * 2;
+		if (total <= 0)
+			continue;
+
+		qreal ratio = qreal(score) / qreal(total);
+		qreal eloDiff = -400.0 * std::log(1.0 / ratio - 1.0) / std::log(10.0);
+
+		if (m_tournament->playerCount() == 2)
+		{
+			qDebug("ELO difference: %.0f", eloDiff);
+			break;
+		}
+
+		RankingData data = { player.builder->name(),
+				     total / 2,
+				     ratio,
+				     qreal(player.draws * 2) / qreal(total) };
+		ranking.insert(-eloDiff, data);
+	}
+
+	if (!ranking.isEmpty())
+		qDebug("%4s %-23s %7s %7s %7s %7s",
+		       "Rank", "Name", "ELO", "Games", "Score", "Draws");
+
+	int rank = 0;
+	QMultiMap<qreal, RankingData>::const_iterator it;
+	for (it = ranking.constBegin(); it != ranking.constEnd(); ++it)
+	{
+		const RankingData& data = it.value();
+		qDebug("%4d %-23s %7.0f %7d %6.0f%% %6.0f%%",
+		       ++rank,
+		       qPrintable(data.name),
+		       -it.key(),
+		       data.games,
+		       data.score * 100.0,
+		       data.draws * 100.0);
+	}
 }

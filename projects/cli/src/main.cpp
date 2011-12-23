@@ -218,9 +218,8 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 {
 	MatchParser parser(args);
-	parser.addOption("-fcp", QVariant::StringList, 1);
-	parser.addOption("-scp", QVariant::StringList, 1);
-	parser.addOption("-both", QVariant::StringList, 1);
+	parser.addOption("-engine", QVariant::StringList, 1, -1, true);
+	parser.addOption("-each", QVariant::StringList, 1);
 	parser.addOption("-variant", QVariant::String, 1, 1);
 	parser.addOption("-book", QVariant::String, 1, 1);
 	parser.addOption("-bookdepth", QVariant::Int, 1, 1);
@@ -229,6 +228,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-resign", QVariant::StringList, 2, 2);
 	parser.addOption("-event", QVariant::String, 1, 1);
 	parser.addOption("-games", QVariant::Int, 1, 1);
+	parser.addOption("-rounds", QVariant::Int, 1, 1);
+	parser.addOption("-ratinginterval", QVariant::Int, 1, 1);
 	parser.addOption("-debug", QVariant::Bool, 0, 0);
 	parser.addOption("-pgnin", QVariant::String, 1, 1);
 	parser.addOption("-pgndepth", QVariant::Int, 1, 1);
@@ -244,14 +245,12 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	GameManager* manager = CuteChessCoreApplication::instance()->gameManager();
 	Tournament* tournament = TournamentFactory::create("round-robin", manager, parent);
 	EngineMatch* match = new EngineMatch(tournament, parent);
-	EngineData fcp;
-	EngineData scp;
 
-	fcp.bookDepth = 1000;
-	scp.bookDepth = 1000;
+	QList<EngineData> engines;
+	QStringList eachOptions;
 
-	QMap<QString, QVariant> options(parser.options());
-	QMap<QString, QVariant>::const_iterator it;
+	QMultiMap<QString, QVariant> options(parser.options());
+	QMultiMap<QString, QVariant>::const_iterator it;
 	for (it = options.constBegin(); it != options.constEnd(); ++it)
 	{
 		bool ok = true;
@@ -259,18 +258,18 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		QVariant value = it.value();
 		Q_ASSERT(!value.isNull());
 
-		// First chess program
-		if (name == "-fcp")
-			ok = parseEngine(value.toStringList(), fcp);
-		// Second chess program
-		else if (name == "-scp")
-			ok = parseEngine(value.toStringList(), scp);
-		// The engine options apply to both engines
-		else if (name == "-both")
+		// Chess engine
+		if (name == "-engine")
 		{
-			ok = (parseEngine(value.toStringList(), fcp) &&
-			      parseEngine(value.toStringList(), scp));
+			EngineData engine;
+			engine.bookDepth = 1000;
+			ok = parseEngine(value.toStringList(), engine);
+			if (ok)
+				engines.append(engine);
 		}
+		// The engine options that apply to each engine
+		else if (name == "-each")
+			eachOptions = value.toStringList();
 		// Chess variant (default: standard chess)
 		else if (name == "-variant")
 		{
@@ -313,13 +312,23 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Event name
 		else if (name == "-event")
 			tournament->setName(value.toString());
-		// Number of games to play
+		// Number of games per encounter
 		else if (name == "-games")
+		{
+			ok = value.toInt() > 0;
+			if (ok)
+				tournament->setGamesPerEncounter(value.toInt());
+		}
+		// Multiplier for the number of tournament rounds
+		else if (name == "-rounds")
 		{
 			ok = value.toInt() > 0;
 			if (ok)
 				tournament->setRoundMultiplier(value.toInt());
 		}
+		// Interval for rating list updates
+		else if (name == "-ratinginterval")
+			match->setRatingInterval(value.toInt());
 		// Debugging mode. Prints all engine input and output.
 		else if (name == "-debug")
 			match->setDebugMode(true);
@@ -390,30 +399,53 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		}
 	}
 
-	if (!fcp.tc.isValid() || !scp.tc.isValid())
+	bool ok = true;
+
+	if (!eachOptions.isEmpty())
 	{
-		qWarning("Invalid or missing time control");
+		QList<EngineData>::iterator it;
+		for (it = engines.begin(); it != engines.end(); ++it)
+		{
+			ok = parseEngine(eachOptions, *it);
+			if (!ok)
+				break;
+		}
+	}
+
+	foreach (const EngineData& engine, engines)
+	{
+		if (!engine.tc.isValid())
+		{
+			ok = false;
+			qWarning("Invalid or missing time control");
+			break;
+		}
+
+		if (engine.config.protocol().isEmpty())
+		{
+			ok = false;
+			qWarning("Missing chess protocol");
+			break;
+		}
+
+		tournament->addPlayer(new EngineBuilder(engine.config),
+				      engine.tc,
+				      match->addOpeningBook(engine.book),
+				      engine.bookDepth);
+	}
+
+	if (engines.size() < 2)
+	{
+		qWarning("At least two engines are needed");
+		ok = false;
+	}
+
+	if (!ok)
+	{
 		delete match;
 		delete tournament;
 		return 0;
 	}
-
-	if (fcp.config.protocol().isEmpty() || scp.config.protocol().isEmpty())
-	{
-		qWarning("Missing chess protocol");
-		delete match;
-		delete tournament;
-		return 0;
-	}
-
-	tournament->addPlayer(new EngineBuilder(fcp.config),
-			      fcp.tc,
-			      match->addOpeningBook(fcp.book),
-			      fcp.bookDepth);
-	tournament->addPlayer(new EngineBuilder(scp.config),
-			      scp.tc,
-			      match->addOpeningBook(scp.book),
-			      scp.bookDepth);
 
 	return match;
 }
@@ -469,16 +501,15 @@ int main(int argc, char* argv[])
 		}
 		else if (arg == "--help")
 		{
-			out << "Usage: cutechess-cli -fcp [eng_options] -scp [eng_options] [options]\n"
+			out << "Usage: cutechess-cli -engine [eng_options] -engine [eng_options]... [options]\n"
 			       "Options:\n"
 			       "  --help		Display this information\n"
 			       "  --version		Display the version number\n"
 			       "  --engines		Display a list of configured engines and exit\n"
 			       "  --protocols		Display a list of supported chess protocols and exit\n"
 			       "  --variants		Display a list of supported chess variants and exit\n\n"
-			       "  -fcp <options>	Apply <options> to the first engine\n"
-			       "  -scp <options>	Apply <options> to the second engine\n"
-			       "  -both <options>	Apply <options> to both engines\n"
+			       "  -engine <options>	Add an engine defined by <options> to the tournament\n"
+			       "  -each <options>	Apply <options> to each engine in the tournament\n"
 			       "  -variant <arg>	Set the chess variant to <arg>\n"
 			       "  -concurrency <n>	Set the maximum number of concurrent games to <n>\n"
 			       "  -draw <n> <score>	Adjudicate the game as a draw if the score of both\n"
@@ -488,7 +519,14 @@ int main(int argc, char* argv[])
 			       "			at least <score> centipawns below zero for at least\n"
 			       "			<n> consecutive moves\n"
 			       "  -event <arg>		Set the event name to <arg>\n"
-			       "  -games <n>		Play <n> games\n"
+			       "  -games <n>		Play <n> games per encounter. This value should be set\n"
+			       "			to an even number in tournaments with more than two\n"
+			       "			players to make sure that each player plays an equal\n"
+			       "			number of games with white and black pieces.\n"
+			       "  -rounds <n>		Multiply the number of rounds to play by <n>.\n"
+			       "			For two-player tournaments this option should be used\n"
+			       "			to set the total number of games to play.\n"
+			       "  -ratinginterval <n>	Set the interval for printing the ratings to <n> games\n"
 			       "  -debug		Display all engine input and output\n"
 			       "  -pgnin <file>		Use <file> as the opening book in PGN format\n"
 			       "  -pgndepth <n>		Set the maximum depth for PGN input to <n> plies\n"
