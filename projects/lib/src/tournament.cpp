@@ -161,12 +161,6 @@ void Tournament::setRoundMultiplier(int factor)
 	m_roundMultiplier = factor;
 }
 
-void Tournament::setConcurrency(int concurrency)
-{
-	Q_ASSERT(concurrency > 0);
-	m_gameManager->setConcurrency(concurrency);
-}
-
 void Tournament::setStartDelay(int delay)
 {
 	Q_ASSERT(delay >= 0);

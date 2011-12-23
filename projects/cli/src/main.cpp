@@ -26,6 +26,7 @@
 
 #include <enginemanager.h>
 #include <enginebuilder.h>
+#include <gamemanager.h>
 #include <tournament.h>
 #include <tournamentfactory.h>
 #include <board/boardfactory.h>
@@ -281,7 +282,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		{
 			ok = value.toInt() > 0;
 			if (ok)
-				tournament->setConcurrency(value.toInt());
+				manager->setConcurrency(value.toInt());
 		}
 		// Threshold for draw adjudication
 		else if (name == "-draw")

@@ -134,8 +134,6 @@ class LIB_EXPORT Tournament : public QObject
 		 * \a factor must be at least 1.
 		 */
 		void setRoundMultiplier(int factor);
-		/*! Sets the maximum number of concurrent games to \a concurrency. */
-		void setConcurrency(int concurrency);
 		/*! Sets the starting delay for each game to \a delay msec. */
 		void setStartDelay(int delay);
 		/*!
