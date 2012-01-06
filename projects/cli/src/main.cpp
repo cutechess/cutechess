@@ -227,6 +227,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-concurrency", QVariant::Int, 1, 1);
 	parser.addOption("-draw", QVariant::StringList, 2, 2);
 	parser.addOption("-resign", QVariant::StringList, 2, 2);
+	parser.addOption("-tournament", QVariant::String, 1, 1);
 	parser.addOption("-event", QVariant::String, 1, 1);
 	parser.addOption("-games", QVariant::Int, 1, 1);
 	parser.addOption("-rounds", QVariant::Int, 1, 1);
@@ -244,7 +245,17 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		return 0;
 
 	GameManager* manager = CuteChessCoreApplication::instance()->gameManager();
-	Tournament* tournament = TournamentFactory::create("round-robin", manager, parent);
+
+	QString ttype = parser.takeOption("-tournament").toString();
+	if (ttype.isEmpty())
+		ttype = "round-robin";
+	Tournament* tournament = TournamentFactory::create(ttype, manager, parent);
+	if (tournament == 0)
+	{
+		qWarning("Invalid tournament type: %s", qPrintable(ttype));
+		return 0;
+	}
+
 	EngineMatch* match = new EngineMatch(tournament, parent);
 
 	QList<EngineData> engines;
@@ -517,6 +528,9 @@ int main(int argc, char* argv[])
 			       "  -resign <n> <score>	Adjudicate the game as a loss if an engine's score is\n"
 			       "			at least <score> centipawns below zero for at least\n"
 			       "			<n> consecutive moves\n"
+			       "  -tournament <arg>	Set the tournament type to <arg>. Supported types are:\n"
+			       "			round-robin (default)\n"
+			       "			gauntlet\n"
 			       "  -event <arg>		Set the event name to <arg>\n"
 			       "  -games <n>		Play <n> games per encounter. This value should be set\n"
 			       "			to an even number in tournaments with more than two\n"
