@@ -120,8 +120,8 @@ def main(argv = None):
             elif line.find(": 0-1") != -1:
                 result = (clop_seed % 2) ^ 1
             elif line.find(": 1/2-1/2") != -1:
-                result = 2;
-            else
+                result = 2
+            else:
                 print 'The game did not terminate properly'
                 return 2
             break
