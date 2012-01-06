@@ -250,13 +250,11 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	QList<EngineData> engines;
 	QStringList eachOptions;
 
-	QMultiMap<QString, QVariant> options(parser.options());
-	QMultiMap<QString, QVariant>::const_iterator it;
-	for (it = options.constBegin(); it != options.constEnd(); ++it)
+	foreach (const MatchParser::Option& option, parser.options())
 	{
 		bool ok = true;
-		QString name = it.key();
-		QVariant value = it.value();
+		const QString& name = option.name;
+		const QVariant& value = option.value;
 		Q_ASSERT(!value.isNull());
 
 		// Chess engine

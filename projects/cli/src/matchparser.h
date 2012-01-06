@@ -18,7 +18,7 @@
 #ifndef MATCHPARSER_H
 #define MATCHPARSER_H
 
-#include <QMultiMap>
+#include <QMap>
 #include <QStringList>
 #include <QVariant>
 
@@ -31,6 +31,13 @@
 class MatchParser
 {
 	public:
+		/*! A parsed command line option. */
+		struct Option
+		{
+			QString name;	//!< The name of the option
+			QVariant value;	//!< The value of the option
+		};
+
 		/*! Constructs a new parser for parsing \a args. */
 		MatchParser(const QStringList& args);
 
@@ -53,7 +60,7 @@ class MatchParser
 			       int maxArgs = -1,
 			       bool duplicates = false);
 		/*! Returns the options parsed by \a parse(). */
-		QMultiMap<QString, QVariant> options() const;
+		QList<Option> options() const;
 		/*!
 		 * Parses the command line arguments.
 		 * Returns true if successfull.
@@ -69,8 +76,10 @@ class MatchParser
 			bool duplicates;
 		};
 
+		bool contains(const QString& optionName) const;
+
 		QStringList m_args;
-		QMultiMap<QString, QVariant> m_options;
+		QList<Option> m_options;
 		QMap<QString, PrivateOption> m_validOptions;
 };
 

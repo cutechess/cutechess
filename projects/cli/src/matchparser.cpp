@@ -33,9 +33,20 @@ void MatchParser::addOption(const QString& name,
 	m_validOptions[name] = option;
 }
 
-QMultiMap<QString, QVariant> MatchParser::options() const
+QList<MatchParser::Option> MatchParser::options() const
 {
 	return m_options;
+}
+
+bool MatchParser::contains(const QString& optionName) const
+{
+	foreach (const Option& option, m_options)
+	{
+		if (option.name == optionName)
+			return true;
+	}
+
+	return false;
 }
 
 bool MatchParser::parse()
@@ -65,7 +76,7 @@ bool MatchParser::parse()
 		}
 		--it;
 		
-		if (!option.duplicates && m_options.contains(name))
+		if (!option.duplicates && contains(name))
 		{
 			qWarning("Multiple instances of option \"%s\"",
 				 qPrintable(name));
@@ -92,7 +103,8 @@ bool MatchParser::parse()
 		// Boolean option
 		if (list.isEmpty())
 		{
-			m_options.insert(name, QVariant(true));
+			Option tmp = { name, QVariant(true) };
+			m_options.append(tmp);
 			continue;
 		}
 		
@@ -109,7 +121,8 @@ bool MatchParser::parse()
 			return false;
 		}
 		
-		m_options.insert(name, value);
+		Option tmp = { name, value };
+		m_options.append(tmp);
 	}
 
 	return true;
