@@ -32,7 +32,8 @@ HEADERS += chessengine.h \
     pgngamefilter.h \
     tournament.h \
     roundrobintournament.h \
-    tournamentfactory.h
+    tournamentfactory.h \
+    gauntlettournament.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -63,10 +64,13 @@ SOURCES += chessengine.cpp \
     pgngamefilter.cpp \
     tournament.cpp \
     roundrobintournament.cpp \
-    tournamentfactory.cpp
+    tournamentfactory.cpp \
+    gauntlettournament.cpp
 win32 { 
     HEADERS += engineprocess_win.h \
         pipereader_win.h
     SOURCES += engineprocess_win.cpp \
         pipereader_win.cpp
 }
+
+
