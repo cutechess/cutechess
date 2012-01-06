@@ -59,6 +59,14 @@ class MatchParser
 			       int minArgs = 0,
 			       int maxArgs = -1,
 			       bool duplicates = false);
+		/*!
+		 * Returns the value of the option with the name \a name
+		 * and removes the option from the parser.
+		 *
+		 * If \a name doesn't match any parsed option,
+		 * a null QVariant is returned.
+		 */
+		QVariant takeOption(const QString& name);
 		/*! Returns the options parsed by \a parse(). */
 		QList<Option> options() const;
 		/*!

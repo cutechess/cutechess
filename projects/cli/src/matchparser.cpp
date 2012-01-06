@@ -33,6 +33,17 @@ void MatchParser::addOption(const QString& name,
 	m_validOptions[name] = option;
 }
 
+QVariant MatchParser::takeOption(const QString& name)
+{
+	for (int i = 0; i < m_options.size(); i++)
+	{
+		if (m_options[i].name == name)
+			return m_options.takeAt(i).value;
+	}
+
+	return QVariant();
+}
+
 QList<MatchParser::Option> MatchParser::options() const
 {
 	return m_options;
