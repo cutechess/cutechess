@@ -17,11 +17,6 @@ test_board
 # qmake generated Makefile
 Makefile
 
-# asciidoc generated man page and xml document
-docs/cutechess*.6
-docs/cutechess*.xml
-docs/cutechess*.html
-
 # doxygen generated api documents
 docs/api/html/
 

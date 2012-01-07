@@ -1,0 +1,252 @@
+.Dd January 7, 2012
+.Dt CUTECHESS-CLI 6
+.Os
+.Sh NAME
+.Nm cutechess-cli
+.Nd A command-line tool for chess engine matches
+.Sh SYNOPSIS
+.Nm
+.Fl engine Ar engine-options
+.Fl engine Ar engine-options
+.Op Fl engine Ar engine-options ...
+.Op options
+.Sh DESCRIPTION
+Runs chess matches from the command line.
+.Pp
+Its options are as follows:
+.Bl -tag -width Ds
+.It Fl engine Ar engine-options
+Add an engine defined by
+.Ar engine-options
+to the tournament.
+See
+.Sx Engine Options .
+.It Fl each Ar engine-options
+Apply
+.Ar engine-options
+to each engine in the tournament.
+.It Fl variant Ar arg
+Set the chess variant to
+.Ar arg .
+.It Fl concurrency Ar n
+Set the maximum number of current games to
+.Ar n .
+.It Fl draw Ar n Ar score
+Adjudicate the game as draw if the score of both engines is within
+.Ar score
+centipawns from zero after
+.Ar n
+full moves have been played.
+.It Fl resign Ar n Ar score
+Adjudicate the game as a loss if an engine's score it at least
+.Ar score
+centipawns below zero for at least
+.Ar n
+consecutive moves.
+.It Fl tournament Ar arg
+Set the tournament type to
+.Ar arg .
+Supported tournament types are:
+.Cm round-robin
+(default) and
+.Cm gauntlet .
+.It Fl event Ar arg
+Set the event name to
+.Ar arg .
+.It Fl games Ar n
+Play
+.Ar n
+games per encounter. This value should be set to an even number in
+tournaments with more than two players to make sure that each player
+plays an equal number of games with white and black pieces.
+.It Fl rounds Ar n
+Multiply the number of rounds to play by
+.Ar n .
+For two-player tournaments this option should be used to set the total
+number of games to play.
+.It Fl ratinginterval Ar n
+Set the interval for printing the ratings to
+.Ar n
+games.
+.It Fl debug
+Display all engine input and output.
+.It Fl pgnin Ar file
+Use
+.Ar file
+as the opening book in PGN format.
+.It Fl pgndepth Ar n
+Set the maximum depth for the PGN input to
+.Ar n
+plies.
+.It Fl pgnout Ar file Bq Cm min
+Save the games to
+.Ar file
+in PGN format. Use the
+.Cm min
+argument to save in a minimal PGN format.
+.It Fl recover
+Restart crashed engines instead of stopping the match.
+.It Fl repeat
+Play each opening twice so that both players get to play it on both
+sides.
+.It Fl site Ar arg
+Set the site / location to
+.Ar arg .
+.It Fl srand Ar n
+Set the random seed for the book move selector to
+.Ar n .
+.It Fl wait Ar n
+Wait
+.Ar n
+milliseconds between games. The default is 0.
+.It Fl -version
+Display the version information.
+.It Fl -help
+Display help information.
+.It Fl -engines
+Display a list of configured engines and exit.
+.It Fl -protocols
+Display a list of supported chess protocols and exit.
+.It Fl -variants
+Display a list of supported chess variants and exit.
+.El
+.Sh ENGINE OPTIONS
+.Bl -tag -width Ds
+.It Ic conf Ns = Ns Ar arg
+Use an engine with the name
+.Ar arg
+from Cute Chess configuration file.
+.It Ic name Ns = Ns Ar arg
+Set the name to
+.Ar arg .
+.It Ic cmd Ns = Ns Ar arg
+Set the command to
+.Ar arg .
+.It Ic dir Ns = Ns Ar arg
+Set the working directory to
+.Ar arg .
+.It Ic arg Ns = Ns Ar arg
+Pass
+.Ar arg
+to the engine as a command line argument.
+.It Ic initstr Ns = Ns Ar arg
+Send
+.Ar arg
+to the engine's standard input at startup.
+.It Ic restart Ns = Ns Cm auto Ns | Ns Cm on Ns | Ns Cm off
+Set the engine restart mode which can be one of the following:
+.Cm auto
+The engine decides wherher to restart (default).
+.Cm on
+The engine is always restarted between games.
+.Cm off
+The engine is never restarted between games.
+.It Ic proto Ns = Ns Ar arg
+Set the chess protocol to
+.Ar arg .
+.It Ic tc Ns = Ns Ar arg Ns | Ns Cm inf
+Set the time control to
+.Ar arg .
+The format is moves/time+increment, where
+.Ar moves
+is the number of moves per tc,
+.Ar time
+is time per tc (either seconds or minutes:seconds, and
+.Ar increment
+is the time increment per move in seconds.
+.Pp
+Infinite time control can be set with
+.Cm inf .
+.It Ic st Ns = Ns Ar n
+Set the time limit fo each move to
+.Ar n
+seconds. This option cannot be used in combination with the
+.Ic tc .
+.It Ic timemargin Ns = Ns Ar n
+Let engines to
+.Ar n
+milliseconds over the time limit.
+.It Ic book Ns = Ns Ar file
+Use
+.Ar file
+(Polyglot book file) as the opening book.
+.It Ic bookdepth Ns = Ns Ar n
+Set the maximum book depth (in fullmoves) to
+.Ar n .
+.It Ic whitepov
+Inver the engine's scores when it plays black. This option should be
+used with engines that always report scores from white's perspective.
+.It Ic depth Ns = Ns Ar n
+Set the search depth limit to
+.Ar n
+plies.
+.It Ic nodes Ns = Ns Ar n
+Set the node count limit to
+.Ar n
+nodes.
+.It Ic option. Ns Ar name Ns = Ns Ar arg
+Set custom engine option
+.Ar name
+to value
+.Ar arg .
+.El
+.Sh EXAMPLES
+Play ten games between two Sloppy engine with a time control of 40
+moves in 60 seconds:
+.Pp
+.Dl $ cutechess-cli \-engine name=Sloppy -engine name=Sloppy -each cmd=sloppy proto=xboard tc=40/60 -rounds 10
+.Pp
+Play a single game between Atak and Glaurung engines with a time
+control of 40 moves in one minute and 30 seconds with one second
+increment:
+.Pp
+.Dl $ cutechess-cli \-engine name=Atak cmd=Atak32.exe dir=C:\\atak proto=xboard -engine cmd=glaurung proto=uci option.Threads=1 -both tc=40/1:30+1
+.Bl -bullet
+.It
+Use the name=Atak parameter because it's a Xboard protocol 1 engine
+and doesn't tell its name.
+.It
+Use the dir=C:\\atak parameter to point the location of the executable.
+.It
+Glaurung can tell its name and is in the PATH variable so only the
+command is needed.
+.It
+Set Glaurung to use 1 thread.
+.It
+Set the time control to 40 moves in one minute and 30 seconds with
+one second increment.
+.El
+.Pp
+Play a Round-Robin tournament between Fruit, Crafty, Stockfish and
+Sloppy:
+.Pp
+.Dl $ cutechess-cli \-engine conf=Fruit -engine conf=Crafty -engine conf=Stockfish -engine conf=Sloppy -each tc=4 book=book.bin -games 2 -rounds 10 -repeat
+.Bl -bullet
+.It
+Play two games per encounter, effectively multiplying the number of
+games by 2.
+.It
+Play 10 times the minimum amount of rounds (3). So the total number
+of rounds to play will be 30, and the total number of games 120.
+.It
+In each two-game encounter colors are switched between games and the
+same opening line is played in both games.
+.El
+.Sh AUTHORS
+The
+.Nm
+utility was written by
+.An Ilari Pihlajisto ,
+.Mt ilari.pihlajisto@mbnet.fi ;
+and
+.An Arto Jonsson ,
+.Mt ajonsson@kapsi.fi .
+.Sh RESOURCES
+.Bl -bullet
+.It
+Source code:
+.Lk http://repo.or.cz/w/sloppygui.git
+.It
+Mailing list:
+.Lk https://list.kapsi.fi/listinfo/cutechess
+.El
