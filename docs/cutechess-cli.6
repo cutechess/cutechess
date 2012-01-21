@@ -1,9 +1,9 @@
-.Dd January 7, 2012
+.Dd January 21, 2012
 .Dt CUTECHESS-CLI 6
 .Os
 .Sh NAME
 .Nm cutechess-cli
-.Nd A command-line tool for chess engine matches
+.Nd Automate chess engine tournaments
 .Sh SYNOPSIS
 .Nm
 .Fl engine Ar engine-options
@@ -11,7 +11,9 @@
 .Op Fl engine Ar engine-options ...
 .Op options
 .Sh DESCRIPTION
-Runs chess matches from the command line.
+The
+.Nm
+utility automates chess engine tournaments.
 .Pp
 Its options are as follows:
 .Bl -tag -width Ds
@@ -25,9 +27,22 @@ See
 Apply
 .Ar engine-options
 to each engine in the tournament.
-.It Fl variant Ar arg
-Set the chess variant to
-.Ar arg .
+See
+.Sx Engine Options .
+.It Fl variant Ar variant
+Set the chess variant, where
+.Ar variant
+is one of:
+.Cm atomic ,
+.Cm capablanca ,
+.Cm caparandom ,
+.Cm crazyhouse ,
+.Cm fischerandom ,
+.Cm gothic ,
+.Cm loser
+or
+.Cm standard
+(default).
 .It Fl concurrency Ar n
 Set the maximum number of concurrent games to
 .Ar n .
@@ -43,12 +58,12 @@ Adjudicate the game as a loss if an engine's score it at least
 centipawns below zero for at least
 .Ar n
 consecutive moves.
-.It Fl tournament Ar arg
-Set the tournament type to
-.Ar arg .
-Supported tournament types are:
+.It Fl tournament Ar type
+Set the tournament type, where
+.Ar type
+is either
 .Cm round-robin
-(default) and
+(default) or
 .Cm gauntlet .
 .It Fl event Ar arg
 Set the event name to
@@ -74,10 +89,8 @@ Display all engine input and output.
 Use
 .Ar file
 as the opening book in PGN format.
-.It Fl pgndepth Ar n
-Set the maximum depth for the PGN input to
-.Ar n
-plies.
+.It Fl pgndepth Ar plies
+Set the maximum depth for the PGN input.
 .It Fl pgnout Ar file Bq Cm min
 Save the games to
 .Ar file
@@ -85,16 +98,15 @@ in PGN format. Use the
 .Cm min
 argument to save in a minimal PGN format.
 .It Fl recover
-Restart crashed engines instead of stopping the match.
+Restart crashed engines instead of stopping the game.
 .It Fl repeat
 Play each opening twice so that both players get to play it on both
 sides.
 .It Fl site Ar arg
 Set the site / location to
 .Ar arg .
-.It Fl srand Ar n
-Set the random seed for the book move selector to
-.Ar n .
+.It Fl srand Ar seed
+Set the random seed for the book move selector.
 .It Fl wait Ar n
 Wait
 .Ar n
@@ -115,7 +127,7 @@ Display a list of supported chess variants and exit.
 .It Ic conf Ns = Ns Ar arg
 Use an engine with the name
 .Ar arg
-from Cute Chess configuration file.
+from engine configuration file.
 .It Ic name Ns = Ns Ar arg
 Set the name to
 .Ar arg .
@@ -133,25 +145,23 @@ to the engine as a command line argument.
 Send
 .Ar arg
 to the engine's standard input at startup.
-.It Ic restart Ns = Ns Cm auto Ns | Ns Cm on Ns | Ns Cm off
-Set the engine restart mode which can be one of the following:
+.It Ic restart Ns = Ns [ Cm auto | Cm on | Cm off Ns ]
+Set the engine restart mode.
 .Cm auto
-The engine decides whether to restart (default).
+means the engine decides whether to restart (default),
 .Cm on
-The engine is always restarted between games.
+means the engine is always restarted between games and
 .Cm off
-The engine is never restarted between games.
-.It Ic proto Ns = Ns Ar arg
-Set the chess protocol to
-.Ar arg .
-.It Ic tc Ns = Ns Ar arg Ns | Ns Cm inf
-Set the time control to
-.Ar arg .
+means the engine is never restarted between games.
+.It Ic proto Ns = Ns [ Cm uci | Cm xboard  Ns ]
+Set the chess protocol.
+.It Ic tc Ns = Ns [ Ns Ar tcformat | Cm inf Ns ]
+Set the time control.
 The format is moves/time+increment, where
 .Ar moves
 is the number of moves per tc,
 .Ar time
-is time per tc (either seconds or minutes:seconds, and
+is time per tc (either seconds or minutes:seconds), and
 .Ar increment
 is the time increment per move in seconds.
 .Pp
@@ -161,7 +171,8 @@ Infinite time control can be set with
 Set the time limit fo each move to
 .Ar n
 seconds. This option cannot be used in combination with the
-.Ic tc .
+.Ic tc
+option.
 .It Ic timemargin Ns = Ns Ar n
 Let engines to
 .Ar n
@@ -176,19 +187,12 @@ Set the maximum book depth (in fullmoves) to
 .It Ic whitepov
 Invert the engine's scores when it plays black. This option should be
 used with engines that always report scores from white's perspective.
-.It Ic depth Ns = Ns Ar n
-Set the search depth limit to
-.Ar n
-plies.
-.It Ic nodes Ns = Ns Ar n
-Set the node count limit to
-.Ar n
-nodes.
-.It Ic option. Ns Ar name Ns = Ns Ar arg
-Set custom engine option
-.Ar name
-to value
-.Ar arg .
+.It Ic depth Ns = Ns Ar plies
+Set the search depth limit.
+.It Ic nodes Ns = Ns Ar count
+Set the node count limit.
+.It Ic option. Ns Ar name Ns = Ns Ar value
+Set custom engine option.
 .El
 .Sh EXAMPLES
 Play ten games between two Sloppy engine with a time control of 40
@@ -232,6 +236,8 @@ of rounds to play will be 30, and the total number of games 120.
 In each two-game encounter colors are switched between games and the
 same opening line is played in both games.
 .El
+.Sh SEE ALSO
+.Xr engines.json 5
 .Sh AUTHORS
 The
 .Nm
