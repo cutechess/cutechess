@@ -1,0 +1,41 @@
+.Dd January 21, 2012
+.Dt ENGINES.JSON 5
+.Os
+.Sh NAME
+.Nm engines.json
+.Nd Cute Chess engine configuration file
+.Sh SYNOPSIS
+.Nm
+is the chess engine configuration file for
+.Xr cutechess-cli 6 .
+.Pp
+Available configuration options are:
+.Bl -tag -width Ds
+.It Ic name No : Ar string
+The name of the engine.
+.It Ic command No : Ar string
+The engine command.
+.It Ic workingDirectory No : Ar string
+The working directory of the engine.
+.It Ic protocol No : Ar string
+The chess engine protocol used by this engine.
+.It Ic initStrings No : Ar array No of Ar string
+Array of strings sent to the engine's standard input at startup.
+.It Ic whitepov No : Ar boolean
+Invert the engine's scores when it plays black. This option
+should be used with engines that always report scores from
+white's perspective.
+.El
+.Sh EXAMPLES
+A minimal engine configuration file for the Sloppy chess engine:
+.Bd -literal -offset indent
+[
+    {
+        "name": "Sloppy",
+	"command": "sloppy",
+	"protocol": "xboard"
+    }
+]
+.Ed
+.Sh SEE ALSO
+.Xr cutechess-cli 6
