@@ -42,6 +42,8 @@
 - Use model testing tools to check validity of all model classes
   during runtime (http://developer.qt.nokia.com/wiki/Model_Test)
 
+- Prepare for Qt 5
+
 User Interface
 --------------
 
