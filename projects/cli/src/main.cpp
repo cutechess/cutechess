@@ -495,20 +495,6 @@ int main(int argc, char* argv[])
 
 			return 0;
 		}
-		else if (arg == "--protocols")
-		{
-			foreach (const QString& protocol, EngineFactory::protocols())
-				out << protocol << endl;
-
-			return 0;
-		}
-		else if (arg == "--variants")
-		{
-			foreach (const QString& variant, Chess::BoardFactory::variants())
-				out << variant << endl;
-
-			return 0;
-		}
 		else if (arg == "--help")
 		{
 			out << "Usage: cutechess-cli -engine [eng_options] -engine [eng_options]... [options]\n"
@@ -516,8 +502,6 @@ int main(int argc, char* argv[])
 			       "  --help		Display this information\n"
 			       "  --version		Display the version number\n"
 			       "  --engines		Display a list of configured engines and exit\n"
-			       "  --protocols		Display a list of supported chess protocols and exit\n"
-			       "  --variants		Display a list of supported chess variants and exit\n\n"
 			       "  -engine <options>	Add an engine defined by <options> to the tournament\n"
 			       "  -each <options>	Apply <options> to each engine in the tournament\n"
 			       "  -variant <arg>	Set the chess variant to <arg>\n"
