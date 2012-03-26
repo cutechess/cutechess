@@ -1,4 +1,4 @@
-.Dd January 21, 2012
+.Dd March 26, 2012
 .Dt CUTECHESS-CLI 6
 .Os
 .Sh NAME
@@ -133,6 +133,22 @@ Set the command to
 .It Ic dir Ns = Ns Ar arg
 Set the working directory to
 .Ar arg .
+.It Ic proto Ns = Ns [ Cm uci | Cm xboard  Ns ]
+Set the chess protocol.
+.It Ic tc Ns = Ns [ Ns Ar tcformat | Cm inf Ns ]
+Set the time control.
+The format is moves/time+increment, where
+.Ar moves
+is the number of moves per tc,
+.Ar time
+is time per tc (either seconds or minutes:seconds), and
+.Ar increment
+is the time increment per move in seconds.
+.Pp
+Infinite time control can be set with
+.Cm inf .
+.It Ic option. Ns Ar name Ns = Ns Ar value
+Set custom engine option.
 .It Ic arg Ns = Ns Ar arg
 Pass
 .Ar arg
@@ -149,20 +165,6 @@ means the engine decides whether to restart (default),
 means the engine is always restarted between games and
 .Cm off
 means the engine is never restarted between games.
-.It Ic proto Ns = Ns [ Cm uci | Cm xboard  Ns ]
-Set the chess protocol.
-.It Ic tc Ns = Ns [ Ns Ar tcformat | Cm inf Ns ]
-Set the time control.
-The format is moves/time+increment, where
-.Ar moves
-is the number of moves per tc,
-.Ar time
-is time per tc (either seconds or minutes:seconds), and
-.Ar increment
-is the time increment per move in seconds.
-.Pp
-Infinite time control can be set with
-.Cm inf .
 .It Ic st Ns = Ns Ar n
 Set the time limit for each move to
 .Ar n
@@ -187,8 +189,6 @@ used with engines that always report scores from white's perspective.
 Set the search depth limit.
 .It Ic nodes Ns = Ns Ar count
 Set the node count limit.
-.It Ic option. Ns Ar name Ns = Ns Ar value
-Set custom engine option.
 .El
 .Sh EXAMPLES
 Play ten games between two Sloppy engines with a time control of 40
