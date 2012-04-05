@@ -71,9 +71,10 @@ Set the event name to
 .It Fl games Ar n
 Play
 .Ar n
-games per encounter. This value should be set to an even number in
-tournaments with more than two players to make sure that each player
-plays an equal number of games with white and black pieces.
+games per encounter.
+This value should be set to an even number in tournaments with more than two
+players to make sure that each player plays an equal number of games with white
+and black pieces.
 .It Fl rounds Ar n
 Multiply the number of rounds to play by
 .Ar n .
@@ -137,11 +138,13 @@ Set the working directory to
 Set the chess protocol.
 .It Ic tc Ns = Ns [ Ns Ar tcformat | Cm inf Ns ]
 Set the time control.
-The format is moves/time+increment, where
+The format is moves/time+increment,
+where
 .Ar moves
 is the number of moves per tc,
 .Ar time
-is time per tc (either seconds or minutes:seconds), and
+is time per tc (either seconds or minutes:seconds),
+and
 .Ar increment
 is the time increment per move in seconds.
 .Pp
@@ -168,7 +171,8 @@ means the engine is never restarted between games.
 .It Ic st Ns = Ns Ar n
 Set the time limit for each move to
 .Ar n
-seconds. This option cannot be used in combination with the
+seconds.
+This option cannot be used in combination with the
 .Ic tc
 option.
 .It Ic timemargin Ns = Ns Ar n
@@ -183,8 +187,9 @@ Use
 Set the maximum book depth (in fullmoves) to
 .Ar n .
 .It Ic whitepov
-Invert the engine's scores when it plays black. This option should be
-used with engines that always report scores from white's perspective.
+Invert the engine's scores when it plays black.
+This option should be used with engines that always report scores from white's
+perspective.
 .It Ic depth Ns = Ns Ar plies
 Set the search depth limit.
 .It Ic nodes Ns = Ns Ar count
@@ -223,8 +228,8 @@ Sloppy:
 .Dl $ cutechess-cli \-engine conf=Fruit -engine conf=Crafty -engine conf=Stockfish -engine conf=Sloppy -each tc=4 book=book.bin -games 2 -rounds 10 -repeat
 .Bl -bullet
 .It
-Play two games per encounter, effectively multiplying the number of
-games by 2.
+Play two games per encounter,
+effectively multiplying the number of games by 2.
 .It
 Play 10 times the minimum amount of rounds (3). So the total number
 of rounds to play will be 30, and the total number of games 120.
