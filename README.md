@@ -10,10 +10,10 @@ Installing
 
 Binaries are available for `cutechess-cli`. The latest version is 0.5.1.
 
-[cutechess-cli GNU/Linux 32-bit](http://github.com/downloads/cutechess/cutechess/cutechess-cli-linux32.tar.gz)
-[cutechess-cli GNU/Linux 64-bit](http://github.com/downloads/cutechess/cutechess/cutechess-cli-linux64.tar.gz)
-[cutechess-cli OS X 64-bit](http://github.com/downloads/cutechess/cutechess/cutechess-cli-osx.zip)
-[cutechess-cli Win32](http://github.com/downloads/cutechess/cutechess/cutechess-cli-win32.zip)
+* [cutechess-cli GNU/Linux 32-bit](http://github.com/downloads/cutechess/cutechess/cutechess-cli-linux32.tar.gz)
+* [cutechess-cli GNU/Linux 64-bit](http://github.com/downloads/cutechess/cutechess/cutechess-cli-linux64.tar.gz)
+* [cutechess-cli OS X 64-bit](http://github.com/downloads/cutechess/cutechess/cutechess-cli-osx.zip)
+* [cutechess-cli Win32](http://github.com/downloads/cutechess/cutechess/cutechess-cli-win32.zip)
 
 The GUI doesn't have a binary release at this time.
 
