@@ -34,6 +34,13 @@ Documentation is available as Unix manual pages in the `docs/` directory.
 
 API documentation can be built by issuing `make doc-api` (requires Doxygen).
 
+License
+-------
+
+Cute Chess is released under the GPLv3+ license except for the components in
+the `projects/lib/components` and `projects/gui/components` directories which
+are released under the MIT License.
+
 Credits
 -------
 
