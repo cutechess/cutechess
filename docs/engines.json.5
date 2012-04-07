@@ -1,4 +1,4 @@
-.Dd January 21, 2012
+.Dd April 7, 2012
 .Dt ENGINES.JSON 5
 .Os
 .Sh NAME
@@ -8,8 +8,118 @@
 .Nm
 is the chess engine configuration file for
 .Xr cutechess-cli 6 .
+.Sh JSON FORMAT
+.Ss Values
+A JSON value must be one of:
+.Ar object ,
+.Ar array ,
+.Ar number ,
+.Ar string ,
+.Cm false ,
+.Cm true
+or
+.Cm null .
+.Ss Objects
+A
+.Ar object
+is structure of name-value pairs enclosed in curly brackets.
+A name is a
+.Ar string .
+Name and value are separated by a single colon.
+Pairs are separated by commas.
 .Pp
-Available configuration options are:
+Example objects would be:
+.Bd -literal -offset indent
+{ "Finland" : ".fi", "Sweden" : ".se" }
+
+{
+  "firstName" : "JC",
+  "lastName"  : "Denton",
+  "age"       : 28,
+  "languages" : [ "English", "French", "Spanish" ]
+}
+.Ed
+.Ss Arrays
+An
+.Ar array
+is a structure of zero or more values enclosed in square brackets.
+Values are separated by commas.
+.Pp
+Example arrays would be:
+.Bd -literal -offset indent
+[ "Cute", "Chess" ]
+
+[
+  [ 1, 0, 0 ],
+  [ 0, 1, 0 ],
+  [ 0, 0, 1 ]
+]
+.Ed
+.Ss Numbers
+A
+.Ar number
+consists of an integer part and optional fractional and/or exponent part.
+The integer part can be prefixed with a minus sign.
+Fractional part is a decimal point followed by one or more digits.
+Exponent part begins with a letter E in upper or lowercase which may be
+followed by a plus or minus sign.
+The E and optional sign are followed by one or more digits.
+.Pp
+Octal and hex forms are not allowed.
+.Pp
+Example numbers would be:
+.Bd -literal -offset indent
+128
+-1.04
+2e32
+-18E-20
+.Ed
+.Ss Strings
+A
+.Ar string
+is sequence of characters enclosed in quotation marks.
+All Unicode characters may be placed within the quotation marks except
+for the characters that must be escaped: quotation mark, backslash, and
+control characters.
+.Pp
+Available two-character escape sequences are as follows:
+.Pp
+.Bl -tag -width Ds -offset indent -compact
+.It Cm \e\e
+Backslash character.
+.It Cm \e/
+Forward slash character.
+.It Cm \e"
+Quotation mark.
+.It Cm \eb
+Bell character.
+.It Cm \ef
+Form feed character.
+.It Cm \en
+Line feed character.
+.It Cm \et
+Vertical tab character.
+.It Cm \eu Ns Ar num
+Unicode character where
+.Ar num
+is a four hexadecimal digits that encode the character's code point.
+.El
+.Pp
+Example strings would be:
+.Bd -literal -offset indent
+"Hello, world!"
+
+"Please place all items \e"carefully\e" in bins."
+
+"\eu03a6 is one of the letters of Greek alphabet."
+.Ed
+.Sh ENGINE CONFIGURATION
+The configuration file consist of an
+.Ar array
+of
+.Ar objects .
+Each object defines a single engine configuration.
+Available options for an engine configuration are:
 .Bl -tag -width Ds
 .It Ic name No : Ar string
 The name of the engine.
@@ -30,11 +140,11 @@ white's perspective.
 A minimal engine configuration file for the Sloppy chess engine:
 .Bd -literal -offset indent
 [
-    {
-        "name": "Sloppy",
-        "command": "sloppy",
-        "protocol": "xboard"
-    }
+  {
+    "name": "Sloppy",
+    "command": "sloppy",
+    "protocol": "xboard"
+  }
 ]
 .Ed
 .Sh SEE ALSO
