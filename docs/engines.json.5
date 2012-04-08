@@ -119,21 +119,30 @@ The configuration file consist of an
 of
 .Ar objects .
 Each object defines a single engine configuration.
-Available options for an engine configuration are:
+Required options for each engine configuration are:
 .Bl -tag -width Ds
 .It Ic name No : Ar string
 The name of the engine.
 .It Ic command No : Ar string
 The engine command.
+.It Ic protocol No : \(dquci\(dq | \(dqxboard\(dq
+The chess engine protocol used by this engine.
+.El
+.Pp
+Other available options for an engine configuration are:
+.Bl -tag -width Ds
 .It Ic workingDirectory No : Ar string
 The working directory of the engine.
-.It Ic protocol No : Ar string
-The chess engine protocol used by this engine.
 .It Ic initStrings No : Ar array No of Ar string
 Array of strings sent to the engine's standard input at startup.
-.It Ic whitepov No : Ar boolean
-Invert the engine's scores when it plays black. This option
-should be used with engines that always report scores from
+.It Ic whitepov No : Cm true | Cm false
+When
+.Cm true
+invert the engine's scores when it plays black.
+The default is
+.Cm false .
+.Pp
+This option should be used with engines that always report scores from
 white's perspective.
 .El
 .Sh EXAMPLES
