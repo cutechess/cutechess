@@ -1,13 +1,24 @@
-.Dd April 7, 2012
+.Dd April 10, 2012
 .Dt ENGINES.JSON 5
 .Os
 .Sh NAME
 .Nm engines.json
 .Nd Cute Chess engine configuration file
-.Sh SYNOPSIS
+.Sh DESCRIPTION
 .Nm
 is the chess engine configuration file for
 .Xr cutechess-cli 6 .
+An engine configuration defines name, command, working directory and
+many other options.
+These options can be then used in
+.Xr cutechess-cli 6
+with the
+.Cm conf
+command-line option.
+.Pp
+Engine configurations are defined in JavaScript Object Notation (JSON) format.
+See
+.Sx JSON FORMAT .
 .Sh JSON FORMAT
 .Ss Values
 A JSON value must be one of:
