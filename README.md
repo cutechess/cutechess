@@ -20,7 +20,8 @@ The GUI doesn't have a binary release at this time.
 Compiling
 ---------
 
-Cute Chess requires Qt 4.6 or greater and `qmake`.
+Cute Chess requires Qt 4.6 or greater and `qmake`. Qt 5 is not currently
+supported.
 
 In the simplest case you only have to issue:
 
