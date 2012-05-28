@@ -194,7 +194,7 @@ QString WesternBoard::sanMoveString(const Move& move)
 
 		for (int i = 0; i < moves.size(); i++)
 		{
-			const Move& move2 = moves.at(i);
+			const Move& move2 = moves[i];
 			if (move2.sourceSquare() == 0
 			||  move2.sourceSquare() == source
 			||  move2.targetSquare() != target)
@@ -414,7 +414,7 @@ Move WesternBoard::moveFromSanString(const QString& str)
 	// the data we got from the move string.
 	for (int i = 0; i < moves.size(); i++)
 	{
-		const Move& move = moves.at(i);
+		const Move& move = moves[i];
 		if (move.sourceSquare() == 0 || move.targetSquare() != target)
 			continue;
 		Square sourceSq2 = chessSquare(move.sourceSquare());
@@ -925,7 +925,7 @@ bool WesternBoard::inCheck(Side side, int square) const
 	// Knight, archbishop, chancellor attacks
 	for (int i = 0; i < m_knightOffsets.size(); i++)
 	{
-		piece = pieceAt(square + m_knightOffsets.at(i));
+		piece = pieceAt(square + m_knightOffsets[i]);
 		if (piece.side() == opSide && pieceHasMovement(piece.type(), KnightMovement))
 			return true;
 	}
@@ -933,7 +933,7 @@ bool WesternBoard::inCheck(Side side, int square) const
 	// Bishop, queen, archbishop, king attacks
 	for (int i = 0; i < m_bishopOffsets.size(); i++)
 	{
-		int offset = m_bishopOffsets.at(i);
+		int offset = m_bishopOffsets[i];
 		int targetSquare = square + offset;
 		if (m_kingCanCapture && targetSquare == m_kingSquare[opSide])
 			return true;

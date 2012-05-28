@@ -34,7 +34,7 @@ QDebug operator<<(QDebug dbg, const Board* board)
 		i++;
 		for (int x = 0; x < board->m_width; x++)
 		{
-			Piece pc = board->m_squares.at(i);
+			Piece pc = board->m_squares[i];
 			if (pc.isValid())
 				str += board->pieceSymbol(pc);
 			else
@@ -136,8 +136,8 @@ QString Board::pieceSymbol(Piece piece) const
 		return QString();
 
 	if (piece.side() == upperCaseSide())
-		return m_pieceData.at(type).symbol;
-	return m_pieceData.at(type).symbol.toLower();
+		return m_pieceData[type].symbol;
+	return m_pieceData[type].symbol.toLower();
 }
 
 Piece Board::pieceFromSymbol(const QString& pieceSymbol) const
@@ -150,7 +150,7 @@ Piece Board::pieceFromSymbol(const QString& pieceSymbol) const
 
 	for (int i = 1; i < m_pieceData.size(); i++)
 	{
-		if (symbol == m_pieceData.at(i).symbol)
+		if (symbol == m_pieceData[i].symbol)
 		{
 			code = i;
 			break;
@@ -169,7 +169,7 @@ QString Board::pieceString(int pieceType) const
 {
 	if (pieceType <= 0 || pieceType >= m_pieceData.size())
 		return QString();
-	return m_pieceData.at(pieceType).name;
+	return m_pieceData[pieceType].name;
 }
 
 int Board::reserveType(int pieceType) const
@@ -403,7 +403,7 @@ QString Board::fenString(FenNotation notation) const
 			fen += '/';
 		for (int x = 0; x < m_width; x++)
 		{
-			Piece pc = m_squares.at(i);
+			Piece pc = m_squares[i];
 
 			if (pc.isEmpty())
 				nempty++;
@@ -635,7 +635,7 @@ void Board::generateMoves(QVarLengthArray<Move>& moves, int pieceType) const
 	moves.clear();
 	for (unsigned sq = begin; sq < end; sq++)
 	{
-		Piece tmp = m_squares.at(sq);
+		Piece tmp = m_squares[sq];
 		if (tmp.side() == m_side
 		&&  (pieceType == Piece::NoPiece || tmp.type() == pieceType))
 			generateMovesForPiece(moves, tmp.type(), sq);
@@ -670,7 +670,7 @@ void Board::generateHoppingMoves(int sourceSquare,
 	Side opSide = sideToMove().opposite();
 	for (int i = 0; i < offsets.size(); i++)
 	{
-		int targetSquare = sourceSquare + offsets.at(i);
+		int targetSquare = sourceSquare + offsets[i];
 		Piece capture = pieceAt(targetSquare);
 		if (capture.isEmpty() || capture.side() == opSide)
 			moves.append(Move(sourceSquare, targetSquare));
@@ -684,7 +684,7 @@ void Board::generateSlidingMoves(int sourceSquare,
 	Side side = sideToMove();
 	for (int i = 0; i < offsets.size(); i++)
 	{
-		int offset = offsets.at(i);
+		int offset = offsets[i];
 		int targetSquare = sourceSquare + offset;
 		Piece capture;
 		while (!(capture = pieceAt(targetSquare)).isWall()
@@ -709,7 +709,7 @@ bool Board::moveExists(const Move& move) const
 		generateDropMoves(moves, move.promotion());
 	else
 	{
-		Piece piece = m_squares.at(source);
+		Piece piece = m_squares[source];
 		if (piece.side() != m_side)
 			return false;
 		generateMovesForPiece(moves, piece.type(), source);
@@ -727,7 +727,7 @@ int Board::captureType(const Move& move) const
 {
 	Q_ASSERT(!move.isNull());
 
-	Piece piece(m_squares.at(move.targetSquare()));
+	Piece piece(m_squares[move.targetSquare()]);
 	if (piece.side() == m_side.opposite())
 		return piece.type();
 	return Piece::NoPiece;
@@ -782,7 +782,7 @@ bool Board::canMove()
 
 	for (int i = 0; i < moves.size(); i++)
 	{
-		if (vIsLegalMove(moves.at(i)))
+		if (vIsLegalMove(moves[i]))
 			return true;
 	}
 
@@ -799,8 +799,8 @@ QVector<Move> Board::legalMoves()
 
 	for (int i = moves.size() - 1; i >= 0; i--)
 	{
-		if (vIsLegalMove(moves.at(i)))
-			legalMoves << moves.at(i);
+		if (vIsLegalMove(moves[i]))
+			legalMoves << moves[i];
 	}
 
 	return legalMoves;
