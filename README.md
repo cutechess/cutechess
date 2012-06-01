@@ -8,7 +8,8 @@ framework](http://qt.nokia.com/).
 Installing
 ----------
 
-Binaries are available for `cutechess-cli`. The latest version is 0.5.1.
+Binaries are available for `cutechess-cli`, the command-line interface of Cute
+Chess. The latest version is 0.5.1.
 
 * [cutechess-cli GNU/Linux 32-bit](http://github.com/downloads/cutechess/cutechess/cutechess-cli-linux32.tar.gz)
 * [cutechess-cli GNU/Linux 64-bit](http://github.com/downloads/cutechess/cutechess/cutechess-cli-linux64.tar.gz)
