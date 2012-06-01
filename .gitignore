@@ -6,7 +6,9 @@ cutechess.exe
 cutechess-cli.exe
 
 # test executables
-test_board
+tst_board
+tst_jsonparser
+tst_jsonserializer
 
 # libraries
 *.so
