@@ -97,7 +97,7 @@ void MainWindow::createActions()
 	m_newGameAct->setShortcut(QKeySequence::New);
 
 	m_closeGameAct = new QAction(tr("&Close"), this);
-	#ifdef Q_WS_WIN
+	#ifdef Q_OS_WIN32
 	m_closeGameAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
 	#else
 	m_closeGameAct->setShortcut(QKeySequence::Close);
@@ -114,7 +114,7 @@ void MainWindow::createActions()
 	m_importGameAct = new QAction(tr("Import..."), this);
 
 	m_quitGameAct = new QAction(tr("&Quit"), this);
-	#ifdef Q_OS_WIN
+	#ifdef Q_OS_WIN32
 	m_quitGameAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
 	#else
 	m_quitGameAct->setShortcut(QKeySequence::Quit);
@@ -551,7 +551,7 @@ void MainWindow::updateWindowTitle()
 
 QString MainWindow::windowListTitle() const
 {
-	#ifndef Q_WS_MAC
+	#ifndef Q_OS_MAC
 	if (isWindowModified())
 		return genericTitle(m_game) + QLatin1String("*");
 	#endif

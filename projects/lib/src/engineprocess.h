@@ -20,11 +20,11 @@
 
 #include <QtGlobal>
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
   #include "engineprocess_win.h"
-#else // not Q_WS_WIN
+#else // not Q_OS_WIN32
   #include <QProcess>
   #define EngineProcess QProcess
-#endif // not Q_WS_WIN
+#endif // not Q_OS_WIN32
 
 #endif // ENGINEPROCESS_H

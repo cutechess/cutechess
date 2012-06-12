@@ -132,7 +132,7 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 void EngineConfigurationDialog::browseCommand()
 {
 	// Use file extensions only on Windows
-	#ifdef Q_WS_WIN
+	#ifdef Q_OS_WIN32
 	const QString filter = tr("Executables (*.exe *.bat *.cmd);;All Files (*.*)");
 	#else
 	const QString filter = tr("All Files (*)");
