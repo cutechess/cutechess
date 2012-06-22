@@ -21,7 +21,7 @@ mac {
     CONFIG -= app_bundle
 }
 
-QT -= gui
+QT = core
 
 # Code
 include(src/src.pri)
