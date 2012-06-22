@@ -1,13 +1,8 @@
-TEMPLATE = app
 TARGET = cutechess
-DESTDIR = $$PWD
 
 include(../lib/lib.pri)
 
 CUTECHESS_VERSION = unknown
-
-INCLUDEPATH += $$PWD
-DEPENDPATH += $$PWD
 
 macx-xcode {
     DEFINES += CUTECHESS_VERSION=\"$$CUTECHESS_VERSION\"

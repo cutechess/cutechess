@@ -1,13 +1,8 @@
-TEMPLATE = app
 TARGET = cutechess-cli
-DESTDIR = $$PWD
 
 include(../lib/lib.pri)
 
 CUTECHESS_CLI_VERSION = 0.5.1
-
-INCLUDEPATH += $$PWD
-DEPENDPATH += $$PWD
 
 macx-xcode {
     DEFINES += CUTECHESS_CLI_VERSION=\"$$CUTECHESS_CLI_VERSION\"
