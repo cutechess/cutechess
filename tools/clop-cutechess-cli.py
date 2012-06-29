@@ -32,7 +32,6 @@ standard output:
 
 from subprocess import Popen, PIPE
 import sys
-import exceptions
 
 
 # Path to the cutechess-cli executable.
@@ -65,19 +64,19 @@ def main(argv = None):
         argv = sys.argv[1:]
     
     if len(argv) == 0 or argv[0] == '--help':
-        print __doc__
+        sys.stdout.write(__doc__)
         return 0
 
     argv = argv[1:]
     if len(argv) < 3 or len(argv) % 2 == 0:
-        print 'Too few arguments'
+        sys.stderr.write('Too few arguments\n')
         return 2
     
     clop_seed = 0
     try:
         clop_seed = int(argv[0])
-    except exceptions.ValueError:
-        print 'Invalid seed value: %s' % argv[0]
+    except ValueError:
+        sys.stderr.write('invalid seed value: %s\n' % argv[0])
         return 2
 
     fcp = engine
@@ -88,8 +87,8 @@ def main(argv = None):
         # Make sure the parameter value is numeric
         try:
             float(argv[i + 1])
-        except exceptions.ValueError:
-            print 'Invalid value for parameter %s: %s' % (argv[i], argv[i + 1])
+        except ValueError:
+            sys.stderr.write('invalid value for parameter %s: %s\n' % (argv[i], argv[i + 1]))
             return 2
         # Pass CLOP's parameters to the engine by using
         # cutechess-cli's initialization string feature
@@ -107,13 +106,13 @@ def main(argv = None):
     process = Popen(command, shell = True, stdout = PIPE)
     output = process.communicate()[0]
     if process.returncode != 0:
-        print 'Could not execute command: %s' % command
+        sys.stderr.write('failed to execute command: %s\n' % command)
         return 2
     
     # Convert Cutechess-cli's result into W/L/D
     # Note that only one game should be played
     result = -1
-    for line in output.splitlines():
+    for line in output.decode("utf-8").splitlines():
         if line.startswith('Finished game'):
             if line.find(": 1-0") != -1:
                 result = clop_seed % 2
@@ -122,16 +121,16 @@ def main(argv = None):
             elif line.find(": 1/2-1/2") != -1:
                 result = 2
             else:
-                print 'The game did not terminate properly'
+                sys.stderr.write('the game did not terminate properly\n')
                 return 2
             break
     
     if result == 0:
-        print 'W'
+        sys.stdout.write('W\n')
     elif result == 1:
-        print 'L'
+        sys.stdout.write('L\n')
     elif result == 2:
-        print 'D'
+        sys.stdout.write('D\n')
 
 if __name__ == "__main__":
     sys.exit(main())
