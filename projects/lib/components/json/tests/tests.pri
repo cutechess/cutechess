@@ -1,5 +1,3 @@
-TEMPLATE = app
-
 win32:config += CONSOLE
 CONFIG += qtestlib
 DEFINES += LIB_EXPORT=""
