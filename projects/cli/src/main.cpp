@@ -32,6 +32,7 @@
 #include <board/boardfactory.h>
 #include <enginefactory.h>
 #include <enginetextoption.h>
+#include <openingsuite.h>
 
 #include "cutechesscoreapp.h"
 #include "matchparser.h"
@@ -233,6 +234,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-rounds", QVariant::Int, 1, 1);
 	parser.addOption("-ratinginterval", QVariant::Int, 1, 1);
 	parser.addOption("-debug", QVariant::Bool, 0, 0);
+	parser.addOption("-epdin", QVariant::String, 1, 1);
 	parser.addOption("-pgnin", QVariant::String, 1, 1);
 	parser.addOption("-pgndepth", QVariant::Int, 1, 1);
 	parser.addOption("-pgnout", QVariant::StringList, 1, 2);
@@ -347,14 +349,29 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		{
 			ok = value.toInt() > 0;
 			if (ok)
-				tournament->setPgnInputDepth(value.toInt());
+				tournament->setOpeningDepth(value.toInt());
+		}
+		// Use an EPD file as the opening book
+		else if (name == "-epdin")
+		{
+			ok = QFile::exists(value.toString());
+			if (ok)
+			{
+				tournament->setOpeningSuite(
+					new OpeningSuite(value.toString(),
+							 OpeningSuite::EpdFormat));
+			}
 		}
 		// Use a PGN file as the opening book
 		else if (name == "-pgnin")
 		{
 			ok = QFile::exists(value.toString());
 			if (ok)
-				tournament->setPgnInput(value.toString());
+			{
+				tournament->setOpeningSuite(
+					new OpeningSuite(value.toString(),
+							 OpeningSuite::PgnFormat));
+			}
 		}
 		// PGN file where the games should be saved
 		else if (name == "-pgnout")

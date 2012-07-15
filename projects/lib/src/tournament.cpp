@@ -24,6 +24,7 @@
 #include <chessplayer.h>
 #include <chessgame.h>
 #include <pgnstream.h>
+#include <openingsuite.h>
 
 Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	: QObject(parent),
@@ -42,13 +43,11 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_drawScore(0),
 	  m_resignMoveCount(0),
 	  m_resignScore(0),
-	  m_pgnInputDepth(256),
-	  m_pgnGamesRead(0),
+	  m_openingDepth(1024),
 	  m_stopping(false),
 	  m_repeatOpening(false),
-	  m_cleanupPgnin(false),
 	  m_recover(false),
-	  m_pgnin(0),
+	  m_openingSuite(0),
 	  m_pgnOutMode(PgnGame::Verbose),
 	  m_pair(QPair<int, int>(-1, -1))
 {
@@ -65,11 +64,7 @@ Tournament::~Tournament()
 	foreach (const PlayerData& data, m_players)
 		delete data.builder;
 
-	if (m_cleanupPgnin && m_pgnin != 0)
-	{
-		delete m_pgnin->device();
-		delete m_pgnin;
-	}
+	delete m_openingSuite;
 }
 
 GameManager* Tournament::gameManager() const
@@ -189,38 +184,15 @@ void Tournament::setResignThreshold(int moveCount, int score)
 	m_resignScore = score;
 }
 
-void Tournament::setPgnInput(PgnStream* stream)
+void Tournament::setOpeningSuite(OpeningSuite *suite)
 {
-	if (m_cleanupPgnin && m_pgnin != 0)
-	{
-		delete m_pgnin->device();
-		delete m_pgnin;
-	}
-	m_cleanupPgnin = false;
-
-	m_startFen.clear();
-	m_openingMoves.clear();
-	m_pgnin = stream;
+	delete m_openingSuite;
+	m_openingSuite = suite;
 }
 
-void Tournament::setPgnInput(const QString& fileName)
+void Tournament::setOpeningDepth(int plies)
 {
-	QFile* file = new QFile(fileName);
-	if (!file->open(QIODevice::ReadOnly))
-	{
-		qWarning("Can't open PGN file %s", qPrintable(fileName));
-		delete file;
-	}
-	else
-	{
-		setPgnInput(new PgnStream(file));
-		m_cleanupPgnin = true;
-	}
-}
-
-void Tournament::setPgnInputDepth(int plies)
-{
-	m_pgnInputDepth = plies;
+	m_openingDepth = plies;
 }
 
 void Tournament::setPgnOutput(const QString& fileName, PgnGame::PgnMode mode)
@@ -290,22 +262,8 @@ void Tournament::startNextGame()
 		m_openingMoves.clear();
 		isRepeat = true;
 	}
-	else if (m_pgnin != 0 && m_pgnin->isOpen())
-	{
-		PgnGame pgn;
-		if (pgn.read(*m_pgnin, m_pgnInputDepth))
-			m_pgnGamesRead++;
-		// Rewind the PGN input file
-		else if (m_pgnGamesRead > 0)
-		{
-			m_pgnin->rewind();
-			bool ok = pgn.read(*m_pgnin, m_pgnInputDepth);
-			Q_ASSERT(ok);
-			Q_UNUSED(ok);
-			m_pgnGamesRead++;
-		}
-		game->setMoves(pgn);
-	}
+	else if (m_openingSuite != 0)
+		game->setMoves(m_openingSuite->nextGame(m_openingDepth));
 
 	game->generateOpening();
 	if (m_repeatOpening && !isRepeat)
@@ -439,7 +397,6 @@ void Tournament::start()
 	m_finishedGameCount = 0;
 	m_savedGameCount = 0;
 	m_finalGameCount = 0;
-	m_pgnGamesRead = 0;
 	m_stopping = false;
 
 	qDeleteAll(m_pgnGames);

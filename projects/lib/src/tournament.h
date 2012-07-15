@@ -31,7 +31,7 @@ class GameManager;
 class PlayerBuilder;
 class ChessGame;
 class OpeningBook;
-class PgnStream;
+class OpeningSuite;
 
 /*!
  * \brief Base class for chess tournaments
@@ -162,21 +162,17 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		void setResignThreshold(int moveCount, int score);
 		/*!
-		 * Sets \a stream as the PGN-formatted opening book.
+		 * Uses \a suite as the opening suite (a collection of openings)
+		 * for the games.
 		 *
-		 * \note If a PGN book and a Polyglot book are used at the
-		 * same time, then PGN moves are played before Polyglot
-		 * moves.
+		 * The tournament takes ownership of \a suite.
 		 */
-		void setPgnInput(PgnStream* stream);
+		void setOpeningSuite(OpeningSuite* suite);
 		/*!
-		 * Sets \a fileName as the PGN-formatted opening book file.
-		 *
-		 * This is an overloaded convenience function.
+		 * Sets the maximum depth of an opening from the opening suite
+		 * to \a plies (halfmoves).
 		 */
-		void setPgnInput(const QString& fileName);
-		/*! Sets the maximum PGN input depth to \a plies. */
-		void setPgnInputDepth(int plies);
+		void setOpeningDepth(int plies);
 		/*!
 		 * Sets the PGN output file for the games to \a fileName.
 		 *
@@ -322,13 +318,11 @@ class LIB_EXPORT Tournament : public QObject
 		int m_drawScore;
 		int m_resignMoveCount;
 		int m_resignScore;
-		int m_pgnInputDepth;
-		int m_pgnGamesRead;
+		int m_openingDepth;
 		bool m_stopping;
 		bool m_repeatOpening;
-		bool m_cleanupPgnin;
 		bool m_recover;
-		PgnStream* m_pgnin;
+		OpeningSuite* m_openingSuite;
 		QString m_pgnout;
 		QString m_startFen;
 		PgnGame::PgnMode m_pgnOutMode;
