@@ -549,6 +549,7 @@ int main(int argc, char* argv[])
 			       "			to set the total number of games to play.\n"
 			       "  -ratinginterval <n>	Set the interval for printing the ratings to <n> games\n"
 			       "  -debug		Display all engine input and output\n"
+			       "  -epdin <file>		Use <file> as the opening book in EPD format\n"
 			       "  -pgnin <file>		Use <file> as the opening book in PGN format\n"
 			       "  -pgndepth <n>		Set the maximum depth for PGN input to <n> plies\n"
 			       "  -pgnout <file> [min]	Save the games to <file> in PGN format. Use the 'min'\n"
