@@ -35,7 +35,8 @@ HEADERS += chessengine.h \
     tournamentfactory.h \
     gauntlettournament.h \
     epdrecord.h \
-    openingsuite.h
+    openingsuite.h \
+    econode.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -69,7 +70,8 @@ SOURCES += chessengine.cpp \
     tournamentfactory.cpp \
     gauntlettournament.cpp \
     epdrecord.cpp \
-    openingsuite.cpp
+    openingsuite.cpp \
+    econode.cpp
 win32 { 
     HEADERS += engineprocess_win.h \
         pipereader_win.h
