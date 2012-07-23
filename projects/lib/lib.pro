@@ -10,6 +10,8 @@ win32:!static {
 
 include(src/src.pri)
 include(components/json/src/json.pri)
+include(res/res.pri)
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
+RCC_DIR = .rcc
