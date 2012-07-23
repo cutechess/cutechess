@@ -26,6 +26,7 @@
 #include "board/result.h"
 class QTextStream;
 class PgnStream;
+class EcoNode;
 namespace Chess { class Board; }
 
 
@@ -112,6 +113,12 @@ class LIB_EXPORT PgnGame
 		bool write(const QString& filename, PgnMode mode = Verbose) const;
 		
 		/*!
+		 * Returns true if the game's variant is "standard" and it's
+		 * played from the default starting position; otherwise
+		 * returns false.
+		 */
+		bool isStandard() const;
+		/*!
 		 * Returns the value of tag \a tag.
 		 * If \a tag doesn't exist, an empty string is returned.
 		 */
@@ -171,6 +178,7 @@ class LIB_EXPORT PgnGame
 		bool parseMove(PgnStream& in);
 		
 		Chess::Side m_startingSide;
+		const EcoNode* m_eco;
 		QMap<QString, QString> m_tags;
 		QVector<MoveData > m_moves;
 };
