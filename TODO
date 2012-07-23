@@ -24,8 +24,6 @@
   - negative minimum search depth
   - test the ping time
 
-- Use ECO codes to determine the opening name for PGN games
-
 - EPD tests for engines
 
 - Design a file format for tournaments
@@ -51,6 +49,9 @@
 - Support Xboard's custom engine options
 
 - WesternBoard should support file and rank strings of arbitrary length
+
+- Update documentation for engines.json. At the moment there's nothing about
+  "restart", "variants" or "options".
 
 
 User Interface
