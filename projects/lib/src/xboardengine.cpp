@@ -26,6 +26,9 @@
 #include <climits>
 
 #include "timecontrol.h"
+#include "enginebuttonoption.h"
+#include "enginecheckoption.h"
+#include "enginecombooption.h"
 #include "enginespinoption.h"
 #include "enginetextoption.h"
 
@@ -345,6 +348,78 @@ void XboardEngine::sendQuit()
 	write("quit");
 }
 
+EngineOption* XboardEngine::parseOption(const QString& line)
+{
+	int start = line.indexOf('-');
+	if (start < 2)
+		return 0;
+
+	QString name(line.left(start - 1));
+
+	start++;
+	int end = line.indexOf(' ', start);
+	if (end == -1)
+		end = line.length();
+	QString type(line.mid(start, end - start));
+
+	if (type == "button" || type == "save")
+		return new EngineButtonOption(name);
+	if (type == "check")
+	{
+		bool value = line.mid(end + 1) == "1";
+		return new EngineCheckOption(name, value, value);
+	}
+	if (type == "string" || type == "file" || type == "path")
+	{
+		QString value(line.mid(end + 1));
+		return new EngineTextOption(name, value, value);
+	}
+	if (type == "spin" || type == "slider")
+	{
+		QStringList params(line.mid(end + 1).split(' ', QString::SkipEmptyParts));
+		if (params.size() != 3)
+			return 0;
+
+		bool ok = false;
+		int value = params.at(0).toInt(&ok);
+		if (!ok)
+			return 0;
+
+		int min = params.at(1).toInt(&ok);
+		if (!ok || min > value)
+			return 0;
+
+		int max = params.at(2).toInt(&ok);
+		if (!ok || max < value)
+			return 0;
+
+		return new EngineSpinOption(name, value, value, min, max);
+	}
+	if (type == "combo")
+	{
+		QStringList choices = line.mid(end + 1).split(" /// ", QString::SkipEmptyParts);
+		if (choices.isEmpty())
+			return 0;
+
+		QString value;
+		QStringList::iterator it;
+		for (it = choices.begin(); it != choices.end(); ++it)
+		{
+			if (it->startsWith('*'))
+			{
+				it->remove(0, 1);
+				value = *it;
+			}
+		}
+		if (value.isEmpty())
+			value = choices.first();
+
+		return new EngineComboOption(name, value, value, choices);
+	}
+
+	return 0;
+}
+
 void XboardEngine::setFeature(const QString& name, const QString& val)
 {
 	if (name == "ping")
@@ -402,6 +477,15 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 			QString egtType = QString("egtpath %1").arg(str.trimmed());
 			addOption(new EngineTextOption(egtType, QString(), QString()));
 		}
+	}
+	else if (name == "option")
+	{
+		EngineOption* option = parseOption(val);
+		if (option == 0 || !option->isValid())
+			qDebug() << "Invalid Xboard option from" << this->name()
+				 << ":" << val;
+		else
+			addOption(option);
 	}
 	else if (name == "done")
 	{
@@ -586,5 +670,13 @@ void XboardEngine::parseLine(const QString& line)
 
 void XboardEngine::sendOption(const QString& name, const QString& value)
 {
-	write(name + " " + value);
+	if (name == "memory" || name == "cores" || name.startsWith("egtpath "))
+		write(name + " " + value);
+	else
+	{
+		if (value.isEmpty())
+			write("option " + name);
+		else
+			write("option " + name + "=" + value);
+	}
 }

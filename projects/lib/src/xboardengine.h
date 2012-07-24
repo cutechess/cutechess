@@ -60,6 +60,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void initialize();
 
 	private:
+		EngineOption* parseOption(const QString& line);
 		void setFeature(const QString& name, const QString& val);
 		void setForceMode(bool enable);
 		void sendTimeLeft();
