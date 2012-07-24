@@ -46,8 +46,6 @@
 
 - Support the Xboard "draw" command
 
-- Support Xboard's custom engine options
-
 - WesternBoard should support file and rank strings of arbitrary length
 
 - Update documentation for engines.json. At the moment there's nothing about
