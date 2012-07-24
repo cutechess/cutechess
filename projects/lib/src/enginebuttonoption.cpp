@@ -1,7 +1,7 @@
 #include "enginebuttonoption.h"
 
 EngineButtonOption::EngineButtonOption(const QString& name)
-	: EngineOption(name)
+	: EngineOption(name, QVariant::Invalid)
 {
 }
 

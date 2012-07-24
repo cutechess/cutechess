@@ -4,7 +4,7 @@ EngineTextOption::EngineTextOption(const QString& name,
                                    const QVariant& value,
                                    const QVariant& defaultValue,
                                    const QString& alias)
-	: EngineOption(name, value, defaultValue, alias)
+	: EngineOption(name, QVariant::String, value, defaultValue, alias)
 {
 }
 

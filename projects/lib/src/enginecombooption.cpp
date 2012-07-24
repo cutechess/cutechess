@@ -5,7 +5,7 @@ EngineComboOption::EngineComboOption(const QString& name,
                                      const QVariant& defaultValue,
                                      const QStringList& choices,
                                      const QString& alias)
-	: EngineOption(name, value, defaultValue, alias),
+	: EngineOption(name, QVariant::String, value, defaultValue, alias),
 	  m_choices(choices)
 {
 }
