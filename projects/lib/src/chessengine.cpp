@@ -170,7 +170,7 @@ void ChessEngine::setOption(const QString& name, const QVariant& value)
 	}
 
 	option->setValue(value);
-	sendOption(option->name(), value.toString());
+	sendOption(option->name(), option->value());
 }
 
 QList<EngineOption*> ChessEngine::options() const

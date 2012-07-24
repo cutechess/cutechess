@@ -668,15 +668,22 @@ void XboardEngine::parseLine(const QString& line)
 	}
 }
 
-void XboardEngine::sendOption(const QString& name, const QString& value)
+void XboardEngine::sendOption(const QString& name, const QVariant& value)
 {
 	if (name == "memory" || name == "cores" || name.startsWith("egtpath "))
-		write(name + " " + value);
+		write(name + " " + value.toString());
 	else
 	{
-		if (value.isEmpty())
+		if (value.isNull())
 			write("option " + name);
 		else
-			write("option " + name + "=" + value);
+		{
+			QString tmp;
+			if (value.type() == QVariant::Bool)
+				tmp = value.toBool() ? "1" : "0";
+			else
+				tmp = value.toString();
+			write("option " + name + "=" + tmp);
+		}
 	}
 }

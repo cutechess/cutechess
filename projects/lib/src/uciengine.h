@@ -49,7 +49,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		virtual void startGame();
 		virtual void startThinking();
 		virtual void parseLine(const QString& line);
-		virtual void sendOption(const QString& name, const QString& value);
+		virtual void sendOption(const QString& name, const QVariant& value);
 		
 	private:
 		static QStringRef parseUciTokens(const QStringRef& first,

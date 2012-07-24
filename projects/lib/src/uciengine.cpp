@@ -107,11 +107,11 @@ void UciEngine::startGame()
 	if (uciVariant != m_variantOption)
 	{
 		if (!m_variantOption.isEmpty())
-			sendOption(m_variantOption, "false");
+			sendOption(m_variantOption, false);
 		m_variantOption = uciVariant;
 	}
 	if (!m_variantOption.isEmpty())
-		sendOption(m_variantOption, "true");
+		sendOption(m_variantOption, true);
 
 	write("ucinewgame");
 
@@ -521,10 +521,10 @@ void UciEngine::parseLine(const QString& line)
 	}
 }
 
-void UciEngine::sendOption(const QString& name, const QString& value)
+void UciEngine::sendOption(const QString& name, const QVariant& value)
 {
-	if (!value.isEmpty())
-		write(QString("setoption name %1 value %2").arg(name).arg(value));
+	if (!value.isNull())
+		write(QString("setoption name %1 value %2").arg(name).arg(value.toString()));
 	else
 		write(QString("setoption name %1").arg(name));
 }

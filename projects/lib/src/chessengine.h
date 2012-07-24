@@ -183,7 +183,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 */
 		EngineOption* getOption(const QString& name) const;
 		/*! Tells the engine to set option \a name's value to \a value. */
-		virtual void sendOption(const QString& name, const QString& value) = 0;
+		virtual void sendOption(const QString& name, const QVariant& value) = 0;
 
 		/*! Adds \a variant to the list of supported variants. */
 		void addVariant(const QString& variant);
