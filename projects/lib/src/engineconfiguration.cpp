@@ -18,6 +18,7 @@
 #include "engineconfiguration.h"
 
 #include "engineoption.h"
+#include "enginetextoption.h"
 #include "engineoptionfactory.h"
 
 EngineConfiguration::EngineConfiguration()
@@ -233,6 +234,28 @@ void EngineConfiguration::addOption(EngineOption* option)
 	Q_ASSERT(option != 0);
 
 	m_options << option;
+}
+
+void EngineConfiguration::setOption(const QString& name, const QVariant& value)
+{
+	foreach (EngineOption* option, m_options)
+	{
+		if (option->name() == name)
+		{
+			if (!option->isValid(value))
+			{
+				qWarning("Invalid value for engine option %s: %s",
+					 qPrintable(name),
+					 qPrintable(value.toString()));
+			}
+			else
+				option->setValue(value);
+
+			return;
+		}
+	}
+
+	m_options << new EngineTextOption(name, value, value);
 }
 
 bool EngineConfiguration::whiteEvalPov() const

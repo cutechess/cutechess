@@ -146,6 +146,13 @@ class LIB_EXPORT EngineConfiguration
 		void setOptions(const QList<EngineOption*>& options);
 		/*! Adds new option. */
 		void addOption(EngineOption* option);
+		/*!
+		 * Sets option \a name's value to \a value.
+		 *
+		 * If an option with the name \a name doesn't exist, a new
+		 * EngineTextOption object is added to the configuration.
+		 */
+		void setOption(const QString& name, const QVariant& value);
 
 		/*! Returns true if evaluation is from white's point of view. */
 		bool whiteEvalPov() const;
