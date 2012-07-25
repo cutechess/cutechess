@@ -185,7 +185,10 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Signals the player's move. */
 		void moveMade(const Chess::Move& move) const;
 		
-		/*! Signals that the player forfeits the game. */
+		/*!
+		 * Emitted when the player claims the game to end
+		 * with result \a result.
+		 */
 		void resultClaim(const Chess::Result& result) const;
 
 		/*! Signals a debugging message from the player. */
@@ -224,8 +227,13 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		virtual void startThinking() = 0;
 
-		/*! Emits the forfeit() signal. */
+		/*! Emits the resultClaim() signal with result \a result. */
 		void claimResult(const Chess::Result& result);
+		/*!
+		 * Emits the resultClaim() signal with a result of type
+		 * \a type, description \a description, and this player
+		 * as the loser.
+		 */
 		void forfeit(Chess::Result::Type type,
 			     const QString& description = QString());
 
