@@ -92,7 +92,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void startGame();
 		void startTurn();
 		void finish();
-		void onForfeit(const Chess::Result& result);
+		void onResultClaim(const Chess::Result& result);
 		void onPlayerReady();
 		void syncPlayers();
 		void pauseThread();

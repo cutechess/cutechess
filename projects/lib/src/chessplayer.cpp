@@ -24,7 +24,8 @@ ChessPlayer::ChessPlayer(QObject* parent)
 	: QObject(parent),
 	  m_state(NotStarted),
 	  m_timer(new QTimer(this)),
-	  m_forfeited(false),
+	  m_claimedResult(false),
+	  m_validateClaims(true),
 	  m_board(0),
 	  m_opponent(0)
 {
@@ -57,7 +58,7 @@ void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board*
 	Q_ASSERT(isReady());
 	Q_ASSERT(m_state != Disconnected);
 
-	m_forfeited = false;
+	m_claimedResult = false;
 	m_eval.clear();
 	m_opponent = opponent;
 	m_board = board;
@@ -192,20 +193,38 @@ void ChessPlayer::setName(const QString& name)
 	emit nameChanged(m_name);
 }
 
-void ChessPlayer::emitForfeit(Chess::Result::Type type, const QString& description)
+bool ChessPlayer::areClaimsValidated() const
 {
-	if (m_forfeited)
+	return m_validateClaims;
+}
+
+void ChessPlayer::setClaimsValidated(bool validate)
+{
+	m_validateClaims = validate;
+}
+
+void ChessPlayer::claimResult(const Chess::Result& result)
+{
+	if (m_claimedResult)
 		return;
 
 	m_timer->stop();
 	if (m_state == Thinking)
 		setState(Observing);
-	m_forfeited = true;
+	m_claimedResult = true;
 
-	Chess::Side winner;
-	if (!m_side.isNull())
-		winner = m_side.opposite();
-	emit forfeit(Chess::Result(type, winner, description));
+	emit resultClaim(result);
+}
+
+void ChessPlayer::forfeit(Chess::Result::Type type, const QString& description)
+{
+	if (m_side.isNull())
+	{
+		qWarning("Player %s has no side", qPrintable(name()));
+		return;
+	}
+
+	claimResult(Chess::Result(type, m_side.opposite(), description));
 }
 
 void ChessPlayer::emitMove(const Chess::Move& move)
@@ -219,7 +238,7 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 	m_timer->stop();
 	if (m_timeControl.expired())
 	{
-		emitForfeit(Chess::Result::Timeout);
+		forfeit(Chess::Result::Timeout);
 		return;
 	}
 
@@ -235,10 +254,10 @@ void ChessPlayer::kill()
 void ChessPlayer::onCrashed()
 {
 	kill();
-	emitForfeit(Chess::Result::Disconnection);
+	forfeit(Chess::Result::Disconnection);
 }
 
 void ChessPlayer::onTimeout()
 {
-	emitForfeit(Chess::Result::Timeout);
+	forfeit(Chess::Result::Timeout);
 }

@@ -464,7 +464,7 @@ void UciEngine::parseLine(const QString& line)
 		if (!move.isNull())
 			emitMove(move);
 		else
-			emitForfeit(Chess::Result::IllegalMove, moveString);
+			forfeit(Chess::Result::IllegalMove, moveString);
 	}
 	else if (command == "readyok")
 	{

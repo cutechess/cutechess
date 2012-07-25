@@ -24,6 +24,7 @@
 EngineConfiguration::EngineConfiguration()
 	: m_variants(QStringList() << "standard"),
 	  m_whiteEvalPov(false),
+	  m_validateClaims(true),
 	  m_restartMode(RestartAuto)
 {
 }
@@ -36,6 +37,7 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 	  m_protocol(protocol),
 	  m_variants(QStringList() << "standard"),
 	  m_whiteEvalPov(false),
+	  m_validateClaims(true),
 	  m_restartMode(RestartAuto)
 {
 }
@@ -43,6 +45,7 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 EngineConfiguration::EngineConfiguration(const QVariant& variant)
 	: m_variants(QStringList() << "standard"),
 	  m_whiteEvalPov(false),
+	  m_validateClaims(true),
 	  m_restartMode(RestartAuto)
 {
 	const QVariantMap map = variant.toMap();
@@ -67,6 +70,9 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 		else if (val == "off")
 			setRestartMode(RestartOff);
 	}
+
+	if (map.contains("validateClaims"))
+		setClaimsValidated(map["validateClaims"].toBool());
 
 	if (map.contains("variants"))
 		setSupportedVariants(map["variants"].toStringList());
@@ -93,6 +99,7 @@ EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
 	  m_initStrings(other.m_initStrings),
 	  m_variants(other.m_variants),
 	  m_whiteEvalPov(other.m_whiteEvalPov),
+	  m_validateClaims(other.m_validateClaims),
 	  m_restartMode(other.m_restartMode)
 {
 	foreach (const EngineOption* option, other.options())
@@ -122,6 +129,9 @@ QVariant EngineConfiguration::toVariant() const
 		map.insert("restart", "on");
 	else if (m_restartMode == RestartOff)
 		map.insert("restart", "off");
+
+	if (!m_validateClaims)
+		map.insert("validateClaims", false);
 
 	if (m_variants.count("standard") != m_variants.count())
 		map.insert("variants", m_variants);
@@ -278,6 +288,16 @@ void EngineConfiguration::setRestartMode(RestartMode mode)
 	m_restartMode = mode;
 }
 
+bool EngineConfiguration::areClaimsValidated() const
+{
+	return m_validateClaims;
+}
+
+void EngineConfiguration::setClaimsValidated(bool validate)
+{
+	m_validateClaims = validate;
+}
+
 EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& other)
 {
 	if (this != &other)
@@ -290,6 +310,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		setInitStrings(other.initStrings());
 		setSupportedVariants(other.supportedVariants());
 		setWhiteEvalPov(other.whiteEvalPov());
+		setClaimsValidated(other.areClaimsValidated());
 		setRestartMode(other.restartMode());
 
 		qDeleteAll(m_options);

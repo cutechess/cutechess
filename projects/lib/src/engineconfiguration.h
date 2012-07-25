@@ -168,6 +168,17 @@ class LIB_EXPORT EngineConfiguration
 		void setRestartMode(RestartMode mode);
 
 		/*!
+		 * Returns true if result claims from the engine are validated;
+		 * otherwise returns false.
+		 *
+		 * With validation on (the default) the engine will forfeit the
+		 * game if it makes an incorrect result claim.
+		 */
+		bool areClaimsValidated() const;
+		/*! Sets result claim validation mode to \a validate. */
+		void setClaimsValidated(bool validate);
+
+		/*!
 		 * Assigns \a other to this engine configuration and returns
 		 * a reference to this object.
 		 */
@@ -183,6 +194,7 @@ class LIB_EXPORT EngineConfiguration
 		QStringList m_variants;
 		QList<EngineOption*> m_options;
 		bool m_whiteEvalPov;
+		bool m_validateClaims;
 		RestartMode m_restartMode;
 };
 

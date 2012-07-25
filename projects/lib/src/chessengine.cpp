@@ -128,6 +128,7 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 
 	m_whiteEvalPov = configuration.whiteEvalPov();
 	m_restartMode = configuration.restartMode();
+	setClaimsValidated(configuration.areClaimsValidated());
 }
 
 void ChessEngine::addOption(EngineOption* option)
@@ -292,7 +293,7 @@ void ChessEngine::onIdleTimeout()
 	m_writeBuffer.clear();
 	kill();
 
-	emitForfeit(Chess::Result::StalledConnection);
+	forfeit(Chess::Result::StalledConnection);
 }
 
 void ChessEngine::kill()
@@ -365,7 +366,7 @@ void ChessEngine::onPingTimeout()
 	m_writeBuffer.clear();
 	kill();
 
-	emitForfeit(Chess::Result::StalledConnection);
+	forfeit(Chess::Result::StalledConnection);
 }
 
 void ChessEngine::write(const QString& data, WriteMode mode)

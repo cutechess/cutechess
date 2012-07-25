@@ -310,8 +310,7 @@ void XboardEngine::onTimeout()
 		Q_ASSERT(state() == Thinking);
 
 		m_drawOnNextMove = false;
-		qDebug("%s forfeits by invalid draw claim", qPrintable(name()));
-		emitForfeit(Chess::Result::Adjudication);
+		claimResult(Chess::Result(Chess::Result::Draw));
 	}
 	else
 		ChessEngine::onTimeout();
@@ -512,7 +511,7 @@ void XboardEngine::parseLine(const QString& line)
 		return;
 
 	if (command == "1-0" || command == "0-1"
-	||  command == "1/2-1/2" || command == "resign")
+	||  command == "*" || command == "1/2-1/2" || command == "resign")
 	{
 		if ((state() != Thinking && state() != Observing)
 		||  !board()->result().isNone())
@@ -521,29 +520,35 @@ void XboardEngine::parseLine(const QString& line)
 			return;
 		}
 
-		if (command == "1/2-1/2")
+		QString description(nextToken(command, true).toString());
+		if (description.startsWith('{'))
+			description.remove(0, 1);
+		if (description.endsWith('}'))
+			description.chop(1);
+
+		if (command == "*")
+			claimResult(Chess::Result(Chess::Result::NoResult,
+						  Chess::Side::NoSide,
+						  description));
+		else if (command == "1/2-1/2")
 		{
-			if (state() == Thinking)
+			if (state() == Thinking && areClaimsValidated())
 				// The engine claims that its next move will draw the game
 				m_drawOnNextMove = true;
 			else
-			{
-				qDebug("%s forfeits by invalid draw claim",
-				       qPrintable(name()));
-				emitForfeit(Chess::Result::Adjudication);
-			}
-			return;
+				claimResult(Chess::Result(Chess::Result::Draw,
+							  Chess::Side::NoSide,
+							  description));
 		}
-
-		if ((command == "1-0" && side() == Chess::Side::White)
-		||  (command == "0-1" && side() == Chess::Side::Black))
-		{
-			qDebug("%s forfeits by invalid victory claim",
-			       qPrintable(name()));
-			emitForfeit(Chess::Result::Adjudication);
-		}
+		else if ((command == "1-0" && side() == Chess::Side::White)
+		     ||  (command == "0-1" && side() == Chess::Side::Black))
+			claimResult(Chess::Result(Chess::Result::Win,
+						  side(),
+						  description));
 		else
-			emitForfeit(Chess::Result::Resignation);
+			forfeit(Chess::Result::Resignation);
+
+		return;
 	}
 	else if (command.at(0).isDigit()) // principal variation
 	{
@@ -606,7 +611,7 @@ void XboardEngine::parseLine(const QString& line)
 		Chess::Move move = board()->moveFromString(args);
 		if (move.isNull())
 		{
-			emitForfeit(Chess::Result::IllegalMove, args);
+			forfeit(Chess::Result::IllegalMove, args);
 			return;
 		}
 
@@ -622,9 +627,7 @@ void XboardEngine::parseLine(const QString& line)
 			// game must have ended in a draw by now
 			if (!boardResult.isDraw())
 			{
-				qDebug("%s forfeits by invalid draw claim",
-				       qPrintable(name()));
-				emitForfeit(Chess::Result::Adjudication);
+				claimResult(Chess::Result(Chess::Result::Draw));
 				return;
 			}
 		}

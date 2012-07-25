@@ -308,20 +308,32 @@ void ChessGame::startTurn()
 		m_player[side]->makeBookMove(move);
 }
 
-void ChessGame::onForfeit(const Chess::Result& result)
+void ChessGame::onResultClaim(const Chess::Result& result)
 {
 	if (m_finished)
 		return;
 
+	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
+	Q_ASSERT(sender != 0);
+
 	if (!m_gameInProgress && result.winner().isNull())
 	{
-		ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
-		Q_ASSERT(sender != 0);
-		qWarning("%s: %s", qPrintable(sender->name()),
-				   qPrintable(result.description()));
+		qWarning("Unexpected result claim from %s: %s",
+			 qPrintable(sender->name()),
+			 qPrintable(result.toVerboseString()));
 	}
+	else if (sender->areClaimsValidated() && result.loser() != sender->side())
+	{
+		qWarning("%s forfeits by invalid result claim: %s",
+			 qPrintable(sender->name()),
+			 qPrintable(result.toVerboseString()));
+		m_result = Chess::Result(Chess::Result::Adjudication,
+					 sender->side().opposite(),
+					 "Invalid result claim");
+	}
+	else
+		m_result = result;
 
-	m_result = result;
 	stop();
 }
 
@@ -558,8 +570,8 @@ void ChessGame::start()
 
 	for (int i = 0; i < 2; i++)
 	{
-		connect(m_player[i], SIGNAL(forfeit(Chess::Result)),
-			this, SLOT(onForfeit(Chess::Result)));
+		connect(m_player[i], SIGNAL(resultClaim(Chess::Result)),
+			this, SLOT(onResultClaim(Chess::Result)));
 	}
 
 	// Start the game in the correct thread

@@ -124,6 +124,17 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Returns true if the player is human. */
 		virtual bool isHuman() const = 0;
 
+		/*!
+		 * Returns true if result claims from the engine are validated;
+		 * otherwise returns false.
+		 *
+		 * With validation on (the default) the engine will forfeit the
+		 * game if it makes an incorrect result claim.
+		 */
+		bool areClaimsValidated() const;
+		/*! Sets result claim validation mode to \a validate. */
+		void setClaimsValidated(bool validate);
+
 	public slots:
 		/*!
 		 * Waits (without blocking) until the player is ready,
@@ -175,7 +186,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		void moveMade(const Chess::Move& move) const;
 		
 		/*! Signals that the player forfeits the game. */
-		void forfeit(const Chess::Result& result) const;
+		void resultClaim(const Chess::Result& result) const;
 
 		/*! Signals a debugging message from the player. */
 		void debugMessage(const QString& data) const;
@@ -214,8 +225,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void startThinking() = 0;
 
 		/*! Emits the forfeit() signal. */
-		void emitForfeit(Chess::Result::Type type,
-				 const QString& description = QString());
+		void claimResult(const Chess::Result& result);
+		void forfeit(Chess::Result::Type type,
+			     const QString& description = QString());
 
 		/*!
 		 * Emits the player's move, and a timeout signal if the
@@ -239,7 +251,8 @@ class LIB_EXPORT ChessPlayer : public QObject
 		State m_state;
 		TimeControl m_timeControl;
 		QTimer* m_timer;
-		bool m_forfeited;
+		bool m_claimedResult;
+		bool m_validateClaims;
 		Chess::Side m_side;
 		Chess::Board* m_board;
 		ChessPlayer* m_opponent;

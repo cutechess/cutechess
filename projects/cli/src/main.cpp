@@ -132,6 +132,11 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 
 			data.config.setRestartMode(mode);
 		}
+		// Trust all result claims coming from the engine?
+		else if (name == "trust")
+		{
+			data.config.setClaimsValidated(false);
+		}
 		// Time control (moves/time+increment)
 		else if (name == "tc")
 		{
@@ -572,6 +577,8 @@ int main(int argc, char* argv[])
 			       "			'auto': the engine decides whether to restart (default)\n"
 			       "			'on': the engine is always restarted between games\n"
 			       "			'off': the engine is never restarted between games\n"
+			       "  trust			Trust result claims from the engine without validation.\n"
+			       "			By default all claims are validated.\n"
 			       "  proto=<arg>		Set the chess protocol to <arg>\n"
 			       "  tc=<arg>		Set the time control to <arg>. The format is\n"
 			       "			moves/time+increment, where 'moves' is the number of\n"
