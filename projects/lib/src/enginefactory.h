@@ -46,7 +46,7 @@ class LIB_EXPORT EngineFactory
  *
  * This macro must be called once for every concrete ChessEngine class.
  */
-#define REGISTER_ENGINE_CLASS(TYPE, PROTOCOL) \
-	REGISTER_CLASS(ChessEngine, TYPE, PROTOCOL, EngineFactory::registry());
+#define REGISTER_ENGINE_CLASS(TYPE, PROTOCOL, ALIASES) \
+	REGISTER_CLASS_A(ChessEngine, TYPE, PROTOCOL, EngineFactory::registry(), ALIASES);
 
 #endif // ENGINEFACTORY_H

@@ -35,6 +35,9 @@
 #define REGISTER_CLASS(BASE, TYPE, KEY, REGISTRY) \
 	static ClassRegistration<BASE> _class_registration_ ## TYPE(REGISTRY, &ClassRegistry<BASE>::factory<TYPE>, KEY);
 
+#define REGISTER_CLASS_A(BASE, TYPE, KEY, REGISTRY, ALIASES) \
+	static ClassRegistration<BASE> _class_registration_ ## TYPE(REGISTRY, &ClassRegistry<BASE>::factory<TYPE>, KEY, ALIASES);
+
 /*!
  * \brief A class for creating objects based on the class'
  * runtime name or key (a string).
@@ -63,10 +66,20 @@ class ClassRegistry
 		{
 			return m_items;
 		}
-		/*! Adds a new factory associated with \a key. */
-		void add(Factory factory, const QString& key)
+		/*! Adds a new factory associated with \a key.
+		 * \param factory A factory function for creating instances
+		 * of the class.
+		 * \param key A key (class name) associated with the class.
+		 * \param aliases A comma-separated list of aliases using
+		 * which the class can be created.
+		 */
+		void add(Factory factory, const QString& key, const QString& aliases = QString())
 		{
 			m_items[key] = factory;
+			QStringList l = aliases.split(',', QString::SkipEmptyParts);
+			QString alias;
+			foreach (alias, l)
+				m_items[alias] = factory;
 		}
 		/*!
 		 * Creates and returns an object whose type is associated with \a key.
@@ -101,9 +114,9 @@ class ClassRegistration
 		 */
 		ClassRegistration(ClassRegistry<T>* registry,
 				  typename ClassRegistry<T>::Factory factory,
-				  const QString& key)
+				  const QString& key, const QString& aliases = QString())
 		{
-			registry->add(factory, key);
+			registry->add(factory, key, aliases);
 		}
 };
 
