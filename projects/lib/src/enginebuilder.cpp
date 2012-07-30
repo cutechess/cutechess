@@ -74,7 +74,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		return 0;
 	}
 
-	ChessEngine* engine = EngineFactory::create(m_config.protocol());
+	ChessEngine* engine = EngineFactory::create(m_config.protocol().toLower());
 	if (!engine)
 	{
 		delete process;
