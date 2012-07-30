@@ -75,7 +75,13 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 	}
 
 	ChessEngine* engine = EngineFactory::create(m_config.protocol());
-	Q_ASSERT(engine != 0);
+	if (!engine)
+	{
+		delete process;
+		qWarning() << "Protocol does not exist" << m_config.protocol();
+		return 0;
+	}
+
 	engine->setParent(parent);
 	if (receiver != 0 && method != 0)
 		QObject::connect(engine, SIGNAL(debugMessage(QString)),
