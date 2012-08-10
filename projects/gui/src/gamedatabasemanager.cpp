@@ -17,7 +17,6 @@
 
 #include "gamedatabasemanager.h"
 
-#include <QDebug>
 #include <QFileInfo>
 
 #include "pgndatabase.h"
@@ -35,7 +34,6 @@ GameDatabaseManager::GameDatabaseManager(QObject* parent)
 
 GameDatabaseManager::~GameDatabaseManager()
 {
-	qDebug() << "Waiting PGN importer threads to finish...";
 	foreach (PgnImporter* importer, m_pgnImporters)
 	{
 		importer->disconnect();
@@ -57,9 +55,6 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 	if (!stateFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
 		return false;
 
-	qDebug() << "Starting to write game database state file at"
-		<< QTime::currentTime().toString("hh:mm:ss");
-
 	QDataStream out(&stateFile);
 	out.setVersion(QDataStream::Qt_4_6); // don't change
 
@@ -70,8 +65,6 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 	// Write the number of databases
 	out << (qint32)m_databases.count();
 
-	qDebug() << m_databases.count() << "databases";
-
 	// Write the contents of the databases
 	foreach (const PgnDatabase* db, m_databases)
 	{
@@ -80,14 +73,9 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 		out << db->displayName();
 		out << (qint32)db->entries().count();
 
-		qDebug() << "Writing" << db->entries().count() << "entries";
-
 		foreach (const PgnGameEntry* entry, db->entries())
 			entry->write(out);
 	}
-
-	qDebug() << "Writing done at"
-		<< QTime::currentTime().toString("hh:mm:ss");
 
 	m_modified = false;
 
@@ -101,9 +89,6 @@ bool GameDatabaseManager::readState(const QString& fileName)
 	if (!stateFile.open(QIODevice::ReadOnly))
 		return false;
 
-	qDebug() << "Starting to read game database state file at"
-		<< QTime::currentTime().toString("hh:mm:ss");
-
 	QDataStream in(&stateFile);
 	in.setVersion(QDataStream::Qt_4_6); // don't change
 
@@ -113,7 +98,7 @@ bool GameDatabaseManager::readState(const QString& fileName)
 
 	if (magic != GAME_DATABASE_STATE_MAGIC)
 	{
-		qDebug() << "GameDatabaseManager: bad magic value in state file";
+		qWarning("GameDatabaseManager: bad magic value in state file");
 		return false;
 	}
 
@@ -125,15 +110,13 @@ bool GameDatabaseManager::readState(const QString& fileName)
 	    version > GAME_DATABASE_STATE_VERSION)
 	{
 		// TODO: Add backward compatibility
-		qDebug() << "GameDatabaseManager: state file version mismatch";
+		qWarning("GameDatabaseManager: state file version mismatch");
 		return false;
 	}
 
 	// Read the number of databases
 	qint32 dbCount;
 	in >> dbCount;
-
-	qDebug() << dbCount << "databases";
 
 	// Read the contents of the databases
 	QString dbFileName;
@@ -151,7 +134,6 @@ bool GameDatabaseManager::readState(const QString& fileName)
 		QFileInfo fileInfo(dbFileName);
 		if (!fileInfo.exists())
 		{
-			qDebug() << "GameDatabaseManager:" << dbDisplayName << "does not exists and will be removed";
 			m_modified = true;
 			continue;
 		}
@@ -159,8 +141,6 @@ bool GameDatabaseManager::readState(const QString& fileName)
 		// Check if the database has been modified
 		if (fileInfo.lastModified() > dbLastModified)
 		{
-			qDebug() << "GameDatabaseManager:" << dbDisplayName << "has been modified and will be re-imported";
-
 			m_modified = true;
 			importPgnFile(dbFileName);
 			continue;
@@ -168,8 +148,6 @@ bool GameDatabaseManager::readState(const QString& fileName)
 
 		qint32 dbEntryCount;
 		in >> dbEntryCount;
-
-		qDebug() << "Reading" << dbEntryCount << "entries";
 
 		// Read the entries
 		QList<const PgnGameEntry*> entries;
@@ -188,9 +166,6 @@ bool GameDatabaseManager::readState(const QString& fileName)
 		readDatabases << db;
 	}
 
-	qDebug() << "Reading done at"
-		<< QTime::currentTime().toString("hh:mm:ss");
-
 	m_modified = false;
 
 	m_databases = readDatabases;
@@ -208,17 +183,12 @@ void GameDatabaseManager::importPgnFile(const QString& fileName)
 		this, SLOT(addDatabase(PgnDatabase*)));
 
 	emit importStarted(pgnImporter);
-	qDebug() << "Importing started at"
-		<< QTime::currentTime().toString("hh:mm:ss");
 
 	pgnImporter->start();
 }
 
 void GameDatabaseManager::addDatabase(PgnDatabase* database)
 {
-	qDebug() << "Importing finished at"
-		<< QTime::currentTime().toString("hh:mm:ss");
-
 	m_databases << database;
 	m_modified = true;
 	emit databaseAdded(m_databases.count() - 1);
