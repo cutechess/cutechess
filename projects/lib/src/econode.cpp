@@ -89,6 +89,7 @@ void EcoNode::initialize()
 		else
 		{
 			QDataStream in(&file);
+			in.setVersion(QDataStream::Qt_4_6);
 			in >> s_openings >> s_root;
 		}
 	}
@@ -188,6 +189,7 @@ void EcoNode::write(const QString& fileName)
 	}
 
 	QDataStream out(&file);
+	out.setVersion(QDataStream::Qt_4_6);
 	out << s_openings << s_root;
 }
 
