@@ -17,7 +17,7 @@ macx-xcode {
 QT += svg
 
 win32 {
-    debug {
+    CONFIG(debug, debug|release) {
 	CONFIG += console
     }
     RC_FILE = res/icons/cutechess_win.rc
