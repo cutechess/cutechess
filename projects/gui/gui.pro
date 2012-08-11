@@ -1,4 +1,5 @@
 TARGET = cutechess
+DESTDIR = $$PWD
 
 include(../lib/lib.pri)
 

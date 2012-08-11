@@ -1,6 +1,7 @@
 TEMPLATE = lib
 TARGET = cutechess
 QT = core
+DESTDIR = $$PWD
 
 win32:!static {
     DEFINES += LIB_EXPORT="__declspec(dllexport)"

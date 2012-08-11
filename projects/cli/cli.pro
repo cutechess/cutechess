@@ -1,4 +1,5 @@
 TARGET = cutechess-cli
+DESTDIR = $$PWD
 
 include(../lib/lib.pri)
 
