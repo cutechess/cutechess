@@ -20,10 +20,10 @@
 
 #include <QDialog>
 #include <QTimer>
+#include <QItemSelection>
 
 #include <pgngame.h>
 
-class QModelIndex;
 class PgnDatabaseModel;
 class PgnGameEntryModel;
 class PgnDatabase;
@@ -50,8 +50,8 @@ class GameDatabaseDialog : public QDialog
 		virtual ~GameDatabaseDialog();
 
 	private slots:
-		void databaseSelectionChanged(const QModelIndex& current,
-		                              const QModelIndex& previous);
+		void databaseSelectionChanged(const QItemSelection& selected,
+		                              const QItemSelection& deselected);
 		void gameSelectionChanged(const QModelIndex& current,
 		                          const QModelIndex& previous);
 		void viewNextMove();
@@ -63,6 +63,7 @@ class GameDatabaseDialog : public QDialog
 		void onAdvancedSearch();
 
 	private:
+		int databaseIndexFromGame(int game);
 		BoardView* m_boardView;
 		BoardScene* m_boardScene;
 		QVector<PgnGame::MoveData> m_moves;
@@ -70,7 +71,7 @@ class GameDatabaseDialog : public QDialog
 
 		PgnDatabaseModel* m_pgnDatabaseModel;
 		PgnGameEntryModel* m_pgnGameEntryModel;
-		PgnDatabase* m_selectedDatabase;
+		QItemSelection m_selectedDatabases;
 
 		QTimer m_searchTimer;
 		QString m_searchTerms;

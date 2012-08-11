@@ -21,6 +21,8 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QMessageBox>
+#include <QtAlgorithms>
+#include <QModelIndex>
 
 #include <pgngame.h>
 #include <pgngameentry.h>
@@ -40,7 +42,6 @@ GameDatabaseDialog::GameDatabaseDialog(QWidget* parent)
 	  m_boardScene(0),
 	  m_pgnDatabaseModel(0),
 	  m_pgnGameEntryModel(0),
-	  m_selectedDatabase(0),
 	  ui(new Ui::GameDatabaseDialog)
 {
 	ui->setupUi(this);
@@ -83,8 +84,8 @@ GameDatabaseDialog::GameDatabaseDialog(QWidget* parent)
 		SLOT(viewLastMove()));
 
 	connect(ui->m_databasesListView->selectionModel(),
-		SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
-		this, SLOT(databaseSelectionChanged(const QModelIndex&, const QModelIndex&)));
+		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+		this, SLOT(databaseSelectionChanged(const QItemSelection&, const QItemSelection&)));
 
 	connect(ui->m_gamesListView->selectionModel(),
 		SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
@@ -108,21 +109,26 @@ GameDatabaseDialog::~GameDatabaseDialog()
 	delete ui;
 }
 
-void GameDatabaseDialog::databaseSelectionChanged(const QModelIndex& current,
-                                                  const QModelIndex& previous)
+void GameDatabaseDialog::databaseSelectionChanged(const QItemSelection& selected,
+                                                  const QItemSelection& deselected)
 {
-	Q_UNUSED(previous);
+	m_selectedDatabases.merge(selected, QItemSelectionModel::Select);
+	m_selectedDatabases.merge(deselected, QItemSelectionModel::Deselect);
 
-	if (!current.isValid())
+	if (m_selectedDatabases.isEmpty())
 	{
 		m_pgnGameEntryModel->setEntries(QList<const PgnGameEntry*>());
 		return;
 	}
 
-	m_selectedDatabase =
-		CuteChessApplication::instance()->gameDatabaseManager()->databases().at(current.row());
+	QList<const PgnGameEntry*> entries;
+	foreach (const QModelIndex& index, m_selectedDatabases.indexes())
+	{
+		entries.append(
+		    CuteChessApplication::instance()->gameDatabaseManager()->databases().at(index.row())->entries());
+	}
 
-	m_pgnGameEntryModel->setEntries(m_selectedDatabase->entries());
+	m_pgnGameEntryModel->setEntries(entries);
 	ui->m_advancedSearchBtn->setEnabled(true);
 }
 
@@ -131,11 +137,21 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 {
 	Q_UNUSED(previous);
 
-	const PgnGameEntry* entry = m_pgnGameEntryModel->entryAt(current.row());
+	if (!current.isValid())
+		return;
+
+	int databaseIndex;
+	if ((databaseIndex = databaseIndexFromGame(current.row())) == -1)
+		return;
+
+	PgnDatabase* selectedDatabase =
+	    CuteChessApplication::instance()->gameDatabaseManager()->databases().at(databaseIndex);
 
 	PgnGame game;
 	PgnDatabase::PgnDatabaseError error;
-	if ((error = m_selectedDatabase->game(entry, &game)) !=
+	const PgnGameEntry* entry = m_pgnGameEntryModel->entryAt(current.row());
+
+	if ((error = selectedDatabase->game(entry, &game)) !=
 		PgnDatabase::NoError)
 	{
 		if (error == PgnDatabase::DatabaseDoesNotExist)
@@ -148,18 +164,14 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 			msgBox.addButton(QMessageBox::Cancel);
 
 			msgBox.setText("PGN database does not exist.");
-			msgBox.setInformativeText(QString("Remove %1 from the list of databases?").arg(m_selectedDatabase->displayName()));
+			msgBox.setInformativeText(QString("Remove %1 from the list of databases?").arg(selectedDatabase->displayName()));
 			msgBox.setDefaultButton(removeDbButton);
 			msgBox.setIcon(QMessageBox::Warning);
 
 			msgBox.exec();
 
 			if (msgBox.clickedButton() == removeDbButton)
-			{
-				QItemSelectionModel* selection = ui->m_databasesListView->selectionModel();
-				if (selection->hasSelection())
-					CuteChessApplication::instance()->gameDatabaseManager()->removeDatabase(selection->currentIndex().row());
-			}
+				CuteChessApplication::instance()->gameDatabaseManager()->removeDatabase(databaseIndex);
 		}
 		else
 		{
@@ -186,11 +198,7 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 			msgBox.exec();
 
 			if (msgBox.clickedButton() == importDbButton)
-			{
-				QItemSelectionModel* selection = ui->m_databasesListView->selectionModel();
-				if (selection->hasSelection())
-					CuteChessApplication::instance()->gameDatabaseManager()->importDatabaseAgain(selection->currentIndex().row());
-			}
+				CuteChessApplication::instance()->gameDatabaseManager()->importDatabaseAgain(databaseIndex);
 		}
 	}
 
@@ -274,4 +282,30 @@ void GameDatabaseDialog::onAdvancedSearch()
 	ui->m_searchEdit->clear();
 	m_pgnGameEntryModel->setFilter(dlg.filter());
 	ui->m_clearBtn->setEnabled(true);
+}
+
+int GameDatabaseDialog::databaseIndexFromGame(int game)
+{
+	QList<int> sorted;
+	int databaseIndex;
+
+	foreach (const QModelIndex& index, m_selectedDatabases.indexes())
+		sorted << index.row();
+
+	if (sorted.count() == 0)
+		return -1;
+
+	qSort(sorted);
+
+	forever
+	{
+		databaseIndex = sorted.takeFirst();
+		game -=
+		    CuteChessApplication::instance()->gameDatabaseManager()->databases().at(databaseIndex)->entries().count();
+
+		if (game < 0)
+			break;
+	}
+
+	return databaseIndex;
 }
