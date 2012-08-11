@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QtAlgorithms>
 #include <QModelIndex>
+#include <QFileDialog>
 
 #include <pgngame.h>
 #include <pgngameentry.h>
@@ -82,6 +83,8 @@ GameDatabaseDialog::GameDatabaseDialog(QWidget* parent)
 		SLOT(viewFirstMove()));
 	connect(ui->m_skipToLastMoveButton, SIGNAL(clicked(bool)), this,
 		SLOT(viewLastMove()));
+	connect(ui->m_importBtn, SIGNAL(clicked(bool)), this,
+		SLOT(import()));
 
 	connect(ui->m_databasesListView->selectionModel(),
 		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
@@ -308,4 +311,15 @@ int GameDatabaseDialog::databaseIndexFromGame(int game)
 	}
 
 	return databaseIndex;
+}
+
+void GameDatabaseDialog::import()
+{
+	const QString fileName = QFileDialog::getOpenFileName(this, tr("Import Game"),
+		QString(), tr("Portable Game Notation (*.pgn);;All Files (*.*)"));
+
+	if (fileName.isEmpty())
+		return;
+
+	CuteChessApplication::instance()->gameDatabaseManager()->importPgnFile(fileName);
 }

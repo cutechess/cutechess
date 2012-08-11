@@ -63,7 +63,6 @@ class MainWindow : public QMainWindow
 		void updateWindowTitle();
 		bool save();
 		bool saveAs();
-		void import();
 		void onTabChanged(int index);
 		void onTabCloseRequested(int index);
 		void removeGame(ChessGame* game);
@@ -99,7 +98,6 @@ class MainWindow : public QMainWindow
 		QAction* m_closeGameAct;
 		QAction* m_saveGameAct;
 		QAction* m_saveGameAsAct;
-		QAction* m_importGameAct;
 		QAction* m_manageEnginesAct;
 		QAction* m_showGameDatabaseWindowAct;
 		QAction* m_showGameWallAct;

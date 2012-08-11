@@ -61,6 +61,7 @@ class GameDatabaseDialog : public QDialog
 		void updateSearch(const QString& terms = QString());
 		void onSearchTimeout();
 		void onAdvancedSearch();
+		void import();
 
 	private:
 		int databaseIndexFromGame(int game);

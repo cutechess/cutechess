@@ -111,8 +111,6 @@ void MainWindow::createActions()
 
 	m_gamePropertiesAct = new QAction(tr("P&roperties..."), this);
 
-	m_importGameAct = new QAction(tr("Import..."), this);
-
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	#ifdef Q_OS_WIN32
 	m_quitGameAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
@@ -131,7 +129,6 @@ void MainWindow::createActions()
 	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered(bool)), this, SLOT(saveAs()));
 	connect(m_gamePropertiesAct, SIGNAL(triggered(bool)), this, SLOT(gameProperties()));
-	connect(m_importGameAct, SIGNAL(triggered(bool)), this, SLOT(import()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(closeAllWindows()));
 
 	connect(m_manageEnginesAct, SIGNAL(triggered(bool)), this,
@@ -153,7 +150,6 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_saveGameAct);
 	m_gameMenu->addAction(m_saveGameAsAct);
 	m_gameMenu->addAction(m_gamePropertiesAct);
-	m_gameMenu->addAction(m_importGameAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 
@@ -639,15 +635,4 @@ bool MainWindow::askToSave()
 			return false;
 	}
 	return true;
-}
-
-void MainWindow::import()
-{
-	const QString fileName = QFileDialog::getOpenFileName(this, tr("Import Game"),
-		QString(), tr("Portable Game Notation (*.pgn);;All Files (*.*)"));
-
-	if (fileName.isEmpty())
-		return;
-
-	CuteChessApplication::instance()->gameDatabaseManager()->importPgnFile(fileName);
 }
