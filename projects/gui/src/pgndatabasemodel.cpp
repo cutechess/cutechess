@@ -18,7 +18,7 @@
 #include "pgndatabasemodel.h"
 
 const QStringList PgnDatabaseModel::s_headers = (QStringList() <<
-	tr("Name"));
+	tr("Database"));
 
 PgnDatabaseModel::PgnDatabaseModel(GameDatabaseManager* gameDatabaseManager,
                                    QObject* parent)
