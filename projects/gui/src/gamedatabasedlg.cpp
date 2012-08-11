@@ -24,9 +24,11 @@
 #include <QtAlgorithms>
 #include <QModelIndex>
 #include <QFileDialog>
+#include <QInputDialog>
 
 #include <pgngame.h>
 #include <pgngameentry.h>
+#include <polyglotbook.h>
 
 #include "pgndatabasemodel.h"
 #include "pgngameentrymodel.h"
@@ -85,6 +87,8 @@ GameDatabaseDialog::GameDatabaseDialog(QWidget* parent)
 		SLOT(viewLastMove()));
 	connect(ui->m_importBtn, SIGNAL(clicked(bool)), this,
 		SLOT(import()));
+	connect(ui->m_createOpeningBookBtn, SIGNAL(clicked(bool)), this,
+		SLOT(createOpeningBook()));
 
 	connect(ui->m_databasesListView->selectionModel(),
 		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
@@ -102,6 +106,11 @@ GameDatabaseDialog::GameDatabaseDialog(QWidget* parent)
 
 	connect(ui->m_advancedSearchBtn, SIGNAL(clicked()),
 		this, SLOT(onAdvancedSearch()));
+
+	connect(m_pgnGameEntryModel, SIGNAL(modelReset()), this,
+		SLOT(updateUi()));
+	connect(m_pgnGameEntryModel, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+		this, SLOT(updateUi()));
 
 	m_searchTimer.setSingleShot(true);
 	connect(&m_searchTimer, SIGNAL(timeout()), this, SLOT(onSearchTimeout()));
@@ -322,4 +331,49 @@ void GameDatabaseDialog::import()
 		return;
 
 	CuteChessApplication::instance()->gameDatabaseManager()->importPgnFile(fileName);
+}
+
+void GameDatabaseDialog::createOpeningBook()
+{
+	const QString fileName = QFileDialog::getSaveFileName(this, tr("Create Opening Book"),
+		QString(), tr("Polyglot Book File (*.bin)"));
+
+	if (fileName.isEmpty())
+		return;
+
+	bool ok;
+	int depth = QInputDialog::getInt(this, tr("Opening depth"), tr("Maximum opening depth (plies):"),
+		10, 1, 1024, 1, &ok);
+
+	if (!ok)
+		return;
+
+	int databaseIndex;
+	PgnDatabase* pgnDatabase;
+
+	PgnGame game;
+	PgnDatabase::PgnDatabaseError error;
+	PolyglotBook openingBook;
+
+	for (int gameIndex = 0; gameIndex < m_pgnGameEntryModel->rowCount(); gameIndex++)
+	{
+		if ((databaseIndex = databaseIndexFromGame(gameIndex)) == -1)
+			break;
+
+		pgnDatabase =
+			CuteChessApplication::instance()->gameDatabaseManager()->databases().at(databaseIndex);
+
+		if ((error = pgnDatabase->game(m_pgnGameEntryModel->entryAt(gameIndex), &game)) ==
+			PgnDatabase::NoError)
+		{
+			openingBook.import(game, depth);
+		}
+	}
+
+	openingBook.write(fileName);
+}
+
+void GameDatabaseDialog::updateUi()
+{
+	ui->m_createOpeningBookBtn->setEnabled(m_pgnGameEntryModel->rowCount() > 0);
 }

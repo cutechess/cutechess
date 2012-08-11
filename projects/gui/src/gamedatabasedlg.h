@@ -62,6 +62,8 @@ class GameDatabaseDialog : public QDialog
 		void onSearchTimeout();
 		void onAdvancedSearch();
 		void import();
+		void createOpeningBook();
+		void updateUi();
 
 	private:
 		int databaseIndexFromGame(int game);

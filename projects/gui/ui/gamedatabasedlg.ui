@@ -350,6 +350,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="m_createOpeningBookBtn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Create opening book...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
