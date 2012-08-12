@@ -47,7 +47,7 @@ class PgnGameEntryModel : public QAbstractItemModel
 		 * not yet fetched into the model.
 		 */
 		int entryCount() const;
-		/*! Associates a list of PGN game entris with this model. */
+		/*! Associates a list of PGN game entries with this model. */
 		void setEntries(const QList<const PgnGameEntry*>& entries);
 
 		// Inherited from QAbstractItemModel
