@@ -369,7 +369,8 @@ void MainWindow::onTabCloseRequested(int index)
 
 void MainWindow::newGame()
 {
-	NewGameDialog dlg(this);
+	EngineManager* engineManager = CuteChessApplication::instance()->engineManager();
+	NewGameDialog dlg(engineManager, this);
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
@@ -385,10 +386,8 @@ void MainWindow::newGame()
 
 		if (dlg.playerType(side) == NewGameDialog::CPU)
 		{
-			EngineConfiguration config =
-				CuteChessApplication::instance()->engineManager()->engines().at(dlg.selectedEngineIndex(side));
-
-			player[i] = new EngineBuilder(config);
+			int index = dlg.selectedEngineIndex(side);
+			player[i] = new EngineBuilder(engineManager->engineAt(index));
 		}
 		else
 		{

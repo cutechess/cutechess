@@ -23,21 +23,21 @@
 #include <board/boardfactory.h>
 #include <enginemanager.h>
 
-#include "cutechessapp.h"
 #include "engineconfigurationmodel.h"
 #include "engineconfigproxymodel.h"
 #include "engineconfigurationdlg.h"
 #include "timecontroldlg.h"
 
 
-NewGameDialog::NewGameDialog(QWidget* parent)
+NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	: QDialog(parent),
+	  m_engineManager(engineManager),
 	  ui(new Ui::NewGameDialog)
 {
+	Q_ASSERT(engineManager != 0);
 	ui->setupUi(this);
 
-	m_engines = new EngineConfigurationModel(
-		CuteChessApplication::instance()->engineManager(), this);
+	m_engines = new EngineConfigurationModel(m_engineManager, this);
 
 	connect(ui->m_configureWhiteEngineButton, SIGNAL(clicked(bool)), this,
 		SLOT(configureWhiteEngine()));
@@ -111,14 +111,10 @@ void NewGameDialog::configureWhiteEngine()
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 
 	int i = selectedEngineIndex(Chess::Side::White);
-	dlg.applyEngineInformation(
-		CuteChessApplication::instance()->engineManager()->engines().at(i));
+	dlg.applyEngineInformation(m_engineManager->engineAt(i));
 
 	if (dlg.exec() == QDialog::Accepted)
-	{
-		CuteChessApplication::instance()->engineManager()->updateEngineAt(i,
-			dlg.engineConfiguration());
-	}
+		m_engineManager->updateEngineAt(i, dlg.engineConfiguration());
 }
 
 void NewGameDialog::configureBlackEngine()
@@ -126,14 +122,10 @@ void NewGameDialog::configureBlackEngine()
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 
 	int i = selectedEngineIndex(Chess::Side::Black);
-	dlg.applyEngineInformation(
-		CuteChessApplication::instance()->engineManager()->engines().at(i));
+	dlg.applyEngineInformation(m_engineManager->engineAt(i));
 
 	if (dlg.exec() == QDialog::Accepted)
-	{
-		CuteChessApplication::instance()->engineManager()->updateEngineAt(i,
-			dlg.engineConfiguration());
-	}
+		m_engineManager->updateEngineAt(i, dlg.engineConfiguration());
 }
 
 void NewGameDialog::showTimeControlDialog()

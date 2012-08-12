@@ -24,6 +24,7 @@
 
 class EngineConfigurationModel;
 class EngineConfigurationProxyModel;
+class EngineManager;
 
 namespace Ui {
 	class NewGameDialog;
@@ -50,7 +51,7 @@ class NewGameDialog : public QDialog
 		 * Creates a new game dialog with \a engineConfigurations as the
 		 * list of chess engines and given \a parent.
 		*/
-		NewGameDialog(QWidget* parent = 0);
+		NewGameDialog(EngineManager* engineManager, QWidget* parent = 0);
 		/*! Destroys the dialog. */
 		virtual ~NewGameDialog();
 
@@ -77,6 +78,7 @@ class NewGameDialog : public QDialog
 		void onVariantChanged(const QString& variant);
 
 	private:
+		EngineManager* m_engineManager;
 		EngineConfigurationModel* m_engines;
 		EngineConfigurationProxyModel* m_proxyModel;
 		TimeControl m_timeControl;
