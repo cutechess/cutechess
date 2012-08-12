@@ -297,20 +297,17 @@ void GameDatabaseDialog::onAdvancedSearch()
 
 int GameDatabaseDialog::databaseIndexFromGame(int game)
 {
-	QList<int> sorted;
 	int databaseIndex;
 
-	foreach (const QModelIndex& index, m_selectedDatabases.indexes())
-		sorted << index.row();
+	QModelIndexList sorted = m_selectedDatabases.indexes();
+	qSort(sorted);
 
 	if (sorted.count() == 0)
 		return -1;
 
-	qSort(sorted);
-
 	forever
 	{
-		databaseIndex = sorted.takeFirst();
+		databaseIndex = sorted.takeFirst().row();
 		game -=
 		    CuteChessApplication::instance()->gameDatabaseManager()->databases().at(databaseIndex)->entries().count();
 
