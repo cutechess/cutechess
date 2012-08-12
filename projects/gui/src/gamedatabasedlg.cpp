@@ -354,7 +354,7 @@ void GameDatabaseDialog::createOpeningBook()
 	PgnDatabase::PgnDatabaseError error;
 	PolyglotBook openingBook;
 
-	for (int gameIndex = 0; gameIndex < m_pgnGameEntryModel->rowCount(); gameIndex++)
+	for (int gameIndex = 0; gameIndex < m_pgnGameEntryModel->entryCount(); gameIndex++)
 	{
 		if ((databaseIndex = databaseIndexFromGame(gameIndex)) == -1)
 			break;
