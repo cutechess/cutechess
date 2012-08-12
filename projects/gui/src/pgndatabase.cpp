@@ -17,7 +17,6 @@
 
 #include "pgndatabase.h"
 #include <pgnstream.h>
-#include <QDebug>
 #include <QFileInfo>
 
 PgnDatabase::PgnDatabase(const QString& fileName, QObject* parent)
@@ -84,23 +83,15 @@ PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry* entry, PgnGa
 		return DatabaseModified;
 
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		qDebug() << "PgnDatabase::game(): QIODevice error:" << file.error();
 		return IoDeviceError;
-	}
 
 	PgnStream pgnStream(&file);
 
 	if (!pgnStream.seek(entry->pos(), entry->lineNumber()))
-	{
-		qDebug() << "PgnDatabase::game(): PgnStream error: seek() failed";
 		return StreamError;
-	}
 
 	if (!game->read(pgnStream))
-	{
-		qDebug() << "PgnDatabase::game(): PgnGame error: read() failed";
 		return StreamError;
-	}
+
 	return NoError;
 }

@@ -19,7 +19,6 @@
 #include "ui_gamedatabasedlg.h"
 
 #include <QVBoxLayout>
-#include <QDebug>
 #include <QMessageBox>
 #include <QtAlgorithms>
 #include <QModelIndex>
