@@ -111,15 +111,13 @@ void EngineManagementDialog::configureEngine()
 
 void EngineManagementDialog::removeEngine()
 {
-	const QList<QModelIndex> selected =
-		ui->m_enginesList->selectionModel()->selectedIndexes();
+	const QItemSelection selection =
+		m_filteredModel->mapSelectionToSource(ui->m_enginesList->selectionModel()->selection());
+	QModelIndexList selected = selection.indexes();
+	qSort(selected.begin(), selected.end(), qGreater<QModelIndex>());
 
 	foreach (const QModelIndex& index, selected)
-	{
-		// Map the index from the filtered model to the original model
-		m_engineManager->removeEngineAt(
-			m_filteredModel->mapToSource(index).row());
-	}
+		m_engineManager->removeEngineAt(index.row());
 }
 
 QList<EngineConfiguration> EngineManagementDialog::engines() const
