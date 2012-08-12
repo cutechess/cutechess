@@ -39,6 +39,14 @@ class PgnGameEntryModel : public QAbstractItemModel
 
 		/*! Returns the PGN entry at \a row. */
 		const PgnGameEntry* entryAt(int row) const;
+		/*!
+		 * Returns the total number of PGN game entries matching the
+		 * current filter.
+		 *
+		 * \note Unlike rowCount() this method also includes entries that are
+		 * not yet fetched into the model.
+		 */
+		int entryCount() const;
 		/*! Associates a list of PGN game entris with this model. */
 		void setEntries(const QList<const PgnGameEntry*>& entries);
 

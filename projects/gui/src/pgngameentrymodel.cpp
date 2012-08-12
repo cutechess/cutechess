@@ -53,6 +53,11 @@ const PgnGameEntry* PgnGameEntryModel::entryAt(int row) const
 	return m_filtered.resultAt(row);
 }
 
+int PgnGameEntryModel::entryCount() const
+{
+	return m_filtered.resultCount();
+}
+
 void PgnGameEntryModel::setEntries(const QList<const PgnGameEntry*>& entries)
 {
 	m_watcher.cancel();
