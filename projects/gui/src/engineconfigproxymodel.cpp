@@ -17,7 +17,6 @@
 
 #include "engineconfigproxymodel.h"
 #include <QStringList>
-#include <QtDebug>
 
 EngineConfigurationProxyModel::EngineConfigurationProxyModel(QObject *parent)
 	: QSortFilterProxyModel(parent)

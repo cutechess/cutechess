@@ -18,7 +18,6 @@
 #include "pgngame.h"
 #include <QStringList>
 #include <QFile>
-#include <QtDebug>
 #include "board/boardfactory.h"
 #include "econode.h"
 #include "pgnstream.h"
@@ -102,7 +101,7 @@ bool PgnGame::parseMove(PgnStream& in)
 {
 	if (m_tags.isEmpty())
 	{
-		qDebug() << "No tags found";
+		qDebug("No tags found");
 		return false;
 	}
 
@@ -116,7 +115,7 @@ bool PgnGame::parseMove(PgnStream& in)
 
 		if (!tmp.isEmpty() && !in.setVariant(tmp))
 		{
-			qDebug() << "Unknown variant:" << tmp;
+			qDebug("Unknown variant: %s", qPrintable(tmp));
 			return false;
 		}
 		board = in.board();
@@ -128,7 +127,7 @@ bool PgnGame::parseMove(PgnStream& in)
 		{
 			if (board->isRandomVariant())
 			{
-				qDebug() << "Missing FEN tag";
+				qDebug("Missing FEN tag");
 				return false;
 			}
 			tmp = board->defaultFenString();
@@ -136,7 +135,7 @@ bool PgnGame::parseMove(PgnStream& in)
 
 		if (!board->setFenString(tmp))
 		{
-			qDebug() << "Invalid FEN string:" << tmp;
+			qDebug("Invalid FEN string: %s", qPrintable(tmp));
 			return false;
 		}
 		m_startingSide = board->startingSide();
@@ -146,7 +145,7 @@ bool PgnGame::parseMove(PgnStream& in)
 	Chess::Move move(board->moveFromString(str));
 	if (move.isNull())
 	{
-		qDebug() << "Illegal move:" << str;
+		qDebug("Illegal move: %s", qPrintable(str));
 		return false;
 	}
 
@@ -182,8 +181,8 @@ bool PgnGame::read(PgnStream& in, int maxMoves)
 				QString& tag = m_tags["Result"];
 
 				if (!tag.isEmpty() && str != tag)
-					qDebug() << "Line" << in.lineNumber() << ": The termination "
-						    "marker is different from the result tag";
+					qDebug(qPrintable(QString("Line %1: The termination "
+						"marker is different from the result tag").arg(in.lineNumber())));
 				tag = str;
 			}
 			stop = true;
@@ -193,7 +192,7 @@ bool PgnGame::read(PgnStream& in, int maxMoves)
 				bool ok;
 				int nag = in.tokenString().toInt(&ok);
 				if (!ok || nag < 0 || nag > 255)
-					qDebug() << "Invalid NAG:" << in.tokenString();
+					qDebug("Invalid NAG: %s", qPrintable(in.tokenString()));
 			}
 			break;
 		case PgnStream::NoToken:

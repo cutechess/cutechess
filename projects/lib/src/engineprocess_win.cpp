@@ -18,7 +18,6 @@
 #include "engineprocess_win.h"
 #include <QDir>
 #include <QRegExp>
-#include <QtDebug>
 #include "pipereader_win.h"
 
 

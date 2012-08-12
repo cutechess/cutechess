@@ -17,7 +17,6 @@
 
 #include "gamemanager.h"
 #include <QThread>
-#include <QtDebug>
 #include "playerbuilder.h"
 #include "chessgame.h"
 #include "chessplayer.h"

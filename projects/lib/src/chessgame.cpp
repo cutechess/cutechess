@@ -18,7 +18,6 @@
 #include "chessgame.h"
 #include <QThread>
 #include <QTimer>
-#include <QtDebug>
 #include "board/board.h"
 #include "chessplayer.h"
 #include "openingbook.h"
@@ -265,7 +264,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	Q_ASSERT(m_board->isLegalMove(move));
 	if (sender != playerToMove())
 	{
-		qDebug() << sender->name() << "tried to make a move on the opponent's turn";
+		qDebug("%s tried to make a move on the opponent's turn", qPrintable(sender->name()));
 		return;
 	}
 
@@ -631,8 +630,8 @@ void ChessGame::startGame()
 			return;
 		if (!player->supportsVariant(m_board->variant()))
 		{
-			qDebug() << player->name() << "doesn't support variant"
-				 << m_board->variant();
+			qDebug("%s doesn't support variant %s",
+				qPrintable(player->name()), qPrintable(m_board->variant()));
 			m_result = Chess::Result(Chess::Result::ResultError);
 			stop();
 			return;
@@ -669,7 +668,7 @@ void ChessGame::startGame()
 
 		if (!m_board->result().isNone())
 		{
-			qDebug() << "Every move was played from the book";
+			qDebug("Every move was played from the book");
 			m_result = m_board->result();
 			stop();
 			return;

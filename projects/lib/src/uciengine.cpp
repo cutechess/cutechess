@@ -19,7 +19,6 @@
 
 #include <QString>
 #include <QStringList>
-#include <QDebug>
 
 #include "board/board.h"
 #include "board/boardfactory.h"
@@ -488,7 +487,7 @@ void UciEngine::parseLine(const QString& line)
 	{
 		if (nextToken(command) == "error")
 		{
-			qDebug() << "Failed to register UCI engine" << name();
+			qDebug("Failed to register UCI engine %s", qPrintable(name()));
 			write("register later");
 		}
 	}
@@ -498,8 +497,8 @@ void UciEngine::parseLine(const QString& line)
 		QString variant;
 
 		if (option == 0 || !option->isValid())
-			qDebug() << "Invalid UCI option from" << name() << ":"
-				 << line;
+			qDebug("Invalid UCI option from %s: %s",
+				qPrintable(name()), qPrintable(line));
 		else if (!(variant = variantFromUci(option->name())).isEmpty())
 			addVariant(variant);
 		else if (option->name() == "UCI_Opponent")

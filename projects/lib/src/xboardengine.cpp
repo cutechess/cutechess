@@ -21,7 +21,6 @@
 #include <QString>
 #include <QStringList>
 #include <QTimer>
-#include <QDebug>
 
 #include <climits>
 
@@ -124,7 +123,7 @@ void XboardEngine::startGame()
 		if (m_ftSetboard)
 			write("setboard " + board()->fenString());
 		else
-			qDebug() << name() << "doesn't support the setboard command.";
+			qDebug("%s doesn't support the setboard command", qPrintable(name()));
 	}
 	
 	// Send the time controls
@@ -149,7 +148,7 @@ void XboardEngine::startGame()
 		if (m_ftNps)
 			write(QString("st 1\nnps %1").arg(myTc->nodeLimit()));
 		else
-			qDebug() << name() << "doesn't support the nps command.";
+			qDebug("%s doesn't support the nps command", qPrintable(name()));
 	}
 
 	// Show thinking
@@ -604,7 +603,7 @@ void XboardEngine::parseLine(const QString& line)
 			if (state() == FinishingGame)
 				finishGame();
 			else
-				qDebug() << "Unexpected move from" << name();
+				qDebug("Unexpected move from %s", qPrintable(name()));
 			return;
 		}
 

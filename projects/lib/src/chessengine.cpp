@@ -19,7 +19,6 @@
 #include <QIODevice>
 #include <QTimer>
 #include <QStringRef>
-#include <QtDebug>
 #include <QtAlgorithms>
 #include "engineoption.h"
 
@@ -159,14 +158,14 @@ void ChessEngine::setOption(const QString& name, const QVariant& value)
 	EngineOption* option = getOption(name);
 	if (option == 0)
 	{
-		qDebug() << this->name() << "doesn't have option" << name;
+		qDebug("%s doesn't have option %s", qPrintable(this->name()), qPrintable(name));
 		return;
 	}
 
 	if (!option->isValid(value))
 	{
-		qDebug() << "Invalid value for option" << name
-			 << ":" << value.toString();
+		qDebug("Invalid value for option %s: %s", qPrintable(name),
+			qPrintable(value.toString()));
 		return;
 	}
 
@@ -360,7 +359,7 @@ void ChessEngine::pong()
 
 void ChessEngine::onPingTimeout()
 {
-	qDebug() << "Engine" << name() << "failed to respond to ping";
+	qDebug("Engine %s failed to respond to ping", qPrintable(name()));
 
 	m_pinging = false;
 	m_writeBuffer.clear();

@@ -19,7 +19,6 @@
 #include <QSettings>
 #include <QFile>
 #include <QTextStream>
-#include <QDebug>
 #include <jsonparser.h>
 #include <jsonserializer.h>
 
@@ -84,7 +83,7 @@ void EngineManager::loadEngines(const QString& fileName)
 	QFile input(fileName);
 	if (!input.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
-		qWarning() << "cannot open engine configuration file:" << fileName;
+		qWarning("cannot open engine configuration file: %s", qPrintable(fileName));
 		return;
 	}
 
@@ -94,9 +93,9 @@ void EngineManager::loadEngines(const QString& fileName)
 
 	if (parser.hasError())
 	{
-		qWarning() << "bad engine configuration file line" <<
-			parser.errorLineNumber() << "in" << fileName << ":"
-				<< parser.errorString();
+		qWarning(qPrintable(QString("bad engine configuration file line %1 in %2: %3")
+			.arg(parser.errorLineNumber()).arg(fileName)
+			.arg(parser.errorString())));
 		return;
 	}
 
@@ -113,7 +112,7 @@ void EngineManager::saveEngines(const QString& fileName)
 	QFile output(fileName);
 	if (!output.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
-		qWarning() << "cannot open engine configuration file:" << fileName;
+		qWarning("cannot open engine configuration file: %s", qPrintable(fileName));
 		return;
 	}
 

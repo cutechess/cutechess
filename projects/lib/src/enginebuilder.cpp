@@ -17,7 +17,6 @@
 
 #include "enginebuilder.h"
 #include <QDir>
-#include <QtDebug>
 #include "engineprocess.h"
 #include "enginefactory.h"
 
@@ -52,7 +51,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		// in the engine's working directory
 		if (!QDir::setCurrent(workDir))
 		{
-			qWarning() << "Invalid working directory:" << workDir;
+			qWarning("Invalid working directory: %s", qPrintable(workDir));
 			delete process;
 			return 0;
 		}
@@ -69,7 +68,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		QDir::setCurrent(path);
 	if (!ok)
 	{
-		qWarning() << "Cannot start engine" << m_config.command();
+		qWarning("Cannot start engine %s", qPrintable(m_config.command()));
 		delete process;
 		return 0;
 	}

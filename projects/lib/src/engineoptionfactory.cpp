@@ -1,7 +1,5 @@
 #include "engineoptionfactory.h"
 
-#include <QtDebug>
-
 #include "engineoption.h"
 #include "enginetextoption.h"
 #include "enginebuttonoption.h"
@@ -21,7 +19,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 
 	if (name.isEmpty())
 	{
-		qWarning() << "Empty option name";
+		qWarning("Empty option name");
 		return 0;
 	}
 
@@ -33,7 +31,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 		value.type() != QVariant::String &&
 		value.type() != QVariant::Int)
 	{
-		qWarning() << "Invalid value type for option:" << name;
+		qWarning("Invalid value type for option: %s", qPrintable(name));
 		return 0;
 	}
 
@@ -43,7 +41,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 		defaultValue.type() != QVariant::String &&
 		defaultValue.type() != QVariant::Int)
 	{
-		qWarning() << "Invalid default value type for option:" << name;
+		qWarning("Invalid default value type for option: %s", qPrintable(name));
 		return 0;
 	}
 
