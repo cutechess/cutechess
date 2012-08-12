@@ -93,7 +93,7 @@ void EngineManager::loadEngines(const QString& fileName)
 
 	if (parser.hasError())
 	{
-		qWarning(qPrintable(QString("bad engine configuration file line %1 in %2: %3")
+		qWarning("%s", qPrintable(QString("bad engine configuration file line %1 in %2: %3")
 			.arg(parser.errorLineNumber()).arg(fileName)
 			.arg(parser.errorString())));
 		return;

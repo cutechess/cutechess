@@ -181,7 +181,7 @@ bool PgnGame::read(PgnStream& in, int maxMoves)
 				QString& tag = m_tags["Result"];
 
 				if (!tag.isEmpty() && str != tag)
-					qDebug(qPrintable(QString("Line %1: The termination "
+					qDebug("%s",qPrintable(QString("Line %1: The termination "
 						"marker is different from the result tag").arg(in.lineNumber())));
 				tag = str;
 			}
