@@ -68,7 +68,9 @@ void PgnDatabase::setDisplayName(const QString& displayName)
 	m_displayName = displayName;
 }
 
-PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry* entry, PgnGame* game)
+PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry* entry,
+						PgnGame* game,
+						int maxPlies)
 {
 	Q_ASSERT(entry != 0);
 	Q_ASSERT(game != 0);
@@ -90,7 +92,7 @@ PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry* entry, PgnGa
 	if (!pgnStream.seek(entry->pos(), entry->lineNumber()))
 		return StreamError;
 
-	if (!game->read(pgnStream))
+	if (!game->read(pgnStream, maxPlies))
 		return StreamError;
 
 	return NoError;

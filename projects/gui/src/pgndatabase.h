@@ -111,9 +111,12 @@ class PgnDatabase : public QObject
 		/*!
 		 * Reads \a game from the database using \a entry.
 		 *
+		 * A maximum of \a maxPlies plies (halfmoves) are read.
 		 * \note \a game must be allocated by the caller and must not be NULL.
 		 */
-		PgnDatabaseError game(const PgnGameEntry* entry, PgnGame* game);
+		PgnDatabaseError game(const PgnGameEntry* entry,
+				      PgnGame* game,
+				      int maxPlies = INT_MAX - 1);
 
 	private:
 		QList<const PgnGameEntry*> m_entries;

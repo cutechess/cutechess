@@ -359,7 +359,7 @@ void GameDatabaseDialog::createOpeningBook()
 		pgnDatabase =
 			CuteChessApplication::instance()->gameDatabaseManager()->databases().at(databaseIndex);
 
-		if ((error = pgnDatabase->game(m_pgnGameEntryModel->entryAt(gameIndex), &game)) ==
+		if ((error = pgnDatabase->game(m_pgnGameEntryModel->entryAt(gameIndex), &game, depth)) ==
 			PgnDatabase::NoError)
 		{
 			openingBook.import(game, depth);
