@@ -24,6 +24,7 @@
 
 #include <pgngame.h>
 
+class GameDatabaseManager;
 class PgnDatabaseModel;
 class PgnGameEntryModel;
 class PgnDatabase;
@@ -45,7 +46,8 @@ class GameDatabaseDialog : public QDialog
 
 	public:
 		/*! Constructs a new GameDatabaseDialog. */
-		GameDatabaseDialog(QWidget* parent = 0);
+		GameDatabaseDialog(GameDatabaseManager* dbManager,
+				   QWidget* parent = 0);
 		/*! Destroys the dialog. */
 		virtual ~GameDatabaseDialog();
 
@@ -72,6 +74,7 @@ class GameDatabaseDialog : public QDialog
 		QVector<PgnGame::MoveData> m_moves;
 		int m_moveIndex;
 
+		GameDatabaseManager* m_dbManager;
 		PgnDatabaseModel* m_pgnDatabaseModel;
 		PgnGameEntryModel* m_pgnGameEntryModel;
 		QItemSelection m_selectedDatabases;

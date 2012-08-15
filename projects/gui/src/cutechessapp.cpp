@@ -187,7 +187,7 @@ GameDatabaseManager* CuteChessApplication::gameDatabaseManager()
 void CuteChessApplication::showGameDatabaseDialog()
 {
 	if (m_gameDatabaseDialog == 0)
-		m_gameDatabaseDialog = new GameDatabaseDialog();
+		m_gameDatabaseDialog = new GameDatabaseDialog(gameDatabaseManager());
 
 	m_gameDatabaseDialog->show();
 	m_gameDatabaseDialog->raise();
