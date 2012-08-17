@@ -333,7 +333,7 @@ void GameDatabaseDialog::createOpeningBook()
 
 	bool ok;
 	int depth = QInputDialog::getInt(this, tr("Opening depth"), tr("Maximum opening depth (plies):"),
-		10, 1, 1024, 1, &ok);
+		20, 1, 1024, 1, &ok);
 
 	if (!ok)
 		return;
