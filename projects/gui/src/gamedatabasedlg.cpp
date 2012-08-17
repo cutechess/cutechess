@@ -338,26 +338,31 @@ void GameDatabaseDialog::createOpeningBook()
 	if (!ok)
 		return;
 
-	int databaseIndex;
-	PgnDatabase* pgnDatabase;
+	int databaseIndex = -1;
+	PgnDatabase* pgnDatabase = 0;
 
 	PgnGame game;
-	PgnDatabase::PgnDatabaseError error;
 	PolyglotBook openingBook;
 
 	for (int gameIndex = 0; gameIndex < m_pgnGameEntryModel->entryCount(); gameIndex++)
 	{
-		if ((databaseIndex = databaseIndexFromGame(gameIndex)) == -1)
+		int newDbIndex = databaseIndexFromGame(gameIndex);
+		if (newDbIndex == -1)
 			break;
 
-		pgnDatabase = m_dbManager->databases().at(databaseIndex);
-
-		if ((error = pgnDatabase->game(m_pgnGameEntryModel->entryAt(gameIndex), &game, depth)) ==
-			PgnDatabase::NoError)
+		if (newDbIndex != databaseIndex)
 		{
-			openingBook.import(game, depth);
+			databaseIndex = newDbIndex;
+			if (pgnDatabase != 0)
+				pgnDatabase->closeFile();
+			pgnDatabase = m_dbManager->databases().at(databaseIndex);
 		}
+
+		const PgnGameEntry* entry = m_pgnGameEntryModel->entryAt(gameIndex);
+		if (pgnDatabase->game(entry, &game, depth, true) == PgnDatabase::NoError)
+			openingBook.import(game, depth);
 	}
+	pgnDatabase->closeFile();
 
 	openingBook.write(fileName);
 }
