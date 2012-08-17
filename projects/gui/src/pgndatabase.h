@@ -21,8 +21,10 @@
 #include <QObject>
 #include <QList>
 #include <QDateTime>
+#include <QFile>
 #include <pgngame.h>
 #include <pgngameentry.h>
+class PgnStream;
 
 /*!
  * \brief PGN database
@@ -75,6 +77,14 @@ class PgnDatabase : public QObject
 		QString fileName() const;
 
 		/*!
+		 * Closes the database file.
+		 *
+		 * In general, this function doesn't need to be called because the
+		 * file is closed automatically.
+		 */
+		void closeFile();
+
+		/*!
 		 * Returns the last recorded modification time of this database.
 		 *
 		 * \note This is recorded information. The underlying database file
@@ -112,15 +122,21 @@ class PgnDatabase : public QObject
 		 * Reads \a game from the database using \a entry.
 		 *
 		 * A maximum of \a maxPlies plies (halfmoves) are read.
+		 *
+		 * If \a leaveFileOpen is true then the database file is left open
+		 * until either closeFile() is called or this database is destroyed.
+		 *
 		 * \note \a game must be allocated by the caller and must not be NULL.
 		 */
 		PgnDatabaseError game(const PgnGameEntry* entry,
 				      PgnGame* game,
-				      int maxPlies = INT_MAX - 1);
+				      int maxPlies = INT_MAX - 1,
+				      bool leaveFileOpen = false);
 
 	private:
 		QList<const PgnGameEntry*> m_entries;
-		QString m_fileName;
+		QFile m_file;
+		PgnStream* m_stream;
 		QDateTime m_lastModified;
 		QString m_displayName;
 

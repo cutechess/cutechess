@@ -21,15 +21,17 @@
 
 PgnDatabase::PgnDatabase(const QString& fileName, QObject* parent)
 	: QObject(parent),
-	  m_fileName(fileName)
+	  m_file(fileName),
+	  m_stream(0)
 {
-	QFileInfo fileInfo(m_fileName);
+	QFileInfo fileInfo(fileName);
 	m_displayName = fileInfo.fileName();
 }
 
 PgnDatabase::~PgnDatabase()
 {
 	qDeleteAll(m_entries);
+	delete m_stream;
 }
 
 void PgnDatabase::setEntries(const QList<const PgnGameEntry*>& entries)
@@ -45,7 +47,14 @@ QList<const PgnGameEntry*> PgnDatabase::entries() const
 
 QString PgnDatabase::fileName() const
 {
-	return m_fileName;
+	return m_file.fileName();
+}
+
+void PgnDatabase::closeFile()
+{
+	delete m_stream;
+	m_stream = 0;
+	m_file.close();
 }
 
 QDateTime PgnDatabase::lastModified() const
@@ -70,30 +79,36 @@ void PgnDatabase::setDisplayName(const QString& displayName)
 
 PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry* entry,
 						PgnGame* game,
-						int maxPlies)
+						int maxPlies,
+						bool leaveFileOpen)
 {
 	Q_ASSERT(entry != 0);
 	Q_ASSERT(game != 0);
 
-	QFile file(m_fileName);
-	QFileInfo fileInfo(m_fileName);
+	if (!m_stream)
+	{
+		QFileInfo fileInfo(m_file.fileName());
 
-	if (!fileInfo.exists())
-		return DatabaseDoesNotExist;
+		if (!fileInfo.exists())
+			return DatabaseDoesNotExist;
 
-	if (fileInfo.lastModified() != m_lastModified)
-		return DatabaseModified;
+		if (fileInfo.lastModified() != m_lastModified)
+			return DatabaseModified;
 
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-		return IoDeviceError;
+		if (!m_file.open(QIODevice::ReadOnly | QIODevice::Text))
+			return IoDeviceError;
 
-	PgnStream pgnStream(&file);
+		m_stream = new PgnStream(&m_file);
+	}
 
-	if (!pgnStream.seek(entry->pos(), entry->lineNumber()))
-		return StreamError;
+	PgnDatabaseError error = NoError;
 
-	if (!game->read(pgnStream, maxPlies))
-		return StreamError;
+	if (!m_stream->seek(entry->pos(), entry->lineNumber())
+	||  !game->read(*m_stream, maxPlies))
+		error = StreamError;
 
-	return NoError;
+	if (!leaveFileOpen)
+		closeFile();
+
+	return error;
 }
