@@ -47,6 +47,11 @@ class PgnGameEntryModel : public QAbstractItemModel
 		 * not yet fetched into the model.
 		 */
 		int entryCount() const;
+		/*!
+		 * Returns the index in the source data that corresponds to
+		 * \a row in the model.
+		 */
+		int sourceIndex(int row) const;
 		/*! Associates a list of PGN game entries with this model. */
 		void setEntries(const QList<const PgnGameEntry*>& entries);
 
@@ -78,9 +83,10 @@ class PgnGameEntryModel : public QAbstractItemModel
 		static const QStringList s_headers;
 
 		QList<const PgnGameEntry*> m_entries;
+		QVector<int> m_indexes;
 		int m_entryCount;
-		QFuture<const PgnGameEntry*> m_filtered;
-		QFutureWatcher<const PgnGameEntry*> m_watcher;
+		QFuture<int> m_filtered;
+		QFutureWatcher<int> m_watcher;
 };
 
 #endif // PGN_GAME_ENTRY_MODEL_H

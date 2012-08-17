@@ -23,16 +23,18 @@
 
 struct EntryContains
 {
-	EntryContains(const PgnGameFilter& filter)
-		: m_filter(filter) { }
+	EntryContains(const QList<const PgnGameEntry*>& entries,
+		      const PgnGameFilter& filter)
+		: m_entries(entries), m_filter(filter) { }
 
 	typedef bool result_type;
 
-	inline bool operator()(const PgnGameEntry* entry)
+	inline bool operator()(int index)
 	{
-		return entry->match(m_filter);
+		return m_entries.at(index)->match(m_filter);
 	}
 
+	const QList<const PgnGameEntry*>& m_entries;
 	PgnGameFilter m_filter;
 };
 
@@ -50,6 +52,11 @@ PgnGameEntryModel::PgnGameEntryModel(QObject* parent)
 
 const PgnGameEntry* PgnGameEntryModel::entryAt(int row) const
 {
+	return m_entries.at(m_filtered.resultAt(row));
+}
+
+int PgnGameEntryModel::sourceIndex(int row) const
+{
 	return m_filtered.resultAt(row);
 }
 
@@ -64,6 +71,14 @@ void PgnGameEntryModel::setEntries(const QList<const PgnGameEntry*>& entries)
 	m_watcher.waitForFinished();
 
 	m_entries = entries;
+
+	if (entries.size() > m_indexes.size())
+	{
+		m_indexes.reserve(entries.size());
+		for (int i = m_indexes.size(); i < entries.size(); i++)
+			m_indexes.append(i);
+	}
+
 	applyFilter(QString());
 }
 
@@ -78,7 +93,9 @@ void PgnGameEntryModel::applyFilter(const PgnGameFilter& filter)
 	beginResetModel();
 	m_entryCount = 0;
 
-	m_filtered = QtConcurrent::filtered(m_entries, EntryContains(filter));
+	m_filtered = QtConcurrent::filtered(m_indexes.constBegin(),
+					    m_indexes.constBegin() + m_entries.size(),
+					    EntryContains(m_entries, filter));
 
 	m_watcher.setFuture(m_filtered);
 	endResetModel();
@@ -92,7 +109,7 @@ void PgnGameEntryModel::setFilter(const PgnGameFilter& filter)
 }
 
 QModelIndex PgnGameEntryModel::index(int row, int column,
-                                 const QModelIndex& parent) const
+				 const QModelIndex& parent) const
 {
 	if (!hasIndex(row, column, parent))
 		return QModelIndex();
@@ -128,13 +145,13 @@ QVariant PgnGameEntryModel::data(const QModelIndex& index, int role) const
 	if (index.isValid() && role == Qt::DisplayRole)
 	{
 		PgnGameEntry::TagType tagType = PgnGameEntry::TagType(index.column());
-		return m_filtered.resultAt(index.row())->tagValue(tagType);
+		return entryAt(index.row())->tagValue(tagType);
 	}
 	return QVariant();
 }
 
 QVariant PgnGameEntryModel::headerData(int section, Qt::Orientation orientation,
-                                   int role) const
+				   int role) const
 {
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
 		return s_headers.at(section);
