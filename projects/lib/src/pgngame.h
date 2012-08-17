@@ -100,7 +100,7 @@ class LIB_EXPORT PgnGame
 		 *
 		 * Returns true if any tags and/or moves were read.
 		 */
-		bool read(PgnStream& in, int maxMoves = 1000);
+		bool read(PgnStream& in, int maxMoves = INT_MAX - 1);
 		/*! Writes the game to a text stream. */
 		void write(QTextStream& out, PgnMode mode = Verbose) const;
 		/*!
