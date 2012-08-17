@@ -123,8 +123,10 @@ GameDatabaseDialog::~GameDatabaseDialog()
 void GameDatabaseDialog::databaseSelectionChanged(const QItemSelection& selected,
                                                   const QItemSelection& deselected)
 {
-	m_selectedDatabases.merge(selected, QItemSelectionModel::Select);
-	m_selectedDatabases.merge(deselected, QItemSelectionModel::Deselect);
+	foreach (const QModelIndex& index, deselected.indexes())
+		m_selectedDatabases.remove(index.row());
+	foreach (const QModelIndex& index, selected.indexes())
+		m_selectedDatabases[index.row()] = m_dbManager->databases().at(index.row());
 
 	if (m_selectedDatabases.isEmpty())
 	{
@@ -133,8 +135,9 @@ void GameDatabaseDialog::databaseSelectionChanged(const QItemSelection& selected
 	}
 
 	QList<const PgnGameEntry*> entries;
-	foreach (const QModelIndex& index, m_selectedDatabases.indexes())
-		entries.append(m_dbManager->databases().at(index.row())->entries());
+	QMap<int, PgnDatabase*>::const_iterator it;
+	for (it = m_selectedDatabases.constBegin(); it != m_selectedDatabases.constEnd(); ++it)
+		entries.append(it.value()->entries());
 
 	m_pgnGameEntryModel->setEntries(entries);
 	ui->m_advancedSearchBtn->setEnabled(true);
@@ -291,26 +294,22 @@ void GameDatabaseDialog::onAdvancedSearch()
 	ui->m_clearBtn->setEnabled(true);
 }
 
-int GameDatabaseDialog::databaseIndexFromGame(int game)
+int GameDatabaseDialog::databaseIndexFromGame(int game) const
 {
-	int databaseIndex;
-
-	QModelIndexList sorted = m_selectedDatabases.indexes();
-	qSort(sorted);
-
-	if (sorted.count() == 0)
+	if (m_selectedDatabases.isEmpty())
 		return -1;
 
-	forever
-	{
-		databaseIndex = sorted.takeFirst().row();
-		game -= m_dbManager->databases().at(databaseIndex)->entries().count();
+	game = m_pgnGameEntryModel->sourceIndex(game);
 
+	QMap<int, PgnDatabase*>::const_iterator it;
+	for (it = m_selectedDatabases.constBegin(); it != m_selectedDatabases.constEnd(); ++it)
+	{
+		game -= it.value()->entries().count();
 		if (game < 0)
-			break;
+			return it.key();
 	}
 
-	return databaseIndex;
+	return -1;
 }
 
 void GameDatabaseDialog::import()

@@ -68,7 +68,8 @@ class GameDatabaseDialog : public QDialog
 		void updateUi();
 
 	private:
-		int databaseIndexFromGame(int game);
+		int databaseIndexFromGame(int game) const;
+
 		BoardView* m_boardView;
 		BoardScene* m_boardScene;
 		QVector<PgnGame::MoveData> m_moves;
@@ -77,7 +78,7 @@ class GameDatabaseDialog : public QDialog
 		GameDatabaseManager* m_dbManager;
 		PgnDatabaseModel* m_pgnDatabaseModel;
 		PgnGameEntryModel* m_pgnGameEntryModel;
-		QItemSelection m_selectedDatabases;
+		QMap<int, PgnDatabase*> m_selectedDatabases;
 
 		QTimer m_searchTimer;
 		QString m_searchTerms;
