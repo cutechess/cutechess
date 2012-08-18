@@ -46,3 +46,5 @@ Doxyfile
 *.pro.user*
 qtc-gdbmacros/
 
+# files created by Mac OS X
+.DS_Store
