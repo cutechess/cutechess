@@ -356,6 +356,8 @@ void Tournament::onGameFinished(ChessGame* game)
 			delete pgn;
 		}
 	}
+	else
+		delete pgn;
 
 	Chess::Result::Type resultType(game->result().type());
 	bool crashed = (resultType == Chess::Result::Disconnection ||
