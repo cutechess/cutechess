@@ -7,5 +7,12 @@
         <file>cutechess_128x128.png</file>
         <file>cutechess_256x256.png</file>
         <file>cutechess_512x512.png</file>
+        <file>toolbutton/add_16x16.png</file>
+        <file>toolbutton/configure_16x16.png</file>
+        <file>toolbutton/first_16x16.png</file>
+        <file>toolbutton/last_16x16.png</file>
+        <file>toolbutton/next_16x16.png</file>
+        <file>toolbutton/previous_16x16.png</file>
+        <file>toolbutton/remove_16x16.png</file>
     </qresource>
 </RCC>
