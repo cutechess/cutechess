@@ -71,11 +71,6 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 
 	ui->m_chessboardParentWidget->setLayout(chessboardViewLayout);
 
-	ui->m_nextMoveButton->setIcon(style()->standardIcon(QStyle::SP_ArrowRight));
-	ui->m_previousMoveButton->setIcon(style()->standardIcon(QStyle::SP_ArrowLeft));
-	ui->m_skipToFirstMoveButton->setIcon(style()->standardIcon(QStyle::SP_MediaSkipBackward));
-	ui->m_skipToLastMoveButton->setIcon(style()->standardIcon(QStyle::SP_MediaSkipForward));
-
 	connect(ui->m_nextMoveButton, SIGNAL(clicked(bool)), this,
 		SLOT(viewNextMove()));
 	connect(ui->m_previousMoveButton, SIGNAL(clicked(bool)), this,

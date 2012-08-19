@@ -102,7 +102,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>196</width>
+         <width>198</width>
          <height>333</height>
         </rect>
        </property>
@@ -135,7 +135,11 @@
                  <bool>false</bool>
                 </property>
                 <property name="text">
-                 <string/>
+                 <string>Skip to first move</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../res/icons/icons.qrc">
+                  <normaloff>:/icons/toolbutton/first_16x16.png</normaloff>:/icons/toolbutton/first_16x16.png</iconset>
                 </property>
                </widget>
               </item>
@@ -145,7 +149,11 @@
                  <bool>false</bool>
                 </property>
                 <property name="text">
-                 <string/>
+                 <string>Previous move</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../res/icons/icons.qrc">
+                  <normaloff>:/icons/toolbutton/previous_16x16.png</normaloff>:/icons/toolbutton/previous_16x16.png</iconset>
                 </property>
                </widget>
               </item>
@@ -155,7 +163,11 @@
                  <bool>false</bool>
                 </property>
                 <property name="text">
-                 <string/>
+                 <string>Next move</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../res/icons/icons.qrc">
+                  <normaloff>:/icons/toolbutton/next_16x16.png</normaloff>:/icons/toolbutton/next_16x16.png</iconset>
                 </property>
                </widget>
               </item>
@@ -165,7 +177,11 @@
                  <bool>false</bool>
                 </property>
                 <property name="text">
-                 <string/>
+                 <string>Skip to last move</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../res/icons/icons.qrc">
+                  <normaloff>:/icons/toolbutton/last_16x16.png</normaloff>:/icons/toolbutton/last_16x16.png</iconset>
                 </property>
                </widget>
               </item>
@@ -386,7 +402,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../res/icons/icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
