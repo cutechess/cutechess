@@ -24,9 +24,9 @@
 #include <QList>
 #include <QVector>
 #include <QMap>
-#include <board/move.h>
-#include <timecontrol.h>
-#include <pgngame.h>
+#include "board/move.h"
+#include "timecontrol.h"
+#include "pgngame.h"
 class GameManager;
 class PlayerBuilder;
 class ChessGame;

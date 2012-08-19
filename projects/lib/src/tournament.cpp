@@ -18,13 +18,13 @@
 
 #include "tournament.h"
 #include <QFile>
-#include <gamemanager.h>
-#include <playerbuilder.h>
-#include <board/boardfactory.h>
-#include <chessplayer.h>
-#include <chessgame.h>
-#include <pgnstream.h>
-#include <openingsuite.h>
+#include "gamemanager.h"
+#include "playerbuilder.h"
+#include "board/boardfactory.h"
+#include "chessplayer.h"
+#include "chessgame.h"
+#include "pgnstream.h"
+#include "openingsuite.h"
 
 Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	: QObject(parent),

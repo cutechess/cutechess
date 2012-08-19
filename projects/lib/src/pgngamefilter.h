@@ -20,7 +20,7 @@
 
 #include <QByteArray>
 #include <QDate>
-#include <board/side.h>
+#include "board/side.h"
 class QString;
 class PgnGameEntry;
 

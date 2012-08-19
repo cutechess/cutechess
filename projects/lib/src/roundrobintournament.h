@@ -19,7 +19,7 @@
 #ifndef ROUNDROBINTOURNAMENT_H
 #define ROUNDROBINTOURNAMENT_H
 
-#include <tournament.h>
+#include "tournament.h"
 
 /*!
  * \brief Round-robin type chess tournament.

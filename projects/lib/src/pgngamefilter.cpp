@@ -1,5 +1,5 @@
 #include "pgngamefilter.h"
-#include <pgngameentry.h>
+#include "pgngameentry.h"
 
 
 PgnGameFilter::PgnGameFilter()

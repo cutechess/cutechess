@@ -1,7 +1,7 @@
 #ifndef GAUNTLETTOURNAMENT_H
 #define GAUNTLETTOURNAMENT_H
 
-#include <tournament.h>
+#include "tournament.h"
 
 /*!
  * \brief Gauntlet type chess tournament.

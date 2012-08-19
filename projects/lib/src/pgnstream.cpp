@@ -19,7 +19,7 @@
 #include <cctype>
 #include <cstring>
 #include <QIODevice>
-#include <board/boardfactory.h>
+#include "board/boardfactory.h"
 
 
 PgnStream::PgnStream(const QString& variant)
