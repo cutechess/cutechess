@@ -308,7 +308,8 @@ void PgnStream::parseComment(char opBracket)
 		else if (c == clBracket && --level <= 0)
 			break;
 
-		m_tokenString.append(c);
+		if (c != '\n' || !m_tokenString.isEmpty())
+			m_tokenString.append(c);
 	}
 }
 
