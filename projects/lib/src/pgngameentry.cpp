@@ -264,62 +264,34 @@ void PgnGameEntry::clear()
 	m_data.clear();
 }
 
-static void skipSection(PgnStream& in, char type)
-{
-	char end;
-	switch (type)
-	{
-	case '(':
-		end = ')';
-		break;
-	case '{':
-		end = '}';
-		break;
-	default:
-		return;
-	}
-
-	int level = 1;
-	char c;
-	while ((c = in.readChar()) != 0)
-	{
-		if (c == end && --level == 0)
-			break;
-		if (c == type)
-			level++;
-	}
-}
-
 bool PgnGameEntry::read(PgnStream& in)
 {
+	if (!in.nextGame())
+		return false;
+
+	m_pos = in.pos();
+	m_lineNumber = in.lineNumber();
+	m_data.clear();
+
 	char c;
 	QByteArray tagName;
 	QByteArray tagValue;
 	QMap<QByteArray, QByteArray> tags;
 	bool haveTagName = false;
-	bool foundTag = false;
 	bool inTag = false;
 	bool inQuotes = false;
 
-	clear();
 	while ((c = in.readChar()) != 0)
 	{
 		if (!inTag)
 		{
 			if (c == '[')
-			{
 				inTag = true;
-				if (!foundTag)
-				{
-					foundTag = true;
-					m_pos = in.pos() - 1;
-					m_lineNumber = in.lineNumber();
-				}
-			}
-			else if (foundTag && !isspace(c))
+			else if (!isspace(c))
+			{
+				in.rewindChar();
 				break;
-			else
-				skipSection(in, c);
+			}
 
 			continue;
 		}
@@ -357,7 +329,7 @@ bool PgnGameEntry::read(PgnStream& in)
 	addTag(tags["Result"]);
 	addTag(tags["Variant"]);
 
-	return foundTag;
+	return true;
 }
 
 bool PgnGameEntry::read(QDataStream& in)

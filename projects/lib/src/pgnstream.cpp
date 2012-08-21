@@ -313,6 +313,37 @@ void PgnStream::parseComment(char opBracket)
 	}
 }
 
+void PgnStream::skipSection(char start)
+{
+	char end;
+	switch (start)
+	{
+	case '(':
+		end = ')';
+		break;
+	case '{':
+		end = '}';
+		break;
+	case ';':
+	case '%':
+		start = 0;
+		end = '\n';
+		break;
+	default:
+		return;
+	}
+
+	int level = 1;
+	char c;
+	while ((c = readChar()) != 0)
+	{
+		if (c == end && --level == 0)
+			break;
+		if (c == start)
+			level++;
+	}
+}
+
 bool PgnStream::nextGame()
 {
 	char c;
@@ -324,6 +355,8 @@ bool PgnStream::nextGame()
 			m_phase = InTags;
 			return true;
 		}
+		else
+			skipSection(c);
 	}
 
 	return false;

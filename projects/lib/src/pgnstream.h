@@ -202,6 +202,7 @@ class LIB_EXPORT PgnStream
 		void parseUntil(const char* chars);
 		void parseTag();
 		void parseComment(char opBracket);
+		void skipSection(char start);
 
 		Chess::Board* m_board;
 		qint64 m_pos;
