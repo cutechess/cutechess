@@ -68,6 +68,7 @@ class GameDatabaseDialog : public QDialog
 		void updateUi();
 
 	private:
+		friend class PgnGameIterator;
 		int databaseIndexFromGame(int game) const;
 
 		BoardView* m_boardView;

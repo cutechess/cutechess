@@ -37,6 +37,67 @@
 #include "pgndatabase.h"
 #include "gamedatabasesearchdlg.h"
 
+
+class PgnGameIterator
+{
+	public:
+		PgnGameIterator(GameDatabaseDialog* dlg);
+		~PgnGameIterator();
+
+		bool hasNext() const;
+		PgnGame next(bool* ok, int depth = INT_MAX - 1);
+
+	private:
+		GameDatabaseDialog* m_dlg;
+		PgnDatabase* m_db;
+		int m_dbIndex;
+		int m_gameIndex;
+		int m_gameCount;
+};
+
+PgnGameIterator::PgnGameIterator(GameDatabaseDialog* dlg)
+	: m_dlg(dlg),
+	  m_db(0),
+	  m_dbIndex(-1),
+	  m_gameIndex(0),
+	  m_gameCount(dlg->m_pgnGameEntryModel->entryCount())
+{
+}
+
+PgnGameIterator::~PgnGameIterator()
+{
+	if (m_db != 0)
+		m_db->closeFile();
+}
+
+bool PgnGameIterator::hasNext() const
+{
+	return m_gameIndex < m_gameCount;
+}
+
+PgnGame PgnGameIterator::next(bool* ok, int depth)
+{
+	Q_ASSERT(hasNext());
+
+	int newDbIndex = m_dlg->databaseIndexFromGame(m_gameIndex);
+	Q_ASSERT(newDbIndex != -1);
+
+	if (newDbIndex != m_dbIndex)
+	{
+		m_dbIndex = newDbIndex;
+		if (m_db != 0)
+			m_db->closeFile();
+		m_db = m_dlg->m_dbManager->databases().at(m_dbIndex);
+	}
+
+	const PgnGameEntry* entry = m_dlg->m_pgnGameEntryModel->entryAt(m_gameIndex++);
+	PgnGame game;
+	*ok = (m_db->game(entry, &game, depth, true) == PgnDatabase::NoError);
+
+	return game;
+}
+
+
 GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* parent)
 	: QDialog(parent, Qt::Window),
 	  m_boardView(0),
@@ -333,31 +394,17 @@ void GameDatabaseDialog::createOpeningBook()
 	if (!ok)
 		return;
 
-	int databaseIndex = -1;
-	PgnDatabase* pgnDatabase = 0;
-
-	PgnGame game;
 	PolyglotBook openingBook;
 
-	for (int gameIndex = 0; gameIndex < m_pgnGameEntryModel->entryCount(); gameIndex++)
+	PgnGameIterator it(this);
+	while (it.hasNext())
 	{
-		int newDbIndex = databaseIndexFromGame(gameIndex);
-		if (newDbIndex == -1)
-			break;
+		bool ok;
+		PgnGame game(it.next(&ok, depth));
 
-		if (newDbIndex != databaseIndex)
-		{
-			databaseIndex = newDbIndex;
-			if (pgnDatabase != 0)
-				pgnDatabase->closeFile();
-			pgnDatabase = m_dbManager->databases().at(databaseIndex);
-		}
-
-		const PgnGameEntry* entry = m_pgnGameEntryModel->entryAt(gameIndex);
-		if (pgnDatabase->game(entry, &game, depth, true) == PgnDatabase::NoError)
+		if (ok)
 			openingBook.import(game, depth);
 	}
-	pgnDatabase->closeFile();
 
 	openingBook.write(fileName);
 }
