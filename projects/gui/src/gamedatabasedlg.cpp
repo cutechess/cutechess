@@ -395,10 +395,10 @@ void GameDatabaseDialog::exportPgn()
 	if (!file.open(QIODevice::WriteOnly))
 	{
 		QMessageBox::critical(this, tr("File Error"),
-				      tr("Error while saving file %1").arg(fileName));
+				      tr("Error while saving file %1\n%2")
+				      .arg(fileName).arg(file.errorString()));
 		return;
 	}
-
 	QTextStream out(&file);
 
 	PgnGameIterator it(this);
@@ -420,10 +420,19 @@ void GameDatabaseDialog::createOpeningBook()
 	if (fileName.isEmpty())
 		return;
 
+	QFile file(fileName);
+	if (!file.open(QIODevice::WriteOnly))
+	{
+		QMessageBox::critical(this, tr("File Error"),
+				      tr("Error while saving file %1\n%2")
+				      .arg(fileName).arg(file.errorString()));
+		return;
+	}
+	QDataStream out(&file);
+
 	bool ok;
 	int depth = QInputDialog::getInt(this, tr("Opening depth"), tr("Maximum opening depth (plies):"),
 		20, 1, 1024, 1, &ok);
-
 	if (!ok)
 		return;
 
@@ -439,7 +448,7 @@ void GameDatabaseDialog::createOpeningBook()
 			openingBook.import(game, depth);
 	}
 
-	openingBook.write(fileName);
+	out << &openingBook;
 }
 
 void GameDatabaseDialog::updateUi()
