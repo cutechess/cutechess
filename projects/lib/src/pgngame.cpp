@@ -175,6 +175,10 @@ bool PgnGame::read(PgnStream& in, int maxMoves)
 		case PgnStream::PgnMove:
 			stop = !parseMove(in) || m_moves.size() >= maxMoves;
 			break;
+		case PgnStream::PgnComment:
+			if (!m_moves.isEmpty())
+				m_moves.last().comment.append(in.tokenString());
+			break;
 		case PgnStream::PgnResult:
 			{
 				const QString str(in.tokenString());
