@@ -64,6 +64,7 @@ class GameDatabaseDialog : public QDialog
 		void onSearchTimeout();
 		void onAdvancedSearch();
 		void import();
+		void exportPgn();
 		void createOpeningBook();
 		void updateUi();
 

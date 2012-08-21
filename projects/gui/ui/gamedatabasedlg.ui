@@ -366,6 +366,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="m_exportBtn">
+       <property name="toolTip">
+        <string>Export filtered games in PGN format</string>
+       </property>
+       <property name="text">
+        <string>Export...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="m_createOpeningBookBtn">
        <property name="enabled">
         <bool>false</bool>

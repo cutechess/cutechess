@@ -142,6 +142,8 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 		SLOT(viewLastMove()));
 	connect(ui->m_importBtn, SIGNAL(clicked(bool)), this,
 		SLOT(import()));
+	connect(ui->m_exportBtn, SIGNAL(clicked()), this,
+		SLOT(exportPgn()));
 	connect(ui->m_createOpeningBookBtn, SIGNAL(clicked(bool)), this,
 		SLOT(createOpeningBook()));
 
@@ -377,6 +379,37 @@ void GameDatabaseDialog::import()
 		return;
 
 	m_dbManager->importPgnFile(fileName);
+}
+
+void GameDatabaseDialog::exportPgn()
+{
+	const QString fileName =
+		QFileDialog::getSaveFileName(this,
+					     tr("Export game collection"),
+					     QString(),
+					     tr("Portable Game Notation (*.pgn)"));
+	if (fileName.isEmpty())
+		return;
+
+	QFile file(fileName);
+	if (!file.open(QIODevice::WriteOnly))
+	{
+		QMessageBox::critical(this, tr("File Error"),
+				      tr("Error while saving file %1").arg(fileName));
+		return;
+	}
+
+	QTextStream out(&file);
+
+	PgnGameIterator it(this);
+	while (it.hasNext())
+	{
+		bool ok;
+		PgnGame game(it.next(&ok));
+
+		if (ok)
+			out << game;
+	}
 }
 
 void GameDatabaseDialog::createOpeningBook()
