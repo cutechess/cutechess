@@ -313,7 +313,7 @@ void PgnStream::parseComment(char opBracket)
 	}
 }
 
-void PgnStream::skipSection(char start)
+static void skipSection(PgnStream* in, char start)
 {
 	char end;
 	switch (start)
@@ -335,7 +335,7 @@ void PgnStream::skipSection(char start)
 
 	int level = 1;
 	char c;
-	while ((c = readChar()) != 0)
+	while ((c = in->readChar()) != 0)
 	{
 		if (c == end && --level == 0)
 			break;
@@ -356,7 +356,7 @@ bool PgnStream::nextGame()
 			return true;
 		}
 		else
-			skipSection(c);
+			skipSection(this, c);
 	}
 
 	return false;
