@@ -40,7 +40,7 @@ struct EntryContains
 
 const QStringList PgnGameEntryModel::s_headers = (QStringList() <<
 	tr("Event") << tr("Site") << tr("Date") << tr("Round") <<
-	tr("White") << tr("Black") << tr("Result") << tr("Variant"));
+	tr("White") << tr("Black") << tr("Result"));
 
 PgnGameEntryModel::PgnGameEntryModel(QObject* parent)
 	: QAbstractItemModel(parent),
