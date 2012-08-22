@@ -33,7 +33,8 @@ void MoveList::setGame(ChessGame* game)
 {
 	Q_ASSERT(game != 0);
 
-	m_game->disconnect(this);
+	if (m_game != 0)
+		m_game->disconnect(this);
 	m_game = game;
 
 	clear();
