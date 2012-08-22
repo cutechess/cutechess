@@ -124,8 +124,8 @@ class BoardScene : public QGraphicsScene
 		void tryMove(GraphicsPiece* piece, const QPointF& targetPos);
 		void selectPiece(const QList<Chess::Piece>& types,
 				 const char* member);
-		void addMoveHighlight(const QPointF& sourcePos,
-				      const QPointF& targetPos);
+		void addMoveArrow(const QPointF& sourcePos,
+				  const QPointF& targetPos);
 		void applyTransition(const Chess::BoardTransition& transition,
 				     MoveDirection direction);
 		void updateMoves();
@@ -144,7 +144,7 @@ class BoardScene : public QGraphicsScene
 		QList<Chess::GenericMove> m_moves;
 		Chess::GenericMove m_promotionMove;
 		GraphicsPiece* m_highlightPiece;
-		QGraphicsItemGroup* m_moveHighlights;
+		QGraphicsItemGroup* m_moveArrows;
 };
 
 #endif // BOARDSCENE_H

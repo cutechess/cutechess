@@ -40,7 +40,7 @@ BoardScene::BoardScene(QObject* parent)
 	  m_anim(0),
 	  m_renderer(new QSvgRenderer(QString(":/default.svg"), this)),
 	  m_highlightPiece(0),
-	  m_moveHighlights(0)
+	  m_moveArrows(0)
 {
 }
 
@@ -62,7 +62,7 @@ void BoardScene::setBoard(Chess::Board* board)
 	m_reserve = 0;
 	m_chooser = 0;
 	m_highlightPiece = 0;
-	m_moveHighlights = 0;
+	m_moveArrows = 0;
 	m_board = board;
 }
 
@@ -78,7 +78,7 @@ void BoardScene::populate()
 	m_reserve = 0;
 	m_chooser = 0;
 	m_highlightPiece = 0;
-	m_moveHighlights = 0;
+	m_moveArrows = 0;
 
 	m_squares = new GraphicsBoard(m_board->width(),
 				      m_board->height(),
@@ -131,9 +131,8 @@ void BoardScene::setFenString(const QString& fenString)
 void BoardScene::makeMove(const Chess::Move& move)
 {
 	stopAnimation();
-	delete m_moveHighlights;
-	m_moveHighlights = new QGraphicsItemGroup(m_squares, this);
-	m_moveHighlights->setZValue(-1);
+	delete m_moveArrows;
+	m_moveArrows = new QGraphicsItemGroup(m_squares, this);
 
 	Q_ASSERT(!move.isNull());
 	Q_ASSERT(m_board->isLegalMove(move));
@@ -152,8 +151,8 @@ void BoardScene::makeMove(const Chess::GenericMove& move)
 void BoardScene::undoMove()
 {
 	stopAnimation();
-	delete m_moveHighlights;
-	m_moveHighlights = 0;
+	delete m_moveArrows;
+	m_moveArrows = 0;
 
 	m_board->undoMove();
 	applyTransition(m_history.takeLast(), Backward);
@@ -406,13 +405,15 @@ void BoardScene::selectPiece(const QList<Chess::Piece>& types,
 	m_chooser->reveal();
 }
 
-void BoardScene::addMoveHighlight(const QPointF& sourcePos,
-				  const QPointF& targetPos)
+void BoardScene::addMoveArrow(const QPointF& sourcePos,
+			      const QPointF& targetPos)
 {
-	Q_ASSERT(m_moveHighlights != 0);
+	Q_ASSERT(m_moveArrows != 0);
 
 	QLineF l1(sourcePos, targetPos);
 	QLineF l2(l1.normalVector());
+
+	l1.setLength(l1.length() - s_squareSize / 2.5);
 	l2.setLength(s_squareSize / 3.0);
 	l2.translate(l2.dx() / -2.0, l2.dy() / -2.0);
 
@@ -420,20 +421,11 @@ void BoardScene::addMoveHighlight(const QPointF& sourcePos,
 	polygon << l2.p1() << l1.p2() << l2.p2();
 
 	QGraphicsPolygonItem* item = new QGraphicsPolygonItem(polygon);
+	item->setPen(QPen(QBrush(Qt::yellow), 2));
+	item->setBrush(Qt::yellow);
+	item->setOpacity(0.6);
 
-	Qt::GlobalColor penColor = Qt::white;
-	Qt::GlobalColor brushColor = Qt::black;
-	if (m_board->sideToMove() == Chess::Side::Black)
-		qSwap(penColor, brushColor);
-
-	QLinearGradient gradient(sourcePos, targetPos);
-	gradient.setColorAt(0.0, Qt::transparent);
-	gradient.setColorAt(0.5, brushColor);
-
-	item->setPen(QPen(penColor, 2));
-	item->setBrush(gradient);
-
-	m_moveHighlights->addToGroup(item);
+	m_moveArrows->addToGroup(item);
 }
 
 void BoardScene::applyTransition(const Chess::BoardTransition& transition,
@@ -454,7 +446,7 @@ void BoardScene::applyTransition(const Chess::BoardTransition& transition,
 		if (direction == Backward)
 			qSwap(source, target);
 		else
-			addMoveHighlight(m_squares->squarePos(source),
+			addMoveArrow(m_squares->squarePos(source),
 					 m_squares->squarePos(target));
 
 		GraphicsPiece* piece = m_squares->pieceAt(source);
@@ -470,7 +462,7 @@ void BoardScene::applyTransition(const Chess::BoardTransition& transition,
 	{
 		if (direction == Forward)
 		{
-			addMoveHighlight(m_squares->mapFromItem(m_reserve, QPointF()),
+			addMoveArrow(m_squares->mapFromItem(m_reserve, QPointF()),
 					 m_squares->squarePos(drop.target));
 
 			GraphicsPiece* piece = m_reserve->piece(drop.piece);
