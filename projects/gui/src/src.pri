@@ -7,7 +7,6 @@ HEADERS += chessclock.h \
     mainwindow.h \
     plaintextlog.h \
     newgamedlg.h \
-    movelistmodel.h \
     cutechessapp.h \
     gamepropertiesdlg.h \
     autoverticalscroller.h \
@@ -24,7 +23,9 @@ HEADERS += chessclock.h \
     timecontroldlg.h \
     engineconfigproxymodel.h \
     gamewall.h \
-    tilelayout.h
+    tilelayout.h \
+    movelist.h \
+	movehighlighter.h
 SOURCES += main.cpp \
     chessclock.cpp \
     engineconfigurationmodel.cpp \
@@ -33,7 +34,6 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     plaintextlog.cpp \
     newgamedlg.cpp \
-    movelistmodel.cpp \
     cutechessapp.cpp \
     gamepropertiesdlg.cpp \
     autoverticalscroller.cpp \
@@ -50,4 +50,6 @@ SOURCES += main.cpp \
     timecontroldlg.cpp \
     engineconfigproxymodel.cpp \
     gamewall.cpp \
-    tilelayout.cpp
+    tilelayout.cpp \
+    movelist.cpp \
+	movehighlighter.cpp

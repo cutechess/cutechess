@@ -29,7 +29,7 @@ class QCloseEvent;
 class QGraphicsView;
 class QTabBar;
 class BoardScene;
-class MoveListModel;
+class MoveList;
 class EngineConfigurationModel;
 class ChessClock;
 class PlainTextLog;
@@ -89,7 +89,7 @@ class MainWindow : public QMainWindow
 
 		BoardScene* m_boardScene;
 		QGraphicsView* m_boardView;
-		MoveListModel* m_moveListModel;
+		MoveList* m_moveList;
 		ChessClock* m_chessClock[2];
 
 		QAction* m_quitGameAct;

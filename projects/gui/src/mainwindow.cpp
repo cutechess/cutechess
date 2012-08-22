@@ -34,7 +34,7 @@
 #include "cutechessapp.h"
 #include "boardview/boardscene.h"
 #include "boardview/boardview.h"
-#include "movelistmodel.h"
+#include "movelist.h"
 #include "newgamedlg.h"
 #include "chessclock.h"
 #include "engineconfigurationmodel.h"
@@ -64,7 +64,7 @@ MainWindow::MainWindow(ChessGame* game)
 	m_boardScene = new BoardScene(this);
 	m_boardView = new BoardView(m_boardScene, this);
 
-	m_moveListModel = new MoveListModel(this);
+	m_moveList= new MoveList(this);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
@@ -76,7 +76,7 @@ MainWindow::MainWindow(ChessGame* game)
 	QWidget* mainWidget = new QWidget(this);
 	mainWidget->setLayout(mainLayout);
 	setCentralWidget(mainWidget);
-	
+
 	setStatusBar(new QStatusBar());
 
 	createActions();
@@ -200,17 +200,8 @@ void MainWindow::createDockWindows()
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
 
 	// Move list
-	QDockWidget* moveListDock = new QDockWidget(tr("Move List"), this);
-	QTreeView* moveListView = new QTreeView(moveListDock);
-	moveListView->setModel(m_moveListModel);
-	moveListView->setAlternatingRowColors(true);
-	moveListView->setRootIsDecorated(false);
-	moveListView->header()->setResizeMode(0, QHeaderView::ResizeToContents);
-	moveListDock->setWidget(moveListView);
-
-	AutoVerticalScroller* moveListScroller =
-		new AutoVerticalScroller(moveListView, this);
-	Q_UNUSED(moveListScroller);
+	QDockWidget* moveListDock = new QDockWidget(tr("Moves"), this);
+	moveListDock->setWidget(m_moveList);
 
 	addDockWidget(Qt::RightDockWidgetArea, moveListDock);
 
@@ -259,7 +250,7 @@ void MainWindow::setCurrentGame(ChessGame* game)
 	{
 		disconnect(m_game, 0, m_boardScene, 0);
 		disconnect(m_game, 0, m_boardView, 0);
-		disconnect(m_game, 0, m_moveListModel, 0);
+		disconnect(m_game, 0, m_moveList, 0);
 
 		for (int i = 0; i < 2; i++)
 		{
@@ -332,7 +323,7 @@ void MainWindow::setCurrentGame(ChessGame* game)
 			clock, SLOT(stop()));
 	}
 
-	m_moveListModel->setGame(m_game);
+	m_moveList->setGame(m_game);
 	m_boardScene->setBoard(m_game->pgn()->createBoard());
 	m_boardScene->populate();
 
