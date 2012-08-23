@@ -19,7 +19,9 @@
 #define MOVE_LIST_H
 
 #include <QTextEdit>
+#include <QPointer>
 
+class PgnGame;
 class ChessGame;
 namespace Chess { class GenericMove; }
 class QMouseEvent;
@@ -33,8 +35,13 @@ class MoveList : public QTextEdit
 		/*! Constructs a move list with the given \a parent. */
 		MoveList(QWidget* parent = 0);
 
-		/*! Associates \a game with this document. */
-		void setGame(ChessGame* game);
+		/*!
+		 * Associates \a game and \a pgn with this document.
+		 *
+		 * Either \a game or \a pgn must not be NULL.
+		 * If \a pgn is NULL, then the PGN data is retrieved from \a game.
+		 */
+		void setGame(ChessGame* game, PgnGame* pgn = 0);
 
 	signals:
 		void moveClicked(int side, int move);
@@ -53,7 +60,7 @@ class MoveList : public QTextEdit
 		int findKey(int pos, const QList<int>& list);
 		void insertPlainTextMove(const QString& move);
 		QSyntaxHighlighter* m_syntax;
-		ChessGame* m_game;
+		QPointer<ChessGame> m_game;
 };
 
 #endif // MOVE_LIST_H

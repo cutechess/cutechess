@@ -42,29 +42,34 @@ static void appendMove(QString& s, int moveNum, const QString& moveString,
 	s.append(move);
 }
 
-void MoveList::setGame(ChessGame* game)
+void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 {
-	Q_ASSERT(game != 0);
-
 	if (m_game != 0)
 		m_game->disconnect(this);
 	m_game = game;
+
+	if (pgn == 0)
+	{
+		Q_ASSERT(game != 0);
+		pgn = m_game->pgn();
+	}
 
 	clear();
 
 	QString moves;
 	moves.reserve(512);
 
-	for (int i = 0; i < m_game->pgn()->moves().size(); i++)
+	for (int i = 0; i < pgn->moves().size(); i++)
 	{
-		const PgnGame::MoveData& md = m_game->pgn()->moves().at(i);
+		const PgnGame::MoveData& md = pgn->moves().at(i);
 		appendMove(moves, i + 1, md.moveString, md.comment);
 	}
 
 	insertPlainTextMove(moves);
 
-	connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
-		this, SLOT(onMoveMade(Chess::GenericMove, QString, QString)));
+	if (m_game != 0)
+		connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
+			this, SLOT(onMoveMade(Chess::GenericMove, QString, QString)));
 }
 
 void MoveList::onMoveMade(const Chess::GenericMove& genericMove,
