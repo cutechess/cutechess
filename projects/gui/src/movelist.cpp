@@ -55,10 +55,7 @@ void MoveList::setGame(ChessGame* game)
 		moves.append(move);
 	}
 
-	QTextCursor cursor = textCursor();
-	cursor.movePosition(QTextCursor::End);
-	setTextCursor(cursor);
-	insertPlainText(moves);
+	insertPlainTextMove(moves);
 
 	connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
 		this, SLOT(onMoveMade(Chess::GenericMove, QString, QString)));
@@ -79,10 +76,7 @@ void MoveList::onMoveMade(const Chess::GenericMove& genericMove,
 	if (!comment.isEmpty())
 		move.append(QString("{%1} ").arg(comment));
 
-	QTextCursor cursor = textCursor();
-	cursor.movePosition(QTextCursor::End);
-	setTextCursor(cursor);
-	insertPlainText(move);
+	insertPlainTextMove(move);
 }
 
 void MoveList::mouseReleaseEvent(QMouseEvent *e)
@@ -161,4 +155,12 @@ int MoveList::findKey(int pos, const QList<int>& list)
 		i--;
 
 	return list.at(i);
+}
+
+void MoveList::insertPlainTextMove(const QString& move)
+{
+	QTextCursor cursor = textCursor();
+	cursor.movePosition(QTextCursor::End);
+	setTextCursor(cursor);
+	insertPlainText(move);
 }

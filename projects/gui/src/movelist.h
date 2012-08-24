@@ -51,6 +51,7 @@ class MoveList : public QTextEdit
 
 	private:
 		int findKey(int pos, const QList<int>& list);
+		void insertPlainTextMove(const QString& move);
 		QSyntaxHighlighter* m_syntax;
 		ChessGame* m_game;
 };
