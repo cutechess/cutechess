@@ -29,6 +29,19 @@ MoveList::MoveList(QWidget* parent)
 	setMouseTracking(true);
 }
 
+static void appendMove(QString& s, int moveNum, const QString& moveString,
+                  const QString& comment)
+{
+	QString move = QString("%1 ").arg(moveString);
+
+	if (moveNum % 2 != 0)
+		move.prepend(QString("%1. ").arg(moveNum / 2 + 1));
+	if (!comment.isEmpty())
+		move.append(QString("{%1} ").arg(comment));
+
+	s.append(move);
+}
+
 void MoveList::setGame(ChessGame* game)
 {
 	Q_ASSERT(game != 0);
@@ -45,14 +58,7 @@ void MoveList::setGame(ChessGame* game)
 	for (int i = 0; i < m_game->pgn()->moves().size(); i++)
 	{
 		const PgnGame::MoveData& md = m_game->pgn()->moves().at(i);
-		QString move = QString("%1 ").arg(md.moveString);
-
-		if ((i + 1) % 2 != 0)
-			move.prepend(QString("%1. ").arg((i + 1) / 2 + 1));
-		if (!md.comment.isEmpty())
-			move.append(QString("{%1} ").arg(md.comment));
-
-		moves.append(move);
+		appendMove(moves, i + 1, md.moveString, md.comment);
 	}
 
 	insertPlainTextMove(moves);
@@ -67,15 +73,8 @@ void MoveList::onMoveMade(const Chess::GenericMove& genericMove,
 {
 	Q_UNUSED(genericMove);
 
-	int moveCount = m_game->pgn()->moves().size();
-	QString move = QString("%1 ").arg(sanString);
-
-	if (moveCount % 2 != 0)
-		move.prepend(QString("%1. ").arg(moveCount / 2 + 1));
-
-	if (!comment.isEmpty())
-		move.append(QString("{%1} ").arg(comment));
-
+	QString move;
+	appendMove(move, m_game->pgn()->moves().size(), sanString, comment);
 	insertPlainTextMove(move);
 }
 
