@@ -108,10 +108,10 @@ void MoveList::mouseMoveEvent(QMouseEvent *e)
 	const QTextCursor cursor = cursorForPosition(e->pos());
 	int pos = cursor.position() - cursor.block().position();
 	const MoveHighlighter::MoveData* md =
-		dynamic_cast<MoveHighlighter::MoveData *>(textCursor().block().userData());
+		dynamic_cast<MoveHighlighter::MoveData *>(cursor.block().userData());
 
-	if (md && !textCursor().hasSelection() &&
-		pos < textCursor().block().length() - 1)
+	if (md && !cursor.hasSelection() &&
+		pos < cursor.block().length() - 1)
 	{
 		int key = findKey(pos, md->tokens.keys());
 
