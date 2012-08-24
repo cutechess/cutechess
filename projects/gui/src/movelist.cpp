@@ -88,7 +88,7 @@ void MoveList::onMoveMade(const Chess::GenericMove& genericMove,
 void MoveList::mouseReleaseEvent(QMouseEvent *e)
 {
 	int pos = textCursor().position() - textCursor().block().position();
-	MoveHighlighter::MoveData* md =
+	const MoveHighlighter::MoveData* md =
 		dynamic_cast<MoveHighlighter::MoveData *>(textCursor().block().userData());
 
 	if (md && e->button() == Qt::LeftButton && !textCursor().hasSelection() &&
@@ -107,6 +107,32 @@ void MoveList::mouseReleaseEvent(QMouseEvent *e)
 		}
 	}
 	QTextEdit::mouseReleaseEvent(e);
+}
+
+void MoveList::mouseMoveEvent(QMouseEvent *e)
+{
+	QCursor newCursor = Qt::IBeamCursor;
+	const QTextCursor cursor = cursorForPosition(e->pos());
+	int pos = cursor.position() - cursor.block().position();
+	const MoveHighlighter::MoveData* md =
+		dynamic_cast<MoveHighlighter::MoveData *>(textCursor().block().userData());
+
+	if (md && !textCursor().hasSelection() &&
+		pos < textCursor().block().length() - 1)
+	{
+		int key = findKey(pos, md->tokens.keys());
+
+		if (key != -1)
+		{
+			MoveHighlighter::MoveToken token = md->tokens.value(key);
+
+			if (token.type == MoveHighlighter::Move ||
+			    token.type == MoveHighlighter::Comment)
+				newCursor = Qt::PointingHandCursor;
+		}
+	}
+	viewport()->setCursor(newCursor);
+	QTextEdit::mouseMoveEvent(e);
 }
 
 int MoveList::findKey(int pos, const QList<int>& list)

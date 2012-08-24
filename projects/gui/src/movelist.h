@@ -42,6 +42,7 @@ class MoveList : public QTextEdit
 	
 	protected:
 		void mouseReleaseEvent(QMouseEvent *e);
+		void mouseMoveEvent(QMouseEvent *e);
 
 	private slots:
 		void onMoveMade(const Chess::GenericMove& genericMove,
