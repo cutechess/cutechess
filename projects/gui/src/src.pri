@@ -25,7 +25,8 @@ HEADERS += chessclock.h \
     gamewall.h \
     tilelayout.h \
     movelist.h \
-	movehighlighter.h
+    movehighlighter.h \
+    pgntagsmodel.h
 SOURCES += main.cpp \
     chessclock.cpp \
     engineconfigurationmodel.cpp \
@@ -52,4 +53,5 @@ SOURCES += main.cpp \
     gamewall.cpp \
     tilelayout.cpp \
     movelist.cpp \
-	movehighlighter.cpp
+    movehighlighter.cpp \
+    pgntagsmodel.cpp

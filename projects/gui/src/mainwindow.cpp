@@ -43,6 +43,7 @@
 #include "gamepropertiesdlg.h"
 #include "autoverticalscroller.h"
 #include "gamedatabasemanager.h"
+#include "pgntagsmodel.h"
 
 MainWindow::MainWindow(ChessGame* game)
 	: m_game(0),
@@ -65,6 +66,7 @@ MainWindow::MainWindow(ChessGame* game)
 	m_boardView = new BoardView(m_boardScene, this);
 
 	m_moveList= new MoveList(this);
+	m_tagsModel = new PgnTagsModel(this);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
@@ -205,8 +207,22 @@ void MainWindow::createDockWindows()
 
 	addDockWidget(Qt::RightDockWidgetArea, moveListDock);
 
+	// Tags
+	QDockWidget* tagsDock = new QDockWidget(tr("Tags"), this);
+	QTreeView* tagsView = new QTreeView(tagsDock);
+	tagsView->setModel(m_tagsModel);
+	tagsView->setAlternatingRowColors(true);
+	tagsView->setRootIsDecorated(false);
+	tagsDock->setWidget(tagsView);
+
+	addDockWidget(Qt::RightDockWidgetArea, tagsDock);
+
+	tabifyDockWidget(moveListDock, tagsDock);
+	moveListDock->raise();
+
 	// Add toggle view actions to the View menu
 	m_viewMenu->addAction(moveListDock->toggleViewAction());
+	m_viewMenu->addAction(tagsDock->toggleViewAction());
 	m_viewMenu->addAction(engineDebugDock->toggleViewAction());
 }
 

@@ -34,6 +34,7 @@ class EngineConfigurationModel;
 class ChessClock;
 class PlainTextLog;
 class ChessGame;
+class PgnTagsModel;
 
 /**
  * MainWindow
@@ -91,6 +92,7 @@ class MainWindow : public QMainWindow
 		QGraphicsView* m_boardView;
 		MoveList* m_moveList;
 		ChessClock* m_chessClock[2];
+		PgnTagsModel* m_tagsModel;
 
 		QAction* m_quitGameAct;
 		QAction* m_gamePropertiesAct;
