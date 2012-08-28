@@ -78,6 +78,8 @@ class LIB_EXPORT Tournament : public QObject
 		virtual QString type() const = 0;
 		/*! Returns the GameManager that manages the tournament's games. */
 		GameManager* gameManager() const;
+		/*! Returns true if the tournament is finished; otherwise returns false. */
+		bool isFinished() const;
 		/*!
 		 * Returns the name of the tournament.
 		 *
@@ -332,6 +334,7 @@ class LIB_EXPORT Tournament : public QObject
 		bool m_repeatOpening;
 		bool m_recover;
 		bool m_pgnCleanup;
+		bool m_finished;
 		OpeningSuite* m_openingSuite;
 		QString m_pgnout;
 		QString m_startFen;

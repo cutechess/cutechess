@@ -48,6 +48,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_repeatOpening(false),
 	  m_recover(false),
 	  m_pgnCleanup(true),
+	  m_finished(false),
 	  m_openingSuite(0),
 	  m_pgnOutMode(PgnGame::Verbose),
 	  m_pair(QPair<int, int>(-1, -1))
@@ -70,6 +71,11 @@ Tournament::~Tournament()
 GameManager* Tournament::gameManager() const
 {
 	return m_gameManager;
+}
+
+bool Tournament::isFinished() const
+{
+	return m_finished;
 }
 
 QString Tournament::name() const
@@ -391,6 +397,7 @@ void Tournament::onGameDestroyed(ChessGame* game)
 
 	m_lastGame = 0;
 	m_gameManager->cleanupIdleThreads();
+	m_finished = true;
 	emit finished();
 }
 
@@ -430,6 +437,7 @@ void Tournament::stop()
 	if (m_gameData.isEmpty())
 	{
 		m_gameManager->cleanupIdleThreads();
+		m_finished = true;
 		emit finished();
 		return;
 	}
