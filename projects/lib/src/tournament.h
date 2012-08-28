@@ -182,6 +182,15 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		void setPgnOutput(const QString& fileName,
 				  PgnGame::PgnMode mode = PgnGame::Verbose);
+
+		/*!
+		 * Sets PgnGame cleanup mode to \a enabled.
+		 *
+		 * If \a enabled is true (the default) then the generated PgnGame
+		 * objects are destroyed automatically once the games are finished.
+		 */
+		void setPgnCleanupEnabled(bool enabled);
+
 		/*!
 		 * Sets the opening repetition mode to \a repeat.
 		 *
@@ -322,13 +331,14 @@ class LIB_EXPORT Tournament : public QObject
 		bool m_stopping;
 		bool m_repeatOpening;
 		bool m_recover;
+		bool m_pgnCleanup;
 		OpeningSuite* m_openingSuite;
 		QString m_pgnout;
 		QString m_startFen;
 		PgnGame::PgnMode m_pgnOutMode;
 		QPair<int, int> m_pair;
 		QList<PlayerData> m_players;
-		QMap<int, PgnGame*> m_pgnGames;
+		QMap<int, PgnGame> m_pgnGames;
 		QMap<ChessGame*, GameData*> m_gameData;
 		QVector<Chess::Move> m_openingMoves;
 };

@@ -47,6 +47,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_stopping(false),
 	  m_repeatOpening(false),
 	  m_recover(false),
+	  m_pgnCleanup(true),
 	  m_openingSuite(0),
 	  m_pgnOutMode(PgnGame::Verbose),
 	  m_pair(QPair<int, int>(-1, -1))
@@ -59,7 +60,6 @@ Tournament::~Tournament()
 	if (!m_gameData.isEmpty())
 		qWarning("Tournament: Destroyed while games are still running.");
 
-	qDeleteAll(m_pgnGames);
 	qDeleteAll(m_gameData);
 	foreach (const PlayerData& data, m_players)
 		delete data.builder;
@@ -199,6 +199,11 @@ void Tournament::setPgnOutput(const QString& fileName, PgnGame::PgnMode mode)
 {
 	m_pgnout = fileName;
 	m_pgnOutMode = mode;
+}
+
+void Tournament::setPgnCleanupEnabled(bool enabled)
+{
+	m_pgnCleanup = enabled;
 }
 
 void Tournament::setOpeningRepetition(bool repeat)
@@ -347,16 +352,15 @@ void Tournament::onGameFinished(ChessGame* game)
 
 	if (!m_pgnout.isEmpty())
 	{
-		m_pgnGames[gameNumber] = pgn;
+		m_pgnGames[gameNumber] = *pgn;
 		while (m_pgnGames.contains(m_savedGameCount + 1))
 		{
-			pgn = m_pgnGames.take(++m_savedGameCount);
-			if (!pgn->write(m_pgnout, m_pgnOutMode))
+			PgnGame tmp = m_pgnGames.take(++m_savedGameCount);
+			if (!tmp.write(m_pgnout, m_pgnOutMode))
 				qWarning("Can't write to PGN file %s", qPrintable(m_pgnout));
-			delete pgn;
 		}
 	}
-	else
+	if (m_pgnCleanup)
 		delete pgn;
 
 	Chess::Result::Type resultType(game->result().type());
@@ -401,7 +405,6 @@ void Tournament::start()
 	m_finalGameCount = 0;
 	m_stopping = false;
 
-	qDeleteAll(m_pgnGames);
 	m_gameData.clear();
 	m_pgnGames.clear();
 	m_startFen.clear();
