@@ -30,12 +30,14 @@
 #include <enginebuilder.h>
 #include <chessplayer.h>
 #include <pgnstream.h>
+#include <tournament.h>
 
 #include "cutechessapp.h"
 #include "boardview/boardscene.h"
 #include "boardview/boardview.h"
 #include "movelist.h"
 #include "newgamedlg.h"
+#include "newtournamentdialog.h"
 #include "chessclock.h"
 #include "engineconfigurationmodel.h"
 #include "enginemanagementdlg.h"
@@ -44,6 +46,14 @@
 #include "autoverticalscroller.h"
 #include "gamedatabasemanager.h"
 #include "pgntagsmodel.h"
+
+MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
+	: id(game),
+	  game(game),
+	  pgn(game->pgn()),
+	  tournament(tournament)
+{
+}
 
 MainWindow::MainWindow(ChessGame* game)
 	: m_game(0),
@@ -120,6 +130,9 @@ void MainWindow::createActions()
 	m_quitGameAct->setShortcut(QKeySequence::Quit);
 	#endif
 
+	m_newTournamentAct = new QAction(tr("New..."), this);
+	m_stopTournamentAct = new QAction(tr("Stop"), this);
+
 	m_manageEnginesAct = new QAction(tr("Manage..."), this);
 
 	m_showGameDatabaseWindowAct = new QAction(tr("&Game Database"), this);
@@ -132,6 +145,8 @@ void MainWindow::createActions()
 	connect(m_saveGameAsAct, SIGNAL(triggered(bool)), this, SLOT(saveAs()));
 	connect(m_gamePropertiesAct, SIGNAL(triggered(bool)), this, SLOT(gameProperties()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(closeAllWindows()));
+
+	connect(m_newTournamentAct, SIGNAL(triggered()), this, SLOT(newTournament()));
 
 	connect(m_manageEnginesAct, SIGNAL(triggered(bool)), this,
 		SLOT(manageEngines()));
@@ -155,6 +170,11 @@ void MainWindow::createMenus()
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 
+	m_tournamentMenu = menuBar()->addMenu(tr("&Tournament"));
+	m_tournamentMenu->addAction(m_newTournamentAct);
+	m_tournamentMenu->addAction(m_stopTournamentAct);
+	m_stopTournamentAct->setEnabled(false);
+
 	m_viewMenu = menuBar()->addMenu(tr("&View"));
 
 	m_enginesMenu = menuBar()->addMenu(tr("En&gines"));
@@ -172,21 +192,21 @@ void MainWindow::createToolBars()
 	// Create tool bars here, use actions from createActions()
 	// See: createActions(), QToolBar documentation
 
-	m_tabs = new QTabBar();
-	m_tabs->setDocumentMode(true);
-	m_tabs->setTabsClosable(true);
-	m_tabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+	m_tabBar = new QTabBar();
+	m_tabBar->setDocumentMode(true);
+	m_tabBar->setTabsClosable(true);
+	m_tabBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-	connect(m_tabs, SIGNAL(currentChanged(int)),
+	connect(m_tabBar, SIGNAL(currentChanged(int)),
 		this, SLOT(onTabChanged(int)));
-	connect(m_tabs, SIGNAL(tabCloseRequested(int)),
+	connect(m_tabBar, SIGNAL(tabCloseRequested(int)),
 		this, SLOT(onTabCloseRequested(int)));
 
 	QToolBar* toolBar = new QToolBar(tr("Game Tabs"));
 	toolBar->setFloatable(false);
 	toolBar->setMovable(false);
 	toolBar->setAllowedAreas(Qt::TopToolBarArea);
-	toolBar->addWidget(m_tabs);
+	toolBar->addWidget(m_tabBar);
 	addToolBar(toolBar);
 }
 
@@ -228,38 +248,58 @@ void MainWindow::createDockWindows()
 
 void MainWindow::addGame(ChessGame* game)
 {
-	m_games.append(game);
-	m_tabs->setCurrentIndex(m_tabs->addTab(genericTitle(game)));
+	Tournament* tournament = qobject_cast<Tournament*>(QObject::sender());
+	TabData tab(game, tournament);
+
+	if (tournament)
+	{
+		int index = tabIndex(tournament, true);
+		if (index != -1)
+		{
+			delete m_tabs[index].pgn;
+			m_tabs[index] = tab;
+
+			m_tabBar->setTabText(index, genericTitle(tab));
+			if (!m_closing && m_tabBar->currentIndex() == index)
+				setCurrentGame(tab);
+
+			return;
+		}
+	}
+
+	m_tabs.append(tab);
+	m_tabBar->setCurrentIndex(m_tabBar->addTab(genericTitle(tab)));
 }
 
-void MainWindow::removeGame(ChessGame* game)
+void MainWindow::removeGame(int index)
 {
-	Q_ASSERT(game != 0);
-
-	int index = m_games.indexOf(game);
 	Q_ASSERT(index != -1);
 
-	m_games.removeAt(index);
-	m_tabs->removeTab(index);
+	m_tabs.removeAt(index);
+	m_tabBar->removeTab(index);
 }
 
 void MainWindow::destroyGame(ChessGame* game)
 {
 	Q_ASSERT(game != 0);
 
-	removeGame(game);
-	game->deleteLater();
-	delete game->pgn();
+	int index = tabIndex(game);
+	Q_ASSERT(index != -1);
+	TabData tab = m_tabs.at(index);
 
-	if (m_games.isEmpty())
+	removeGame(index);
+
+	if (tab.tournament == 0)
+		game->deleteLater();
+	delete tab.pgn;
+
+	if (m_tabs.isEmpty())
 		close();
 }
 
-void MainWindow::setCurrentGame(ChessGame* game)
+void MainWindow::setCurrentGame(const TabData& gameData)
 {
-	Q_ASSERT(game != 0);
-
-	if (game == m_game)
+	if (gameData.game == m_game && m_game != 0)
 		return;
 
 	if (m_game != 0)
@@ -297,17 +337,43 @@ void MainWindow::setCurrentGame(ChessGame* game)
 			return;
 	}
 
-	m_game = game;
+	m_game = gameData.game;
 
-	m_game->lockThread();
-	connect(m_game, SIGNAL(fenChanged(QString)),
-		m_boardScene, SLOT(setFenString(QString)));
-	connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
-		m_boardScene, SLOT(makeMove(Chess::GenericMove)));
-	connect(m_game, SIGNAL(humanEnabled(bool)),
-		m_boardView, SLOT(setEnabled(bool)));
+	if (m_game != 0)
+	{
+		m_game->lockThread();
+		connect(m_game, SIGNAL(fenChanged(QString)),
+			m_boardScene, SLOT(setFenString(QString)));
+		connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
+			m_boardScene, SLOT(makeMove(Chess::GenericMove)));
+		connect(m_game, SIGNAL(humanEnabled(bool)),
+			m_boardView, SLOT(setEnabled(bool)));
+	}
 
 	m_engineDebugLog->clear();
+
+	m_moveList->setGame(m_game, gameData.pgn);
+	m_boardScene->setBoard(gameData.pgn->createBoard());
+	m_boardScene->populate();
+
+	foreach (const PgnGame::MoveData& moveData, gameData.pgn->moves())
+		m_boardScene->makeMove(moveData.move);
+
+	if (m_game == 0)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			ChessClock* clock(m_chessClock[i]);
+			clock->stop();
+			clock->setInfiniteTime(true);
+			clock->setPlayerName(gameData.pgn->playerName(Chess::Side::Type(i)));
+		}
+
+		m_boardView->setEnabled(false);
+		updateWindowTitle();
+
+		return;
+	}
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -339,13 +405,6 @@ void MainWindow::setCurrentGame(ChessGame* game)
 			clock, SLOT(stop()));
 	}
 
-	m_moveList->setGame(m_game);
-	m_boardScene->setBoard(m_game->pgn()->createBoard());
-	m_boardScene->populate();
-
-	foreach (const Chess::Move& move, m_game->moves())
-		m_boardScene->makeMove(move);
-
 	m_boardView->setEnabled(!m_game->isFinished() &&
 				m_game->playerToMove()->isHuman());
 
@@ -353,25 +412,65 @@ void MainWindow::setCurrentGame(ChessGame* game)
 	m_game->unlockThread();
 }
 
+int MainWindow::tabIndex(ChessGame* game) const
+{
+	Q_ASSERT(game != 0);
+
+	for (int i = 0; i < m_tabs.size(); i++)
+	{
+		if (m_tabs.at(i).id == game)
+			return i;
+	}
+
+	return -1;
+}
+
+int MainWindow::tabIndex(Tournament* tournament, bool freeTab) const
+{
+	Q_ASSERT(tournament != 0);
+
+	for (int i = 0; i < m_tabs.size(); i++)
+	{
+		const TabData& tab = m_tabs.at(i);
+
+		if (tab.tournament == tournament
+		&&  (!freeTab || (tab.game == 0 || tab.game->isFinished())))
+			return i;
+	}
+
+	return -1;
+}
+
 void MainWindow::onTabChanged(int index)
 {
 	if (index == -1 || m_closing)
 		m_game = 0;
 	else
-		setCurrentGame(m_games.at(index));
+		setCurrentGame(m_tabs.at(index));
 }
 
 void MainWindow::onTabCloseRequested(int index)
 {
-	ChessGame* game = m_games.at(index);
+	const TabData& tab = m_tabs.at(index);
 
-	if (game->isFinished())
-		destroyGame(game);
+	if (tab.game == 0)
+	{
+		delete tab.pgn;
+		removeGame(index);
+
+		if (m_tabs.isEmpty())
+			close();
+
+		return;
+	}
+
+	if (tab.game->isFinished())
+		destroyGame(tab.game);
 	else
 	{
-		connect(game, SIGNAL(finished(ChessGame*)),
+		connect(tab.game, SIGNAL(finished(ChessGame*)),
 			this, SLOT(destroyGame(ChessGame*)));
-		QMetaObject::invokeMethod(game, "stop", Qt::QueuedConnection);
+		QMetaObject::invokeMethod(tab.game, "stop", Qt::QueuedConnection);
 	}
 }
 
@@ -412,24 +511,55 @@ void MainWindow::newGame()
 		player[0], player[1]);
 }
 
+void MainWindow::newTournament()
+{
+	NewTournamentDialog dlg(CuteChessApplication::instance()->engineManager(), this);
+	if (dlg.exec() != QDialog::Accepted)
+		return;
+
+	GameManager* manager = CuteChessApplication::instance()->gameManager();
+
+	Tournament* t = dlg.createTournament(manager);
+	connect(t, SIGNAL(finished()),
+		this, SLOT(onTournamentFinished()));
+	connect(t, SIGNAL(gameStarted(ChessGame*, int, int, int)),
+		this, SLOT(addGame(ChessGame*)));
+	t->start();
+
+	connect(m_stopTournamentAct, SIGNAL(triggered()), t, SLOT(stop()));
+	m_stopTournamentAct->setEnabled(true);
+}
+
+void MainWindow::onTournamentFinished()
+{
+	Tournament* tournament = qobject_cast<Tournament*>(QObject::sender());
+	Q_ASSERT(tournament != 0);
+
+	QMessageBox::information(this,
+				 tr("Tournament finished"),
+				 tr("Tournament \"%1\" is finished")
+					.arg(tournament->name()));
+	tournament->deleteLater();
+	m_stopTournamentAct->setEnabled(false);
+}
+
 void MainWindow::gameProperties()
 {
 	GamePropertiesDialog dlg(this);
-	ChessGame* game = m_game;
-	PgnGame* pgn = game->pgn();
+	PgnGame* pgn = m_tabs.at(m_tabBar->currentIndex()).pgn;
 
-	game->lockThread();
+	lockCurrentGame();
 	dlg.setWhite(pgn->playerName(Chess::Side::White));
 	dlg.setBlack(pgn->playerName(Chess::Side::Black));
 	dlg.setEvent(pgn->event());
 	dlg.setSite(pgn->site());
 	dlg.setRound(pgn->round());
-	game->unlockThread();
+	unlockCurrentGame();
 
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
-	game->lockThread();
+	lockCurrentGame();
 	pgn->setPlayerName(Chess::Side::White, dlg.white());
 	pgn->setPlayerName(Chess::Side::Black, dlg.black());
 	pgn->setEvent(dlg.event());
@@ -437,7 +567,7 @@ void MainWindow::gameProperties()
 	pgn->setRound(dlg.round());
 
 	updateWindowTitle();
-	game->unlockThread();
+	unlockCurrentGame();
 
 	setWindowModified(true);
 }
@@ -549,26 +679,44 @@ void MainWindow::showGameWindow()
 void MainWindow::updateWindowTitle()
 {
 	// setWindowTitle() requires "[*]" (see docs)
-	setWindowTitle(genericTitle(m_game) + QLatin1String("[*]"));
+	const TabData& gameData(m_tabs.at(m_tabBar->currentIndex()));
+	setWindowTitle(genericTitle(gameData) + QLatin1String("[*]"));
 }
 
 QString MainWindow::windowListTitle() const
 {
-	#ifndef Q_OS_MAC
+	const TabData& gameData(m_tabs.at(m_tabBar->currentIndex()));
+
+#ifndef Q_OS_MAC
 	if (isWindowModified())
-		return genericTitle(m_game) + QLatin1String("*");
+		return genericTitle(gameData) + QLatin1String("*");
 	#endif
 
-	return genericTitle(m_game);
+	return genericTitle(gameData);
 }
 
-QString MainWindow::genericTitle(ChessGame* game) const
+QString MainWindow::genericTitle(const TabData& gameData) const
 {
-	Q_ASSERT(game != 0);
+	if (gameData.game != 0)
+		return tr("%1 vs %2")
+			.arg(gameData.game->player(Chess::Side::White)->name())
+			.arg(gameData.game->player(Chess::Side::Black)->name());
 
 	return tr("%1 vs %2")
-		.arg(game->player(Chess::Side::White)->name())
-		.arg(game->player(Chess::Side::Black)->name());
+		.arg(gameData.pgn->playerName(Chess::Side::White))
+		.arg(gameData.pgn->playerName(Chess::Side::Black));
+}
+
+void MainWindow::lockCurrentGame()
+{
+	if (m_game != 0)
+		m_game->lockThread();
+}
+
+void MainWindow::unlockCurrentGame()
+{
+	if (m_game != 0)
+		m_game->unlockThread();
 }
 
 bool MainWindow::save()
@@ -592,9 +740,9 @@ bool MainWindow::saveAs()
 
 bool MainWindow::saveGame(const QString& fileName)
 {
-	m_game->lockThread();
-	bool ok = m_game->pgn()->write(fileName);
-	m_game->unlockThread();
+	lockCurrentGame();
+	bool ok = m_tabs.at(m_tabBar->currentIndex()).pgn->write(fileName);
+	unlockCurrentGame();
 
 	if (!ok)
 		return false;
@@ -610,14 +758,14 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	if (askToSave())
 	{
 		m_closing = true;
-		if (m_games.isEmpty())
+		if (m_tabs.isEmpty())
 			event->accept();
 		else
 		{
-			for (int i = m_games.size() - 1; i >= 0; i--)
+			for (int i = m_tabs.size() - 1; i >= 0; i--)
 				onTabCloseRequested(i);
 
-			if (m_games.isEmpty())
+			if (m_tabs.isEmpty())
 				event->accept();
 			else
 				event->ignore();

@@ -33,8 +33,10 @@ class MoveList;
 class EngineConfigurationModel;
 class ChessClock;
 class PlainTextLog;
+class PgnGame;
 class ChessGame;
 class PgnTagsModel;
+class Tournament;
 
 /**
  * MainWindow
@@ -56,6 +58,7 @@ class MainWindow : public QMainWindow
 
 	private slots:
 		void newGame();
+		void newTournament();
 		void gameProperties();
 		void manageEngines();
 		void saveLogToFile();
@@ -66,27 +69,44 @@ class MainWindow : public QMainWindow
 		bool saveAs();
 		void onTabChanged(int index);
 		void onTabCloseRequested(int index);
-		void removeGame(ChessGame* game);
 		void destroyGame(ChessGame* game);
+		void onTournamentFinished();
 
 	private:
+		struct TabData
+		{
+			explicit TabData(ChessGame* game,
+					 Tournament* tournament = 0);
+
+			ChessGame* id;
+			QPointer<ChessGame> game;
+			PgnGame* pgn;
+			Tournament* tournament;
+		};
+
 		void createActions();
 		void createMenus();
 		void createToolBars();
 		void createDockWindows();
 		void readSettings();
-		QString genericTitle(ChessGame* game) const;
+		QString genericTitle(const TabData& gameData) const;
+		void lockCurrentGame();
+		void unlockCurrentGame();
 		bool saveGame(const QString& fileName);
 		bool askToSave();
-		void setCurrentGame(ChessGame* game);
+		void setCurrentGame(const TabData& gameData);
+		void removeGame(int index);
+		int tabIndex(ChessGame* game) const;
+		int tabIndex(Tournament* tournament, bool freeTab = false) const;
 
 		QMenu* m_gameMenu;
+		QMenu* m_tournamentMenu;
 		QMenu* m_viewMenu;
 		QMenu* m_enginesMenu;
 		QMenu* m_windowMenu;
 		QMenu* m_helpMenu;
 
-		QTabBar* m_tabs;
+		QTabBar* m_tabBar;
 
 		BoardScene* m_boardScene;
 		QGraphicsView* m_boardView;
@@ -100,6 +120,8 @@ class MainWindow : public QMainWindow
 		QAction* m_closeGameAct;
 		QAction* m_saveGameAct;
 		QAction* m_saveGameAsAct;
+		QAction* m_newTournamentAct;
+		QAction* m_stopTournamentAct;
 		QAction* m_manageEnginesAct;
 		QAction* m_showGameDatabaseWindowAct;
 		QAction* m_showGameWallAct;
@@ -107,7 +129,7 @@ class MainWindow : public QMainWindow
 		PlainTextLog* m_engineDebugLog;
 
 		QPointer<ChessGame> m_game;
-		QList<ChessGame*> m_games;
+		QList<TabData> m_tabs;
 
 		QString m_currentFile;
 		bool m_closing;
