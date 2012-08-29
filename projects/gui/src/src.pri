@@ -26,7 +26,9 @@ HEADERS += chessclock.h \
     tilelayout.h \
     movelist.h \
     movehighlighter.h \
-    pgntagsmodel.h
+    pgntagsmodel.h \
+    newtournamentdialog.h \
+    engineselectiondlg.h
 SOURCES += main.cpp \
     chessclock.cpp \
     engineconfigurationmodel.cpp \
@@ -54,4 +56,6 @@ SOURCES += main.cpp \
     tilelayout.cpp \
     movelist.cpp \
     movehighlighter.cpp \
-    pgntagsmodel.cpp
+    pgntagsmodel.cpp \
+    newtournamentdialog.cpp \
+    engineselectiondlg.cpp
