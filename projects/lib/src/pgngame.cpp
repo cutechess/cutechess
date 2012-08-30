@@ -196,7 +196,7 @@ bool PgnGame::read(PgnStream& in, int maxMoves)
 				bool ok;
 				int nag = in.tokenString().toInt(&ok);
 				if (!ok || nag < 0 || nag > 255)
-					qDebug("Invalid NAG: %s", qPrintable(in.tokenString()));
+					qDebug("Invalid NAG: %s", in.tokenString().constData());
 			}
 			break;
 		case PgnStream::NoToken:
