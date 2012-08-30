@@ -180,7 +180,7 @@ class LIB_EXPORT PgnGame
 		Chess::Side m_startingSide;
 		const EcoNode* m_eco;
 		QMap<QString, QString> m_tags;
-		QVector<MoveData > m_moves;
+		QVector<MoveData> m_moves;
 };
 
 /*! Reads a PGN game from a PGN stream. */

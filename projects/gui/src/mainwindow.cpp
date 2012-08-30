@@ -75,7 +75,7 @@ MainWindow::MainWindow(ChessGame* game)
 	m_boardScene = new BoardScene(this);
 	m_boardView = new BoardView(m_boardScene, this);
 
-	m_moveList= new MoveList(this);
+	m_moveList = new MoveList(this);
 	m_tagsModel = new PgnTagsModel(this);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
