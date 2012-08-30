@@ -42,7 +42,6 @@
 #include "engineconfigurationmodel.h"
 #include "enginemanagementdlg.h"
 #include "plaintextlog.h"
-#include "gamepropertiesdlg.h"
 #include "autoverticalscroller.h"
 #include "gamedatabasemanager.h"
 #include "pgntagsmodel.h"
@@ -121,8 +120,6 @@ void MainWindow::createActions()
 	m_saveGameAsAct = new QAction(tr("Save &As..."), this);
 	m_saveGameAsAct->setShortcut(QKeySequence::SaveAs);
 
-	m_gamePropertiesAct = new QAction(tr("P&roperties..."), this);
-
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	#ifdef Q_OS_WIN32
 	m_quitGameAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
@@ -143,7 +140,6 @@ void MainWindow::createActions()
 	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
 	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered(bool)), this, SLOT(saveAs()));
-	connect(m_gamePropertiesAct, SIGNAL(triggered(bool)), this, SLOT(gameProperties()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(closeAllWindows()));
 
 	connect(m_newTournamentAct, SIGNAL(triggered()), this, SLOT(newTournament()));
@@ -166,7 +162,6 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_closeGameAct);
 	m_gameMenu->addAction(m_saveGameAct);
 	m_gameMenu->addAction(m_saveGameAsAct);
-	m_gameMenu->addAction(m_gamePropertiesAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 
@@ -541,35 +536,6 @@ void MainWindow::onTournamentFinished()
 					.arg(tournament->name()));
 	tournament->deleteLater();
 	m_stopTournamentAct->setEnabled(false);
-}
-
-void MainWindow::gameProperties()
-{
-	GamePropertiesDialog dlg(this);
-	PgnGame* pgn = m_tabs.at(m_tabBar->currentIndex()).pgn;
-
-	lockCurrentGame();
-	dlg.setWhite(pgn->playerName(Chess::Side::White));
-	dlg.setBlack(pgn->playerName(Chess::Side::Black));
-	dlg.setEvent(pgn->event());
-	dlg.setSite(pgn->site());
-	dlg.setRound(pgn->round());
-	unlockCurrentGame();
-
-	if (dlg.exec() != QDialog::Accepted)
-		return;
-
-	lockCurrentGame();
-	pgn->setPlayerName(Chess::Side::White, dlg.white());
-	pgn->setPlayerName(Chess::Side::Black, dlg.black());
-	pgn->setEvent(dlg.event());
-	pgn->setSite(dlg.site());
-	pgn->setRound(dlg.round());
-
-	updateWindowTitle();
-	unlockCurrentGame();
-
-	setWindowModified(true);
 }
 
 void MainWindow::manageEngines()

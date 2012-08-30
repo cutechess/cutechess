@@ -59,7 +59,6 @@ class MainWindow : public QMainWindow
 	private slots:
 		void newGame();
 		void newTournament();
-		void gameProperties();
 		void manageEngines();
 		void saveLogToFile();
 		void onWindowMenuAboutToShow();
@@ -115,7 +114,6 @@ class MainWindow : public QMainWindow
 		PgnTagsModel* m_tagsModel;
 
 		QAction* m_quitGameAct;
-		QAction* m_gamePropertiesAct;
 		QAction* m_newGameAct;
 		QAction* m_closeGameAct;
 		QAction* m_saveGameAct;

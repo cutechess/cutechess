@@ -8,7 +8,6 @@ HEADERS += chessclock.h \
     plaintextlog.h \
     newgamedlg.h \
     cutechessapp.h \
-    gamepropertiesdlg.h \
     autoverticalscroller.h \
     gamedatabasedlg.h \
     pgnimporter.h \
@@ -38,7 +37,6 @@ SOURCES += main.cpp \
     plaintextlog.cpp \
     newgamedlg.cpp \
     cutechessapp.cpp \
-    gamepropertiesdlg.cpp \
     autoverticalscroller.cpp \
     gamedatabasedlg.cpp \
     pgnimporter.cpp \
