@@ -33,6 +33,7 @@ static void appendMove(QString& s, int moveNum, const QString& moveString,
                   const QString& comment)
 {
 	QString move = QString("%1 ").arg(moveString);
+	move.replace('-', QString::fromUtf8("\u2060-\u2060"));
 
 	if (moveNum % 2 != 0)
 		move.prepend(QString("%1. ").arg(moveNum / 2 + 1));
