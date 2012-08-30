@@ -61,6 +61,8 @@ class MoveList : public QTextEdit
 		void insertPlainTextMove(const QString& move);
 		QSyntaxHighlighter* m_syntax;
 		QPointer<ChessGame> m_game;
+		int m_moveCount;
+		int m_startingSide;
 };
 
 #endif // MOVE_LIST_H

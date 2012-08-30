@@ -23,20 +23,32 @@
 MoveList::MoveList(QWidget* parent)
 	: QTextEdit(parent),
 	  m_syntax(new MoveHighlighter(document())),
-	  m_game(0)
+	  m_game(0),
+	  m_moveCount(0),
+	  m_startingSide(0)
 {
 	setReadOnly(true);
 	setMouseTracking(true);
 }
 
-static void appendMove(QString& s, int moveNum, const QString& moveString,
-                  const QString& comment)
+static void appendMove(QString& s,
+		       int moveNum,
+		       int startingSide,
+		       const QString& moveString,
+		       const QString& comment)
 {
 	QString move = QString("%1 ").arg(moveString);
 	move.replace('-', QString::fromUtf8("\u2060-\u2060"));
 
-	if (moveNum % 2 != 0)
-		move.prepend(QString("%1. ").arg(moveNum / 2 + 1));
+	if (moveNum == 0 && startingSide == Chess::Side::Black)
+		move.prepend("1... ");
+	else
+	{
+		moveNum += startingSide;
+		if (moveNum % 2 == 0)
+			move.prepend(QString("%1. ").arg(moveNum / 2 + 1));
+	}
+
 	if (!comment.isEmpty())
 		move.append(QString("{%1} ").arg(comment));
 
@@ -60,10 +72,11 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 	QString moves;
 	moves.reserve(512);
 
-	for (int i = 0; i < pgn->moves().size(); i++)
+	m_startingSide = pgn->startingSide();
+	for (m_moveCount = 0; m_moveCount < pgn->moves().size(); m_moveCount++)
 	{
-		const PgnGame::MoveData& md = pgn->moves().at(i);
-		appendMove(moves, i + 1, md.moveString, md.comment);
+		const PgnGame::MoveData& md = pgn->moves().at(m_moveCount);
+		appendMove(moves, m_moveCount, m_startingSide, md.moveString, md.comment);
 	}
 
 	insertPlainTextMove(moves);
@@ -80,7 +93,7 @@ void MoveList::onMoveMade(const Chess::GenericMove& genericMove,
 	Q_UNUSED(genericMove);
 
 	QString move;
-	appendMove(move, m_game->pgn()->moves().size(), sanString, comment);
+	appendMove(move, m_moveCount++, m_startingSide, sanString, comment);
 	insertPlainTextMove(move);
 }
 
