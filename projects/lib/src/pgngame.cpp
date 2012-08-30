@@ -263,7 +263,9 @@ void PgnGame::write(QTextStream& out, PgnMode mode) const
 		const MoveData& data = m_moves.at(i);
 
 		str.clear();
-		if (side == Chess::Side::White || i == 0)
+		if (i == 0 && side == Chess::Side::Black)
+			str = QString::number(++movenum) + "... ";
+		else if (side == Chess::Side::White)
 			str = QString::number(++movenum) + ". ";
 
 		str += data.moveString;
