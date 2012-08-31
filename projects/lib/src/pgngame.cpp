@@ -54,6 +54,11 @@ void PgnGame::clear()
 	m_moves.clear();
 }
 
+const QMap<QString, QString>& PgnGame::tags() const
+{
+	return m_tags;
+}
+
 const QVector<PgnGame::MoveData>& PgnGame::moves() const
 {
 	return m_moves;

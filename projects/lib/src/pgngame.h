@@ -76,6 +76,8 @@ class LIB_EXPORT PgnGame
 		/*! Deletes all tags and moves. */
 		void clear();
 
+		/*! Returns the tags that are used to describe the game. */
+		const QMap<QString, QString>& tags() const;
 		/*! Returns the moves that were played in the game. */
 		const QVector<MoveData>& moves() const;
 		/*! Adds a new move to the game. */
