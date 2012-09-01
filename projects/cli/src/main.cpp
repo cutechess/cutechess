@@ -24,6 +24,7 @@
 #include <QStringList>
 #include <QFile>
 
+#include <mersenne.h>
 #include <enginemanager.h>
 #include <enginebuilder.h>
 #include <gamemanager.h>
@@ -404,7 +405,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			tournament->setSite(value.toString());
 		// Set the random seed manually
 		else if (name == "-srand")
-			qsrand(value.toUInt());
+			Mersenne::initialize(value.toUInt());
 		// Delay between games
 		else if (name == "-wait")
 		{

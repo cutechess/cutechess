@@ -17,6 +17,7 @@
 
 #include "frcboard.h"
 #include "piece.h"
+#include <mersenne.h>
 
 
 static void addPiece(QVector<int>& pieces,
@@ -67,11 +68,11 @@ QString FrcBoard::defaultFenString() const
 	const int empty = Piece::NoPiece;
 	QVector<int> pieces(8, empty);
 
-	addPiece(pieces, Bishop, qrand() % 4, 0, 2);
-	addPiece(pieces, Bishop, qrand() % 4, 1, 2);
-	addPiece(pieces, Queen, qrand() % 6);
-	addPiece(pieces, Knight, qrand() % 5);
-	addPiece(pieces, Knight, qrand() % 4);
+	addPiece(pieces, Bishop, Mersenne::random() % 4, 0, 2);
+	addPiece(pieces, Bishop, Mersenne::random() % 4, 1, 2);
+	addPiece(pieces, Queen, Mersenne::random() % 6);
+	addPiece(pieces, Knight, Mersenne::random() % 5);
+	addPiece(pieces, Knight, Mersenne::random() % 4);
 	addPiece(pieces, Rook, 0);
 	addPiece(pieces, King, 0);
 	addPiece(pieces, Rook, 0);

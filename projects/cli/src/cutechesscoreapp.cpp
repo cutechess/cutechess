@@ -20,6 +20,7 @@
 #include <QTime>
 #include <QFileInfo>
 #include <QDir>
+#include <mersenne.h>
 #include <enginemanager.h>
 #include <gamemanager.h>
 #include <cstdlib>
@@ -31,7 +32,7 @@ CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 	  m_engineManager(0),
 	  m_gameManager(0)
 {
-	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+	Mersenne::initialize(QTime(0,0,0).secsTo(QTime::currentTime()));
 
 	QCoreApplication::setOrganizationName(QLatin1String("cutechess"));
 	QCoreApplication::setOrganizationDomain(QLatin1String("cutechess.org"));

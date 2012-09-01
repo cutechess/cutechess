@@ -23,6 +23,7 @@
 #include <QSettings>
 #include <QFileInfo>
 
+#include <mersenne.h>
 #include <enginemanager.h>
 #include <gamemanager.h>
 #include <board/boardfactory.h>
@@ -45,7 +46,7 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	  m_gameDatabaseManager(0),
 	  m_gameDatabaseDialog(0)
 {
-	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+	Mersenne::initialize(QTime(0,0,0).secsTo(QTime::currentTime()));
 
 	// Set the application icon
 	QIcon icon;

@@ -45,8 +45,9 @@ class LIB_EXPORT CaparandomBoard : public CapablancaBoard
 		/*!
 		 * Returns a randomized starting FEN string.
 		 *
-		 * \note qrand() is used for the randomization, so qsrand()
-		 * should be called before calling this function.
+		 * \note Mersenne::random() is used for the randomization,
+		 * so Mersenne::initialize() should be called before calling
+		 * this function.
 		 */
 		virtual QString defaultFenString() const;
 
