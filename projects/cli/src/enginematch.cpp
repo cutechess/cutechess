@@ -121,7 +121,7 @@ void EngineMatch::onGameFinished(ChessGame* game, int number)
 		Tournament::PlayerData fcp = m_tournament->playerAt(0);
 		Tournament::PlayerData scp = m_tournament->playerAt(1);
 		int totalResults = fcp.wins + fcp.losses + fcp.draws;
-		qDebug("Score of %s vs %s: %d - %d - %d  [%.2f] %d",
+		qDebug("Score of %s vs %s: %d - %d - %d  [%.3f] %d",
 		       qPrintable(fcp.builder->name()),
 		       qPrintable(scp.builder->name()),
 		       fcp.wins, scp.wins, fcp.draws,
