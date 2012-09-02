@@ -83,10 +83,16 @@ void GameWall::addGame(ChessGame* game)
 		scene, SLOT(setFenString(QString)));
 	connect(game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
 		scene, SLOT(makeMove(Chess::GenericMove)));
+	connect(game, SIGNAL(humanEnabled(bool)),
+		view, SLOT(setEnabled(bool)));
 
 	for (int i = 0; i < 2; i++)
 	{
 		ChessPlayer* player(game->player(Chess::Side::Type(i)));
+
+		if (player->isHuman())
+			connect(scene, SIGNAL(humanMove(Chess::GenericMove, Chess::Side)),
+				player, SLOT(onHumanMove(Chess::GenericMove, Chess::Side)));
 
 		clock[i]->setPlayerName(player->name());
 		connect(player, SIGNAL(nameChanged(QString)),
@@ -113,7 +119,8 @@ void GameWall::addGame(ChessGame* game)
 
 	game->unlockThread();
 
-	view->setEnabled(false);
+	view->setEnabled(!game->isFinished() &&
+			 game->playerToMove()->isHuman());
 	m_games[game] = widget;
 
 	cleanupWidgets();

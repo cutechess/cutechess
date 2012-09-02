@@ -124,7 +124,7 @@ void ChessGame::stop()
 
 	m_player[Chess::Side::White]->endGame(m_result);
 	m_player[Chess::Side::Black]->endGame(m_result);
-	
+
 	connect(this, SIGNAL(playersReady()), this, SLOT(finish()), Qt::QueuedConnection);
 	syncPlayers();
 }
