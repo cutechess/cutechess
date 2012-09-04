@@ -74,7 +74,13 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 	}
 
 	ChessEngine* engine = EngineFactory::create(m_config.protocol());
-	Q_ASSERT(engine != 0);
+	if (engine == 0)
+	{
+		qWarning("Unknown chess protocol: %s", qPrintable(m_config.protocol()));
+		delete process;
+		return 0;
+	}
+
 	engine->setParent(parent);
 	if (receiver != 0 && method != 0)
 		QObject::connect(engine, SIGNAL(debugMessage(QString)),
