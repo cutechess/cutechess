@@ -37,8 +37,8 @@ class tst_JsonParser: public QObject
 		void invalid_data() const;
 		void invalid() const;
 
-		void complex_data() const;
-		void complex() const;
+		void advanced_data() const;
+		void advanced() const;
 
 	private:
 		QVariant sample1() const;
@@ -343,23 +343,23 @@ QVariant tst_JsonParser::sample2() const
 	return QVariant(list);
 }
 
-void tst_JsonParser::complex_data() const
+void tst_JsonParser::advanced_data() const
 {
 	QTest::addColumn<QString>("filename");
 	QTest::addColumn<QVariant::Type>("type");
 	QTest::addColumn<QVariant>("expected");
 
-	QTest::newRow("complex #1")
+	QTest::newRow("advanced #1")
 		<< "sample1.json"
 		<< QVariant::Map
 		<< sample1();
-	QTest::newRow("complex #2")
+	QTest::newRow("advanced #2")
 		<< "sample2.json"
 		<< QVariant::List
 		<< sample2();
 }
 
-void tst_JsonParser::complex() const
+void tst_JsonParser::advanced() const
 {
 	QFETCH(QString, filename);
 	QFETCH(QVariant::Type, type);
