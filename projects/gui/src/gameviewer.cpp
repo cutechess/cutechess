@@ -16,6 +16,7 @@
 */
 
 #include "gameviewer.h"
+#include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QAction>
 #include <QIcon>
@@ -27,7 +28,7 @@
 #include "boardview/boardscene.h"
 #include "boardview/boardview.h"
 
-GameViewer::GameViewer(QWidget* parent)
+GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 	: QWidget(parent),
 	  m_toolBar(new QToolBar),
 	  m_moveNumberSlider(new QSlider(Qt::Horizontal)),
@@ -57,14 +58,30 @@ GameViewer::GameViewer(QWidget* parent)
 		QIcon(":/icons/toolbutton/last_16x16"),
 		tr("Skip to last move"),
 		this, SLOT(viewLastMove()));
-	m_toolBar->addWidget(m_moveNumberSlider);
 
 	connect(m_moveNumberSlider, SIGNAL(valueChanged(int)),
 		this, SLOT(viewMove(int)));
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addWidget(m_boardView);
-	layout->addWidget(m_toolBar);
+
+	if (orientation == Qt::Horizontal)
+	{
+		m_toolBar->addWidget(m_moveNumberSlider);
+		layout->addWidget(m_toolBar);
+	}
+	else
+	{
+		m_moveNumberSlider->setEnabled(false);
+		layout->addWidget(m_moveNumberSlider);
+
+		QHBoxLayout* toolbarLayout = new QHBoxLayout();
+		toolbarLayout->addStretch();
+		toolbarLayout->addWidget(m_toolBar);
+		toolbarLayout->addStretch();
+
+		layout->addLayout(toolbarLayout);
+	}
 
 	setLayout(layout);
 }
@@ -204,6 +221,7 @@ void GameViewer::onFenChanged(const QString& fen)
 	m_moveIndex = 0;
 
 	m_toolBar->setEnabled(false);
+	m_moveNumberSlider->setEnabled(false);
 	m_moveNumberSlider->setMaximum(0);
 
 	m_boardScene->setFenString(fen);
@@ -214,8 +232,8 @@ void GameViewer::onMoveMade(const Chess::GenericMove& move)
 	m_moves.append(move);
 
 	m_toolBar->setEnabled(true);
-	m_moveNumberSlider->setMaximum(m_moves.count());
 	m_moveNumberSlider->setEnabled(true);
+	m_moveNumberSlider->setMaximum(m_moves.count());
 
 	if (m_moveIndex == m_moves.count() - 1)
 		viewNextMove();

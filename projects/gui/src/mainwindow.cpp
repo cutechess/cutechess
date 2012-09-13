@@ -70,7 +70,7 @@ MainWindow::MainWindow(ChessGame* game)
 	}
 	clockLayout->insertSpacing(1, 20);
 
-	m_gameViewer = new GameViewer(this);
+	m_gameViewer = new GameViewer;
 
 	m_moveList = new MoveList(this);
 	m_tagsModel = new PgnTagsModel(this);

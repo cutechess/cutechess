@@ -123,7 +123,7 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 	ui->m_gamesListView->setAlternatingRowColors(true);
 	ui->m_gamesListView->setUniformRowHeights(true);
 
-	m_gameViewer = new GameViewer(this);
+	m_gameViewer = new GameViewer(Qt::Vertical);
 
 	QVBoxLayout* chessboardViewLayout = new QVBoxLayout();
 	chessboardViewLayout->addWidget(m_gameViewer);

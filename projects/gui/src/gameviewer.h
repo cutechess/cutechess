@@ -35,7 +35,8 @@ class GameViewer : public QWidget
 	Q_OBJECT
 
 	public:
-		explicit GameViewer(QWidget* parent = 0);
+		explicit GameViewer(Qt::Orientation orientation = Qt::Horizontal,
+				    QWidget* parent = 0);
 
 		void setGame(ChessGame* game);
 		void setGame(const PgnGame* pgn);
