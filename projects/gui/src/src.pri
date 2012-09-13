@@ -27,7 +27,8 @@ HEADERS += chessclock.h \
     movehighlighter.h \
     pgntagsmodel.h \
     newtournamentdialog.h \
-    engineselectiondlg.h
+    engineselectiondlg.h \
+    gameviewer.h
 SOURCES += main.cpp \
     chessclock.cpp \
     engineconfigurationmodel.cpp \
@@ -56,4 +57,5 @@ SOURCES += main.cpp \
     movehighlighter.cpp \
     pgntagsmodel.cpp \
     newtournamentdialog.cpp \
-    engineselectiondlg.cpp
+    engineselectiondlg.cpp \
+    gameviewer.cpp
