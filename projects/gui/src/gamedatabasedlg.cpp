@@ -129,6 +129,8 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 	chessboardViewLayout->addWidget(m_gameViewer);
 	ui->m_chessboardParentWidget->setLayout(chessboardViewLayout);
 
+	ui->m_splitter->setSizes(QList<int>() << 100 << 500 << 300);
+
 	connect(ui->m_importBtn, SIGNAL(clicked(bool)), this,
 		SLOT(import()));
 	connect(ui->m_exportBtn, SIGNAL(clicked()), this,
