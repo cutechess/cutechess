@@ -28,8 +28,7 @@ class GameDatabaseManager;
 class PgnDatabaseModel;
 class PgnGameEntryModel;
 class PgnDatabase;
-class BoardView;
-class BoardScene;
+class GameViewer;
 
 namespace Ui {
 	class GameDatabaseDialog;
@@ -56,10 +55,6 @@ class GameDatabaseDialog : public QDialog
 		                              const QItemSelection& deselected);
 		void gameSelectionChanged(const QModelIndex& current,
 		                          const QModelIndex& previous);
-		void viewNextMove();
-		void viewPreviousMove();
-		void viewFirstMove();
-		void viewLastMove();
 		void updateSearch(const QString& terms = QString());
 		void onSearchTimeout();
 		void onAdvancedSearch();
@@ -72,8 +67,7 @@ class GameDatabaseDialog : public QDialog
 		friend class PgnGameIterator;
 		int databaseIndexFromGame(int game) const;
 
-		BoardView* m_boardView;
-		BoardScene* m_boardScene;
+		GameViewer* m_gameViewer;
 		QVector<PgnGame::MoveData> m_moves;
 		int m_moveIndex;
 

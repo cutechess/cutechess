@@ -33,8 +33,7 @@
 #include <tournament.h>
 
 #include "cutechessapp.h"
-#include "boardview/boardscene.h"
-#include "boardview/boardview.h"
+#include "gameviewer.h"
 #include "movelist.h"
 #include "newgamedlg.h"
 #include "newtournamentdialog.h"
@@ -71,15 +70,14 @@ MainWindow::MainWindow(ChessGame* game)
 	}
 	clockLayout->insertSpacing(1, 20);
 
-	m_boardScene = new BoardScene(this);
-	m_boardView = new BoardView(m_boardScene, this);
+	m_gameViewer = new GameViewer(this);
 
 	m_moveList = new MoveList(this);
 	m_tagsModel = new PgnTagsModel(this);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
-	mainLayout->addWidget(m_boardView);
+	mainLayout->addWidget(m_gameViewer);
 
 	// The content margins look stupid when used with dock widgets
 	mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -299,8 +297,7 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 
 	if (m_game != 0)
 	{
-		disconnect(m_game, 0, m_boardScene, 0);
-		disconnect(m_game, 0, m_boardView, 0);
+		m_gameViewer->disconnectGame();
 		disconnect(m_game, 0, m_moveList, 0);
 
 		for (int i = 0; i < 2; i++)
@@ -308,7 +305,6 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 			ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
 			if (player != 0)
 			{
-				disconnect(m_boardScene, 0, player, 0);
 				disconnect(player, 0, m_engineDebugLog, 0);
 				disconnect(player, 0, m_chessClock[0], 0);
 				disconnect(player, 0, m_chessClock[1], 0);
@@ -334,28 +330,16 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 
 	m_game = gameData.game;
 
-	if (m_game != 0)
-	{
-		m_game->lockThread();
-		connect(m_game, SIGNAL(fenChanged(QString)),
-			m_boardScene, SLOT(setFenString(QString)));
-		connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
-			m_boardScene, SLOT(makeMove(Chess::GenericMove)));
-		connect(m_game, SIGNAL(humanEnabled(bool)),
-			m_boardView, SLOT(setEnabled(bool)));
-	}
+	lockCurrentGame();
 
 	m_engineDebugLog->clear();
 
 	m_moveList->setGame(m_game, gameData.pgn);
-	m_boardScene->setBoard(gameData.pgn->createBoard());
-	m_boardScene->populate();
-
-	foreach (const PgnGame::MoveData& moveData, gameData.pgn->moves())
-		m_boardScene->makeMove(moveData.move);
 
 	if (m_game == 0)
 	{
+		m_gameViewer->setGame(gameData.pgn);
+
 		for (int i = 0; i < 2; i++)
 		{
 			ChessClock* clock(m_chessClock[i]);
@@ -364,19 +348,17 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 			clock->setPlayerName(gameData.pgn->playerName(Chess::Side::Type(i)));
 		}
 
-		m_boardView->setEnabled(false);
 		updateWindowTitle();
 
 		return;
 	}
+	else
+		m_gameViewer->setGame(m_game);
 
 	for (int i = 0; i < 2; i++)
 	{
 		ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
 
-		if (player->isHuman())
-			connect(m_boardScene, SIGNAL(humanMove(Chess::GenericMove, Chess::Side)),
-				player, SLOT(onHumanMove(Chess::GenericMove, Chess::Side)));
 		connect(player, SIGNAL(debugMessage(QString)),
 			m_engineDebugLog, SLOT(appendPlainText(QString)));
 
@@ -399,9 +381,6 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 		connect(player, SIGNAL(stoppedThinking()),
 			clock, SLOT(stop()));
 	}
-
-	m_boardView->setEnabled(!m_game->isFinished() &&
-				m_game->playerToMove()->isHuman());
 
 	updateWindowTitle();
 	m_game->unlockThread();

@@ -110,95 +110,9 @@
         <item row="0" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1,0">
+           <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1">
             <item>
              <widget class="QWidget" name="m_chessboardParentWidget" native="true"/>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout">
-              <item>
-               <spacer name="horizontalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QToolButton" name="m_skipToFirstMoveButton">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Skip to first move</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../res/icons/icons.qrc">
-                  <normaloff>:/icons/toolbutton/first_16x16.png</normaloff>:/icons/toolbutton/first_16x16.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QToolButton" name="m_previousMoveButton">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Previous move</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../res/icons/icons.qrc">
-                  <normaloff>:/icons/toolbutton/previous_16x16.png</normaloff>:/icons/toolbutton/previous_16x16.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QToolButton" name="m_nextMoveButton">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Next move</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../res/icons/icons.qrc">
-                  <normaloff>:/icons/toolbutton/next_16x16.png</normaloff>:/icons/toolbutton/next_16x16.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QToolButton" name="m_skipToLastMoveButton">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Skip to last move</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../res/icons/icons.qrc">
-                  <normaloff>:/icons/toolbutton/last_16x16.png</normaloff>:/icons/toolbutton/last_16x16.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
             </item>
            </layout>
           </item>
@@ -412,9 +326,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../res/icons/icons.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

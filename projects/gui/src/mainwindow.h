@@ -28,7 +28,7 @@ class QTextEdit;
 class QCloseEvent;
 class QGraphicsView;
 class QTabBar;
-class BoardScene;
+class GameViewer;
 class MoveList;
 class EngineConfigurationModel;
 class ChessClock;
@@ -107,8 +107,7 @@ class MainWindow : public QMainWindow
 
 		QTabBar* m_tabBar;
 
-		BoardScene* m_boardScene;
-		QGraphicsView* m_boardView;
+		GameViewer* m_gameViewer;
 		MoveList* m_moveList;
 		ChessClock* m_chessClock[2];
 		PgnTagsModel* m_tagsModel;

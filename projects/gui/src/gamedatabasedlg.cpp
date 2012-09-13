@@ -34,6 +34,7 @@
 #include "gamedatabasemanager.h"
 #include "boardview/boardview.h"
 #include "boardview/boardscene.h"
+#include "gameviewer.h"
 #include "pgndatabase.h"
 #include "gamedatabasesearchdlg.h"
 
@@ -100,8 +101,7 @@ PgnGame PgnGameIterator::next(bool* ok, int depth)
 
 GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* parent)
 	: QDialog(parent, Qt::Window),
-	  m_boardView(0),
-	  m_boardScene(0),
+	  m_gameViewer(0),
 	  m_dbManager(dbManager),
 	  m_pgnDatabaseModel(0),
 	  m_pgnGameEntryModel(0),
@@ -123,23 +123,12 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 	ui->m_gamesListView->setAlternatingRowColors(true);
 	ui->m_gamesListView->setUniformRowHeights(true);
 
-	m_boardScene = new BoardScene(this);
-	m_boardView = new BoardView(m_boardScene, this);
-	m_boardView->setEnabled(false);
+	m_gameViewer = new GameViewer(this);
 
 	QVBoxLayout* chessboardViewLayout = new QVBoxLayout();
-	chessboardViewLayout->addWidget(m_boardView);
-
+	chessboardViewLayout->addWidget(m_gameViewer);
 	ui->m_chessboardParentWidget->setLayout(chessboardViewLayout);
 
-	connect(ui->m_nextMoveButton, SIGNAL(clicked(bool)), this,
-		SLOT(viewNextMove()));
-	connect(ui->m_previousMoveButton, SIGNAL(clicked(bool)), this,
-		SLOT(viewPreviousMove()));
-	connect(ui->m_skipToFirstMoveButton, SIGNAL(clicked(bool)), this,
-		SLOT(viewFirstMove()));
-	connect(ui->m_skipToLastMoveButton, SIGNAL(clicked(bool)), this,
-		SLOT(viewLastMove()));
 	connect(ui->m_importBtn, SIGNAL(clicked(bool)), this,
 		SLOT(import()));
 	connect(ui->m_exportBtn, SIGNAL(clicked()), this,
@@ -276,57 +265,7 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 	ui->m_eventLabel->setText(game.tagValue("Event"));
 	ui->m_resultLabel->setText(game.tagValue("Result"));
 
-	m_boardScene->setBoard(game.createBoard());
-	m_boardScene->populate();
-	m_moveIndex = 0;
-	m_moves = game.moves();
-
-	ui->m_previousMoveButton->setEnabled(false);
-	ui->m_nextMoveButton->setEnabled(!m_moves.isEmpty());
-	ui->m_skipToFirstMoveButton->setEnabled(false);
-	ui->m_skipToLastMoveButton->setEnabled(!m_moves.isEmpty());
-}
-
-void GameDatabaseDialog::viewNextMove()
-{
-	m_boardScene->makeMove(m_moves.at(m_moveIndex++).move);
-
-	ui->m_previousMoveButton->setEnabled(true);
-	ui->m_skipToFirstMoveButton->setEnabled(true);
-
-	if (m_moveIndex >= m_moves.count())
-	{
-		ui->m_nextMoveButton->setEnabled(false);
-		ui->m_skipToLastMoveButton->setEnabled(false);
-	}
-}
-
-void GameDatabaseDialog::viewPreviousMove()
-{
-	m_moveIndex--;
-
-	if (m_moveIndex == 0)
-	{
-		ui->m_previousMoveButton->setEnabled(false);
-		ui->m_skipToFirstMoveButton->setEnabled(false);
-	}
-
-	m_boardScene->undoMove();
-
-	ui->m_nextMoveButton->setEnabled(true);
-	ui->m_skipToLastMoveButton->setEnabled(true);
-}
-
-void GameDatabaseDialog::viewFirstMove()
-{
-	while (m_moveIndex > 0)
-		viewPreviousMove();
-}
-
-void GameDatabaseDialog::viewLastMove()
-{
-	while (m_moveIndex < m_moves.count())
-		viewNextMove();
+	m_gameViewer->setGame(&game);
 }
 
 void GameDatabaseDialog::updateSearch(const QString& terms)
