@@ -63,6 +63,7 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 		this, SLOT(viewMove(int)));
 
 	QVBoxLayout* layout = new QVBoxLayout();
+	layout->setContentsMargins(0, 0, 0, 0);
 	layout->addWidget(m_boardView);
 
 	if (orientation == Qt::Horizontal)
@@ -76,6 +77,7 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 		layout->addWidget(m_moveNumberSlider);
 
 		QHBoxLayout* toolbarLayout = new QHBoxLayout();
+		toolbarLayout->setContentsMargins(0, 0, 0, 0);
 		toolbarLayout->addStretch();
 		toolbarLayout->addWidget(m_toolBar);
 		toolbarLayout->addStretch();
