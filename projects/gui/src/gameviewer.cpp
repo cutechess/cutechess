@@ -60,7 +60,7 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 		this, SLOT(viewLastMove()));
 
 	connect(m_moveNumberSlider, SIGNAL(valueChanged(int)),
-		this, SLOT(viewMove(int)));
+		this, SLOT(viewPosition(int)));
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->setContentsMargins(0, 0, 0, 0);
@@ -206,7 +206,7 @@ void GameViewer::viewLastMove()
 		viewNextMove();
 }
 
-void GameViewer::viewMove(int index)
+void GameViewer::viewPosition(int index)
 {
 	if (m_moves.isEmpty())
 		return;
@@ -215,6 +215,25 @@ void GameViewer::viewMove(int index)
 		viewPreviousMove();
 	while (index > m_moveIndex)
 		viewNextMove();
+}
+
+void GameViewer::viewMove(int index)
+{
+	Q_ASSERT(!m_moves.isEmpty());
+
+	if (index < m_moveIndex)
+	{
+		// We backtrack one move too far and then make one
+		// move forward to highlight the correct move
+		while (index < m_moveIndex)
+			viewPreviousMove();
+		viewNextMove();
+	}
+	else
+	{
+		while (index + 1 > m_moveIndex)
+			viewNextMove();
+	}
 }
 
 void GameViewer::onFenChanged(const QString& fen)

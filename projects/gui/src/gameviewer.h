@@ -42,12 +42,15 @@ class GameViewer : public QWidget
 		void setGame(const PgnGame* pgn);
 		void disconnectGame();
 
+	public slots:
+		void viewMove(int index);
+
 	private slots:
 		void viewFirstMove();
 		void viewPreviousMove();
 		void viewNextMove();
 		void viewLastMove();
-		void viewMove(int index);
+		void viewPosition(int index);
 
 		void onFenChanged(const QString& fen);
 		void onMoveMade(const Chess::GenericMove& move);
