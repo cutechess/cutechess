@@ -62,7 +62,7 @@ XboardEngine::XboardEngine(QObject* parent)
 	  m_initTimer(new QTimer(this))
 {
 	m_initTimer->setSingleShot(true);
-	m_initTimer->setInterval(2000);
+	m_initTimer->setInterval(8000);
 	connect(m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
 
 	addVariant("standard");
