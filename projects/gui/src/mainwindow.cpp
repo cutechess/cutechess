@@ -93,6 +93,9 @@ MainWindow::MainWindow(ChessGame* game)
 	createToolBars();
 	createDockWindows();
 
+	connect(m_moveList, SIGNAL(moveClicked(int, int, int)),
+		m_gameViewer, SLOT(viewMove(int)));
+
 	addGame(game);
 }
 
