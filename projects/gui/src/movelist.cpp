@@ -111,11 +111,12 @@ void MoveList::mouseReleaseEvent(QMouseEvent *e)
 		if (key != -1)
 		{
 			MoveHighlighter::MoveToken token = md->tokens.value(key);
+			int index = (token.side - m_startingSide) + (token.move - 1) * 2;
 
 			if (token.type == MoveHighlighter::Move)
-				emit(moveClicked(token.side, token.move));
+				emit moveClicked(index, token.side, token.move);
 			else if (token.type == MoveHighlighter::Comment)
-				emit(commentClicked(token.side, token.move));
+				emit commentClicked(index, token.side, token.move);
 		}
 	}
 	QTextEdit::mouseReleaseEvent(e);

@@ -44,8 +44,8 @@ class MoveList : public QTextEdit
 		void setGame(ChessGame* game, PgnGame* pgn = 0);
 
 	signals:
-		void moveClicked(int side, int move);
-		void commentClicked(int side, int move);
+		void moveClicked(int moveIndex, int side, int moveNumber);
+		void commentClicked(int moveIndex, int side, int moveNumber);
 	
 	protected:
 		void mouseReleaseEvent(QMouseEvent *e);
