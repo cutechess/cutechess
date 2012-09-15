@@ -23,15 +23,26 @@
 class LIB_EXPORT EngineTextOption : public EngineOption
 {
 	public:
+		enum EditorType
+		{
+			LineEdit,
+			FileDialog,
+			FolderDialog
+		};
+
 		EngineTextOption(const QString& name,
 		                 const QVariant& value = QVariant(),
 		                 const QVariant& defaultValue = QVariant(),
-		                 const QString& alias = QString());
+				 const QString& alias = QString(),
+				 EditorType editorType = LineEdit);
 
 		// Inherited from EngineOption
 		virtual EngineOption* copy() const;
 		virtual bool isValid(const QVariant& value) const;
 		virtual QVariant toVariant() const;
+
+	private:
+		EditorType m_editorType;
 };
 
 #endif // ENGINETEXTOPTION_H

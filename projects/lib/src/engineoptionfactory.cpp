@@ -69,10 +69,18 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 		return new EngineTextOption(name, value.toString(),
 			defaultValue.toString(), alias);
 	}
-	else if (type == "text")
+	else if (type == "text" || type == "file" || type == "folder")
 	{
+		EngineTextOption::EditorType editorType;
+		if (type == "file")
+			editorType = EngineTextOption::FileDialog;
+		else if (type == "folder")
+			editorType = EngineTextOption::FolderDialog;
+		else
+			editorType = EngineTextOption::LineEdit;
+
 		return new EngineTextOption(name, value.toString(),
-			defaultValue.toString(), alias);
+			defaultValue.toString(), alias, editorType);
 	}
 	else if (type == "check")
 	{

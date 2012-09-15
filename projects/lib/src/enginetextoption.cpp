@@ -20,8 +20,10 @@
 EngineTextOption::EngineTextOption(const QString& name,
                                    const QVariant& value,
                                    const QVariant& defaultValue,
-                                   const QString& alias)
-	: EngineOption(name, QVariant::String, value, defaultValue, alias)
+				   const QString& alias,
+				   EditorType editorType)
+	: EngineOption(name, QVariant::String, value, defaultValue, alias),
+	  m_editorType(editorType)
 {
 }
 
@@ -39,7 +41,18 @@ QVariant EngineTextOption::toVariant() const
 {
 	QVariantMap map;
 
-	map.insert("type", "text");
+	switch (m_editorType)
+	{
+	case LineEdit:
+		map.insert("type", "text");
+		break;
+	case FileDialog:
+		map.insert("type", "file");
+		break;
+	case FolderDialog:
+		map.insert("type", "folder");
+		break;
+	}
 
 	map.insert("name", name());
 	map.insert("value", value());
