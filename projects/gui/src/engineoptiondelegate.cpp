@@ -20,6 +20,7 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QLineEdit>
+#include "pathlineedit.h"
 
 EngineOptionDelegate::EngineOptionDelegate(QWidget* parent)
 	: QStyledItemDelegate(parent)
@@ -65,6 +66,18 @@ QWidget* EngineOptionDelegate::createEditor(QWidget* parent,
 				QLineEdit* editor = new QLineEdit(parent);
 				return editor;
 			}
+			else if (optionType == "file")
+			{
+				PathLineEdit* editor = new PathLineEdit(
+					PathLineEdit::FilePath, parent);
+				return editor;
+			}
+			else if (optionType == "folder")
+			{
+				PathLineEdit* editor = new PathLineEdit(
+					PathLineEdit::FolderPath, parent);
+				return editor;
+			}
 		}
 	}
 	return QStyledItemDelegate::createEditor(parent, option, index);
@@ -104,6 +117,11 @@ void EngineOptionDelegate::setEditorData(QWidget* editor,
 			else if (optionType == "text")
 			{
 				QLineEdit* optionEditor = qobject_cast<QLineEdit*>(editor);
+				optionEditor->setText(map.value("value").toString());
+			}
+			else if (optionType == "file" || optionType == "folder")
+			{
+				PathLineEdit* optionEditor = qobject_cast<PathLineEdit*>(editor);
 				optionEditor->setText(map.value("value").toString());
 			}
 		}

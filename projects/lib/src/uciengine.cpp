@@ -433,6 +433,9 @@ EngineOption* UciEngine::parseOption(const QStringRef& line)
 		return new EngineSpinOption(name, value.toInt(), value.toInt(), min, max);
 	else if (type == "string")
 		return new EngineTextOption(name, value, value);
+	else if (type == "filename")
+		return new EngineTextOption(name, value, value, QString(),
+					    EngineTextOption::FileDialog);
 
 	return 0;
 }

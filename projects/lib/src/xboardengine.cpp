@@ -370,7 +370,16 @@ EngineOption* XboardEngine::parseOption(const QString& line)
 	if (type == "string" || type == "file" || type == "path")
 	{
 		QString value(line.mid(end + 1));
-		return new EngineTextOption(name, value, value);
+		EngineTextOption::EditorType editorType;
+
+		if (type == "file")
+			editorType = EngineTextOption::FileDialog;
+		else if (type == "path")
+			editorType = EngineTextOption::FolderDialog;
+		else
+			editorType = EngineTextOption::LineEdit;
+
+		return new EngineTextOption(name, value, value, QString(), editorType);
 	}
 	if (type == "spin" || type == "slider")
 	{
