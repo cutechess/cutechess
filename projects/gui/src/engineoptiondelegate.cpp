@@ -152,11 +152,6 @@ void EngineOptionDelegate::setModelData(QWidget* editor,
 				optionEditor->interpretText();
 				model->setData(index, optionEditor->value());
 			}
-			else if (optionType == "text")
-			{
-				QLineEdit* optionEditor = qobject_cast<QLineEdit*>(editor);
-				model->setData(index, optionEditor->text());
-			}
 		}
 	}
 	QStyledItemDelegate::setModelData(editor, model, index);
