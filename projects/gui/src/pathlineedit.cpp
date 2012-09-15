@@ -16,10 +16,9 @@
 */
 
 #include "pathlineedit.h"
-#include <QDirModel>
 #include <QFileDialog>
 #include <QToolButton>
-#include <QtEvents>
+#include <QResizeEvent>
 
 PathLineEdit::PathLineEdit(PathType pathType, QWidget* parent)
 	: QLineEdit(parent),
