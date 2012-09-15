@@ -180,6 +180,7 @@ void GameViewer::viewPreviousMove()
 
 	m_viewNextMoveAction->setEnabled(true);
 	m_viewLastMoveAction->setEnabled(true);
+	m_boardView->setEnabled(false);
 
 	m_moveNumberSlider->setSliderPosition(m_moveIndex);
 }
@@ -195,6 +196,10 @@ void GameViewer::viewNextMove()
 	{
 		m_viewNextMoveAction->setEnabled(false);
 		m_viewLastMoveAction->setEnabled(false);
+
+		if (!m_game.isNull()
+		&&  !m_game->isFinished() && m_game->playerToMove()->isHuman())
+			m_boardView->setEnabled(true);
 	}
 
 	m_moveNumberSlider->setSliderPosition(m_moveIndex);
