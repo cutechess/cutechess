@@ -87,9 +87,6 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 		SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
 		this, SLOT(onPlayerSelectionChanged(QItemSelection, QItemSelection)));
 
-	ui->m_moveEngineUpBtn->setIcon(style()->standardIcon(QStyle::SP_ArrowUp));
-	ui->m_moveEngineDownBtn->setIcon(style()->standardIcon(QStyle::SP_ArrowDown));
-
 	ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
 

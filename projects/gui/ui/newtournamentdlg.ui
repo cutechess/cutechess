@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>556</height>
+    <height>568</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -290,6 +290,9 @@
             <property name="text">
              <string/>
             </property>
+            <property name="arrowType">
+             <enum>Qt::UpArrow</enum>
+            </property>
            </widget>
           </item>
           <item>
@@ -299,6 +302,9 @@
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="arrowType">
+             <enum>Qt::DownArrow</enum>
             </property>
            </widget>
           </item>
