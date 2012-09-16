@@ -22,8 +22,7 @@
 #include <QVector>
 #include <QPointer>
 #include <board/genericmove.h>
-class QAction;
-class QToolBar;
+class QToolButton;
 class QSlider;
 class ChessGame;
 class PgnGame;
@@ -58,13 +57,12 @@ class GameViewer : public QWidget
 	private:
 		BoardScene* m_boardScene;
 		BoardView* m_boardView;
-		QToolBar* m_toolBar;
 		QSlider* m_moveNumberSlider;
 
-		QAction* m_viewFirstMoveAction;
-		QAction* m_viewPreviousMoveAction;
-		QAction* m_viewNextMoveAction;
-		QAction* m_viewLastMoveAction;
+		QToolButton* m_viewFirstMoveBtn;
+		QToolButton* m_viewPreviousMoveBtn;
+		QToolButton* m_viewNextMoveBtn;
+		QToolButton* m_viewLastMoveBtn;
 
 		QPointer<ChessGame> m_game;
 		QVector<Chess::GenericMove> m_moves;

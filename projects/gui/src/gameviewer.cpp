@@ -18,9 +18,7 @@
 #include "gameviewer.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QAction>
-#include <QIcon>
-#include <QToolBar>
+#include <QToolButton>
 #include <QSlider>
 #include <pgngame.h>
 #include <chessgame.h>
@@ -30,61 +28,76 @@
 
 GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 	: QWidget(parent),
-	  m_toolBar(new QToolBar),
 	  m_moveNumberSlider(new QSlider(Qt::Horizontal)),
+	  m_viewFirstMoveBtn(new QToolButton),
+	  m_viewPreviousMoveBtn(new QToolButton),
+	  m_viewNextMoveBtn(new QToolButton),
+	  m_viewLastMoveBtn(new QToolButton),
 	  m_moveIndex(0)
 {
 	m_boardScene = new BoardScene(this);
 	m_boardView = new BoardView(m_boardScene, this);
 	m_boardView->setEnabled(false);
 
-	m_toolBar->setFloatable(false);
-	m_toolBar->setMovable(false);
-	m_toolBar->setEnabled(false);
-
-	m_viewFirstMoveAction = m_toolBar->addAction(
-		QIcon(":/icons/toolbutton/first_16x16"),
-		tr("Skip to first move"),
+	m_viewFirstMoveBtn->setEnabled(false);
+	m_viewFirstMoveBtn->setAutoRaise(true);
+	m_viewFirstMoveBtn->setMinimumSize(32, 32);
+	m_viewFirstMoveBtn->setToolTip(tr("Skip to the beginning"));
+	m_viewFirstMoveBtn->setIcon(QIcon(":/icons/toolbutton/first_16x16"));
+	connect(m_viewFirstMoveBtn, SIGNAL(clicked()),
 		this, SLOT(viewFirstMove()));
-	m_viewPreviousMoveAction = m_toolBar->addAction(
-		QIcon(":/icons/toolbutton/previous_16x16"),
-		tr("Previous move"),
+
+	m_viewPreviousMoveBtn->setEnabled(false);
+	m_viewPreviousMoveBtn->setAutoRaise(true);
+	m_viewPreviousMoveBtn->setMinimumSize(32, 32);
+	m_viewPreviousMoveBtn->setToolTip(tr("Previous move"));
+	m_viewPreviousMoveBtn->setIcon(QIcon(":/icons/toolbutton/previous_16x16"));
+	connect(m_viewPreviousMoveBtn, SIGNAL(clicked()),
 		this, SLOT(viewPreviousMove()));
-	m_viewNextMoveAction = m_toolBar->addAction(
-		QIcon(":/icons/toolbutton/next_16x16"),
-		tr("Next move"),
+
+	m_viewNextMoveBtn->setEnabled(false);
+	m_viewNextMoveBtn->setAutoRaise(true);
+	m_viewNextMoveBtn->setMinimumSize(32, 32);
+	m_viewNextMoveBtn->setToolTip(tr("Next move"));
+	m_viewNextMoveBtn->setIcon(QIcon(":/icons/toolbutton/next_16x16"));
+	connect(m_viewNextMoveBtn, SIGNAL(clicked()),
 		this, SLOT(viewNextMove()));
-	m_viewLastMoveAction = m_toolBar->addAction(
-		QIcon(":/icons/toolbutton/last_16x16"),
-		tr("Skip to last move"),
+
+	m_viewLastMoveBtn->setEnabled(false);
+	m_viewLastMoveBtn->setAutoRaise(true);
+	m_viewLastMoveBtn->setMinimumSize(32, 32);
+	m_viewLastMoveBtn->setToolTip(tr("Skip to the end"));
+	m_viewLastMoveBtn->setIcon(QIcon(":/icons/toolbutton/last_16x16"));
+	connect(m_viewLastMoveBtn, SIGNAL(clicked()),
 		this, SLOT(viewLastMove()));
 
+	m_moveNumberSlider->setEnabled(false);
 	connect(m_moveNumberSlider, SIGNAL(valueChanged(int)),
 		this, SLOT(viewPosition(int)));
+
+	QHBoxLayout* controls = new QHBoxLayout();
+	controls->setContentsMargins(0, 0, 0, 0);
+	controls->setSpacing(0);
+	controls->addWidget(m_viewFirstMoveBtn);
+	controls->addWidget(m_viewPreviousMoveBtn);
+	controls->addWidget(m_viewNextMoveBtn);
+	controls->addWidget(m_viewLastMoveBtn);
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->setContentsMargins(0, 0, 0, 0);
 	layout->addWidget(m_boardView);
 
 	if (orientation == Qt::Horizontal)
-	{
-		m_toolBar->addWidget(m_moveNumberSlider);
-		layout->addWidget(m_toolBar);
-	}
+		controls->addWidget(m_moveNumberSlider);
 	else
 	{
-		m_moveNumberSlider->setEnabled(false);
 		layout->addWidget(m_moveNumberSlider);
 
-		QHBoxLayout* toolbarLayout = new QHBoxLayout();
-		toolbarLayout->setContentsMargins(0, 0, 0, 0);
-		toolbarLayout->addStretch();
-		toolbarLayout->addWidget(m_toolBar);
-		toolbarLayout->addStretch();
-
-		layout->addLayout(toolbarLayout);
+		controls->insertStretch(0);
+		controls->addStretch();
 	}
 
+	layout->addLayout(controls);
 	setLayout(layout);
 }
 
@@ -130,11 +143,10 @@ void GameViewer::setGame(const PgnGame* pgn)
 	foreach (const PgnGame::MoveData& md, pgn->moves())
 		m_moves.append(md.move);
 
-	m_toolBar->setEnabled(true);
-	m_viewFirstMoveAction->setEnabled(false);
-	m_viewPreviousMoveAction->setEnabled(false);
-	m_viewNextMoveAction->setEnabled(!m_moves.isEmpty());
-	m_viewLastMoveAction->setEnabled(!m_moves.isEmpty());
+	m_viewFirstMoveBtn->setEnabled(false);
+	m_viewPreviousMoveBtn->setEnabled(false);
+	m_viewNextMoveBtn->setEnabled(!m_moves.isEmpty());
+	m_viewLastMoveBtn->setEnabled(!m_moves.isEmpty());
 
 	m_moveNumberSlider->setEnabled(!m_moves.isEmpty());
 	m_moveNumberSlider->setMaximum(m_moves.count());
@@ -172,14 +184,14 @@ void GameViewer::viewPreviousMove()
 
 	if (m_moveIndex == 0)
 	{
-		m_viewPreviousMoveAction->setEnabled(false);
-		m_viewFirstMoveAction->setEnabled(false);
+		m_viewPreviousMoveBtn->setEnabled(false);
+		m_viewFirstMoveBtn->setEnabled(false);
 	}
 
 	m_boardScene->undoMove();
 
-	m_viewNextMoveAction->setEnabled(true);
-	m_viewLastMoveAction->setEnabled(true);
+	m_viewNextMoveBtn->setEnabled(true);
+	m_viewLastMoveBtn->setEnabled(true);
 	m_boardView->setEnabled(false);
 
 	m_moveNumberSlider->setSliderPosition(m_moveIndex);
@@ -189,13 +201,13 @@ void GameViewer::viewNextMove()
 {
 	m_boardScene->makeMove(m_moves.at(m_moveIndex++));
 
-	m_viewPreviousMoveAction->setEnabled(true);
-	m_viewFirstMoveAction->setEnabled(true);
+	m_viewPreviousMoveBtn->setEnabled(true);
+	m_viewFirstMoveBtn->setEnabled(true);
 
 	if (m_moveIndex >= m_moves.count())
 	{
-		m_viewNextMoveAction->setEnabled(false);
-		m_viewLastMoveAction->setEnabled(false);
+		m_viewNextMoveBtn->setEnabled(false);
+		m_viewLastMoveBtn->setEnabled(false);
 
 		if (!m_game.isNull()
 		&&  !m_game->isFinished() && m_game->playerToMove()->isHuman())
@@ -246,7 +258,10 @@ void GameViewer::onFenChanged(const QString& fen)
 	m_moves.clear();
 	m_moveIndex = 0;
 
-	m_toolBar->setEnabled(false);
+	m_viewFirstMoveBtn->setEnabled(false);
+	m_viewPreviousMoveBtn->setEnabled(false);
+	m_viewNextMoveBtn->setEnabled(false);
+	m_viewLastMoveBtn->setEnabled(false);
 	m_moveNumberSlider->setEnabled(false);
 	m_moveNumberSlider->setMaximum(0);
 
@@ -257,7 +272,6 @@ void GameViewer::onMoveMade(const Chess::GenericMove& move)
 {
 	m_moves.append(move);
 
-	m_toolBar->setEnabled(true);
 	m_moveNumberSlider->setEnabled(true);
 	m_moveNumberSlider->setMaximum(m_moves.count());
 
