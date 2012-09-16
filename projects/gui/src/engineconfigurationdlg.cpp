@@ -51,7 +51,11 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	ui->m_protocolCombo->addItems(EngineFactory::protocols());
 
 	ui->m_optionsView->setModel(m_engineOptionModel);
-	ui->m_optionsView->setItemDelegate(new EngineOptionDelegate());
+
+	EngineOptionDelegate* delegate = new EngineOptionDelegate(this);
+	ui->m_optionsView->setItemDelegate(delegate);
+	connect(ui->m_workingDirEdit, SIGNAL(textChanged(QString)),
+		delegate, SLOT(setEngineDirectory(QString)));
 
 	m_optionDetectionTimer = new QTimer(this);
 	m_optionDetectionTimer->setSingleShot(true);

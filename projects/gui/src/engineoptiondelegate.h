@@ -34,6 +34,11 @@ class EngineOptionDelegate : public QStyledItemDelegate
 		virtual void setModelData(QWidget* editor, QAbstractItemModel* model,
 					  const QModelIndex& index) const;
 
+	public slots:
+		void setEngineDirectory(const QString& dir);
+
+	private:
+		QString m_engineDir;
 };
 
 #endif // ENGINE_OPTION_DELEGATE_H

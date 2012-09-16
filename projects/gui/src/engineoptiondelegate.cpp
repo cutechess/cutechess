@@ -27,6 +27,11 @@ EngineOptionDelegate::EngineOptionDelegate(QWidget* parent)
 {
 }
 
+void EngineOptionDelegate::setEngineDirectory(const QString& dir)
+{
+	m_engineDir = dir;
+}
+
 QWidget* EngineOptionDelegate::createEditor(QWidget* parent,
                                             const QStyleOptionViewItem& option,
                                             const QModelIndex& index) const
@@ -123,6 +128,7 @@ void EngineOptionDelegate::setEditorData(QWidget* editor,
 			{
 				PathLineEdit* optionEditor = qobject_cast<PathLineEdit*>(editor);
 				optionEditor->setText(map.value("value").toString());
+				optionEditor->setDefaultDirectory(m_engineDir);
 			}
 		}
 	}
