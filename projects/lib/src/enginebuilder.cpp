@@ -31,11 +31,17 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 				   const char* method,
 				   QObject* parent) const
 {
+	QString workDir = m_config.workingDirectory();
+	QString cmd = m_config.command().trimmed();
+
+	if (cmd.isEmpty())
+	{
+		qWarning("Empty engine command");
+		return 0;
+	}
+
 	QString path(QDir::currentPath());
 	EngineProcess* process = new EngineProcess();
-
-	QString workDir = m_config.workingDirectory();
-	QString cmd = m_config.command();
 
 	if (workDir.isEmpty())
 	{
