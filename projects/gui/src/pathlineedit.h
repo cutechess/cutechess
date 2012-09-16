@@ -19,6 +19,7 @@
 #define PATHLINEEDIT_H
 
 #include <QLineEdit>
+#include <QDir>
 class QToolButton;
 
 class PathLineEdit : public QLineEdit
@@ -34,6 +35,8 @@ class PathLineEdit : public QLineEdit
 
 		explicit PathLineEdit(PathType pathType, QWidget* parent = 0);
 
+		void setDefaultDirectory(const QString& dir);
+
 	protected:
 		virtual void resizeEvent(QResizeEvent* event);
 
@@ -43,6 +46,7 @@ class PathLineEdit : public QLineEdit
 	private:
 		PathType m_pathType;
 		QToolButton* m_browseBtn;
+		QDir m_defaultDir;
 };
 
 #endif // PATHLINEEDIT_H

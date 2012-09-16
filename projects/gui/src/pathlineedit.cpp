@@ -35,6 +35,11 @@ PathLineEdit::PathLineEdit(PathType pathType, QWidget* parent)
 	connect(m_browseBtn, SIGNAL(clicked()), this, SLOT(browse()));
 }
 
+void PathLineEdit::setDefaultDirectory(const QString& dir)
+{
+	m_defaultDir.setPath(dir);
+}
+
 void PathLineEdit::resizeEvent(QResizeEvent* event)
 {
 	int height = event->size().height();
@@ -48,6 +53,7 @@ void PathLineEdit::resizeEvent(QResizeEvent* event)
 void PathLineEdit::browse()
 {
 	QFileDialog dlg(this);
+
 	if (m_pathType == FilePath)
 	{
 		dlg.setFileMode(QFileDialog::AnyFile);
@@ -58,9 +64,19 @@ void PathLineEdit::browse()
 		dlg.setOption(QFileDialog::ShowDirsOnly);
 	}
 
+	if (m_defaultDir.exists())
+		dlg.setDirectory(m_defaultDir);
+
 	if (dlg.exec() == QDialog::Accepted)
 	{
 		QString val(dlg.selectedFiles().first());
+		if (!val.isEmpty() && m_defaultDir.exists())
+		{
+			QString tmp = m_defaultDir.relativeFilePath(val);
+			if (!tmp.startsWith(".."))
+				val = tmp;
+		}
+
 		if (!val.isEmpty())
 			setText(val);
 	}
