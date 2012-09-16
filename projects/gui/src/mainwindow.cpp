@@ -71,6 +71,7 @@ MainWindow::MainWindow(ChessGame* game)
 	clockLayout->insertSpacing(1, 20);
 
 	m_gameViewer = new GameViewer;
+	m_gameViewer->setContentsMargins(6, 6, 6, 6);
 
 	m_moveList = new MoveList(this);
 	m_tagsModel = new PgnTagsModel(this);

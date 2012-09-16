@@ -35,6 +35,10 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 	  m_viewLastMoveBtn(new QToolButton),
 	  m_moveIndex(0)
 {
+	#ifdef Q_OS_MAC
+	setStyleSheet("QToolButton:!hover { border: none; }");
+	#endif
+
 	m_boardScene = new BoardScene(this);
 	m_boardView = new BoardView(m_boardScene, this);
 	m_boardView->setEnabled(false);
@@ -88,7 +92,10 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 	layout->addWidget(m_boardView);
 
 	if (orientation == Qt::Horizontal)
+	{
+		controls->addSpacing(6);
 		controls->addWidget(m_moveNumberSlider);
+	}
 	else
 	{
 		layout->addWidget(m_moveNumberSlider);
