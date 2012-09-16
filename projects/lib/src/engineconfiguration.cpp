@@ -302,22 +302,22 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 {
 	if (this != &other)
 	{
-		setName(other.name());
-		setCommand(other.command());
-		setProtocol(other.protocol());
-		setWorkingDirectory(other.workingDirectory());
-		setArguments(other.arguments());
-		setInitStrings(other.initStrings());
-		setSupportedVariants(other.supportedVariants());
-		setWhiteEvalPov(other.whiteEvalPov());
-		setClaimsValidated(other.areClaimsValidated());
-		setRestartMode(other.restartMode());
+		m_name = other.m_name;
+		m_command = other.m_command;
+		m_workingDirectory = other.m_workingDirectory;
+		m_protocol = other.m_protocol;
+		m_arguments = other.m_arguments;
+		m_initStrings = other.m_initStrings;
+		m_variants = other.m_variants;
+		m_whiteEvalPov = other.m_whiteEvalPov;
+		m_validateClaims = other.m_validateClaims;
+		m_restartMode = other.m_restartMode;
 
 		qDeleteAll(m_options);
 		m_options.clear();
 
-		foreach (const EngineOption* option, other.options())
-			addOption(option->copy());
+		foreach (const EngineOption* option, other.m_options)
+			m_options.append(option->copy());
 	}
 	return *this;
 }
