@@ -248,7 +248,9 @@ void GameThread::newGame(ChessGame* game)
 {
 	m_ready = false;
 	m_game = game;
-	connect(game, SIGNAL(destroyed()), this, SLOT(onGameDestroyed()));
+	connect(game, SIGNAL(destroyed()),
+		this, SLOT(onGameDestroyed()),
+		Qt::QueuedConnection);
 
 	m_initializer->setGame(m_game);
 	QMetaObject::invokeMethod(m_initializer, "initializeGame",
@@ -257,8 +259,12 @@ void GameThread::newGame(ChessGame* game)
 
 void GameThread::finish()
 {
+	if (m_initializer == 0)
+		return;
+
 	QMetaObject::invokeMethod(m_initializer, "finish",
 				  Qt::QueuedConnection);
+	m_initializer = 0;
 }
 
 void GameThread::finishAndDelete()

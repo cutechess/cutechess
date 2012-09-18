@@ -70,6 +70,7 @@ class MainWindow : public QMainWindow
 		void onTabCloseRequested(int index);
 		void destroyGame(ChessGame* game);
 		void onTournamentFinished();
+		void onGameManagerFinished();
 
 	private:
 		struct TabData
@@ -130,6 +131,7 @@ class MainWindow : public QMainWindow
 
 		QString m_currentFile;
 		bool m_closing;
+		bool m_readyToClose;
 };
 
 #endif // MAINWINDOW_H

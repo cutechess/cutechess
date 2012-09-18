@@ -55,7 +55,8 @@ MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
 
 MainWindow::MainWindow(ChessGame* game)
 	: m_game(0),
-	  m_closing(false)
+	  m_closing(false),
+	  m_readyToClose(false)
 {
 	setAttribute(Qt::WA_DeleteOnClose, true);
 
@@ -96,6 +97,9 @@ MainWindow::MainWindow(ChessGame* game)
 
 	connect(m_moveList, SIGNAL(moveClicked(int, int, int)),
 		m_gameViewer, SLOT(viewMove(int)));
+
+	connect(CuteChessApplication::instance()->gameManager(),
+		SIGNAL(finished()), this, SLOT(onGameManagerFinished()));
 
 	addGame(game);
 }
@@ -702,26 +706,32 @@ bool MainWindow::saveGame(const QString& fileName)
 	return true;
 }
 
+void MainWindow::onGameManagerFinished()
+{
+	m_readyToClose = true;
+	close();
+}
+
 void MainWindow::closeEvent(QCloseEvent* event)
 {
+	if (m_readyToClose)
+	{
+		event->accept();
+		return;
+	}
+
 	if (askToSave())
 	{
 		m_closing = true;
-		if (m_tabs.isEmpty())
-			event->accept();
-		else
-		{
-			for (int i = m_tabs.size() - 1; i >= 0; i--)
-				onTabCloseRequested(i);
 
-			if (m_tabs.isEmpty())
-				event->accept();
-			else
-				event->ignore();
-		}
+		for (int i = m_tabs.size() - 1; i >= 0; i--)
+			onTabCloseRequested(i);
+
+		if (m_tabs.isEmpty())
+			CuteChessApplication::instance()->gameManager()->finish();
 	}
-	else
-		event->ignore();
+
+	event->ignore();
 }
 
 bool MainWindow::askToSave()
