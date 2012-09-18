@@ -117,7 +117,9 @@ void GameInitializer::initializeGame()
 
 		if (m_player[i] == 0)
 		{
-			m_player[i] = m_builder[i]->create(0, 0, this);
+			m_player[i] = m_builder[i]->create(thread()->parent(),
+							   SIGNAL(debugMessage(QString)),
+							   this);
 			if (m_player[i] == 0)
 			{
 				m_playerCount = 0;
