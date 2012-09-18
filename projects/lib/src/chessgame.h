@@ -76,6 +76,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void resume();
 		void stop();
 		void kill();
+		void emitStartFailed();
 		void onMoveMade(const Chess::Move& move);
 
 	signals:
@@ -86,6 +87,7 @@ class LIB_EXPORT ChessGame : public QObject
 			      const QString& comment);
 		void started(ChessGame* game = 0);
 		void finished(ChessGame* game = 0);
+		void startFailed(ChessGame* game = 0);
 		void playersReady();
 
 	private slots:

@@ -298,18 +298,13 @@ void Tournament::startNextGame()
 	data->blackIndex = m_pair.second;
 	m_gameData[game] = data;
 
-	if (!m_gameManager->newGame(game,
-				    white.builder,
-				    black.builder,
-				    GameManager::Enqueue,
-				    GameManager::ReusePlayers))
-	{
-		delete game->pgn();
-		game->deleteLater();
-		m_gameData.remove(game);
-
-		stop();
-	}
+	connect(game, SIGNAL(startFailed(ChessGame*)),
+		this, SLOT(onGameStartFailed(ChessGame*)));
+	m_gameManager->newGame(game,
+			       white.builder,
+			       black.builder,
+			       GameManager::Enqueue,
+			       GameManager::ReusePlayers);
 }
 
 void Tournament::onGameStarted(ChessGame* game)
@@ -399,6 +394,15 @@ void Tournament::onGameDestroyed(ChessGame* game)
 	m_gameManager->cleanupIdleThreads();
 	m_finished = true;
 	emit finished();
+}
+
+void Tournament::onGameStartFailed(ChessGame* game)
+{
+	delete game->pgn();
+	game->deleteLater();
+	m_gameData.remove(game);
+
+	stop();
 }
 
 void Tournament::start()

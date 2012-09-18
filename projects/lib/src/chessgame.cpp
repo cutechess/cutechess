@@ -460,6 +460,11 @@ void ChessGame::generateOpening()
 	}
 }
 
+void ChessGame::emitStartFailed()
+{
+	emit startFailed(this);
+}
+
 void ChessGame::setStartDelay(int time)
 {
 	Q_ASSERT(time >= 0);

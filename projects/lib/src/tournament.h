@@ -303,6 +303,7 @@ class LIB_EXPORT Tournament : public QObject
 		void onGameStarted(ChessGame* game);
 		void onGameFinished(ChessGame* game);
 		void onGameDestroyed(ChessGame* game);
+		void onGameStartFailed(ChessGame* game);
 
 	private:
 		struct GameData

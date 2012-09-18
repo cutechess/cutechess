@@ -139,7 +139,7 @@ class LIB_EXPORT GameManager : public QObject
 		 * \note If there are still free game slots after starting this
 		 * game, the ready() signal is emitted immediately.
 		 */
-		bool newGame(ChessGame* game,
+		void newGame(ChessGame* game,
 			     const PlayerBuilder* white,
 			     const PlayerBuilder* black,
 			     StartMode startMode = StartImmediately,
@@ -185,6 +185,7 @@ class LIB_EXPORT GameManager : public QObject
 	private slots:
 		void onThreadReady();
 		void onThreadQuit();
+		void onGameInitialized(bool success);
 
 	private:
 		struct GameEntry
@@ -198,8 +199,8 @@ class LIB_EXPORT GameManager : public QObject
 
 		GameThread* getThread(const PlayerBuilder* white,
 				      const PlayerBuilder* black);
-		bool startGame(const GameEntry& entry);
-		bool startQueuedGame();
+		void startGame(const GameEntry& entry);
+		void startQueuedGame();
 		void cleanup();
 
 		bool m_finishing;
