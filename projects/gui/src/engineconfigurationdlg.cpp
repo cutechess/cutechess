@@ -51,6 +51,8 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	ui->m_protocolCombo->addItems(EngineFactory::protocols());
 
 	ui->m_optionsView->setModel(m_engineOptionModel);
+	connect(m_engineOptionModel, SIGNAL(modelReset()),
+		this, SLOT(resizeColumns()));
 
 	EngineOptionDelegate* delegate = new EngineOptionDelegate(this);
 	ui->m_optionsView->setItemDelegate(delegate);
@@ -267,6 +269,12 @@ void EngineConfigurationDialog::onAccepted()
 	connect(this, SIGNAL(detectionFinished()),
 		this, SLOT(accept()));
 	detectEngineOptions();
+}
+
+void EngineConfigurationDialog::resizeColumns()
+{
+	for (int i = 0; i < m_engineOptionModel->columnCount(); i++)
+		ui->m_optionsView->resizeColumnToContents(i);
 }
 
 void EngineConfigurationDialog::restoreDefaults()

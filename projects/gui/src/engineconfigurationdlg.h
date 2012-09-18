@@ -77,6 +77,7 @@ class EngineConfigurationDialog : public QDialog
 		void onEngineQuit();
 		void onTabChanged(int index);
 		void onAccepted();
+		void resizeColumns();
 
 	private:
 		EngineOptionModel* m_engineOptionModel;
