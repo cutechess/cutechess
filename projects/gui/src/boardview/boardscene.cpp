@@ -158,6 +158,23 @@ void BoardScene::undoMove()
 	applyTransition(m_history.takeLast(), Backward);
 }
 
+void BoardScene::cancelUserMove()
+{
+	GraphicsPiece* piece = qgraphicsitem_cast<GraphicsPiece*>(mouseGrabberItem());
+	if (piece == 0)
+	{
+		if (!m_chooser.isNull())
+			m_chooser->cancelChoice();
+		return;
+	}
+
+	m_anim = pieceAnimation(piece, m_sourcePos);
+	m_anim->start(QAbstractAnimation::DeleteWhenStopped);
+
+	m_highlightPiece = 0;
+	m_squares->clearHighlights();
+}
+
 void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
 	GraphicsPiece* piece = pieceAt(event->scenePos());

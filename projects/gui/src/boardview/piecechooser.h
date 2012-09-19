@@ -62,6 +62,9 @@ class PieceChooser : public QGraphicsObject
 				   const QStyleOptionGraphicsItem* option,
 				   QWidget* widget = 0);
 
+		/*! Chooses a null piece and destroys the object. */
+		void cancelChoice();
+
 	public slots:
 		/*! Reveals the dialog with an animation. */
 		void reveal();
@@ -71,7 +74,11 @@ class PieceChooser : public QGraphicsObject
 	signals:
 		/*!
 		 * This signal is emitted when the user has chosen a piece.
+		 *
 		 * If the user clicked outside of the dialog, \a piece is null.
+		 *
+		 * The piece chooser is destroyed automatically after the
+		 * choice has been made.
 		 */
 		void pieceChosen(const Chess::Piece& piece);
 

@@ -54,6 +54,12 @@ void PieceChooser::paint(QPainter* painter,
 	painter->drawRoundedRect(m_rect, 10.0, 10.0);
 }
 
+void PieceChooser::cancelChoice()
+{
+	emit pieceChosen(Chess::Piece());
+	destroy();
+}
+
 void PieceChooser::reveal()
 {
 	QParallelAnimationGroup* group = new QParallelAnimationGroup(this);
@@ -122,8 +128,7 @@ void PieceChooser::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 	if (!contains(pos))
 	{
-		emit pieceChosen(Chess::Piece());
-		destroy();
+		cancelChoice();
 		return;
 	}
 

@@ -87,6 +87,8 @@ class BoardScene : public QGraphicsScene
 		void makeMove(const Chess::GenericMove& move);
 		/*! Reverses the last move that was made in the scene. */
 		void undoMove();
+		/*! Cancels any move that the user is attempting to make. */
+		void cancelUserMove();
 
 	signals:
 		/*!
