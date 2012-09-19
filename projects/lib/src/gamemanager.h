@@ -133,8 +133,8 @@ class LIB_EXPORT GameManager : public QObject
 		 * \a cleanupMode determines whether the players and their builder
 		 * objects are destroyed or reused after the game.
 		 *
-		 * Returns true if successfull (ie. the game was added to the queue
-		 * or it was started successfully); otherwise returns false.
+		 * If the game cannot be started because one or both of the players
+		 * can't be initialized, \a game will emit the startFailed() signal.
 		 *
 		 * \note If there are still free game slots after starting this
 		 * game, the ready() signal is emitted immediately.
