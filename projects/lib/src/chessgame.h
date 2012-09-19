@@ -41,6 +41,7 @@ class LIB_EXPORT ChessGame : public QObject
 		ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent = 0);
 		virtual ~ChessGame();
 		
+		QString errorString() const;
 		ChessPlayer* player(Chess::Side side) const;
 		ChessPlayer* playerToMove() const;
 		ChessPlayer* playerToWait() const;
@@ -52,6 +53,7 @@ class LIB_EXPORT ChessGame : public QObject
 		const QVector<Chess::Move>& moves() const;
 		Chess::Result result() const;
 
+		void setError(const QString& message);
 		void setPlayer(Chess::Side side, ChessPlayer* player);
 		void setStartingFen(const QString& fen);
 		void setTimeControl(const TimeControl& timeControl,
@@ -122,6 +124,7 @@ class LIB_EXPORT ChessGame : public QObject
 		int m_resignMoveCount;
 		int m_resignScore;
 		int m_resignScoreCount[2];
+		QString m_error;
 		QString m_startingFen;
 		Chess::Result m_result;
 		QVector<Chess::Move> m_moves;

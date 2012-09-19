@@ -17,9 +17,9 @@
 
 #include "enginebuilder.h"
 #include <QDir>
+#include <QObject>
 #include "engineprocess.h"
 #include "enginefactory.h"
-
 
 EngineBuilder::EngineBuilder(const EngineConfiguration& config)
 	: PlayerBuilder(config.name()),
@@ -29,14 +29,22 @@ EngineBuilder::EngineBuilder(const EngineConfiguration& config)
 
 ChessPlayer* EngineBuilder::create(QObject* receiver,
 				   const char* method,
-				   QObject* parent) const
+				   QObject* parent,
+				   QString* error) const
 {
 	QString workDir = m_config.workingDirectory();
 	QString cmd = m_config.command().trimmed();
 
 	if (cmd.isEmpty())
 	{
-		qWarning("Empty engine command");
+		setError(error, QObject::tr("Empty engine command"));
+		return 0;
+	}
+
+	if (!EngineFactory::protocols().contains(m_config.protocol()))
+	{
+		setError(error, QObject::tr("Unknown chess protocol: %1")
+			 .arg(m_config.protocol()));
 		return 0;
 	}
 
@@ -57,7 +65,8 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		// in the engine's working directory
 		if (!QDir::setCurrent(workDir))
 		{
-			qWarning("Invalid working directory: %s", qPrintable(workDir));
+			setError(error, QObject::tr("Invalid working directory: %1")
+				 .arg(workDir));
 			delete process;
 			return 0;
 		}
@@ -74,18 +83,14 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		QDir::setCurrent(path);
 	if (!ok)
 	{
-		qWarning("Cannot start engine %s", qPrintable(m_config.command()));
+		setError(error, QObject::tr("Cannot execute command: %1")
+			 .arg(m_config.command()));
 		delete process;
 		return 0;
 	}
 
 	ChessEngine* engine = EngineFactory::create(m_config.protocol());
-	if (engine == 0)
-	{
-		qWarning("Unknown chess protocol: %s", qPrintable(m_config.protocol()));
-		delete process;
-		return 0;
-	}
+	Q_ASSERT(engine != 0);
 
 	engine->setParent(parent);
 	if (receiver != 0 && method != 0)
@@ -96,4 +101,16 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 
 	engine->start();
 	return engine;
+}
+
+void EngineBuilder::setError(QString* error, const QString& message) const
+{
+	QChar sep = error ? '\n' : ' ';
+	QString str(QObject::tr("Cannot start engine %1:%2%3")
+		    .arg(name()).arg(sep).arg(message));
+
+	if (error != 0)
+		*error = str;
+	else
+		qWarning("%s", qPrintable(str));
 }

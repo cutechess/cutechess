@@ -37,7 +37,8 @@ class LIB_EXPORT HumanBuilder : public PlayerBuilder
 		// Inherited from PlayerBuilder
 		virtual ChessPlayer* create(QObject* receiver,
 					    const char* method,
-					    QObject* parent) const;
+					    QObject* parent,
+					    QString* error) const;
 };
 
 #endif // HUMANBUILDER_H

@@ -71,6 +71,7 @@ class MainWindow : public QMainWindow
 		void destroyGame(ChessGame* game);
 		void onTournamentFinished();
 		void onGameManagerFinished();
+		void onGameStartFailed(ChessGame* game);
 
 	private:
 		struct TabData

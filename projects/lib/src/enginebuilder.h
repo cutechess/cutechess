@@ -32,9 +32,12 @@ class LIB_EXPORT EngineBuilder : public PlayerBuilder
 		// Inherited from PlayerBuilder
 		virtual ChessPlayer* create(QObject* receiver,
 					    const char* method,
-					    QObject* parent) const;
+					    QObject* parent,
+					    QString* error) const;
 
 	private:
+		void setError(QString* error, const QString& message) const;
+
 		EngineConfiguration m_config;
 };
 

@@ -53,6 +53,11 @@ ChessGame::~ChessGame()
 	delete m_board;
 }
 
+QString ChessGame::errorString() const
+{
+	return m_error;
+}
+
 ChessPlayer* ChessGame::player(Chess::Side side) const
 {
 	Q_ASSERT(!side.isNull());
@@ -361,6 +366,11 @@ Chess::Move ChessGame::bookMove(Chess::Side side)
 		return Chess::Move();
 
 	return move;
+}
+
+void ChessGame::setError(const QString& message)
+{
+	m_error = message;
 }
 
 void ChessGame::setPlayer(Chess::Side side, ChessPlayer* player)

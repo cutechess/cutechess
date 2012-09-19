@@ -140,6 +140,10 @@ void EngineMatch::onTournamentFinished()
 	||  m_tournament->finishedGameCount() % m_ratingInterval != 0)
 		printRanking();
 
+	QString error = m_tournament->errorString();
+	if (!error.isEmpty())
+		qWarning("%s", qPrintable(error));
+
 	qDebug("Finished match");
 	connect(m_tournament->gameManager(), SIGNAL(finished()),
 		this, SIGNAL(finished()));

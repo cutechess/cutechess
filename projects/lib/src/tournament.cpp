@@ -78,6 +78,11 @@ bool Tournament::isFinished() const
 	return m_finished;
 }
 
+QString Tournament::errorString() const
+{
+	return m_error;
+}
+
 QString Tournament::name() const
 {
 	return m_name;
@@ -398,6 +403,8 @@ void Tournament::onGameDestroyed(ChessGame* game)
 
 void Tournament::onGameStartFailed(ChessGame* game)
 {
+	m_error = game->errorString();
+
 	delete game->pgn();
 	game->deleteLater();
 	m_gameData.remove(game);

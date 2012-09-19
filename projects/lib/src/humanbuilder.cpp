@@ -25,8 +25,11 @@ HumanBuilder::HumanBuilder(const QString& name)
 
 ChessPlayer* HumanBuilder::create(QObject *receiver,
 				  const char *method,
-				  QObject *parent) const
+				  QObject *parent,
+				  QString* error) const
 {
+	Q_UNUSED(error);
+
 	ChessPlayer* player = new HumanPlayer(parent);
 	if (!name().isEmpty())
 		player->setName(name());

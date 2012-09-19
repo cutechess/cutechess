@@ -22,6 +22,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QTimer>
+#include <QMessageBox>
 
 #include <enginefactory.h>
 #include <engineoption.h>
@@ -200,7 +201,8 @@ void EngineConfigurationDialog::detectEngineOptions()
 	ui->m_progressBar->show();
 
 	EngineBuilder builder(engineConfiguration());
-	m_engine = qobject_cast<ChessEngine*>(builder.create(0, 0, this));
+	QString error;
+	m_engine = qobject_cast<ChessEngine*>(builder.create(0, 0, this, &error));
 
 	if (m_engine != 0)
 	{
@@ -217,6 +219,8 @@ void EngineConfigurationDialog::detectEngineOptions()
 	}
 	else
 	{
+		QMessageBox::critical(this, tr("Engine Error"), error);
+
 		ui->m_detectBtn->setEnabled(true);
 		ui->m_restoreBtn->setEnabled(true);
 		ui->m_progressBar->hide();

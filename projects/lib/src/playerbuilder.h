@@ -53,10 +53,13 @@ class LIB_EXPORT PlayerBuilder
 		 * \param method The receiver's method the \a debugMessage(QString)
 		 *               signal will connect to.
 		 * \param parent The player's parent object.
+		 * \param error If an error occurs and \a error is not 0, the error
+		 *              description is written here.
 		 */
-		virtual ChessPlayer* create(QObject* receiver = 0,
-					    const char* method = 0,
-					    QObject* parent = 0) const = 0;
+		virtual ChessPlayer* create(QObject* receiver,
+					    const char* method,
+					    QObject* parent,
+					    QString* error) const = 0;
 
 	private:
 		QString m_name;

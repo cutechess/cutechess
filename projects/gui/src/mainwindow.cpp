@@ -489,8 +489,17 @@ void MainWindow::newGame()
 	// Start the game in a new tab
 	connect(game, SIGNAL(started(ChessGame*)),
 		this, SLOT(addGame(ChessGame*)));
+	connect(game, SIGNAL(startFailed(ChessGame*)),
+		this, SLOT(onGameStartFailed(ChessGame*)));
 	CuteChessApplication::instance()->gameManager()->newGame(game,
 		player[0], player[1]);
+}
+
+void MainWindow::onGameStartFailed(ChessGame* game)
+{
+	QMessageBox::critical(this, tr("Game Error"), game->errorString());
+	delete game->pgn();
+	game->deleteLater();
 }
 
 void MainWindow::newTournament()
@@ -517,10 +526,22 @@ void MainWindow::onTournamentFinished()
 	Tournament* tournament = qobject_cast<Tournament*>(QObject::sender());
 	Q_ASSERT(tournament != 0);
 
-	QMessageBox::information(this,
-				 tr("Tournament finished"),
-				 tr("Tournament \"%1\" is finished")
-					.arg(tournament->name()));
+	QString error = tournament->errorString();
+	if (!error.isEmpty())
+	{
+		QMessageBox::critical(this,
+				      tr("Tournament Error"),
+				      tr("Tournament \"%1\" finished with an error.\n\n%2")
+				      .arg(tournament->name()).arg(error));
+	}
+	else
+	{
+		QMessageBox::information(this,
+					 tr("Tournament finished"),
+					 tr("Tournament \"%1\" is finished")
+					 .arg(tournament->name()));
+	}
+
 	tournament->deleteLater();
 	m_stopTournamentAct->setEnabled(false);
 }

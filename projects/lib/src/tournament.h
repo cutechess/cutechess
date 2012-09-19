@@ -80,6 +80,8 @@ class LIB_EXPORT Tournament : public QObject
 		GameManager* gameManager() const;
 		/*! Returns true if the tournament is finished; otherwise returns false. */
 		bool isFinished() const;
+		/*! Returns a detailed description of the error. */
+		QString errorString() const;
 		/*!
 		 * Returns the name of the tournament.
 		 *
@@ -315,6 +317,7 @@ class LIB_EXPORT Tournament : public QObject
 
 		GameManager* m_gameManager;
 		ChessGame* m_lastGame;
+		QString m_error;
 		QString m_name;
 		QString m_site;
 		QString m_variant;
