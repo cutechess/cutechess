@@ -262,6 +262,12 @@ void GameThread::finish()
 	if (m_initializer == 0)
 		return;
 
+	if (m_cleanupMode == GameManager::DeletePlayers)
+	{
+		delete m_initializer->whiteBuilder();
+		delete m_initializer->blackBuilder();
+	}
+
 	QMetaObject::invokeMethod(m_initializer, "finish",
 				  Qt::QueuedConnection);
 	m_initializer = 0;
@@ -439,10 +445,6 @@ void GameManager::onThreadReady()
 	if (thread->cleanupMode() == DeletePlayers)
 	{
 		m_activeThreads.removeOne(thread);
-
-		delete thread->initializer()->whiteBuilder();
-		delete thread->initializer()->blackBuilder();
-
 		thread->finishAndDelete();
 	}
 
