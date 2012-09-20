@@ -111,22 +111,21 @@ class BookExportTask : public ThreadedTask
 
 	public:
 		BookExportTask(PgnGameIterator* it,
-			       QDataStream* out,
+			       QFile* file,
 			       int maxDepth,
 			       QWidget* parent);
-		virtual ~BookExportTask();
 
 	protected:
 		virtual void run();
 
 	private:
 		PgnGameIterator* m_it;
-		QDataStream* m_out;
+		QFile* m_file;
 		int m_depth;
 };
 
 BookExportTask::BookExportTask(PgnGameIterator* it,
-			       QDataStream* out,
+			       QFile* file,
 			       int maxDepth,
 			       QWidget* parent)
 	: ThreadedTask(tr("Export Opening Book"),
@@ -134,20 +133,15 @@ BookExportTask::BookExportTask(PgnGameIterator* it,
 		       0, it->count(),
 		       parent),
 	  m_it(it),
-	  m_out(out),
+	  m_file(file),
 	  m_depth(maxDepth)
 {
-}
-
-BookExportTask::~BookExportTask()
-{
-	delete m_out->device();
-	delete m_out;
-	delete m_it;
+	m_file->moveToThread(this);
 }
 
 void BookExportTask::run()
 {
+	QDataStream out(m_file);
 	PolyglotBook openingBook;
 
 	int i = 0;
@@ -169,7 +163,11 @@ void BookExportTask::run()
 	}
 
 	emit statusMessageChanged(tr("Writing opening book to disk..."));
-	*m_out << &openingBook;
+	out << &openingBook;
+
+	delete m_it;
+	delete m_file;
+
 	emit progressValueChanged(i);
 }
 
@@ -180,39 +178,34 @@ class PgnExportTask : public ThreadedTask
 
 	public:
 		PgnExportTask(PgnGameIterator* it,
-			      QTextStream* out,
+			      QFile* file,
 			      QWidget* parent);
-		virtual ~PgnExportTask();
 
 	protected:
 		virtual void run();
 
 	private:
 		PgnGameIterator* m_it;
-		QTextStream* m_out;
+		QFile* m_file;
 };
 
 PgnExportTask::PgnExportTask(PgnGameIterator* it,
-			     QTextStream* out,
+			     QFile* file,
 			     QWidget* parent)
 	: ThreadedTask(tr("Export Games"),
 		       tr("Writing %1 games to file...").arg(it->count()),
 		       0, it->count(),
 		       parent),
 	  m_it(it),
-	  m_out(out)
+	  m_file(file)
 {
-}
-
-PgnExportTask::~PgnExportTask()
-{
-	delete m_out->device();
-	delete m_out;
-	delete m_it;
+	m_file->moveToThread(this);
 }
 
 void PgnExportTask::run()
 {
+	QTextStream out(m_file);
+
 	int i = 0;
 	while (m_it->hasNext())
 	{
@@ -221,7 +214,7 @@ void PgnExportTask::run()
 
 		if (ok)
 		{
-			*m_out << game;
+			out << game;
 			if (++i % 512 == 0)
 			{
 				if (cancelRequested())
@@ -230,6 +223,9 @@ void PgnExportTask::run()
 			}
 		}
 	}
+
+	delete m_it;
+	delete m_file;
 
 	emit progressValueChanged(i);
 }
@@ -479,10 +475,9 @@ void GameDatabaseDialog::exportPgn()
 		delete file;
 		return;
 	}
-	QTextStream* out = new QTextStream(file);
 
 	PgnExportTask* task = new PgnExportTask(new PgnGameIterator(this),
-						out, this);
+						file, this);
 	task->start();
 }
 
@@ -510,10 +505,9 @@ void GameDatabaseDialog::createOpeningBook()
 		delete file;
 		return;
 	}
-	QDataStream* out = new QDataStream(file);
 
 	BookExportTask* task = new BookExportTask(new PgnGameIterator(this),
-						  out, depth, this);
+						  file, depth, this);
 	task->start();
 }
 
