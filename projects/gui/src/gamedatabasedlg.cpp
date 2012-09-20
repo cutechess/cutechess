@@ -156,12 +156,14 @@ void BookExportTask::run()
 			if (++i % 512 == 0)
 			{
 				if (cancelRequested())
-					return;
+					break;
 				emit progressValueChanged(i);
 			}
 		}
 	}
 
+	// Write the already imported games to the book
+	// even if cancel was requested.
 	emit statusMessageChanged(tr("Writing opening book to disk..."));
 	out << &openingBook;
 
@@ -218,7 +220,7 @@ void PgnExportTask::run()
 			if (++i % 512 == 0)
 			{
 				if (cancelRequested())
-					return;
+					break;
 				emit progressValueChanged(i);
 			}
 		}
