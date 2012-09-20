@@ -29,7 +29,8 @@ HEADERS += chessclock.h \
     newtournamentdialog.h \
     engineselectiondlg.h \
     gameviewer.h \
-    pathlineedit.h
+    pathlineedit.h \
+    threadedtask.h
 SOURCES += main.cpp \
     chessclock.cpp \
     engineconfigurationmodel.cpp \
@@ -60,4 +61,5 @@ SOURCES += main.cpp \
     newtournamentdialog.cpp \
     engineselectiondlg.cpp \
     gameviewer.cpp \
-    pathlineedit.cpp
+    pathlineedit.cpp \
+    threadedtask.cpp
