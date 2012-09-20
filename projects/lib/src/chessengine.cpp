@@ -392,8 +392,6 @@ void ChessEngine::onReadyRead()
 {
 	while (m_ioDevice->isReadable() && m_ioDevice->canReadLine())
 	{
-		m_idleTimer->stop();
-
 		QString line = QString(m_ioDevice->readLine());
 		if (line.endsWith('\n'))
 			line.chop(1);
@@ -407,6 +405,14 @@ void ChessEngine::onReadyRead()
 				  .arg(m_id)
 				  .arg(line));
 		parseLine(line);
+
+		if (m_idleTimer->isActive())
+		{
+			if (state() == Thinking && !m_pinging)
+				m_idleTimer->start();
+			else
+				m_idleTimer->stop();
+		}
 	}
 }
 
