@@ -304,7 +304,7 @@ bool PgnGame::write(const QString& filename, PgnMode mode) const
 		return false;
 
 	QFile file(filename);
-	if (!file.open(QIODevice::Append))
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Append))
 		return false;
 
 	QTextStream out(&file);

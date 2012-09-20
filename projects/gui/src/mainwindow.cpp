@@ -703,9 +703,13 @@ bool MainWindow::save()
 
 bool MainWindow::saveAs()
 {
-	const QString fileName = QFileDialog::getSaveFileName(this, tr("Save Game"),
-		QString(), tr("Portable Game Notation (*.pgn);;All Files (*.*)"));
-
+	const QString fileName = QFileDialog::getSaveFileName(
+		this,
+		tr("Save Game"),
+		QString(),
+		tr("Portable Game Notation (*.pgn);;All Files (*.*)"),
+		0,
+		QFileDialog::DontConfirmOverwrite);
 	if (fileName.isEmpty())
 		return false;
 

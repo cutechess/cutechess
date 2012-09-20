@@ -460,16 +460,18 @@ void GameDatabaseDialog::import()
 
 void GameDatabaseDialog::exportPgn()
 {
-	const QString fileName =
-		QFileDialog::getSaveFileName(this,
-					     tr("Export game collection"),
-					     QString(),
-					     tr("Portable Game Notation (*.pgn)"));
+	const QString fileName = QFileDialog::getSaveFileName(
+		this,
+		tr("Export game collection"),
+		QString(),
+		tr("Portable Game Notation (*.pgn)"),
+		0,
+		QFileDialog::DontConfirmOverwrite);
 	if (fileName.isEmpty())
 		return;
 
 	QFile* file = new QFile(fileName);
-	if (!file->open(QIODevice::WriteOnly))
+	if (!file->open(QIODevice::WriteOnly | QIODevice::Append))
 	{
 		QMessageBox::critical(this, tr("File Error"),
 				      tr("Error while saving file %1\n%2")
