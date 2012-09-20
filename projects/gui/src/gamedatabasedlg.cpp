@@ -517,7 +517,9 @@ void GameDatabaseDialog::createOpeningBook()
 
 void GameDatabaseDialog::updateUi()
 {
-	ui->m_createOpeningBookBtn->setEnabled(m_pgnGameEntryModel->rowCount() > 0);
+	bool enable = m_pgnGameEntryModel->rowCount() > 0;
+	ui->m_createOpeningBookBtn->setEnabled(enable);
+	ui->m_exportBtn->setEnabled(enable);
 }
 
 #include "gamedatabasedlg.moc"

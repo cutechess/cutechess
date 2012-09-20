@@ -62,6 +62,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="m_exportBtn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="toolTip">
         <string>Export filtered games in PGN format</string>
        </property>
