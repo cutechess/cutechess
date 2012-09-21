@@ -158,6 +158,7 @@ void GameViewer::setGame(const PgnGame* pgn)
 
 	m_moveNumberSlider->setEnabled(!m_moves.isEmpty());
 	m_moveNumberSlider->setMaximum(m_moves.count());
+	m_moveNumberSlider->setValue(0);
 }
 
 void GameViewer::disconnectGame()
