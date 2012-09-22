@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>317</width>
+    <width>284</width>
     <height>367</height>
    </rect>
   </property>
@@ -160,7 +160,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Increment (sec):</string>
+        <string>Increment:</string>
        </property>
        <property name="buddy">
         <cstring>m_incrementSpin</cstring>
@@ -171,6 +171,9 @@
       <widget class="QDoubleSpinBox" name="m_incrementSpin">
        <property name="toolTip">
         <string>Time increment per move in milliseconds</string>
+       </property>
+       <property name="suffix">
+        <string> sec</string>
        </property>
       </widget>
      </item>
@@ -219,6 +222,9 @@
        <property name="toolTip">
         <string>The time limit can be exceeded by this many milliseconds</string>
        </property>
+       <property name="suffix">
+        <string> ms</string>
+       </property>
        <property name="maximum">
         <number>9999</number>
        </property>
@@ -227,7 +233,7 @@
      <item row="5" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>Margin (msec):</string>
+        <string>Margin:</string>
        </property>
        <property name="buddy">
         <cstring>m_marginSpin</cstring>
