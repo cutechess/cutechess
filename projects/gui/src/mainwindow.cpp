@@ -99,7 +99,8 @@ MainWindow::MainWindow(ChessGame* game)
 		m_gameViewer, SLOT(viewMove(int)));
 
 	connect(CuteChessApplication::instance()->gameManager(),
-		SIGNAL(finished()), this, SLOT(onGameManagerFinished()));
+		SIGNAL(finished()), this, SLOT(onGameManagerFinished()),
+		Qt::QueuedConnection);
 
 	addGame(game);
 }
