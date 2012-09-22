@@ -22,6 +22,7 @@
 #include <QString>
 #include <QVector>
 #include <QDate>
+#include <climits>
 #include "board/genericmove.h"
 #include "board/result.h"
 class QTextStream;
