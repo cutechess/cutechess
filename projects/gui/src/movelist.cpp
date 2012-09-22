@@ -38,7 +38,7 @@ static void appendMove(QString& s,
 		       const QString& comment)
 {
 	QString move = QString("%1 ").arg(moveString);
-	move.replace('-', QString::fromUtf8("\u2060-\u2060"));
+	move.replace('-', QString::fromUtf8("\xE2\x81\xA0-\xE2\x81\xA0"));
 
 	if (moveNum == 0 && startingSide == Chess::Side::Black)
 		move.prepend("1... ");

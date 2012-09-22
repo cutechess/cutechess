@@ -59,7 +59,7 @@ void ChessClock::setInfiniteTime(bool infinite)
 		return;
 
 	stopTimer();
-	m_timeLabel->setText(QString::fromUtf8("<h1>\u221E</h1>"));
+	m_timeLabel->setText(QString::fromUtf8("<h1>\xE2\x88\x9E</h1>"));
 }
 
 void ChessClock::setTime(int totalTime)
