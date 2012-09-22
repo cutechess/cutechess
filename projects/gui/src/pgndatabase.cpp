@@ -47,18 +47,18 @@ QString PgnDatabase::fileName() const
 	return m_fileName;
 }
 
-PgnDatabase::PgnDatabaseError PgnDatabase::status() const
+PgnDatabase::Status PgnDatabase::status() const
 {
 	QFileInfo info(m_fileName);
 
 	if (!info.exists())
-		return DatabaseDoesNotExist;
+		return DoesNotExist;
 	if (!info.isReadable())
-		return IoDeviceError;
+		return Unreadable;
 	if (info.lastModified() != m_lastModified)
-		return DatabaseModified;
+		return Modified;
 
-	return NoError;
+	return Ok;
 }
 
 QDateTime PgnDatabase::lastModified() const
@@ -81,23 +81,23 @@ void PgnDatabase::setDisplayName(const QString& displayName)
 	m_displayName = displayName;
 }
 
-PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry* entry,
-						PgnGame* game)
+PgnDatabase::Status PgnDatabase::game(const PgnGameEntry* entry,
+				      PgnGame* game)
 {
 	Q_ASSERT(entry != 0);
 	Q_ASSERT(game != 0);
 
-	PgnDatabaseError error = status();
-	if (error != NoError)
-		return error;
+	Status status = this->status();
+	if (status != Ok)
+		return status;
 
 	QFile file(m_fileName);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-		return IoDeviceError;
+		return Unreadable;
 
 	PgnStream in(&file);
 	if (!in.seek(entry->pos(), entry->lineNumber()) || !game->read(in))
-		error = StreamError;
+		return Corrupted;
 
-	return error;
+	return Ok;
 }

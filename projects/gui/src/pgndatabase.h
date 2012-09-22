@@ -38,14 +38,14 @@ class PgnDatabase : public QObject
 	Q_OBJECT
 
 	public:
-		/*! PGN database processing error. */
-		enum PgnDatabaseError
+		/*! The current status of the database. */
+		enum Status
 		{
-			NoError,              //!< No error occured
-			DatabaseModified,     //!< Database was modified externally
-			DatabaseDoesNotExist, //!< Database file does not exist
-			IoDeviceError,        //!< Generic I/O device error
-			StreamError           //!< Error while processing the PGN data
+			Ok,		//!< The database can be used normally
+			Modified,	//!< Database file was modified externally
+			DoesNotExist,	//!< Database file does not exist
+			Unreadable,	//!< Database file cannot be read
+			Corrupted	//!< Database contains corrupted or invalid data
 		};
 
 		/*!
@@ -77,7 +77,7 @@ class PgnDatabase : public QObject
 		QString fileName() const;
 
 		/*! Returns the current status of this database. */
-		PgnDatabaseError status() const;
+		Status status() const;
 
 		/*!
 		 * Returns the last recorded modification time of this database.
@@ -118,7 +118,7 @@ class PgnDatabase : public QObject
 		 *
 		 * \note \a game must be allocated by the caller and must not be NULL.
 		 */
-		PgnDatabaseError game(const PgnGameEntry* entry, PgnGame* game);
+		Status game(const PgnGameEntry* entry, PgnGame* game);
 
 	private:
 		QList<const PgnGameEntry*> m_entries;

@@ -89,7 +89,7 @@ PgnGame PgnGameIterator::next(bool* ok, int depth)
 		m_file.close();
 
 		const PgnDatabase* db = m_dlg->m_dbManager->databases().at(m_dbIndex);
-		if (db->status() == PgnDatabase::NoError)
+		if (db->status() == PgnDatabase::Ok)
 		{
 			m_file.setFileName(db->fileName());
 			m_file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -348,13 +348,12 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 	PgnDatabase* selectedDatabase = m_dbManager->databases().at(databaseIndex);
 
 	PgnGame game;
-	PgnDatabase::PgnDatabaseError error;
+	PgnDatabase::Status status;
 	const PgnGameEntry* entry = m_pgnGameEntryModel->entryAt(current.row());
 
-	if ((error = selectedDatabase->game(entry, &game)) !=
-		PgnDatabase::NoError)
+	if ((status = selectedDatabase->game(entry, &game)) != PgnDatabase::Ok)
 	{
-		if (error == PgnDatabase::DatabaseDoesNotExist)
+		if (status == PgnDatabase::DoesNotExist)
 		{
 			// Ask the user if the database should be deleted from the
 			// list
@@ -381,7 +380,7 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 				QMessageBox::ActionRole);
 			msgBox.addButton(QMessageBox::Cancel);
 
-			if (error == PgnDatabase::DatabaseModified)
+			if (status == PgnDatabase::Modified)
 			{
 				msgBox.setText("PGN database has been modified since the last import.");
 				msgBox.setInformativeText("The database must be imported again to read it.");
