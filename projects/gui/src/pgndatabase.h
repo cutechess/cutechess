@@ -76,13 +76,8 @@ class PgnDatabase : public QObject
 		/*! Returns the file name of this database. */
 		QString fileName() const;
 
-		/*!
-		 * Closes the database file.
-		 *
-		 * In general, this function doesn't need to be called because the
-		 * file is closed automatically.
-		 */
-		void closeFile();
+		/*! Returns the current status of this database. */
+		PgnDatabaseError status() const;
 
 		/*!
 		 * Returns the last recorded modification time of this database.
@@ -121,25 +116,15 @@ class PgnDatabase : public QObject
 		/*!
 		 * Reads \a game from the database using \a entry.
 		 *
-		 * A maximum of \a maxPlies plies (halfmoves) are read.
-		 *
-		 * If \a leaveFileOpen is true then the database file is left open
-		 * until either closeFile() is called or this database is destroyed.
-		 *
 		 * \note \a game must be allocated by the caller and must not be NULL.
 		 */
-		PgnDatabaseError game(const PgnGameEntry* entry,
-				      PgnGame* game,
-				      int maxPlies = INT_MAX - 1,
-				      bool leaveFileOpen = false);
+		PgnDatabaseError game(const PgnGameEntry* entry, PgnGame* game);
 
 	private:
 		QList<const PgnGameEntry*> m_entries;
-		QFile m_file;
-		PgnStream* m_stream;
 		QDateTime m_lastModified;
+		QString m_fileName;
 		QString m_displayName;
-
 };
 
 #endif // PGN_DATABASE_H

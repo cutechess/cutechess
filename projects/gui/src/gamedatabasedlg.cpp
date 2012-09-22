@@ -25,6 +25,7 @@
 #include <QFileDialog>
 #include <QInputDialog>
 
+#include <pgnstream.h>
 #include <pgngame.h>
 #include <pgngameentry.h>
 #include <polyglotbook.h>
@@ -42,34 +43,27 @@
 class PgnGameIterator
 {
 	public:
-		PgnGameIterator(GameDatabaseDialog* dlg);
-		~PgnGameIterator();
+		PgnGameIterator(const GameDatabaseDialog* dlg);
 
 		int count() const;
 		bool hasNext() const;
 		PgnGame next(bool* ok, int depth = INT_MAX - 1);
 
 	private:
-		GameDatabaseDialog* m_dlg;
-		PgnDatabase* m_db;
+		const GameDatabaseDialog* m_dlg;
 		int m_dbIndex;
 		int m_gameIndex;
 		int m_gameCount;
+		QFile m_file;
+		PgnStream m_in;
 };
 
-PgnGameIterator::PgnGameIterator(GameDatabaseDialog* dlg)
+PgnGameIterator::PgnGameIterator(const GameDatabaseDialog* dlg)
 	: m_dlg(dlg),
-	  m_db(0),
 	  m_dbIndex(-1),
 	  m_gameIndex(0),
 	  m_gameCount(dlg->m_pgnGameEntryModel->entryCount())
 {
-}
-
-PgnGameIterator::~PgnGameIterator()
-{
-	if (m_db != 0)
-		m_db->closeFile();
 }
 
 int PgnGameIterator::count() const
@@ -92,14 +86,27 @@ PgnGame PgnGameIterator::next(bool* ok, int depth)
 	if (newDbIndex != m_dbIndex)
 	{
 		m_dbIndex = newDbIndex;
-		if (m_db != 0)
-			m_db->closeFile();
-		m_db = m_dlg->m_dbManager->databases().at(m_dbIndex);
+		m_file.close();
+
+		const PgnDatabase* db = m_dlg->m_dbManager->databases().at(m_dbIndex);
+		if (db->status() == PgnDatabase::NoError)
+		{
+			m_file.setFileName(db->fileName());
+			m_file.open(QIODevice::ReadOnly | QIODevice::Text);
+			m_in.setDevice(&m_file);
+		}
+	}
+
+	PgnGame game;
+	if (!m_file.isOpen())
+	{
+		*ok = false;
+		m_gameIndex++;
+		return game;
 	}
 
 	const PgnGameEntry* entry = m_dlg->m_pgnGameEntryModel->entryAt(m_gameIndex++);
-	PgnGame game;
-	*ok = (m_db->game(entry, &game, depth, true) == PgnDatabase::NoError);
+	*ok = m_in.seek(entry->pos(), entry->lineNumber()) && game.read(m_in, depth);
 
 	return game;
 }
@@ -393,6 +400,8 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 			if (msgBox.clickedButton() == importDbButton)
 				m_dbManager->importDatabaseAgain(databaseIndex);
 		}
+
+		return;
 	}
 
 	ui->m_whiteLabel->setText(game.tagValue("White"));

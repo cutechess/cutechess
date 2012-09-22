@@ -21,17 +21,14 @@
 
 PgnDatabase::PgnDatabase(const QString& fileName, QObject* parent)
 	: QObject(parent),
-	  m_file(fileName),
-	  m_stream(0)
+	  m_fileName(fileName),
+	  m_displayName(QFileInfo(fileName).fileName())
 {
-	QFileInfo fileInfo(fileName);
-	m_displayName = fileInfo.fileName();
 }
 
 PgnDatabase::~PgnDatabase()
 {
 	qDeleteAll(m_entries);
-	delete m_stream;
 }
 
 void PgnDatabase::setEntries(const QList<const PgnGameEntry*>& entries)
@@ -47,14 +44,21 @@ QList<const PgnGameEntry*> PgnDatabase::entries() const
 
 QString PgnDatabase::fileName() const
 {
-	return m_file.fileName();
+	return m_fileName;
 }
 
-void PgnDatabase::closeFile()
+PgnDatabase::PgnDatabaseError PgnDatabase::status() const
 {
-	delete m_stream;
-	m_stream = 0;
-	m_file.close();
+	QFileInfo info(m_fileName);
+
+	if (!info.exists())
+		return DatabaseDoesNotExist;
+	if (!info.isReadable())
+		return IoDeviceError;
+	if (info.lastModified() != m_lastModified)
+		return DatabaseModified;
+
+	return NoError;
 }
 
 QDateTime PgnDatabase::lastModified() const
@@ -78,37 +82,22 @@ void PgnDatabase::setDisplayName(const QString& displayName)
 }
 
 PgnDatabase::PgnDatabaseError PgnDatabase::game(const PgnGameEntry* entry,
-						PgnGame* game,
-						int maxPlies,
-						bool leaveFileOpen)
+						PgnGame* game)
 {
 	Q_ASSERT(entry != 0);
 	Q_ASSERT(game != 0);
 
-	if (!m_stream)
-	{
-		QFileInfo fileInfo(m_file.fileName());
+	PgnDatabaseError error = status();
+	if (error != NoError)
+		return error;
 
-		if (!fileInfo.exists())
-			return DatabaseDoesNotExist;
+	QFile file(m_fileName);
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+		return IoDeviceError;
 
-		if (fileInfo.lastModified() != m_lastModified)
-			return DatabaseModified;
-
-		if (!m_file.open(QIODevice::ReadOnly | QIODevice::Text))
-			return IoDeviceError;
-
-		m_stream = new PgnStream(&m_file);
-	}
-
-	PgnDatabaseError error = NoError;
-
-	if (!m_stream->seek(entry->pos(), entry->lineNumber())
-	||  !game->read(*m_stream, maxPlies))
+	PgnStream in(&file);
+	if (!in.seek(entry->pos(), entry->lineNumber()) || !game->read(in))
 		error = StreamError;
-
-	if (!leaveFileOpen)
-		closeFile();
 
 	return error;
 }
