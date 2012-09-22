@@ -198,6 +198,10 @@ void MainWindow::createToolBars()
 	m_tabBar->setTabsClosable(true);
 	m_tabBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
+	#ifdef Q_OS_MAC
+	m_tabBar->setDrawBase(false);
+	#endif
+
 	connect(m_tabBar, SIGNAL(currentChanged(int)),
 		this, SLOT(onTabChanged(int)));
 	connect(m_tabBar, SIGNAL(tabCloseRequested(int)),
