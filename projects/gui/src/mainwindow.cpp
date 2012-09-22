@@ -209,6 +209,7 @@ void MainWindow::createToolBars()
 		this, SLOT(onTabCloseRequested(int)));
 
 	QToolBar* toolBar = new QToolBar(tr("Game Tabs"));
+	toolBar->setVisible(false);
 	toolBar->setFloatable(false);
 	toolBar->setMovable(false);
 	toolBar->setAllowedAreas(Qt::TopToolBarArea);
@@ -275,6 +276,9 @@ void MainWindow::addGame(ChessGame* game)
 
 	m_tabs.append(tab);
 	m_tabBar->setCurrentIndex(m_tabBar->addTab(genericTitle(tab)));
+
+	if (m_tabs.size() == 2)
+		m_tabBar->parentWidget()->show();
 }
 
 void MainWindow::removeGame(int index)
@@ -283,6 +287,9 @@ void MainWindow::removeGame(int index)
 
 	m_tabs.removeAt(index);
 	m_tabBar->removeTab(index);
+
+	if (m_tabs.size() == 1)
+		m_tabBar->parentWidget()->hide();
 }
 
 void MainWindow::destroyGame(ChessGame* game)
