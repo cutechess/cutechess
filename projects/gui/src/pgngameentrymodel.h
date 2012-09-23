@@ -22,8 +22,8 @@
 #include <QList>
 #include <QFuture>
 #include <QFutureWatcher>
+#include <pgngamefilter.h>
 class PgnGameEntry;
-class PgnGameFilter;
 
 /*!
  * \brief Supplies PGN game entry information to views.
@@ -84,6 +84,7 @@ class PgnGameEntryModel : public QAbstractItemModel
 		int m_entryCount;
 		QFuture<int> m_filtered;
 		QFutureWatcher<int> m_watcher;
+		PgnGameFilter m_filter;
 };
 
 #endif // PGN_GAME_ENTRY_MODEL_H

@@ -18,7 +18,6 @@
 #include "pgngameentrymodel.h"
 #include <QtConcurrentFilter>
 #include <pgngameentry.h>
-#include <pgngamefilter.h>
 
 
 struct EntryContains
@@ -76,7 +75,7 @@ void PgnGameEntryModel::setEntries(const QList<const PgnGameEntry*>& entries)
 			m_indexes.append(i);
 	}
 
-	applyFilter(QString());
+	applyFilter(m_filter);
 }
 
 void PgnGameEntryModel::onResultsReady()
@@ -102,6 +101,8 @@ void PgnGameEntryModel::setFilter(const PgnGameFilter& filter)
 {
 	m_watcher.cancel();
 	m_watcher.waitForFinished();
+
+	m_filter = filter;
 	applyFilter(filter);
 }
 
