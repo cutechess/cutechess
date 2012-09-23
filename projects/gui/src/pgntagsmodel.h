@@ -19,7 +19,6 @@
 #define PGN_TAGS_MODEL_H
 
 #include <QAbstractItemModel>
-#include <QStringList>
 #include <QMap>
 
 /*!
@@ -46,7 +45,6 @@ class PgnTagsModel : public QAbstractItemModel
 					    int role = Qt::DisplayRole) const;
 
 	private:
-		static const QStringList m_headers;
 		QMap<QString, QString> m_tags;
 };
 

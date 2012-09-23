@@ -23,6 +23,7 @@
 #include <QVarLengthArray>
 #include <QSharedPointer>
 #include <QDebug>
+#include <QCoreApplication>
 #include "square.h"
 #include "piece.h"
 #include "move.h"
@@ -54,6 +55,8 @@ class BoardTransition;
  */
 class LIB_EXPORT Board
 {
+	Q_DECLARE_TR_FUNCTIONS(Board)
+
 	public:
 		/*! Coordinate system for the notation of the squares. */
 		enum CoordinateSystem

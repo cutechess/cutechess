@@ -24,10 +24,10 @@ namespace Chess {
 CrazyhouseBoard::CrazyhouseBoard()
 	: WesternBoard(new WesternZobrist())
 {
-	setPieceType(PromotedKnight, QObject::tr("promoted knight"), "N~", KnightMovement);
-	setPieceType(PromotedBishop, QObject::tr("promoted bishop"), "B~", BishopMovement);
-	setPieceType(PromotedRook, QObject::tr("promoted rook"), "R~", RookMovement);
-	setPieceType(PromotedQueen, QObject::tr("promoted queen"), "Q~", BishopMovement | RookMovement);
+	setPieceType(PromotedKnight, tr("promoted knight"), "N~", KnightMovement);
+	setPieceType(PromotedBishop, tr("promoted bishop"), "B~", BishopMovement);
+	setPieceType(PromotedRook, tr("promoted rook"), "R~", RookMovement);
+	setPieceType(PromotedQueen, tr("promoted queen"), "Q~", BishopMovement | RookMovement);
 }
 
 Board* CrazyhouseBoard::copy() const

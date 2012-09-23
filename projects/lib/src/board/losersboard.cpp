@@ -86,7 +86,7 @@ Result LosersBoard::result()
 	if (!canMove())
 	{
 		winner = sideToMove();
-		str = QObject::tr("%1 gets mated").arg(winner.toString());
+		str = tr("%1 gets mated").arg(winner.toString());
 		return Result(Result::Win, winner, str);
 	}
 
@@ -101,21 +101,21 @@ Result LosersBoard::result()
 	if (pieceCount <= 1)
 	{
 		winner = sideToMove();
-		str = QObject::tr("%1 lost all pieces").arg(winner.toString());
+		str = tr("%1 lost all pieces").arg(winner.toString());
 		return Result(Result::Win, winner, str);
 	}
 
 	// 50 move rule
 	if (reversibleMoveCount() >= 100)
 	{
-		str = QObject::tr("Draw by fifty moves rule");
+		str = tr("Draw by fifty moves rule");
 		return Result(Result::Draw, Side::NoSide, str);
 	}
 
 	// 3-fold repetition
 	if (repeatCount() >= 2)
 	{
-		str = QObject::tr("Draw by 3-fold repetition");
+		str = tr("Draw by 3-fold repetition");
 		return Result(Result::Draw, Side::NoSide, str);
 	}
 

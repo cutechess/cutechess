@@ -17,7 +17,6 @@
 
 #include "enginebuilder.h"
 #include <QDir>
-#include <QObject>
 #include "engineprocess.h"
 #include "enginefactory.h"
 
@@ -37,13 +36,13 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 
 	if (cmd.isEmpty())
 	{
-		setError(error, QObject::tr("Empty engine command"));
+		setError(error, tr("Empty engine command"));
 		return 0;
 	}
 
 	if (!EngineFactory::protocols().contains(m_config.protocol()))
 	{
-		setError(error, QObject::tr("Unknown chess protocol: %1")
+		setError(error, tr("Unknown chess protocol: %1")
 			 .arg(m_config.protocol()));
 		return 0;
 	}
@@ -65,7 +64,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		// in the engine's working directory
 		if (!QDir::setCurrent(workDir))
 		{
-			setError(error, QObject::tr("Invalid working directory: %1")
+			setError(error, tr("Invalid working directory: %1")
 				 .arg(workDir));
 			delete process;
 			return 0;
@@ -83,7 +82,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		QDir::setCurrent(path);
 	if (!ok)
 	{
-		setError(error, QObject::tr("Cannot execute command: %1")
+		setError(error, tr("Cannot execute command: %1")
 			 .arg(m_config.command()));
 		delete process;
 		return 0;
@@ -106,7 +105,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 void EngineBuilder::setError(QString* error, const QString& message) const
 {
 	QChar sep = error ? '\n' : ' ';
-	QString str(QObject::tr("Cannot start engine %1:%2%3")
+	QString str(tr("Cannot start engine %1:%2%3")
 		    .arg(name()).arg(sep).arg(message));
 
 	if (error != 0)

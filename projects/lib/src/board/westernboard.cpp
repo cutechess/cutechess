@@ -32,12 +32,12 @@ WesternBoard::WesternBoard(WesternZobrist* zobrist)
 	  m_kingCanCapture(true),
 	  m_zobrist(zobrist)
 {
-	setPieceType(Pawn, QObject::tr("pawn"), "P");
-	setPieceType(Knight, QObject::tr("knight"), "N", KnightMovement);
-	setPieceType(Bishop, QObject::tr("bishop"), "B", BishopMovement);
-	setPieceType(Rook, QObject::tr("rook"), "R", RookMovement);
-	setPieceType(Queen, QObject::tr("queen"), "Q", BishopMovement | RookMovement);
-	setPieceType(King, QObject::tr("king"), "K");
+	setPieceType(Pawn, tr("pawn"), "P");
+	setPieceType(Knight, tr("knight"), "N", KnightMovement);
+	setPieceType(Bishop, tr("bishop"), "B", BishopMovement);
+	setPieceType(Rook, tr("rook"), "R", RookMovement);
+	setPieceType(Queen, tr("queen"), "Q", BishopMovement | RookMovement);
+	setPieceType(King, tr("king"), "K");
 }
 
 int WesternBoard::width() const
@@ -1180,13 +1180,13 @@ Result WesternBoard::result()
 		if (inCheck(sideToMove()))
 		{
 			Side winner = sideToMove().opposite();
-			str = QObject::tr("%1 mates").arg(winner.toString());
+			str = tr("%1 mates").arg(winner.toString());
 
 			return Result(Result::Win, winner, str);
 		}
 		else
 		{
-			str = QObject::tr("Draw by stalemate");
+			str = tr("Draw by stalemate");
 			return Result(Result::Draw, Side::NoSide, str);
 		}
 	}
@@ -1206,21 +1206,21 @@ Result WesternBoard::result()
 	}
 	if (material[Side::White] <= 3 && material[Side::Black] <= 3)
 	{
-		str = QObject::tr("Draw by insufficient mating material");
+		str = tr("Draw by insufficient mating material");
 		return Result(Result::Draw, Side::NoSide, str);
 	}
 
 	// 50 move rule
 	if (m_reversibleMoveCount >= 100)
 	{
-		str = QObject::tr("Draw by fifty moves rule");
+		str = tr("Draw by fifty moves rule");
 		return Result(Result::Draw, Side::NoSide, str);
 	}
 
 	// 3-fold repetition
 	if (repeatCount() >= 2)
 	{
-		str = QObject::tr("Draw by 3-fold repetition");
+		str = tr("Draw by 3-fold repetition");
 		return Result(Result::Draw, Side::NoSide, str);
 	}
 

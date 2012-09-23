@@ -19,6 +19,7 @@
 #define RESULT_H
 
 #include "side.h"
+#include <QCoreApplication>
 
 namespace Chess {
 
@@ -30,6 +31,8 @@ namespace Chess {
  */
 class LIB_EXPORT Result
 {
+	Q_DECLARE_TR_FUNCTIONS(Result)
+
 	public:
 		/*! Result type. */
 		enum Type

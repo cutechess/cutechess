@@ -19,12 +19,15 @@
 #define ENGINEBUILDER_H
 
 #include "playerbuilder.h"
+#include <QCoreApplication>
 #include "engineconfiguration.h"
 
 
 /*! \brief A class for constructing local chess engines. */
 class LIB_EXPORT EngineBuilder : public PlayerBuilder
 {
+	Q_DECLARE_TR_FUNCTIONS(EngineBuilder)
+
 	public:
 		/*! Creates a new EngineBuilder. */
 		EngineBuilder(const EngineConfiguration& config);

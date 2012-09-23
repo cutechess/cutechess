@@ -19,7 +19,6 @@
 #define ENGINE_OPTION_MODEL_H
 
 #include <QAbstractItemModel>
-#include <QStringList>
 
 class EngineOption;
 
@@ -47,9 +46,7 @@ class EngineOptionModel : public QAbstractItemModel
 				     int role = Qt::EditRole);
 
 	private:
-		static const QStringList s_headers;
 		QList<EngineOption*> m_options;
-
 };
 
 #endif // ENGINE_OPTION_MODEL_H

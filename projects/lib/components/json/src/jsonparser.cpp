@@ -42,7 +42,7 @@ QString JsonParser::tokenString(JsonParser::Token type, const QString& str)
 	case JsonTrue: return "true";
 	case JsonFalse: return "false";
 	case JsonNull: return "null";
-	case JsonString: return QObject::tr("(empty string)");
+	case JsonString: return tr("(empty string)");
 	default: return QString();
 	}
 }
@@ -176,7 +176,7 @@ JsonParser::Token JsonParser::parseToken()
 					unicode.clear();
 					break;
 				default:
-					setError(QObject::tr("Unknown escape sequence: \\%1").arg(c));
+					setError(tr("Unknown escape sequence: \\%1").arg(c));
 					return JsonError;
 				}
 				break;
@@ -185,7 +185,7 @@ JsonParser::Token JsonParser::parseToken()
 			{
 				if (!c.isLetterOrNumber())
 				{
-					setError(QObject::tr("Invalid unicode digit: %1").arg(c));
+					setError(tr("Invalid unicode digit: %1").arg(c));
 					return JsonError;
 				}
 
@@ -196,7 +196,7 @@ JsonParser::Token JsonParser::parseToken()
 					int code = unicode.toInt(&ok, 16);
 					if (!ok)
 					{
-						setError(QObject::tr("Invalid unicode value: \\u%1")
+						setError(tr("Invalid unicode value: \\u%1")
 							 .arg(unicode));
 						return JsonError;
 					}
@@ -241,7 +241,7 @@ JsonParser::Token JsonParser::parseToken()
 				type = JsonNumber;
 			else
 			{
-				setError(QObject::tr("Unknown token: %1")
+				setError(tr("Unknown token: %1")
 					 .arg(m_lastToken));
 				return JsonError;
 			}
@@ -253,7 +253,7 @@ JsonParser::Token JsonParser::parseToken()
 		}
 	}
 
-	setError(QObject::tr("Reached EOF unexpectedly"));
+	setError(tr("Reached EOF unexpectedly"));
 	return JsonError;
 }
 
@@ -285,7 +285,7 @@ QVariant JsonParser::parseValue(Token* tokenType)
 				double val = m_lastToken.toDouble(&ok);
 				if (!ok)
 				{
-					setError(QObject::tr("Invalid fraction: %1")
+					setError(tr("Invalid fraction: %1")
 						 .arg(m_lastToken));
 					return QVariant();
 				}
@@ -300,7 +300,7 @@ QVariant JsonParser::parseValue(Token* tokenType)
 				if (ok)
 					return longval;
 
-				setError(QObject::tr("Invalid integer: %1")
+				setError(tr("Invalid integer: %1")
 					 .arg(m_lastToken));
 				return QVariant();
 			}
@@ -308,7 +308,7 @@ QVariant JsonParser::parseValue(Token* tokenType)
 	case JsonString:
 		return QVariant(m_lastToken);
 	default:
-		setError(QObject::tr("Invalid value: %1")
+		setError(tr("Invalid value: %1")
 			 .arg(tokenString(type, m_lastToken)));
 		return QVariant();
 	}
@@ -328,14 +328,14 @@ QVariant JsonParser::parseObject()
 		{
 			if (!map.isEmpty())
 			{
-				setError(QObject::tr("Expected more key/value pairs"));
+				setError(tr("Expected more key/value pairs"));
 				break;
 			}
 			return map;
 		}
 		if (t != JsonString)
 		{
-			setError(QObject::tr("Invalid key: %1")
+			setError(tr("Invalid key: %1")
 				 .arg(tokenString(t, m_lastToken)));
 			break;
 		}
@@ -344,7 +344,7 @@ QVariant JsonParser::parseObject()
 		t = parseToken();
 		if (t != JsonColon)
 		{
-			setError(QObject::tr("Expected colon instead of: %1")
+			setError(tr("Expected colon instead of: %1")
 				 .arg(tokenString(t, m_lastToken)));
 			break;
 		}
@@ -360,7 +360,7 @@ QVariant JsonParser::parseObject()
 			return map;
 		if (t != JsonComma)
 		{
-			setError(QObject::tr("Expected comma or closing bracket instead of: %1")
+			setError(tr("Expected comma or closing bracket instead of: %1")
 				 .arg(tokenString(t, m_lastToken)));
 			break;
 		}
@@ -386,7 +386,7 @@ QVariant JsonParser::parseArray()
 			clearError();
 			if (!list.isEmpty())
 			{
-				setError(QObject::tr("Expected more array items"));
+				setError(tr("Expected more array items"));
 				break;
 			}
 			return list;
@@ -398,7 +398,7 @@ QVariant JsonParser::parseArray()
 			return list;
 		if (t != JsonComma)
 		{
-			setError(QObject::tr("Expected comma or closing bracket instead of: %1")
+			setError(tr("Expected comma or closing bracket instead of: %1")
 				 .arg(tokenString(t, m_lastToken)));
 			break;
 		}

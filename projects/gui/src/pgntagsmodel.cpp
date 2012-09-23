@@ -17,9 +17,6 @@
 
 #include "pgntagsmodel.h"
 
-const QStringList PgnTagsModel::m_headers = (QStringList() <<
-	tr("Name") << tr("Value"));
-
 PgnTagsModel::PgnTagsModel(QObject* parent)
 	: QAbstractItemModel(parent)
 {
@@ -60,17 +57,22 @@ int PgnTagsModel::columnCount(const QModelIndex& parent) const
 	if (parent.isValid())
 		return 0;
 
-	return m_headers.count();
+	return 2;
 }
 
 QVariant PgnTagsModel::data(const QModelIndex& index, int role) const
 {
 	if (index.isValid() && role == Qt::DisplayRole)
 	{
-		if (index.column() == 0)
+		switch (index.column())
+		{
+		case 0:
 			return m_tags.keys().at(index.row());
-		else if (index.column() == 1)
+		case 1:
 			return m_tags.values().at(index.row());
+		default:
+			return QVariant();
+		}
 	}
 
 	return QVariant();
@@ -80,7 +82,17 @@ QVariant PgnTagsModel::headerData(int section, Qt::Orientation orientation,
                                    int role) const
 {
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
-		return m_headers.at(section);
+	{
+		switch (section)
+		{
+		case 0:
+			return tr("Name");
+		case 1:
+			return tr("Value");
+		default:
+			return QVariant();
+		}
+	}
 
 	return QVariant();
 }

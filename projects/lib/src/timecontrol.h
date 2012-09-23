@@ -20,6 +20,7 @@
 
 #include <QTime>
 #include <QString>
+#include <QCoreApplication>
 
 /*!
  * \brief Time controls of a chess game.
@@ -31,6 +32,8 @@
  */
 class LIB_EXPORT TimeControl
 {
+	Q_DECLARE_TR_FUNCTIONS(TimeControl)
+
 	public:
 		/*! Creates a new time control with invalid default settings. */
 		TimeControl();

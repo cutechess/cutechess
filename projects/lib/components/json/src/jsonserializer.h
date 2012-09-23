@@ -28,6 +28,7 @@
 
 #include <QString>
 #include <QVariant>
+#include <QCoreApplication>
 
 class QTextStream;
 
@@ -51,6 +52,8 @@ class QTextStream;
  */
 class LIB_EXPORT JsonSerializer
 {
+	Q_DECLARE_TR_FUNCTIONS(JsonSerializer)
+
 	public:
 		/*! Creates a new serializer that operates on \a data. */
 		JsonSerializer(const QVariant& data);

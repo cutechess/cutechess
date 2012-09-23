@@ -19,7 +19,6 @@
 #define PGN_DATABASE_MODEL_H
 
 #include <QAbstractItemModel>
-#include <QStringList>
 #include <QList>
 
 #include "pgndatabase.h"
@@ -61,9 +60,7 @@ class PgnDatabaseModel : public QAbstractItemModel
 		void onDatabasesReset();
 
 	private:
-		static const QStringList s_headers;
 		GameDatabaseManager* m_gameDatabaseManager;
-
 };
 
 #endif // PGN_DATABASE_MODEL_H

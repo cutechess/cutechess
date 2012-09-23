@@ -174,7 +174,7 @@ Result AtomicBoard::result()
 	if (pieceAt(kingSquare(side)).isEmpty())
 	{
 		Side winner = side.opposite();
-		QString str = QObject::tr("%1's king exploded").arg(side.toString());
+		QString str = tr("%1's king exploded").arg(side.toString());
 		return Result(Result::Win, winner, str);
 	}
 

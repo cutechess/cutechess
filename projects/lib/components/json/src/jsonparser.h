@@ -27,6 +27,7 @@
 #define JSONPARSER_H
 
 #include <QVariant>
+#include <QCoreApplication>
 
 class QTextStream;
 
@@ -42,6 +43,8 @@ class QTextStream;
  */
 class LIB_EXPORT JsonParser
 {
+	Q_DECLARE_TR_FUNCTIONS(JsonParser)
+
 	public:
 		/*! Creates a new parser that reads data from \a stream. */
 		JsonParser(QTextStream& stream);

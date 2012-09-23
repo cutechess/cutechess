@@ -153,7 +153,7 @@ bool JsonSerializer::serializeNode(QTextStream& stream,
 			stream << node.toString();
 		else
 		{
-			setError(QObject::tr("Invalid variant type: %1")
+			setError(tr("Invalid variant type: %1")
 				 .arg(node.typeName()));
 			return false;
 		}

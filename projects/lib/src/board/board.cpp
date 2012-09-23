@@ -25,7 +25,7 @@ namespace Chess {
 QDebug operator<<(QDebug dbg, const Board* board)
 {
 	QString str = "FEN: " + board->fenString() + '\n';
-	str += QObject::tr("Zobrist key") + ": 0x" +
+	str += Board::tr("Zobrist key") + ": 0x" +
 	       QString::number(board->m_key, 16).toUpper() + '\n';
 
 	int i = (board->m_width + 2) * 2;

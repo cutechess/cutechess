@@ -38,9 +38,6 @@ struct EntryContains
 	PgnGameFilter m_filter;
 };
 
-const QStringList PgnGameEntryModel::s_headers = (QStringList() <<
-	tr("Event") << tr("Site") << tr("Date") << tr("Round") <<
-	tr("White") << tr("Black") << tr("Result"));
 
 PgnGameEntryModel::PgnGameEntryModel(QObject* parent)
 	: QAbstractItemModel(parent),
@@ -137,7 +134,7 @@ int PgnGameEntryModel::columnCount(const QModelIndex& parent) const
 	if (parent.isValid())
 		return 0;
 
-	return s_headers.count();
+	return 7;
 }
 
 QVariant PgnGameEntryModel::data(const QModelIndex& index, int role) const
@@ -154,7 +151,27 @@ QVariant PgnGameEntryModel::headerData(int section, Qt::Orientation orientation,
 				   int role) const
 {
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
-		return s_headers.at(section);
+	{
+		switch (section)
+		{
+		case 0:
+			return tr("Event");
+		case 1:
+			return tr("Site");
+		case 2:
+			return tr("Date");
+		case 3:
+			return tr("Round");
+		case 4:
+			return tr("White");
+		case 5:
+			return tr("Black");
+		case 6:
+			return tr("Result");
+		default:
+			return QVariant();
+		}
+	}
 
 	return QVariant();
 }

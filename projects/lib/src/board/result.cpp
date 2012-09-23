@@ -16,7 +16,6 @@
 */
 
 #include "result.h"
-#include <QObject>
 
 
 namespace Chess {
@@ -102,55 +101,55 @@ QString Result::description() const
 	QString str;
 
 	if (m_type == Resignation)
-		str = QObject::tr("%1 resigns").arg(l);
+		str = tr("%1 resigns").arg(l);
 	else if (m_type == Timeout)
 	{
 		if (l.isEmpty())
-			str = QObject::tr("Draw by timeout");
+			str = tr("Draw by timeout");
 		else
-			str = QObject::tr("%1 loses on time").arg(l);
+			str = tr("%1 loses on time").arg(l);
 	}
 	else if (m_type == Adjudication)
 	{
 		if (w.isEmpty())
-			str = QObject::tr("Draw by adjudication");
+			str = tr("Draw by adjudication");
 		else
-			str = QObject::tr("%1 wins by adjudication").arg(w);
+			str = tr("%1 wins by adjudication").arg(w);
 	}
 	else if (m_type == IllegalMove)
-		str = QObject::tr("%1 makes an illegal move").arg(l);
+		str = tr("%1 makes an illegal move").arg(l);
 	else if (m_type == Disconnection)
 	{
 		if (l.isEmpty())
-			str = QObject::tr("Draw by disconnection");
+			str = tr("Draw by disconnection");
 		else
-			str = QObject::tr("%1 disconnects").arg(l);
+			str = tr("%1 disconnects").arg(l);
 	}
 	else if (m_type == StalledConnection)
 	{
 		if (l.isEmpty())
-			str = QObject::tr("Draw by stalled connection");
+			str = tr("Draw by stalled connection");
 		else
-			str = QObject::tr("%1's connection stalls").arg(l);
+			str = tr("%1's connection stalls").arg(l);
 	}
 	else if (m_type == Agreement)
 	{
 		if (w.isEmpty())
-			str = QObject::tr("Draw by agreement");
+			str = tr("Draw by agreement");
 		else
-			str = QObject::tr("%1 wins by agreement").arg(w);
+			str = tr("%1 wins by agreement").arg(w);
 	}
 	else if (m_type == NoResult)
-		str = QObject::tr("No result");
+		str = tr("No result");
 	else if (m_type == ResultError)
-		str = QObject::tr("Result error");
+		str = tr("Result error");
 
 	if (m_description.isEmpty())
 	{
 		if (m_type == Win)
-			str = QObject::tr("%1 wins").arg(w);
+			str = tr("%1 wins").arg(w);
 		else if (m_type == Draw)
-			str = QObject::tr("Drawn game");
+			str = tr("Drawn game");
 	}
 	else
 	{

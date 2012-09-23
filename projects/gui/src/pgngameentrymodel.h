@@ -19,7 +19,6 @@
 #define PGN_GAME_ENTRY_MODEL_H
 
 #include <QAbstractItemModel>
-#include <QStringList>
 #include <QList>
 #include <QFuture>
 #include <QFutureWatcher>
@@ -79,8 +78,6 @@ class PgnGameEntryModel : public QAbstractItemModel
 
 	private:
 		void applyFilter(const PgnGameFilter& filter);
-
-		static const QStringList s_headers;
 
 		QList<const PgnGameEntry*> m_entries;
 		QVector<int> m_indexes;

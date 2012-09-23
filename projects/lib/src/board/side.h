@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QMetaType>
+#include <QCoreApplication>
 
 namespace Chess {
 
@@ -32,6 +33,8 @@ namespace Chess {
  */
 class LIB_EXPORT Side
 {
+	Q_DECLARE_TR_FUNCTIONS(Side)
+
 	public:
 		/*! The enumerated type for the side. */
 		enum Type

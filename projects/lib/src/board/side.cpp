@@ -16,7 +16,6 @@
 */
 
 #include "side.h"
-#include <QObject>
 
 namespace Chess {
 
@@ -43,9 +42,9 @@ QString Side::symbol() const
 QString Side::toString() const
 {
 	if (m_type == White)
-		return QObject::tr("white");
+		return tr("white");
 	else if (m_type == Black)
-		return QObject::tr("black");
+		return tr("black");
 
 	return QString();
 }

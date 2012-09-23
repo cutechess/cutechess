@@ -17,8 +17,6 @@
 
 #include "pgndatabasemodel.h"
 
-const QStringList PgnDatabaseModel::s_headers = (QStringList() <<
-	tr("Database"));
 
 PgnDatabaseModel::PgnDatabaseModel(GameDatabaseManager* gameDatabaseManager,
                                    QObject* parent)
@@ -81,7 +79,7 @@ int PgnDatabaseModel::columnCount(const QModelIndex& parent) const
 	if (parent.isValid())
 		return 0;
 
-	return s_headers.count();
+	return 1;
 }
 
 QVariant PgnDatabaseModel::data(const QModelIndex& index, int role) const
@@ -112,7 +110,15 @@ QVariant PgnDatabaseModel::headerData(int section, Qt::Orientation orientation,
                                    int role) const
 {
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
-		return s_headers.at(section);
+	{
+		switch (section)
+		{
+		case 0:
+			return tr("Database");
+		default:
+			return QVariant();
+		}
+	}
 
 	return QVariant();
 }

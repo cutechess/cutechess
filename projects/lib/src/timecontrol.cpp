@@ -17,7 +17,6 @@
 
 #include "timecontrol.h"
 #include <QStringList>
-#include <QObject>
 
 
 TimeControl::TimeControl()
@@ -143,10 +142,10 @@ QString TimeControl::toString() const
 static QString s_timeString(int ms)
 {
 	if (ms == 0 || ms % 60000 != 0)
-		return QObject::tr("%1 sec").arg(double(ms) / 1000.0);
+		return TimeControl::tr("%1 sec").arg(double(ms) / 1000.0);
 	if (ms % 3600000 != 0)
-		return QObject::tr("%1 min").arg(ms / 60000);
-	return QObject::tr("%1 h").arg(ms / 3600000);
+		return TimeControl::tr("%1 min").arg(ms / 60000);
+	return TimeControl::tr("%1 h").arg(ms / 3600000);
 }
 
 static QString s_nodeString(int nodes)
@@ -154,8 +153,8 @@ static QString s_nodeString(int nodes)
 	if (nodes == 0 || nodes % 1000 != 0)
 		return QString::number(nodes);
 	else if (nodes % 1000000 != 0)
-		return QObject::tr("%1 k").arg(nodes / 1000);
-	return QObject::tr("%1 M").arg(nodes / 1000000);
+		return TimeControl::tr("%1 k").arg(nodes / 1000);
+	return TimeControl::tr("%1 M").arg(nodes / 1000000);
 }
 
 QString TimeControl::toVerboseString() const
@@ -166,27 +165,27 @@ QString TimeControl::toVerboseString() const
 	QString str;
 
 	if (m_infinite)
-		str = QObject::tr("infinite time");
+		str = tr("infinite time");
 	else if (m_timePerMove != 0)
-		str = QObject::tr("%1 per move")
+		str = tr("%1 per move")
 			.arg(s_timeString(m_timePerMove));
 	else if (m_movesPerTc != 0)
-		str = QObject::tr("%1 moves in %2")
+		str = tr("%1 moves in %2")
 			.arg(m_movesPerTc)
 			.arg(s_timeString(m_timePerTc));
 	else
 		str = s_timeString(m_timePerTc);
 
 	if (m_timePerTc != 0 && m_increment != 0)
-		str += QObject::tr(", %1 increment")
+		str += tr(", %1 increment")
 			.arg(s_timeString(m_increment));
 	if (m_nodeLimit != 0)
-		str += QObject::tr(", %1 nodes")
+		str += tr(", %1 nodes")
 			.arg(s_nodeString(m_nodeLimit));
 	if (m_plyLimit != 0)
-		str += QObject::tr(", %1 plies").arg(m_plyLimit);
+		str += tr(", %1 plies").arg(m_plyLimit);
 	if (m_expiryMargin != 0)
-		str += QObject::tr(", %1 msec margin").arg(m_expiryMargin);
+		str += tr(", %1 msec margin").arg(m_expiryMargin);
 
 	return str;
 }

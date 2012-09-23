@@ -20,8 +20,6 @@
 #include <engineoption.h>
 #include <enginebuttonoption.h>
 
-const QStringList EngineOptionModel::s_headers = (QStringList() <<
-	tr("Name") << tr("Value") << tr("Alias"));
 
 EngineOptionModel::EngineOptionModel(QObject* parent)
 	: QAbstractItemModel(parent)
@@ -70,7 +68,7 @@ int EngineOptionModel::columnCount(const QModelIndex& parent) const
 	if (parent.isValid())
 		return 0;
 
-	return s_headers.count();
+	return 3;
 }
 
 QVariant EngineOptionModel::data(const QModelIndex& index, int role) const
@@ -130,7 +128,19 @@ QVariant EngineOptionModel::headerData(int section, Qt::Orientation orientation,
                                        int role) const
 {
 	if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
-		return s_headers.at(section);
+	{
+		switch (section)
+		{
+		case 0:
+			return tr("Name");
+		case 1:
+			return tr("Value");
+		case 2:
+			return tr("Alias");
+		default:
+			return QVariant();
+		}
+	}
 
 	return QVariant();
 }
