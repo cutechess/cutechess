@@ -18,16 +18,18 @@
 #ifndef MOVE_LIST_H
 #define MOVE_LIST_H
 
-#include <QTextEdit>
+#include <QWidget>
 #include <QPointer>
+#include <QUrl>
 
+class QTextBrowser;
 class PgnGame;
 class ChessGame;
 namespace Chess { class GenericMove; }
 class QMouseEvent;
 class QSyntaxHighlighter;
 
-class MoveList : public QTextEdit
+class MoveList : public QWidget
 {
 	Q_OBJECT
 
@@ -44,22 +46,20 @@ class MoveList : public QTextEdit
 		void setGame(ChessGame* game, PgnGame* pgn = 0);
 
 	signals:
-		void moveClicked(int moveIndex, int side, int moveNumber);
-		void commentClicked(int moveIndex, int side, int moveNumber);
+		/*! Emitted when the user clicks move \a num. */
+		void moveClicked(int num);
+		/*! Emitted when the user clicks comment \a num. */
+		void commentClicked(int num);
 	
-	protected:
-		void mouseReleaseEvent(QMouseEvent *e);
-		void mouseMoveEvent(QMouseEvent *e);
-
 	private slots:
 		void onMoveMade(const Chess::GenericMove& genericMove,
 		                const QString& sanString,
 		                const QString& comment);
+		void onMoveOrCommentClicked(const QUrl& url);
 
 	private:
-		int findKey(int pos, const QList<int>& list);
-		void insertPlainTextMove(const QString& move);
-		QSyntaxHighlighter* m_syntax;
+		void insertHtmlMove(const QString& move);
+		QTextBrowser* m_moveList;
 		QPointer<ChessGame> m_game;
 		int m_moveCount;
 		int m_startingSide;

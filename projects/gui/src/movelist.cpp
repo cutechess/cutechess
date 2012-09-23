@@ -16,19 +16,25 @@
 */
 
 #include "movelist.h"
-#include <QMouseEvent>
+#include <QTextBrowser>
+#include <QVBoxLayout>
 #include <chessgame.h>
-#include "movehighlighter.h"
 
 MoveList::MoveList(QWidget* parent)
-	: QTextEdit(parent),
-	  m_syntax(new MoveHighlighter(document())),
+	: QWidget(parent),
 	  m_game(0),
 	  m_moveCount(0),
 	  m_startingSide(0)
 {
-	setReadOnly(true);
-	setMouseTracking(true);
+	m_moveList = new QTextBrowser(this);
+	m_moveList->setOpenLinks(false);
+	connect(m_moveList, SIGNAL(anchorClicked(const QUrl&)), this,
+	    SLOT(onMoveOrCommentClicked(const QUrl&)));
+
+	QVBoxLayout* layout = new QVBoxLayout();
+	layout->addWidget(m_moveList);
+	layout->setContentsMargins(0, 0, 0, 0);
+	setLayout(layout);
 }
 
 static void appendMove(QString& s,
@@ -37,23 +43,23 @@ static void appendMove(QString& s,
 		       const QString& moveString,
 		       const QString& comment)
 {
-	QString move = QString("%1 ").arg(moveString);
+	QString move = QString("<a href=\"move://%1\">%2</a> ").arg(moveNum).arg(moveString);
 
 	#ifndef Q_OS_WIN32
-	move.replace('-', QString::fromUtf8("\xE2\x81\xA0-\xE2\x81\xA0"));
+	move.replace('-', "&#8288;-&#8288;");
 	#endif
 
 	if (moveNum == 0 && startingSide == Chess::Side::Black)
-		move.prepend("1... ");
+		move.prepend("<strong>1...</strong> ");
 	else
 	{
 		moveNum += startingSide;
 		if (moveNum % 2 == 0)
-			move.prepend(QString("%1. ").arg(moveNum / 2 + 1));
+			move.prepend(QString("<strong>%1.</strong> ").arg(moveNum / 2 + 1));
 	}
 
 	if (!comment.isEmpty())
-		move.append(QString("{%1} ").arg(comment));
+		move.append(QString("<a style=\"color: green\" href=\"comment://%1\">{%2}</a> ").arg(moveNum).arg(comment));
 
 	s.append(move);
 }
@@ -70,7 +76,7 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 		pgn = m_game->pgn();
 	}
 
-	clear();
+	m_moveList->clear();
 
 	QString moves;
 	moves.reserve(512);
@@ -82,7 +88,7 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 		appendMove(moves, m_moveCount, m_startingSide, md.moveString, md.comment);
 	}
 
-	insertPlainTextMove(moves);
+	insertHtmlMove(moves);
 
 	if (m_game != 0)
 		connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
@@ -97,92 +103,35 @@ void MoveList::onMoveMade(const Chess::GenericMove& genericMove,
 
 	QString move;
 	appendMove(move, m_moveCount++, m_startingSide, sanString, comment);
-	insertPlainTextMove(move);
+	insertHtmlMove(move);
 }
 
-void MoveList::mouseReleaseEvent(QMouseEvent *e)
+void MoveList::insertHtmlMove(const QString& move)
 {
-	int pos = textCursor().position() - textCursor().block().position();
-	const MoveHighlighter::MoveData* md =
-		dynamic_cast<MoveHighlighter::MoveData *>(textCursor().block().userData());
-
-	if (md && e->button() == Qt::LeftButton && !textCursor().hasSelection() &&
-		pos < textCursor().block().length() - 1)
-	{
-		int key = findKey(pos, md->tokens.keys());
-
-		if (key != -1)
-		{
-			MoveHighlighter::MoveToken token = md->tokens.value(key);
-			int index = (token.side - m_startingSide) + (token.move - 1) * 2;
-
-			if (token.type == MoveHighlighter::Move)
-				emit moveClicked(index, token.side, token.move);
-			else if (token.type == MoveHighlighter::Comment)
-				emit commentClicked(index, token.side, token.move);
-		}
-	}
-	QTextEdit::mouseReleaseEvent(e);
-}
-
-void MoveList::mouseMoveEvent(QMouseEvent *e)
-{
-	QCursor newCursor = Qt::IBeamCursor;
-	const QTextCursor cursor = cursorForPosition(e->pos());
-	int pos = cursor.position() - cursor.block().position();
-	const MoveHighlighter::MoveData* md =
-		dynamic_cast<MoveHighlighter::MoveData *>(cursor.block().userData());
-
-	if (md && !cursor.hasSelection() &&
-		pos < cursor.block().length() - 1)
-	{
-		int key = findKey(pos, md->tokens.keys());
-
-		if (key != -1)
-		{
-			MoveHighlighter::MoveToken token = md->tokens.value(key);
-
-			if (token.type == MoveHighlighter::Move ||
-			    token.type == MoveHighlighter::Comment)
-				newCursor = Qt::PointingHandCursor;
-		}
-	}
-	viewport()->setCursor(newCursor);
-	QTextEdit::mouseMoveEvent(e);
-}
-
-int MoveList::findKey(int pos, const QList<int>& list)
-{
-	if (list.isEmpty())
-		return -1;
-
-	int i;
-	bool found = false;
-
-	for (i = 0; i < list.size(); i++)
-	{
-		if (pos >= list.at(i))
-			found = true;
-
-		if (found && pos < list.at(i))
-		{
-			i--;
-			break;
-		}
-	}
-	if (!found)
-		return -1;
-
-	if (i == list.size())
-		i--;
-
-	return list.at(i);
-}
-
-void MoveList::insertPlainTextMove(const QString& move)
-{
-	QTextCursor cursor = textCursor();
+	QTextCursor cursor = m_moveList->textCursor();
 	cursor.movePosition(QTextCursor::End);
-	setTextCursor(cursor);
-	insertPlainText(move);
+	m_moveList->setTextCursor(cursor);
+	m_moveList->insertHtml(move);
+}
+
+void MoveList::onMoveOrCommentClicked(const QUrl& url)
+{
+	bool ok;
+	int moveNum = url.authority().toInt(&ok);
+
+	if (!ok)
+	{
+		qWarning("MoveList: invalid move number: %s",
+		    qPrintable(url.authority()));
+
+		return;
+	}
+
+	if (url.scheme() == "move")
+		emit moveClicked(moveNum);
+	else if (url.scheme() == "comment")
+		emit commentClicked(moveNum);
+	else
+		qWarning("MoveList: unknown scheme: %s",
+		    qPrintable(url.scheme()));
 }

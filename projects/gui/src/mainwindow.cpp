@@ -95,7 +95,7 @@ MainWindow::MainWindow(ChessGame* game)
 	createToolBars();
 	createDockWindows();
 
-	connect(m_moveList, SIGNAL(moveClicked(int, int, int)),
+	connect(m_moveList, SIGNAL(moveClicked(int)),
 		m_gameViewer, SLOT(viewMove(int)));
 
 	connect(CuteChessApplication::instance()->gameManager(),
