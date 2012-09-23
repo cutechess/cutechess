@@ -185,7 +185,7 @@
              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
             </property>
             <item row="0" column="0">
-             <widget class="QLabel" name="label_2">
+             <widget class="QLabel" name="label_7">
               <property name="font">
                <font>
                 <weight>75</weight>
@@ -193,12 +193,12 @@
                </font>
               </property>
               <property name="text">
-               <string>White:</string>
+               <string>Event:</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLabel" name="m_whiteLabel">
+             <widget class="QLabel" name="m_eventLabel">
               <property name="font">
                <font>
                 <underline>true</underline>
@@ -213,34 +213,6 @@
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Black:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLabel" name="m_blackLabel">
-              <property name="font">
-               <font>
-                <underline>true</underline>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
              <widget class="QLabel" name="label_5">
               <property name="font">
                <font>
@@ -253,7 +225,7 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="1" column="1">
              <widget class="QLabel" name="m_siteLabel">
               <property name="font">
                <font>
@@ -268,8 +240,8 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_7">
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_2">
               <property name="font">
                <font>
                 <weight>75</weight>
@@ -277,12 +249,40 @@
                </font>
               </property>
               <property name="text">
-               <string>Event:</string>
+               <string>White:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="m_whiteLabel">
+              <property name="font">
+               <font>
+                <underline>true</underline>
+               </font>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Black:</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="QLabel" name="m_eventLabel">
+             <widget class="QLabel" name="m_blackLabel">
               <property name="font">
                <font>
                 <underline>true</underline>
