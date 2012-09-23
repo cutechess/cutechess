@@ -24,9 +24,7 @@
 namespace Chess { class Board; class Move; }
 class QMenu;
 class QAction;
-class QTextEdit;
 class QCloseEvent;
-class QGraphicsView;
 class QTabBar;
 class GameViewer;
 class MoveList;
