@@ -62,7 +62,10 @@ int PgnTagsModel::columnCount(const QModelIndex& parent) const
 
 QVariant PgnTagsModel::data(const QModelIndex& index, int role) const
 {
-	if (index.isValid() && role == Qt::DisplayRole)
+	if (!index.isValid())
+		return QVariant();
+
+	if (role == Qt::DisplayRole || role == Qt::EditRole)
 	{
 		switch (index.column())
 		{

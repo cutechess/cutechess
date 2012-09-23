@@ -53,7 +53,7 @@ QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) cons
 	if (!index.isValid())
 		return QVariant();
 
-	if (role == Qt::DisplayRole)
+	if (role == Qt::DisplayRole || role == Qt::EditRole)
 	{
 		const EngineConfiguration engine(m_engineManager->engineAt(index.row()));
 

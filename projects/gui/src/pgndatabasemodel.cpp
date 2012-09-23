@@ -89,7 +89,7 @@ QVariant PgnDatabaseModel::data(const QModelIndex& index, int role) const
 
 	const PgnDatabase* db = m_gameDatabaseManager->databases().at(index.row());
 
-	if (role == Qt::DisplayRole)
+	if (role == Qt::DisplayRole || role == Qt::EditRole)
 	{
 		switch (index.column())
 		{
@@ -100,8 +100,6 @@ QVariant PgnDatabaseModel::data(const QModelIndex& index, int role) const
 				return QVariant();
 		}
 	}
-	else if (role == Qt::EditRole && index.column() == 0)
-		return db->displayName();
 
 	return QVariant();
 }

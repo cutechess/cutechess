@@ -140,11 +140,15 @@ int PgnGameEntryModel::columnCount(const QModelIndex& parent) const
 
 QVariant PgnGameEntryModel::data(const QModelIndex& index, int role) const
 {
-	if (index.isValid() && role == Qt::DisplayRole)
+	if (!index.isValid())
+		return QVariant();
+
+	if (role == Qt::DisplayRole || role == Qt::EditRole)
 	{
 		PgnGameEntry::TagType tagType = PgnGameEntry::TagType(index.column());
 		return entryAt(index.row())->tagValue(tagType);
 	}
+
 	return QVariant();
 }
 
