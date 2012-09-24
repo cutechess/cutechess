@@ -22,7 +22,7 @@
 PgnDatabase::PgnDatabase(const QString& fileName, QObject* parent)
 	: QObject(parent),
 	  m_fileName(fileName),
-	  m_displayName(QFileInfo(fileName).fileName())
+	  m_displayName(QFileInfo(fileName).completeBaseName())
 {
 }
 
