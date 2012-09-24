@@ -145,18 +145,52 @@ void EngineConfigurationDialog::browseCommand()
 	const QString filter = tr("All Files (*)");
 	#endif
 
-	QString fileName = QFileDialog::getOpenFileName(this,
-		tr("Select Engine Executable"), ui->m_commandEdit->text(), filter);
+	// Try to open the dialog in a directory that best matches the
+	// previous command and working directory
+	QString defaultDir;
+	QFileInfo oldInfo(ui->m_commandEdit->text());
+	if (oldInfo.exists())
+		defaultDir = oldInfo.absoluteFilePath();
+	else
+	{
+		QString relFilePath = oldInfo.filePath();
+		QDir dir(ui->m_workingDirEdit->text());
 
+		if (!relFilePath.isEmpty() && dir.exists(relFilePath))
+			defaultDir = dir.absoluteFilePath(relFilePath);
+		else if (dir.exists())
+			defaultDir = dir.absolutePath();
+	}
+
+	QString fileName = QFileDialog::getOpenFileName(
+		this, tr("Select Engine Executable"), defaultDir, filter);
 	if (fileName.isEmpty())
 		return;
 
+	QFileInfo info(fileName);
+	QString prefix;
+
 	if (ui->m_workingDirEdit->text().isEmpty())
 		ui->m_workingDirEdit->setText(QDir::toNativeSeparators(
-			QFileInfo(fileName).absolutePath()));
+			info.absolutePath()));
 
 	if (ui->m_nameEdit->text().isEmpty())
-		ui->m_nameEdit->setText(QFileInfo(fileName).baseName());
+		ui->m_nameEdit->setText(info.completeBaseName());
+
+	// Use a relative path in the "command" field if possible
+	QDir dir(ui->m_workingDirEdit->text());
+	if (info.absoluteFilePath().startsWith(dir.absolutePath()))
+	{
+		fileName = dir.relativeFilePath(info.absoluteFilePath());
+
+		#ifndef Q_OS_WIN32
+		QString suffix(info.suffix().toLower());
+		if (suffix == "exe" || suffix == "bat" || suffix == "cmd")
+			prefix = "wine ";
+		else if (fileName == info.fileName())
+			fileName.prepend("./");
+		#endif
+	}
 
 	// Paths with spaces must be wrapped in quotes
 	if (fileName.contains(' '))
@@ -164,7 +198,8 @@ void EngineConfigurationDialog::browseCommand()
 		fileName.prepend('\"');
 		fileName.append('\"');
 	}
-	ui->m_commandEdit->setText(QDir::toNativeSeparators(fileName));
+
+	ui->m_commandEdit->setText(QDir::toNativeSeparators(prefix + fileName));
 }
 
 void EngineConfigurationDialog::browseWorkingDir()
