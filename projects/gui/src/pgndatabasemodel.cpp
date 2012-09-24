@@ -100,6 +100,8 @@ QVariant PgnDatabaseModel::data(const QModelIndex& index, int role) const
 				return QVariant();
 		}
 	}
+	else if (role == Qt::ToolTipRole && index.column() == 0)
+		return db->fileName();
 
 	return QVariant();
 }
