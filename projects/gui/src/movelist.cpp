@@ -30,7 +30,7 @@ MoveList::MoveList(QWidget* parent)
 	m_moveList->setOpenLinks(false);
 	m_moveList->document()->setDefaultStyleSheet(
 		"a:link { text-decoration: none; } "
-		".comment { color: green; }");
+		".comment { color: grey; }");
 	connect(m_moveList, SIGNAL(anchorClicked(const QUrl&)), this,
 	    SLOT(onMoveOrCommentClicked(const QUrl&)));
 
@@ -62,7 +62,7 @@ static void appendMove(QString& s,
 	}
 
 	if (!comment.isEmpty())
-		move.append(QString("<a class=\"comment\" href=\"comment://%1\">{%2}</a> ")
+		move.append(QString("<a class=\"comment\" href=\"comment://%1\">%2</a> ")
 			    .arg(moveNum).arg(comment));
 
 	s.append(move);
