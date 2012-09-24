@@ -18,6 +18,7 @@
 #include "movelist.h"
 #include <QTextBrowser>
 #include <QVBoxLayout>
+#include <QScrollBar>
 #include <chessgame.h>
 
 MoveList::MoveList(QWidget* parent)
@@ -112,10 +113,15 @@ void MoveList::onMoveMade(const Chess::GenericMove& genericMove,
 
 void MoveList::insertHtmlMove(const QString& move)
 {
+	QScrollBar* sb = m_moveList->verticalScrollBar();
+	bool atEnd = sb->value() == sb->maximum();
+
 	QTextCursor cursor = m_moveList->textCursor();
 	cursor.movePosition(QTextCursor::End);
-	m_moveList->setTextCursor(cursor);
-	m_moveList->insertHtml(move);
+	cursor.insertHtml(move);
+
+	if (atEnd)
+		sb->setValue(sb->maximum());
 }
 
 void MoveList::onMoveOrCommentClicked(const QUrl& url)
