@@ -430,7 +430,8 @@ void GameDatabaseDialog::onAdvancedSearch()
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
-	ui->m_searchEdit->clear();
+	ui->m_searchEdit->setText(tr("[Advanced search]"));
+	ui->m_searchEdit->setEnabled(false);
 	m_pgnGameEntryModel->setFilter(dlg.filter());
 	ui->m_clearBtn->setEnabled(true);
 }
