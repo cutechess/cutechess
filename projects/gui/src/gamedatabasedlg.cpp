@@ -264,11 +264,8 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 	ui->m_gamesListView->setAlternatingRowColors(true);
 	ui->m_gamesListView->setUniformRowHeights(true);
 
-	m_gameViewer = new GameViewer(Qt::Vertical);
-
-	QVBoxLayout* chessboardViewLayout = new QVBoxLayout();
-	chessboardViewLayout->addWidget(m_gameViewer);
-	ui->m_chessboardParentWidget->setLayout(chessboardViewLayout);
+	m_gameViewer = new GameViewer(Qt::Horizontal);
+	ui->m_viewerLayout->insertWidget(0, m_gameViewer);
 
 	ui->m_splitter->setSizes(QList<int>() << 100 << 500 << 300);
 
