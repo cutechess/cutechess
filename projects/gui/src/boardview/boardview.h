@@ -37,6 +37,10 @@ class BoardView : public QGraphicsView
 		/*! Creates a new BoardView object that displays \a scene. */
 		explicit BoardView(QGraphicsScene* scene, QWidget* parent = 0);
 
+		// Inherited from QGraphicsView
+		virtual QSize sizeHint() const;
+		virtual int heightForWidth(int width) const;
+
 	protected:
 		// Inherited from QGraphicsView
 		virtual void resizeEvent(QResizeEvent* event);
@@ -44,6 +48,7 @@ class BoardView : public QGraphicsView
 
 	private slots:
 		void fitToRect();
+		void onSceneRectChanged();
 
 	private:
 		bool m_initialized;

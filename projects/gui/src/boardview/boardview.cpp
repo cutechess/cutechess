@@ -31,13 +31,38 @@ BoardView::BoardView(QGraphicsScene* scene, QWidget* parent)
 	setRenderHint(QPainter::Antialiasing);
 	setMouseTracking(true);
 
+	QSizePolicy sp(sizePolicy());
+	sp.setHeightForWidth(true);
+	setSizePolicy(sp);
+
 	m_resizeTimer->setSingleShot(true);
 	m_resizeTimer->setInterval(300);
 
 	connect(m_resizeTimer, SIGNAL(timeout()),
 		this, SLOT(fitToRect()));
 	connect(scene, SIGNAL(sceneRectChanged(QRectF)),
-		this, SLOT(fitToRect()));
+		this, SLOT(onSceneRectChanged()));
+}
+
+QSize BoardView::sizeHint() const
+{
+	QSize size(sceneRect().size().toSize());
+	if (!size.isEmpty())
+		return size;
+
+	return QSize(200, 200);
+}
+
+int BoardView::heightForWidth(int width) const
+{
+	QSizeF size(sceneRect().size());
+	if (!size.isEmpty())
+	{
+		qreal ar = size.width() / size.height();
+		return width / ar;
+	}
+
+	return width;
 }
 
 void BoardView::paintEvent(QPaintEvent* event)
@@ -83,4 +108,10 @@ void BoardView::fitToRect()
 	m_initialized = true;
 	m_resizePixmap = QPixmap();
 	fitInView(sceneRect(), Qt::KeepAspectRatio);
+}
+
+void BoardView::onSceneRectChanged()
+{
+	updateGeometry();
+	fitToRect();
 }
