@@ -315,21 +315,21 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	if (gameData.game == m_game && m_game != 0)
 		return;
 
+	for (int i = 0; i < 2; i++)
+	{
+		ChessPlayer* player(m_players[i]);
+		if (player != 0)
+		{
+			disconnect(player, 0, m_engineDebugLog, 0);
+			disconnect(player, 0, m_chessClock[0], 0);
+			disconnect(player, 0, m_chessClock[1], 0);
+		}
+	}
+
 	if (m_game != 0)
 	{
 		m_gameViewer->disconnectGame();
 		disconnect(m_game, 0, m_moveList, 0);
-
-		for (int i = 0; i < 2; i++)
-		{
-			ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
-			if (player != 0)
-			{
-				disconnect(player, 0, m_engineDebugLog, 0);
-				disconnect(player, 0, m_chessClock[0], 0);
-				disconnect(player, 0, m_chessClock[1], 0);
-			}
-		}
 
 		ChessGame* tmp = m_game;
 		m_game = 0;
@@ -378,6 +378,7 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	for (int i = 0; i < 2; i++)
 	{
 		ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
+		m_players[i] = player;
 
 		connect(player, SIGNAL(debugMessage(QString)),
 			m_engineDebugLog, SLOT(appendPlainText(QString)));

@@ -33,6 +33,7 @@ class ChessClock;
 class PlainTextLog;
 class PgnGame;
 class ChessGame;
+class ChessPlayer;
 class PgnTagsModel;
 class Tournament;
 
@@ -126,6 +127,7 @@ class MainWindow : public QMainWindow
 		PlainTextLog* m_engineDebugLog;
 
 		QPointer<ChessGame> m_game;
+		QPointer<ChessPlayer> m_players[2];
 		QList<TabData> m_tabs;
 
 		QString m_currentFile;
