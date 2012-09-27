@@ -403,7 +403,7 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	}
 
 	updateWindowTitle();
-	m_game->unlockThread();
+	unlockCurrentGame();
 }
 
 int MainWindow::tabIndex(ChessGame* game) const
