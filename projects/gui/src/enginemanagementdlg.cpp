@@ -56,6 +56,8 @@ EngineManagementDialog::EngineManagementDialog(QWidget* parent)
 	connect(ui->m_enginesList->selectionModel(),
 		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
 		this, SLOT(updateUi()));
+	connect(ui->m_enginesList, SIGNAL(doubleClicked(QModelIndex)),
+		this, SLOT(configureEngine(QModelIndex)));
 	
 	// Add button
 	connect(ui->m_addBtn, SIGNAL(clicked(bool)), this, SLOT(addEngine()));
@@ -98,15 +100,19 @@ void EngineManagementDialog::addEngine()
 
 void EngineManagementDialog::configureEngine()
 {
+	configureEngine(ui->m_enginesList->currentIndex());
+}
+
+void EngineManagementDialog::configureEngine(const QModelIndex& index)
+{
 	// Map the index from the filtered model to the original model
-	int index = m_filteredModel->mapToSource(
-		ui->m_enginesList->selectionModel()->currentIndex()).row();
+	int row = m_filteredModel->mapToSource(index).row();
 
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
-	dlg.applyEngineInformation(m_engineManager->engines().at(index));
+	dlg.applyEngineInformation(m_engineManager->engines().at(row));
 
 	if (dlg.exec() == QDialog::Accepted)
-		m_engineManager->updateEngineAt(index, dlg.engineConfiguration());
+		m_engineManager->updateEngineAt(row, dlg.engineConfiguration());
 }
 
 void EngineManagementDialog::removeEngine()

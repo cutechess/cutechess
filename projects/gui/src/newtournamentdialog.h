@@ -21,6 +21,7 @@
 #include <QDialog>
 #include <timecontrol.h>
 
+class QModelIndex;
 class QItemSelection;
 class EngineManager;
 class EngineConfigurationModel;
@@ -47,6 +48,7 @@ class NewTournamentDialog : public QDialog
 		void addEngine();
 		void removeEngine();
 		void configureEngine();
+		void configureEngine(const QModelIndex& index);
 		void moveEngineUp();
 		void moveEngineDown();
 		void onVariantChanged(const QString& variant);

@@ -86,6 +86,8 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	connect(ui->m_playersList->selectionModel(),
 		SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
 		this, SLOT(onPlayerSelectionChanged(QItemSelection, QItemSelection)));
+	connect(ui->m_playersList, SIGNAL(doubleClicked(QModelIndex)),
+		this, SLOT(configureEngine(QModelIndex)));
 
 	ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
@@ -123,13 +125,18 @@ void NewTournamentDialog::removeEngine()
 
 void NewTournamentDialog::configureEngine()
 {
+	configureEngine(ui->m_playersList->currentIndex());
+}
+
+void NewTournamentDialog::configureEngine(const QModelIndex& index)
+{
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine);
 
-	int i = ui->m_playersList->currentIndex().row();
-	dlg.applyEngineInformation(m_addedEnginesManager->engineAt(i));
+	int row = index.row();
+	dlg.applyEngineInformation(m_addedEnginesManager->engineAt(row));
 
 	if (dlg.exec() == QDialog::Accepted)
-		m_addedEnginesManager->updateEngineAt(i, dlg.engineConfiguration());
+		m_addedEnginesManager->updateEngineAt(row, dlg.engineConfiguration());
 }
 
 void NewTournamentDialog::moveEngine(int offset)

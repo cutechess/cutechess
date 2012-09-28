@@ -23,6 +23,7 @@
 
 class EngineManager;
 class QSortFilterProxyModel;
+class QModelIndex;
 
 namespace Ui {
 	class EngineManagementDialog;
@@ -52,6 +53,7 @@ class EngineManagementDialog : public QDialog
 		void updateSearch(const QString& terms);
 		void addEngine();
 		void configureEngine();
+		void configureEngine(const QModelIndex& index);
 		void removeEngine();
 
 	private:
