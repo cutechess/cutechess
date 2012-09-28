@@ -229,8 +229,6 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-engine", QVariant::StringList, 1, -1, true);
 	parser.addOption("-each", QVariant::StringList, 1);
 	parser.addOption("-variant", QVariant::String, 1, 1);
-	parser.addOption("-book", QVariant::String, 1, 1);
-	parser.addOption("-bookdepth", QVariant::Int, 1, 1);
 	parser.addOption("-concurrency", QVariant::Int, 1, 1);
 	parser.addOption("-draw", QVariant::StringList, 2, 2);
 	parser.addOption("-resign", QVariant::StringList, 2, 2);
