@@ -27,6 +27,7 @@
 #include "engineconfigproxymodel.h"
 #include "engineconfigurationdlg.h"
 #include "timecontroldlg.h"
+#include "stringvalidator.h"
 
 
 NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
@@ -53,8 +54,13 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	m_proxyModel->sort(0);
 	m_proxyModel->setDynamicSortFilter(true);
 
+	StringValidator* engineValidator = new StringValidator(this);
+	engineValidator->setModel(m_proxyModel);
+
 	ui->m_whiteEngineComboBox->setModel(m_proxyModel);
+	ui->m_whiteEngineComboBox->setValidator(engineValidator);
 	ui->m_blackEngineComboBox->setModel(m_proxyModel);
+	ui->m_blackEngineComboBox->setValidator(engineValidator);
 
 	ui->m_variantComboBox->addItems(Chess::BoardFactory::variants());
 	connect(ui->m_variantComboBox, SIGNAL(currentIndexChanged(QString)),
