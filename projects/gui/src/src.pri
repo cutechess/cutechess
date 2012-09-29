@@ -29,7 +29,8 @@ HEADERS += chessclock.h \
     engineselectiondlg.h \
     gameviewer.h \
     pathlineedit.h \
-    threadedtask.h
+    threadedtask.h \
+    stringvalidator.h
 SOURCES += main.cpp \
     chessclock.cpp \
     engineconfigurationmodel.cpp \
@@ -60,4 +61,5 @@ SOURCES += main.cpp \
     engineselectiondlg.cpp \
     gameviewer.cpp \
     pathlineedit.cpp \
-    threadedtask.cpp
+    threadedtask.cpp \
+    stringvalidator.cpp
