@@ -28,6 +28,7 @@ MoveList::MoveList(QWidget* parent)
 	  m_startingSide(0)
 {
 	m_moveList = new QTextBrowser(this);
+	m_moveList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	m_moveList->setOpenLinks(false);
 	m_moveList->document()->setDefaultStyleSheet(
 		"a:link { text-decoration: none; } "
