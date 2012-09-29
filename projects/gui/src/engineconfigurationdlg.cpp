@@ -62,7 +62,7 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 
 	m_optionDetectionTimer = new QTimer(this);
 	m_optionDetectionTimer->setSingleShot(true);
-	m_optionDetectionTimer->setInterval(5000);
+	m_optionDetectionTimer->setInterval(8000);
 
 	connect(ui->m_browseCmdBtn, SIGNAL(clicked(bool)),
 		this, SLOT(browseCommand()));
