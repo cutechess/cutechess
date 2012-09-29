@@ -35,10 +35,10 @@
 - Use PgnStream for HTTP downloading
 
 - Apply for the Qt Ambassador program (application showcase) after first
-  public release: http://qt.nokia.com/qtambassador
+  public release: http://qt.digia.com/qtambassador/
 
 - Use model testing tools to check validity of all model classes
-  during runtime (http://developer.qt.nokia.com/wiki/Model_Test)
+  during runtime (http://qt-project.org/wiki/Model_Test)
 
 - Prepare for Qt 5
 

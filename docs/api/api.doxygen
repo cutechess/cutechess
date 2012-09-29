@@ -898,30 +898,31 @@ QCH_FILE               =
 
 # The QHP_NAMESPACE tag specifies the namespace to use when generating 
 # Qt Help Project output. For more information please see 
-# http://doc.trolltech.com/qthelpproject.html#namespace
+# http://qt-project.org/doc/qt-5.0/qthelpproject.html#namespace
 
 QHP_NAMESPACE          = 
 
 # The QHP_VIRTUAL_FOLDER tag specifies the namespace to use when generating 
 # Qt Help Project output. For more information please see 
-# http://doc.trolltech.com/qthelpproject.html#virtual-folders
+# http://qt-project.org/doc/qt-5.0/qthelpproject.html#virtual-folders
 
 QHP_VIRTUAL_FOLDER     = doc
 
 # If QHP_CUST_FILTER_NAME is set, it specifies the name of a custom filter to add. 
 # For more information please see 
-# http://doc.trolltech.com/qthelpproject.html#custom-filters
+# http://qt-project.org/doc/qt-5.0/qthelpproject.html#custom-filters
 
 QHP_CUST_FILTER_NAME   = 
 
-# The QHP_CUST_FILT_ATTRS tag specifies the list of the attributes of the custom filter to add.For more information please see 
-# <a href="http://doc.trolltech.com/qthelpproject.html#custom-filters">Qt Help Project / Custom Filters</a>.
+# The QHP_CUST_FILT_ATTRS tag specifies the list of the attributes of the custom filter to add.
+# For more information please see 
+# http://qt-project.org/doc/qt-5.0/qthelpproject.html#custom-filters
 
 QHP_CUST_FILTER_ATTRS  = 
 
 # The QHP_SECT_FILTER_ATTRS tag specifies the list of the attributes this project's 
 # filter section matches. 
-# <a href="http://doc.trolltech.com/qthelpproject.html#filter-attributes">Qt Help Project / Filter Attributes</a>.
+# http://qt-project.org/doc/qt-5.0/qthelpproject.html#filter-attributes
 
 QHP_SECT_FILTER_ATTRS  = 
 
@@ -1289,7 +1290,7 @@ SKIP_FUNCTION_MACROS   = YES
 # If a tag file is not located in the directory in which doxygen 
 # is run, you must also specify the path to the tagfile here.
 
-TAGFILES               = "./docs/api/qt.tag = http://doc.trolltech.com/latest"
+TAGFILES               = "./docs/api/qt.tag = http://doc.qt.digia.com/latest"
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create 
 # a tag file that is based on the input files it reads.

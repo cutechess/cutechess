@@ -3,7 +3,7 @@ Cute Chess
 
 Cute Chess is a graphical user interface, command-line interface and a library
 for playing chess. Cute Chess is written in C++ using the [Qt
-framework](http://qt.nokia.com/).
+framework](http://qt.digia.com/).
 
 Installing
 ----------
