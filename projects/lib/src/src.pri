@@ -37,7 +37,8 @@ HEADERS += chessengine.h \
     epdrecord.h \
     openingsuite.h \
     econode.h \
-    mersenne.h
+    mersenne.h \
+    sprt.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -73,7 +74,8 @@ SOURCES += chessengine.cpp \
     epdrecord.cpp \
     openingsuite.cpp \
     econode.cpp \
-    mersenne.cpp
+    mersenne.cpp \
+    sprt.cpp
 win32 { 
     HEADERS += engineprocess_win.h \
         pipereader_win.h
