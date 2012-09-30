@@ -34,6 +34,19 @@ class MatchParser
 		/*! A parsed command line option. */
 		struct Option
 		{
+			/*!
+			 * Returns a QMap containing a StringList option's
+			 * parameters as name-value pairs.
+			 *
+			 * \a validArgs should contain all acceptable argument
+			 * names for this option, separated by the '|' character
+			 * (eg. "argument1|argument2").
+			 *
+			 * If this option's arguments don't match the ones in
+			 * \a validArgs exactly, an empty map is returned.
+			 */
+			QMap<QString, QString> toMap(const QString& validArgs) const;
+
 			QString name;	//!< The name of the option
 			QVariant value;	//!< The value of the option
 		};

@@ -138,3 +138,44 @@ bool MatchParser::parse()
 
 	return true;
 }
+
+QMap<QString, QString> MatchParser::Option::toMap(const QString& validArgs) const
+{
+	const QStringList args = value.toStringList();
+	const QStringList names = validArgs.split('|');
+	QMap<QString, QString> map;
+
+	foreach (const QString& arg, args)
+	{
+		QString argName = arg.section('=', 0, 0);
+		QString argVal = arg.section('=', 1);
+
+		if (argName.isEmpty() || argVal.isEmpty()
+		||  !names.contains(argName) || map.contains(argName))
+		{
+			qWarning("Invalid argument for option \"%s\": \"%s\"",
+				 qPrintable(name),
+				 qPrintable(arg));
+			return QMap<QString, QString>();
+		}
+
+		map.insert(argName, argVal);
+	}
+
+	if (map.size() != names.size())
+	{
+		QStringList missing;
+		foreach (const QString& argName, names)
+		{
+			if (!map.contains(argName))
+				missing.append(QString("\"%1\"").arg(argName));
+		}
+
+		qWarning("Option \"%s\" needs argument(s): %s",
+			 qPrintable(name),
+			 qPrintable(missing.join(", ")));
+		return QMap<QString, QString>();
+	}
+
+	return map;
+}

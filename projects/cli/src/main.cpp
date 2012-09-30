@@ -230,8 +230,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-each", QVariant::StringList, 1);
 	parser.addOption("-variant", QVariant::String, 1, 1);
 	parser.addOption("-concurrency", QVariant::Int, 1, 1);
-	parser.addOption("-draw", QVariant::StringList, 2, 2);
-	parser.addOption("-resign", QVariant::StringList, 2, 2);
+	parser.addOption("-draw", QVariant::StringList);
+	parser.addOption("-resign", QVariant::StringList);
 	parser.addOption("-tournament", QVariant::String, 1, 1);
 	parser.addOption("-event", QVariant::String, 1, 1);
 	parser.addOption("-games", QVariant::Int, 1, 1);
@@ -302,11 +302,11 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Threshold for draw adjudication
 		else if (name == "-draw")
 		{
-			QStringList list = value.toStringList();
+			QMap<QString, QString> params = option.toMap("movenumber|score");
 			bool numOk = false;
 			bool scoreOk = false;
-			int moveNumber = list.at(0).toInt(&numOk);
-			int score = list.at(1).toInt(&scoreOk);
+			int moveNumber = params["movenumber"].toInt(&numOk);
+			int score = params["score"].toInt(&scoreOk);
 
 			ok = (numOk && scoreOk);
 			if (ok)
@@ -315,11 +315,11 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Threshold for resign adjudication
 		else if (name == "-resign")
 		{
-			QStringList list = value.toStringList();
+			QMap<QString, QString> params = option.toMap("movecount|score");
 			bool countOk = false;
 			bool scoreOk = false;
-			int moveCount = list.at(0).toInt(&countOk);
-			int score = list.at(1).toInt(&scoreOk);
+			int moveCount = params["movecount"].toInt(&countOk);
+			int score = params["score"].toInt(&scoreOk);
 
 			ok = (countOk && scoreOk);
 			if (ok)
@@ -416,13 +416,20 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 		if (!ok)
 		{
-			QString val;
-			if (value.type() == QVariant::StringList)
-				val = value.toStringList().join(" ");
+			// Empty values default to boolean type
+			if (value.isValid() && value.type() == QVariant::Bool)
+				qWarning("Empty value for option \"%s\"",
+					 qPrintable(name));
 			else
-				val = value.toString();
-			qWarning("Invalid value for option \"%s\": \"%s\"",
-				 qPrintable(name), qPrintable(val));
+			{
+				QString val;
+				if (value.type() == QVariant::StringList)
+					val = value.toStringList().join(" ");
+				else
+					val = value.toString();
+				qWarning("Invalid value for option \"%s\": \"%s\"",
+					 qPrintable(name), qPrintable(val));
+			}
 
 			delete match;
 			delete tournament;
