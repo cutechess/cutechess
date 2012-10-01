@@ -52,6 +52,12 @@ class LIB_EXPORT Sprt
 		Sprt();
 
 		/*!
+		 * Returns true if the SPRT is uninitialized; otherwise
+		 * returns false.
+		 */
+		bool isNull() const;
+
+		/*!
 		 * Initializes the SPRT.
 		 *
 		 * \a elo0 is the ELO difference between player A and

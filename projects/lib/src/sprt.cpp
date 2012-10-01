@@ -28,6 +28,12 @@ Sprt::Sprt()
 {
 }
 
+bool Sprt::isNull() const
+{
+	return m_llrWin == 0 && m_llrDraw == 0 && m_llrLoss == 0 &&
+	       m_lowerBound == 0 && m_upperBound == 0;
+}
+
 void Sprt::initialize(double elo0, double elo1,
 		      double alpha, double beta)
 {
