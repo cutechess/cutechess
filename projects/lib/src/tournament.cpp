@@ -25,6 +25,7 @@
 #include "chessgame.h"
 #include "pgnstream.h"
 #include "openingsuite.h"
+#include "sprt.h"
 
 Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	: QObject(parent),
@@ -50,6 +51,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_pgnCleanup(true),
 	  m_finished(false),
 	  m_openingSuite(0),
+	  m_sprt(new Sprt),
 	  m_pgnOutMode(PgnGame::Verbose),
 	  m_pair(QPair<int, int>(-1, -1))
 {
@@ -66,6 +68,7 @@ Tournament::~Tournament()
 		delete data.builder;
 
 	delete m_openingSuite;
+	delete m_sprt;
 }
 
 GameManager* Tournament::gameManager() const
@@ -131,6 +134,11 @@ Tournament::PlayerData Tournament::playerAt(int index) const
 int Tournament::playerCount() const
 {
 	return m_players.size();
+}
+
+Sprt* Tournament::sprt() const
+{
+	return m_sprt;
 }
 
 void Tournament::setName(const QString& name)
@@ -336,22 +344,26 @@ void Tournament::onGameFinished(ChessGame* game)
 	Q_ASSERT(m_gameData.contains(game));
 	GameData* data = m_gameData.take(game);
 	int gameNumber = data->number;
+	Sprt::GameResult sprtResult = Sprt::NoResult;
 
 	switch (game->result().winner())
 	{
 	case Chess::Side::White:
 		m_players[data->whiteIndex].wins++;
 		m_players[data->blackIndex].losses++;
+		sprtResult = (data->whiteIndex == 0) ? Sprt::Win : Sprt::Loss;
 		break;
 	case Chess::Side::Black:
 		m_players[data->blackIndex].wins++;
 		m_players[data->whiteIndex].losses++;
+		sprtResult = (data->blackIndex == 0) ? Sprt::Win : Sprt::Loss;
 		break;
 	default:
 		if (game->result().isDraw())
 		{
 			m_players[data->whiteIndex].draws++;
 			m_players[data->blackIndex].draws++;
+			sprtResult = Sprt::Draw;
 		}
 		break;
 	}
@@ -374,6 +386,13 @@ void Tournament::onGameFinished(ChessGame* game)
 			resultType == Chess::Result::StalledConnection);
 	if (!m_recover && crashed)
 		stop();
+
+	if (!m_sprt->isNull() && sprtResult != Sprt::NoResult)
+	{
+		m_sprt->addResult(sprtResult);
+		if (m_sprt->status() != Sprt::Continue)
+			QMetaObject::invokeMethod(this, "stop", Qt::QueuedConnection);
+	}
 
 	emit gameFinished(game, gameNumber, data->whiteIndex, data->blackIndex);
 

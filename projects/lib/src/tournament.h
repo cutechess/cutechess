@@ -32,6 +32,7 @@ class PlayerBuilder;
 class ChessGame;
 class OpeningBook;
 class OpeningSuite;
+class Sprt;
 
 /*!
  * \brief Base class for chess tournaments
@@ -119,6 +120,13 @@ class LIB_EXPORT Tournament : public QObject
 		PlayerData playerAt(int index) const;
 		/*! Returns the number of participants in the tournament. */
 		int playerCount() const;
+		/*!
+		 * Returns the SPRT object of this tournament.
+		 *
+		 * Initializing \a sprt makes this tournament to use it as a
+		 * stopping criterion.
+		 */
+		Sprt* sprt() const;
 
 		/*! Sets the tournament's name to \a name. */
 		void setName(const QString& name);
@@ -340,6 +348,7 @@ class LIB_EXPORT Tournament : public QObject
 		bool m_pgnCleanup;
 		bool m_finished;
 		OpeningSuite* m_openingSuite;
+		Sprt* m_sprt;
 		QString m_pgnout;
 		QString m_startFen;
 		PgnGame::PgnMode m_pgnOutMode;
