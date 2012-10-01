@@ -34,6 +34,7 @@
 #include <enginefactory.h>
 #include <enginetextoption.h>
 #include <openingsuite.h>
+#include <sprt.h>
 
 #include "cutechesscoreapp.h"
 #include "matchparser.h"
@@ -236,6 +237,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-event", QVariant::String, 1, 1);
 	parser.addOption("-games", QVariant::Int, 1, 1);
 	parser.addOption("-rounds", QVariant::Int, 1, 1);
+	parser.addOption("-sprt", QVariant::StringList);
 	parser.addOption("-ratinginterval", QVariant::Int, 1, 1);
 	parser.addOption("-debug", QVariant::Bool, 0, 0);
 	parser.addOption("-epdin", QVariant::String, 1, 1);
@@ -341,6 +343,20 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			ok = value.toInt() > 0;
 			if (ok)
 				tournament->setRoundMultiplier(value.toInt());
+		}
+		// SPRT-based stopping rule
+		else if (name == "-sprt")
+		{
+			QMap<QString, QString> params = option.toMap("elo0|elo1|alpha|beta");
+			bool sprtOk[4];
+			double elo0 = params["elo0"].toDouble(sprtOk);
+			double elo1 = params["elo1"].toDouble(sprtOk + 1);
+			double alpha = params["alpha"].toDouble(sprtOk + 2);
+			double beta = params["beta"].toDouble(sprtOk + 3);
+
+			ok = (sprtOk[0] && sprtOk[1] && sprtOk[2] && sprtOk[3]);
+			if (ok)
+				tournament->sprt()->initialize(elo0, elo1, alpha, beta);
 		}
 		// Interval for rating list updates
 		else if (name == "-ratinginterval")

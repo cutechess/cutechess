@@ -24,6 +24,7 @@
 #include <polyglotbook.h>
 #include <tournament.h>
 #include <gamemanager.h>
+#include <sprt.h>
 
 
 EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
@@ -143,6 +144,20 @@ void EngineMatch::onTournamentFinished()
 	QString error = m_tournament->errorString();
 	if (!error.isEmpty())
 		qWarning("%s", qPrintable(error));
+	else
+	{
+		switch (m_tournament->sprt()->status())
+		{
+		case Sprt::AcceptH0:
+			qDebug("SPRT: H0 was accepted");
+			break;
+		case Sprt::AcceptH1:
+			qDebug("SPRT: H1 was accepted");
+			break;
+		default:
+			break;
+		}
+	}
 
 	qDebug("Finished match");
 	connect(m_tournament->gameManager(), SIGNAL(finished()),
