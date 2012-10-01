@@ -41,6 +41,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_roundMultiplier(1),
 	  m_startDelay(0),
 	  m_drawMoveNumber(0),
+	  m_drawMoveCount(0),
 	  m_drawScore(0),
 	  m_resignMoveCount(0),
 	  m_resignScore(0),
@@ -186,12 +187,14 @@ void Tournament::setRecoveryMode(bool recover)
 	m_recover = recover;
 }
 
-void Tournament::setDrawThreshold(int moveNumber, int score)
+void Tournament::setDrawThreshold(int moveNumber, int moveCount, int score)
 {
 	Q_ASSERT(moveNumber >= 0);
+	Q_ASSERT(moveCount >= 0);
 	Q_ASSERT(score >= 0);
 
 	m_drawMoveNumber = moveNumber;
+	m_drawMoveCount = moveCount;
 	m_drawScore = score;
 }
 
@@ -302,7 +305,7 @@ void Tournament::startNextGame()
 
 	game->setStartDelay(m_startDelay);
 
-	game->setDrawThreshold(m_drawMoveNumber, m_drawScore);
+	game->setDrawThreshold(m_drawMoveNumber, m_drawMoveCount, m_drawScore);
 	game->setResignThreshold(m_resignMoveCount, m_resignScore);
 
 	GameData* data = new GameData;

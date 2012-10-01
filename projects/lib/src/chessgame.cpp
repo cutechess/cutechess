@@ -31,6 +31,7 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	  m_gameInProgress(false),
 	  m_paused(false),
 	  m_drawMoveNum(0),
+	  m_drawMoveCount(0),
 	  m_drawScore(0),
 	  m_drawScoreCount(0),
 	  m_resignMoveCount(0),
@@ -176,7 +177,7 @@ void ChessGame::adjudication(const MoveEvaluation& eval)
 		else
 			m_drawScoreCount = 0;
 		if (m_moves.size() / 2 >= m_drawMoveNum
-		&&  m_drawScoreCount >= 2)
+		&&  m_drawScoreCount >= m_drawMoveCount * 2)
 		{
 			m_result = Chess::Result(Chess::Result::Adjudication, Chess::Side::NoSide);
 			return;
@@ -504,9 +505,10 @@ void ChessGame::unlockThread()
 	m_resumeSem.release();
 }
 
-void ChessGame::setDrawThreshold(int moveNumber, int score)
+void ChessGame::setDrawThreshold(int moveNumber, int moveCount, int score)
 {
 	m_drawMoveNum = moveNumber;
+	m_drawMoveCount = moveCount;
 	m_drawScore = score;
 }
 

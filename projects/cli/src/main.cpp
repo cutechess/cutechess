@@ -304,15 +304,18 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Threshold for draw adjudication
 		else if (name == "-draw")
 		{
-			QMap<QString, QString> params = option.toMap("movenumber|score");
+			QMap<QString, QString> params =
+				option.toMap("movenumber|movecount|score");
 			bool numOk = false;
+			bool countOk = false;
 			bool scoreOk = false;
 			int moveNumber = params["movenumber"].toInt(&numOk);
+			int moveCount = params["movecount"].toInt(&countOk);
 			int score = params["score"].toInt(&scoreOk);
 
-			ok = (numOk && scoreOk);
+			ok = (numOk && countOk && scoreOk);
 			if (ok)
-				tournament->setDrawThreshold(moveNumber, score);
+				tournament->setDrawThreshold(moveNumber, moveCount, score);
 		}
 		// Threshold for resign adjudication
 		else if (name == "-resign")

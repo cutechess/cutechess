@@ -160,10 +160,11 @@ class LIB_EXPORT Tournament : public QObject
 		 * Sets the draw adjudication threshold for each game.
 		 *
 		 * A game will be adjudicated as a draw if both players report
-		 * a score that's within \a score centipawns from zero after
-		 * at least \a moveNumber full moves have been played.
+		 * a score that's within \a score centipawns from zero for at
+		 * least \a moveCount consecutive moves, and at least
+		 * \a moveNumber full moves have been played.
 		 */
-		void setDrawThreshold(int moveNumber, int score);
+		void setDrawThreshold(int moveNumber, int moveCount, int score);
 		/*!
 		 * Sets the resign adjudication threshold for each game.
 		 *
@@ -338,6 +339,7 @@ class LIB_EXPORT Tournament : public QObject
 		int m_roundMultiplier;
 		int m_startDelay;
 		int m_drawMoveNumber;
+		int m_drawMoveCount;
 		int m_drawScore;
 		int m_resignMoveCount;
 		int m_resignScore;

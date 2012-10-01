@@ -63,7 +63,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void setOpeningBook(const OpeningBook* book,
 				    Chess::Side side = Chess::Side(),
 				    int depth = 1000);
-		void setDrawThreshold(int moveNumber, int score);
+		void setDrawThreshold(int moveNumber, int moveCount, int score);
 		void setResignThreshold(int moveCount, int score);
 		void setStartDelay(int time);
 
@@ -119,6 +119,7 @@ class LIB_EXPORT ChessGame : public QObject
 		bool m_gameInProgress;
 		bool m_paused;
 		int m_drawMoveNum;
+		int m_drawMoveCount;
 		int m_drawScore;
 		int m_drawScoreCount;
 		int m_resignMoveCount;
