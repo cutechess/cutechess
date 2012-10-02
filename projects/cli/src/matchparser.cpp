@@ -142,8 +142,19 @@ bool MatchParser::parse()
 QMap<QString, QString> MatchParser::Option::toMap(const QString& validArgs) const
 {
 	const QStringList args = value.toStringList();
-	const QStringList names = validArgs.split('|');
+	QMap<QString, QString> defaults;
 	QMap<QString, QString> map;
+
+	foreach (const QString& arg, validArgs.split('|'))
+	{
+		QString argName = arg.section('=', 0, 0);
+		QString argVal = arg.section('=', 1);
+
+		if (argName.isEmpty() || argVal.isEmpty())
+			defaults[arg] = QString();
+		else
+			defaults[argName] = argVal;
+	}
 
 	foreach (const QString& arg, args)
 	{
@@ -151,7 +162,7 @@ QMap<QString, QString> MatchParser::Option::toMap(const QString& validArgs) cons
 		QString argVal = arg.section('=', 1);
 
 		if (argName.isEmpty() || argVal.isEmpty()
-		||  !names.contains(argName) || map.contains(argName))
+		||  !defaults.contains(argName) || map.contains(argName))
 		{
 			qWarning("Invalid argument for option \"%s\": \"%s\"",
 				 qPrintable(name),
@@ -162,19 +173,28 @@ QMap<QString, QString> MatchParser::Option::toMap(const QString& validArgs) cons
 		map.insert(argName, argVal);
 	}
 
-	if (map.size() != names.size())
+	if (map.size() != defaults.size())
 	{
 		QStringList missing;
-		foreach (const QString& argName, names)
+		QMap<QString, QString>::const_iterator it;
+		for (it = defaults.constBegin(); it != defaults.constEnd(); ++it)
 		{
-			if (!map.contains(argName))
-				missing.append(QString("\"%1\"").arg(argName));
+			if (map.contains(it.key()))
+				continue;
+
+			if (it.value().isEmpty())
+				missing.append(QString("\"%1\"").arg(it.key()));
+			else
+				map[it.key()] = it.value();
 		}
 
-		qWarning("Option \"%s\" needs argument(s): %s",
-			 qPrintable(name),
-			 qPrintable(missing.join(", ")));
-		return QMap<QString, QString>();
+		if (!missing.isEmpty())
+		{
+			qWarning("Option \"%s\" needs argument(s): %s",
+				 qPrintable(name),
+				 qPrintable(missing.join(", ")));
+			return QMap<QString, QString>();
+		}
 	}
 
 	return map;
