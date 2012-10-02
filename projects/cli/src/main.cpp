@@ -240,9 +240,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-sprt", QVariant::StringList);
 	parser.addOption("-ratinginterval", QVariant::Int, 1, 1);
 	parser.addOption("-debug", QVariant::Bool, 0, 0);
-	parser.addOption("-epdin", QVariant::String, 1, 1);
-	parser.addOption("-pgnin", QVariant::String, 1, 1);
-	parser.addOption("-pgndepth", QVariant::Int, 1, 1);
+	parser.addOption("-openings", QVariant::StringList);
 	parser.addOption("-pgnout", QVariant::StringList, 1, 2);
 	parser.addOption("-repeat", QVariant::Bool, 0, 0);
 	parser.addOption("-recover", QVariant::Bool, 0, 0);
@@ -367,34 +365,50 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Debugging mode. Prints all engine input and output.
 		else if (name == "-debug")
 			match->setDebugMode(true);
-		// PGN input depth in plies
-		else if (name == "-pgndepth")
+		// Use an opening suite
+		else if (name == "-openings")
 		{
-			ok = value.toInt() > 0;
+			QMap<QString, QString> params =
+				option.toMap("file|format=pgn|order=sequential|plies=1024");
+
+			OpeningSuite::Format format;
+			if (params["format"] == "epd")
+				format = OpeningSuite::EpdFormat;
+			else if (params["format"] == "pgn")
+				format = OpeningSuite::PgnFormat;
+			else
+			{
+				qWarning("Invalid opening suite format: \"%s\"",
+					 qPrintable(params["format"]));
+				ok = false;
+			}
+
+			OpeningSuite::Order order;
+			if (params["order"] == "sequential")
+				order = OpeningSuite::SequentialOrder;
+			else if (params["order"] == "random")
+				order = OpeningSuite::RandomOrder;
+			else
+			{
+				qWarning("Invalid opening selection order: \"%s\"",
+					 qPrintable(params["order"]));
+				ok = false;
+			}
+
+			int plies = params["plies"].toInt();
+
+			ok = ok && plies > 0;
 			if (ok)
-				tournament->setOpeningDepth(value.toInt());
-		}
-		// Use an EPD file as the opening book
-		else if (name == "-epdin")
-		{
-			OpeningSuite* suite =
-				new OpeningSuite(value.toString(),
-						 OpeningSuite::EpdFormat,
-						 OpeningSuite::SequentialOrder);
-			ok = suite->initialize();
-			if (ok)
-				tournament->setOpeningSuite(suite);
-		}
-		// Use a PGN file as the opening book
-		else if (name == "-pgnin")
-		{
-			OpeningSuite* suite =
-				new OpeningSuite(value.toString(),
-						 OpeningSuite::PgnFormat,
-						 OpeningSuite::SequentialOrder);
-			ok = suite->initialize();
-			if (ok)
-				tournament->setOpeningSuite(suite);
+			{
+				tournament->setOpeningDepth(plies);
+
+				OpeningSuite* suite = new OpeningSuite(params["file"],
+								       format,
+								       order);
+				ok = suite->initialize();
+				if (ok)
+					tournament->setOpeningSuite(suite);
+			}
 		}
 		// PGN file where the games should be saved
 		else if (name == "-pgnout")
