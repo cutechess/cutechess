@@ -18,6 +18,7 @@
 #ifndef OPENINGSUITE_H
 #define OPENINGSUITE_H
 
+#include <QVector>
 #include "pgngame.h"
 class QString;
 class QTextStream;
@@ -44,17 +45,32 @@ class LIB_EXPORT OpeningSuite
 			PgnFormat	//!< PGN format
 		};
 
+		/*! The order in which openings are picked. */
+		enum Order
+		{
+			SequentialOrder,	//!< Sequential order
+			RandomOrder		//!< Random order
+		};
+
 		/*!
 		 * Creates a new opening suite that reads the openings
 		 * from \a fileName in \a format format.
-		 * If the file can't be read a null object is created.
+		 *
+		 * Openings will be picked according to \a order.
+		 *
+		 * \note The created opening suite is null until
+		 * initialize() is called.
 		 */
-		OpeningSuite(const QString& fileName, Format format);
+		OpeningSuite(const QString& fileName,
+			     Format format,
+			     Order order = SequentialOrder);
 		/*! Destroys the opening suite. */
 		~OpeningSuite();
 
 		/*! Returns the format of the source data. */
 		Format format() const;
+		/*! Returns the order in which openings are picked. */
+		Order order() const;
 		/*!
 		 * Returns true if the suite contains no data; otherwise
 		 * returns false.
@@ -62,16 +78,41 @@ class LIB_EXPORT OpeningSuite
 		bool isNull() const;
 
 		/*!
+		 * Initializes the opening suite.
+		 *
+		 * If \a order is SequentialOrder, this function just opens
+		 * the opening suite file and gets ready to read data. If
+		 * \a order is RandomOrder, the file positions of all the
+		 * openings are parsed from the file, which could take some
+		 * time if the file is large.
+		 *
+		 * Returns true if successfull; otherwise returns false.
+		 */
+		bool initialize();
+		/*!
 		 * Reads a new opening from the suite and returns it.
 		 * A maximum of \a maxPlies plies (halfmoves) are read.
 		 */
 		PgnGame nextGame(int maxPlies);
 
 	private:
+		struct FilePosition
+		{
+			qint64 pos;
+			qint64 lineNumber;
+		};
+
+		FilePosition getPgnPos();
+		FilePosition getEpdPos();
+
 		Format m_format;
+		Order m_order;
 		int m_gamesRead;
+		int m_gameIndex;
+		QString m_fileName;
 		QTextStream* m_epdStream;
 		PgnStream* m_pgnStream;
+		QVector<FilePosition> m_filePositions;
 };
 
 #endif // OPENINGSUITE_H

@@ -377,24 +377,24 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Use an EPD file as the opening book
 		else if (name == "-epdin")
 		{
-			ok = QFile::exists(value.toString());
+			OpeningSuite* suite =
+				new OpeningSuite(value.toString(),
+						 OpeningSuite::EpdFormat,
+						 OpeningSuite::SequentialOrder);
+			ok = suite->initialize();
 			if (ok)
-			{
-				tournament->setOpeningSuite(
-					new OpeningSuite(value.toString(),
-							 OpeningSuite::EpdFormat));
-			}
+				tournament->setOpeningSuite(suite);
 		}
 		// Use a PGN file as the opening book
 		else if (name == "-pgnin")
 		{
-			ok = QFile::exists(value.toString());
+			OpeningSuite* suite =
+				new OpeningSuite(value.toString(),
+						 OpeningSuite::PgnFormat,
+						 OpeningSuite::SequentialOrder);
+			ok = suite->initialize();
 			if (ok)
-			{
-				tournament->setOpeningSuite(
-					new OpeningSuite(value.toString(),
-							 OpeningSuite::PgnFormat));
-			}
+				tournament->setOpeningSuite(suite);
 		}
 		// PGN file where the games should be saved
 		else if (name == "-pgnout")
