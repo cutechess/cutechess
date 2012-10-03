@@ -1,0 +1,73 @@
+Usage: cutechess-cli -engine [eng_options] -engine [eng_options]... [options]
+Options:
+  --help		Display this information
+  --version		Display the version number
+  --engines		Display a list of configured engines and exit
+  -engine <options>	Add an engine defined by <options> to the tournament
+  -each <options>	Apply <options> to each engine in the tournament
+  -variant <arg>	Set the chess variant to <arg>
+  -concurrency <n>	Set the maximum number of concurrent games to <n>
+  -draw <n> <score>	Adjudicate the game as a draw if the score of both
+			engines is within <score> centipawns from zero after
+			<n> full moves have been played
+  -resign <n> <score>	Adjudicate the game as a loss if an engine's score is
+			at least <score> centipawns below zero for at least
+			<n> consecutive moves
+  -tournament <arg>	Set the tournament type to <arg>. Supported types are:
+			round-robin (default)
+			gauntlet
+  -event <arg>		Set the event name to <arg>
+  -games <n>		Play <n> games per encounter. This value should be set
+			to an even number in tournaments with more than two
+			players to make sure that each player plays an equal
+			number of games with white and black pieces.
+  -rounds <n>		Multiply the number of rounds to play by <n>.
+			For two-player tournaments this option should be used
+			to set the total number of games to play.
+  -ratinginterval <n>	Set the interval for printing the ratings to <n> games
+  -debug		Display all engine input and output
+  -epdin <file>		Use <file> as the opening book in EPD format
+  -pgnin <file>		Use <file> as the opening book in PGN format
+  -pgndepth <n>		Set the maximum depth for PGN input to <n> plies
+  -pgnout <file> [min]	Save the games to <file> in PGN format. Use the 'min'
+			argument to save in a minimal PGN format.
+  -recover		Restart crashed engines instead of stopping the match
+  -repeat		Play each opening twice so that both players get
+			to play it on both sides
+  -site <arg>		Set the site/location to <arg>
+  -srand <n>		Set the random seed for the book move selector to <n>
+  -wait <n>		Wait <n> milliseconds between games. The default is 0.
+
+Engine options:
+  conf=<arg>		Use an engine with the name <arg> from Cute Chess'
+			configuration file.
+  name=<arg>		Set the name to <arg>
+  cmd=<arg>		Set the command to <arg>
+  dir=<arg>		Set the working directory to <arg>
+  arg=<arg>		Pass <arg> to the engine as a command line argument
+  initstr=<arg>		Send <arg> to the engine's standard input at startup
+  restart=<arg>		Set the restart mode to <arg> which can be:
+			'auto': the engine decides whether to restart (default)
+			'on': the engine is always restarted between games
+			'off': the engine is never restarted between games
+  trust			Trust result claims from the engine without validation.
+			By default all claims are validated.
+  proto=<arg>		Set the chess protocol to <arg>
+  tc=<arg>		Set the time control to <arg>. The format is
+			moves/time+increment, where 'moves' is the number of
+			moves per tc, 'time' is time per tc (either seconds or
+			minutes:seconds), and 'increment' is time increment
+			per move in seconds.
+			Infinite time control can be set with 'tc=inf'.
+  st=<n>		Set the time limit for each move to <n> seconds.
+			This option can't be used in combination with "tc".
+  timemargin=<n>	Let engines go <n> milliseconds over the time limit.
+  book=<file>		Use <file> (Polyglot book file) as the opening book
+  bookdepth=<n>		Set the maximum book depth (in fullmoves) to <n>
+  whitepov		Invert the engine's scores when it plays black. This
+			option should be used with engines that always report
+			scores from white's perspective.
+  depth=<n>		Set the search depth limit to <n> plies
+  nodes=<n>		Set the node count limit to <n> nodes
+  option.<name>=<arg>	Set custom option <name> to value <arg>
+

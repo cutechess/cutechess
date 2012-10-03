@@ -26,3 +26,6 @@ QT = core
 
 # Code
 include(src/src.pri)
+
+# Resources
+include(res/res.pri)
