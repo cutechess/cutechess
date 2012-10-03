@@ -1,73 +1,108 @@
-Usage: cutechess-cli -engine [eng_options] -engine [eng_options]... [options]
+Usage:
+
+  cutechess-cli -engine [eng_options] -engine [eng_options]... [options]
+
 Options:
+
   --help		Display this information
   --version		Display the version number
   --engines		Display a list of configured engines and exit
-  -engine <options>	Add an engine defined by <options> to the tournament
-  -each <options>	Apply <options> to each engine in the tournament
-  -variant <arg>	Set the chess variant to <arg>
-  -concurrency <n>	Set the maximum number of concurrent games to <n>
-  -draw <n> <score>	Adjudicate the game as a draw if the score of both
-			engines is within <score> centipawns from zero after
-			<n> full moves have been played
-  -resign <n> <score>	Adjudicate the game as a loss if an engine's score is
-			at least <score> centipawns below zero for at least
-			<n> consecutive moves
-  -tournament <arg>	Set the tournament type to <arg>. Supported types are:
-			round-robin (default)
-			gauntlet
-  -event <arg>		Set the event name to <arg>
-  -games <n>		Play <n> games per encounter. This value should be set
-			to an even number in tournaments with more than two
-			players to make sure that each player plays an equal
-			number of games with white and black pieces.
-  -rounds <n>		Multiply the number of rounds to play by <n>.
+  -engine OPTIONS	Add an engine defined by OPTIONS to the tournament
+  -each OPTIONS		Apply OPTIONS to each engine in the tournament
+  -variant VARIANT	Set the chess variant to VARIANT, which can be one of:
+			'atomic': Atomic Chess
+			'capablanca': Capablanca Chess
+			'caparandom': Capablanca Random Chess
+			'crazyhouse': Crazyhouse/Drop Chess
+			'fischerandom': Fischer Random Chess/Chess 960
+			'gothic': Gothic Chess
+			'losers': Loser's Chess
+			'standard': Standard Chess (default).
+  -concurrency N	Set the maximum number of concurrent games to N
+  -draw movenumber=NUMBER movecount=COUNT score=SCORE
+			Adjudicate the game as a draw if the score of both
+			engines is within SCORE centipawns from zero for at
+			least COUNT consecutive moves, and at least NUMBER full
+			moves have been played.
+  -resign movecount=COUNT score=SCORE
+			Adjudicate the game as a loss if an engine's score is
+			at least SCORE centipawns below zero for at least COUNT
+			consecutive moves.
+  -tournament TYPE	Set the tournament type to TYPE, which can be one of:
+			'gauntlet': First engine plays against the rest
+			'round-robin': Round-robin tournament (default).
+  -event EVENT		Set the event/tournament name to EVENT
+  -games N		Play N games per encounter. This value should be set to
+			an even number in tournaments with more than two players
+			to make sure that each player plays an equal number of
+			games with white and black pieces.
+  -rounds N		Multiply the number of rounds to play by N.
 			For two-player tournaments this option should be used
 			to set the total number of games to play.
-  -ratinginterval <n>	Set the interval for printing the ratings to <n> games
+  -sprt elo0=ELO0 elo1=ELO1 alpha=ALPHA beta=BETA
+			Use a Sequential Probability Ratio Test as a termination
+			criterion for the match. This option should only be used
+			in matches between two players to test if engine A is
+			stronger than engine B. Hypothesis H1 is that A is
+			stronger than B by at least ELO0 ELO points, and H0
+			(the null hypothesis) is that A is not stronger than B
+			by at least ELO1 ELO points. The maximum probabilities
+			for type I and type II errors outside the interval
+			[ELO0, ELO1] are ALPHA and BETA. The match is stopped if
+			either H0 or H1 is accepted or if the maximum number of
+			games set by '-rounds' and/or '-games' is reached.
+  -ratinginterval N	Set the interval for printing the ratings to N games
   -debug		Display all engine input and output
-  -epdin <file>		Use <file> as the opening book in EPD format
-  -pgnin <file>		Use <file> as the opening book in PGN format
-  -pgndepth <n>		Set the maximum depth for PGN input to <n> plies
-  -pgnout <file> [min]	Save the games to <file> in PGN format. Use the 'min'
-			argument to save in a minimal PGN format.
+  -openings file=FILE format=FORMAT order=ORDER plies=PLIES
+			Pick game openings from FILE. The file's format is
+			FORMAT, which can be either 'epd' or 'pgn' (default).
+			Openings will be picked in the order specified by ORDER,
+			which can be either 'random' or 'sequential' (default).
+			The opening depth is limited to PLIES plies. If PLIES is
+			not set the opening depth is unlimited.
+  -pgnout FILE [min]	Save the games to FILE in PGN format. Use the 'min'
+			argument to save in a minimal/compact PGN format.
   -recover		Restart crashed engines instead of stopping the match
   -repeat		Play each opening twice so that both players get
 			to play it on both sides
-  -site <arg>		Set the site/location to <arg>
-  -srand <n>		Set the random seed for the book move selector to <n>
-  -wait <n>		Wait <n> milliseconds between games. The default is 0.
+  -site SITE		Set the site/location to SITE
+  -srand N		Set the seed for the random number generator to N
+  -wait N		Wait N milliseconds between games. The default is 0.
 
 Engine options:
-  conf=<arg>		Use an engine with the name <arg> from Cute Chess'
-			configuration file.
-  name=<arg>		Set the name to <arg>
-  cmd=<arg>		Set the command to <arg>
-  dir=<arg>		Set the working directory to <arg>
-  arg=<arg>		Pass <arg> to the engine as a command line argument
-  initstr=<arg>		Send <arg> to the engine's standard input at startup
-  restart=<arg>		Set the restart mode to <arg> which can be:
+
+  conf=NAME		Use an engine with the name NAME from Cute Chess'
+			engines.json configuration file.
+  name=NAME		Set the name to NAME
+  cmd=COMMAND		Set the command to COMMAND
+  dir=DIR		Set the working directory to DIR
+  arg=ARG		Pass ARG to the engine as a command line argument
+  initstr=TEXT		Send TEXT to the engine's standard input at startup.
+			TEXT may contain multiple lines seprated by '\n'.
+  restart=MODE		Set the restart mode to MODE which can be:
 			'auto': the engine decides whether to restart (default)
 			'on': the engine is always restarted between games
 			'off': the engine is never restarted between games
   trust			Trust result claims from the engine without validation.
 			By default all claims are validated.
-  proto=<arg>		Set the chess protocol to <arg>
-  tc=<arg>		Set the time control to <arg>. The format is
+  proto=PROTOCOL	Set the chess protocol to PROTOCOL, which can be one of:
+			'xboard': The Xboard/Winboard/CECP protocol
+			'uci': The Universal Chess Interface
+  tc=TIMECONTROL	Set the time control to TIMECONTROL. The format is
 			moves/time+increment, where 'moves' is the number of
 			moves per tc, 'time' is time per tc (either seconds or
 			minutes:seconds), and 'increment' is time increment
 			per move in seconds.
 			Infinite time control can be set with 'tc=inf'.
-  st=<n>		Set the time limit for each move to <n> seconds.
+  st=N			Set the time limit for each move to N seconds.
 			This option can't be used in combination with "tc".
-  timemargin=<n>	Let engines go <n> milliseconds over the time limit.
-  book=<file>		Use <file> (Polyglot book file) as the opening book
-  bookdepth=<n>		Set the maximum book depth (in fullmoves) to <n>
+  timemargin=N		Let engines go N milliseconds over the time limit.
+  book=FILE		Use FILE (Polyglot book file) as the opening book
+  bookdepth=N		Set the maximum book depth (in fullmoves) to N
   whitepov		Invert the engine's scores when it plays black. This
 			option should be used with engines that always report
 			scores from white's perspective.
-  depth=<n>		Set the search depth limit to <n> plies
-  nodes=<n>		Set the node count limit to <n> nodes
-  option.<name>=<arg>	Set custom option <name> to value <arg>
+  depth=N		Set the search depth limit to N plies
+  nodes=N		Set the node count limit to N nodes
+  option.OPTION=VALUE	Set custom option OPTION to value VALUE
 
