@@ -1,4 +1,4 @@
-.Dd March 26, 2012
+.Dd October 3, 2012
 .Dt CUTECHESS-CLI 6
 .Os
 .Sh NAME
@@ -46,17 +46,19 @@ or
 .It Fl concurrency Ar n
 Set the maximum number of concurrent games to
 .Ar n .
-.It Fl draw Ar n Ar score
+.It Fl draw Cm movenumber Ns = Ns Ar number Cm movecount Ns = Ns Ar count Cm score Ns = Ns Ar score
 Adjudicate the game as draw if the score of both engines is within
 .Ar score
-centipawns from zero after
-.Ar n
+centipawns from zero for at least
+.Ar count
+consecutive moves, and at least
+.Ar number
 full moves have been played.
-.It Fl resign Ar n Ar score
+.It Fl resign Cm movecount Ns = Ns Ar count Cm score Ns = Ns Ar score
 Adjudicate the game as a loss if an engine's score is at least
 .Ar score
 centipawns below zero for at least
-.Ar n
+.Ar count
 consecutive moves.
 .It Fl tournament Ar type
 Set the tournament type, where
@@ -80,22 +82,62 @@ Multiply the number of rounds to play by
 .Ar n .
 For two-player tournaments this option should be used to set the total
 number of games to play.
+.It Fl sprt Cm elo0 Ns = Ns Ar E0 Cm elo1 Ns = Ns Ar E1 Cm alpha Ns = Ns Ar \(*a Cm beta Ns = Ns Ar \(*b
+Use a Sequential Probability Ratio Test as a termination criterion for the
+match.
+.Pp
+This option should only be used in matches between two players to test if
+engine P1 is stronger than engine P2.
+Hypothesis H1 is that P1 is stronger than P2 by at least
+.Ar E0
+ELO points, and
+H0 (the null hypothesis) is that P1 is not stronger than P2 byt at least
+.Ar E1
+ELO points.
+The maximum probabilities for type I and type II errors outside the
+interval [
+.Ar E0 ,
+.Ar E1
+] are
+.Ar \(*a
+and
+.Ar \(*b .
+.Pp
+The match is stopped if either H0 or H1 is accepted or if the maximum number
+of games set by
+.Fl rounds
+and / or
+.Fl games
+is reached.
+.It Ic proto Ns = Ns [ Cm uci | Cm xboard  Ns ]
+Set the chess protocol.
 .It Fl ratinginterval Ar n
 Set the interval for printing the ratings to
 .Ar n
 games.
 .It Fl debug
 Display all engine input and output.
-.It Fl epdin Ar file
-Use
-.Ar file
-as the opening book in extended position description (EPD) format.
-.It Fl pgnin Ar file
-Use
-.Ar file
-as the opening book in portable game notation (PGN) format.
-.It Fl pgndepth Ar plies
-Set the maximum depth for the PGN input.
+.It Ic openings Cm file Ns = Ns Ar file Cm format Ns = Ns [ Cm epd | Cm pgn Ns ] Cm order Ns = Ns [ Cm random | Cm sequential Ns ] Cm plies Ns = Ns Ar plies
+Pick game openings from
+.Ar file .
+The file can be either in
+.Cm epd
+(Extended Position Description) or
+.Cm pgn
+(Portable Game Notation) format.
+The default format is
+.Cm pgn .
+Openings can be picked in
+.Cm random
+or
+.Cm sequential
+(default) order.
+The opening depth is limited to
+.Ar plies
+number of plies.
+If
+.Cm plies
+is not set the opening depth is unlimited.
 .It Fl pgnout Ar file Bq Cm min
 Save the games to
 .Ar file
