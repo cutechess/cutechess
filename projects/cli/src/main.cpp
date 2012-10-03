@@ -370,13 +370,14 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		{
 			QMap<QString, QString> params =
 				option.toMap("file|format=pgn|order=sequential|plies=1024");
+			ok = !params.isEmpty();
 
 			OpeningSuite::Format format;
 			if (params["format"] == "epd")
 				format = OpeningSuite::EpdFormat;
 			else if (params["format"] == "pgn")
 				format = OpeningSuite::PgnFormat;
-			else
+			else if (ok)
 			{
 				qWarning("Invalid opening suite format: \"%s\"",
 					 qPrintable(params["format"]));
@@ -388,7 +389,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 				order = OpeningSuite::SequentialOrder;
 			else if (params["order"] == "random")
 				order = OpeningSuite::RandomOrder;
-			else
+			else if (ok)
 			{
 				qWarning("Invalid opening selection order: \"%s\"",
 					 qPrintable(params["order"]));
@@ -405,6 +406,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 				OpeningSuite* suite = new OpeningSuite(params["file"],
 								       format,
 								       order);
+				if (order == OpeningSuite::RandomOrder)
+					qDebug("Indexing opening suite...");
 				ok = suite->initialize();
 				if (ok)
 					tournament->setOpeningSuite(suite);
