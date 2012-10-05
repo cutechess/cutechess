@@ -11,6 +11,7 @@ win32:!static {
 
 include(src/src.pri)
 include(components/json/src/json.pri)
+include(3rdparty/gtb/src/gtb.pri)
 include(res/res.pri)
 
 OBJECTS_DIR = .obj
