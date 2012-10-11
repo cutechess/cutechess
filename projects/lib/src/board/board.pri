@@ -16,7 +16,8 @@ SOURCES += board.cpp \
     gothicboard.cpp \
     crazyhouseboard.cpp \
     boardfactory.cpp \
-    boardtransition.cpp
+    boardtransition.cpp \
+    gaviotatablebase.cpp
 HEADERS += board.h \
     move.h \
     piece.h \
@@ -36,4 +37,5 @@ HEADERS += board.h \
     gothicboard.h \
     crazyhouseboard.h \
     boardfactory.h \
-    boardtransition.h
+    boardtransition.h \
+    gaviotatablebase.h
