@@ -372,7 +372,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 				option.toMap("file|format=pgn|order=sequential|plies=1024");
 			ok = !params.isEmpty();
 
-			OpeningSuite::Format format;
+			OpeningSuite::Format format = OpeningSuite::EpdFormat;
 			if (params["format"] == "epd")
 				format = OpeningSuite::EpdFormat;
 			else if (params["format"] == "pgn")
@@ -384,7 +384,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 				ok = false;
 			}
 
-			OpeningSuite::Order order;
+			OpeningSuite::Order order = OpeningSuite::SequentialOrder;
 			if (params["order"] == "sequential")
 				order = OpeningSuite::SequentialOrder;
 			else if (params["order"] == "random")
