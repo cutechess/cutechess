@@ -40,15 +40,6 @@ class WesternZobrist;
 class LIB_EXPORT WesternBoard : public Board
 {
 	public:
-		/*! Creates a new WesternBoard object. */
-		WesternBoard(WesternZobrist* zobrist);
-
-		// Inherited from Board
-		virtual int width() const;
-		virtual int height() const;
-		virtual Result result();
-
-	protected:
 		/*! Basic piece types for western variants. */
 		enum WesternPieceType
 		{
@@ -58,6 +49,23 @@ class LIB_EXPORT WesternBoard : public Board
 			Rook,		//!< Rook
 			Queen,		//!< Queen
 			King		//!< King
+		};
+
+		/*! Creates a new WesternBoard object. */
+		WesternBoard(WesternZobrist* zobrist);
+
+		// Inherited from Board
+		virtual int width() const;
+		virtual int height() const;
+		virtual Result result();
+
+	protected:
+		/*! The king's castling side. */
+		enum CastlingSide
+		{
+			QueenSide,	//!< Queen side (O-O-O)
+			KingSide,	//!< King side (O-O)
+			NoCastlingSide	//!< No castling side
 		};
 
 		/*! Movement mask for Knight moves. */
@@ -86,6 +94,16 @@ class LIB_EXPORT WesternBoard : public Board
 					   QVarLengthArray<Move>& moves) const;
 		/*! Returns the king square of \a side. */
 		int kingSquare(Side side) const;
+		/*! Returns the current en-passant square. */
+		int enpassantSquare() const;
+		/*!
+		 * Returns true if \a side has a right to castle on \a castlingSide;
+		 * otherwise returns false.
+		 *
+		 * \note Even if this function returns true, castling may not be
+		 * a legal move in the current position.
+		 */
+		bool hasCastlingRight(Side side, CastlingSide castlingSide) const;
 		/*! Returns the number of consecutive reversible moves made. */
 		int reversibleMoveCount() const;
 		/*!
@@ -121,13 +139,6 @@ class LIB_EXPORT WesternBoard : public Board
 		virtual int captureType(const Move& move) const;
 
 	private:
-		enum CastlingSide
-		{
-			QueenSide,
-			KingSide,
-			NoCastlingSide
-		};
-
 		struct CastlingRights
 		{
 			// Usage: 'rookSquare[Side][CastlingSide]'

@@ -1165,6 +1165,16 @@ int WesternBoard::kingSquare(Side side) const
 	return m_kingSquare[side];
 }
 
+int WesternBoard::enpassantSquare() const
+{
+	return m_enpassantSquare;
+}
+
+bool WesternBoard::hasCastlingRight(Side side, CastlingSide castlingSide) const
+{
+	return m_castlingRights.rookSquare[side][castlingSide] != 0;
+}
+
 int WesternBoard::reversibleMoveCount() const
 {
 	return m_reversibleMoveCount;
