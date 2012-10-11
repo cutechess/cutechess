@@ -806,4 +806,9 @@ QVector<Move> Board::legalMoves()
 	return legalMoves;
 }
 
+Result Board::tablebaseResult() const
+{
+	return Result();
+}
+
 } // namespace Chess

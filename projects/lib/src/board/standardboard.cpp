@@ -17,6 +17,7 @@
 
 #include "standardboard.h"
 #include "westernzobrist.h"
+#include "gaviotatablebase.h"
 
 
 // Zobrist keys for Polyglot opening book compatibility
@@ -1066,6 +1067,37 @@ QString StandardBoard::variant() const
 QString StandardBoard::defaultFenString() const
 {
 	return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+}
+
+Result StandardBoard::tablebaseResult() const
+{
+	GaviotaTablebase::PieceList pieces;
+
+	for (int i = 0; i < arraySize(); i++)
+	{
+		Piece piece(pieceAt(i));
+		if (piece.isValid())
+		{
+			if (pieces.size() >= 5)
+				return Result();
+			pieces.append(qMakePair(chessSquare(i), piece));
+		}
+	}
+
+	GaviotaTablebase::Castling castling = 0;
+	if (hasCastlingRight(Chess::Side::White, KingSide))
+		castling |= GaviotaTablebase::WhiteKingSide;
+	if (hasCastlingRight(Chess::Side::White, QueenSide))
+		castling |= GaviotaTablebase::WhiteQueenSide;
+	if (hasCastlingRight(Chess::Side::Black, KingSide))
+		castling |= GaviotaTablebase::BlackKingSide;
+	if (hasCastlingRight(Chess::Side::Black, QueenSide))
+		castling |= GaviotaTablebase::BlackQueenSide;
+
+	return GaviotaTablebase::result(sideToMove(),
+					chessSquare(enpassantSquare()),
+					castling,
+					pieces);
 }
 
 } // namespace Chess

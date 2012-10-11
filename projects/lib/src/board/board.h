@@ -261,6 +261,12 @@ class LIB_EXPORT Board
 		 * the game is in progress.
 		 */
 		virtual Result result() = 0;
+		/*!
+		 * Returns the expected game result according to endgame tablebases.
+		 *
+		 * The default implementation always returns a null result.
+		 */
+		virtual Result tablebaseResult() const;
 
 	protected:
 		/*!
