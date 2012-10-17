@@ -264,9 +264,13 @@ class LIB_EXPORT Board
 		/*!
 		 * Returns the expected game result according to endgame tablebases.
 		 *
+		 * If the position is a win for either player, \a dtm is
+		 * set to the distance to mate, ie. the number of plies it
+		 * takes to force a mate.
+		 *
 		 * The default implementation always returns a null result.
 		 */
-		virtual Result tablebaseResult() const;
+		virtual Result tablebaseResult(unsigned int* dtm = 0) const;
 
 	protected:
 		/*!

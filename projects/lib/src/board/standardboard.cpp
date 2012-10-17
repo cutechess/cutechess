@@ -1069,7 +1069,7 @@ QString StandardBoard::defaultFenString() const
 	return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 }
 
-Result StandardBoard::tablebaseResult() const
+Result StandardBoard::tablebaseResult(unsigned int* dtm) const
 {
 	GaviotaTablebase::PieceList pieces;
 
@@ -1097,7 +1097,8 @@ Result StandardBoard::tablebaseResult() const
 	return GaviotaTablebase::result(sideToMove(),
 					chessSquare(enpassantSquare()),
 					castling,
-					pieces);
+					pieces,
+					dtm);
 }
 
 } // namespace Chess

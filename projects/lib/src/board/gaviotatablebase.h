@@ -73,6 +73,10 @@ class LIB_EXPORT GaviotaTablebase
 		 * Returns the expected game result for the positions specified
 		 * by \a side, \a enpassantSq, \a castling and \a pieces.
 		 *
+		 * If the position is a win for either player, \a dtm is
+		 * set to the distance to mate, ie. the number of plies it
+		 * takes to force a mate.
+		 *
 		 * If the position isn't found in the tablebases, a null result
 		 * is returned.
 		 *
@@ -81,7 +85,8 @@ class LIB_EXPORT GaviotaTablebase
 		static Chess::Result result(const Chess::Side& side,
 					    const Chess::Square& enpassantSq,
 					    Castling castling,
-					    const PieceList& pieces);
+					    const PieceList& pieces,
+					    unsigned int* dtm = 0);
 
 	private:
 		GaviotaTablebase();

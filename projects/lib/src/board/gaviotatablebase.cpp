@@ -89,7 +89,8 @@ static TB_pieces tbPiece(int pieceType)
 Chess::Result GaviotaTablebase::result(const Chess::Side& side,
 				       const Chess::Square& enpassantSq,
 				       Castling castling,
-				       const PieceList& pieces)
+				       const PieceList& pieces,
+				       unsigned int* dtm)
 {
 	Q_ASSERT(pieces.size() <= 5);
 
@@ -116,9 +117,15 @@ Chess::Result GaviotaTablebase::result(const Chess::Side& side,
 	pc[1][pcIndex[1]] = tb_NOPIECE;
 
 	unsigned info = tb_UNKNOWN;
-	bool ok = tb_probe_WDL_hard(stm, epsq, castling,
-				    sq[0], sq[1], pc[0], pc[1],
-				    &info);
+	bool ok = false;
+	if (dtm == 0)
+		ok = tb_probe_WDL_hard(stm, epsq, castling,
+				       sq[0], sq[1], pc[0], pc[1],
+				       &info);
+	else
+		ok = tb_probe_hard(stm, epsq, castling,
+				   sq[0], sq[1], pc[0], pc[1],
+				   &info, dtm);
 
 	if (ok)
 	{

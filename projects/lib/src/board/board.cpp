@@ -806,8 +806,9 @@ QVector<Move> Board::legalMoves()
 	return legalMoves;
 }
 
-Result Board::tablebaseResult() const
+Result Board::tablebaseResult(unsigned int* dtm) const
 {
+	Q_UNUSED(dtm);
 	return Result();
 }
 
