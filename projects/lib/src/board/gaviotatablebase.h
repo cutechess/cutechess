@@ -65,6 +65,11 @@ class LIB_EXPORT GaviotaTablebase
 		/*! Cleans up when the tablebases aren't needed any more. */
 		static void cleanup();
 		/*!
+		 * Returns true if complete tablebases for \a pieces pieces are
+		 * available; otherwise returns false.
+		 */
+		static bool tbAvailable(int pieces);
+		/*!
 		 * Returns the expected game result for the positions specified
 		 * by \a side, \a enpassantSq, \a castling and \a pieces.
 		 *

@@ -52,6 +52,12 @@ void GaviotaTablebase::cleanup()
 	s_initInfo = 0;
 }
 
+bool GaviotaTablebase::tbAvailable(int pieces)
+{
+	int bit = (pieces - 3) * 2;
+	return tb_availability() & (1 << bit);
+}
+
 static TB_squares tbSquare(const Chess::Square& square)
 {
 	if (!square.isValid())
