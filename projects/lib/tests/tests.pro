@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = chessboard
+SUBDIRS = chessboard gtb
