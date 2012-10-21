@@ -38,7 +38,8 @@ HEADERS += chessengine.h \
     openingsuite.h \
     econode.h \
     mersenne.h \
-    sprt.h
+    sprt.h \
+    gameadjudicator.h
 SOURCES += chessengine.cpp \
     chessgame.cpp \
     chessplayer.cpp \
@@ -75,7 +76,8 @@ SOURCES += chessengine.cpp \
     openingsuite.cpp \
     econode.cpp \
     mersenne.cpp \
-    sprt.cpp
+    sprt.cpp \
+    gameadjudicator.cpp
 win32 { 
     HEADERS += engineprocess_win.h \
         pipereader_win.h
