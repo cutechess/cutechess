@@ -27,6 +27,7 @@
 #include "board/move.h"
 #include "timecontrol.h"
 #include "pgngame.h"
+#include "gameadjudicator.h"
 class GameManager;
 class PlayerBuilder;
 class ChessGame;
@@ -156,24 +157,7 @@ class LIB_EXPORT Tournament : public QObject
 		 * whole tournament stops when a player crashes.
 		 */
 		void setRecoveryMode(bool recover);
-		/*!
-		 * Sets the draw adjudication threshold for each game.
-		 *
-		 * A game will be adjudicated as a draw if both players report
-		 * a score that's within \a score centipawns from zero for at
-		 * least \a moveCount consecutive moves, and at least
-		 * \a moveNumber full moves have been played.
-		 */
-		void setDrawThreshold(int moveNumber, int moveCount, int score);
-		/*!
-		 * Sets the resign adjudication threshold for each game.
-		 *
-		 * A game will be adjudicated as a loss for the player that
-		 * made the last move if it reports a score that's at least
-		 * \a score centipawns below zero for at least \a moveCount
-		 * consecutive moves.
-		 */
-		void setResignThreshold(int moveCount, int score);
+		void setAdjudicator(const GameAdjudicator& adjudicator);
 		/*!
 		 * Uses \a suite as the opening suite (a collection of openings)
 		 * for the games.
@@ -338,17 +322,13 @@ class LIB_EXPORT Tournament : public QObject
 		int m_gamesPerEncounter;
 		int m_roundMultiplier;
 		int m_startDelay;
-		int m_drawMoveNumber;
-		int m_drawMoveCount;
-		int m_drawScore;
-		int m_resignMoveCount;
-		int m_resignScore;
 		int m_openingDepth;
 		bool m_stopping;
 		bool m_repeatOpening;
 		bool m_recover;
 		bool m_pgnCleanup;
 		bool m_finished;
+		GameAdjudicator m_adjudicator;
 		OpeningSuite* m_openingSuite;
 		Sprt* m_sprt;
 		QString m_pgnout;

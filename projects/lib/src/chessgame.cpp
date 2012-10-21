@@ -30,19 +30,12 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	  m_finished(false),
 	  m_gameInProgress(false),
 	  m_paused(false),
-	  m_drawMoveNum(0),
-	  m_drawMoveCount(0),
-	  m_drawScore(0),
-	  m_drawScoreCount(0),
-	  m_resignMoveCount(0),
-	  m_resignScore(0),
 	  m_pgn(pgn)
 {
 	Q_ASSERT(pgn != 0);
 
 	for (int i = 0; i < 2; i++)
 	{
-		m_resignScoreCount[i] = 0;
 		m_player[i] = 0;
 		m_book[i] = 0;
 		m_bookDepth[i] = 0;
@@ -158,47 +151,6 @@ void ChessGame::kill()
 	stop();
 }
 
-void ChessGame::adjudication(const MoveEvaluation& eval)
-{
-	Chess::Side side(m_board->sideToMove().opposite());
-
-	if (eval.depth() <= 0)
-	{
-		m_drawScoreCount = 0;
-		m_resignScoreCount[side] = 0;
-		return;
-	}
-
-	// Draw adjudication
-	if (m_drawMoveNum > 0)
-	{
-		if (qAbs(eval.score()) <= m_drawScore)
-			m_drawScoreCount++;
-		else
-			m_drawScoreCount = 0;
-		if (m_moves.size() / 2 >= m_drawMoveNum
-		&&  m_drawScoreCount >= m_drawMoveCount * 2)
-		{
-			m_result = Chess::Result(Chess::Result::Adjudication, Chess::Side::NoSide);
-			return;
-		}
-	}
-
-	// Resign adjudication
-	if (m_resignMoveCount > 0)
-	{
-		int& count = m_resignScoreCount[side];
-		if (eval.score() <= m_resignScore)
-			count++;
-		else
-			count = 0;
-
-		if (count >= m_resignMoveCount)
-			m_result = Chess::Result(Chess::Result::Adjudication,
-						 side.opposite());
-	}
-}
-
 static QString evalString(const MoveEvaluation& eval)
 {
 	if (eval.isBookEval())
@@ -281,7 +233,10 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	m_board->makeMove(move);
 	m_result = m_board->result();
 	if (m_result.isNone())
-		adjudication(sender->evaluation());
+	{
+		m_adjudicator.addEval(m_board, sender->evaluation());
+		m_result = m_adjudicator.result();
+	}
 	m_board->undoMove();
 
 	ChessPlayer* player = playerToWait();
@@ -440,6 +395,11 @@ void ChessGame::setOpeningBook(const OpeningBook* book,
 	}
 }
 
+void ChessGame::setAdjudicator(const GameAdjudicator& adjudicator)
+{
+	m_adjudicator = adjudicator;
+}
+
 void ChessGame::generateOpening()
 {
 	if (m_book[Chess::Side::White] == 0 || m_book[Chess::Side::Black] == 0)
@@ -503,19 +463,6 @@ void ChessGame::unlockThread()
 		return;
 
 	m_resumeSem.release();
-}
-
-void ChessGame::setDrawThreshold(int moveNumber, int moveCount, int score)
-{
-	m_drawMoveNum = moveNumber;
-	m_drawMoveCount = moveCount;
-	m_drawScore = score;
-}
-
-void ChessGame::setResignThreshold(int moveCount, int score)
-{
-	m_resignMoveCount = moveCount;
-	m_resignScore = score;
 }
 
 void ChessGame::resetBoard()

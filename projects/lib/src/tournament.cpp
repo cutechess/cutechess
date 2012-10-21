@@ -40,11 +40,6 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_gamesPerEncounter(1),
 	  m_roundMultiplier(1),
 	  m_startDelay(0),
-	  m_drawMoveNumber(0),
-	  m_drawMoveCount(0),
-	  m_drawScore(0),
-	  m_resignMoveCount(0),
-	  m_resignScore(0),
 	  m_openingDepth(1024),
 	  m_stopping(false),
 	  m_repeatOpening(false),
@@ -187,23 +182,9 @@ void Tournament::setRecoveryMode(bool recover)
 	m_recover = recover;
 }
 
-void Tournament::setDrawThreshold(int moveNumber, int moveCount, int score)
+void Tournament::setAdjudicator(const GameAdjudicator& adjudicator)
 {
-	Q_ASSERT(moveNumber >= 0);
-	Q_ASSERT(moveCount >= 0);
-	Q_ASSERT(score >= 0);
-
-	m_drawMoveNumber = moveNumber;
-	m_drawMoveCount = moveCount;
-	m_drawScore = score;
-}
-
-void Tournament::setResignThreshold(int moveCount, int score)
-{
-	Q_ASSERT(moveCount >= 0);
-
-	m_resignMoveCount = moveCount;
-	m_resignScore = score;
+	m_adjudicator = adjudicator;
 }
 
 void Tournament::setOpeningSuite(OpeningSuite *suite)
@@ -304,9 +285,7 @@ void Tournament::startNextGame()
 	game->pgn()->setRound(m_round);
 
 	game->setStartDelay(m_startDelay);
-
-	game->setDrawThreshold(m_drawMoveNumber, m_drawMoveCount, m_drawScore);
-	game->setResignThreshold(m_resignMoveCount, m_resignScore);
+	game->setAdjudicator(m_adjudicator);
 
 	GameData* data = new GameData;
 	data->number = ++m_nextGameNumber;

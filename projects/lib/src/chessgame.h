@@ -26,6 +26,7 @@
 #include "board/result.h"
 #include "board/move.h"
 #include "timecontrol.h"
+#include "gameadjudicator.h"
 
 namespace Chess { class Board; }
 class ChessPlayer;
@@ -63,8 +64,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void setOpeningBook(const OpeningBook* book,
 				    Chess::Side side = Chess::Side(),
 				    int depth = 1000);
-		void setDrawThreshold(int moveNumber, int moveCount, int score);
-		void setResignThreshold(int moveCount, int score);
+		void setAdjudicator(const GameAdjudicator& adjudicator);
 		void setStartDelay(int time);
 
 		void generateOpening();
@@ -102,7 +102,6 @@ class LIB_EXPORT ChessGame : public QObject
 		void pauseThread();
 
 	private:
-		void adjudication(const MoveEvaluation& eval);
 		Chess::Move bookMove(Chess::Side side);
 		void resetBoard();
 		void initializePgn();
@@ -118,13 +117,6 @@ class LIB_EXPORT ChessGame : public QObject
 		bool m_finished;
 		bool m_gameInProgress;
 		bool m_paused;
-		int m_drawMoveNum;
-		int m_drawMoveCount;
-		int m_drawScore;
-		int m_drawScoreCount;
-		int m_resignMoveCount;
-		int m_resignScore;
-		int m_resignScoreCount[2];
 		QString m_error;
 		QString m_startingFen;
 		Chess::Result m_result;
@@ -132,6 +124,7 @@ class LIB_EXPORT ChessGame : public QObject
 		PgnGame* m_pgn;
 		QSemaphore m_pauseSem;
 		QSemaphore m_resumeSem;
+		GameAdjudicator m_adjudicator;
 };
 
 #endif // CHESSGAME_H

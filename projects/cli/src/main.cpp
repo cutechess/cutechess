@@ -266,6 +266,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 	QList<EngineData> engines;
 	QStringList eachOptions;
+	GameAdjudicator adjudicator;
 
 	foreach (const MatchParser::Option& option, parser.options())
 	{
@@ -313,7 +314,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 			ok = (numOk && countOk && scoreOk);
 			if (ok)
-				tournament->setDrawThreshold(moveNumber, moveCount, score);
+				adjudicator.setDrawThreshold(moveNumber, moveCount, score);
 		}
 		// Threshold for resign adjudication
 		else if (name == "-resign")
@@ -326,7 +327,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 			ok = (countOk && scoreOk);
 			if (ok)
-				tournament->setResignThreshold(moveCount, -score);
+				adjudicator.setResignThreshold(moveCount, -score);
 		}
 		// Event name
 		else if (name == "-event")
@@ -527,6 +528,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		delete tournament;
 		return 0;
 	}
+
+	tournament->setAdjudicator(adjudicator);
 
 	return match;
 }
