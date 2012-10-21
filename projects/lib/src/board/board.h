@@ -190,6 +190,13 @@ class LIB_EXPORT Board
 		Side startingSide() const;
 		/*! Returns the piece at \a square. */
 		Piece pieceAt(const Square& square) const;
+		/*! Returns the number of halfmoves (plies) played. */
+		int plyCount() const;
+		/*!
+		 * Returns the number of times the current position was
+		 * reached previously in the game.
+		 */
+		int repeatCount() const;
 		/*!
 		 * Returns the number of reserve pieces of type \a piece.
 		 *
@@ -464,13 +471,6 @@ class LIB_EXPORT Board
 		 * subclasses shouldn't mess with it directly.
 		 */
 		void setSquare(int square, Piece piece);
-		/*! Returns the number of halfmoves (plies) played. */
-		int plyCount() const;
-		/*!
-		 * Returns the number of times the current position was
-		 * reached previously in the game.
-		 */
-		int repeatCount() const;
 		/*! Returns the last move made in the game. */
 		const Move& lastMove() const;
 		/*!
