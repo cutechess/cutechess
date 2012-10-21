@@ -129,12 +129,13 @@ Chess::Result GaviotaTablebase::result(const Chess::Side& side,
 
 	if (ok)
 	{
-		if (info == tb_DRAW)
-			return Chess::Result(Chess::Result::Draw);
+		Chess::Side winner(Chess::Side::NoSide);
 		if (info == tb_WMATE)
-			return Chess::Result(Chess::Result::Win, Chess::Side::White);
-		if (info == tb_BMATE)
-			return Chess::Result(Chess::Result::Win, Chess::Side::Black);
+			winner = Chess::Side::White;
+		else if (info == tb_BMATE)
+			winner = Chess::Side::Black;
+
+		return Chess::Result(Chess::Result::Adjudication, winner, "GTB");
 	}
 
 	return Chess::Result();
