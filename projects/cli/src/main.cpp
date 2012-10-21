@@ -35,6 +35,7 @@
 #include <enginetextoption.h>
 #include <openingsuite.h>
 #include <sprt.h>
+#include <board/gaviotatablebase.h>
 
 #include "cutechesscoreapp.h"
 #include "matchparser.h"
@@ -233,6 +234,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-concurrency", QVariant::Int, 1, 1);
 	parser.addOption("-draw", QVariant::StringList);
 	parser.addOption("-resign", QVariant::StringList);
+	parser.addOption("-gtb", QVariant::String, 1, 1);
 	parser.addOption("-tournament", QVariant::String, 1, 1);
 	parser.addOption("-event", QVariant::String, 1, 1);
 	parser.addOption("-games", QVariant::Int, 1, 1);
@@ -328,6 +330,17 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			ok = (countOk && scoreOk);
 			if (ok)
 				adjudicator.setResignThreshold(moveCount, -score);
+		}
+		// Gaviota tablebase adjudication
+		else if (name == "-gtb")
+		{
+			adjudicator.setTablebaseAdjudication(true);
+			QStringList paths = QStringList() << value.toString();
+
+			ok = GaviotaTablebase::initialize(paths) &&
+			     GaviotaTablebase::tbAvailable(3);
+			if (!ok)
+				qWarning("Could not load Gaviota tablebases");
 		}
 		// Event name
 		else if (name == "-event")

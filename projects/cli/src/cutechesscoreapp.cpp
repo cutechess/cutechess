@@ -23,6 +23,7 @@
 #include <mersenne.h>
 #include <enginemanager.h>
 #include <gamemanager.h>
+#include <board/gaviotatablebase.h>
 #include <cstdlib>
 #include <cstdio>
 
@@ -52,6 +53,7 @@ CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 
 CuteChessCoreApplication::~CuteChessCoreApplication()
 {
+	GaviotaTablebase::cleanup();
 }
 
 void CuteChessCoreApplication::messageHandler(QtMsgType type,

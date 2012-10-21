@@ -28,6 +28,10 @@ Options:
 			Adjudicate the game as a loss if an engine's score is
 			at least SCORE centipawns below zero for at least COUNT
 			consecutive moves.
+  -gtb PATHS		Adjudicate games using Gaviota tablebases. PATHS should
+			be semicolon-delimited list of paths to the compressed
+			tablebase files. At the moment only scheme 4 compression
+			is supported.
   -tournament TYPE	Set the tournament type to TYPE, which can be one of:
 			'gauntlet': First engine plays against the rest
 			'round-robin': Round-robin tournament (default).
