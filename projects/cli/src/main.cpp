@@ -383,7 +383,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		else if (name == "-openings")
 		{
 			QMap<QString, QString> params =
-				option.toMap("file|format=pgn|order=sequential|plies=1024");
+				option.toMap("file|format=pgn|order=sequential|plies=1024|start=1");
 			ok = !params.isEmpty();
 
 			OpeningSuite::Format format = OpeningSuite::EpdFormat;
@@ -411,15 +411,17 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			}
 
 			int plies = params["plies"].toInt();
+			int start = params["start"].toInt();
 
-			ok = ok && plies > 0;
+			ok = ok && plies > 0 && start > 0;
 			if (ok)
 			{
 				tournament->setOpeningDepth(plies);
 
 				OpeningSuite* suite = new OpeningSuite(params["file"],
 								       format,
-								       order);
+								       order,
+								       start - 1);
 				if (order == OpeningSuite::RandomOrder)
 					qDebug("Indexing opening suite...");
 				ok = suite->initialize();

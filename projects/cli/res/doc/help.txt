@@ -57,13 +57,15 @@ Options:
 			games set by '-rounds' and/or '-games' is reached.
   -ratinginterval N	Set the interval for printing the ratings to N games
   -debug		Display all engine input and output
-  -openings file=FILE format=FORMAT order=ORDER plies=PLIES
+  -openings file=FILE format=FORMAT order=ORDER plies=PLIES start=START
 			Pick game openings from FILE. The file's format is
 			FORMAT, which can be either 'epd' or 'pgn' (default).
 			Openings will be picked in the order specified by ORDER,
 			which can be either 'random' or 'sequential' (default).
 			The opening depth is limited to PLIES plies. If PLIES is
-			not set the opening depth is unlimited.
+			not set the opening depth is unlimited. In sequential
+			mode START is the number of the first opening that will
+			be played. The minimum value for START is 1 (default).
   -pgnout FILE [min]	Save the games to FILE in PGN format. Use the 'min'
 			argument to save in a minimal/compact PGN format.
   -recover		Restart crashed engines instead of stopping the match
