@@ -1046,7 +1046,21 @@ static long unsigned int eg_was_open_count(void)
 
 enum  Sizes {INISIZE = 4096};
 static char ini_str[INISIZE];
-static void sjoin(char *s, const char *tail, size_t max) {strncat(s, tail, max - strlen(s) - 1);}
+
+static void sjoin(char *s, const char *tail, size_t max)
+{
+#ifdef _MSC_VER
+	strncat_s(s, INISIZE, tail, max - strlen(s) - 1);
+#else
+	strncat(s, tail, max - strlen(s) - 1);
+#endif
+}
+
+#ifdef _MSC_VER
+  #define GTB_SNPRINTF sprintf_s
+#else
+  #define GTB_SNPRINTF snprintf
+#endif
 
 char *
 tb_init (int verbosity, int decoding_sch, const char **paths)
@@ -1074,9 +1088,9 @@ tb_init (int verbosity, int decoding_sch, const char **paths)
 		for (g = 0; Gtbpath[g] != NULL; g++) {
 			const char *p = Gtbpath[g];
 			if (0 == g) {
-				sprintf (localstr,"  main: %s\n", p);
+				GTB_SNPRINTF(localstr, 256, "  main: %s\n", p);
 			} else {
-				sprintf (localstr,"    #%d: %s\n", g, p);
+				GTB_SNPRINTF(localstr, 256, "    #%d: %s\n", g, p);
 			}
 			sjoin(ini_str,localstr,INISIZE);
 		}
@@ -1113,7 +1127,7 @@ tb_init (int verbosity, int decoding_sch, const char **paths)
 
 	if (verbosity) {
 		sjoin (ini_str,"\nGTB initialization\n",INISIZE);
-		sprintf (localstr,"  Compression  Scheme = %d\n", GTB_scheme);
+		GTB_SNPRINTF(localstr, 256, "  Compression  Scheme = %d\n", GTB_scheme);
 		sjoin (ini_str,localstr,INISIZE);
 	}
 
@@ -1129,23 +1143,23 @@ tb_init (int verbosity, int decoding_sch, const char **paths)
 
 			n = 3; bit = 1;
 			if (zi&(1u<<bit)) 
-				sprintf (localstr,"  Compression Indexes (%d-pc) = PASSED\n",n);
+				GTB_SNPRINTF(localstr, 256, "  Compression Indexes (%d-pc) = PASSED\n",n);
 			else
-				sprintf (localstr,"  Compression Indexes (%d-pc) = **FAILED**\n",n);
+				GTB_SNPRINTF(localstr, 256, "  Compression Indexes (%d-pc) = **FAILED**\n",n);
 			sjoin (ini_str,localstr,INISIZE);
 			
 			n = 4; bit = 3;
 			if (zi&(1u<<bit))
-				sprintf (localstr,"  Compression Indexes (%d-pc) = PASSED\n",n);
+				GTB_SNPRINTF(localstr, 256, "  Compression Indexes (%d-pc) = PASSED\n",n);
 			else
-				sprintf (localstr,"  Compression Indexes (%d-pc) = **FAILED**\n",n);
+				GTB_SNPRINTF(localstr, 256, "  Compression Indexes (%d-pc) = **FAILED**\n",n);
 			sjoin (ini_str,localstr,INISIZE);
 
 			n = 5; bit = 5;
 			if (zi&(1u<<bit))
-				sprintf (localstr,"  Compression Indexes (%d-pc) = PASSED\n",n);
+				GTB_SNPRINTF(localstr, 256, "  Compression Indexes (%d-pc) = PASSED\n",n);
 			else
-				sprintf (localstr,"  Compression Indexes (%d-pc) = **FAILED**\n",n);
+				GTB_SNPRINTF(localstr, 256, "  Compression Indexes (%d-pc) = **FAILED**\n",n);
 			sjoin (ini_str,localstr,INISIZE);
 		}
 		sjoin (ini_str,"\n",INISIZE);
