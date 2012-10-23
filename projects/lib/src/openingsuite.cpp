@@ -22,11 +22,15 @@
 #include "epdrecord.h"
 #include "mersenne.h"
 
-OpeningSuite::OpeningSuite(const QString& fileName, Format format, Order order)
+OpeningSuite::OpeningSuite(const QString& fileName,
+			   Format format,
+			   Order order,
+			   int startIndex)
 	: m_format(format),
 	  m_order(order),
 	  m_gamesRead(0),
 	  m_gameIndex(0),
+	  m_startIndex(startIndex),
 	  m_fileName(fileName),
 	  m_epdStream(0),
 	  m_pgnStream(0)
@@ -119,8 +123,22 @@ bool OpeningSuite::initialize()
 			}
 		}
 	}
+	else if (m_order == SequentialOrder)
+	{
+		for (int i = 0; i < m_startIndex; i++)
+		{
+			FilePosition pos;
+			if (m_format == EpdFormat)
+				pos = getEpdPos();
+			else if (m_format == PgnFormat)
+				pos = getPgnPos();
 
-	if (m_epdStream != 0)
+			if (pos.pos == -1)
+				break;
+		}
+	}
+
+	if (m_epdStream != 0 && m_epdStream->atEnd())
 	{
 		m_epdStream->seek(0);
 		m_epdStream->resetStatus();

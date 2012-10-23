@@ -58,12 +58,17 @@ class LIB_EXPORT OpeningSuite
 		 *
 		 * Openings will be picked according to \a order.
 		 *
+		 * If \a order is \a SequentialOrder, \a startIndex will
+		 * be the index of the first opening. If \a order is
+		 * \a RandomOrder, then setting a start index does nothing.
+		 *
 		 * \note The created opening suite is null until
 		 * initialize() is called.
 		 */
 		OpeningSuite(const QString& fileName,
 			     Format format,
-			     Order order = SequentialOrder);
+			     Order order = SequentialOrder,
+			     int startIndex = 0);
 		/*! Destroys the opening suite. */
 		~OpeningSuite();
 
@@ -109,6 +114,7 @@ class LIB_EXPORT OpeningSuite
 		Order m_order;
 		int m_gamesRead;
 		int m_gameIndex;
+		int m_startIndex;
 		QString m_fileName;
 		QTextStream* m_epdStream;
 		PgnStream* m_pgnStream;
