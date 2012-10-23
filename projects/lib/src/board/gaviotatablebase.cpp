@@ -17,7 +17,7 @@
 
 #include "gaviotatablebase.h"
 #include <QStringList>
-#include <3rdparty/gtb/src/gtb-probe.h>
+#include <gtb-probe.h>
 #include "westernboard.h"
 
 const char** s_paths = 0;

@@ -1,6 +1,7 @@
 DEFINES += Z_PREFIX
 CONFIG(release, debug|release):DEFINES += NDEBUG
 
+INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 SOURCES += gtb-probe.c \
     gtb-dec.c \
