@@ -139,7 +139,7 @@ void XboardEngine::startGame()
 		write(QString("level %1 %2 %3")
 		      .arg(myTc->movesPerTc())
 		      .arg(msToXboardTime(myTc->timePerTc()))
-		      .arg(myTc->timeIncrement() / 1000));
+		      .arg(double(myTc->timeIncrement()) / 1000));
 
 	if (myTc->plyLimit() > 0)
 		write(QString("sd %1").arg(myTc->plyLimit()));
