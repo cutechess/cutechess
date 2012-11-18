@@ -67,10 +67,10 @@ class LIB_EXPORT GameAdjudicator
 		/*!
 		 * Adds a new move evaluation to the adjudicator.
 		 *
-		 * \a board should be at the latest position of the game and
-		 * \a eval should be the evaluation of the latest move.
+		 * \a board should be at the position that follows the move.
+		 * \a eval should be the evaluation of the move.
 		 *
-		 * result() should be called after this function to find out if
+		 * result() can be called after this function to find out if
 		 * the game should be adjudicated.
 		 */
 		void addEval(const Chess::Board* board, const MoveEvaluation& eval);

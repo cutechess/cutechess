@@ -60,7 +60,7 @@ void GameAdjudicator::setTablebaseAdjudication(bool enable)
 
 void GameAdjudicator::addEval(const Chess::Board* board, const MoveEvaluation& eval)
 {
-	Chess::Side side = board->sideToMove();
+	Chess::Side side = board->sideToMove().opposite();
 
 	// Tablebase adjudication
 	if (m_tbEnabled)
@@ -74,8 +74,7 @@ void GameAdjudicator::addEval(const Chess::Board* board, const MoveEvaluation& e
 	if (eval.depth() <= 0)
 	{
 		m_drawScoreCount = 0;
-		m_resignScoreCount[0] = 0;
-		m_resignScoreCount[1] = 0;
+		m_resignScoreCount[side] = 0;
 		return;
 	}
 
