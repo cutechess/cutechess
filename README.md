@@ -30,11 +30,32 @@ In the simplest case you only have to issue:
     $ make
 
 If you are using the Visual C++ compiler replace `make` with `nmake`. To build
-on OS X add `-spec macx-g++` to the `qmake` command.
+on OS X add `-spec macx-g++` to the `qmake` command. To compile the
+`libcutechess` library into the `cutechess` and `cutechess-cli` binaries add
+`-config static` to the `qmake` command.
 
 Documentation is available as Unix manual pages in the `docs/` directory.
 
 API documentation can be built by issuing `make doc-api` (requires Doxygen).
+
+Running
+-------
+
+In order to run the `cutechess` and `cutechess-cli` executables the program
+loader must find the Qt libraries and the `libcutechess` library, if it's not
+compiled statically. On Windows it's enough to copy the libraries (DLL files)
+to the same directory as the Cute Chess executables. On Linux and OS X the path
+to `libcutechess` should be set via an environment variable. On Linux the
+command to run is:
+
+    $ export LD_LIBRARY_PATH=path_to_libcutechess
+
+And on OS X:
+
+    $ export DYLD_LIBRARY_PATH=path_to_libcutechess
+
+OS X users can also create a .dmg bundle of Cute Chess and the Qt frameworks
+with the `macdeployqt` tool that is bundled with the Qt SDK.
 
 License
 -------
