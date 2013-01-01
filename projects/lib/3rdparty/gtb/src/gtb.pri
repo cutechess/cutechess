@@ -46,7 +46,7 @@ HEADERS += gtb-att.h \
     compression/zlib/inftrees.h \
     compression/zlib/trees.h \
     compression/zlib/zconf.h \
-    compression/zlib/czonf.in.h \
+    compression/zlib/zconf.in.h \
     compression/zlib/zlib.h \
     compression/zlib/zutil.h \
     compression/lzma/Alloc.h \
