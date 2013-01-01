@@ -89,7 +89,7 @@ int OpeningBook::import(const PgnGame& pgn, int maxMoves)
 
 	Chess::Side winner(pgn.result().winner());
 	int loserMod = -1;
-	int weight = 1;
+	quint16 weight = 1;
 	maxMoves = qMin(maxMoves, pgn.moves().size());
 	int ret = maxMoves;
 
