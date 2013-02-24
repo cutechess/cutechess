@@ -1,88 +1,86 @@
 include(board/board.pri)
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
-HEADERS += chessengine.h \
-    chessgame.h \
-    chessplayer.h \
-    engineconfiguration.h \
-    openingbook.h \
-    pgnstream.h \
-    pgngame.h \
-    polyglotbook.h \
-    timecontrol.h \
-    uciengine.h \
-    xboardengine.h \
-    moveevaluation.h \
-    enginemanager.h \
-    humanplayer.h \
-    engineoption.h \
-    enginespinoption.h \
-    enginecombooption.h \
-    enginecheckoption.h \
-    enginetextoption.h \
-    enginebuttonoption.h \
-    pgngameentry.h \
-    gamemanager.h \
-    playerbuilder.h \
-    enginebuilder.h \
-    classregistry.h \
-    enginefactory.h \
-    humanbuilder.h \
-    engineoptionfactory.h \
-    pgngamefilter.h \
-    tournament.h \
-    roundrobintournament.h \
-    tournamentfactory.h \
-    gauntlettournament.h \
-    epdrecord.h \
-    openingsuite.h \
-    econode.h \
-    mersenne.h \
-    sprt.h \
-    gameadjudicator.h
-SOURCES += chessengine.cpp \
-    chessgame.cpp \
-    chessplayer.cpp \
-    engineconfiguration.cpp \
-    openingbook.cpp \
-    pgnstream.cpp \
-    pgngame.cpp \
-    polyglotbook.cpp \
-    timecontrol.cpp \
-    uciengine.cpp \
-    xboardengine.cpp \
-    moveevaluation.cpp \
-    enginemanager.cpp \
-    humanplayer.cpp \
-    engineoption.cpp \
-    enginespinoption.cpp \
-    enginecombooption.cpp \
-    enginecheckoption.cpp \
-    enginetextoption.cpp \
-    enginebuttonoption.cpp \
-    pgngameentry.cpp \
-    gamemanager.cpp \
-    playerbuilder.cpp \
-    enginebuilder.cpp \
-    enginefactory.cpp \
-    humanbuilder.cpp \
-    engineoptionfactory.cpp \
-    pgngamefilter.cpp \
-    tournament.cpp \
-    roundrobintournament.cpp \
-    tournamentfactory.cpp \
-    gauntlettournament.cpp \
-    epdrecord.cpp \
-    openingsuite.cpp \
-    econode.cpp \
-    mersenne.cpp \
-    sprt.cpp \
-    gameadjudicator.cpp
+HEADERS += $$PWD/chessengine.h \
+    $$PWD/chessgame.h \
+    $$PWD/chessplayer.h \
+    $$PWD/engineconfiguration.h \
+    $$PWD/openingbook.h \
+    $$PWD/pgnstream.h \
+    $$PWD/pgngame.h \
+    $$PWD/polyglotbook.h \
+    $$PWD/timecontrol.h \
+    $$PWD/uciengine.h \
+    $$PWD/xboardengine.h \
+    $$PWD/moveevaluation.h \
+    $$PWD/enginemanager.h \
+    $$PWD/humanplayer.h \
+    $$PWD/engineoption.h \
+    $$PWD/enginespinoption.h \
+    $$PWD/enginecombooption.h \
+    $$PWD/enginecheckoption.h \
+    $$PWD/enginetextoption.h \
+    $$PWD/enginebuttonoption.h \
+    $$PWD/pgngameentry.h \
+    $$PWD/gamemanager.h \
+    $$PWD/playerbuilder.h \
+    $$PWD/enginebuilder.h \
+    $$PWD/classregistry.h \
+    $$PWD/enginefactory.h \
+    $$PWD/humanbuilder.h \
+    $$PWD/engineoptionfactory.h \
+    $$PWD/pgngamefilter.h \
+    $$PWD/tournament.h \
+    $$PWD/roundrobintournament.h \
+    $$PWD/tournamentfactory.h \
+    $$PWD/gauntlettournament.h \
+    $$PWD/epdrecord.h \
+    $$PWD/openingsuite.h \
+    $$PWD/econode.h \
+    $$PWD/mersenne.h \
+    $$PWD/sprt.h \
+    $$PWD/gameadjudicator.h
+SOURCES += $$PWD/chessengine.cpp \
+    $$PWD/chessgame.cpp \
+    $$PWD/chessplayer.cpp \
+    $$PWD/engineconfiguration.cpp \
+    $$PWD/openingbook.cpp \
+    $$PWD/pgnstream.cpp \
+    $$PWD/pgngame.cpp \
+    $$PWD/polyglotbook.cpp \
+    $$PWD/timecontrol.cpp \
+    $$PWD/uciengine.cpp \
+    $$PWD/xboardengine.cpp \
+    $$PWD/moveevaluation.cpp \
+    $$PWD/enginemanager.cpp \
+    $$PWD/humanplayer.cpp \
+    $$PWD/engineoption.cpp \
+    $$PWD/enginespinoption.cpp \
+    $$PWD/enginecombooption.cpp \
+    $$PWD/enginecheckoption.cpp \
+    $$PWD/enginetextoption.cpp \
+    $$PWD/enginebuttonoption.cpp \
+    $$PWD/pgngameentry.cpp \
+    $$PWD/gamemanager.cpp \
+    $$PWD/playerbuilder.cpp \
+    $$PWD/enginebuilder.cpp \
+    $$PWD/enginefactory.cpp \
+    $$PWD/humanbuilder.cpp \
+    $$PWD/engineoptionfactory.cpp \
+    $$PWD/pgngamefilter.cpp \
+    $$PWD/tournament.cpp \
+    $$PWD/roundrobintournament.cpp \
+    $$PWD/tournamentfactory.cpp \
+    $$PWD/gauntlettournament.cpp \
+    $$PWD/epdrecord.cpp \
+    $$PWD/openingsuite.cpp \
+    $$PWD/econode.cpp \
+    $$PWD/mersenne.cpp \
+    $$PWD/sprt.cpp \
+    $$PWD/gameadjudicator.cpp
 win32 { 
-    HEADERS += engineprocess_win.h \
-        pipereader_win.h
-    SOURCES += engineprocess_win.cpp \
-        pipereader_win.cpp
+    HEADERS += $$PWD/engineprocess_win.h \
+	$$PWD/pipereader_win.h
+    SOURCES += $$PWD/engineprocess_win.cpp \
+	$$PWD/pipereader_win.cpp
 }
-
-

@@ -132,7 +132,7 @@ void PieceChooser::mousePressEvent(QGraphicsSceneMouseEvent* event)
 		return;
 	}
 
-	QGraphicsItem* item = scene()->itemAt(event->scenePos());
+	QGraphicsItem* item = scene()->itemAt(event->scenePos(), QTransform());
 	GraphicsPiece* piece = qgraphicsitem_cast<GraphicsPiece*>(item);
 	if (piece != 0 && piece->parentItem() == this)
 	{

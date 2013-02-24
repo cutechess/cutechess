@@ -64,7 +64,7 @@ static int ecoFromString(const QString& ecoString)
 {
 	if (ecoString.length() < 2)
 		return -1;
-	int hundreds = ecoString.at(0).toUpper().toAscii() - 'A';
+	int hundreds = ecoString.at(0).toUpper().toLatin1() - 'A';
 
 	bool ok = false;
 	int tens = ecoString.right(ecoString.length() - 1).toInt(&ok);

@@ -385,7 +385,7 @@ void ChessEngine::write(const QString& data, WriteMode mode)
 			  .arg(m_id)
 			  .arg(data));
 
-	m_ioDevice->write(data.toAscii() + "\n");
+	m_ioDevice->write(data.toLatin1() + "\n");
 }
 
 void ChessEngine::onReadyRead()

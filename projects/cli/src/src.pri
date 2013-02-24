@@ -1,8 +1,8 @@
 DEPENDPATH += $$PWD
-HEADERS += enginematch.h \
-    cutechesscoreapp.h \
-    matchparser.h
-SOURCES += main.cpp \
-    cutechesscoreapp.cpp \
-    enginematch.cpp \
-    matchparser.cpp
+HEADERS += $$PWD/enginematch.h \
+    $$PWD/cutechesscoreapp.h \
+    $$PWD/matchparser.h
+SOURCES += $$PWD/main.cpp \
+    $$PWD/cutechesscoreapp.cpp \
+    $$PWD/enginematch.cpp \
+    $$PWD/matchparser.cpp

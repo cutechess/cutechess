@@ -209,7 +209,6 @@ class GameThread : public QThread
 
 	private:
 		bool m_ready;
-		bool m_quitting;
 		GameManager::StartMode m_startMode;
 		GameManager::CleanupMode m_cleanupMode;
 		ChessGame* m_game;
@@ -221,7 +220,6 @@ GameThread::GameThread(const PlayerBuilder* white,
 		       QObject* parent)
 	: QThread(parent),
 	  m_ready(true),
-	  m_quitting(false),
 	  m_startMode(GameManager::StartImmediately),
 	  m_cleanupMode(GameManager::DeletePlayers),
 	  m_game(0),

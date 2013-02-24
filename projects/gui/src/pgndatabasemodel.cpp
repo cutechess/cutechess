@@ -47,7 +47,8 @@ void PgnDatabaseModel::onDatabaseAboutToBeRemoved(int index)
 
 void PgnDatabaseModel::onDatabasesReset()
 {
-	reset();
+	beginResetModel();
+	endResetModel();
 }
 
 QModelIndex PgnDatabaseModel::index(int row, int column,

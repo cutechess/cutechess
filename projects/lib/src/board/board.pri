@@ -1,41 +1,41 @@
 DEPENDPATH += $$PWD
-SOURCES += board.cpp \
-    westernboard.cpp \
-    square.cpp \
-    standardboard.cpp \
-    capablancaboard.cpp \
-    zobrist.cpp \
-    westernzobrist.cpp \
-    frcboard.cpp \
-    caparandomboard.cpp \
-    result.cpp \
-    side.cpp \
-    genericmove.cpp \
-    atomicboard.cpp \
-    losersboard.cpp \
-    gothicboard.cpp \
-    crazyhouseboard.cpp \
-    boardfactory.cpp \
-    boardtransition.cpp \
-    gaviotatablebase.cpp
-HEADERS += board.h \
-    move.h \
-    piece.h \
-    westernboard.h \
-    square.h \
-    standardboard.h \
-    capablancaboard.h \
-    zobrist.h \
-    westernzobrist.h \
-    frcboard.h \
-    caparandomboard.h \
-    result.h \
-    side.h \
-    genericmove.h \
-    atomicboard.h \
-    losersboard.h \
-    gothicboard.h \
-    crazyhouseboard.h \
-    boardfactory.h \
-    boardtransition.h \
-    gaviotatablebase.h
+SOURCES += $$PWD/board.cpp \
+    $$PWD/westernboard.cpp \
+    $$PWD/square.cpp \
+    $$PWD/standardboard.cpp \
+    $$PWD/capablancaboard.cpp \
+    $$PWD/zobrist.cpp \
+    $$PWD/westernzobrist.cpp \
+    $$PWD/frcboard.cpp \
+    $$PWD/caparandomboard.cpp \
+    $$PWD/result.cpp \
+    $$PWD/side.cpp \
+    $$PWD/genericmove.cpp \
+    $$PWD/atomicboard.cpp \
+    $$PWD/losersboard.cpp \
+    $$PWD/gothicboard.cpp \
+    $$PWD/crazyhouseboard.cpp \
+    $$PWD/boardfactory.cpp \
+    $$PWD/boardtransition.cpp \
+    $$PWD/gaviotatablebase.cpp
+HEADERS += $$PWD/board.h \
+    $$PWD/move.h \
+    $$PWD/piece.h \
+    $$PWD/westernboard.h \
+    $$PWD/square.h \
+    $$PWD/standardboard.h \
+    $$PWD/capablancaboard.h \
+    $$PWD/zobrist.h \
+    $$PWD/westernzobrist.h \
+    $$PWD/frcboard.h \
+    $$PWD/caparandomboard.h \
+    $$PWD/result.h \
+    $$PWD/side.h \
+    $$PWD/genericmove.h \
+    $$PWD/atomicboard.h \
+    $$PWD/losersboard.h \
+    $$PWD/gothicboard.h \
+    $$PWD/crazyhouseboard.h \
+    $$PWD/boardfactory.h \
+    $$PWD/boardtransition.h \
+    $$PWD/gaviotatablebase.h

@@ -12,8 +12,8 @@ Public domain */
 #define LZMA86_SIZE_OFFSET (1 + LZMA_PROPS_SIZE)
 #define LZMA86_HEADER_SIZE (LZMA86_SIZE_OFFSET + 8)
 
-static void *SzAlloc(void *p, size_t size) { p = p; return MyAlloc(size); }
-static void SzFree(void *p, void *address) { p = p; MyFree(address); }
+static void *SzAlloc(void *p, size_t size) { (void)(p); return MyAlloc(size); }
+static void SzFree(void *p, void *address) { (void)(p); MyFree(address); }
 static ISzAlloc g_Alloc = { SzAlloc, SzFree };
 
 SRes Lzma86_GetUnpackSize(const Byte *src, SizeT srcLen, UInt64 *unpackSize)

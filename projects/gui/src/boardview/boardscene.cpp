@@ -132,7 +132,7 @@ void BoardScene::makeMove(const Chess::Move& move)
 {
 	stopAnimation();
 	delete m_moveArrows;
-	m_moveArrows = new QGraphicsItemGroup(m_squares, this);
+	m_moveArrows = new QGraphicsItemGroup(m_squares);
 
 	Q_ASSERT(!move.isNull());
 	Q_ASSERT(m_board->isLegalMove(move));

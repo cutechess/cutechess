@@ -58,7 +58,7 @@ bool EpdRecord::parse(QTextStream& stream)
 		QChar c;
 		stream >> c;
 
-		switch (c.toAscii())
+		switch (c.toLatin1())
 		{
 		case '\n':
 			return true;

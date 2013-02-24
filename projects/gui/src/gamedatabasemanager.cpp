@@ -18,6 +18,7 @@
 #include "gamedatabasemanager.h"
 
 #include <QFileInfo>
+#include <QDataStream>
 
 #include "pgndatabase.h"
 #include "pgnimporter.h"

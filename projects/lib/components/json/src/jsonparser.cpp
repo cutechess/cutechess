@@ -128,7 +128,7 @@ JsonParser::Token JsonParser::parseToken()
 		switch (type)
 		{
 		case JsonNone:
-			switch (c.toAscii())
+			switch (c.toLatin1())
 			{
 			case ',': return JsonComma;
 			case ':': return JsonColon;
@@ -149,7 +149,7 @@ JsonParser::Token JsonParser::parseToken()
 			if (escapeChar)
 			{
 				escapeChar = false;
-				switch (c.toAscii())
+				switch (c.toLatin1())
 				{
 				case '\"':
 				case '\\':
@@ -208,7 +208,7 @@ JsonParser::Token JsonParser::parseToken()
 				break;
 			}
 
-			switch (c.toAscii())
+			switch (c.toLatin1())
 			{
 			case '\\':
 				escapeChar = true;

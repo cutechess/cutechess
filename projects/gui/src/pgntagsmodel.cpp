@@ -24,8 +24,9 @@ PgnTagsModel::PgnTagsModel(QObject* parent)
 
 void PgnTagsModel::setTags(const QMap<QString, QString>& tags)
 {
+	beginResetModel();
 	m_tags = tags;
-	reset();
+	endResetModel();
 }
 
 QModelIndex PgnTagsModel::index(int row, int column,

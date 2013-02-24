@@ -32,7 +32,7 @@ static QString jsonString(const QString& source)
 	QString str;
 	foreach (const QChar& c, source)
 	{
-		switch (c.toAscii())
+		switch (c.toLatin1())
 		{
 		case '\"':
 			str += "\\\"";

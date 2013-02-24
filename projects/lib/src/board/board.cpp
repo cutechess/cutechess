@@ -271,14 +271,14 @@ Square Board::chessSquare(const QString& str) const
 
 	if (coordinateSystem() == NormalCoordinates)
 	{
-		file = str.at(0).toAscii() - 'a';
+		file = str.at(0).toLatin1() - 'a';
 		rank = str.mid(1).toInt(&ok) - 1;
 	}
 	else
 	{
 		int tmp = str.length() - 1;
 		file = m_width - str.left(tmp).toInt(&ok);
-		rank = m_height - (str.at(tmp).toAscii() - 'a') - 1;
+		rank = m_height - (str.at(tmp).toLatin1() - 'a') - 1;
 	}
 
 	if (!ok)

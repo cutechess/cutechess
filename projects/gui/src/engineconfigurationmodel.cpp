@@ -122,5 +122,6 @@ void EngineConfigurationModel::onEngineUpdated(int index)
 
 void EngineConfigurationModel::onEnginesReset()
 {
-	reset();
+	beginResetModel();
+	endResetModel();
 }

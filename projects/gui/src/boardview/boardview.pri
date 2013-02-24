@@ -1,13 +1,13 @@
 DEPENDPATH += $$PWD
-HEADERS += boardscene.h \
-    boardview.h \
-    graphicsboard.h \
-    graphicspiece.h \
-    graphicspiecereserve.h \
-    piecechooser.h
-SOURCES += boardscene.cpp \
-    boardview.cpp \
-    graphicsboard.cpp \
-    graphicspiece.cpp \
-    graphicspiecereserve.cpp \
-    piecechooser.cpp
+HEADERS += $$PWD/boardscene.h \
+    $$PWD/boardview.h \
+    $$PWD/graphicsboard.h \
+    $$PWD/graphicspiece.h \
+    $$PWD/graphicspiecereserve.h \
+    $$PWD/piecechooser.h
+SOURCES += $$PWD/boardscene.cpp \
+    $$PWD/boardview.cpp \
+    $$PWD/graphicsboard.cpp \
+    $$PWD/graphicspiece.cpp \
+    $$PWD/graphicspiecereserve.cpp \
+    $$PWD/piecechooser.cpp

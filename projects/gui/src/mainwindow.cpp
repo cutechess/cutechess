@@ -17,7 +17,17 @@
 
 #include "mainwindow.h"
 
-#include <QtGui>
+#include <QAction>
+#include <QHBoxLayout>
+#include <QStatusBar>
+#include <QMenu>
+#include <QMenuBar>
+#include <QTabBar>
+#include <QToolBar>
+#include <QDockWidget>
+#include <QTreeView>
+#include <QMessageBox>
+#include <QFileDialog>
 
 #include <board/boardfactory.h>
 #include <chessgame.h>

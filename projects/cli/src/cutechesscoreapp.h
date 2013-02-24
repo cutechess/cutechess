@@ -36,7 +36,14 @@ class CuteChessCoreApplication : public QCoreApplication
 		GameManager* gameManager();
 		static CuteChessCoreApplication* instance();
 
-		static void messageHandler(QtMsgType type, const char* message);
+		#if QT_VERSION >= 0x050000
+		static void messageHandler(QtMsgType type,
+					   const QMessageLogContext &context,
+					   const QString &message);
+		#else
+		static void messageHandler(QtMsgType type,
+					   const char* message);
+		#endif
 	private:
 		EngineManager* m_engineManager;
 		GameManager* m_gameManager;

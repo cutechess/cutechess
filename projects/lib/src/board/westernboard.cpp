@@ -337,7 +337,7 @@ Move WesternBoard::moveFromSanString(const QString& str)
 	if (!isValidSquare(targetSq))
 	{
 		// Source square's file
-		sourceSq.setFile(it->toAscii() - 'a');
+		sourceSq.setFile(it->toLatin1() - 'a');
 		if (sourceSq.file() < 0 || sourceSq.file() >= width())
 			sourceSq.setFile(-1);
 		else if (++it == mstr.end())
@@ -346,7 +346,7 @@ Move WesternBoard::moveFromSanString(const QString& str)
 		// Source square's rank
 		if (it->isDigit())
 		{
-			sourceSq.setRank(it->toAscii() - '1');
+			sourceSq.setRank(it->toLatin1() - '1');
 			if (sourceSq.rank() < 0 || sourceSq.rank() >= height())
 				return Move();
 			++it;
@@ -559,7 +559,7 @@ bool WesternBoard::parseCastlingRights(QChar c)
 	}
 	else	// Shredder FEN or X-FEN
 	{
-		int file = c.toAscii() - 'a';
+		int file = c.toLatin1() - 'a';
 		if (file < 0 || file >= width())
 			return false;
 
