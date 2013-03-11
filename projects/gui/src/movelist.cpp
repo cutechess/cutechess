@@ -48,7 +48,7 @@ static void appendMove(QString& s,
 		       const QString& moveString,
 		       const QString& comment)
 {
-	QString move = QString("<a href=\"move://%1\">%2</a> ").arg(moveNum).arg(moveString);
+	QString move = QString("<a href=\"move://%1@\">%2</a> ").arg(moveNum).arg(moveString);
 
 	#ifndef Q_OS_WIN32
 	move.replace('-', "&#8288;-&#8288;");
@@ -128,12 +128,12 @@ void MoveList::insertHtmlMove(const QString& move)
 void MoveList::onMoveOrCommentClicked(const QUrl& url)
 {
 	bool ok;
-	int moveNum = url.authority().toInt(&ok);
+	int moveNum = url.userName().toInt(&ok);
 
 	if (!ok)
 	{
 		qWarning("MoveList: invalid move number: %s",
-		    qPrintable(url.authority()));
+		    qPrintable(url.userName()));
 
 		return;
 	}
