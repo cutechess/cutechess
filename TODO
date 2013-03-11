@@ -40,8 +40,6 @@
 - Use model testing tools to check validity of all model classes
   during runtime (http://qt-project.org/wiki/Model_Test)
 
-- Prepare for Qt 5
-
 - Allow setting engine options again for each game instead of only once for the whole match
 
 - Support the Xboard "draw" command
