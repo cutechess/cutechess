@@ -46,6 +46,8 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	  m_gameDatabaseManager(0),
 	  m_gameDatabaseDialog(0)
 {
+	Q_INIT_RESOURCE(eco);
+
 	Mersenne::initialize(QTime(0,0,0).secsTo(QTime::currentTime()));
 
 	// Set the application icon
