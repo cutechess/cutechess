@@ -551,7 +551,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 int main(int argc, char* argv[])
 {
-	setvbuf(stdout, NULL, _IOLBF, 1024);
+	setvbuf(stdout, NULL, _IONBF, 0);
 	signal(SIGINT, sigintHandler);
 
 	CuteChessCoreApplication app(argc, argv);
