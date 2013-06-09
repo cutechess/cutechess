@@ -79,30 +79,13 @@ class LIB_EXPORT Sprt
 		void addResult(GameResult result);
 
 	private:
-		/*!
-		 * \internal From BayesElo: computes probabilities of win and
-		 * draw, given the elo difference. So it basically makes
-		 * a realistic assumption on (pWin, pDraw) for a given
-		 * elo difference, that is for a given theoretical score
-		 * pWin + pDraw/2.
-		 */
-		static void setResultProbabilities(double eloDiff,
-						   double& pWin,
-						   double& pDraw,
-						   double& pLoss);
-
-		// Cumulative sum of the log-likelihood ratio
-		double m_llrSum;
-		// Log-likelihood ratio for wins
-		double m_llrWin;
-		// Log-likelihood ratio for draws
-		double m_llrDraw;
-		// Log-likelihood ratio for losses
-		double m_llrLoss;
-		// Treshold for accepting H0
-		double m_lowerBound;
-		// Treshold for accepting H1
-		double m_upperBound;
+		double m_elo0;
+		double m_elo1;
+		double m_alpha;
+		double m_beta;
+		int m_wins;
+		int m_losses;
+		int m_draws;
 };
 
 #endif // SPRT_H
