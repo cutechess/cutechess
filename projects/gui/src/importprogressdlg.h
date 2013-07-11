@@ -45,9 +45,11 @@ class ImportProgressDialog : public QDialog
 	private slots:
 		void onImporterFinished();
 		void onImportError(int error);
-		void updateImportStatus(const QTime& startTime, int numReadGames);
+		void updateImportStatus(const QTime& startTime, int numReadGames, qint64 numReadBytes);
 
 	private:
+		QString humaniseTime(int sec);
+		qint64 m_totalFileSize;
 		PgnImporter* m_pgnImporter;
 		int m_lastUpdateSecs;
 		bool m_importError;

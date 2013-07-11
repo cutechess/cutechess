@@ -62,10 +62,10 @@ class PgnImporter : public QThread
 		/*!
 		 * Emitted periodically to give progress information about the import.
 		 *
-		 * The import was initiated at \a started and so far \a numReadGames have
-		 * been read.
+		 * The import was initiated at \a started and so far \a numReadGames games
+		 * and \a numReadBytes bytes have been read.
 		 */
-		void databaseReadStatus(const QTime& started, int numReadGames);
+		void databaseReadStatus(const QTime& started, int numReadGames, qint64 numReadBytes);
 		/*!
 		 * Emitted when an error is encountered during the import.
 		 *

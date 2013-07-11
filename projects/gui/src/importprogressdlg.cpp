@@ -35,9 +35,10 @@ ImportProgressDialog::ImportProgressDialog(PgnImporter* pgnImporter,
 
 	QFileInfo info(m_pgnImporter->fileName());
 
-	ui->m_fileNameLabel->setText(info.fileName());
-	ui->m_statusLabel->setText(tr("Importing"));
-	ui->m_totalGamesLabel->setText(tr("0 games imported"));
+	ui->m_fileNameLabel->setText(
+	    QString(tr("Importing \"%1\"").arg(info.fileName())));
+
+	m_totalFileSize = info.size();
 
 	connect(ui->m_buttonBox, SIGNAL(rejected()), m_pgnImporter,
 		SLOT(abort()));
@@ -45,8 +46,8 @@ ImportProgressDialog::ImportProgressDialog(PgnImporter* pgnImporter,
 		SLOT(onImporterFinished()));
 	connect(m_pgnImporter, SIGNAL(error(int)), this,
 		SLOT(onImportError(int)));
-	connect(m_pgnImporter, SIGNAL(databaseReadStatus(const QTime&, int)),
-		this, SLOT(updateImportStatus(const QTime&, int)));
+	connect(m_pgnImporter, SIGNAL(databaseReadStatus(const QTime&, int, qint64)),
+		this, SLOT(updateImportStatus(const QTime&, int, qint64)));
 }
 
 ImportProgressDialog::~ImportProgressDialog()
@@ -55,7 +56,7 @@ ImportProgressDialog::~ImportProgressDialog()
 }
 
 void ImportProgressDialog::updateImportStatus(const QTime& startTime,
-                                             int numReadGames)
+                                             int numReadGames, qint64 numReadBytes)
 {
 	int elapsed = startTime.secsTo(QTime::currentTime());
 	if (elapsed == 0)
@@ -67,10 +68,14 @@ void ImportProgressDialog::updateImportStatus(const QTime& startTime,
 
 	m_lastUpdateSecs = elapsed;
 
-	ui->m_statusLabel->setText(
-		QString(tr("Importing, %1 games/sec")).arg((int)numReadGames / elapsed));
-	ui->m_totalGamesLabel->setText(
-		QString(tr("%1 games imported")).arg(numReadGames));
+	ui->m_importProgressBar->setMinimum(0);
+	ui->m_importProgressBar->setMaximum(100);
+	ui->m_importProgressBar->setValue(int((double(numReadBytes) / m_totalFileSize) * 100));
+
+	int remainingSecs = (m_totalFileSize - numReadBytes) / (numReadBytes / elapsed);
+
+	ui->m_statusLabel->setText(QString(tr("%1 games/sec - %2")).arg((int)numReadGames / elapsed)
+	    .arg(humaniseTime(remainingSecs)));
 }
 
 void ImportProgressDialog::onImporterFinished()
@@ -103,4 +108,21 @@ void ImportProgressDialog::onImportError(int error)
 	// the import operation is already finished
 	ui->m_buttonBox->clear();
 	ui->m_buttonBox->addButton(QDialogButtonBox::Close);
+}
+
+QString ImportProgressDialog::humaniseTime(int sec)
+{
+	if (sec <= 5)
+		return QString(tr("About 5 seconds"));
+
+	if (sec <= 10)
+		return QString(tr("About 10 seconds"));
+
+	if (sec <= 60)
+		return QString(tr("Less than a minute"));
+
+	if (sec <= 120)
+		return QString(tr("About a minute"));
+
+	return QString(tr("About %1 minutes").arg(sec / 60));
 }

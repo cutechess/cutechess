@@ -76,7 +76,8 @@ void PgnImporter::run()
 		numReadGames++;
 
 		if (numReadGames % updateInterval == 0)
-			emit databaseReadStatus(startTime, numReadGames);
+			emit databaseReadStatus(startTime, numReadGames,
+			    pgnStream.pos());
 	}
 	PgnDatabase* db = new PgnDatabase(m_fileName);
 	db->setEntries(games);
