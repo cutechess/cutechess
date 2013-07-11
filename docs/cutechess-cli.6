@@ -114,15 +114,13 @@ of games set by
 and / or
 .Fl games
 is reached.
-.It Ic proto Ns = Ns [ Cm uci | Cm xboard  Ns ]
-Set the chess protocol.
 .It Fl ratinginterval Ar n
 Set the interval for printing the ratings to
 .Ar n
 games.
 .It Fl debug
 Display all engine input and output.
-.It Ic openings Cm file Ns = Ns Ar file Cm format Ns = Ns [ Cm epd | Cm pgn Ns ] Cm order Ns = Ns [ Cm random | Cm sequential Ns ] Cm plies Ns = Ns Ar plies
+.It Fl openings Cm file Ns = Ns Ar file Cm format Ns = Ns [ Cm epd | Cm pgn Ns ] Cm order Ns = Ns [ Cm random | Cm sequential Ns ] Cm plies Ns = Ns Ar plies Cm start Ns = Ns Ar start
 Pick game openings from
 .Ar file .
 The file can be either in
@@ -143,6 +141,12 @@ number of plies.
 If
 .Cm plies
 is not set the opening depth is unlimited.
+In sequential mode
+.Ar start
+is the number of the first opening that will be played.
+The minimum value for
+.Ar start
+is 1 (default).
 .It Fl pgnout Ar file Bq Cm min
 Save the games to
 .Ar file
