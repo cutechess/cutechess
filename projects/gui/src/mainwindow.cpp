@@ -338,6 +338,7 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 
 	if (m_game != 0)
 	{
+		m_game->pgn()->setTagReceiver(0);
 		m_gameViewer->disconnectGame();
 		disconnect(m_game, 0, m_moveList, 0);
 
@@ -384,6 +385,9 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	}
 	else
 		m_gameViewer->setGame(m_game);
+
+	m_tagsModel->setTags(gameData.pgn->tags());
+	gameData.pgn->setTagReceiver(m_tagsModel);
 
 	for (int i = 0; i < 2; i++)
 	{

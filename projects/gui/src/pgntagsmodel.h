@@ -19,7 +19,8 @@
 #define PGN_TAGS_MODEL_H
 
 #include <QAbstractItemModel>
-#include <QMap>
+#include <QList>
+#include <QPair>
 
 /*!
  * \brief Supplies PGN tag information to views.
@@ -32,7 +33,7 @@ class PgnTagsModel : public QAbstractItemModel
 		/*! Constructs a model with the given \a parent. */
 		PgnTagsModel(QObject* parent = 0);
 		/*! Associates \a tags with this model. */
-		void setTags(const QMap<QString, QString>& tags);
+		void setTags(const QList<QPair<QString, QString> >& tags);
 
 		// Inherited from QAbstractItemModel
 		virtual QModelIndex index(int row, int column,
@@ -44,8 +45,11 @@ class PgnTagsModel : public QAbstractItemModel
 		virtual QVariant headerData(int section, Qt::Orientation orientation,
 					    int role = Qt::DisplayRole) const;
 
+	public slots:
+		void setTag(const QString& name, const QString& value);
+
 	private:
-		QMap<QString, QString> m_tags;
+		QList< QPair<QString, QString> > m_tags;
 };
 
 #endif // PGN_TAGS_MODEL_H

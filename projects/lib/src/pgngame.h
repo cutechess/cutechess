@@ -21,6 +21,8 @@
 #include <QMap>
 #include <QString>
 #include <QVector>
+#include <QList>
+#include <QPair>
 #include <QDate>
 #include <climits>
 #include "board/genericmove.h"
@@ -28,6 +30,7 @@
 class QTextStream;
 class PgnStream;
 class EcoNode;
+class QObject;
 namespace Chess { class Board; }
 
 
@@ -78,7 +81,7 @@ class LIB_EXPORT PgnGame
 		void clear();
 
 		/*! Returns the tags that are used to describe the game. */
-		const QMap<QString, QString>& tags() const;
+		QList< QPair<QString, QString> > tags() const;
 		/*! Returns the moves that were played in the game. */
 		const QVector<MoveData>& moves() const;
 		/*! Adds a new move to the game. */
@@ -177,6 +180,14 @@ class LIB_EXPORT PgnGame
 		 */
 		void setResultDescription(const QString& description);
 
+		/*!
+		 * Sets a receiver for PGN tags
+		 *
+		 * \a receiver is an object whose "setTag(QString tag, QString value)"
+		 * slot is called when a PGN tag changes.
+		 */
+		void setTagReceiver(QObject* receiver);
+
 	private:
 		bool parseMove(PgnStream& in);
 		
@@ -184,6 +195,7 @@ class LIB_EXPORT PgnGame
 		const EcoNode* m_eco;
 		QMap<QString, QString> m_tags;
 		QVector<MoveData> m_moves;
+		QObject* m_tagReceiver;
 };
 
 /*! Reads a PGN game from a PGN stream. */

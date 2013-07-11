@@ -18,6 +18,7 @@
 #include "pgngame.h"
 #include <QStringList>
 #include <QFile>
+#include <QMetaObject>
 #include "board/boardfactory.h"
 #include "econode.h"
 #include "pgnstream.h"
@@ -37,7 +38,8 @@ QTextStream& operator<<(QTextStream& out, const PgnGame& game)
 
 PgnGame::PgnGame()
 	: m_startingSide(Chess::Side::White),
-	  m_eco(EcoNode::root())
+	  m_eco(EcoNode::root()),
+	  m_tagReceiver(0)
 {
 }
 
@@ -54,9 +56,30 @@ void PgnGame::clear()
 	m_moves.clear();
 }
 
-const QMap<QString, QString>& PgnGame::tags() const
+QList< QPair<QString, QString> > PgnGame::tags() const
 {
-	return m_tags;
+	QList< QPair<QString, QString> > list;
+
+	// The seven tag roster
+	QStringList roster;
+	roster << "Event" << "Site" << "Date" << "Round"
+	       << "White" << "Black" << "Result";
+	foreach (const QString& tag, roster)
+	{
+		QString value = m_tags.value(tag);
+		if (value.isEmpty())
+			value = "?";
+		list.append(qMakePair(tag, value));
+	}
+
+	QMap<QString, QString>::const_iterator it;
+	for (it = m_tags.constBegin(); it != m_tags.constEnd(); ++it)
+	{
+		if (!roster.contains(it.key()) && !it.value().isEmpty())
+			list.append(qMakePair(it.key(), it.value()));
+	}
+
+	return list;
 }
 
 const QVector<PgnGame::MoveData>& PgnGame::moves() const
@@ -235,24 +258,12 @@ void PgnGame::write(QTextStream& out, PgnMode mode) const
 	if (m_tags.isEmpty())
 		return;
 	
-	// The seven tag roster
-	QStringList roster;
-	roster << "Event" << "Site" << "Date" << "Round"
-	       << "White" << "Black" << "Result";
-	foreach (const QString& tag, roster)
-		writeTag(out, tag, m_tags.value(tag));
+	const QList< QPair<QString, QString> > tags = this->tags();
+	int maxTags = (mode == Verbose) ? tags.size() : 7;
+	for (int i = 0; i < maxTags; i++)
+		writeTag(out, tags.at(i).first, tags.at(i).second);
 	
-	// Other supported tags
-	if (mode == Verbose)
-	{
-		QMap<QString, QString>::const_iterator it;
-		for (it = m_tags.constBegin(); it != m_tags.constEnd(); ++it)
-		{
-			if (!roster.contains(it.key()) && !it.value().isEmpty())
-				writeTag(out, it.key(), it.value());
-		}
-	}
-	else if (mode == Minimal && m_tags.contains("FEN"))
+	if (mode == Minimal && m_tags.contains("FEN"))
 	{
 		writeTag(out, "FEN", m_tags["FEN"]);
 		writeTag(out, "SetUp", m_tags["SetUp"]);
@@ -380,6 +391,12 @@ void PgnGame::setTag(const QString& tag, const QString& value)
 		m_tags.remove(tag);
 	else
 		m_tags[tag] = value;
+
+	if (m_tagReceiver)
+		QMetaObject::invokeMethod(m_tagReceiver, "setTag",
+					  Qt::QueuedConnection,
+					  Q_ARG(QString, tag),
+					  Q_ARG(QString, value));
 }
 
 void PgnGame::setEvent(const QString& event)
@@ -471,4 +488,9 @@ void PgnGame::setResultDescription(const QString& description)
 	if (!comment.isEmpty())
 		comment += ", ";
 	comment += description;
+}
+
+void PgnGame::setTagReceiver(QObject* receiver)
+{
+	m_tagReceiver = receiver;
 }

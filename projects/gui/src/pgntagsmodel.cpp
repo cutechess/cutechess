@@ -22,7 +22,7 @@ PgnTagsModel::PgnTagsModel(QObject* parent)
 {
 }
 
-void PgnTagsModel::setTags(const QMap<QString, QString>& tags)
+void PgnTagsModel::setTags(const QList< QPair<QString, QString> >& tags)
 {
 	beginResetModel();
 	m_tags = tags;
@@ -71,9 +71,9 @@ QVariant PgnTagsModel::data(const QModelIndex& index, int role) const
 		switch (index.column())
 		{
 		case 0:
-			return m_tags.keys().at(index.row());
+			return m_tags.at(index.row()).first;
 		case 1:
-			return m_tags.values().at(index.row());
+			return m_tags.at(index.row()).second;
 		default:
 			return QVariant();
 		}
@@ -99,4 +99,36 @@ QVariant PgnTagsModel::headerData(int section, Qt::Orientation orientation,
 	}
 
 	return QVariant();
+}
+
+void PgnTagsModel::setTag(const QString& name, const QString& value)
+{
+	for (int i = 0; i < m_tags.size(); i++)
+	{
+		if (m_tags.at(i).first == name)
+		{
+			if (value.isEmpty())
+			{
+				beginRemoveRows(QModelIndex(), i, i);
+				m_tags.removeAt(i);
+				endRemoveRows();
+			}
+			else
+			{
+				m_tags[i].second = value;
+				QModelIndex index = this->index(i, 1);
+				emit dataChanged(index, index);
+			}
+
+			return;
+		}
+	}
+
+	if (value.isEmpty())
+		return;
+
+	int pos = m_tags.size();
+	beginInsertRows(QModelIndex(), pos, pos);
+	m_tags.append(qMakePair(name, value));
+	endInsertRows();
 }
