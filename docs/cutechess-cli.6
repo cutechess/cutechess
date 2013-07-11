@@ -60,6 +60,11 @@ Adjudicate the game as a loss if an engine's score is at least
 centipawns below zero for at least
 .Ar count
 consecutive moves.
+.It Fl gtb Ar paths
+Adjudicate games using Gaviota tablebases.
+.Ar Paths
+should be semicolon-delimited list of paths to the compressed tablebase files.
+At the moment only scheme 4 compression is supported.
 .It Fl tournament Ar type
 Set the tournament type, where
 .Ar type
