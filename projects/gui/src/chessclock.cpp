@@ -67,7 +67,7 @@ void ChessClock::setTime(int totalTime)
 	if (m_infiniteTime)
 		return;
 
-	QTime timeLeft = QTime().addMSecs(abs(totalTime + 500));
+	QTime timeLeft = QTime(0, 0).addMSecs(abs(totalTime + 500));
 
 	QString format;
 	if (timeLeft.hour() > 0)
