@@ -154,7 +154,7 @@ void MainWindow::createActions()
 	m_showGameWallAct = new QAction(tr("Game Wall"), this);
 
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
-	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(close()));
+	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(closeCurrentGame()));
 	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered(bool)), this, SLOT(saveAs()));
 	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(closeAllWindows()));
@@ -477,6 +477,11 @@ void MainWindow::onTabCloseRequested(int index)
 			this, SLOT(destroyGame(ChessGame*)));
 		QMetaObject::invokeMethod(tab.game, "stop", Qt::QueuedConnection);
 	}
+}
+
+void MainWindow::closeCurrentGame()
+{
+	onTabCloseRequested(m_tabBar->currentIndex());
 }
 
 void MainWindow::newGame()
