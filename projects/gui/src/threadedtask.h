@@ -81,6 +81,12 @@ class ThreadedTask : public QThread
 		 * value periodically and return if cancel was requested.
 		 */
 		bool cancelRequested() const;
+
+		/*!
+		 * Returns human-readable version of the given time \a
+		 * sec.
+		 */
+		QString humaniseTime(int sec) const;
 	
 	private slots:
 		// Yes, QThread subclasses shouldn't normally have slots
