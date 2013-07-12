@@ -19,7 +19,9 @@
 #define THREADEDTASK_H
 
 #include <QThread>
+#include <QTime>
 class QWidget;
+class QProgressDialog;
 
 /*!
  * \brief A long task that is executed in its own thread.
@@ -94,8 +96,15 @@ class ThreadedTask : public QThread
 		// case it doesn't matter because we're just setting a flag.
 		void cancel();
 
+		void updateProgress(int value);
+		void setStatusMessage(const QString& msg);
+
 	private:
 		bool m_cancel;
+		QString m_statusMessage;
+		QTime m_taskStart;
+		int m_lastUpdate;
+		QProgressDialog* m_dlg;
 };
 
 #endif // THREADEDTASK_H
