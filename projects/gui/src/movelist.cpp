@@ -19,6 +19,7 @@
 #include <QTextBrowser>
 #include <QVBoxLayout>
 #include <QScrollBar>
+#include <QTimer>
 #include <chessgame.h>
 
 MoveList::MoveList(QWidget* parent)
@@ -26,7 +27,9 @@ MoveList::MoveList(QWidget* parent)
 	  m_game(0),
 	  m_moveCount(0),
 	  m_startingSide(0),
-	  m_selectedMove(-1)
+	  m_selectedMove(-1),
+	  m_moveToBeSelected(-1),
+	  m_selectionTimer(new QTimer(this))
 {
 	m_moveList = new QTextBrowser(this);
 	m_moveList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -41,6 +44,11 @@ MoveList::MoveList(QWidget* parent)
 	layout->addWidget(m_moveList);
 	layout->setContentsMargins(0, 0, 0, 0);
 	setLayout(layout);
+
+	m_selectionTimer->setSingleShot(true);
+	m_selectionTimer->setInterval(50);
+	connect(m_selectionTimer, SIGNAL(timeout()),
+		this, SLOT(selectChosenMove()));
 }
 
 MoveList::HtmlMove MoveList::htmlMove(int moveNum,
@@ -88,6 +96,7 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 	m_moveList->clear();
 	m_movePos.clear();
 	m_selectedMove = -1;
+	m_moveToBeSelected = -1;
 
 	m_startingSide = pgn->startingSide();
 	for (m_moveCount = 0; m_moveCount < pgn->moves().size(); m_moveCount++)
@@ -118,10 +127,16 @@ void MoveList::onMoveMade(const Chess::GenericMove& genericMove,
 
 	insertHtmlMove(htmlMove(m_moveCount++, m_startingSide, sanString, comment));
 
-	if (m_selectedMove == -1 || m_selectedMove == m_moveCount - 2)
+	bool atLastMove = false;
+	if (m_selectedMove == -1 || m_moveToBeSelected == m_moveCount - 2)
+		atLastMove = true;
+	if (m_moveToBeSelected == -1 && m_selectedMove == m_moveCount - 2)
+		atLastMove = true;
+
+	if (atLastMove)
 		selectMove(m_moveCount - 1);
 
-	if (atEnd && m_selectedMove == m_moveCount - 1)
+	if (atEnd && atLastMove)
 		sb->setValue(sb->maximum());
 }
 
@@ -142,12 +157,11 @@ void MoveList::insertHtmlMove(const HtmlMove& htmlMove)
 	cursor.insertHtml(htmlMove.comment);
 }
 
-void MoveList::selectMove(int moveNum)
+void MoveList::selectChosenMove()
 {
-	if (moveNum == -1)
-		moveNum = 0;
-	if (moveNum >= m_moveCount || m_moveCount <= 0)
-		return;
+	int moveNum = m_moveToBeSelected;
+	m_moveToBeSelected = -1;
+	Q_ASSERT(moveNum >= 0 && moveNum < m_moveCount);
 
 	if (m_selectedMove >= 0)
 	{
@@ -170,6 +184,17 @@ void MoveList::selectMove(int moveNum)
 	format.setForeground(Qt::white);
 	format.setBackground(Qt::black);
 	c.mergeCharFormat(format);
+}
+
+void MoveList::selectMove(int moveNum)
+{
+	if (moveNum == -1)
+		moveNum = 0;
+	if (moveNum >= m_moveCount || m_moveCount <= 0)
+		return;
+
+	m_moveToBeSelected = moveNum;
+	m_selectionTimer->start();
 }
 
 void MoveList::onMoveOrCommentClicked(const QUrl& url)

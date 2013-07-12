@@ -29,8 +29,7 @@ class QTextBrowser;
 class PgnGame;
 class ChessGame;
 namespace Chess { class GenericMove; }
-class QMouseEvent;
-class QSyntaxHighlighter;
+class QTimer;
 
 class MoveList : public QWidget
 {
@@ -63,6 +62,7 @@ class MoveList : public QWidget
 		                const QString& sanString,
 		                const QString& comment);
 		void onMoveOrCommentClicked(const QUrl& url);
+		void selectChosenMove();
 
 	private:
 		struct HtmlMove
@@ -84,7 +84,9 @@ class MoveList : public QWidget
 		int m_moveCount;
 		int m_startingSide;
 		int m_selectedMove;
+		int m_moveToBeSelected;
 		QTextCharFormat m_defaultTextFormat;
+		QTimer* m_selectionTimer;
 };
 
 #endif // MOVE_LIST_H
