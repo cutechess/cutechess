@@ -44,17 +44,26 @@ class GameViewer : public QWidget
 	public slots:
 		void viewMove(int index);
 
+	signals:
+		void moveSelected(int moveNumber);
+
 	private slots:
+		void viewFirstMoveClicked();
+		void viewPreviousMoveClicked();
+		void viewNextMoveClicked();
+		void viewLastMoveClicked();
+		void viewPositionClicked(int index);
+
+		void onFenChanged(const QString& fen);
+		void onMoveMade(const Chess::GenericMove& move);
+
+	private:
 		void viewFirstMove();
 		void viewPreviousMove();
 		void viewNextMove();
 		void viewLastMove();
 		void viewPosition(int index);
 
-		void onFenChanged(const QString& fen);
-		void onMoveMade(const Chess::GenericMove& move);
-
-	private:
 		BoardScene* m_boardScene;
 		BoardView* m_boardView;
 		QSlider* m_moveNumberSlider;

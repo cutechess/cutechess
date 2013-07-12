@@ -21,6 +21,9 @@
 #include <QWidget>
 #include <QPointer>
 #include <QUrl>
+#include <QPair>
+#include <QList>
+#include <QTextCharFormat>
 
 class QTextBrowser;
 class PgnGame;
@@ -45,6 +48,10 @@ class MoveList : public QWidget
 		 */
 		void setGame(ChessGame* game, PgnGame* pgn = 0);
 
+	public slots:
+		/*! Highlights move \a moveNum */
+		void selectMove(int moveNum);
+
 	signals:
 		/*! Emitted when the user clicks move \a num. */
 		void moveClicked(int num);
@@ -58,11 +65,26 @@ class MoveList : public QWidget
 		void onMoveOrCommentClicked(const QUrl& url);
 
 	private:
-		void insertHtmlMove(const QString& move);
+		struct HtmlMove
+		{
+			QString number;
+			QString move;
+			QString comment;
+		};
+
+		static HtmlMove htmlMove(int moveNum,
+					 int startingSide,
+					 const QString& moveString,
+					 const QString& comment);
+		void insertHtmlMove(const HtmlMove& htmlMove);
+
 		QTextBrowser* m_moveList;
 		QPointer<ChessGame> m_game;
+		QList< QPair<int, int> > m_movePos;
 		int m_moveCount;
 		int m_startingSide;
+		int m_selectedMove;
+		QTextCharFormat m_defaultTextFormat;
 };
 
 #endif // MOVE_LIST_H

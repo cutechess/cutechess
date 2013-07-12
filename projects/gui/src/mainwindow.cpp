@@ -107,6 +107,8 @@ MainWindow::MainWindow(ChessGame* game)
 
 	connect(m_moveList, SIGNAL(moveClicked(int)),
 		m_gameViewer, SLOT(viewMove(int)));
+	connect(m_gameViewer, SIGNAL(moveSelected(int)),
+		m_moveList, SLOT(selectMove(int)));
 
 	connect(CuteChessApplication::instance()->gameManager(),
 		SIGNAL(finished()), this, SLOT(onGameManagerFinished()),

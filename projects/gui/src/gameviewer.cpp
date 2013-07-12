@@ -49,7 +49,7 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 	m_viewFirstMoveBtn->setToolTip(tr("Skip to the beginning"));
 	m_viewFirstMoveBtn->setIcon(QIcon(":/icons/toolbutton/first_16x16"));
 	connect(m_viewFirstMoveBtn, SIGNAL(clicked()),
-		this, SLOT(viewFirstMove()));
+		this, SLOT(viewFirstMoveClicked()));
 
 	m_viewPreviousMoveBtn->setEnabled(false);
 	m_viewPreviousMoveBtn->setAutoRaise(true);
@@ -57,7 +57,7 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 	m_viewPreviousMoveBtn->setToolTip(tr("Previous move"));
 	m_viewPreviousMoveBtn->setIcon(QIcon(":/icons/toolbutton/previous_16x16"));
 	connect(m_viewPreviousMoveBtn, SIGNAL(clicked()),
-		this, SLOT(viewPreviousMove()));
+		this, SLOT(viewPreviousMoveClicked()));
 
 	m_viewNextMoveBtn->setEnabled(false);
 	m_viewNextMoveBtn->setAutoRaise(true);
@@ -65,7 +65,7 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 	m_viewNextMoveBtn->setToolTip(tr("Next move"));
 	m_viewNextMoveBtn->setIcon(QIcon(":/icons/toolbutton/next_16x16"));
 	connect(m_viewNextMoveBtn, SIGNAL(clicked()),
-		this, SLOT(viewNextMove()));
+		this, SLOT(viewNextMoveClicked()));
 
 	m_viewLastMoveBtn->setEnabled(false);
 	m_viewLastMoveBtn->setAutoRaise(true);
@@ -73,11 +73,11 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 	m_viewLastMoveBtn->setToolTip(tr("Skip to the end"));
 	m_viewLastMoveBtn->setIcon(QIcon(":/icons/toolbutton/last_16x16"));
 	connect(m_viewLastMoveBtn, SIGNAL(clicked()),
-		this, SLOT(viewLastMove()));
+		this, SLOT(viewLastMoveClicked()));
 
 	m_moveNumberSlider->setEnabled(false);
 	connect(m_moveNumberSlider, SIGNAL(valueChanged(int)),
-		this, SLOT(viewPosition(int)));
+		this, SLOT(viewPositionClicked(int)));
 
 	QHBoxLayout* controls = new QHBoxLayout();
 	controls->setContentsMargins(0, 0, 0, 0);
@@ -181,10 +181,22 @@ void GameViewer::disconnectGame()
 	m_game = 0;
 }
 
+void GameViewer::viewFirstMoveClicked()
+{
+	viewFirstMove();
+	emit moveSelected(m_moveIndex - 1);
+}
+
 void GameViewer::viewFirstMove()
 {
 	while (m_moveIndex > 0)
 		viewPreviousMove();
+}
+
+void GameViewer::viewPreviousMoveClicked()
+{
+	viewPreviousMove();
+	emit moveSelected(m_moveIndex - 1);
 }
 
 void GameViewer::viewPreviousMove()
@@ -204,6 +216,12 @@ void GameViewer::viewPreviousMove()
 	m_boardView->setEnabled(false);
 
 	m_moveNumberSlider->setSliderPosition(m_moveIndex);
+}
+
+void GameViewer::viewNextMoveClicked()
+{
+	viewNextMove();
+	emit moveSelected(m_moveIndex - 1);
 }
 
 void GameViewer::viewNextMove()
@@ -226,10 +244,22 @@ void GameViewer::viewNextMove()
 	m_moveNumberSlider->setSliderPosition(m_moveIndex);
 }
 
+void GameViewer::viewLastMoveClicked()
+{
+	viewLastMove();
+	emit moveSelected(m_moveIndex - 1);
+}
+
 void GameViewer::viewLastMove()
 {
 	while (m_moveIndex < m_moves.count())
 		viewNextMove();
+}
+
+void GameViewer::viewPositionClicked(int index)
+{
+	viewPosition(index);
+	emit moveSelected(m_moveIndex - 1);
 }
 
 void GameViewer::viewPosition(int index)
