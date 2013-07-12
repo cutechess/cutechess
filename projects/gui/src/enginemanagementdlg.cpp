@@ -94,6 +94,7 @@ void EngineManagementDialog::updateSearch(const QString& terms)
 void EngineManagementDialog::addEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::AddEngine, this);
+	dlg.setReservedNames(m_engineManager->engineNames());
 	if (dlg.exec() == QDialog::Accepted)
 		m_engineManager->addEngine(dlg.engineConfiguration());
 }
@@ -107,9 +108,14 @@ void EngineManagementDialog::configureEngine(const QModelIndex& index)
 {
 	// Map the index from the filtered model to the original model
 	int row = m_filteredModel->mapToSource(index).row();
+	const EngineConfiguration& config = m_engineManager->engineAt(row);
 
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
-	dlg.applyEngineInformation(m_engineManager->engines().at(row));
+	dlg.applyEngineInformation(config);
+
+	QSet<QString> names = m_engineManager->engineNames();
+	names.remove(config.name());
+	dlg.setReservedNames(names);
 
 	if (dlg.exec() == QDialog::Accepted)
 		m_engineManager->updateEngineAt(row, dlg.engineConfiguration());

@@ -19,6 +19,7 @@
 #define ENGINECONFIGURATIONDIALOG_H
 
 #include <QDialog>
+#include <QSet>
 #include <engineconfiguration.h>
 
 class QTimer;
@@ -65,6 +66,14 @@ class EngineConfigurationDialog : public QDialog
 		*/
 		EngineConfiguration engineConfiguration();
 
+		/*!
+		 * Sets the list of names reserved for other engines.
+		 *
+		 * If the user tries to use a reserved name they'll see a
+		 * warning message.
+		 */
+		void setReservedNames(const QSet<QString>& names);
+
 	signals:
 		void detectionFinished();
 	
@@ -90,6 +99,7 @@ class EngineConfigurationDialog : public QDialog
 		QTimer* m_optionDetectionTimer;
 		ChessEngine* m_engine;
 		Ui::EngineConfigurationDialog* ui;
+		QSet<QString> m_reservedNames;
 };
 
 #endif // ENGINECONFIGURATIONDIALOG_H

@@ -141,6 +141,11 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 	return engine;
 }
 
+void EngineConfigurationDialog::setReservedNames(const QSet<QString>& names)
+{
+	m_reservedNames = names;
+}
+
 void EngineConfigurationDialog::browseCommand()
 {
 	// Use file extensions only on Windows
@@ -317,6 +322,13 @@ void EngineConfigurationDialog::onCommandChanged(const QString& text)
 
 void EngineConfigurationDialog::onAccepted()
 {
+	if (m_reservedNames.contains(ui->m_nameEdit->text()))
+	{
+		QMessageBox::warning(this, tr("Duplicate engine name"),
+				     tr("An engine with this name already exists"));
+		return;
+	}
+
 	connect(this, SIGNAL(detectionFinished()),
 		this, SLOT(accept()));
 	detectEngineOptions();

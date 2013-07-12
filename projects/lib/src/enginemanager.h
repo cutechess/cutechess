@@ -18,6 +18,7 @@
 #ifndef ENGINE_MANAGER_H
 #define ENGINE_MANAGER_H
 
+#include <QSet>
 #include "engineconfiguration.h"
 
 /*!
@@ -53,6 +54,9 @@ class LIB_EXPORT EngineManager : public QObject
 
 		void loadEngines(const QString& fileName);
 		void saveEngines(const QString& fileName);
+
+		/*! Returns the names of all configured engines. */
+		QSet<QString> engineNames() const;
 
 	signals:
 		/*!

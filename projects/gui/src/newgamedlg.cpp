@@ -117,7 +117,12 @@ void NewGameDialog::configureWhiteEngine()
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 
 	int i = selectedEngineIndex(Chess::Side::White);
-	dlg.applyEngineInformation(m_engineManager->engineAt(i));
+	const EngineConfiguration& config = m_engineManager->engineAt(i);
+	dlg.applyEngineInformation(config);
+
+	QSet<QString> names = m_engineManager->engineNames();
+	names.remove(config.name());
+	dlg.setReservedNames(names);
 
 	if (dlg.exec() == QDialog::Accepted)
 		m_engineManager->updateEngineAt(i, dlg.engineConfiguration());
@@ -128,7 +133,12 @@ void NewGameDialog::configureBlackEngine()
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
 
 	int i = selectedEngineIndex(Chess::Side::Black);
-	dlg.applyEngineInformation(m_engineManager->engineAt(i));
+	const EngineConfiguration& config = m_engineManager->engineAt(i);
+	dlg.applyEngineInformation(config);
+
+	QSet<QString> names = m_engineManager->engineNames();
+	names.remove(config.name());
+	dlg.setReservedNames(names);
 
 	if (dlg.exec() == QDialog::Accepted)
 		m_engineManager->updateEngineAt(i, dlg.engineConfiguration());

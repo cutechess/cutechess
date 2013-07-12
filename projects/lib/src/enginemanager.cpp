@@ -120,3 +120,12 @@ void EngineManager::saveEngines(const QString& fileName)
 	JsonSerializer serializer(engines);
 	serializer.serialize(out);
 }
+
+QSet<QString> EngineManager::engineNames() const
+{
+	QSet<QString> names;
+	foreach (const EngineConfiguration& engine, m_engines)
+		names.insert(engine.name());
+
+	return names;
+}

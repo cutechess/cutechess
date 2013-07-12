@@ -133,7 +133,12 @@ void NewTournamentDialog::configureEngine(const QModelIndex& index)
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine);
 
 	int row = index.row();
-	dlg.applyEngineInformation(m_addedEnginesManager->engineAt(row));
+	const EngineConfiguration& config = m_addedEnginesManager->engineAt(row);
+	dlg.applyEngineInformation(config);
+
+	QSet<QString> names = m_addedEnginesManager->engineNames();
+	names.remove(config.name());
+	dlg.setReservedNames(names);
 
 	if (dlg.exec() == QDialog::Accepted)
 		m_addedEnginesManager->updateEngineAt(row, dlg.engineConfiguration());
