@@ -148,7 +148,7 @@ bool PgnGame::parseMove(PgnStream& in)
 		}
 		board = in.board();
 		if (tmp.isEmpty() && board->variant() != "standard")
-			m_tags["Variant"] = board->variant();
+			setTag("Variant", board->variant());
 
 		tmp = m_tags.value("FEN");
 		if (tmp.isEmpty())
@@ -198,7 +198,7 @@ bool PgnGame::read(PgnStream& in, int maxMoves)
 		switch (in.readNext())
 		{
 		case PgnStream::PgnTag:
-			m_tags[in.tagName()] = in.tagValue();
+			setTag(in.tagName(), in.tagValue());
 			break;
 		case PgnStream::PgnMove:
 			stop = !parseMove(in) || m_moves.size() >= maxMoves;
@@ -210,12 +210,12 @@ bool PgnGame::read(PgnStream& in, int maxMoves)
 		case PgnStream::PgnResult:
 			{
 				const QString str(in.tokenString());
-				QString& tag = m_tags["Result"];
+				QString result = m_tags.value("Result");
 
-				if (!tag.isEmpty() && str != tag)
+				if (!result.isEmpty() && str != result)
 					qDebug("%s",qPrintable(QString("Line %1: The termination "
 						"marker is different from the result tag").arg(in.lineNumber())));
-				tag = str;
+				setTag("Result", str);
 			}
 			stop = true;
 			break;
@@ -240,7 +240,7 @@ bool PgnGame::read(PgnStream& in, int maxMoves)
 	if (m_tags.isEmpty())
 		return false;
 
-	m_tags["PlyCount"] = QString::number(m_moves.size());
+	setTag("PlyCount", QString::number(m_moves.size()));
 
 	return true;
 }
@@ -401,52 +401,52 @@ void PgnGame::setTag(const QString& tag, const QString& value)
 
 void PgnGame::setEvent(const QString& event)
 {
-	m_tags["Event"] = event;
+	setTag("Event", event);
 }
 
 void PgnGame::setSite(const QString& site)
 {
-	m_tags["Site"] = site;
+	setTag("Site", site);
 }
 
 void PgnGame::setDate(const QDate& date)
 {
-	m_tags["Date"] = date.toString("yyyy.MM.dd");
+	setTag("Date", date.toString("yyyy.MM.dd"));
 }
 
 void PgnGame::setRound(int round)
 {
-	m_tags["Round"] = QString::number(round);
+	setTag("Round", QString::number(round));
 }
 
 void PgnGame::setPlayerName(Chess::Side side, const QString& name)
 {
 	if (side == Chess::Side::White)
-		m_tags["White"] = name;
+		setTag("White", name);
 	else if (side == Chess::Side::Black)
-		m_tags["Black"] = name;
+		setTag("Black", name);
 }
 
 void PgnGame::setResult(const Chess::Result& result)
 {
-	m_tags["Result"] = result.toShortString();
+	setTag("Result", result.toShortString());
 
 	switch (result.type())
 	{
 	case Chess::Result::Adjudication:
-		m_tags["Termination"] = "adjudication";
+		setTag("Termination", "adjudication");
 		break;
 	case Chess::Result::Timeout:
-		m_tags["Termination"] = "time forfeit";
+		setTag("Termination", "time forfeit");
 		break;
 	case Chess::Result::Disconnection:
-		m_tags["Termination"] = "abandoned";
+		setTag("Termination", "abandoned");
 		break;
 	case Chess::Result::NoResult:
-		m_tags["Termination"] = "unterminated";
+		setTag("Termination", "unterminated");
 		break;
 	default:
-		m_tags.remove("Termination");
+		setTag("Termination", QString());
 		break;
 	}
 }
@@ -454,9 +454,9 @@ void PgnGame::setResult(const Chess::Result& result)
 void PgnGame::setVariant(const QString& variant)
 {
 	if (variant == "standard")
-		m_tags.remove("Variant");
+		setTag("Variant", QString());
 	else
-		m_tags["Variant"] = variant;
+		setTag("Variant", variant);
 }
 
 void PgnGame::setStartingSide(Chess::Side side)
@@ -469,13 +469,13 @@ void PgnGame::setStartingFenString(Chess::Side side, const QString& fen)
 	m_startingSide = side;
 	if (fen.isEmpty())
 	{
-		m_tags.remove("FEN");
-		m_tags.remove("SetUp");
+		setTag("FEN", QString());
+		setTag("SetUp", QString());
 	}
 	else
 	{
-		m_tags["FEN"] = fen;
-		m_tags["SetUp"] = "1";
+		setTag("FEN", fen);
+		setTag("SetUp", "1");
 	}
 }
 
