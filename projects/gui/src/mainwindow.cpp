@@ -692,7 +692,7 @@ QString MainWindow::windowListTitle() const
 {
 	const TabData& gameData(m_tabs.at(m_tabBar->currentIndex()));
 
-#ifndef Q_OS_MAC
+	#ifndef Q_OS_MAC
 	if (isWindowModified())
 		return genericTitle(gameData) + QLatin1String("*");
 	#endif
