@@ -92,11 +92,11 @@ CuteChessApplication* CuteChessApplication::instance()
 
 QString CuteChessApplication::userName()
 {
-#ifdef Q_OS_WIN32
+	#ifdef Q_OS_WIN32
 	return qgetenv("USERNAME");
-#else
+	#else
 	return qgetenv("USER");
-#endif
+	#endif
 }
 
 QString CuteChessApplication::configPath()
