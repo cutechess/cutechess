@@ -203,9 +203,6 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
-	// Create tool bars here, use actions from createActions()
-	// See: createActions(), QToolBar documentation
-
 	m_tabBar = new QTabBar();
 	m_tabBar->setDocumentMode(true);
 	m_tabBar->setTabsClosable(true);
