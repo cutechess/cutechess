@@ -136,7 +136,7 @@ BookExportTask::BookExportTask(PgnGameIterator* it,
 			       int maxDepth,
 			       QWidget* parent)
 	: ThreadedTask(tr("Export Opening Book"),
-		       tr("Parsing %1 PGN games...").arg(it->count()),
+		       tr("Parsing %1 PGN games").arg(it->count()),
 		       0, it->count(),
 		       parent),
 	  m_it(it),
@@ -171,7 +171,7 @@ void BookExportTask::run()
 
 	// Write the already imported games to the book
 	// even if cancel was requested.
-	emit statusMessageChanged(tr("Writing opening book to disk..."));
+	emit statusMessageChanged(tr("Writing opening book to disk"));
 	out << &openingBook;
 
 	delete m_it;
@@ -202,7 +202,7 @@ PgnExportTask::PgnExportTask(PgnGameIterator* it,
 			     QFile* file,
 			     QWidget* parent)
 	: ThreadedTask(tr("Export Games"),
-		       tr("Writing %1 games to file...").arg(it->count()),
+		       tr("Writing %1 games to file").arg(it->count()),
 		       0, it->count(),
 		       parent),
 	  m_it(it),
