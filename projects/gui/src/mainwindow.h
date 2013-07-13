@@ -60,8 +60,6 @@ class MainWindow : public QMainWindow
 		void newTournament();
 		void manageEngines();
 		void saveLogToFile();
-		void onWindowMenuAboutToShow();
-		void showGameWindow();
 		void updateWindowTitle();
 		bool save();
 		bool saveAs();

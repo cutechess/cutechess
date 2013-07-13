@@ -129,21 +129,9 @@ GameManager* CuteChessApplication::gameManager()
 	return m_gameManager;
 }
 
-QList<MainWindow*> CuteChessApplication::gameWindows()
-{
-	m_gameWindows.removeAll(0);
-
-	QList<MainWindow*> gameWindowList;
-	foreach (const QPointer<MainWindow>& window, m_gameWindows)
-		gameWindowList << window.data();
-
-	return gameWindowList;
-}
-
 MainWindow* CuteChessApplication::newGameWindow(ChessGame* game)
 {
 	MainWindow* mainWindow = new MainWindow(game);
-	m_gameWindows.prepend(mainWindow);
 	mainWindow->show();
 
 	return mainWindow;
@@ -165,13 +153,6 @@ void CuteChessApplication::newDefaultGame()
 	gameManager()->newGame(game,
 			       new HumanBuilder(userName()),
 			       new HumanBuilder(userName()));
-}
-
-void CuteChessApplication::showGameWindow(int index)
-{
-	MainWindow* gameWindow = m_gameWindows.at(index);
-	gameWindow->activateWindow();
-	gameWindow->raise();
 }
 
 GameDatabaseManager* CuteChessApplication::gameDatabaseManager()

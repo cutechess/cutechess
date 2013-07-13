@@ -40,8 +40,6 @@ class CuteChessApplication : public QApplication
 		QString configPath();
 		EngineManager* engineManager();
 		GameManager* gameManager();
-		QList<MainWindow*> gameWindows();
-		void showGameWindow(int index);
 		GameDatabaseManager* gameDatabaseManager();
 
 		static CuteChessApplication* instance();
@@ -60,7 +58,6 @@ class CuteChessApplication : public QApplication
 		EngineManager* m_engineManager;
 		GameManager* m_gameManager;
 		GameDatabaseManager* m_gameDatabaseManager;
-		QList<QPointer<MainWindow> > m_gameWindows;
 		GameDatabaseDialog* m_gameDatabaseDialog;
 
 	private slots:
