@@ -83,6 +83,8 @@ void EcoNode::initialize()
 	mutex.lock();
 	if (!s_root)
 	{
+		Q_INIT_RESOURCE(eco);
+
 		QFile file(":/eco.bin");
 		if (!file.open(QIODevice::ReadOnly))
 			qWarning("Could not open ECO file");
