@@ -21,6 +21,7 @@
 #include <QVector>
 #include "pgngame.h"
 class QString;
+class QFile;
 class QTextStream;
 class PgnStream;
 
@@ -116,6 +117,7 @@ class LIB_EXPORT OpeningSuite
 		int m_gameIndex;
 		int m_startIndex;
 		QString m_fileName;
+		QFile* m_file;
 		QTextStream* m_epdStream;
 		PgnStream* m_pgnStream;
 		QVector<FilePosition> m_filePositions;

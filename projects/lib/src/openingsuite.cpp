@@ -32,6 +32,7 @@ OpeningSuite::OpeningSuite(const QString& fileName,
 	  m_gameIndex(0),
 	  m_startIndex(startIndex),
 	  m_fileName(fileName),
+	  m_file(0),
 	  m_epdStream(0),
 	  m_pgnStream(0)
 {
@@ -85,19 +86,17 @@ bool OpeningSuite::initialize()
 		m_pgnStream = 0;
 	}
 
-	QFile* file = new QFile(m_fileName);
-	if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
+	m_file = new QFile(m_fileName);
+	if (!m_file->open(QIODevice::ReadOnly | QIODevice::Text))
 	{
 		qWarning("Can't open opening suite %s",
 			 qPrintable(m_fileName));
-		delete file;
+		delete m_file;
 		return false;
 	}
 
-	if (m_format == EpdFormat)
-		m_epdStream = new QTextStream(file);
-	else if (m_format == PgnFormat)
-		m_pgnStream = new PgnStream(file);
+	if (m_format == PgnFormat)
+		m_pgnStream = new PgnStream(m_file);
 
 	if (m_order == RandomOrder)
 	{
@@ -138,10 +137,10 @@ bool OpeningSuite::initialize()
 		}
 	}
 
-	if (m_epdStream != 0 && m_epdStream->atEnd())
+	if (m_format == EpdFormat)
 	{
-		m_epdStream->seek(0);
-		m_epdStream->resetStatus();
+		m_file->reset();
+		m_epdStream = new QTextStream(m_file);
 	}
 
 	return true;
@@ -248,17 +247,17 @@ OpeningSuite::FilePosition OpeningSuite::getPgnPos()
 
 OpeningSuite::FilePosition OpeningSuite::getEpdPos()
 {
-	FilePosition pos = { m_epdStream->pos(), -1 };
+	FilePosition pos = { m_file->pos(), -1 };
 
-	while (m_epdStream->readLine().isEmpty())
+	while (m_file->readLine().isEmpty())
 	{
-		if (m_epdStream->atEnd())
+		if (m_file->atEnd())
 		{
 			pos.pos = -1;
 			break;
 		}
 		else
-			pos.pos = m_epdStream->pos();
+			pos.pos = m_file->pos();
 	}
 
 	return pos;
