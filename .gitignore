@@ -15,6 +15,7 @@ tst_jsonserializer
 *.so.*
 *.dylib
 *.dll
+*.lib
 
 # qmake generated Makefile
 Makefile
@@ -52,3 +53,14 @@ qtc-gdbmacros/
 
 # files created by Mac OS X
 .DS_Store
+
+# filed created by MSVC
+*.exe.embed.manifest
+*.dll.embed.manifest
+*.exe_manifest.rc
+*.dll_manifest.rc
+*.exe_manifest.res
+*.dll_manifest.res
+*.ilk
+*.pdb
+*.exp
