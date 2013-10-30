@@ -331,7 +331,9 @@ static size_t			WDL_cache_size = 0;
 static unsigned int		TB_AVAILABILITY = 0;
 
 /* LOCKS */
+#if defined(MULTI_THREADED_INTERFACE)
 static mythread_mutex_t	Egtb_lock;
+#endif
 
 
 /****************************************************************************\
@@ -1168,7 +1170,9 @@ tb_init (int verbosity, int decoding_sch, const char **paths)
 	eg_was_open_reset();
 	Bytes_read = 0;
 
+#if defined(MULTI_THREADED_INTERFACE)
 	mythread_mutex_init (&Egtb_lock);
+#endif
 
 	TB_INITIALIZED = TRUE;
 
@@ -1195,7 +1199,9 @@ tb_done (void)
 	RAM_egtbfree();
 	zipinfo_done();
 	path_system_done();
+#if defined(MULTI_THREADED_INTERFACE)
 	mythread_mutex_destroy (&Egtb_lock);
+#endif
 	TB_INITIALIZED = FALSE;
 
 	/*
@@ -1775,7 +1781,9 @@ egtb_get_dtm (tbkey_t k, unsigned stm, const SQUARE *wS, const SQUARE *bS, bool_
 			/* 
 			|		LOCK 
 			*-------------------------------*/
+#if defined(MULTI_THREADED_INTERFACE)
 			mythread_mutex_lock (&Egtb_lock);	
+#endif
 
 			if (dtm_cache_is_on()) {
 
@@ -1811,7 +1819,9 @@ egtb_get_dtm (tbkey_t k, unsigned stm, const SQUARE *wS, const SQUARE *bS, bool_
 					success = FALSE;
 			}
 
+#if defined(MULTI_THREADED_INTERFACE)
 			mythread_mutex_unlock (&Egtb_lock);	
+#endif
 			/*------------------------------*\ 
 			|		UNLOCK 
 			*/
