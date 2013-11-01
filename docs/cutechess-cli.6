@@ -1,4 +1,4 @@
-.Dd October 3, 2012
+.Dd November 1, 2013
 .Dt CUTECHESS-CLI 6
 .Os
 .Sh NAME
@@ -33,16 +33,25 @@ See
 Set the chess variant, where
 .Ar variant
 is one of:
-.Cm atomic ,
-.Cm capablanca ,
-.Cm caparandom ,
-.Cm crazyhouse ,
-.Cm fischerandom ,
-.Cm gothic ,
-.Cm losers
-or
-.Cm standard
-(default).
+.Pp
+.Bl -tag -width "XXXXXXXXXXXXX" -offset ident -compact
+.It atomic
+Atomic Chess
+.It capablanca
+Capablanca Chess
+.It caparandom
+Capablanca Random Chess
+.It crazyhouse
+Crazyhouse / Drop Chess
+.It fischerandom
+Fischer Random Chess / Chess 960
+.It gothic
+Gothic Chess
+.It losers
+Loser's Chess
+.It standard
+Standard Chess (default)
+.El
 .It Fl concurrency Ar n
 Set the maximum number of concurrent games to
 .Ar n .
@@ -139,7 +148,7 @@ The opening depth is limited to
 .Ar plies
 number of plies.
 If
-.Cm plies
+.Ar plies
 is not set the opening depth is unlimited.
 In sequential mode
 .Ar start
