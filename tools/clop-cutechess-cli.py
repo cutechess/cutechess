@@ -13,7 +13,7 @@ Run cutechess-cli with CLOP_PARAM(s).
 CLOP is a black-box parameter tuning tool designed and written by Rémi Coulom.
 More information about CLOP can be found at the CLOP website:
 http://remi.coulom.free.fr/CLOP/
- 
+
 This script works between CLOP and cutechess-cli. The path to this script,
 without any parameters, should be on the "Script" line of the .clop file.
 'Replications' in the .clop file should be set to 2 so that this script can
@@ -62,7 +62,7 @@ options = '-each tc=40/1+0.05 -draw movenumber=80 movecount=5 score=5 -resign mo
 def main(argv = None):
     if argv is None:
         argv = sys.argv[1:]
-    
+
     if len(argv) == 0 or argv[0] == '--help':
         sys.stdout.write(__doc__)
         return 0
@@ -71,7 +71,7 @@ def main(argv = None):
     if len(argv) < 3 or len(argv) % 2 == 0:
         sys.stderr.write('Too few arguments\n')
         return 2
-    
+
     clop_seed = 0
     try:
         clop_seed = int(argv[0])
@@ -81,7 +81,7 @@ def main(argv = None):
 
     fcp = engine
     scp = opponents[(clop_seed >> 1) % len(opponents)]
-    
+
     # Parse the parameters that should be optimized
     for i in range(1, len(argv), 2):
         # Make sure the parameter value is numeric
@@ -94,21 +94,21 @@ def main(argv = None):
         # cutechess-cli's initialization string feature
         initstr = engine_param_cmd.format(name = argv[i], value = argv[i + 1])
         fcp += ' initstr="%s"' % initstr
-    
+
     # Choose the engine's playing side (color) based on CLOP's seed
     if clop_seed % 2 != 0:
         fcp, scp = scp, fcp
-    
+
     cutechess_args = '-engine %s -engine %s %s' % (fcp, scp, options)
     command = '%s %s' % (cutechess_cli_path, cutechess_args)
-    
+
     # Run cutechess-cli and wait for it to finish
     process = Popen(command, shell = True, stdout = PIPE)
     output = process.communicate()[0]
     if process.returncode != 0:
         sys.stderr.write('failed to execute command: %s\n' % command)
         return 2
-    
+
     # Convert Cutechess-cli's result into W/L/D
     # Note that only one game should be played
     result = -1
@@ -124,7 +124,7 @@ def main(argv = None):
                 sys.stderr.write('the game did not terminate properly\n')
                 return 2
             break
-    
+
     if result == 0:
         sys.stdout.write('W\n')
     elif result == 1:
