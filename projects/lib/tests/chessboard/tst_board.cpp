@@ -264,6 +264,11 @@ void tst_Board::perft_data() const
 		<< "2rkr3/5PP1/8/5Q2/5q2/8/5pp1/2RKR3 w KQkq - 0 1"
 		<< 3
 		<< Q_UINT64_C(71005);
+	QTest::newRow("frc4")
+		<< variant
+		<< "2Rnb1kr/5ppp/8/q3p3/p3P3/4P3/6PP/1Q3BKR b Hh - 0 15"
+		<< 3
+		<< Q_UINT64_C(24750);
 
 	variant = "crazyhouse";
 	QTest::newRow("crazyhouse startpos")

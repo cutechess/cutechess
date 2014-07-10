@@ -1003,7 +1003,7 @@ bool WesternBoard::isLegalPosition()
 				i -= offset;
 				Piece piece(pieceAt(i));
 
-				if (piece.isWall())
+				if (piece.isWall() || piece.side() == side)
 					return true;
 				if (piece.side() == sideToMove()
 				&&  pieceHasMovement(piece.type(), RookMovement))
