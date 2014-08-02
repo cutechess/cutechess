@@ -26,6 +26,7 @@ win32 {
 
 macx {
     ICON = res/icons/cutechess_mac.icns
+    QMAKE_INFO_PLIST = res/Info.plist
 }
 
 # Components
