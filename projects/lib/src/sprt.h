@@ -31,8 +31,8 @@
 class LIB_EXPORT Sprt
 {
 	public:
-		/*! The current status of the test. */
-		enum Status
+		/*! The result of the test. */
+		enum Result
 		{
 			Continue,	//!< Continue monitoring
 			AcceptH0,	//!< Accept null hypothesis H0
@@ -46,6 +46,15 @@ class LIB_EXPORT Sprt
 			Win,		//!< First player won
 			Loss,		//!< First player lost
 			Draw		//!< Game was drawn
+		};
+
+		/*! The status of the test. */
+		struct Status
+		{
+			Result result;	//!< Test result
+			double llr;	//!< Log-likelihood ratio
+			double lBound;	//!< Lower bound
+			double uBound;	//!< Upper bound
 		};
 
 		/*! Creates a new uninitialized Sprt object. */
@@ -76,7 +85,7 @@ class LIB_EXPORT Sprt
 		 * After calling this function, status() should be called to
 		 * check if H0 or H1 can be accepted.
 		 */
-		void addResult(GameResult result);
+		void addGameResult(GameResult result);
 
 	private:
 		double m_elo0;

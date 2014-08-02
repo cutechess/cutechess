@@ -371,8 +371,8 @@ void Tournament::onGameFinished(ChessGame* game)
 
 	if (!m_sprt->isNull() && sprtResult != Sprt::NoResult)
 	{
-		m_sprt->addResult(sprtResult);
-		if (m_sprt->status() != Sprt::Continue)
+		m_sprt->addGameResult(sprtResult);
+		if (m_sprt->status().result != Sprt::Continue)
 			QMetaObject::invokeMethod(this, "stop", Qt::QueuedConnection);
 	}
 

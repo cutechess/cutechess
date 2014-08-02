@@ -144,20 +144,6 @@ void EngineMatch::onTournamentFinished()
 	QString error = m_tournament->errorString();
 	if (!error.isEmpty())
 		qWarning("%s", qPrintable(error));
-	else
-	{
-		switch (m_tournament->sprt()->status())
-		{
-		case Sprt::AcceptH0:
-			qDebug("SPRT: H0 was accepted");
-			break;
-		case Sprt::AcceptH1:
-			qDebug("SPRT: H1 was accepted");
-			break;
-		default:
-			break;
-		}
-	}
 
 	qDebug("Finished match");
 	connect(m_tournament->gameManager(), SIGNAL(finished()),
@@ -223,5 +209,22 @@ void EngineMatch::printRanking()
 		       data.games,
 		       data.score * 100.0,
 		       data.draws * 100.0);
+	}
+
+	Sprt::Status sprtStatus = m_tournament->sprt()->status();
+	if (sprtStatus.llr != 0.0
+	||  sprtStatus.lBound != 0.0
+	||  sprtStatus.uBound != 0.0)
+	{
+		QString sprtStr = QString("SPRT: llr %1, lbound %2, ubound %3")
+			.arg(sprtStatus.llr, 0, 'g', 3)
+			.arg(sprtStatus.lBound, 0, 'g', 3)
+			.arg(sprtStatus.uBound, 0, 'g', 3);
+		if (sprtStatus.result == Sprt::AcceptH0)
+			sprtStr.append(" - H0 was accepted");
+		else if (sprtStatus.result == Sprt::AcceptH1)
+			sprtStr.append(" - H1 was accepted");
+
+		qDebug("%s", qPrintable(sprtStr));
 	}
 }

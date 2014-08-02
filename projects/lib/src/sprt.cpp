@@ -156,8 +156,15 @@ void Sprt::initialize(double elo0, double elo1,
 
 Sprt::Status Sprt::status() const
 {
+	Status status = {
+		Continue,
+		0.0,
+		0.0,
+		0.0
+	};
+
 	if (m_wins <= 0 || m_losses <= 0 || m_draws <= 0)
-		return Continue;
+		return status;
 
 	// Estimate draw_elo out of sample
 	const SprtProbability p(m_wins, m_losses, m_draws);
@@ -170,22 +177,23 @@ Sprt::Status Sprt::status() const
 	const SprtProbability p0(b0), p1(b1);
 
 	// Log-Likelyhood Ratio
-	const double llr = m_wins * std::log(p1.pWin() / p0.pWin()) +
-			   m_losses * std::log(p1.pLoss() / p0.pLoss()) +
-			   m_draws * std::log(p1.pDraw() / p0.pDraw());
+	status.llr = m_wins * std::log(p1.pWin() / p0.pWin()) +
+		     m_losses * std::log(p1.pLoss() / p0.pLoss()) +
+		     m_draws * std::log(p1.pDraw() / p0.pDraw());
 
 	// Bounds based on error levels of the test
-	const double lowerBound = std::log(m_beta / (1.0 - m_alpha));
-	const double upperBound = std::log((1.0 - m_beta) / m_alpha);
+	status.lBound = std::log(m_beta / (1.0 - m_alpha));
+	status.uBound = std::log((1.0 - m_beta) / m_alpha);
 
-	if (llr > upperBound)
-		return AcceptH1;
-	else if (llr < lowerBound)
-		return AcceptH0;
-	return Continue;
+	if (status.llr > status.uBound)
+		status.result = AcceptH1;
+	else if (status.llr < status.lBound)
+		status.result = AcceptH0;
+
+	return status;
 }
 
-void Sprt::addResult(GameResult result)
+void Sprt::addGameResult(GameResult result)
 {
 	if (result == Win)
 		m_wins++;
