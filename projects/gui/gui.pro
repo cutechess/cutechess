@@ -1,4 +1,9 @@
-TARGET = cutechess
+macx {
+    TARGET = "Cute Chess"
+} else {
+    TARGET = cutechess
+}
+
 DESTDIR = $$PWD
 
 include(../lib/lib.pri)
@@ -26,7 +31,6 @@ win32 {
 
 macx {
     ICON = res/icons/cutechess_mac.icns
-    QMAKE_INFO_PLIST = res/Info.plist
 }
 
 # Components
