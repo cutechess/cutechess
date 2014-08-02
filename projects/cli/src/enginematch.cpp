@@ -167,7 +167,7 @@ void EngineMatch::onTournamentFinished()
 
 void EngineMatch::print(const QString& msg)
 {
-	qDebug("%d %s", m_startTime.elapsed(), qPrintable(msg));
+	qDebug("%lld %s", m_startTime.elapsed(), qPrintable(msg));
 }
 
 struct RankingData

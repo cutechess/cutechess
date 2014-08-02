@@ -319,7 +319,11 @@ void TimeControl::startTimer()
 
 void TimeControl::update()
 {
-	m_lastMoveTime = m_time.elapsed();
+	/*
+	 * This will overflow after roughly 49 days however it's unlikely
+	 * we'll ever hit that limit.
+	 */
+	m_lastMoveTime = (int)m_time.elapsed();
 
 	if (!m_infinite && m_lastMoveTime > m_timeLeft + m_expiryMargin)
 		m_expired = true;

@@ -18,7 +18,7 @@
 #ifndef TIMECONTROL_H
 #define TIMECONTROL_H
 
-#include <QTime>
+#include <QElapsedTimer>
 #include <QString>
 #include <QCoreApplication>
 
@@ -203,7 +203,7 @@ class LIB_EXPORT TimeControl
 		int m_expiryMargin;
 		bool m_expired;
 		bool m_infinite;
-		QTime m_time;
+		QElapsedTimer m_time;
 
 };
 
