@@ -591,7 +591,7 @@ void XboardEngine::parseLine(const QString& line)
 		// Node count
 		if ((ref = nextToken(ref)).isNull())
 			return;
-		val = ref.toString().toInt(&ok);
+		val = ref.toString().toULongLong(&ok);
 		if (ok)
 			m_eval.setNodeCount(val);
 

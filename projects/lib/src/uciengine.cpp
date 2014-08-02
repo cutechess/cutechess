@@ -282,7 +282,7 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 		m_eval.setTime(tokens[0].toString().toInt());
 		break;
 	case InfoNodes:
-		m_eval.setNodeCount(tokens[0].toString().toInt());
+		m_eval.setNodeCount(tokens[0].toString().toULongLong());
 		break;
 	case InfoPv:
 		m_eval.setPv(joinTokens(tokens).toString());
