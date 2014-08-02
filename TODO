@@ -69,8 +69,6 @@ User Interface
 - Analyzing feature. Probably should be placed in its own dock window with a
   selectable list of engines.
 
-- All game information should be editable in Game|Properties.
-
 - There should be no "whitepov" option for UCI engines (it should always be OFF)
 
 - Add a time control widget that can be embedded in New Game dialog
