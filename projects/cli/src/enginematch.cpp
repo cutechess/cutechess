@@ -194,7 +194,7 @@ void EngineMatch::printRanking()
 	}
 
 	if (!ranking.isEmpty())
-		qDebug("%4s %-23s %7s %7s %7s %7s",
+		qDebug("%4s %-25.25s %7s %7s %7s %7s",
 		       "Rank", "Name", "ELO", "Games", "Score", "Draws");
 
 	int rank = 0;
@@ -202,7 +202,7 @@ void EngineMatch::printRanking()
 	for (it = ranking.constBegin(); it != ranking.constEnd(); ++it)
 	{
 		const RankingData& data = it.value();
-		qDebug("%4d %-23s %7.0f %7d %6.0f%% %6.0f%%",
+		qDebug("%4d %-25.25s %7.0f %7d %6.0f%% %6.0f%%",
 		       ++rank,
 		       qPrintable(data.name),
 		       -it.key(),
