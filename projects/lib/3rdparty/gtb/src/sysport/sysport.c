@@ -48,29 +48,7 @@
 
 /**** Maximum Files Open *****************************************************************/
 
-#if defined(GCCLINUX)
-	#include <sys/resource.h>
-	#if 0	
-	struct rlimit {
-		rlim_t rlim_cur;  /* Soft limit */
-		rlim_t rlim_max;  /* Hard limit (ceiling for rlim_cur) */
-	};
-	#endif
-	extern int mysys_fopen_max (void) 
-	{ 
-		int ok;
-		struct rlimit rl;
-		ok = 0 == getrlimit(RLIMIT_NOFILE, &rl);
-		if (ok)
-			return (int)rl.rlim_cur;
-		else
-			return FOPEN_MAX;
-	}
-#elif defined(MVSC)
-	extern int mysys_fopen_max (void) { return FOPEN_MAX;}
-#else
-	extern int mysys_fopen_max (void) { return FOPEN_MAX;}
-#endif
+extern int mysys_fopen_max (void) { return FOPEN_MAX;}
 
 
 #if defined(MULTI_THREADED_INTERFACE)
