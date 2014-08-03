@@ -72,7 +72,3 @@ User Interface
 - There should be no "whitepov" option for UCI engines (it should always be OFF)
 
 - Add a time control widget that can be embedded in New Game dialog
-
-- MoveListModel and/or the view need some changes because white doesn't
-  always start the game, and in some variants white isn't even the default
-  starting side. Now the first move always goes in the "white" column.
