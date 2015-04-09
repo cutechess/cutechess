@@ -97,6 +97,7 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 	m_movePos.clear();
 	m_selectedMove = -1;
 	m_moveToBeSelected = -1;
+	m_selectionTimer->stop();
 
 	m_startingSide = pgn->startingSide();
 	for (m_moveCount = 0; m_moveCount < pgn->moves().size(); m_moveCount++)
