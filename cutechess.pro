@@ -1,7 +1,7 @@
 # Check Qt version
-contains(QT_VERSION, ^4\\.[0-6]\\..*) {
+contains(QT_VERSION, ^4\\.[0-7]\\..*) {
     message("Cannot build Cute Chess with Qt version $${QT_VERSION}.")
-    error("Qt version 4.7 or later is required.")
+    error("Qt version 4.8 or later is required.")
 }
 
 TEMPLATE = subdirs
