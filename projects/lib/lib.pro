@@ -1,4 +1,5 @@
 TEMPLATE = lib
+CONFIG += staticlib
 TARGET = cutechess
 QT = core
 DESTDIR = $$PWD
