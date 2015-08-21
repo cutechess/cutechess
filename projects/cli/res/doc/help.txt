@@ -4,9 +4,9 @@ Usage:
 
 Options:
 
-  --help		Display this information
-  --version		Display the version number
-  --engines		Display a list of configured engines and exit
+  -help 		Display this information
+  -version		Display the version number
+  -engines		Display a list of configured engines and exit
   -engine OPTIONS	Add an engine defined by OPTIONS to the tournament
   -each OPTIONS		Apply OPTIONS to each engine in the tournament
   -variant VARIANT	Set the chess variant to VARIANT, which can be one of:

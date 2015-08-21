@@ -563,7 +563,7 @@ int main(int argc, char* argv[])
 	QTextStream out(stdout);
 	foreach (const QString& arg, arguments)
 	{
-		if (arg == "-v" || arg == "--version")
+		if (arg == "-v" || arg == "--version" || arg == "-version")
 		{
 			out << "cutechess-cli " << CUTECHESS_CLI_VERSION << endl;
 			out << "Using Qt version " << qVersion() << endl << endl;
@@ -575,7 +575,7 @@ int main(int argc, char* argv[])
 
 			return 0;
 		}
-		else if (arg == "--engines")
+		else if (arg == "--engines" || arg == "-engines")
 		{
 			const QList<EngineConfiguration> engines =
 				CuteChessCoreApplication::instance()->engineManager()->engines();
@@ -585,7 +585,7 @@ int main(int argc, char* argv[])
 
 			return 0;
 		}
-		else if (arg == "--help")
+		else if (arg == "--help" || arg == "-help")
 		{
 			QFile file(":/help.txt");
 			if (file.open(QIODevice::ReadOnly | QIODevice::Text))
