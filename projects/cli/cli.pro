@@ -2,6 +2,7 @@ TARGET = cutechess-cli
 DESTDIR = $$PWD
 
 include(../lib/lib.pri)
+include(../lib/libexport.pri)
 
 CUTECHESS_CLI_VERSION = 0.6.0
 
