@@ -47,6 +47,8 @@ class GameInitializer : public QObject
 		void onPlayerQuit();
 
 	private:
+		void deletePlayer(int index);
+
 		int m_playerCount;
 		bool m_finishing;
 		const PlayerBuilder* m_builder[2];
@@ -102,6 +104,23 @@ void GameInitializer::setGame(ChessGame* game)
 	m_game = game;
 }
 
+void GameInitializer::deletePlayer(int index)
+{
+	ChessPlayer* player = m_player[index];
+	if (player == 0)
+		return;
+
+	m_player[index] = 0;
+	if (player->state() == ChessPlayer::Disconnected)
+		player->deleteLater();
+	else
+	{
+		connect(player, SIGNAL(disconnected()),
+			player, SLOT(deleteLater()));
+		player->kill();
+	}
+}
+
 void GameInitializer::initializeGame()
 {
 	for (int i = 0; i < 2; i++)
@@ -111,8 +130,7 @@ void GameInitializer::initializeGame()
 		if (m_player[i] != 0
 		&&  m_player[i]->state() == ChessPlayer::Disconnected)
 		{
-			m_player[i]->deleteLater();
-			m_player[i] = 0;
+			deletePlayer(i);
 		}
 
 		if (m_player[i] == 0)
@@ -126,14 +144,7 @@ void GameInitializer::initializeGame()
 			if (m_player[i] == 0)
 			{
 				m_playerCount = 0;
-
-				int j = !i;
-				if (m_player[j] != 0)
-				{
-					m_player[j]->kill();
-					delete m_player[j];
-					m_player[j] = 0;
-				}
+				deletePlayer(!i);
 
 				emit gameInitialized(false);
 				return;

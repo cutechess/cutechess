@@ -17,8 +17,12 @@
 
 #include "enginebuilder.h"
 #include <QDir>
+#include <QMutexLocker>
 #include "engineprocess.h"
 #include "enginefactory.h"
+
+
+QMutex EngineBuilder::s_mutex;
 
 EngineBuilder::EngineBuilder(const EngineConfiguration& config)
 	: PlayerBuilder(config.name()),
@@ -50,6 +54,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 	QString path(QDir::currentPath());
 	EngineProcess* process = new EngineProcess();
 
+	QMutexLocker locker(&s_mutex);
 	if (workDir.isEmpty())
 	{
 		process->setWorkingDirectory(QDir::tempPath());
@@ -76,10 +81,12 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		process->start(cmd, m_config.arguments());
 	else
 		process->start(cmd);
-	bool ok = process->waitForStarted();
-
 	if (!workDir.isEmpty())
 		QDir::setCurrent(path);
+	locker.unlock();
+
+	bool ok = process->waitForStarted();
+
 	if (!ok)
 	{
 		setError(error, tr("Cannot execute command: %1")

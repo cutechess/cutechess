@@ -95,7 +95,6 @@ void EngineProcess::cleanup()
 	killHandle(&m_outRead);
 
 	killHandle(&m_processInfo.hProcess);
-	killHandle(&m_processInfo.hThread);
 
 	m_started = false;
 }
@@ -231,6 +230,7 @@ void EngineProcess::start(const QString& program,
 		// terminates and closes its pipes
 		killHandle(&outWrite);
 		killHandle(&inRead);
+		killHandle(&m_processInfo.hThread);
 
 		// Start reading input from the child
 		m_reader = new PipeReader(m_outRead, this);

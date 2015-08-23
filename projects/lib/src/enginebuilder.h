@@ -20,6 +20,7 @@
 
 #include "playerbuilder.h"
 #include <QCoreApplication>
+#include <QMutex>
 #include "engineconfiguration.h"
 
 
@@ -39,6 +40,8 @@ class LIB_EXPORT EngineBuilder : public PlayerBuilder
 					    QString* error) const;
 
 	private:
+		static QMutex s_mutex;
+
 		void setError(QString* error, const QString& message) const;
 
 		EngineConfiguration m_config;
