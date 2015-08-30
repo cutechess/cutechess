@@ -54,7 +54,7 @@ qtc-gdbmacros/
 # files created by Mac OS X
 .DS_Store
 
-# filed created by MSVC
+# files created by MSVC
 *.exe.embed.manifest
 *.dll.embed.manifest
 *.exe_manifest.rc
@@ -64,3 +64,6 @@ qtc-gdbmacros/
 *.ilk
 *.pdb
 *.exp
+
+# object files
+*.o
