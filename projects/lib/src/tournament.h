@@ -24,6 +24,8 @@
 #include <QList>
 #include <QVector>
 #include <QMap>
+#include <QFile>
+#include <QTextStream>
 #include "board/move.h"
 #include "timecontrol.h"
 #include "pgngame.h"
@@ -295,6 +297,7 @@ class LIB_EXPORT Tournament : public QObject
 
 	private slots:
 		void startNextGame();
+		bool writePgn(PgnGame* pgn, int gameNumber);
 		void onGameStarted(ChessGame* game);
 		void onGameFinished(ChessGame* game);
 		void onGameDestroyed(ChessGame* game);
@@ -331,7 +334,8 @@ class LIB_EXPORT Tournament : public QObject
 		GameAdjudicator m_adjudicator;
 		OpeningSuite* m_openingSuite;
 		Sprt* m_sprt;
-		QString m_pgnout;
+		QFile m_pgnFile;
+		QTextStream m_pgnOut;
 		QString m_startFen;
 		PgnGame::PgnMode m_pgnOutMode;
 		QPair<int, int> m_pair;

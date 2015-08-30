@@ -253,10 +253,10 @@ static void writeTag(QTextStream& out, const QString& tag, const QString& value)
 		out << "[" << tag << " \"?\"]\n";
 }
 
-void PgnGame::write(QTextStream& out, PgnMode mode) const
+bool PgnGame::write(QTextStream& out, PgnMode mode) const
 {
 	if (m_tags.isEmpty())
-		return;
+		return false;
 	
 	const QList< QPair<QString, QString> > tags = this->tags();
 	int maxTags = (mode == Verbose) ? tags.size() : 7;
@@ -307,20 +307,18 @@ void PgnGame::write(QTextStream& out, PgnMode mode) const
 		out << "\n" << str << "\n\n";
 	else
 		out << " " << str << "\n\n";
+
+	return true;
 }
 
 bool PgnGame::write(const QString& filename, PgnMode mode) const
 {
-	if (m_tags.isEmpty())
-		return false;
-
 	QFile file(filename);
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Append))
 		return false;
 
 	QTextStream out(&file);
-	write(out, mode);
-	return true;
+	return write(out, mode);
 }
 
 bool PgnGame::isStandard() const

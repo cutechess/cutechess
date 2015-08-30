@@ -200,7 +200,11 @@ void Tournament::setOpeningDepth(int plies)
 
 void Tournament::setPgnOutput(const QString& fileName, PgnGame::PgnMode mode)
 {
-	m_pgnout = fileName;
+	if (fileName != m_pgnFile.fileName())
+	{
+		m_pgnFile.close();
+		m_pgnFile.setFileName(fileName);
+	}
 	m_pgnOutMode = mode;
 }
 
@@ -302,6 +306,35 @@ void Tournament::startNextGame()
 			       GameManager::ReusePlayers);
 }
 
+bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
+{
+	Q_ASSERT(pgn != 0);
+	Q_ASSERT(gameNumber > 0);
+
+	if (m_pgnFile.fileName().isEmpty())
+		return true;
+
+	if (!m_pgnFile.isOpen())
+	{
+		if (!m_pgnFile.open(QIODevice::WriteOnly | QIODevice::Append))
+		{
+			qWarning("Could not open PGN file %s",
+				 qPrintable(m_pgnFile.fileName()));
+			return false;
+		}
+		m_pgnOut.setDevice(&m_pgnFile);
+	}
+
+	m_pgnGames[gameNumber] = *pgn;
+	while (m_pgnGames.contains(m_savedGameCount + 1))
+	{
+		PgnGame tmp = m_pgnGames.take(++m_savedGameCount);
+		tmp.write(m_pgnOut, m_pgnOutMode);
+	}
+
+	return true;
+}
+
 void Tournament::onGameStarted(ChessGame* game)
 {
 	Q_ASSERT(game != 0);
@@ -350,16 +383,7 @@ void Tournament::onGameFinished(ChessGame* game)
 		break;
 	}
 
-	if (!m_pgnout.isEmpty())
-	{
-		m_pgnGames[gameNumber] = *pgn;
-		while (m_pgnGames.contains(m_savedGameCount + 1))
-		{
-			PgnGame tmp = m_pgnGames.take(++m_savedGameCount);
-			if (!tmp.write(m_pgnout, m_pgnOutMode))
-				qWarning("Can't write to PGN file %s", qPrintable(m_pgnout));
-		}
-	}
+	writePgn(pgn, gameNumber);
 	if (m_pgnCleanup)
 		delete pgn;
 
