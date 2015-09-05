@@ -17,6 +17,7 @@
 
 #include "engineprocess_win.h"
 #include <QDir>
+#include <QFile>
 #include <QRegExp>
 #include "pipereader_win.h"
 
@@ -134,9 +135,26 @@ static QString quoteString(QString str)
 	return str;
 }
 
-static QString commandLine(const QString& prog, const QStringList& args)
+static QString commandLine(const QString& wdir,
+			   const QString& prog,
+			   const QStringList& args)
 {
-	QString cmd = QDir::toNativeSeparators(quoteString(prog));
+	QString cmd = prog;
+
+	// Make sure we find the program
+	if (!QFile::exists(cmd) && !wdir.isEmpty())
+	{
+		if (!wdir.endsWith('\\') && !wdir.endsWith('/'))
+			cmd.prepend('/');
+		cmd.prepend(wdir);
+
+		// Try the original command if the modified one doesn't
+		// point to an existing file.
+		if (!QFile::exists(cmd))
+			cmd = prog;
+	}
+
+	cmd = QDir::toNativeSeparators(quoteString(cmd));
 	foreach (const QString& arg, args)
 		cmd += ' ' + quoteString(arg);
 
@@ -194,7 +212,7 @@ void EngineProcess::start(const QString& program,
 			DUPLICATE_SAME_ACCESS);	// same handle access
 
 	BOOL ok = FALSE;
-	QString cmd = commandLine(program, arguments);
+	QString cmd = commandLine(m_workDir, program, arguments);
 	QString wdir = QDir::toNativeSeparators(m_workDir);
 	ZeroMemory(&m_processInfo, sizeof(m_processInfo));
 
@@ -204,7 +222,7 @@ void EngineProcess::start(const QString& program,
 			    NULL,	// process attributes
 			    NULL,	// thread attributes
 			    TRUE,	// inherit handles
-			    CREATE_NEW_PROCESS_GROUP, // creation flags
+			    CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW, // creation flags
 			    NULL,	// environment
 			    wdir.isEmpty() ? NULL : (WCHAR*)wdir.utf16(),
 			    &startupInfo,
@@ -215,7 +233,7 @@ void EngineProcess::start(const QString& program,
 			    NULL,	// process attributes
 			    NULL,	// thread attributes
 			    TRUE,	// inherit handles
-			    CREATE_NEW_PROCESS_GROUP, // creation flags
+			    CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW, // creation flags
 			    NULL,	// environment
 			    wdir.isEmpty() ? NULL : wdir.toLocal8Bit().data(),
 			    &startupInfo,
