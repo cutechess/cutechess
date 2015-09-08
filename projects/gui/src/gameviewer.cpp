@@ -76,6 +76,9 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 		this, SLOT(viewLastMoveClicked()));
 
 	m_moveNumberSlider->setEnabled(false);
+	#ifdef Q_OS_WIN
+	m_moveNumberSlider->setMinimumHeight(18);
+	#endif
 	connect(m_moveNumberSlider, SIGNAL(valueChanged(int)),
 		this, SLOT(viewPositionClicked(int)));
 
