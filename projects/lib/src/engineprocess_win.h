@@ -137,6 +137,12 @@ class LIB_EXPORT EngineProcess : public QIODevice
 		void onFinished();
 
 	private:
+		static QString quote(QString str);
+		static QString unquote(QString str);
+		static QString cmdLine(const QString& wdir,
+				       const QString& prog,
+				       const QStringList& args);
+
 		void cleanup();
 		void killHandle(HANDLE* handle);
 

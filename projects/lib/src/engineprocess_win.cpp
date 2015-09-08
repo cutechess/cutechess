@@ -122,7 +122,7 @@ void EngineProcess::setWorkingDirectory(const QString& dir)
 	m_workDir = dir;
 }
 
-static QString quoteString(QString str)
+QString EngineProcess::quote(QString str)
 {
 	if (!str.contains(' '))
 		return str;
@@ -135,11 +135,22 @@ static QString quoteString(QString str)
 	return str;
 }
 
-static QString commandLine(const QString& wdir,
-			   const QString& prog,
-			   const QStringList& args)
+QString EngineProcess::unquote(QString str)
 {
-	QString cmd = prog;
+	if (str.startsWith('\"'))
+		str.remove(0, 1);
+	if (str.endsWith('\"'))
+		str.chop(1);
+
+	return str;
+}
+
+QString EngineProcess::cmdLine(const QString& wdir,
+			       const QString& prog,
+			       const QStringList& args)
+{
+	bool useArgs = true;
+	QString cmd = unquote(prog);
 
 	// Make sure we find the program
 	if (!QFile::exists(cmd) && !wdir.isEmpty())
@@ -148,15 +159,30 @@ static QString commandLine(const QString& wdir,
 			cmd.prepend('/');
 		cmd.prepend(wdir);
 
+		// Maybe the args are actually a part of the command
+		if (!QFile::exists(cmd)
+		&&  !prog.startsWith('\"')
+		&&  !args.isEmpty())
+		{
+			cmd.append(" " + args.join(' '));
+			useArgs = false;
+		}
+
 		// Try the original command if the modified one doesn't
 		// point to an existing file.
 		if (!QFile::exists(cmd))
+		{
 			cmd = prog;
+			useArgs = true;
+		}
 	}
 
-	cmd = QDir::toNativeSeparators(quoteString(cmd));
-	foreach (const QString& arg, args)
-		cmd += ' ' + quoteString(arg);
+	cmd = QDir::toNativeSeparators(quote(cmd));
+	if (useArgs)
+	{
+		foreach (const QString& arg, args)
+			cmd += ' ' + quote(arg);
+	}
 
 	return cmd;
 }
@@ -212,7 +238,7 @@ void EngineProcess::start(const QString& program,
 			DUPLICATE_SAME_ACCESS);	// same handle access
 
 	BOOL ok = FALSE;
-	QString cmd = commandLine(m_workDir, program, arguments);
+	QString cmd = cmdLine(m_workDir, program, arguments);
 	QString wdir = QDir::toNativeSeparators(m_workDir);
 	ZeroMemory(&m_processInfo, sizeof(m_processInfo));
 
