@@ -57,6 +57,18 @@ void tst_Sprt::sprt_data() const
 		<< -0.74
 		<< -4.6
 		<< 4.6;
+
+	QTest::newRow("test3")
+		<< 0.0
+		<< 10.0
+		<< 0.01
+		<< 0.01
+		<< 3
+		<< 149
+		<< 1
+		<< -4.6
+		<< -4.6
+		<< 4.6;
 }
 
 void tst_Sprt::sprt()
