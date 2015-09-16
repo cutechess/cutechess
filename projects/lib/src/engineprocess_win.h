@@ -21,6 +21,7 @@
 #include <windows.h>
 #include <QIODevice>
 #include <QString>
+#include <QMutex>
 class PipeReader;
 
 
@@ -142,6 +143,10 @@ class LIB_EXPORT EngineProcess : public QIODevice
 		static QString cmdLine(const QString& wdir,
 				       const QString& prog,
 				       const QStringList& args);
+		static HANDLE mainJob();
+
+		static HANDLE s_job;
+		static QMutex s_mutex;
 
 		void cleanup();
 		void killHandle(HANDLE* handle);

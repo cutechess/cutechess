@@ -19,8 +19,12 @@
 #include <QDir>
 #include <QFile>
 #include <QRegExp>
+#include <QMutexLocker>
 #include "pipereader_win.h"
 
+
+HANDLE EngineProcess::s_job = NULL;
+QMutex EngineProcess::s_mutex;
 
 EngineProcess::EngineProcess(QObject* parent)
 	: QIODevice(parent),
@@ -187,6 +191,23 @@ QString EngineProcess::cmdLine(const QString& wdir,
 	return cmd;
 }
 
+HANDLE EngineProcess::mainJob()
+{
+	QMutexLocker locker(&s_mutex);
+	if (s_job)
+		return s_job;
+
+	s_job = CreateJobObject(NULL, NULL);
+	JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli;
+
+	memset(&jeli, 0, sizeof(JOBOBJECT_EXTENDED_LIMIT_INFORMATION));
+
+	jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+	SetInformationJobObject(s_job, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli));
+
+	return s_job;
+}
+
 void EngineProcess::start(const QString& program,
 			  const QStringList& arguments,
 			  OpenMode mode)
@@ -269,6 +290,10 @@ void EngineProcess::start(const QString& program,
 	m_started = (bool)ok;
 	if (ok)
 	{
+		// Assign the engine process to the main job to make sure it's
+		// terminated when CuteChess terminates.
+		AssignProcessToJobObject(mainJob(), m_processInfo.hProcess);
+
 		// Close the child process' ends of the pipes to make sure
 		// that ReadFile and WriteFile will return when the child
 		// terminates and closes its pipes
