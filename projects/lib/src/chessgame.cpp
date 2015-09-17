@@ -477,6 +477,8 @@ void ChessGame::resetBoard()
 
 	if (!m_board->setFenString(fen))
 		qFatal("Invalid FEN string: %s", qPrintable(fen));
+	else if (!m_startingFen.isEmpty())
+		m_startingFen = m_board->fenString();
 }
 
 void ChessGame::onPlayerReady()
