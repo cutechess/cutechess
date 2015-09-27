@@ -220,7 +220,8 @@ void ChessPlayer::forfeit(Chess::Result::Type type, const QString& description)
 {
 	if (m_side.isNull())
 	{
-		qWarning("Player %s has no side", qPrintable(name()));
+		qWarning("Forfeit type %d: player %s has no side",
+			 type, qPrintable(name()));
 		return;
 	}
 
