@@ -80,6 +80,13 @@ class LIB_EXPORT EngineProcess : public QIODevice
 		 * EngineProcess will start the process in this directory.
 		 */
 		void setWorkingDirectory(const QString& dir);
+		/*!
+		 * Redirects the process' standard error to the file fileName.
+		 * The file will be appended to if mode is Append; otherwise
+		 * it will be truncated.
+		 */
+		void setStandardErrorFile(const QString& fileName,
+					  OpenMode mode = Truncate);
 
 		/*!
 		 * Starts the program \a program in a new process, passing the
@@ -143,6 +150,7 @@ class LIB_EXPORT EngineProcess : public QIODevice
 		static QString cmdLine(const QString& wdir,
 				       const QString& prog,
 				       const QStringList& args);
+		static HANDLE createFile(const QString& fileName, OpenMode mode);
 		static HANDLE mainJob();
 
 		static HANDLE s_job;
@@ -156,9 +164,12 @@ class LIB_EXPORT EngineProcess : public QIODevice
 		DWORD m_exitCode;
 		ExitStatus m_exitStatus;
 		QString m_workDir;
+		QString m_stdErrFile;
+		OpenMode m_stdErrFileMode;
 		PROCESS_INFORMATION m_processInfo;
 		HANDLE m_inWrite;
 		HANDLE m_outRead;
+		HANDLE m_errRead;
 		PipeReader* m_reader;
 };
 

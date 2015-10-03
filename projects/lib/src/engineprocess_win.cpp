@@ -32,8 +32,10 @@ EngineProcess::EngineProcess(QObject* parent)
 	  m_finished(false),
 	  m_exitCode(0),
 	  m_exitStatus(EngineProcess::NormalExit),
+	  m_stdErrFileMode(Truncate),
 	  m_inWrite(INVALID_HANDLE_VALUE),
 	  m_outRead(INVALID_HANDLE_VALUE),
+	  m_errRead(INVALID_HANDLE_VALUE),
 	  m_reader(0)
 {
 }
@@ -79,7 +81,8 @@ void EngineProcess::killHandle(HANDLE* handle)
 {
 	if (*handle == INVALID_HANDLE_VALUE)
 		return;
-	CloseHandle(*handle);
+	if (*handle != NULL)
+		CloseHandle(*handle);
 	*handle = INVALID_HANDLE_VALUE;
 }
 
@@ -98,6 +101,7 @@ void EngineProcess::cleanup()
 
 	killHandle(&m_inWrite);
 	killHandle(&m_outRead);
+	killHandle(&m_errRead);
 
 	killHandle(&m_processInfo.hProcess);
 
@@ -124,6 +128,12 @@ bool EngineProcess::isSequential() const
 void EngineProcess::setWorkingDirectory(const QString& dir)
 {
 	m_workDir = dir;
+}
+
+void EngineProcess::setStandardErrorFile(const QString& fileName, OpenMode mode)
+{
+	m_stdErrFile = fileName;
+	m_stdErrFileMode = mode;
 }
 
 QString EngineProcess::quote(QString str)
@@ -208,6 +218,29 @@ HANDLE EngineProcess::mainJob()
 	return s_job;
 }
 
+HANDLE EngineProcess::createFile(const QString& fileName, OpenMode mode)
+{
+	if (fileName.isEmpty())
+		return NULL;
+
+	SECURITY_ATTRIBUTES sa;
+	sa.nLength = sizeof(sa);
+	sa.lpSecurityDescriptor = NULL;
+	sa.bInheritHandle = TRUE;
+
+	DWORD dwMode = GENERIC_WRITE;
+	if (mode == Append)
+		dwMode = FILE_APPEND_DATA;
+
+	return CreateFileW((LPCWSTR)fileName.utf16(),
+			   dwMode,
+			   FILE_SHARE_READ | FILE_SHARE_WRITE,
+			   &sa,
+			   OPEN_ALWAYS,
+			   FILE_ATTRIBUTE_NORMAL,
+			   NULL);
+}
+
 void EngineProcess::start(const QString& program,
 			  const QStringList& arguments,
 			  OpenMode mode)
@@ -219,6 +252,7 @@ void EngineProcess::start(const QString& program,
 	m_finished = false;
 	m_exitCode = 0;
 	m_exitStatus = NormalExit;
+	m_errRead = createFile(m_stdErrFile, m_stdErrFileMode);
 
 	// Temporary handles for the child process' end of the pipes
 	HANDLE outWrite;
@@ -236,7 +270,7 @@ void EngineProcess::start(const QString& program,
 	STARTUPINFO startupInfo;
 	ZeroMemory(&startupInfo, sizeof(startupInfo));
 	startupInfo.cb = sizeof(startupInfo);
-	startupInfo.hStdError = outWrite;
+	startupInfo.hStdError = m_errRead;
 	startupInfo.hStdOutput = outWrite;
 	startupInfo.hStdInput = inRead;
 	startupInfo.dwFlags |= STARTF_USESTDHANDLES;
