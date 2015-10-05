@@ -85,7 +85,7 @@ ChessEngine::ChessEngine(QObject* parent)
 	connect(m_pingTimer, SIGNAL(timeout()), this, SLOT(onPingTimeout()));
 
 	m_quitTimer->setSingleShot(true);
-	m_quitTimer->setInterval(2000);
+	m_quitTimer->setInterval(5000);
 	connect(m_quitTimer, SIGNAL(timeout()), this, SLOT(onQuitTimeout()));
 
 	m_idleTimer->setSingleShot(true);
@@ -299,6 +299,8 @@ void ChessEngine::kill()
 {
 	if (state() == Disconnected)
 		return;
+
+	qDebug("Terminating process of engine %s", qPrintable(name()));
 
 	m_pinging = false;
 	m_pingTimer->stop();
