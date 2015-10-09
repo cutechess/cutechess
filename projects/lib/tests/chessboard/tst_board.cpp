@@ -162,19 +162,39 @@ void tst_Board::moveStrings_data() const
 	QTest::addColumn<QString>("startfen");
 	QTest::addColumn<QString>("endfen");
 	
-	QTest::newRow("san")
+	QTest::newRow("san1")
 		<< "standard"
 		<< "e4 Nc6 e5 d5 exd6 Be6 Nf3 Qd7 Bb5 O-O-O dxc7 a6 O-O Qxd2 "
 		   "cxd8=N Qxc1 Bxc6 Qxd1 Nxb7 Qxf1+ Kxf1 Bxa2 Rxa2 Kc7"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< "5bnr/1Nk1pppp/p1B5/8/8/5N2/RPP2PPP/1N3K2 w - - 1 13";
-	QTest::newRow("coord")
+	QTest::newRow("coord1")
 		<< "standard"
 		<< "e2e4 b8c6 e4e5 d7d5 e5d6 c8e6 g1f3 d8d7 f1b5 e8c8 d6c7 "
 		   "a7a6 e1g1 d7d2 c7d8n d2c1 b5c6 c1d1 d8b7 d1f1 g1f1 e6a2 "
 		   "a1a2 c8c7"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< "5bnr/1Nk1pppp/p1B5/8/8/5N2/RPP2PPP/1N3K2 w - - 1 13";
+	QTest::newRow("san2")
+		<< "standard"
+		<< "Qd4"
+		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
+		<< "3r1rk1/8/1p1pb2p/p1p2np1/P1Pq1p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
+	QTest::newRow("coord2")
+		<< "standard"
+		<< "g7d4"
+		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
+		<< "3r1rk1/8/1p1pb2p/p1p2np1/P1Pq1p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
+	QTest::newRow("san3")
+		<< "standard"
+		<< "Qf6"
+		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
+		<< "3r1rk1/8/1p1pbq1p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
+	QTest::newRow("coord3")
+		<< "standard"
+		<< "g7f6"
+		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
+		<< "3r1rk1/8/1p1pbq1p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
 }
 
 void tst_Board::moveStrings()
