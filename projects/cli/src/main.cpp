@@ -219,6 +219,8 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 		// Custom engine option
 		else if (name.startsWith("option."))
 			data.config.setOption(name.section('.', 1), val);
+		else if (name == "stderr")
+			data.config.setStderrFile(val);
 		else
 		{
 			qWarning() << "Invalid engine option:" << name;

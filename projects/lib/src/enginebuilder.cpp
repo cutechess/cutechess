@@ -34,6 +34,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 {
 	QString workDir = m_config.workingDirectory();
 	QString cmd = m_config.command().trimmed();
+	QString stderrFile = m_config.stderrFile();
 
 	if (cmd.isEmpty())
 	{
@@ -60,6 +61,9 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 	}
 	else
 		process->setWorkingDirectory(workDir);
+
+	if (!stderrFile.isEmpty())
+		process->setStandardErrorFile(stderrFile, QIODevice::Append);
 
 	if (!m_config.arguments().isEmpty())
 		process->start(cmd, m_config.arguments());

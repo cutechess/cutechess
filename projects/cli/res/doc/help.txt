@@ -85,6 +85,7 @@ Engine options:
   arg=ARG		Pass ARG to the engine as a command line argument
   initstr=TEXT		Send TEXT to the engine's standard input at startup.
 			TEXT may contain multiple lines seprated by '\n'.
+  stderr=FILE		Redirect standard error output to FILE
   restart=MODE		Set the restart mode to MODE which can be:
 			'auto': the engine decides whether to restart (default)
 			'on': the engine is always restarted between games

@@ -87,6 +87,13 @@ class LIB_EXPORT EngineConfiguration
 		 */
 		void setWorkingDirectory(const QString& workingDir);
 		/*!
+		 * Sets the filename where the engine's standard error output
+		 * is written.
+		 *
+		 * \sa stderrFile()
+		 */
+		void setStderrFile(const QString& fileName);
+		/*!
 		 * Sets the communication protocol the engine uses.
 		 *
 		 * \sa protocol()
@@ -111,6 +118,13 @@ class LIB_EXPORT EngineConfiguration
 		 * \sa setWorkingDirectory()
 		 */
 		QString workingDirectory() const;
+		/*!
+		 * Returns the filename where the engine's standard error output
+		 * is written.
+		 *
+		 * \sa setStderrFile()
+		 */
+		QString stderrFile() const;
 		/*!
 		 * Returns the communication protocol the engine uses.
 		 *
@@ -194,6 +208,7 @@ class LIB_EXPORT EngineConfiguration
 		QString m_name;
 		QString m_command;
 		QString m_workingDirectory;
+		QString m_stderrFile;
 		QString m_protocol;
 		QStringList m_arguments;
 		QStringList m_initStrings;

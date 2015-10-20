@@ -56,6 +56,7 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 	setName(map["name"].toString());
 	setCommand(map["command"].toString());
 	setWorkingDirectory(map["workingDirectory"].toString());
+	setStderrFile(map["stderrFile"].toString());
 	setProtocol(map["protocol"].toString());
 
 	if (map.contains("initStrings"))
@@ -99,6 +100,7 @@ EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
 	: m_name(other.m_name),
 	  m_command(other.m_command),
 	  m_workingDirectory(other.m_workingDirectory),
+	  m_stderrFile(other.m_stderrFile),
 	  m_protocol(other.m_protocol),
 	  m_arguments(other.m_arguments),
 	  m_initStrings(other.m_initStrings),
@@ -124,6 +126,7 @@ QVariant EngineConfiguration::toVariant() const
 	map.insert("name", m_name);
 	map.insert("command", m_command);
 	map.insert("workingDirectory", m_workingDirectory);
+	map.insert("stderrFile", m_stderrFile);
 	map.insert("protocol", m_protocol);
 
 	if (!m_initStrings.isEmpty())
@@ -176,6 +179,11 @@ void EngineConfiguration::setWorkingDirectory(const QString& workingDir)
 	m_workingDirectory = workingDir;
 }
 
+void EngineConfiguration::setStderrFile(const QString& fileName)
+{
+	m_stderrFile = fileName;
+}
+
 QString EngineConfiguration::name() const
 {
 	return m_name;
@@ -189,6 +197,11 @@ QString EngineConfiguration::command() const
 QString EngineConfiguration::workingDirectory() const
 {
 	return m_workingDirectory;
+}
+
+QString EngineConfiguration::stderrFile() const
+{
+	return m_stderrFile;
 }
 
 QString EngineConfiguration::protocol() const
@@ -323,6 +336,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		m_name = other.m_name;
 		m_command = other.m_command;
 		m_workingDirectory = other.m_workingDirectory;
+		m_stderrFile = other.m_stderrFile;
 		m_protocol = other.m_protocol;
 		m_arguments = other.m_arguments;
 		m_initStrings = other.m_initStrings;
