@@ -33,7 +33,7 @@ static void generateNumbers()
 	}
 }
 
-void Mersenne::initialize(int seed)
+void Mersenne::initialize(quint32 seed)
 {
 	s_mt[0] = seed;
 

@@ -32,7 +32,7 @@ class LIB_EXPORT Mersenne
 {
 	public:
 		/*! Initializes the PRNG with \a seed. */
-		static void initialize(int seed);
+		static void initialize(quint32 seed);
 		/*!
 		 * Returns a pseudorandom number between 0 and 0xFFFFFFFF -1.
 		 *

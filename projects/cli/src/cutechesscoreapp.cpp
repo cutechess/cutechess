@@ -33,7 +33,7 @@ CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 	  m_engineManager(0),
 	  m_gameManager(0)
 {
-	Mersenne::initialize(QTime(0,0,0).secsTo(QTime::currentTime()));
+	Mersenne::initialize(QTime(0,0,0).msecsTo(QTime::currentTime()));
 
 	QCoreApplication::setOrganizationName(QLatin1String("cutechess"));
 	QCoreApplication::setOrganizationDomain(QLatin1String("cutechess.org"));

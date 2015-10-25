@@ -455,7 +455,11 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			tournament->setSite(value.toString());
 		// Set the random seed manually
 		else if (name == "-srand")
-			Mersenne::initialize(value.toUInt());
+		{
+			uint seed = value.toUInt(&ok);
+			if (ok)
+				Mersenne::initialize(seed);
+		}
 		// Delay between games
 		else if (name == "-wait")
 		{
