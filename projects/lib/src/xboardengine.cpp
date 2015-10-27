@@ -153,8 +153,11 @@ void XboardEngine::startGame()
 
 	// Show thinking
 	write("post");
-	// Disable pondering
-	write("easy");
+	// Pondering
+	if (pondering())
+		write("hard");
+	else
+		write("easy");
 	setForceMode(true);
 	
 	// Tell the opponent's type and name to the engine

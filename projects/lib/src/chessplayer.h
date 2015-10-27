@@ -121,6 +121,12 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Returns true if the player can play \a variant. */
 		virtual bool supportsVariant(const QString& variant) const = 0;
 
+		/*!
+		 * Tells the player to start pondering (thinking on the
+		 * opponent's move). The default implementation does nothing.
+		 */
+		virtual void startPondering();
+
 		/*! Returns true if the player is human. */
 		virtual bool isHuman() const = 0;
 

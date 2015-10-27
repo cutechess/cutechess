@@ -263,7 +263,10 @@ void ChessGame::startTurn()
 
 	Chess::Move move(bookMove(side));
 	if (move.isNull())
+	{
 		m_player[side]->go();
+		m_player[side.opposite()]->startPondering();
+	}
 	else
 		m_player[side]->makeBookMove(move);
 }

@@ -83,10 +83,14 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * it with the game operator. If the engine doesn't respond in
 		 * reasonable time, it will be terminated.
 		 *
+		 * if \a sendCommand is false, nothing is actually sent to the
+		 * engine (but we'll pretend a message was sent); otherwise the
+		 * ping message is sent.
+		 *
 		 * \note All input to the engine will be delayed until we
 		 * get a response to the ping.
 		 */
-		void ping();
+		void ping(bool sendCommand = true);
 		
 		/*! Returns the engine's chess protocol. */
 		virtual QString protocol() const = 0;
@@ -172,8 +176,13 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Sends the quit command to the engine. */
 		virtual void sendQuit() = 0;
 
-		/*! Tells the engine to stop thinking and move now. */
-		void stopThinking();
+		/*!
+		 * Tells the engine to stop thinking and move now (if on move).
+		 *
+		 * Returns true if the stop message was actually sent; otherwise
+		 * returns false.
+		 */
+		bool stopThinking();
 
 		/*! Adds \a option to the engine options list. */
 		void addOption(EngineOption* option);
@@ -200,9 +209,22 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * returns false.
 		 */
 		virtual bool restartsBetweenGames() const;
+		/*!
+		 * Returns true if the engine is currently thinking on the
+		 * opponent's move; otherwise returns false.
+		 */
+		virtual bool isPondering() const;
 
 		/*! Are evaluation scores from white's point of view? */
 		bool whiteEvalPov() const;
+		/*!
+		 * Returns true if pondering is enabled for the engine;
+		 * otherwise returns false.
+		 *
+		 * \note Even if pondering is enabled, it's still possible that
+		 * the engine does not support pondering.
+		 */
+		bool pondering() const;
 
 	protected slots:
 		// Inherited from ChessPlayer
@@ -243,6 +265,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		State m_pingState;
 		bool m_pinging;
 		bool m_whiteEvalPov;
+		bool m_pondering;
 		QTimer* m_pingTimer;
 		QTimer* m_quitTimer;
 		QTimer* m_idleTimer;

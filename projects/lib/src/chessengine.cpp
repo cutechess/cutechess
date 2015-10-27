@@ -74,6 +74,7 @@ ChessEngine::ChessEngine(QObject* parent)
 	  m_pingState(NotStarted),
 	  m_pinging(false),
 	  m_whiteEvalPov(false),
+	  m_pondering(false),
 	  m_pingTimer(new QTimer(this)),
 	  m_quitTimer(new QTimer(this)),
 	  m_idleTimer(new QTimer(this)),
@@ -126,6 +127,7 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 		setOption(option->name(), option->value());
 
 	m_whiteEvalPov = configuration.whiteEvalPov();
+	m_pondering = configuration.pondering();
 	m_restartMode = configuration.restartMode();
 	setClaimsValidated(configuration.areClaimsValidated());
 }
@@ -227,7 +229,7 @@ void ChessEngine::onProtocolStart()
 
 void ChessEngine::go()
 {
-	if (state() == Observing)
+	if (state() == Observing && !isPondering())
 		ping();
 	ChessPlayer::go();
 }
@@ -242,9 +244,19 @@ bool ChessEngine::restartsBetweenGames() const
 	return m_restartMode == EngineConfiguration::RestartOn;
 }
 
+bool ChessEngine::isPondering() const
+{
+	return false;
+}
+
 bool ChessEngine::whiteEvalPov() const
 {
 	return m_whiteEvalPov;
+}
+
+bool ChessEngine::pondering() const
+{
+	return m_pondering;
 }
 
 void ChessEngine::endGame(const Chess::Result& result)
@@ -274,13 +286,15 @@ bool ChessEngine::supportsVariant(const QString& variant) const
 	return m_variants.contains(variant);
 }
 
-void ChessEngine::stopThinking()
+bool ChessEngine::stopThinking()
 {
-	if (state() == Thinking && !m_pinging)
+	if ((state() == Thinking || isPondering()) && !m_pinging)
 	{
 		m_idleTimer->start();
 		sendStop();
+		return true;
 	}
+	return false;
 }
 
 void ChessEngine::onIdleTimeout()
@@ -318,12 +332,12 @@ void ChessEngine::onTimeout()
 	stopThinking();
 }
 
-void ChessEngine::ping()
+void ChessEngine::ping(bool sendCommand)
 {
 	if (m_pinging
 	||  state() == NotStarted
 	||  state() == Disconnected
-	||  !sendPing())
+	||  (sendCommand && !sendPing()))
 		return;
 
 	m_pinging = true;

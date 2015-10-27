@@ -39,6 +39,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		virtual void endGame(const Chess::Result& result);
 		virtual void makeMove(const Chess::Move& move);
 		virtual QString protocol() const;
+		virtual void startPondering();
 
 	protected:
 		// Inherited from ChessEngine
@@ -50,8 +51,16 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		virtual void startThinking();
 		virtual void parseLine(const QString& line);
 		virtual void sendOption(const QString& name, const QVariant& value);
+		virtual bool isPondering() const;
 		
 	private:
+		enum PonderState
+		{
+			NotPondering,
+			Pondering,
+			PonderHit
+		};
+
 		static QStringRef parseUciTokens(const QStringRef& first,
 						 const QString* types,
 						 int typeCount,
@@ -61,12 +70,20 @@ class LIB_EXPORT UciEngine : public ChessEngine
 			       int type);
 		void parseInfo(const QStringRef& line);
 		EngineOption* parseOption(const QStringRef& line);
+		QString positionString();
 		void sendPosition();
 		
 		QString m_variantOption;
 		QString m_startFen;
 		QString m_moveStrings;
+		// Write buffer for messages that will be flushed to the engine
+		// after it sends a "bestmove"
+		QStringList m_bmBuffer;
 		bool m_sendOpponentsName;
+		bool m_canPonder;
+		PonderState m_ponderState;
+		Chess::Move m_ponderMove;
+		bool m_ignoreThinking;
 };
 
 #endif // UCIENGINE_H

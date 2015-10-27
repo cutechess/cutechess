@@ -33,7 +33,10 @@
 
 UciEngine::UciEngine(QObject* parent)
 	: ChessEngine(parent),
-	  m_sendOpponentsName(false)
+	  m_sendOpponentsName(false),
+	  m_canPonder(false),
+	  m_ponderState(NotPondering),
+	  m_ignoreThinking(false)
 {
 	addVariant("standard");
 	setName("UciEngine");
@@ -45,19 +48,24 @@ void UciEngine::startProtocol()
 	write("uci");
 }
 
-void UciEngine::sendPosition()
+QString UciEngine::positionString()
 {
 	QString str("position");
-	
+
 	if (board()->isRandomVariant() || m_startFen != board()->defaultFenString())
 		str += QString(" fen ") + m_startFen;
 	else
 		str += " startpos";
-	
+
 	if (!m_moveStrings.isEmpty())
 		str += QString(" moves") + m_moveStrings;
-	
-	write(str);
+
+	return str;
+}
+
+void UciEngine::sendPosition()
+{
+	write(positionString());
 }
 
 static QString variantFromUci(const QString& str)
@@ -96,7 +104,12 @@ void UciEngine::startGame()
 {
 	Q_ASSERT(supportsVariant(board()->variant()));
 
+	m_ignoreThinking = false;
+	m_ponderState = NotPondering;
+	m_ponderMove = Chess::Move();
+	m_bmBuffer.clear();
 	m_moveStrings.clear();
+
 	if (board()->isRandomVariant())
 		m_startFen = board()->fenString(Chess::Board::ShredderFen);
 	else
@@ -114,6 +127,9 @@ void UciEngine::startGame()
 
 	write("ucinewgame");
 
+	if (m_canPonder)
+		sendOption("Ponder", pondering());
+
 	if (m_sendOpponentsName)
 	{
 		QString opType = opponent()->isHuman() ? "human" : "computer";
@@ -128,18 +144,49 @@ void UciEngine::startGame()
 
 void UciEngine::endGame(const Chess::Result& result)
 {
-	stopThinking();
+	m_ignoreThinking = true;
+	if (stopThinking())
+		ping(false);
 	ChessEngine::endGame(result);
 }
 
 void UciEngine::makeMove(const Chess::Move& move)
 {
-	m_moveStrings += " " + board()->moveString(move, Chess::Board::LongAlgebraic);
-	sendPosition();
+	if (!m_ponderMove.isNull())
+	{
+		if (move == m_ponderMove)
+			m_ponderState = PonderHit;
+
+		m_ponderMove = Chess::Move();
+		if (m_ponderState != PonderHit)
+		{
+			m_moveStrings.truncate(m_moveStrings.lastIndexOf(' '));
+			m_ignoreThinking = true;
+			if (stopThinking())
+				ping(false);
+		}
+	}
+
+	if (m_ponderState != PonderHit)
+	{
+		m_ponderState = NotPondering;
+		m_moveStrings += " " + board()->moveString(move, Chess::Board::LongAlgebraic);
+		if (m_ignoreThinking)
+			m_bmBuffer << positionString() << "isready";
+		else
+			sendPosition();
+	}
 }
 
 void UciEngine::startThinking()
 {
+	if (m_ponderState == PonderHit)
+	{
+		m_ponderState = NotPondering;
+		write("ponderhit");
+		return;
+	}
+
 	const TimeControl* whiteTc = 0;
 	const TimeControl* blackTc = 0;
 	const TimeControl* myTc = timeControl();
@@ -157,6 +204,13 @@ void UciEngine::startThinking()
 		qFatal("Player %s doesn't have a side", qPrintable(name()));
 	
 	QString command = "go";
+	if (!m_ponderMove.isNull())
+	{
+		command += " ponder";
+		m_ponderState = Pondering;
+	}
+	else
+		m_ponderState = NotPondering;
 	if (myTc->isInfinite())
 	{
 		if (myTc->plyLimit() == 0 && myTc->nodeLimit() == 0)
@@ -181,6 +235,22 @@ void UciEngine::startThinking()
 		command += QString(" nodes %1").arg(myTc->nodeLimit());
 
 	write(command);
+}
+
+void UciEngine::startPondering()
+{
+	if (m_ponderMove.isNull())
+		return;
+
+	m_moveStrings += " " + board()->moveString(m_ponderMove, Chess::Board::LongAlgebraic);
+	sendPosition();
+	ping();
+	startThinking();
+}
+
+bool UciEngine::isPondering() const
+{
+	return (m_ponderState != NotPondering);
 }
 
 void UciEngine::sendStop()
@@ -446,10 +516,27 @@ void UciEngine::parseLine(const QString& line)
 
 	if (command == "info")
 	{
+		if (m_ignoreThinking)
+			return;
 		parseInfo(command);
 	}
 	else if (command == "bestmove")
 	{
+		m_ponderState = NotPondering;
+		if (m_ignoreThinking)
+		{
+			m_ignoreThinking = false;
+			if (!m_bmBuffer.isEmpty())
+			{
+				foreach (const QString& line, m_bmBuffer)
+					write(line, Unbuffered);
+				m_bmBuffer.clear();
+			}
+			else
+				pong();
+			return;
+		}
+
 		if (state() != Thinking)
 		{
 			if (state() == FinishingGame)
@@ -459,14 +546,30 @@ void UciEngine::parseLine(const QString& line)
 			return;
 		}
 
-		QString moveString(nextToken(command).toString());
+		QStringRef token(nextToken(command));
+		QString moveString(token.toString());
 		m_moveStrings += " " + moveString;
 		Chess::Move move = board()->moveFromString(moveString);
-
-		if (!move.isNull())
-			emitMove(move);
-		else
+		if (move.isNull())
+		{
 			forfeit(Chess::Result::IllegalMove, moveString);
+			return;
+		}
+
+		if (m_canPonder && pondering()
+		&&  (token = nextToken(token)) == "ponder")
+		{
+			moveString = nextToken(token).toString();
+			board()->makeMove(move);
+			m_ponderMove = board()->moveFromString(moveString);
+			board()->undoMove();
+			if (m_ponderMove.isNull())
+				qDebug("Illegal ponder move from %s: %s",
+				       qPrintable(name()),
+				       qPrintable(moveString));
+		}
+
+		emitMove(move);
 	}
 	else if (command == "readyok")
 	{
@@ -506,10 +609,11 @@ void UciEngine::parseLine(const QString& line)
 			addVariant(variant);
 		else if (option->name() == "UCI_Opponent")
 			m_sendOpponentsName = true;
-		else if (option->name() == "Ponder"
-		     ||  (option->name().startsWith("UCI_") &&
-			  option->name() != "UCI_LimitStrength" &&
-			  option->name() != "UCI_Elo"))
+		else if (option->name() == "Ponder")
+			m_canPonder = true;
+		else if (option->name().startsWith("UCI_") &&
+			 option->name() != "UCI_LimitStrength" &&
+			 option->name() != "UCI_Elo")
 		{
 			// TODO: Deal with UCI features
 		}

@@ -11,8 +11,6 @@
 
 - FICS support
 
-- Tournaments
-
 - Add a bunch of bugs to Sloppy, and test it with the gui
 
 - Create an engine-testing tool for the gui, which finds out and summarizes

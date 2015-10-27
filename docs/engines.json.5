@@ -1,4 +1,4 @@
-.Dd April 10, 2012
+.Dd October 27, 2015
 .Dt ENGINES.JSON 5
 .Os
 .Sh NAME
@@ -157,6 +157,12 @@ The default is
 .Pp
 This option should be used with engines that always report scores from
 white's perspective.
+.It Ic ponder No : Cm true | Cm false
+When
+.Cm true
+enable pondering if the engine supports it.
+The default is
+.Cm false .
 .El
 .Sh EXAMPLES
 A minimal engine configuration file for the Sloppy chess engine:

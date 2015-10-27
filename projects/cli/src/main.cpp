@@ -212,6 +212,10 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 			}
 			data.tc.setNodeLimit(val.toInt());
 		}
+		else if (name == "ponder")
+		{
+			data.config.setPondering(true);
+		}
 		// Custom engine option
 		else if (name.startsWith("option."))
 			data.config.setOption(name.section('.', 1), val);

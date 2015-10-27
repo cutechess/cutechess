@@ -110,5 +110,7 @@ Engine options:
 			scores from white's perspective.
   depth=N		Set the search depth limit to N plies
   nodes=N		Set the node count limit to N nodes
+  ponder		Enable pondering if the engine supports it. By default
+			pondering is disabled.
   option.OPTION=VALUE	Set custom option OPTION to value VALUE
 

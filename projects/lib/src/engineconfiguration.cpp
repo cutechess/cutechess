@@ -24,6 +24,7 @@
 EngineConfiguration::EngineConfiguration()
 	: m_variants(QStringList() << "standard"),
 	  m_whiteEvalPov(false),
+	  m_pondering(false),
 	  m_validateClaims(true),
 	  m_restartMode(RestartAuto)
 {
@@ -37,6 +38,7 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 	  m_protocol(protocol),
 	  m_variants(QStringList() << "standard"),
 	  m_whiteEvalPov(false),
+	  m_pondering(false),
 	  m_validateClaims(true),
 	  m_restartMode(RestartAuto)
 {
@@ -45,6 +47,7 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 EngineConfiguration::EngineConfiguration(const QVariant& variant)
 	: m_variants(QStringList() << "standard"),
 	  m_whiteEvalPov(false),
+	  m_pondering(false),
 	  m_validateClaims(true),
 	  m_restartMode(RestartAuto)
 {
@@ -59,6 +62,8 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 		setInitStrings(map["initStrings"].toStringList());
 	if (map.contains("whitepov"))
 		setWhiteEvalPov(map["whitepov"].toBool());
+	if (map.contains("ponder"))
+		setPondering(map["ponder"].toBool());
 
 	if (map.contains("restart"))
 	{
@@ -99,6 +104,7 @@ EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
 	  m_initStrings(other.m_initStrings),
 	  m_variants(other.m_variants),
 	  m_whiteEvalPov(other.m_whiteEvalPov),
+	  m_pondering(other.m_pondering),
 	  m_validateClaims(other.m_validateClaims),
 	  m_restartMode(other.m_restartMode)
 {
@@ -124,6 +130,8 @@ QVariant EngineConfiguration::toVariant() const
 		map.insert("initStrings", m_initStrings);
 	if (m_whiteEvalPov)
 		map.insert("whitepov", true);
+	if (m_pondering)
+		map.insert("ponder", true);
 
 	if (m_restartMode == RestartOn)
 		map.insert("restart", "on");
@@ -278,6 +286,16 @@ void EngineConfiguration::setWhiteEvalPov(bool whiteEvalPov)
 	m_whiteEvalPov = whiteEvalPov;
 }
 
+bool EngineConfiguration::pondering() const
+{
+	return m_pondering;
+}
+
+void EngineConfiguration::setPondering(bool enabled)
+{
+	m_pondering = enabled;
+}
+
 EngineConfiguration::RestartMode EngineConfiguration::restartMode() const
 {
 	return m_restartMode;
@@ -310,6 +328,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		m_initStrings = other.m_initStrings;
 		m_variants = other.m_variants;
 		m_whiteEvalPov = other.m_whiteEvalPov;
+		m_pondering = other.m_pondering;
 		m_validateClaims = other.m_validateClaims;
 		m_restartMode = other.m_restartMode;
 

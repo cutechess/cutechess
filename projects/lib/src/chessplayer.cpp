@@ -193,6 +193,10 @@ void ChessPlayer::setName(const QString& name)
 	emit nameChanged(m_name);
 }
 
+void ChessPlayer::startPondering()
+{
+}
+
 bool ChessPlayer::areClaimsValidated() const
 {
 	return m_validateClaims;

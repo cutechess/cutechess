@@ -160,6 +160,11 @@ class LIB_EXPORT EngineConfiguration
 		/*! Sets white evaluation point of view. */
 		void setWhiteEvalPov(bool whiteEvalPov);
 
+		/*! Returns true if pondering is enabled for the engine. */
+		bool pondering() const;
+		/*! Sets pondering mode to \a enabled. */
+		void setPondering(bool enabled);
+
 		/*!
 		 * Returns the restart mode.
 		 * The default value is \a RestartAuto.
@@ -195,6 +200,7 @@ class LIB_EXPORT EngineConfiguration
 		QStringList m_variants;
 		QList<EngineOption*> m_options;
 		bool m_whiteEvalPov;
+		bool m_pondering;
 		bool m_validateClaims;
 		RestartMode m_restartMode;
 };
