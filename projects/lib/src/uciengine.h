@@ -84,6 +84,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		PonderState m_ponderState;
 		Chess::Move m_ponderMove;
 		bool m_ignoreThinking;
+		bool m_rePing;
 };
 
 #endif // UCIENGINE_H

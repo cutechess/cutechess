@@ -239,8 +239,15 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Called when the engine idles for too long. */
 		void onIdleTimeout();
 
-		/*! Called when the engine responds to ping. */
-		void pong();
+		/*!
+		 * Called when the engine responds to ping.
+		 *
+		 * Does nothing if the engine is not being pinged.
+		 * Flushes any pending output to the engine.
+		 * If \a emitReady is true, the ready() signal is emitted after
+		 * pending output is flushed.
+		 */
+		void pong(bool emitReady = true);
 
 		/*!
 		 * Called when the engine has started the chess protocol and
@@ -254,6 +261,9 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * to the engine.
 		 */
 		void flushWriteBuffer();
+
+		/*! Clear the write buffer without flushing it. */
+		void clearWriteBuffer();
 
 	private slots:
 		void onQuitTimeout();

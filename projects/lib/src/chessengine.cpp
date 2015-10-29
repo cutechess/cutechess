@@ -314,7 +314,8 @@ void ChessEngine::kill()
 	if (state() == Disconnected)
 		return;
 
-	qDebug("Terminating process of engine %s", qPrintable(name()));
+	qDebug("Terminating process of engine %s(%d)",
+	       qPrintable(name()), m_id);
 
 	m_pinging = false;
 	m_pingTimer->stop();
@@ -345,7 +346,7 @@ void ChessEngine::ping(bool sendCommand)
 	m_pingTimer->start();
 }
 
-void ChessEngine::pong()
+void ChessEngine::pong(bool emitReady)
 {
 	if (!m_pinging)
 		return;
@@ -370,12 +371,14 @@ void ChessEngine::pong()
 		}
 	}
 
-	emit ready();
+	if (emitReady)
+		emit ready();
 }
 
 void ChessEngine::onPingTimeout()
 {
-	qDebug("Engine %s failed to respond to ping", qPrintable(name()));
+	qDebug("Engine %s(%d) failed to respond to ping",
+	       qPrintable(name()), m_id);
 
 	m_pinging = false;
 	m_writeBuffer.clear();
@@ -439,6 +442,11 @@ void ChessEngine::flushWriteBuffer()
 
 	foreach (const QString& line, m_writeBuffer)
 		write(line);
+	m_writeBuffer.clear();
+}
+
+void ChessEngine::clearWriteBuffer()
+{
 	m_writeBuffer.clear();
 }
 

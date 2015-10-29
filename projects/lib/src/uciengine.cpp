@@ -36,7 +36,8 @@ UciEngine::UciEngine(QObject* parent)
 	  m_sendOpponentsName(false),
 	  m_canPonder(false),
 	  m_ponderState(NotPondering),
-	  m_ignoreThinking(false)
+	  m_ignoreThinking(false),
+	  m_rePing(false)
 {
 	addVariant("standard");
 	setName("UciEngine");
@@ -105,6 +106,7 @@ void UciEngine::startGame()
 	Q_ASSERT(supportsVariant(board()->variant()));
 
 	m_ignoreThinking = false;
+	m_rePing = false;
 	m_ponderState = NotPondering;
 	m_ponderMove = Chess::Move();
 	m_bmBuffer.clear();
@@ -161,9 +163,18 @@ void UciEngine::makeMove(const Chess::Move& move)
 		if (m_ponderState != PonderHit)
 		{
 			m_moveStrings.truncate(m_moveStrings.lastIndexOf(' '));
-			m_ignoreThinking = true;
-			if (stopThinking())
-				ping(false);
+			if (isReady())
+			{
+				m_ignoreThinking = true;
+				if (stopThinking())
+					ping(false);
+			}
+			else
+			{
+				// Cancel sending the "go ponder" message
+				clearWriteBuffer();
+				m_rePing = true;
+			}
 		}
 	}
 
@@ -573,7 +584,14 @@ void UciEngine::parseLine(const QString& line)
 	}
 	else if (command == "readyok")
 	{
-		pong();
+		if (m_rePing)
+		{
+			m_rePing = false;
+			pong(false);
+			ping();
+		}
+		else
+			pong();
 	}
 	else if (command == "uciok")
 	{
