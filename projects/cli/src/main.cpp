@@ -234,6 +234,8 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 {
 	MatchParser parser(args);
+	parser.addOption("-srand", QVariant::UInt, 1, 1);
+	parser.addOption("-tournament", QVariant::String, 1, 1);
 	parser.addOption("-engine", QVariant::StringList, 1, -1, true);
 	parser.addOption("-each", QVariant::StringList, 1);
 	parser.addOption("-variant", QVariant::String, 1, 1);
@@ -241,7 +243,6 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-draw", QVariant::StringList);
 	parser.addOption("-resign", QVariant::StringList);
 	parser.addOption("-gtb", QVariant::String, 1, 1);
-	parser.addOption("-tournament", QVariant::String, 1, 1);
 	parser.addOption("-event", QVariant::String, 1, 1);
 	parser.addOption("-games", QVariant::Int, 1, 1);
 	parser.addOption("-rounds", QVariant::Int, 1, 1);
@@ -253,7 +254,6 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-repeat", QVariant::Bool, 0, 0);
 	parser.addOption("-recover", QVariant::Bool, 0, 0);
 	parser.addOption("-site", QVariant::String, 1, 1);
-	parser.addOption("-srand", QVariant::UInt, 1, 1);
 	parser.addOption("-wait", QVariant::Int, 1, 1);
 	if (!parser.parse())
 		return 0;

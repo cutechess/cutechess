@@ -81,7 +81,7 @@ class MatchParser
 		 */
 		QVariant takeOption(const QString& name);
 		/*! Returns the options parsed by \a parse(). */
-		QList<Option> options() const;
+		QMap<int, Option> options() const;
 		/*!
 		 * Parses the command line arguments.
 		 * Returns true if successfull.
@@ -92,6 +92,7 @@ class MatchParser
 		struct PrivateOption
 		{
 			QVariant::Type type;
+			int priority;
 			int minArgs;
 			int maxArgs;
 			bool duplicates;
@@ -100,8 +101,9 @@ class MatchParser
 		bool contains(const QString& optionName) const;
 
 		QStringList m_args;
-		QList<Option> m_options;
+		QMap<int, Option> m_options;
 		QMap<QString, PrivateOption> m_validOptions;
+		int m_priority;
 };
 
 #endif // MATCHPARSER_H

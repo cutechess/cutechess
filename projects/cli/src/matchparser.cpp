@@ -19,7 +19,8 @@
 
 
 MatchParser::MatchParser(const QStringList& args)
-	: m_args(args)
+	: m_args(args),
+	  m_priority(0)
 {
 }
 
@@ -29,31 +30,39 @@ void MatchParser::addOption(const QString& name,
 			    int maxArgs,
 			    bool duplicates)
 {
-	PrivateOption option = { type, minArgs, maxArgs, duplicates };
+	PrivateOption option =
+	{
+		type,
+		m_priority++,
+		minArgs,
+		maxArgs,
+		duplicates
+	};
 	m_validOptions[name] = option;
 }
 
 QVariant MatchParser::takeOption(const QString& name)
 {
-	for (int i = 0; i < m_options.size(); i++)
-	{
-		if (m_options[i].name == name)
-			return m_options.takeAt(i).value;
-	}
+	Q_ASSERT(m_validOptions.contains(name));
+
+	int i = m_validOptions.value(name).priority;
+	if (m_options.contains(i))
+		return m_options.take(i).value;
 
 	return QVariant();
 }
 
-QList<MatchParser::Option> MatchParser::options() const
+QMap<int, MatchParser::Option> MatchParser::options() const
 {
 	return m_options;
 }
 
 bool MatchParser::contains(const QString& optionName) const
 {
-	foreach (const Option& option, m_options)
+	QMap<int, Option>::const_iterator it;
+	for (it = m_options.constBegin(); it != m_options.constEnd(); ++it)
 	{
-		if (option.name == optionName)
+		if (it.value().name == optionName)
 			return true;
 	}
 
@@ -115,7 +124,7 @@ bool MatchParser::parse()
 		if (list.isEmpty())
 		{
 			Option tmp = { name, QVariant(true) };
-			m_options.append(tmp);
+			m_options[option.priority] = tmp;
 			continue;
 		}
 		
@@ -133,7 +142,7 @@ bool MatchParser::parse()
 		}
 		
 		Option tmp = { name, value };
-		m_options.append(tmp);
+		m_options[option.priority] = tmp;
 	}
 
 	return true;
