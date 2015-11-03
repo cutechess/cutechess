@@ -52,14 +52,22 @@ QVariant MatchParser::takeOption(const QString& name)
 	return QVariant();
 }
 
-QMap<int, MatchParser::Option> MatchParser::options() const
+QList<MatchParser::Option> MatchParser::options() const
 {
-	return m_options;
+	QList<Option> list;
+	foreach (int key, m_options.uniqueKeys())
+	{
+		QList<Option> values(m_options.values(key));
+		while (!values.isEmpty())
+			list.append(values.takeLast());
+	}
+
+	return list;
 }
 
 bool MatchParser::contains(const QString& optionName) const
 {
-	QMap<int, Option>::const_iterator it;
+	QMultiMap<int, Option>::const_iterator it;
 	for (it = m_options.constBegin(); it != m_options.constEnd(); ++it)
 	{
 		if (it.value().name == optionName)
@@ -124,7 +132,7 @@ bool MatchParser::parse()
 		if (list.isEmpty())
 		{
 			Option tmp = { name, QVariant(true) };
-			m_options[option.priority] = tmp;
+			m_options.insert(option.priority, tmp);
 			continue;
 		}
 		
@@ -142,7 +150,7 @@ bool MatchParser::parse()
 		}
 		
 		Option tmp = { name, value };
-		m_options[option.priority] = tmp;
+		m_options.insert(option.priority, tmp);
 	}
 
 	return true;
