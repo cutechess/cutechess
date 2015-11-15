@@ -570,14 +570,9 @@ void UciEngine::parseLine(const QString& line)
 		if (m_canPonder && pondering()
 		&&  (token = nextToken(token)) == "ponder")
 		{
-			moveString = nextToken(token).toString();
 			board()->makeMove(move);
-			m_ponderMove = board()->moveFromString(moveString);
+			setPonderMove(nextToken(token).toString());
 			board()->undoMove();
-			if (m_ponderMove.isNull())
-				qDebug("Illegal ponder move from %s: %s",
-				       qPrintable(name()),
-				       qPrintable(moveString));
 		}
 
 		emitMove(move);
@@ -642,6 +637,27 @@ void UciEngine::parseLine(const QString& line)
 		}
 
 		delete option;
+	}
+}
+
+void UciEngine::setPonderMove(const QString& moveString)
+{
+	Chess::Board* board = this->board();
+
+	m_ponderMove = board->moveFromString(moveString);
+	if (m_ponderMove.isNull())
+	{
+		qDebug("Illegal ponder move from %s: %s",
+		       qPrintable(name()),
+		       qPrintable(moveString));
+	}
+	else
+	{
+		// Ignore game ending ponder moves
+		board->makeMove(m_ponderMove);
+		if (!board->result().isNone())
+			m_ponderMove = Chess::Move();
+		board->undoMove();
 	}
 }
 
