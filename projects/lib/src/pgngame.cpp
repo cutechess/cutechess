@@ -308,6 +308,8 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 	else
 		out << " " << str << "\n\n";
 
+	out.flush();
+
 	return true;
 }
 
