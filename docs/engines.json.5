@@ -8,9 +8,9 @@
 .Nm
 is the chess engine configuration file for
 .Xr cutechess-cli 6 .
-An engine configuration defines name, command, working directory and
+An engine configuration defines a name, a command, a working directory and
 many other options.
-These options can be then used in
+Engine configurations can be used in
 .Xr cutechess-cli 6
 with the
 .Cm conf
@@ -33,9 +33,11 @@ A JSON value must be one of:
 or
 .Cm null .
 .Ss Objects
-A
+An
 .Ar object
-is structure of name-value pairs enclosed in curly brackets.
+is structure of
+.Pf name- Ar value
+pairs enclosed in curly brackets.
 A name is a
 .Ar string .
 Name and value are separated by a single colon.
@@ -55,7 +57,9 @@ Example objects would be:
 .Ss Arrays
 An
 .Ar array
-is a structure of zero or more values enclosed in square brackets.
+is a structure of zero or more
+.Ar values
+enclosed in square brackets.
 Values are separated by commas.
 .Pp
 Example arrays would be:
