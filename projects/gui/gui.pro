@@ -33,9 +33,6 @@ macx {
     ICON = res/icons/cutechess_mac.icns
 }
 
-# Components
-include(components/hintlineedit/src/hintlineedit.pri)
-
 # GUI
 include(src/src.pri)
 
