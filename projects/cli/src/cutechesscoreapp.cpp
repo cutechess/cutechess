@@ -42,11 +42,7 @@ CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 	// Use Ini format on all platforms
 	QSettings::setDefaultFormat(QSettings::IniFormat);
 
-	#if QT_VERSION >= 0x050000
 	qInstallMessageHandler(CuteChessCoreApplication::messageHandler);
-	#else
-	qInstallMsgHandler(CuteChessCoreApplication::messageHandler);
-	#endif
 
 	// Load the engines
 	QString configFile("engines.json");
@@ -60,7 +56,6 @@ CuteChessCoreApplication::~CuteChessCoreApplication()
 	GaviotaTablebase::cleanup();
 }
 
-#if QT_VERSION >= 0x050000
 void CuteChessCoreApplication::messageHandler(QtMsgType type,
 					      const QMessageLogContext &context,
 					      const QString &message)
@@ -87,30 +82,6 @@ void CuteChessCoreApplication::messageHandler(QtMsgType type,
 		abort();
 	}
 }
-#else
-void CuteChessCoreApplication::messageHandler(QtMsgType type,
-                                              const char* message)
-{
-	switch (type)
-	{
-		case QtDebugMsg:
-			fprintf(stdout, "%s\n", message);
-		break;
-
-		case QtWarningMsg:
-			fprintf(stderr, "Warning: %s\n", message);
-		break;
-
-		case QtCriticalMsg:
-			fprintf(stderr, "Critical: %s\n", message);
-		break;
-
-		case QtFatalMsg:
-			fprintf(stderr, "Fatal: %s\n", message);
-			abort();
-	}
-}
-#endif
 
 QString CuteChessCoreApplication::configPath()
 {
