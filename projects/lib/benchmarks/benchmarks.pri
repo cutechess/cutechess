@@ -1,7 +1,7 @@
 TEMPLATE = app
 
 win32:config += CONSOLE
-CONFIG += qtestlib
+QT += testlib
 
 include(../lib.pri)
 

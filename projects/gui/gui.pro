@@ -20,8 +20,7 @@ macx-xcode {
     DEFINES += CUTECHESS_VERSION=\\\"$$CUTECHESS_VERSION\\\"
 }
 
-QT += svg
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets concurrent
+QT += svg widgets concurrent
 
 win32 {
     CONFIG(debug, debug|release) {
