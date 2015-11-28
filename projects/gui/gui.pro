@@ -1,5 +1,5 @@
 macx {
-    TARGET = "Cute Chess"
+    TARGET = CuteChess
 } else {
     TARGET = cutechess
 }
