@@ -19,6 +19,7 @@
 #define CUTE_CHESS_CORE_APPLICATION_H
 
 #include <QCoreApplication>
+#include <QMessageLogContext>
 
 class EngineManager;
 class GameManager;
