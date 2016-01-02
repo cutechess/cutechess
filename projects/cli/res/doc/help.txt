@@ -90,6 +90,9 @@ Engine options:
 			'auto': the engine decides whether to restart (default)
 			'on': the engine is always restarted between games
 			'off': the engine is never restarted between games
+			Setting this option does not prevent engines from being
+			restarted between rounds in a tournament featuring more
+			than two engines.
   trust			Trust result claims from the engine without validation.
 			By default all claims are validated.
   proto=PROTOCOL	Set the chess protocol to PROTOCOL, which can be one of:
