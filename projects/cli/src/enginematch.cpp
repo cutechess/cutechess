@@ -16,7 +16,6 @@
 */
 
 #include "enginematch.h"
-#include <cmath>
 #include <QMultiMap>
 #include <chessplayer.h>
 #include <playerbuilder.h>
@@ -25,6 +24,7 @@
 #include <tournament.h>
 #include <gamemanager.h>
 #include <sprt.h>
+#include <elo.h>
 
 
 EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
@@ -162,6 +162,7 @@ struct RankingData
 	int games;
 	qreal score;
 	qreal draws;
+	qreal errorMargin;
 };
 
 void EngineMatch::printRanking()
@@ -171,41 +172,38 @@ void EngineMatch::printRanking()
 	for (int i = 0; i < m_tournament->playerCount(); i++)
 	{
 		Tournament::PlayerData player(m_tournament->playerAt(i));
-
-		int score = player.wins * 2 + player.draws;
-		int total = (player.wins + player.losses + player.draws) * 2;
-		if (total <= 0)
-			continue;
-
-		qreal ratio = qreal(score) / qreal(total);
-		qreal eloDiff = -400.0 * std::log(1.0 / ratio - 1.0) / std::log(10.0);
+		Elo elo(player.wins, player.losses, player.draws);
 
 		if (m_tournament->playerCount() == 2)
 		{
-			qDebug("ELO difference: %.0f", eloDiff);
+			qDebug("ELO difference: %.2f +/- %.2f",
+			       elo.diff(),
+			       elo.errorMargin());
 			break;
 		}
 
 		RankingData data = { player.builder->name(),
-				     total / 2,
-				     ratio,
-				     qreal(player.draws * 2) / qreal(total) };
-		ranking.insert(-eloDiff, data);
+				     player.wins + player.losses + player.draws,
+				     elo.pointRatio(),
+				     elo.drawRatio(),
+				     elo.errorMargin() };
+		ranking.insert(-elo.diff(), data);
 	}
 
 	if (!ranking.isEmpty())
-		qDebug("%4s %-25.25s %7s %7s %7s %7s",
-		       "Rank", "Name", "ELO", "Games", "Score", "Draws");
+		qDebug("%4s %-25.25s %7s %7s %7s %7s %7s",
+		       "Rank", "Name", "ELO", "+/-", "Games", "Score", "Draws");
 
 	int rank = 0;
 	QMultiMap<qreal, RankingData>::const_iterator it;
 	for (it = ranking.constBegin(); it != ranking.constEnd(); ++it)
 	{
 		const RankingData& data = it.value();
-		qDebug("%4d %-25.25s %7.0f %7d %6.0f%% %6.0f%%",
+		qDebug("%4d %-25.25s %7.0f %7.0f %7d %6.0f%% %6.0f%%",
 		       ++rank,
 		       qPrintable(data.name),
 		       -it.key(),
+		       data.errorMargin,
 		       data.games,
 		       data.score * 100.0,
 		       data.draws * 100.0);
