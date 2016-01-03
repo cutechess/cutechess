@@ -117,9 +117,18 @@ void ChessGame::stop()
 	}
 	
 	m_gameInProgress = false;
-	m_pgn->setTag("PlyCount", QString::number(m_pgn->moves().size()));
+	const QVector<PgnGame::MoveData>& moves(m_pgn->moves());
+	int plies = moves.size();
+
+	m_pgn->setTag("PlyCount", QString::number(plies));
 	m_pgn->setResult(m_result);
 	m_pgn->setResultDescription(m_result.description());
+
+	if (plies > 1)
+	{
+		const PgnGame::MoveData& md(moves.at(plies - 1));
+		emit moveChanged(plies - 1, md.move, md.moveString, md.comment);
+	}
 
 	m_player[Chess::Side::White]->endGame(m_result);
 	m_player[Chess::Side::Black]->endGame(m_result);

@@ -58,9 +58,13 @@ class MoveList : public QWidget
 		void commentClicked(int num);
 	
 	private slots:
-		void onMoveMade(const Chess::GenericMove& genericMove,
+		void onMoveMade(const Chess::GenericMove& move,
 		                const QString& sanString,
 		                const QString& comment);
+		void onMoveChanged(int ply,
+				   const Chess::GenericMove& move,
+				   const QString& sanString,
+				   const QString& comment);
 		void onMoveOrCommentClicked(const QUrl& url);
 		void selectChosenMove();
 
@@ -71,6 +75,11 @@ class MoveList : public QWidget
 			QString move;
 			QString comment;
 		};
+		struct MovePosition
+		{
+			QPair<int, int> move;
+			QPair<int, int> comment;
+		};
 
 		static HtmlMove htmlMove(int moveNum,
 					 int startingSide,
@@ -80,7 +89,7 @@ class MoveList : public QWidget
 
 		QTextBrowser* m_moveList;
 		QPointer<ChessGame> m_game;
-		QList< QPair<int, int> > m_movePos;
+		QList<MovePosition> m_movePos;
 		int m_moveCount;
 		int m_startingSide;
 		int m_selectedMove;

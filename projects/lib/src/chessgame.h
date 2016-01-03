@@ -87,6 +87,10 @@ class LIB_EXPORT ChessGame : public QObject
 		void moveMade(const Chess::GenericMove& move,
 			      const QString& sanString,
 			      const QString& comment);
+		void moveChanged(int ply,
+				 const Chess::GenericMove& move,
+				 const QString& sanString,
+				 const QString& comment);
 		void started(ChessGame* game = 0);
 		void finished(ChessGame* game = 0);
 		void startFailed(ChessGame* game = 0);

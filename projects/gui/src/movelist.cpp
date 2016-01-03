@@ -34,6 +34,7 @@ MoveList::MoveList(QWidget* parent)
 	m_moveList = new QTextBrowser(this);
 	m_moveList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	m_moveList->setOpenLinks(false);
+	m_moveList->setUndoRedoEnabled(false);
 	m_moveList->document()->setDefaultStyleSheet(
 		"a:link { text-decoration: none; } "
 		".comment { color: grey; }");
@@ -108,8 +109,12 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 	}
 
 	if (m_game != 0)
+	{
 		connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
 			this, SLOT(onMoveMade(Chess::GenericMove, QString, QString)));
+		connect(m_game, SIGNAL(moveChanged(int, Chess::GenericMove, QString, QString)),
+			this, SLOT(onMoveChanged(int, Chess::GenericMove, QString, QString)));
+	}
 
 	QScrollBar* sb = m_moveList->verticalScrollBar();
 	sb->setValue(sb->maximum());
@@ -117,11 +122,11 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 	selectMove(m_moveCount - 1);
 }
 
-void MoveList::onMoveMade(const Chess::GenericMove& genericMove,
+void MoveList::onMoveMade(const Chess::GenericMove& move,
 			  const QString& sanString,
 			  const QString& comment)
 {
-	Q_UNUSED(genericMove);
+	Q_UNUSED(move);
 
 	QScrollBar* sb = m_moveList->verticalScrollBar();
 	bool atEnd = sb->value() == sb->maximum();
@@ -141,21 +146,58 @@ void MoveList::onMoveMade(const Chess::GenericMove& genericMove,
 		sb->setValue(sb->maximum());
 }
 
+/*
+ * TODO:
+ * - Handle changes to moves other than the last move. This requires updating
+ * the move positions for every token after the changed move.
+ * - Handle changes to actual moves (eg. undo), not just comments
+ */
+void MoveList::onMoveChanged(int ply,
+			     const Chess::GenericMove& move,
+			     const QString& sanString,
+			     const QString& comment)
+{
+	Q_UNUSED(move);
+
+	HtmlMove html(htmlMove(ply, m_startingSide, sanString, comment));
+
+	MovePosition movePos(m_movePos.at(ply));
+	QTextCursor cursor(m_moveList->textCursor());
+	cursor.beginEditBlock();
+	cursor.setPosition(movePos.comment.first);
+	cursor.setPosition(movePos.comment.second, QTextCursor::KeepAnchor);
+	cursor.insertHtml(html.comment);
+	cursor.endEditBlock();
+}
+
 void MoveList::insertHtmlMove(const HtmlMove& htmlMove)
 {
 	QTextCursor cursor = m_moveList->textCursor();
+	cursor.beginEditBlock();
 	cursor.movePosition(QTextCursor::End);
+
+	if (!m_movePos.isEmpty() && !htmlMove.number.isEmpty())
+	{
+		cursor.insertBlock();
+	}
 
 	cursor.insertHtml(htmlMove.number);
 
-	QPair<int, int> movePos;
-	movePos.first = cursor.position();
+	MovePosition movePos;
+	movePos.move.first = cursor.position();
 	cursor.insertHtml(htmlMove.move);
-	movePos.second = cursor.position() - 1;
-	if (movePos.second > 0)
+	movePos.move.second = cursor.position() - 1;
+
+	movePos.comment.first = cursor.position();
+	cursor.insertHtml(htmlMove.comment);
+	movePos.comment.second = cursor.position() - 1;
+	if (movePos.comment.second < movePos.comment.first)
+		movePos.comment.second = movePos.comment.first;
+
+	if (movePos.move.second > 0)
 		m_movePos.append(movePos);
 
-	cursor.insertHtml(htmlMove.comment);
+	cursor.endEditBlock();
 }
 
 void MoveList::selectChosenMove()
@@ -164,18 +206,21 @@ void MoveList::selectChosenMove()
 	m_moveToBeSelected = -1;
 	Q_ASSERT(moveNum >= 0 && moveNum < m_moveCount);
 
+	QTextCursor c(m_moveList->textCursor());
+	c.beginEditBlock();
+
 	if (m_selectedMove >= 0)
 	{
-		QTextCursor c = m_moveList->textCursor();
-		c.setPosition(m_movePos.at(m_selectedMove).first);
-		c.setPosition(m_movePos.at(m_selectedMove).second, QTextCursor::KeepAnchor);
+		MovePosition movePos(m_movePos.at(m_selectedMove));
+		c.setPosition(movePos.move.first);
+		c.setPosition(movePos.move.second, QTextCursor::KeepAnchor);
 		c.mergeCharFormat(m_defaultTextFormat);
 	}
 
 	m_selectedMove = moveNum;
-	QTextCursor c = m_moveList->textCursor();
-	c.setPosition(m_movePos.at(moveNum).first);
-	c.setPosition(m_movePos.at(moveNum).second, QTextCursor::KeepAnchor);
+	MovePosition movePos(m_movePos.at(moveNum));
+	c.setPosition(movePos.move.first);
+	c.setPosition(movePos.move.second, QTextCursor::KeepAnchor);
 
 	QTextCharFormat format(c.charFormat());
 	m_defaultTextFormat = format;
@@ -185,6 +230,8 @@ void MoveList::selectChosenMove()
 	format.setForeground(Qt::white);
 	format.setBackground(Qt::black);
 	c.mergeCharFormat(format);
+
+	c.endEditBlock();
 }
 
 void MoveList::selectMove(int moveNum)
