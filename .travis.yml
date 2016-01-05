@@ -26,4 +26,4 @@ before_install:
 install:
   - sudo apt-get install -yqq qt${QT_BASE}base qt${QT_BASE}svg; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
 
-script: qmake && make
+script: qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make
