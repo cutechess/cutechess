@@ -1,0 +1,28 @@
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+os: linux
+sudo: true
+
+env:
+  - QT_BASE=53
+  - QT_BASE=54
+  - QT_BASE=55
+
+branches:
+  only:
+    - master
+
+before_install:
+  - if [ "$QT_BASE" = "53" ]; then sudo add-apt-repository ppa:beineri/opt-qt532-trusty -y; fi
+  - if [ "$QT_BASE" = "54" ]; then sudo add-apt-repository ppa:beineri/opt-qt542-trusty -y; fi
+  - if [ "$QT_BASE" = "55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551-trusty -y; fi
+  - sudo apt-get update -qq
+
+install:
+  - sudo apt-get install -yqq qt${QT_BASE}base qt${QT_BASE}svg; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
+
+script: qmake && make
