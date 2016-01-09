@@ -39,7 +39,7 @@ MoveList::MoveList(QWidget* parent)
 		"a:link { text-decoration: none; } "
 		".comment { color: grey; }");
 	connect(m_moveList, SIGNAL(anchorClicked(const QUrl&)), this,
-	    SLOT(onMoveOrCommentClicked(const QUrl&)));
+	    SLOT(onLinkClicked(const QUrl&)));
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addWidget(m_moveList);
@@ -100,20 +100,27 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 	m_moveToBeSelected = -1;
 	m_selectionTimer->stop();
 
+	QTextCursor cursor(m_moveList->textCursor());
+	cursor.beginEditBlock();
+	cursor.movePosition(QTextCursor::End);
+
 	m_startingSide = pgn->startingSide();
-	for (m_moveCount = 0; m_moveCount < pgn->moves().size(); m_moveCount++)
+	m_moveCount = 0;
+	foreach (const PgnGame::MoveData& md, pgn->moves())
 	{
-		const PgnGame::MoveData& md = pgn->moves().at(m_moveCount);
-		insertHtmlMove(htmlMove(m_moveCount, m_startingSide,
-					md.moveString, md.comment));
+		HtmlMove move(htmlMove(m_moveCount, m_startingSide,
+				       md.moveString, md.comment));
+		insertHtmlMove(move, cursor);
+		m_moveCount++;
 	}
+	cursor.endEditBlock();
 
 	if (m_game != 0)
 	{
 		connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
 			this, SLOT(onMoveMade(Chess::GenericMove, QString, QString)));
 		connect(m_game, SIGNAL(moveChanged(int, Chess::GenericMove, QString, QString)),
-			this, SLOT(onMoveChanged(int, Chess::GenericMove, QString, QString)));
+			this, SLOT(setMove(int, Chess::GenericMove, QString, QString)));
 	}
 
 	QScrollBar* sb = m_moveList->verticalScrollBar();
@@ -146,35 +153,48 @@ void MoveList::onMoveMade(const Chess::GenericMove& move,
 		sb->setValue(sb->maximum());
 }
 
-/*
- * TODO:
- * - Handle changes to moves other than the last move. This requires updating
- * the move positions for every token after the changed move.
- * - Handle changes to actual moves (eg. undo), not just comments
- */
-void MoveList::onMoveChanged(int ply,
-			     const Chess::GenericMove& move,
-			     const QString& sanString,
-			     const QString& comment)
+// TODO: Handle changes to actual moves (eg. undo), not just comments
+void MoveList::setMove(int ply,
+		       const Chess::GenericMove& move,
+		       const QString& sanString,
+		       const QString& comment)
 {
 	Q_UNUSED(move);
 
 	HtmlMove html(htmlMove(ply, m_startingSide, sanString, comment));
 
 	MovePosition movePos(m_movePos.at(ply));
+	int prevLength = (movePos.comment.second - movePos.comment.first) - 1;
+
 	QTextCursor cursor(m_moveList->textCursor());
 	cursor.beginEditBlock();
 	cursor.setPosition(movePos.comment.first);
 	cursor.setPosition(movePos.comment.second, QTextCursor::KeepAnchor);
 	cursor.insertHtml(html.comment);
 	cursor.endEditBlock();
+
+	int diff = comment.length() - prevLength;
+	if (diff == 0)
+		return;
+	for (int i = ply + 1; i < m_movePos.size(); i++)
+	{
+		MovePosition& pos(m_movePos[i]);
+		pos.move.first += diff;
+		pos.move.second += diff;
+		pos.comment.first += diff;
+		pos.comment.second += diff;
+	}
 }
 
-void MoveList::insertHtmlMove(const HtmlMove& htmlMove)
+void MoveList::insertHtmlMove(const HtmlMove& htmlMove, QTextCursor cursor)
 {
-	QTextCursor cursor = m_moveList->textCursor();
-	cursor.beginEditBlock();
-	cursor.movePosition(QTextCursor::End);
+	bool editAsBlock = cursor.isNull();
+	if (editAsBlock)
+	{
+		cursor = m_moveList->textCursor();
+		cursor.beginEditBlock();
+		cursor.movePosition(QTextCursor::End);
+	}
 
 	if (!m_movePos.isEmpty() && !htmlMove.number.isEmpty())
 	{
@@ -197,7 +217,8 @@ void MoveList::insertHtmlMove(const HtmlMove& htmlMove)
 	if (movePos.move.second > 0)
 		m_movePos.append(movePos);
 
-	cursor.endEditBlock();
+	if (editAsBlock)
+		cursor.endEditBlock();
 }
 
 void MoveList::selectChosenMove()
@@ -245,7 +266,7 @@ void MoveList::selectMove(int moveNum)
 	m_selectionTimer->start();
 }
 
-void MoveList::onMoveOrCommentClicked(const QUrl& url)
+void MoveList::onLinkClicked(const QUrl& url)
 {
 	bool ok;
 	int moveNum = url.userName().toInt(&ok);

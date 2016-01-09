@@ -28,6 +28,7 @@
 #include <QTreeView>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QInputDialog>
 
 #include <board/boardfactory.h>
 #include <chessgame.h>
@@ -107,6 +108,8 @@ MainWindow::MainWindow(ChessGame* game)
 
 	connect(m_moveList, SIGNAL(moveClicked(int)),
 		m_gameViewer, SLOT(viewMove(int)));
+	connect(m_moveList, SIGNAL(commentClicked(int)),
+		this, SLOT(editMoveComment(int)));
 	connect(m_gameViewer, SIGNAL(moveSelected(int)),
 		m_moveList, SLOT(selectMove(int)));
 
@@ -679,6 +682,28 @@ QString MainWindow::genericTitle(const TabData& gameData) const
 	return tr("%1 vs %2")
 		.arg(gameData.pgn->playerName(Chess::Side::White))
 		.arg(gameData.pgn->playerName(Chess::Side::Black));
+}
+
+void MainWindow::editMoveComment(int ply)
+{
+	lockCurrentGame();
+	PgnGame* pgn(m_tabs.at(m_tabBar->currentIndex()).pgn);
+	QString comment = pgn->moves().at(ply).comment;
+	unlockCurrentGame();
+
+	bool ok;
+	QString text = QInputDialog::getMultiLineText(this, tr("Edit move comment"),
+						      tr("Comment:"), comment, &ok);
+	if (ok && text != comment)
+	{
+		lockCurrentGame();
+		PgnGame::MoveData md(pgn->moves().at(ply));
+		md.comment = text;
+		pgn->setMove(ply, md);
+		unlockCurrentGame();
+
+		m_moveList->setMove(ply, md.move, md.moveString, text);
+	}
 }
 
 void MainWindow::lockCurrentGame()

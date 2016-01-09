@@ -102,7 +102,7 @@ ChessPlayer* ChessGame::playerToWait() const
 	return m_player[m_board->sideToMove().opposite()];
 }
 
-void ChessGame::stop()
+void ChessGame::stop(bool emitMoveChanged)
 {
 	if (m_finished)
 		return;
@@ -124,7 +124,7 @@ void ChessGame::stop()
 	m_pgn->setResult(m_result);
 	m_pgn->setResultDescription(m_result.description());
 
-	if (plies > 1)
+	if (emitMoveChanged && plies > 1)
 	{
 		const PgnGame::MoveData& md(moves.at(plies - 1));
 		emit moveChanged(plies - 1, md.move, md.moveString, md.comment);
@@ -255,7 +255,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	if (m_result.isNone())
 		startTurn();
 	else
-		stop();
+		stop(false);
 
 	emitLastMove();
 }

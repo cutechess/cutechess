@@ -76,7 +76,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void start();
 		void pause();
 		void resume();
-		void stop();
+		void stop(bool emitMoveChanged = true);
 		void kill();
 		void emitStartFailed();
 		void onMoveMade(const Chess::Move& move);

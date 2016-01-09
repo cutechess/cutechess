@@ -100,6 +100,11 @@ void PgnGame::addMove(const MoveData& data)
 	}
 }
 
+void PgnGame::setMove(int ply, const MoveData& data)
+{
+	m_moves[ply] = data;
+}
+
 Chess::Board* PgnGame::createBoard() const
 {
 	Chess::Board* board = Chess::BoardFactory::create(variant());

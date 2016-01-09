@@ -70,6 +70,7 @@ class MainWindow : public QMainWindow
 		void onTournamentFinished();
 		void onGameManagerFinished();
 		void onGameStartFailed(ChessGame* game);
+		void editMoveComment(int ply);
 
 	private:
 		struct TabData

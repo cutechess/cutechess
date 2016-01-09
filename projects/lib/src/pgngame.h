@@ -86,6 +86,7 @@ class LIB_EXPORT PgnGame
 		const QVector<MoveData>& moves() const;
 		/*! Adds a new move to the game. */
 		void addMove(const MoveData& data);
+		void setMove(int ply, const MoveData& data);
 
 		/*!
 		 * Creates a board object for viewing or analyzing the game.
