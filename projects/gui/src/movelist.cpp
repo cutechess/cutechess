@@ -160,10 +160,11 @@ void MoveList::setMove(int ply,
 		       const QString& comment)
 {
 	Q_UNUSED(move);
+	Q_ASSERT(ply < m_movePos.size());
 
 	HtmlMove html(htmlMove(ply, m_startingSide, sanString, comment));
 
-	MovePosition movePos(m_movePos.at(ply));
+	MovePosition& movePos(m_movePos[ply]);
 	int prevLength = (movePos.comment.second - movePos.comment.first) - 1;
 
 	QTextCursor cursor(m_moveList->textCursor());
@@ -171,6 +172,7 @@ void MoveList::setMove(int ply,
 	cursor.setPosition(movePos.comment.first);
 	cursor.setPosition(movePos.comment.second, QTextCursor::KeepAnchor);
 	cursor.insertHtml(html.comment);
+	movePos.comment.second = cursor.position() - 1;
 	cursor.endEditBlock();
 
 	int diff = comment.length() - prevLength;
