@@ -22,6 +22,7 @@
 #include <QTimer>
 #include <chessgame.h>
 
+
 MoveList::MoveList(QWidget* parent)
 	: QWidget(parent),
 	  m_game(0),
@@ -37,6 +38,7 @@ MoveList::MoveList(QWidget* parent)
 	m_moveList->setUndoRedoEnabled(false);
 	m_moveList->document()->setDefaultStyleSheet(
 		"a:link { text-decoration: none; } "
+		".move { color: black; font-weight: bold; } "
 		".comment { color: grey; }");
 	connect(m_moveList, SIGNAL(anchorClicked(const QUrl&)), this,
 	    SLOT(onLinkClicked(const QUrl&)));
@@ -50,36 +52,41 @@ MoveList::MoveList(QWidget* parent)
 	m_selectionTimer->setInterval(50);
 	connect(m_selectionTimer, SIGNAL(timeout()),
 		this, SLOT(selectChosenMove()));
+
+	m_moveList->document()->setIndentWidth(18);
+
+	QTextCharFormat format(m_moveList->currentCharFormat());
+	m_defaultTextFormat.setForeground(format.foreground());
+	m_defaultTextFormat.setBackground(format.background());
 }
 
-MoveList::HtmlMove MoveList::htmlMove(int moveNum,
-				      int startingSide,
-				      const QString& moveString,
-				      const QString& comment)
+void MoveList::insertMove(int ply,
+			  const QString& san,
+			  const QString& comment,
+			  QTextCursor cursor)
 {
-	HtmlMove htmlMove;
+	Move move = {
+		MoveNumberToken(ply, m_startingSide),
+		MoveToken(ply, san),
+		MoveCommentToken(ply, comment)
+	};
 
-	if (moveNum == 0 && startingSide == Chess::Side::Black)
-		htmlMove.number = "<strong>1...</strong> ";
-	else
+	bool editAsBlock = cursor.isNull();
+	if (editAsBlock)
 	{
-		moveNum += startingSide;
-		if (moveNum % 2 == 0)
-			htmlMove.number = QString("<strong>%1.</strong> ")
-					  .arg(moveNum / 2 + 1);
+		cursor = m_moveList->textCursor();
+		cursor.beginEditBlock();
+		cursor.movePosition(QTextCursor::End);
 	}
 
-	htmlMove.move = QString("<a href=\"move://%1@\">%2</a> ")
-			.arg(moveNum).arg(moveString);
-	#ifndef Q_OS_WIN32
-	htmlMove.move.replace('-', "&#8288;-&#8288;");
-	#endif
+	move.number.insert(cursor);
+	move.move.insert(cursor);
+	move.comment.insert(cursor);
 
-	if (!comment.isEmpty())
-		htmlMove.comment = QString("<a class=\"comment\" href=\"comment://%1@\">%2</a> ")
-				   .arg(moveNum).arg(comment);
+	m_moves.append(move);
 
-	return htmlMove;
+	if (editAsBlock)
+		cursor.endEditBlock();
 }
 
 void MoveList::setGame(ChessGame* game, PgnGame* pgn)
@@ -95,7 +102,7 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 	}
 
 	m_moveList->clear();
-	m_movePos.clear();
+	m_moves.clear();
 	m_selectedMove = -1;
 	m_moveToBeSelected = -1;
 	m_selectionTimer->stop();
@@ -108,10 +115,7 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 	m_moveCount = 0;
 	foreach (const PgnGame::MoveData& md, pgn->moves())
 	{
-		HtmlMove move(htmlMove(m_moveCount, m_startingSide,
-				       md.moveString, md.comment));
-		insertHtmlMove(move, cursor);
-		m_moveCount++;
+		insertMove(m_moveCount++, md.moveString, md.comment, cursor);
 	}
 	cursor.endEditBlock();
 
@@ -138,7 +142,7 @@ void MoveList::onMoveMade(const Chess::GenericMove& move,
 	QScrollBar* sb = m_moveList->verticalScrollBar();
 	bool atEnd = sb->value() == sb->maximum();
 
-	insertHtmlMove(htmlMove(m_moveCount++, m_startingSide, sanString, comment));
+	insertMove(m_moveCount++, sanString, comment);
 
 	bool atLastMove = false;
 	if (m_selectedMove == -1 || m_moveToBeSelected == m_moveCount - 2)
@@ -160,67 +164,37 @@ void MoveList::setMove(int ply,
 		       const QString& comment)
 {
 	Q_UNUSED(move);
-	Q_ASSERT(ply < m_movePos.size());
+	Q_UNUSED(sanString);
+	Q_ASSERT(ply < m_moves.size());
 
-	HtmlMove html(htmlMove(ply, m_startingSide, sanString, comment));
+	QTextCursor c(m_moveList->textCursor());
 
-	MovePosition& movePos(m_movePos[ply]);
-	int prevLength = (movePos.comment.second - movePos.comment.first) - 1;
+	MoveCommentToken& commentToken(m_moves[ply].comment);
+	int oldLength = commentToken.length();
+	commentToken.setValue(comment);
+	commentToken.select(c);
+	commentToken.insert(c);
 
-	QTextCursor cursor(m_moveList->textCursor());
-	cursor.beginEditBlock();
-	cursor.setPosition(movePos.comment.first);
-	cursor.setPosition(movePos.comment.second, QTextCursor::KeepAnchor);
-	cursor.insertHtml(html.comment);
-	movePos.comment.second = cursor.position() - 1;
-	cursor.endEditBlock();
-
-	int diff = comment.length() - prevLength;
+	int newLength = commentToken.length();
+	int diff = newLength - oldLength;
 	if (diff == 0)
 		return;
-	for (int i = ply + 1; i < m_movePos.size(); i++)
+
+	for (int i = ply + 1; i < m_moves.size(); i++)
 	{
-		MovePosition& pos(m_movePos[i]);
-		pos.move.first += diff;
-		pos.move.second += diff;
-		pos.comment.first += diff;
-		pos.comment.second += diff;
+		m_moves[i].number.move(diff);
+		if (i == ply + 1)
+		{
+			MoveNumberToken& nextNumber(m_moves[i].number);
+			oldLength = nextNumber.length();
+			nextNumber.select(c);
+			nextNumber.insert(c);
+			newLength = nextNumber.length();
+			diff += (newLength - oldLength);
+		}
+		m_moves[i].move.move(diff);
+		m_moves[i].comment.move(diff);
 	}
-}
-
-void MoveList::insertHtmlMove(const HtmlMove& htmlMove, QTextCursor cursor)
-{
-	bool editAsBlock = cursor.isNull();
-	if (editAsBlock)
-	{
-		cursor = m_moveList->textCursor();
-		cursor.beginEditBlock();
-		cursor.movePosition(QTextCursor::End);
-	}
-
-	if (!m_movePos.isEmpty() && !htmlMove.number.isEmpty())
-	{
-		cursor.insertBlock();
-	}
-
-	cursor.insertHtml(htmlMove.number);
-
-	MovePosition movePos;
-	movePos.move.first = cursor.position();
-	cursor.insertHtml(htmlMove.move);
-	movePos.move.second = cursor.position() - 1;
-
-	movePos.comment.first = cursor.position();
-	cursor.insertHtml(htmlMove.comment);
-	movePos.comment.second = cursor.position() - 1;
-	if (movePos.comment.second < movePos.comment.first)
-		movePos.comment.second = movePos.comment.first;
-
-	if (movePos.move.second > 0)
-		m_movePos.append(movePos);
-
-	if (editAsBlock)
-		cursor.endEditBlock();
 }
 
 void MoveList::selectChosenMove()
@@ -234,25 +208,16 @@ void MoveList::selectChosenMove()
 
 	if (m_selectedMove >= 0)
 	{
-		MovePosition movePos(m_movePos.at(m_selectedMove));
-		c.setPosition(movePos.move.first);
-		c.setPosition(movePos.move.second, QTextCursor::KeepAnchor);
-		c.mergeCharFormat(m_defaultTextFormat);
+		m_moves[m_selectedMove].move.mergeCharFormat(c, m_defaultTextFormat);
 	}
 
 	m_selectedMove = moveNum;
-	MovePosition movePos(m_movePos.at(moveNum));
-	c.setPosition(movePos.move.first);
-	c.setPosition(movePos.move.second, QTextCursor::KeepAnchor);
 
-	QTextCharFormat format(c.charFormat());
-	m_defaultTextFormat = format;
-	m_defaultTextFormat.setBackground(format.background());
-	m_defaultTextFormat.setForeground(format.foreground());
+	QTextCharFormat format;
 
 	format.setForeground(Qt::white);
 	format.setBackground(Qt::black);
-	c.mergeCharFormat(format);
+	m_moves[moveNum].move.mergeCharFormat(c, format);
 
 	c.endEditBlock();
 }
@@ -263,6 +228,8 @@ void MoveList::selectMove(int moveNum)
 		moveNum = 0;
 	if (moveNum >= m_moveCount || m_moveCount <= 0)
 		return;
+	if (moveNum == m_selectedMove)
+		return;
 
 	m_moveToBeSelected = moveNum;
 	m_selectionTimer->start();
@@ -271,7 +238,7 @@ void MoveList::selectMove(int moveNum)
 void MoveList::onLinkClicked(const QUrl& url)
 {
 	bool ok;
-	int moveNum = url.userName().toInt(&ok);
+	int ply = url.userName().toInt(&ok);
 
 	if (!ok)
 	{
@@ -281,16 +248,19 @@ void MoveList::onLinkClicked(const QUrl& url)
 		return;
 	}
 
+	const Move& move(m_moves.at(ply));
 	if (url.scheme() == "move")
-		emit moveClicked(moveNum);
+	{
+		emit moveClicked(ply);
+	}
 	else if (url.scheme() == "comment")
 	{
-		emit commentClicked(moveNum);
+		emit commentClicked(ply, move.comment.toString());
 		return;
 	}
 	else
 		qWarning("MoveList: unknown scheme: %s",
 		    qPrintable(url.scheme()));
 
-	selectMove(moveNum);
+	selectMove(ply);
 }

@@ -30,7 +30,11 @@ HEADERS += $$PWD/chessclock.h \
     $$PWD/gameviewer.h \
     $$PWD/pathlineedit.h \
     $$PWD/threadedtask.h \
-    $$PWD/stringvalidator.h
+    $$PWD/stringvalidator.h \
+    $$PWD/pgntoken.h \
+    $$PWD/movenumbertoken.h \
+    $$PWD/movetoken.h \
+    $$PWD/movecommenttoken.h
 SOURCES += $$PWD/main.cpp \
     $$PWD/chessclock.cpp \
     $$PWD/engineconfigurationmodel.cpp \
@@ -62,4 +66,8 @@ SOURCES += $$PWD/main.cpp \
     $$PWD/gameviewer.cpp \
     $$PWD/pathlineedit.cpp \
     $$PWD/threadedtask.cpp \
-    $$PWD/stringvalidator.cpp
+    $$PWD/stringvalidator.cpp \
+    $$PWD/pgntoken.cpp \
+    $$PWD/movenumbertoken.cpp \
+    $$PWD/movetoken.cpp \
+    $$PWD/movecommenttoken.cpp

@@ -108,8 +108,8 @@ MainWindow::MainWindow(ChessGame* game)
 
 	connect(m_moveList, SIGNAL(moveClicked(int)),
 		m_gameViewer, SLOT(viewMove(int)));
-	connect(m_moveList, SIGNAL(commentClicked(int)),
-		this, SLOT(editMoveComment(int)));
+	connect(m_moveList, SIGNAL(commentClicked(int, QString)),
+		this, SLOT(editMoveComment(int, QString)));
 	connect(m_gameViewer, SIGNAL(moveSelected(int)),
 		m_moveList, SLOT(selectMove(int)));
 
@@ -684,19 +684,15 @@ QString MainWindow::genericTitle(const TabData& gameData) const
 		.arg(gameData.pgn->playerName(Chess::Side::Black));
 }
 
-void MainWindow::editMoveComment(int ply)
+void MainWindow::editMoveComment(int ply, const QString& comment)
 {
-	lockCurrentGame();
-	PgnGame* pgn(m_tabs.at(m_tabBar->currentIndex()).pgn);
-	QString comment = pgn->moves().at(ply).comment;
-	unlockCurrentGame();
-
 	bool ok;
 	QString text = QInputDialog::getMultiLineText(this, tr("Edit move comment"),
 						      tr("Comment:"), comment, &ok);
 	if (ok && text != comment)
 	{
 		lockCurrentGame();
+		PgnGame* pgn(m_tabs.at(m_tabBar->currentIndex()).pgn);
 		PgnGame::MoveData md(pgn->moves().at(ply));
 		md.comment = text;
 		pgn->setMove(ply, md);

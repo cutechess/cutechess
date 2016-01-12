@@ -23,14 +23,19 @@
 #include <QUrl>
 #include <QPair>
 #include <QList>
+#include <QTextBlockFormat>
 #include <QTextCharFormat>
 #include <QTextCursor>
+#include "movenumbertoken.h"
+#include "movetoken.h"
+#include "movecommenttoken.h"
 
 class QTextBrowser;
 class PgnGame;
 class ChessGame;
 namespace Chess { class GenericMove; }
 class QTimer;
+
 
 class MoveList : public QWidget
 {
@@ -61,7 +66,7 @@ class MoveList : public QWidget
 		/*! Emitted when the user clicks move \a num. */
 		void moveClicked(int num);
 		/*! Emitted when the user clicks comment \a num. */
-		void commentClicked(int num);
+		void commentClicked(int num, const QString& comment);
 	
 	private slots:
 		void onMoveMade(const Chess::GenericMove& move,
@@ -71,28 +76,18 @@ class MoveList : public QWidget
 		void selectChosenMove();
 
 	private:
-		struct HtmlMove
+		struct Move
 		{
-			QString number;
-			QString move;
-			QString comment;
-		};
-		struct MovePosition
-		{
-			QPair<int, int> move;
-			QPair<int, int> comment;
+			MoveNumberToken number;
+			MoveToken move;
+			MoveCommentToken comment;
 		};
 
-		static HtmlMove htmlMove(int moveNum,
-					 int startingSide,
-					 const QString& moveString,
-					 const QString& comment);
-		void insertHtmlMove(const HtmlMove& htmlMove,
-				    QTextCursor cursor = QTextCursor());
+		void insertMove(int ply, const QString& san, const QString& comment, QTextCursor cursor = QTextCursor());
 
 		QTextBrowser* m_moveList;
 		QPointer<ChessGame> m_game;
-		QList<MovePosition> m_movePos;
+		QList<Move> m_moves;
 		int m_moveCount;
 		int m_startingSide;
 		int m_selectedMove;
