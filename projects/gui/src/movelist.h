@@ -83,7 +83,10 @@ class MoveList : public QWidget
 			MoveCommentToken comment;
 		};
 
-		void insertMove(int ply, const QString& san, const QString& comment, QTextCursor cursor = QTextCursor());
+		void insertMove(int ply,
+				const QString& san,
+				const QString& comment,
+				QTextCursor cursor = QTextCursor());
 
 		QTextBrowser* m_moveList;
 		QPointer<ChessGame> m_game;

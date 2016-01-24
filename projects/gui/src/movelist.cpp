@@ -39,7 +39,7 @@ MoveList::MoveList(QWidget* parent)
 	m_moveList->document()->setDefaultStyleSheet(
 		"a:link { text-decoration: none; } "
 		".move { color: black; font-weight: bold; } "
-		".comment { color: grey; }");
+		".comment { color: green; }");
 	connect(m_moveList, SIGNAL(anchorClicked(const QUrl&)), this,
 	    SLOT(onLinkClicked(const QUrl&)));
 
