@@ -40,6 +40,13 @@ MoveList::MoveList(QWidget* parent)
 		"a:link { text-decoration: none; } "
 		".move { color: black; font-weight: bold; } "
 		".comment { color: green; }");
+
+	#ifdef Q_OS_WIN32
+	QFont font(m_moveList->document()->defaultFont());
+	font.setPointSize(10);
+	m_moveList->document()->setDefaultFont(font);
+	#endif
+
 	connect(m_moveList, SIGNAL(anchorClicked(const QUrl&)), this,
 	    SLOT(onLinkClicked(const QUrl&)));
 
