@@ -270,9 +270,7 @@ class LIB_EXPORT Tournament : public QObject
 		 *
 		 * Subclasses that implement this member function should prepare
 		 * their data so that the nextPair() function can be called
-		 * immediately afterwards. The total number of games to play
-		 * should also be set here via the \a setFinalGameCount()
-		 * member function.
+		 * immediately afterwards.
 		 */
 		virtual void initializePairing() = 0;
 		/*!
