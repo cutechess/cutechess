@@ -78,6 +78,7 @@ ChessEngine::ChessEngine(QObject* parent)
 	  m_pingTimer(new QTimer(this)),
 	  m_quitTimer(new QTimer(this)),
 	  m_idleTimer(new QTimer(this)),
+	  m_protocolStartTimer(new QTimer(this)),
 	  m_ioDevice(0),
 	  m_restartMode(EngineConfiguration::RestartAuto)
 {
@@ -92,6 +93,11 @@ ChessEngine::ChessEngine(QObject* parent)
 	m_idleTimer->setSingleShot(true);
 	m_idleTimer->setInterval(10000);
 	connect(m_idleTimer, SIGNAL(timeout()), this, SLOT(onIdleTimeout()));
+
+	m_protocolStartTimer->setSingleShot(true);
+	m_protocolStartTimer->setInterval(35000);
+	connect(m_protocolStartTimer, SIGNAL(timeout()),
+		this, SLOT(onProtocolStartTimeout()));
 }
 
 ChessEngine::~ChessEngine()
@@ -208,10 +214,12 @@ void ChessEngine::start()
 	
 	startProtocol();
 	m_pinging = true;
+	m_protocolStartTimer->start();
 }
 
 void ChessEngine::onProtocolStart()
 {
+	m_protocolStartTimer->stop();
 	m_pinging = false;
 	setState(Idle);
 	Q_ASSERT(isReady());
@@ -319,6 +327,7 @@ void ChessEngine::kill()
 
 	m_pinging = false;
 	m_pingTimer->stop();
+	m_protocolStartTimer->stop();
 	m_writeBuffer.clear();
 
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()),
@@ -450,6 +459,16 @@ void ChessEngine::flushWriteBuffer()
 void ChessEngine::clearWriteBuffer()
 {
 	m_writeBuffer.clear();
+}
+
+void ChessEngine::onProtocolStartTimeout()
+{
+	if (state() != Starting)
+		return;
+
+	qDebug("Engine %s(%d) did not start the chess protocol in time",
+	       qPrintable(name()), m_id);
+	onCrashed();
 }
 
 void ChessEngine::onQuitTimeout()

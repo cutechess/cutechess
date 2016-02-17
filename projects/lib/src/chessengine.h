@@ -267,6 +267,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 	private slots:
 		void onQuitTimeout();
+		void onProtocolStartTimeout();
 
 	private:
 		static int s_count;
@@ -279,6 +280,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		QTimer* m_pingTimer;
 		QTimer* m_quitTimer;
 		QTimer* m_idleTimer;
+		QTimer* m_protocolStartTimer;
 		QIODevice *m_ioDevice;
 		QStringList m_writeBuffer;
 		QStringList m_variants;

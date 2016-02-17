@@ -288,7 +288,16 @@ void ChessGame::onResultClaim(const Chess::Result& result)
 	ChessPlayer* sender = qobject_cast<ChessPlayer*>(QObject::sender());
 	Q_ASSERT(sender != 0);
 
-	if (!m_gameInProgress && result.winner().isNull())
+	if (result.type() == Chess::Result::Disconnection)
+	{
+		// The engine may not be properly started so we have to
+		// figure out the player's side this way
+		Chess::Side side(Chess::Side::White);
+		if (m_player[side] != sender)
+			side = Chess::Side::Black;
+		m_result = Chess::Result(result.type(), side.opposite());
+	}
+	else if (!m_gameInProgress && result.winner().isNull())
 	{
 		qWarning("Unexpected result claim from %s: %s",
 			 qPrintable(sender->name()),
