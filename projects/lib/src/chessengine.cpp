@@ -404,7 +404,9 @@ void ChessEngine::write(const QString& data, WriteMode mode)
 			  .arg(m_id)
 			  .arg(data));
 
-	m_ioDevice->write(data.toLatin1() + "\n");
+	if (m_ioDevice->write(data.toLatin1() + "\n") == -1)
+		qDebug("Writing to engine %s(%d) failed",
+		       qPrintable(name()), m_id);
 }
 
 void ChessEngine::onReadyRead()
