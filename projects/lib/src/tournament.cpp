@@ -137,6 +137,11 @@ Sprt* Tournament::sprt() const
 	return m_sprt;
 }
 
+bool Tournament::canSetRoundMultiplier() const
+{
+	return true;
+}
+
 void Tournament::setName(const QString& name)
 {
 	m_name = name;
@@ -167,6 +172,7 @@ void Tournament::setGamesPerEncounter(int count)
 
 void Tournament::setRoundMultiplier(int factor)
 {
+	Q_ASSERT(canSetRoundMultiplier());
 	Q_ASSERT(factor > 0);
 	m_roundMultiplier = factor;
 }

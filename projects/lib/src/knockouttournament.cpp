@@ -29,6 +29,11 @@ QString KnockoutTournament::type() const
 	return "knockout";
 }
 
+bool KnockoutTournament::canSetRoundMultiplier() const
+{
+	return false;
+}
+
 void KnockoutTournament::initializePairing()
 {
 	m_pairs.clear();

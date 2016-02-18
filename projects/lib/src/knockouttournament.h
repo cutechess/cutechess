@@ -37,9 +37,6 @@
  * and the top players would be seeded first (ie. 1st and 2nd seed
  * on different brackets and straight to the second round when
  * possible).
- * - It probably doesn't make sense that the user can set the number
- * of rounds because it should be determined by the number of
- * players.
  * - Code cleanup.
  */
 class LIB_EXPORT KnockoutTournament : public Tournament
@@ -52,6 +49,7 @@ class LIB_EXPORT KnockoutTournament : public Tournament
 					    QObject *parent = 0);
 		// Inherited from Tournament
 		virtual QString type() const;
+		virtual bool canSetRoundMultiplier() const;
 
 	protected:
 		// Inherited from Tournament

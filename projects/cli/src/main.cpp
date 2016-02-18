@@ -361,9 +361,21 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Multiplier for the number of tournament rounds
 		else if (name == "-rounds")
 		{
-			ok = value.toInt() > 0;
-			if (ok)
-				tournament->setRoundMultiplier(value.toInt());
+			if (!tournament->canSetRoundMultiplier())
+			{
+				qWarning("Tournament \"%s\" does not support "
+					 "user-defined round multipliers",
+					 qPrintable(tournament->type()));
+				ok = false;
+			}
+			else
+			{
+				int rounds = value.toInt(&ok);
+				if (rounds <= 0)
+					ok = false;
+				else
+					tournament->setRoundMultiplier(rounds);
+			}
 		}
 		// SPRT-based stopping rule
 		else if (name == "-sprt")

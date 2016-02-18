@@ -144,6 +144,11 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		void setGamesPerEncounter(int count);
 		/*!
+		 * Returns true (default) if the tournament supports
+		 * user-defined round multiplier; otherwise returns false.
+		 */
+		virtual bool canSetRoundMultiplier() const;
+		/*!
 		 * Sets the multiplier for the number of rounds to \a factor.
 		 *
 		 * \a factor must be at least 1.
