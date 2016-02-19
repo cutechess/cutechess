@@ -24,7 +24,6 @@
 #include <tournament.h>
 #include <gamemanager.h>
 #include <sprt.h>
-#include <elo.h>
 
 
 EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
@@ -156,73 +155,7 @@ void EngineMatch::print(const QString& msg)
 	qDebug("%lld %s", m_startTime.elapsed(), qPrintable(msg));
 }
 
-struct RankingData
-{
-	QString name;
-	int games;
-	qreal score;
-	qreal draws;
-	qreal errorMargin;
-};
-
 void EngineMatch::printRanking()
 {
-	QMultiMap<qreal, RankingData> ranking;
-
-	for (int i = 0; i < m_tournament->playerCount(); i++)
-	{
-		Tournament::PlayerData player(m_tournament->playerAt(i));
-		Elo elo(player.wins, player.losses, player.draws);
-
-		if (m_tournament->playerCount() == 2)
-		{
-			qDebug("ELO difference: %.2f +/- %.2f",
-			       elo.diff(),
-			       elo.errorMargin());
-			break;
-		}
-
-		RankingData data = { player.builder->name(),
-				     player.wins + player.losses + player.draws,
-				     elo.pointRatio(),
-				     elo.drawRatio(),
-				     elo.errorMargin() };
-		ranking.insert(-elo.diff(), data);
-	}
-
-	if (!ranking.isEmpty())
-		qDebug("%4s %-25.25s %7s %7s %7s %7s %7s",
-		       "Rank", "Name", "ELO", "+/-", "Games", "Score", "Draws");
-
-	int rank = 0;
-	QMultiMap<qreal, RankingData>::const_iterator it;
-	for (it = ranking.constBegin(); it != ranking.constEnd(); ++it)
-	{
-		const RankingData& data = it.value();
-		qDebug("%4d %-25.25s %7.0f %7.0f %7d %6.0f%% %6.0f%%",
-		       ++rank,
-		       qPrintable(data.name),
-		       -it.key(),
-		       data.errorMargin,
-		       data.games,
-		       data.score * 100.0,
-		       data.draws * 100.0);
-	}
-
-	Sprt::Status sprtStatus = m_tournament->sprt()->status();
-	if (sprtStatus.llr != 0.0
-	||  sprtStatus.lBound != 0.0
-	||  sprtStatus.uBound != 0.0)
-	{
-		QString sprtStr = QString("SPRT: llr %1, lbound %2, ubound %3")
-			.arg(sprtStatus.llr, 0, 'g', 3)
-			.arg(sprtStatus.lBound, 0, 'g', 3)
-			.arg(sprtStatus.uBound, 0, 'g', 3);
-		if (sprtStatus.result == Sprt::AcceptH0)
-			sprtStr.append(" - H0 was accepted");
-		else if (sprtStatus.result == Sprt::AcceptH1)
-			sprtStr.append(" - H1 was accepted");
-
-		qDebug("%s", qPrintable(sprtStr));
-	}
+	qDebug("%s", qPrintable(m_tournament->results()));
 }

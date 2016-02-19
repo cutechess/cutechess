@@ -215,6 +215,11 @@ class LIB_EXPORT Tournament : public QObject
 			       const TimeControl& timeControl,
 			       const OpeningBook* book = 0,
 			       int bookDepth = 256);
+		/*!
+		 * Returns tournament results as a string.
+		 * The default implementation works for most tournament types.
+		 */
+		virtual QString results() const;
 
 	public slots:
 		/*! Starts the tournament. */
@@ -312,6 +317,14 @@ class LIB_EXPORT Tournament : public QObject
 			int number;
 			int whiteIndex;
 			int blackIndex;
+		};
+		struct RankingData
+		{
+			QString name;
+			int games;
+			qreal score;
+			qreal draws;
+			qreal errorMargin;
 		};
 
 		GameManager* m_gameManager;

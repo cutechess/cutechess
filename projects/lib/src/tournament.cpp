@@ -18,6 +18,7 @@
 
 #include "tournament.h"
 #include <QFile>
+#include <QMultiMap>
 #include "gamemanager.h"
 #include "playerbuilder.h"
 #include "board/boardfactory.h"
@@ -26,6 +27,7 @@
 #include "pgnstream.h"
 #include "openingsuite.h"
 #include "sprt.h"
+#include "elo.h"
 
 Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	: QObject(parent),
@@ -487,4 +489,75 @@ void Tournament::stop()
 	m_stopping = true;
 	foreach (ChessGame* game, m_gameData.keys())
 		QMetaObject::invokeMethod(game, "stop", Qt::QueuedConnection);
+}
+
+QString Tournament::results() const
+{
+	QMultiMap<qreal, RankingData> ranking;
+	QString ret;
+
+	for (int i = 0; i < playerCount(); i++)
+	{
+		Tournament::PlayerData player(playerAt(i));
+		Elo elo(player.wins, player.losses, player.draws);
+
+		if (playerCount() == 2)
+		{
+			ret += QString("ELO difference: %1 +/- %2")
+				.arg(elo.diff(), 0, 'f', 2)
+				.arg(elo.errorMargin(), 0, 'f', 2);
+			break;
+		}
+
+		RankingData data = { player.builder->name(),
+				     player.wins + player.losses + player.draws,
+				     elo.pointRatio(),
+				     elo.drawRatio(),
+				     elo.errorMargin() };
+		ranking.insert(-elo.diff(), data);
+	}
+
+	if (!ranking.isEmpty())
+		ret += QString("%1 %2 %3 %4 %5 %6 %7")
+			.arg("Rank", 4)
+			.arg("Name", -25)
+			.arg("ELO", 7)
+			.arg("+/-", 7)
+			.arg("Games", 7)
+			.arg("Score", 7)
+			.arg("Draws", 7);
+
+	int rank = 0;
+	QMultiMap<qreal, RankingData>::const_iterator it;
+	for (it = ranking.constBegin(); it != ranking.constEnd(); ++it)
+	{
+		const RankingData& data = it.value();
+		ret += QString("\n%1 %2 %3 %4 %5 %6% %7%")
+			.arg(++rank, 4)
+			.arg(data.name, -25)
+			.arg(-it.key(), 7, 'f', 0)
+			.arg(data.errorMargin, 7, 'f', 0)
+			.arg(data.games, 7)
+			.arg(data.score * 100.0, 6, 'f', 0)
+			.arg(data.draws * 100.0, 6, 'f', 0);
+	}
+
+	Sprt::Status sprtStatus = sprt()->status();
+	if (sprtStatus.llr != 0.0
+	||  sprtStatus.lBound != 0.0
+	||  sprtStatus.uBound != 0.0)
+	{
+		QString sprtStr = QString("SPRT: llr %1, lbound %2, ubound %3")
+			.arg(sprtStatus.llr, 0, 'g', 3)
+			.arg(sprtStatus.lBound, 0, 'g', 3)
+			.arg(sprtStatus.uBound, 0, 'g', 3);
+		if (sprtStatus.result == Sprt::AcceptH0)
+			sprtStr.append(" - H0 was accepted");
+		else if (sprtStatus.result == Sprt::AcceptH1)
+			sprtStr.append(" - H1 was accepted");
+
+		ret += "\n" + sprtStr;
+	}
+
+	return ret;
 }
