@@ -144,6 +144,10 @@ void MainWindow::createActions()
 	m_saveGameAsAct->setShortcut(QKeySequence::SaveAs);
 
 	m_copyFen = new QAction(tr("Copy FEN"), this);
+	QAction* copyFenSequence = new QAction(m_gameViewer);
+	copyFenSequence->setShortcut(QKeySequence::Copy);
+	copyFenSequence->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+	m_gameViewer->addAction(copyFenSequence);
 
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	#ifdef Q_OS_WIN32
@@ -163,6 +167,7 @@ void MainWindow::createActions()
 
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
 	connect(m_copyFen, SIGNAL(triggered(bool)), this, SLOT(copyFen()));
+	connect(copyFenSequence, SIGNAL(triggered(bool)), this, SLOT(copyFen()));
 	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(closeCurrentGame()));
 	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered(bool)), this, SLOT(saveAs()));
