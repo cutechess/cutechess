@@ -143,7 +143,7 @@ void MainWindow::createActions()
 	m_saveGameAsAct = new QAction(tr("Save &As..."), this);
 	m_saveGameAsAct->setShortcut(QKeySequence::SaveAs);
 
-	m_copyFen = new QAction(tr("Copy FEN"), this);
+	m_copyFenAct = new QAction(tr("Copy FEN"), this);
 	QAction* copyFenSequence = new QAction(m_gameViewer);
 	copyFenSequence->setShortcut(QKeySequence::Copy);
 	copyFenSequence->setShortcutContext(Qt::WidgetWithChildrenShortcut);
@@ -166,7 +166,7 @@ void MainWindow::createActions()
 	m_showGameWallAct = new QAction(tr("Game Wall"), this);
 
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
-	connect(m_copyFen, SIGNAL(triggered(bool)), this, SLOT(copyFen()));
+	connect(m_copyFenAct, SIGNAL(triggered(bool)), this, SLOT(copyFen()));
 	connect(copyFenSequence, SIGNAL(triggered(bool)), this, SLOT(copyFen()));
 	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(closeCurrentGame()));
 	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
@@ -193,7 +193,7 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_closeGameAct);
 	m_gameMenu->addAction(m_saveGameAct);
 	m_gameMenu->addAction(m_saveGameAsAct);
-	m_gameMenu->addAction(m_copyFen);
+	m_gameMenu->addAction(m_copyFenAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 
