@@ -71,6 +71,7 @@ class MainWindow : public QMainWindow
 		void onGameManagerFinished();
 		void onGameStartFailed(ChessGame* game);
 		void editMoveComment(int ply, const QString& comment);
+		void copyFen();
 
 	private:
 		struct TabData
@@ -118,6 +119,7 @@ class MainWindow : public QMainWindow
 		QAction* m_closeGameAct;
 		QAction* m_saveGameAct;
 		QAction* m_saveGameAsAct;
+		QAction* m_copyFen;
 		QAction* m_newTournamentAct;
 		QAction* m_stopTournamentAct;
 		QAction* m_manageEnginesAct;

@@ -28,6 +28,10 @@ class ChessGame;
 class PgnGame;
 class BoardScene;
 class BoardView;
+namespace Chess
+{
+	class Board;
+}
 
 class GameViewer : public QWidget
 {
@@ -40,6 +44,7 @@ class GameViewer : public QWidget
 		void setGame(ChessGame* game);
 		void setGame(const PgnGame* pgn);
 		void disconnectGame();
+		Chess::Board* board() const;
 
 	public slots:
 		void viewMove(int index);

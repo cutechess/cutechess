@@ -184,6 +184,11 @@ void GameViewer::disconnectGame()
 	m_game = 0;
 }
 
+Chess::Board* GameViewer::board() const
+{
+	return m_boardScene->board();
+}
+
 void GameViewer::viewFirstMoveClicked()
 {
 	viewFirstMove();

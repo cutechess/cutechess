@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QClipboard>
 
 #include <board/boardfactory.h>
 #include <chessgame.h>
@@ -142,6 +143,8 @@ void MainWindow::createActions()
 	m_saveGameAsAct = new QAction(tr("Save &As..."), this);
 	m_saveGameAsAct->setShortcut(QKeySequence::SaveAs);
 
+	m_copyFen = new QAction(tr("Copy FEN"), this);
+
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	#ifdef Q_OS_WIN32
 	m_quitGameAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
@@ -159,6 +162,7 @@ void MainWindow::createActions()
 	m_showGameWallAct = new QAction(tr("Game Wall"), this);
 
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
+	connect(m_copyFen, SIGNAL(triggered(bool)), this, SLOT(copyFen()));
 	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(closeCurrentGame()));
 	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered(bool)), this, SLOT(saveAs()));
@@ -184,6 +188,7 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_closeGameAct);
 	m_gameMenu->addAction(m_saveGameAct);
 	m_gameMenu->addAction(m_saveGameAsAct);
+	m_gameMenu->addAction(m_copyFen);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 
@@ -700,6 +705,14 @@ void MainWindow::editMoveComment(int ply, const QString& comment)
 
 		m_moveList->setMove(ply, md.move, md.moveString, text);
 	}
+}
+
+void MainWindow::copyFen()
+{
+	QClipboard* cb = CuteChessApplication::clipboard();
+	QString fen(m_gameViewer->board()->fenString());
+	if (!fen.isEmpty())
+		cb->setText(fen);
 }
 
 void MainWindow::lockCurrentGame()

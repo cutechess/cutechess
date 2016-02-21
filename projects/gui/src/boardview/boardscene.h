@@ -61,6 +61,8 @@ class BoardScene : public QGraphicsScene
 		/*! Destroys the scene and all its items. */
 		~BoardScene();
 
+		/*! Returns the current internal board object. */
+		Chess::Board* board() const;
 		/*!
 		 * Clears the scene and sets \a board as the internal board.
 		 *

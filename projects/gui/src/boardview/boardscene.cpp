@@ -49,6 +49,11 @@ BoardScene::~BoardScene()
 	delete m_board;
 }
 
+Chess::Board* BoardScene::board() const
+{
+	return m_board;
+}
+
 void BoardScene::setBoard(Chess::Board* board)
 {
 	stopAnimation();
