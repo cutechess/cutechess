@@ -64,6 +64,7 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	QCoreApplication::setOrganizationName("cutechess");
 	QCoreApplication::setOrganizationDomain("cutechess.org");
 	QCoreApplication::setApplicationName("cutechess");
+	QCoreApplication::setApplicationVersion(CUTECHESS_VERSION);
 
 	// Use Ini format on all platforms
 	QSettings::setDefaultFormat(QSettings::IniFormat);

@@ -165,6 +165,8 @@ void MainWindow::createActions()
 
 	m_showGameWallAct = new QAction(tr("Game Wall"), this);
 
+	m_aboutAct = new QAction(tr("About CuteChess..."), this);
+
 	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
 	connect(m_copyFenAct, SIGNAL(triggered(bool)), this, SLOT(copyFen()));
 	connect(copyFenSequence, SIGNAL(triggered(bool)), this, SLOT(copyFen()));
@@ -183,6 +185,8 @@ void MainWindow::createActions()
 
 	connect(m_showGameWallAct, SIGNAL(triggered()),
 		CuteChessApplication::instance(), SLOT(showGameWall()));
+
+	connect(m_aboutAct, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 }
 
 void MainWindow::createMenus()
@@ -212,6 +216,7 @@ void MainWindow::createMenus()
 	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
 
 	m_helpMenu = menuBar()->addMenu(tr("&Help"));
+	m_helpMenu->addAction(m_aboutAct);
 }
 
 void MainWindow::createToolBars()
@@ -718,6 +723,23 @@ void MainWindow::copyFen()
 	QString fen(m_gameViewer->board()->fenString());
 	if (!fen.isEmpty())
 		cb->setText(fen);
+}
+
+void MainWindow::showAboutDialog()
+{
+	QString html;
+	html += "<h3>" + QString("CuteChess %1")
+		.arg(CuteChessApplication::applicationVersion()) + "</h3>";
+	html += "<p>" + tr("Using Qt version %1").arg(qVersion()) + "</p>";
+	html += "<p>" + tr("Copyright 2008-2016 "
+			   "Ilari Pihlajisto and Arto Jonsson") + "</p>";
+	html += "<p>" + tr("This is free software; see the source for copying "
+			   "conditions. There is NO warranty; not even for "
+			   "MERCHANTABILITY or FITNESS FOR A PARTICULAR "
+			   "PURPOSE.") + "</p>";
+	html += "<a href=\"http://cutechess.com\">cutechess.com</a><br>";
+
+	QMessageBox::about(this, tr("About CuteChess"), html);
 }
 
 void MainWindow::lockCurrentGame()
