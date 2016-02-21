@@ -167,20 +167,20 @@ void MainWindow::createActions()
 
 	m_aboutAct = new QAction(tr("About CuteChess..."), this);
 
-	connect(m_newGameAct, SIGNAL(triggered(bool)), this, SLOT(newGame()));
-	connect(m_copyFenAct, SIGNAL(triggered(bool)), this, SLOT(copyFen()));
-	connect(copyFenSequence, SIGNAL(triggered(bool)), this, SLOT(copyFen()));
-	connect(m_closeGameAct, SIGNAL(triggered(bool)), this, SLOT(closeCurrentGame()));
-	connect(m_saveGameAct, SIGNAL(triggered(bool)), this, SLOT(save()));
-	connect(m_saveGameAsAct, SIGNAL(triggered(bool)), this, SLOT(saveAs()));
-	connect(m_quitGameAct, SIGNAL(triggered(bool)), qApp, SLOT(closeAllWindows()));
+	connect(m_newGameAct, SIGNAL(triggered()), this, SLOT(newGame()));
+	connect(m_copyFenAct, SIGNAL(triggered()), this, SLOT(copyFen()));
+	connect(copyFenSequence, SIGNAL(triggered()), this, SLOT(copyFen()));
+	connect(m_closeGameAct, SIGNAL(triggered()), this, SLOT(closeCurrentGame()));
+	connect(m_saveGameAct, SIGNAL(triggered()), this, SLOT(save()));
+	connect(m_saveGameAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+	connect(m_quitGameAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
 	connect(m_newTournamentAct, SIGNAL(triggered()), this, SLOT(newTournament()));
 
-	connect(m_manageEnginesAct, SIGNAL(triggered(bool)), this,
-		SLOT(manageEngines()));
+	connect(m_manageEnginesAct, SIGNAL(triggered()),
+		this, SLOT(manageEngines()));
 
-	connect(m_showGameDatabaseWindowAct, SIGNAL(triggered(bool)),
+	connect(m_showGameDatabaseWindowAct, SIGNAL(triggered()),
 		CuteChessApplication::instance(), SLOT(showGameDatabaseDialog()));
 
 	connect(m_showGameWallAct, SIGNAL(triggered()),
