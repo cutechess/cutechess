@@ -59,13 +59,13 @@ class LIB_EXPORT PgnGameEntry
 		void clear();
 		/*!
 		 * Reads an entry from a PGN stream.
-		 * Returns true if successfull.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool read(PgnStream& in);
 
 		/*!
 		 * Reads an entry from data stream.
-		 * Returns true if successfull.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool read(QDataStream& in);
 

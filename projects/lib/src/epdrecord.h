@@ -48,7 +48,7 @@ class LIB_EXPORT EpdRecord
 
 		/*!
 		 * Reads and parses a record from \a stream.
-		 * Returns true if successfull; otherwise returns false.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool parse(QTextStream& stream);
 		/*!

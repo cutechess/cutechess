@@ -92,7 +92,7 @@ class LIB_EXPORT OpeningSuite
 		 * openings are parsed from the file, which could take some
 		 * time if the file is large.
 		 *
-		 * Returns true if successfull; otherwise returns false.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool initialize();
 		/*!

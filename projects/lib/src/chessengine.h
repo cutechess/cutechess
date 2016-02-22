@@ -166,7 +166,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		/*!
 		 * Sends a ping command to the engine.
-		 * \return True if successfull
+		 * Returns true if successful; otherwise returns false.
 		 */
 		virtual bool sendPing() = 0;
 

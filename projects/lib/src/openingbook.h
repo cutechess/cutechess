@@ -81,13 +81,13 @@ class LIB_EXPORT OpeningBook
 
 		/*!
 		 * Reads a book from \a filename.
-		 * Returns true if successfull.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool read(const QString& filename);
 
 		/*!
 		 * Writes the book to \a filename.
-		 * Returns true if successfull.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool write(const QString& filename) const;
 

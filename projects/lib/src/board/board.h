@@ -170,7 +170,7 @@ class LIB_EXPORT Board
 		 * The \a fen string can be in standard FEN, X-FEN or
 		 * Shredder FEN notation.
 		 *
-		 * Returns true if successfull.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool setFenString(const QString& fen);
 		/*!

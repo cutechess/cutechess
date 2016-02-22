@@ -111,7 +111,7 @@ class LIB_EXPORT PgnGame
 		/*!
 		 * Writes the game to a text stream.
 		 *
-		 * Returns true if successfull.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool write(QTextStream& out, PgnMode mode = Verbose) const;
 		/*!
@@ -119,7 +119,7 @@ class LIB_EXPORT PgnGame
 		 * If the file already exists, the game will be appended
 		 * to the end of the file.
 		 *
-		 * Returns true if successfull.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool write(const QString& filename, PgnMode mode = Verbose) const;
 		

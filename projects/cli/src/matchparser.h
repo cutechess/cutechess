@@ -85,7 +85,7 @@ class MatchParser
 		QList<Option> options() const;
 		/*!
 		 * Parses the command line arguments.
-		 * Returns true if successfull.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool parse();
 

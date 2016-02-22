@@ -56,7 +56,7 @@ class LIB_EXPORT GaviotaTablebase
 		/*!
 		 * Initializes the tablebases.
 		 *
-		 * Returns true if successfull; otherwise returns false.
+		 * Returns true if successful; otherwise returns false.
 		 *
 		 * The tablebases should be located in the directories listed
 		 * in \a paths.

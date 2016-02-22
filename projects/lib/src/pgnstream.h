@@ -115,7 +115,7 @@ class LIB_EXPORT PgnStream
 		QString variant() const;
 		/*!
 		 * Sets the chess variant to \a variant.
-		 * Returns true if successfull.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool setVariant(const QString& variant);
 
@@ -151,7 +151,7 @@ class LIB_EXPORT PgnStream
 		/*!
 		 * Seeks to position \a pos in the device, and sets the current
 		 * line number to \a lineNumber.
-		 * Returns true if successfull.
+		 * Returns true if successful; otherwise returns false.
 		 */
 		bool seek(qint64 pos, qint64 lineNumber = 1);
 
