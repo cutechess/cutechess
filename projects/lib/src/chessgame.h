@@ -121,6 +121,7 @@ class LIB_EXPORT ChessGame : public QObject
 		bool m_finished;
 		bool m_gameInProgress;
 		bool m_paused;
+		bool m_pgnInitialized;
 		QString m_error;
 		QString m_startingFen;
 		Chess::Result m_result;

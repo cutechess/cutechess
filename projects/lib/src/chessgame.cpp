@@ -30,6 +30,7 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	  m_finished(false),
 	  m_gameInProgress(false),
 	  m_paused(false),
+	  m_pgnInitialized(false),
 	  m_pgn(pgn)
 {
 	Q_ASSERT(pgn != 0);
@@ -116,6 +117,7 @@ void ChessGame::stop(bool emitMoveChanged)
 		return;
 	}
 	
+	initializePgn();
 	m_gameInProgress = false;
 	const QVector<PgnGame::MoveData>& moves(m_pgn->moves());
 	int plies = moves.size();
@@ -581,6 +583,10 @@ void ChessGame::resume()
 
 void ChessGame::initializePgn()
 {
+	if (m_pgnInitialized)
+		return;
+	m_pgnInitialized = true;
+
 	m_pgn->setVariant(m_board->variant());
 	m_pgn->setStartingFenString(m_board->startingSide(), m_startingFen);
 	m_pgn->setDate(QDate::currentDate());
