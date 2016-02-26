@@ -322,8 +322,16 @@ bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
 	if (m_pgnFile.fileName().isEmpty())
 		return true;
 
-	if (!m_pgnFile.isOpen())
+	bool isOpen = m_pgnFile.isOpen();
+	if (!isOpen || !m_pgnFile.exists())
 	{
+		if (isOpen)
+		{
+			qWarning("PGN file %s does not exist. Reopening...",
+				 qPrintable(m_pgnFile.fileName()));
+			m_pgnFile.close();
+		}
+
 		if (!m_pgnFile.open(QIODevice::WriteOnly | QIODevice::Append))
 		{
 			qWarning("Could not open PGN file %s",
@@ -333,14 +341,20 @@ bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
 		m_pgnOut.setDevice(&m_pgnFile);
 	}
 
+	bool ok = true;
 	m_pgnGames[gameNumber] = *pgn;
 	while (m_pgnGames.contains(m_savedGameCount + 1))
 	{
 		PgnGame tmp = m_pgnGames.take(++m_savedGameCount);
-		tmp.write(m_pgnOut, m_pgnOutMode);
+		if (!tmp.write(m_pgnOut, m_pgnOutMode)
+		||  m_pgnFile.error() != QFile::NoError)
+		{
+			ok = false;
+			qWarning("Could not write PGN game %d", m_savedGameCount);
+		}
 	}
 
-	return true;
+	return ok;
 }
 
 void Tournament::onGameStarted(ChessGame* game)

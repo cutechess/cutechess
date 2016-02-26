@@ -315,7 +315,7 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 
 	out.flush();
 
-	return true;
+	return (out.status() == QTextStream::Ok);
 }
 
 bool PgnGame::write(const QString& filename, PgnMode mode) const
