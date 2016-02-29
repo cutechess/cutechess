@@ -383,6 +383,11 @@ void Tournament::onGameFinished(ChessGame* game)
 	int gameNumber = data->number;
 	Sprt::GameResult sprtResult = Sprt::NoResult;
 
+	PlayerBuilder* whiteBuilder(m_players[data->whiteIndex].builder);
+	PlayerBuilder* blackBuilder(m_players[data->blackIndex].builder);
+	whiteBuilder->setName(pgn->playerName(Chess::Side::White));
+	blackBuilder->setName(pgn->playerName(Chess::Side::Black));
+
 	switch (game->result().winner())
 	{
 	case Chess::Side::White:
