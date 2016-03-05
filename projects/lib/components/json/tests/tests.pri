@@ -1,4 +1,9 @@
 win32:config += CONSOLE
+
+mac {
+	CONFIG -= app_bundle
+}
+
 QT = core testlib
 DEFINES += LIB_EXPORT=""
 
