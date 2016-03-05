@@ -448,9 +448,7 @@ void Tournament::onGameDestroyed(ChessGame* game)
 		return;
 
 	m_lastGame = 0;
-	m_gameManager->cleanupIdleThreads();
-	m_finished = true;
-	emit finished();
+	onFinished();
 }
 
 void Tournament::onGameStartFailed(ChessGame* game)
@@ -462,6 +460,13 @@ void Tournament::onGameStartFailed(ChessGame* game)
 	m_gameData.remove(game);
 
 	stop();
+}
+
+void Tournament::onFinished()
+{
+	m_gameManager->cleanupIdleThreads();
+	m_finished = true;
+	emit finished();
 }
 
 void Tournament::start()
@@ -499,9 +504,7 @@ void Tournament::stop()
 
 	if (m_gameData.isEmpty())
 	{
-		m_gameManager->cleanupIdleThreads();
-		m_finished = true;
-		emit finished();
+		onFinished();
 		return;
 	}
 

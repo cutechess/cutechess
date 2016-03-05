@@ -38,6 +38,8 @@
  * on different brackets and straight to the second round when
  * possible).
  * - Code cleanup.
+ * - Concurrency > 1 can break things by starting the next round
+ * before the previous round has ended.
  */
 class LIB_EXPORT KnockoutTournament : public Tournament
 {
@@ -50,15 +52,27 @@ class LIB_EXPORT KnockoutTournament : public Tournament
 		// Inherited from Tournament
 		virtual QString type() const;
 		virtual bool canSetRoundMultiplier() const;
+		virtual QString results() const;
 
 	protected:
 		// Inherited from Tournament
 		virtual void initializePairing();
 		virtual int gamesPerCycle() const;
 		virtual QPair<int, int> nextPair();
+		virtual void onFinished();
 
 	private:
-		QList< QPair<int, int> > m_pairs;
+		struct KnockoutPlayer
+		{
+			int index;
+			int score;
+		};
+		typedef QPair<KnockoutPlayer, KnockoutPlayer> Pair;
+
+		QList<KnockoutPlayer> lastRoundWinners();
+
+		QList< QList<Pair> > m_rounds;
+		QMap<int, int> m_playerScore;
 		int m_currentPair;
 };
 

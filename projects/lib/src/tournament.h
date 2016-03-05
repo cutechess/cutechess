@@ -302,6 +302,13 @@ class LIB_EXPORT Tournament : public QObject
 		 * to make the tournament as fair as possible.
 		 */
 		virtual QPair<int, int> nextPair() = 0;
+		/*!
+		 * Emits the \a finished() signal.
+		 *
+		 * Subclasses can reimplement this method to add their own
+		 * cleanup and finalization routines when the tournament ends.
+		 */
+		virtual void onFinished();
 
 	private slots:
 		void startNextGame();
