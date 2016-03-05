@@ -1,5 +1,5 @@
 win32:config += CONSOLE
-QT += testlib
+QT = core testlib
 DEFINES += LIB_EXPORT=""
 
 include(../src/json.pri)

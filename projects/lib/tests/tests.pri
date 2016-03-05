@@ -1,7 +1,7 @@
 TEMPLATE = app
 
 win32:config += CONSOLE
-QT += testlib
+QT = core testlib
 
 include(../lib.pri)
 include(../libexport.pri)
