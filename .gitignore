@@ -7,6 +7,10 @@ cutechess-cli.exe
 
 # test executables
 tst_board
+tst_gtb
+tst_sprt
+tst_mersenne
+tst_pipereader
 tst_jsonparser
 tst_jsonserializer
 
