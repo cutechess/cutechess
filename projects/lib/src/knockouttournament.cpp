@@ -136,23 +136,22 @@ QPair<int, int> KnockoutTournament::nextPair()
 	// Start new round
 	if (m_currentPair >= lastRound.size())
 	{
+		// All of the previous round's games must finish before a new
+		// round can begin.
+		if (gamesInProgress() > 0)
+			return qMakePair(-1, -1);
+
 		QList<KnockoutPlayer> winners(lastRoundWinners());
-		if (winners.count() <= 1)
+		Q_ASSERT(winners.count() > 1);
+
+		QList<Pair> nextRound;
+		for (int i = 0; i < winners.count(); i += 2)
 		{
-			initializePairing();
-			setCurrentRound(1);
+			nextRound << qMakePair(winners.at(i), winners.at(i + 1));
 		}
-		else
-		{
-			QList<Pair> nextRound;
-			for (int i = 0; i < winners.count(); i += 2)
-			{
-				nextRound << qMakePair(winners.at(i), winners.at(i + 1));
-			}
-			m_rounds << nextRound;
-			m_currentPair = 0;
-			setCurrentRound(currentRound() + 1);
-		}
+		m_rounds << nextRound;
+		m_currentPair = 0;
+		setCurrentRound(currentRound() + 1);
 	}
 
 	const Pair& pair(m_rounds.last().at(m_currentPair++));

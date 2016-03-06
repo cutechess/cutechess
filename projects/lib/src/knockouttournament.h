@@ -28,8 +28,6 @@
  * determined by the number of players.
  *
  * TODO:
- * - The current ratings table is not suitable, show tournament
- * brackets instead.
  * - In a drawn encounter the first player advances, which is not
  * fair. Setting a high enough gamesPerEncounter() value mitigates
  * this problem, but not completely.
@@ -38,8 +36,8 @@
  * on different brackets and straight to the second round when
  * possible).
  * - Code cleanup.
- * - Concurrency > 1 can break things by starting the next round
- * before the previous round has ended.
+ * - The scores aren't up-to-date when using the "-ratinginterval" option to
+ * display current scores in the middle of a tournament.
  */
 class LIB_EXPORT KnockoutTournament : public Tournament
 {

@@ -166,6 +166,11 @@ void Tournament::setCurrentRound(int round)
 	m_round = round;
 }
 
+int Tournament::gamesInProgress() const
+{
+	return m_nextGameNumber - m_finishedGameCount;
+}
+
 void Tournament::setGamesPerEncounter(int count)
 {
 	Q_ASSERT(count > 0);
@@ -245,6 +250,8 @@ void Tournament::startNextGame()
 	if (m_nextGameNumber % m_gamesPerEncounter == 0)
 	{
 		m_pair = nextPair();
+		if (m_pair.first == -1 || m_pair.second == -1)
+			return;
 
 		if (m_players.size() > 2)
 		{
@@ -255,6 +262,7 @@ void Tournament::startNextGame()
 	else
 		m_pair = qMakePair(m_pair.second, m_pair.first);
 
+	Q_ASSERT(m_pair.first >= 0 && m_pair.second >= 0);
 	PlayerData& white = m_players[m_pair.first];
 	PlayerData& black = m_players[m_pair.second];
 

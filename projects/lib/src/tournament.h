@@ -275,6 +275,8 @@ class LIB_EXPORT Tournament : public QObject
 	protected:
 		/*! Sets the currently executing tournament round to \a round. */
 		void setCurrentRound(int round);
+		/*! Returns the number of games in progress. */
+		int gamesInProgress() const;
 		/*!
 		 * Initializes the pairings for the tournament.
 		 *
@@ -300,6 +302,9 @@ class LIB_EXPORT Tournament : public QObject
 		 * setCurrentRound() to increase the round when needed.
 		 * Subclasses should also alternate the colors when needed,
 		 * to make the tournament as fair as possible.
+		 *
+		 * Sublasses can return \a (-1, -1) if the next game
+		 * should not be started yet.
 		 */
 		virtual QPair<int, int> nextPair() = 0;
 		/*!
