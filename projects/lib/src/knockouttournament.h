@@ -36,8 +36,8 @@
  * on different brackets and straight to the second round when
  * possible).
  * - Code cleanup.
- * - The scores aren't up-to-date when using the "-ratinginterval" option to
- * display current scores in the middle of a tournament.
+ * - Even though scores are now always up-to-date, they shouldn't show a
+ * winner for a match when it's still in progress.
  */
 class LIB_EXPORT KnockoutTournament : public Tournament
 {
@@ -58,6 +58,7 @@ class LIB_EXPORT KnockoutTournament : public Tournament
 		virtual int gamesPerCycle() const;
 		virtual QPair<int, int> nextPair();
 		virtual void onFinished();
+		virtual void addScore(int player, int score);
 
 	private:
 		struct KnockoutPlayer
@@ -67,7 +68,7 @@ class LIB_EXPORT KnockoutTournament : public Tournament
 		};
 		typedef QPair<KnockoutPlayer, KnockoutPlayer> Pair;
 
-		QList<KnockoutPlayer> lastRoundWinners();
+		QList<KnockoutPlayer> lastRoundWinners() const;
 
 		QList< QList<Pair> > m_rounds;
 		QMap<int, int> m_playerScore;

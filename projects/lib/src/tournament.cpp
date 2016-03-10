@@ -365,6 +365,25 @@ bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
 	return ok;
 }
 
+void Tournament::addScore(int player, int score)
+{
+	switch (score)
+	{
+	case 0:
+		m_players[player].losses++;
+		break;
+	case 1:
+		m_players[player].draws++;
+		break;
+	case 2:
+		m_players[player].wins++;
+		break;
+	default:
+		qFatal("Unreachable");
+		break;
+	}
+}
+
 void Tournament::onGameStarted(ChessGame* game)
 {
 	Q_ASSERT(game != 0);
@@ -399,20 +418,20 @@ void Tournament::onGameFinished(ChessGame* game)
 	switch (game->result().winner())
 	{
 	case Chess::Side::White:
-		m_players[data->whiteIndex].wins++;
-		m_players[data->blackIndex].losses++;
+		addScore(data->whiteIndex, 2);
+		addScore(data->blackIndex, 0);
 		sprtResult = (data->whiteIndex == 0) ? Sprt::Win : Sprt::Loss;
 		break;
 	case Chess::Side::Black:
-		m_players[data->blackIndex].wins++;
-		m_players[data->whiteIndex].losses++;
+		addScore(data->blackIndex, 2);
+		addScore(data->whiteIndex, 0);
 		sprtResult = (data->blackIndex == 0) ? Sprt::Win : Sprt::Loss;
 		break;
 	default:
 		if (game->result().isDraw())
 		{
-			m_players[data->whiteIndex].draws++;
-			m_players[data->blackIndex].draws++;
+			addScore(data->whiteIndex, 1);
+			addScore(data->blackIndex, 1);
 			sprtResult = Sprt::Draw;
 		}
 		break;

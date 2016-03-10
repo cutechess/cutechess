@@ -95,35 +95,48 @@ int KnockoutTournament::gamesPerCycle() const
 	return total;
 }
 
-QList<KnockoutTournament::KnockoutPlayer> KnockoutTournament::lastRoundWinners()
+void KnockoutTournament::addScore(int player, int score)
 {
-	QList<KnockoutPlayer> winners;
 	QList<Pair>& lastRound(m_rounds.last());
-
 	QList<Pair>::iterator it;
 	for (it = lastRound.begin(); it != lastRound.end(); ++it)
 	{
+		if (it->first.index == player)
+		{
+			it->first.score += score;
+			break;
+		}
+		if (it->second.index == player)
+		{
+			it->second.score += score;
+			break;
+		}
+	}
+
+	Tournament::addScore(player, score);
+}
+
+QList<KnockoutTournament::KnockoutPlayer> KnockoutTournament::lastRoundWinners() const
+{
+	QList<KnockoutPlayer> winners;
+	const QList<Pair>& lastRound(m_rounds.last());
+
+	QList<Pair>::const_iterator it;
+	for (it = lastRound.constBegin(); it != lastRound.constEnd(); ++it)
+	{
+		KnockoutPlayer winner;
+		winner.score = 0;
+
 		if (it->second.index == -1)
-			winners.append(it->first);
+			winner.index = it->first.index;
 		else
 		{
-			int i1 = it->first.index;
-			int i2 = it->second.index;
-			PlayerData p1(playerAt(i1));
-			int s1 = p1.wins * 2 + p1.draws;
-			PlayerData p2(playerAt(i2));
-			int s2 = p2.wins * 2 + p2.draws;
-
-			it->first.score = s1 - m_playerScore[i1];
-			it->second.score = s2 - m_playerScore[i2];
-			m_playerScore[i1] = s1;
-			m_playerScore[i2] = s2;
-
 			if (it->first.score >= it->second.score)
-				winners.append(it->first);
+				winner.index = it->first.index;
 			else
-				winners.append(it->second);
+				winner.index = it->second.index;
 		}
+		winners << winner;
 	}
 
 	return winners;

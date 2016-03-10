@@ -314,6 +314,14 @@ class LIB_EXPORT Tournament : public QObject
 		 * cleanup and finalization routines when the tournament ends.
 		 */
 		virtual void onFinished();
+		/*!
+		 * Adds \a score points to player at index \a player.
+		 *
+		 * This member function is called when a game ends with a
+		 * 1-0, 0-1 or 1/2-1/2 result. Subclasses can reimplement this
+		 * to do their own score tracking.
+		 */
+		virtual void addScore(int player, int score);
 
 	private slots:
 		void startNextGame();
