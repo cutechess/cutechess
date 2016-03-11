@@ -216,8 +216,8 @@ QString KnockoutTournament::results() const
 					.arg(pair.first.score);
 			}
 			int r = round + 1;
-			int lineNum = (std::pow(2, r) - 1) +
-				      (x * std::pow(2, r + 1));
+			int lineNum = (std::pow((double)2, r) - 1) +
+				      (x * std::pow((double)2, r + 1));
 			QString text = QString(r * 2, '\t');
 			text += playerAt(winner).builder->name();
 			if (score != "0-0")
