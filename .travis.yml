@@ -6,7 +6,7 @@ compiler:
 
 os: linux
 sudo: required
-dist: precise
+dist: trusty
 
 env:
   - QT_BASE=53
@@ -18,9 +18,9 @@ branches:
     - master
 
 before_install:
-  - if [ "$QT_BASE" = "53" ]; then sudo add-apt-repository ppa:beineri/opt-qt532 -y; fi
-  - if [ "$QT_BASE" = "54" ]; then sudo add-apt-repository ppa:beineri/opt-qt542 -y; fi
-  - if [ "$QT_BASE" = "55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551 -y; fi
+  - if [ "$QT_BASE" = "53" ]; then sudo add-apt-repository ppa:beineri/opt-qt532-trusty -y; fi
+  - if [ "$QT_BASE" = "54" ]; then sudo add-apt-repository ppa:beineri/opt-qt542-trusty -y; fi
+  - if [ "$QT_BASE" = "55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551-trusty -y; fi
   - sudo apt-get update -qq
 
 install:
