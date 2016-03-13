@@ -124,6 +124,11 @@ class LIB_EXPORT Tournament : public QObject
 		/*! Returns the number of participants in the tournament. */
 		int playerCount() const;
 		/*!
+		 * Returns the maximum number of players that can be seeded
+		 * in the tournament.
+		 */
+		int seedCount() const;
+		/*!
 		 * Returns the SPRT object of this tournament.
 		 *
 		 * Initializing \a sprt makes this tournament to use it as a
@@ -202,6 +207,11 @@ class LIB_EXPORT Tournament : public QObject
 		 * rounds; otherwise each game gets its own opening.
 		 */
 		void setOpeningRepetition(bool repeat);
+		/*!
+		 * Sets the maximum number of players that should be seeded in
+		 * the tournament.
+		 */
+		void setSeedCount(int seedCount);
 		/*!
 		 * Adds player \a builder to the tournament.
 		 *
@@ -362,6 +372,7 @@ class LIB_EXPORT Tournament : public QObject
 		int m_roundMultiplier;
 		int m_startDelay;
 		int m_openingDepth;
+		int m_seedCount;
 		bool m_stopping;
 		bool m_repeatOpening;
 		bool m_recover;

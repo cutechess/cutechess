@@ -43,6 +43,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_roundMultiplier(1),
 	  m_startDelay(0),
 	  m_openingDepth(1024),
+	  m_seedCount(0),
 	  m_stopping(false),
 	  m_repeatOpening(false),
 	  m_recover(false),
@@ -134,6 +135,11 @@ int Tournament::playerCount() const
 	return m_players.size();
 }
 
+int Tournament::seedCount() const
+{
+	return m_seedCount;
+}
+
 Sprt* Tournament::sprt() const
 {
 	return m_sprt;
@@ -209,6 +215,11 @@ void Tournament::setOpeningSuite(OpeningSuite *suite)
 void Tournament::setOpeningDepth(int plies)
 {
 	m_openingDepth = plies;
+}
+
+void Tournament::setSeedCount(int seedCount)
+{
+	m_seedCount = seedCount;
 }
 
 void Tournament::setPgnOutput(const QString& fileName, PgnGame::PgnMode mode)

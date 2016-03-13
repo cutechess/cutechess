@@ -16,8 +16,15 @@
 */
 
 #include "knockouttournament.h"
-#include <cmath>
 #include "playerbuilder.h"
+#include "mersenne.h"
+
+
+KnockoutTournament::KnockoutPlayer::KnockoutPlayer(int index, int score)
+	: index(index),
+	  score(score)
+{
+}
 
 KnockoutTournament::KnockoutTournament(GameManager* gameManager,
 				       QObject *parent)
@@ -36,42 +43,82 @@ bool KnockoutTournament::canSetRoundMultiplier() const
 	return false;
 }
 
+int KnockoutTournament::playerSeed(int rank, int bracketSize)
+{
+	if (rank <= 1)
+		return 0;
+
+	// If our rank is even we need to put the player into the right bracket
+	// so we add half the bracket size to his position and make a recursive
+	// call with half the rank and half the bracket size.
+	if (rank % 2 == 0)
+		return bracketSize / 2 + playerSeed(rank / 2, bracketSize / 2);
+
+	// If the rank is uneven, we put the player in the left bracket.
+	// Since rank is uneven we need to add + 1 so that it stays uneven.
+	return playerSeed(rank / 2 + 1, bracketSize / 2);
+}
+
+QList<KnockoutTournament::KnockoutPlayer> KnockoutTournament::firstRoundPlayers() const
+{
+	QList<KnockoutPlayer> players;
+	int n(playerCount());
+	int seedCount = qMin(this->seedCount(), n);
+
+	for (int i = 0; i < seedCount; i++)
+		players << KnockoutPlayer(i);
+
+	QList<KnockoutPlayer> unseeded;
+	for (int i = seedCount; i < n; i++)
+	{
+		unseeded << KnockoutPlayer(i);
+	}
+
+	while (!unseeded.isEmpty())
+	{
+		int i = Mersenne::random() % unseeded.size();
+		players << unseeded.takeAt(i);
+	}
+
+	return players;
+}
+
 void KnockoutTournament::initializePairing()
 {
-	QList<Pair> pairs;
-
 	m_playerScore.clear();
 	m_currentPair = 0;
 	int x = 1;
 	while (x < playerCount())
 		x *= 2;
-	int player = 0;
-	for (int i = 0; i < (x - playerCount()); i++)
+	QVector<KnockoutPlayer> all = QVector<KnockoutPlayer>(x);
+
+	QList<KnockoutPlayer> players(firstRoundPlayers());
+	int byeCount = x - players.size();
+	for (int i = 0; i < byeCount; i++)
+		players << KnockoutPlayer();
+
+	int byes = 0;
+	for (int i = 0; i < players.size(); i++)
 	{
-		KnockoutPlayer first =
+		int index = playerSeed(i + 1, x);
+		KnockoutPlayer player(players.at(i));
+
+		// Pair BYEs with top-seeded players
+		if (player.index == -1)
 		{
-			player++,
-			0
-		};
-		KnockoutPlayer second =
-		{
-			-1,
-			0
-		};
-		pairs.append(qMakePair(first, second));
+			int byeIndex = playerSeed(++byes, x) + 1;
+			all[index] = all.at(byeIndex);
+			all[byeIndex] = player;
+		}
+		else
+			all[index] = player;
 	}
-	for (int i = player; i < playerCount(); i += 2)
+
+	QList<Pair> pairs;
+	for (int i = 0; i < x; i += 2)
 	{
-		KnockoutPlayer first =
-		{
-			i,
-			0
-		};
-		KnockoutPlayer second =
-		{
-			i + 1,
-			0
-		};
+		KnockoutPlayer first(all.at(i));
+		KnockoutPlayer second(all.at(i + 1));
 		pairs.append(qMakePair(first, second));
 	}
 
@@ -125,7 +172,6 @@ QList<KnockoutTournament::KnockoutPlayer> KnockoutTournament::lastRoundWinners()
 	for (it = lastRound.constBegin(); it != lastRound.constEnd(); ++it)
 	{
 		KnockoutPlayer winner;
-		winner.score = 0;
 
 		if (it->second.index == -1)
 			winner.index = it->first.index;
@@ -216,8 +262,8 @@ QString KnockoutTournament::results() const
 					.arg(pair.first.score);
 			}
 			int r = round + 1;
-			int lineNum = (std::pow((double)2, r) - 1) +
-				      (x * std::pow((double)2, r + 1));
+			int lineNum = ((2 << (r - 1)) - 1) +
+				      (x * (2 << r));
 			QString text = QString(r * 2, '\t');
 			text += playerAt(winner).builder->name();
 			if (score != "0-0")

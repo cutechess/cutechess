@@ -255,6 +255,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-recover", QVariant::Bool, 0, 0);
 	parser.addOption("-site", QVariant::String, 1, 1);
 	parser.addOption("-wait", QVariant::Int, 1, 1);
+	parser.addOption("-seeds", QVariant::UInt, 1, 1);
 	if (!parser.parse())
 		return 0;
 
@@ -484,6 +485,13 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			ok = value.toInt() >= 0;
 			if (ok)
 				tournament->setStartDelay(value.toInt());
+		}
+		// How many players should be seeded?
+		else if (name == "-seeds")
+		{
+			uint seedCount = value.toUInt(&ok);
+			if (ok)
+				tournament->setSeedCount(seedCount);
 		}
 		else
 			qFatal("Unknown argument: \"%s\"", qPrintable(name));

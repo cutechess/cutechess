@@ -31,10 +31,6 @@
  * - In a drawn encounter the first player advances, which is not
  * fair. Setting a high enough gamesPerEncounter() value mitigates
  * this problem, but not completely.
- *- It should be possible to enter a starting ELO for each player,
- * and the top players would be seeded first (ie. 1st and 2nd seed
- * on different brackets and straight to the second round when
- * possible).
  * - Code cleanup.
  * - Even though scores are now always up-to-date, they shouldn't show a
  * winner for a match when it's still in progress.
@@ -61,13 +57,17 @@ class LIB_EXPORT KnockoutTournament : public Tournament
 		virtual void addScore(int player, int score);
 
 	private:
-		struct KnockoutPlayer
+		class KnockoutPlayer
 		{
-			int index;
-			int score;
+			public:
+				KnockoutPlayer(int index = -1, int score = 0);
+				int index;
+				int score;
 		};
 		typedef QPair<KnockoutPlayer, KnockoutPlayer> Pair;
 
+		static int playerSeed(int rank, int bracketSize);
+		QList<KnockoutPlayer> firstRoundPlayers() const;
 		QList<KnockoutPlayer> lastRoundWinners() const;
 
 		QList< QList<Pair> > m_rounds;
