@@ -48,8 +48,13 @@ int RoundRobinTournament::gamesPerCycle() const
 	return (playerCount() * (playerCount() - 1)) / 2;
 }
 
-QPair<int, int> RoundRobinTournament::nextPair()
+TournamentPair RoundRobinTournament::nextPair(int gameNumber)
 {
+	if (gameNumber >= finalGameCount())
+		return TournamentPair();
+	if (gameNumber % gamesPerEncounter() != 0)
+		return currentPair();
+
 	if (m_pairNumber >= m_topHalf.size())
 	{
 		m_pairNumber = 0;
@@ -72,7 +77,7 @@ QPair<int, int> RoundRobinTournament::nextPair()
 	// makes the pairings easier to organize. In that case
 	// no game is played and we skip to the next pair.
 	if (white < playerCount() && black < playerCount())
-		return qMakePair(white, black);
+		return TournamentPair(white, black);
 	else
-		return nextPair();
+		return nextPair(gameNumber);
 }

@@ -20,7 +20,6 @@
 #define TOURNAMENT_H
 
 #include <QObject>
-#include <QPair>
 #include <QList>
 #include <QVector>
 #include <QMap>
@@ -30,6 +29,8 @@
 #include "timecontrol.h"
 #include "pgngame.h"
 #include "gameadjudicator.h"
+#include "tournamentplayer.h"
+#include "tournamentpair.h"
 class GameManager;
 class PlayerBuilder;
 class ChessGame;
@@ -45,25 +46,6 @@ class LIB_EXPORT Tournament : public QObject
 	Q_OBJECT
 
 	public:
-		/*! \brief A structure for storing player details. */
-		struct PlayerData
-		{
-			//! The player's builder object
-			PlayerBuilder* builder;
-			//! The player's time control
-			TimeControl timeControl;
-			//! The player's opening book
-			const OpeningBook* book;
-			//! The maximum book depth in plies
-			int bookDepth;
-			//! The number of games won by the player
-			int wins;
-			//! The number of games drawn by the player
-			int draws;
-			//! The number of games lost by the player
-			int losses;
-		};
-
 		/*!
 		 * Creates a new tournament that uses \a gameManager
 		 * to manage the games.
@@ -120,7 +102,7 @@ class LIB_EXPORT Tournament : public QObject
 		/*! Returns the total number of games that will be played. */
 		int finalGameCount() const;
 		/*! Returns player data for the player at \a index. */
-		PlayerData playerAt(int index) const;
+		const TournamentPlayer& playerAt(int index) const;
 		/*! Returns the number of participants in the tournament. */
 		int playerCount() const;
 		/*!
@@ -287,6 +269,8 @@ class LIB_EXPORT Tournament : public QObject
 		void setCurrentRound(int round);
 		/*! Returns the number of games in progress. */
 		int gamesInProgress() const;
+		/*! Returns the pair that started the last game. */
+		TournamentPair currentPair() const;
 		/*!
 		 * Initializes the pairings for the tournament.
 		 *
@@ -316,7 +300,7 @@ class LIB_EXPORT Tournament : public QObject
 		 * Sublasses can return \a (-1, -1) if the next game
 		 * should not be started yet.
 		 */
-		virtual QPair<int, int> nextPair() = 0;
+		virtual TournamentPair nextPair(int gameNumber) = 0;
 		/*!
 		 * Emits the \a finished() signal.
 		 *
@@ -332,6 +316,18 @@ class LIB_EXPORT Tournament : public QObject
 		 * to do their own score tracking.
 		 */
 		virtual void addScore(int player, int score);
+		/*!
+		 * Returns true if all games in the tournament have finished;
+		 * otherwise returns false.
+		 */
+		virtual bool areAllGamesFinished() const;
+		/*!
+		 * This member function is called by \a startNextGame() to
+		 * start a new tournament game between \a pair.
+		 *
+		 * Reimplementations should call the base implementation.
+		 */
+		virtual void startGame(const TournamentPair& pair);
 
 	private slots:
 		void startNextGame();
@@ -385,8 +381,8 @@ class LIB_EXPORT Tournament : public QObject
 		QTextStream m_pgnOut;
 		QString m_startFen;
 		PgnGame::PgnMode m_pgnOutMode;
-		QPair<int, int> m_pair;
-		QList<PlayerData> m_players;
+		TournamentPair m_pair;
+		QList<TournamentPlayer> m_players;
 		QMap<int, PgnGame> m_pgnGames;
 		QMap<ChessGame*, GameData*> m_gameData;
 		QVector<Chess::Move> m_openingMoves;

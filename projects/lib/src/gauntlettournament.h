@@ -41,7 +41,7 @@ class LIB_EXPORT GauntletTournament : public Tournament
 		// Inherited from Tournament
 		virtual void initializePairing();
 		virtual int gamesPerCycle() const;
-		virtual QPair<int, int> nextPair();
+		virtual TournamentPair nextPair(int gameNumber);
 
 	private:
 		int m_opponent;

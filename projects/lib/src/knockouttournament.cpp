@@ -16,20 +16,14 @@
 */
 
 #include "knockouttournament.h"
+#include <QStringList>
 #include "playerbuilder.h"
 #include "mersenne.h"
 
 
-KnockoutTournament::KnockoutPlayer::KnockoutPlayer(int index, int score)
-	: index(index),
-	  score(score)
-{
-}
-
 KnockoutTournament::KnockoutTournament(GameManager* gameManager,
 				       QObject *parent)
-	: Tournament(gameManager, parent),
-	  m_currentPair(-1)
+	: Tournament(gameManager, parent)
 {
 }
 
@@ -59,19 +53,19 @@ int KnockoutTournament::playerSeed(int rank, int bracketSize)
 	return playerSeed(rank / 2 + 1, bracketSize / 2);
 }
 
-QList<KnockoutTournament::KnockoutPlayer> KnockoutTournament::firstRoundPlayers() const
+QList<int> KnockoutTournament::firstRoundPlayers() const
 {
-	QList<KnockoutPlayer> players;
+	QList<int> players;
 	int n(playerCount());
 	int seedCount = qMin(this->seedCount(), n);
 
 	for (int i = 0; i < seedCount; i++)
-		players << KnockoutPlayer(i);
+		players << i;
 
-	QList<KnockoutPlayer> unseeded;
+	QList<int> unseeded;
 	for (int i = seedCount; i < n; i++)
 	{
-		unseeded << KnockoutPlayer(i);
+		unseeded << i;
 	}
 
 	while (!unseeded.isEmpty())
@@ -85,26 +79,24 @@ QList<KnockoutTournament::KnockoutPlayer> KnockoutTournament::firstRoundPlayers(
 
 void KnockoutTournament::initializePairing()
 {
-	m_playerScore.clear();
-	m_currentPair = 0;
 	int x = 1;
 	while (x < playerCount())
 		x *= 2;
-	QVector<KnockoutPlayer> all = QVector<KnockoutPlayer>(x);
+	QVector<int> all = QVector<int>(x, -1);
 
-	QList<KnockoutPlayer> players(firstRoundPlayers());
+	QList<int> players(firstRoundPlayers());
 	int byeCount = x - players.size();
 	for (int i = 0; i < byeCount; i++)
-		players << KnockoutPlayer();
+		players << -1;
 
 	int byes = 0;
 	for (int i = 0; i < players.size(); i++)
 	{
 		int index = playerSeed(i + 1, x);
-		KnockoutPlayer player(players.at(i));
+		int player(players.at(i));
 
 		// Pair BYEs with top-seeded players
-		if (player.index == -1)
+		if (player == -1)
 		{
 			int byeIndex = playerSeed(++byes, x) + 1;
 			all[index] = all.at(byeIndex);
@@ -114,13 +106,9 @@ void KnockoutTournament::initializePairing()
 			all[index] = player;
 	}
 
-	QList<Pair> pairs;
+	QList<TournamentPair> pairs;
 	for (int i = 0; i < x; i += 2)
-	{
-		KnockoutPlayer first(all.at(i));
-		KnockoutPlayer second(all.at(i + 1));
-		pairs.append(qMakePair(first, second));
-	}
+		pairs.append(TournamentPair(all.at(i), all.at(i + 1)));
 
 	m_rounds.clear();
 	m_rounds << pairs;
@@ -144,18 +132,18 @@ int KnockoutTournament::gamesPerCycle() const
 
 void KnockoutTournament::addScore(int player, int score)
 {
-	QList<Pair>& lastRound(m_rounds.last());
-	QList<Pair>::iterator it;
+	QList<TournamentPair>& lastRound(m_rounds.last());
+	QList<TournamentPair>::iterator it;
 	for (it = lastRound.begin(); it != lastRound.end(); ++it)
 	{
-		if (it->first.index == player)
+		if (it->firstPlayer() == player)
 		{
-			it->first.score += score;
+			it->addFirstScore(score);
 			break;
 		}
-		if (it->second.index == player)
+		if (it->secondPlayer() == player)
 		{
-			it->second.score += score;
+			it->addSecondScore(score);
 			break;
 		}
 	}
@@ -163,79 +151,123 @@ void KnockoutTournament::addScore(int player, int score)
 	Tournament::addScore(player, score);
 }
 
-QList<KnockoutTournament::KnockoutPlayer> KnockoutTournament::lastRoundWinners() const
+QList<int> KnockoutTournament::lastRoundWinners() const
 {
-	QList<KnockoutPlayer> winners;
-	const QList<Pair>& lastRound(m_rounds.last());
+	QList<int> winners;
+	const QList<TournamentPair>& lastRound(m_rounds.last());
 
-	QList<Pair>::const_iterator it;
+	QList<TournamentPair>::const_iterator it;
 	for (it = lastRound.constBegin(); it != lastRound.constEnd(); ++it)
-	{
-		KnockoutPlayer winner;
-
-		if (it->second.index == -1)
-			winner.index = it->first.index;
-		else
-		{
-			if (it->first.score >= it->second.score)
-				winner.index = it->first.index;
-			else
-				winner.index = it->second.index;
-		}
-		winners << winner;
-	}
+		winners << it->leader();
 
 	return winners;
 }
 
-QPair<int, int> KnockoutTournament::nextPair()
+bool KnockoutTournament::areAllGamesFinished() const
 {
-	QList<Pair>& lastRound(m_rounds.last());
+	const QList<TournamentPair>& lastRound(m_rounds.last());
+	if (lastRound.size() > 1)
+		return false;
 
-	// Start new round
-	if (m_currentPair >= lastRound.size())
-	{
-		// All of the previous round's games must finish before a new
-		// round can begin.
-		if (gamesInProgress() > 0)
-			return qMakePair(-1, -1);
-
-		QList<KnockoutPlayer> winners(lastRoundWinners());
-		Q_ASSERT(winners.count() > 1);
-
-		QList<Pair> nextRound;
-		for (int i = 0; i < winners.count(); i += 2)
-		{
-			nextRound << qMakePair(winners.at(i), winners.at(i + 1));
-		}
-		m_rounds << nextRound;
-		m_currentPair = 0;
-		setCurrentRound(currentRound() + 1);
-	}
-
-	const Pair& pair(m_rounds.last().at(m_currentPair++));
-	if (pair.second.index == -1)
-		return nextPair();
-	return qMakePair(pair.first.index, pair.second.index);
+	const TournamentPair& pair(lastRound.first());
+	return !pair.gamesInProgress() && !needMoreGames(pair);
 }
 
-void KnockoutTournament::onFinished()
+bool KnockoutTournament::needMoreGames(const TournamentPair& pair) const
 {
-	lastRoundWinners();
-	Tournament::onFinished();
+	// Second player is a BYE
+	if (!pair.isValid())
+		return false;
+
+	// Assign the leading player all points from ongoing games.
+	// If the leader still doesn't have enough points to win the
+	// encounter, return true
+	int leadScore = qMax(pair.firstScore(), pair.secondScore());
+	int pointsInProgress = pair.gamesInProgress() * 2;
+	leadScore += pointsInProgress;
+	if (leadScore <= gamesPerEncounter())
+		return true;
+
+	// Make sure the score diff is big enough
+	int minDiff = 1;
+	if (gamesPerEncounter() % 2 == 0)
+		minDiff = 3;
+
+	int maxDiff = qAbs(pair.scoreDiff()) + pointsInProgress;
+	if (maxDiff >= minDiff)
+		return false;
+
+	if (minDiff == 1 || maxDiff == 0)
+		return true;
+
+	// If the encounter was extended, make sure there's an even
+	// number of games if gamesPerEncounter() is even
+	return pair.gamesStarted() % 2 != 0;
+}
+
+void KnockoutTournament::startGame(const TournamentPair& pair)
+{
+	// TODO: This could be a lot easier if we used pointers
+	// and had only one instance of each pair.
+	QList<TournamentPair>& lastRound(m_rounds.last());
+	QList<TournamentPair>::iterator it;
+	for (it = lastRound.begin(); it != lastRound.end(); ++it)
+	{
+		if (it->hasSamePlayers(pair))
+		{
+			it->addStartedGame();
+			break;
+		}
+	}
+
+	Tournament::startGame(pair);
+}
+
+TournamentPair KnockoutTournament::nextPair(int gameNumber)
+{
+	Q_UNUSED(gameNumber);
+
+	QList<TournamentPair>& lastRound(m_rounds.last());
+	foreach (const TournamentPair& pair, lastRound)
+	{
+		if (needMoreGames(pair))
+			return pair;
+	}
+
+	QList<int> winners(lastRoundWinners());
+	if (winners.size() <= 1 || gamesInProgress())
+		return TournamentPair();
+
+	QList<TournamentPair> nextRound;
+	for (int i = 0; i < winners.size(); i += 2)
+	{
+		nextRound << TournamentPair(winners.at(i),
+					    winners.at(i + 1));
+	}
+	m_rounds << nextRound;
+	setCurrentRound(currentRound() + 1);
+
+	foreach (const TournamentPair& pair, nextRound)
+	{
+		if (pair.isValid())
+			return pair;
+	}
+
+	Q_UNREACHABLE();
+	return TournamentPair();
 }
 
 QString KnockoutTournament::results() const
 {
 	QStringList lines;
 
-	foreach (const Pair& pair, m_rounds.first())
+	foreach (const TournamentPair& pair, m_rounds.first())
 	{
-		lines << playerAt(pair.first.index).builder->name() << "";
-		if (pair.second.index == -1)
+		lines << playerAt(pair.firstPlayer()).name() << "";
+		if (!pair.isValid())
 			lines << "bye";
 		else
-			lines << playerAt(pair.second.index).builder->name();
+			lines << playerAt(pair.secondPlayer()).name();
 		lines << "";
 	}
 	lines.removeLast();
@@ -243,29 +275,27 @@ QString KnockoutTournament::results() const
 	for (int round = 0; round < currentRound(); round++)
 	{
 		int x = 0;
-		foreach (const Pair& pair, m_rounds.at(round))
+		foreach (const TournamentPair& pair, m_rounds.at(round))
 		{
-			int winner;
+			int winner = pair.leader();
 			QString score;
-			if (pair.first.score >= pair.second.score)
+			if (winner == pair.firstPlayer())
 			{
-				winner = pair.first.index;
 				score = QString("%1-%2")
-					.arg(pair.first.score)
-					.arg(pair.second.score);
+					.arg(pair.firstScore())
+					.arg(pair.secondScore());
 			}
 			else
 			{
-				winner = pair.second.index;
 				score = QString("%1-%2")
-					.arg(pair.second.score)
-					.arg(pair.first.score);
+					.arg(pair.secondScore())
+					.arg(pair.firstScore());
 			}
 			int r = round + 1;
 			int lineNum = ((2 << (r - 1)) - 1) +
 				      (x * (2 << r));
 			QString text = QString(r * 2, '\t');
-			text += playerAt(winner).builder->name();
+			text += playerAt(winner).name();
 			if (score != "0-0")
 				text += QString(" (%1)").arg(score);
 			lines[lineNum] += text;

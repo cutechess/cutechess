@@ -51,8 +51,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_finished(false),
 	  m_openingSuite(0),
 	  m_sprt(new Sprt),
-	  m_pgnOutMode(PgnGame::Verbose),
-	  m_pair(QPair<int, int>(-1, -1))
+	  m_pgnOutMode(PgnGame::Verbose)
 {
 	Q_ASSERT(gameManager != 0);
 }
@@ -63,8 +62,8 @@ Tournament::~Tournament()
 		qWarning("Tournament: Destroyed while games are still running.");
 
 	qDeleteAll(m_gameData);
-	foreach (const PlayerData& data, m_players)
-		delete data.builder;
+	foreach (const TournamentPlayer& player, m_players)
+		delete player.builder();
 
 	delete m_openingSuite;
 	delete m_sprt;
@@ -125,7 +124,7 @@ int Tournament::finalGameCount() const
 	return m_finalGameCount;
 }
 
-Tournament::PlayerData Tournament::playerAt(int index) const
+const TournamentPlayer& Tournament::playerAt(int index) const
 {
 	return m_players.at(index);
 }
@@ -249,33 +248,27 @@ void Tournament::addPlayer(PlayerBuilder* builder,
 {
 	Q_ASSERT(builder != 0);
 
-	PlayerData data = { builder, timeControl, book, bookDepth, 0, 0, 0 };
-	m_players.append(data);
+	TournamentPlayer player(builder, timeControl, book, bookDepth);
+	m_players.append(player);
 }
 
-void Tournament::startNextGame()
+TournamentPair Tournament::currentPair() const
 {
-	if (m_stopping || m_nextGameNumber >= m_finalGameCount)
-		return;
+	return m_pair;
+}
 
-	if (m_nextGameNumber % m_gamesPerEncounter == 0)
-	{
-		m_pair = nextPair();
-		if (m_pair.first == -1 || m_pair.second == -1)
-			return;
+bool Tournament::areAllGamesFinished() const
+{
+	return m_finishedGameCount >= m_finalGameCount;
+}
 
-		if (m_players.size() > 2)
-		{
-			m_startFen.clear();
-			m_openingMoves.clear();
-		}
-	}
-	else
-		m_pair = qMakePair(m_pair.second, m_pair.first);
+void Tournament::startGame(const TournamentPair& pair)
+{
+	Q_ASSERT(pair.isValid());
+	m_pair = pair;
 
-	Q_ASSERT(m_pair.first >= 0 && m_pair.second >= 0);
-	PlayerData& white = m_players[m_pair.first];
-	PlayerData& black = m_players[m_pair.second];
+	const TournamentPlayer& white = m_players[m_pair.firstPlayer()];
+	const TournamentPlayer& black = m_players[m_pair.secondPlayer()];
 
 	Chess::Board* board = Chess::BoardFactory::create(m_variant);
 	Q_ASSERT(board != 0);
@@ -286,11 +279,11 @@ void Tournament::startNextGame()
 	connect(game, SIGNAL(finished(ChessGame*)),
 		this, SLOT(onGameFinished(ChessGame*)));
 
-	game->setTimeControl(white.timeControl, Chess::Side::White);
-	game->setTimeControl(black.timeControl, Chess::Side::Black);
+	game->setTimeControl(white.timeControl(), Chess::Side::White);
+	game->setTimeControl(black.timeControl(), Chess::Side::Black);
 
-	game->setOpeningBook(white.book, Chess::Side::White, white.bookDepth);
-	game->setOpeningBook(black.book, Chess::Side::Black, black.bookDepth);
+	game->setOpeningBook(white.book(), Chess::Side::White, white.bookDepth());
+	game->setOpeningBook(black.book(), Chess::Side::Black, black.bookDepth());
 
 	bool isRepeat = false;
 	if (!m_startFen.isEmpty() || !m_openingMoves.isEmpty())
@@ -320,17 +313,47 @@ void Tournament::startNextGame()
 
 	GameData* data = new GameData;
 	data->number = ++m_nextGameNumber;
-	data->whiteIndex = m_pair.first;
-	data->blackIndex = m_pair.second;
+	data->whiteIndex = m_pair.firstPlayer();
+	data->blackIndex = m_pair.secondPlayer();
 	m_gameData[game] = data;
+
+	// Some tournament types may require more games than expected
+	if (m_nextGameNumber > m_finalGameCount)
+		m_finalGameCount = m_nextGameNumber;
 
 	connect(game, SIGNAL(startFailed(ChessGame*)),
 		this, SLOT(onGameStartFailed(ChessGame*)));
 	m_gameManager->newGame(game,
-			       white.builder,
-			       black.builder,
+			       white.builder(),
+			       black.builder(),
 			       GameManager::Enqueue,
 			       GameManager::ReusePlayers);
+}
+
+void Tournament::startNextGame()
+{
+	if (m_stopping)
+		return;
+
+	TournamentPair pair(nextPair(m_nextGameNumber));
+	if (!pair.isValid())
+		return;
+
+	if (pair.hasSamePlayers(m_pair))
+	{
+		if (pair.firstPlayer() == m_pair.firstPlayer())
+			pair.swapPlayers();
+	}
+	else
+	{
+		if (m_players.size() > 2)
+		{
+			m_startFen.clear();
+			m_openingMoves.clear();
+		}
+	}
+
+	startGame(pair);
 }
 
 bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
@@ -378,21 +401,7 @@ bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
 
 void Tournament::addScore(int player, int score)
 {
-	switch (score)
-	{
-	case 0:
-		m_players[player].losses++;
-		break;
-	case 1:
-		m_players[player].draws++;
-		break;
-	case 2:
-		m_players[player].wins++;
-		break;
-	default:
-		qFatal("Unreachable");
-		break;
-	}
+	m_players[player].addScore(score);
 }
 
 void Tournament::onGameStarted(ChessGame* game)
@@ -401,10 +410,12 @@ void Tournament::onGameStarted(ChessGame* game)
 	Q_ASSERT(m_gameData.contains(game));
 
 	GameData* data = m_gameData[game];
-	m_players[data->whiteIndex].builder->setName(game->player(Chess::Side::White)->name());
-	m_players[data->blackIndex].builder->setName(game->player(Chess::Side::Black)->name());
+	int iWhite = data->whiteIndex;
+	int iBlack = data->blackIndex;
+	m_players[iWhite].setName(game->player(Chess::Side::White)->name());
+	m_players[iBlack].setName(game->player(Chess::Side::Black)->name());
 
-	emit gameStarted(game, data->number, data->whiteIndex, data->blackIndex);
+	emit gameStarted(game, data->number, iWhite, iBlack);
 }
 
 void Tournament::onGameFinished(ChessGame* game)
@@ -421,28 +432,28 @@ void Tournament::onGameFinished(ChessGame* game)
 	int gameNumber = data->number;
 	Sprt::GameResult sprtResult = Sprt::NoResult;
 
-	PlayerBuilder* whiteBuilder(m_players[data->whiteIndex].builder);
-	PlayerBuilder* blackBuilder(m_players[data->blackIndex].builder);
-	whiteBuilder->setName(pgn->playerName(Chess::Side::White));
-	blackBuilder->setName(pgn->playerName(Chess::Side::Black));
+	int iWhite = data->whiteIndex;
+	int iBlack = data->blackIndex;
+	m_players[iWhite].setName(pgn->playerName(Chess::Side::White));
+	m_players[iBlack].setName(pgn->playerName(Chess::Side::Black));
 
 	switch (game->result().winner())
 	{
 	case Chess::Side::White:
-		addScore(data->whiteIndex, 2);
-		addScore(data->blackIndex, 0);
-		sprtResult = (data->whiteIndex == 0) ? Sprt::Win : Sprt::Loss;
+		addScore(iWhite, 2);
+		addScore(iBlack, 0);
+		sprtResult = (iWhite == 0) ? Sprt::Win : Sprt::Loss;
 		break;
 	case Chess::Side::Black:
-		addScore(data->blackIndex, 2);
-		addScore(data->whiteIndex, 0);
-		sprtResult = (data->blackIndex == 0) ? Sprt::Win : Sprt::Loss;
+		addScore(iBlack, 2);
+		addScore(iWhite, 0);
+		sprtResult = (iBlack == 0) ? Sprt::Win : Sprt::Loss;
 		break;
 	default:
 		if (game->result().isDraw())
 		{
-			addScore(data->whiteIndex, 1);
-			addScore(data->blackIndex, 1);
+			addScore(iWhite, 1);
+			addScore(iBlack, 1);
 			sprtResult = Sprt::Draw;
 		}
 		break;
@@ -465,10 +476,9 @@ void Tournament::onGameFinished(ChessGame* game)
 			QMetaObject::invokeMethod(this, "stop", Qt::QueuedConnection);
 	}
 
-	emit gameFinished(game, gameNumber, data->whiteIndex, data->blackIndex);
+	emit gameFinished(game, gameNumber, iWhite, iBlack);
 
-	if (m_finishedGameCount == m_finalGameCount
-	||  (m_stopping && m_gameData.isEmpty()))
+	if (areAllGamesFinished() || (m_stopping && m_gameData.isEmpty()))
 	{
 		m_stopping = false;
 		m_lastGame = game;
@@ -558,8 +568,8 @@ QString Tournament::results() const
 
 	for (int i = 0; i < playerCount(); i++)
 	{
-		Tournament::PlayerData player(playerAt(i));
-		Elo elo(player.wins, player.losses, player.draws);
+		const TournamentPlayer& player(playerAt(i));
+		Elo elo(player.wins(), player.losses(), player.draws());
 
 		if (playerCount() == 2)
 		{
@@ -569,8 +579,8 @@ QString Tournament::results() const
 			break;
 		}
 
-		RankingData data = { player.builder->name(),
-				     player.wins + player.losses + player.draws,
+		RankingData data = { player.name(),
+				     player.gamesFinished(),
 				     elo.pointRatio(),
 				     elo.drawRatio(),
 				     elo.errorMargin() };

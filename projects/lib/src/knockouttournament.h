@@ -28,9 +28,6 @@
  * determined by the number of players.
  *
  * TODO:
- * - In a drawn encounter the first player advances, which is not
- * fair. Setting a high enough gamesPerEncounter() value mitigates
- * this problem, but not completely.
  * - Code cleanup.
  * - Even though scores are now always up-to-date, they shouldn't show a
  * winner for a match when it's still in progress.
@@ -52,27 +49,18 @@ class LIB_EXPORT KnockoutTournament : public Tournament
 		// Inherited from Tournament
 		virtual void initializePairing();
 		virtual int gamesPerCycle() const;
-		virtual QPair<int, int> nextPair();
-		virtual void onFinished();
+		virtual TournamentPair nextPair(int gameNumber);
 		virtual void addScore(int player, int score);
+		virtual bool areAllGamesFinished() const;
+		virtual void startGame(const TournamentPair& pair);
 
 	private:
-		class KnockoutPlayer
-		{
-			public:
-				KnockoutPlayer(int index = -1, int score = 0);
-				int index;
-				int score;
-		};
-		typedef QPair<KnockoutPlayer, KnockoutPlayer> Pair;
-
 		static int playerSeed(int rank, int bracketSize);
-		QList<KnockoutPlayer> firstRoundPlayers() const;
-		QList<KnockoutPlayer> lastRoundWinners() const;
+		QList<int> firstRoundPlayers() const;
+		QList<int> lastRoundWinners() const;
+		bool needMoreGames(const TournamentPair& pair) const;
 
-		QList< QList<Pair> > m_rounds;
-		QMap<int, int> m_playerScore;
-		int m_currentPair;
+		QList< QList<TournamentPair> > m_rounds;
 };
 
 #endif // KNOCKOUTTOURNAMENT_H

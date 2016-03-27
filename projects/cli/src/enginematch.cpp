@@ -118,14 +118,14 @@ void EngineMatch::onGameFinished(ChessGame* game, int number)
 
 	if (m_tournament->playerCount() == 2)
 	{
-		Tournament::PlayerData fcp = m_tournament->playerAt(0);
-		Tournament::PlayerData scp = m_tournament->playerAt(1);
-		int totalResults = fcp.wins + fcp.losses + fcp.draws;
+		TournamentPlayer fcp = m_tournament->playerAt(0);
+		TournamentPlayer scp = m_tournament->playerAt(1);
+		int totalResults = fcp.gamesFinished();
 		qDebug("Score of %s vs %s: %d - %d - %d  [%.3f] %d",
-		       qPrintable(fcp.builder->name()),
-		       qPrintable(scp.builder->name()),
-		       fcp.wins, scp.wins, fcp.draws,
-		       double(fcp.wins * 2 + fcp.draws) / (totalResults * 2),
+		       qPrintable(fcp.name()),
+		       qPrintable(scp.name()),
+		       fcp.wins(), scp.wins(), fcp.draws(),
+		       double(fcp.score()) / (totalResults * 2),
 		       totalResults);
 	}
 
