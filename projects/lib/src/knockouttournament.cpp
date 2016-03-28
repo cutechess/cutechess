@@ -277,27 +277,20 @@ QString KnockoutTournament::results() const
 		int x = 0;
 		foreach (const TournamentPair& pair, m_rounds.at(round))
 		{
-			int winner = pair.leader();
-			QString score;
-			if (winner == pair.firstPlayer())
-			{
-				score = QString("%1-%2")
-					.arg(pair.firstScore())
-					.arg(pair.secondScore());
-			}
+			QString winner;
+			if (needMoreGames(pair) || pair.gamesInProgress())
+				winner = "...";
 			else
 			{
-				score = QString("%1-%2")
-					.arg(pair.secondScore())
-					.arg(pair.firstScore());
+				winner = playerAt(pair.leader()).name();
 			}
 			int r = round + 1;
-			int lineNum = ((2 << (r - 1)) - 1) +
-				      (x * (2 << r));
-			QString text = QString(r * 2, '\t');
-			text += playerAt(winner).name();
-			if (score != "0-0")
-				text += QString(" (%1)").arg(score);
+			int lineNum = ((2 << (r - 1)) - 1) + (x * (2 << r));
+			QString text = QString("%1%2 (%3-%4)")
+				       .arg(QString(r * 2, '\t'))
+				       .arg(winner)
+				       .arg(pair.firstScore())
+				       .arg(pair.secondScore());
 			lines[lineNum] += text;
 			x++;
 		}

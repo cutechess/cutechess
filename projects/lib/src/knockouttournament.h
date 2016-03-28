@@ -29,8 +29,6 @@
  *
  * TODO:
  * - Code cleanup.
- * - Even though scores are now always up-to-date, they shouldn't show a
- * winner for a match when it's still in progress.
  */
 class LIB_EXPORT KnockoutTournament : public Tournament
 {
