@@ -19,6 +19,8 @@
 #include "ui_enginemanagementdlg.h"
 
 #include <QSortFilterProxyModel>
+#include <functional>
+#include <algorithm>
 
 #include <enginemanager.h>
 
@@ -126,7 +128,14 @@ void EngineManagementDialog::removeEngine()
 	const QItemSelection selection =
 		m_filteredModel->mapSelectionToSource(ui->m_enginesList->selectionModel()->selection());
 	QModelIndexList selected = selection.indexes();
-	qSort(selected.begin(), selected.end(), qGreater<QModelIndex>());
+
+	// Can't use std::greater because operator> isn't implemented
+	// for QModelIndex.
+	std::sort(selected.begin(), selected.end(),
+	[](const QModelIndex &a, const QModelIndex &b)
+	{
+		return b < a;
+	});
 
 	foreach (const QModelIndex& index, selected)
 		m_engineManager->removeEngineAt(index.row());

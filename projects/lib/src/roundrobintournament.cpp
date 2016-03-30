@@ -17,6 +17,7 @@
 
 
 #include "roundrobintournament.h"
+#include <algorithm>
 
 RoundRobinTournament::RoundRobinTournament(GameManager* gameManager,
 					   QObject *parent)
@@ -68,7 +69,7 @@ TournamentPair RoundRobinTournament::nextPair(int gameNumber)
 
 	// Alternate colors between rounds to make it fair
 	if (currentRound() % 2 == 0)
-		qSwap(white, black);
+		std::swap(white, black);
 
 	m_pairNumber++;
 

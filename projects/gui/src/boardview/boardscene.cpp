@@ -21,6 +21,7 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QGraphicsPolygonItem>
+#include <algorithm>
 #include <board/board.h>
 #include "graphicsboard.h"
 #include "graphicspiecereserve.h"
@@ -466,7 +467,7 @@ void BoardScene::applyTransition(const Chess::BoardTransition& transition,
 		Chess::Square target = move.target;
 
 		if (direction == Backward)
-			qSwap(source, target);
+			std::swap(source, target);
 		else
 			addMoveArrow(m_squares->squarePos(source),
 					 m_squares->squarePos(target));

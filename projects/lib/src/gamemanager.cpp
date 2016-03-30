@@ -17,6 +17,7 @@
 
 #include "gamemanager.h"
 #include <QThread>
+#include <algorithm>
 #include "playerbuilder.h"
 #include "chessgame.h"
 #include "chessplayer.h"
@@ -95,8 +96,8 @@ const PlayerBuilder* GameInitializer::blackBuilder() const
 
 void GameInitializer::swapPlayers()
 {
-	qSwap(m_builder[0], m_builder[1]);
-	qSwap(m_player[0], m_player[1]);
+	std::swap(m_builder[0], m_builder[1]);
+	std::swap(m_player[0], m_player[1]);
 }
 
 void GameInitializer::setGame(ChessGame* game)

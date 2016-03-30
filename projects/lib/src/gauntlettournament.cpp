@@ -17,6 +17,7 @@
 
 
 #include "gauntlettournament.h"
+#include <algorithm>
 
 GauntletTournament::GauntletTournament(GameManager* gameManager,
 				       QObject *parent)
@@ -58,7 +59,7 @@ TournamentPair GauntletTournament::nextPair(int gameNumber)
 
 	// Alternate colors between rounds to make it fair
 	if (currentRound() % 2 == 0)
-		qSwap(white, black);
+		std::swap(white, black);
 
 	return TournamentPair(white, black);
 }

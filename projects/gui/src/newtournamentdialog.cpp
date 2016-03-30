@@ -19,6 +19,8 @@
 #include "ui_newtournamentdlg.h"
 
 #include <QFileDialog>
+#include <functional>
+#include <algorithm>
 
 #include <board/boardfactory.h>
 #include <enginemanager.h>
@@ -114,7 +116,14 @@ void NewTournamentDialog::addEngine()
 void NewTournamentDialog::removeEngine()
 {
 	QList<QModelIndex> selected = ui->m_playersList->selectionModel()->selectedRows();
-	qSort(selected.begin(), selected.end(), qGreater<QModelIndex>());
+
+	// Can't use std::greater because operator> isn't implemented
+	// for QModelIndex.
+	std::sort(selected.begin(), selected.end(),
+	[](const QModelIndex &a, const QModelIndex &b)
+	{
+		return b < a;
+	});
 
 	foreach (const QModelIndex& index, selected)
 		m_addedEnginesManager->removeEngineAt(index.row());

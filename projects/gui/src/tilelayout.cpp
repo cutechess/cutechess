@@ -18,6 +18,7 @@
 #include "tilelayout.h"
 #include <qmath.h>
 #include <QWidget>
+#include <algorithm>
 
 TileLayout::TileLayout(QWidget *parent)
 	: QLayout(parent)
@@ -147,7 +148,7 @@ void TileLayout::doLayout(const QRect& rect) const
 		qreal ar1 = qreal(cols * sh.width()) / (rows * sh.height());
 		qreal ar2 = qreal(rows * sh.width()) / (cols * sh.height());
 		if (qAbs(ar1 - layoutAr) > qAbs(ar2 - layoutAr))
-			qSwap(cols, rows);
+			std::swap(cols, rows);
 	}
 
 	int itemWidth = (effectiveRect.width() - (cols - 1) * spaceX) / cols;
