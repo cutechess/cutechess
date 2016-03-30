@@ -231,6 +231,7 @@ void GraphicsBoard::setHighlights(const QList<Chess::Square>& squares)
 	{
 		QGraphicsEllipseItem* dot = new QGraphicsEllipseItem(rect, targets);
 
+		dot->setCacheMode(DeviceCoordinateCache);
 		dot->setPen(pen);
 		dot->setBrush(brush);
 		dot->setPos(squarePos(sq));
