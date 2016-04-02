@@ -15,11 +15,13 @@ doc-html.commands = \
     mandoc -Txhtml -Ostyle=man-style.css docs/cutechess-cli.6 > docs/cutechess-cli.6.html; \
     mandoc -Txhtml -Ostyle=man-style.css docs/engines.json.5 > docs/engines.json.5.html
 QMAKE_EXTRA_TARGETS += doc-html
-QMAKE_DISTCLEAN += docs/*.html
+QMAKE_DISTCLEAN += docs/cutechess-cli.6.html
+QMAKE_DISTCLEAN += docs/engines.json.5.html
 
 # Documentation in text format
 doc-txt.commands = \
     mandoc -Tascii docs/cutechess-cli.6 | col -b > docs/cutechess-cli.6.txt; \
     mandoc -Tascii docs/engines.json.5 | col -b > docs/engines.json.5.txt
 QMAKE_EXTRA_TARGETS += doc-txt
-QMAKE_DISTCLEAN += docs/*.txt
+QMAKE_DISTCLEAN += docs/cutechess-cli.6.txt
+QMAKE_DISTCLEAN += docs/engines.json.5.txt
