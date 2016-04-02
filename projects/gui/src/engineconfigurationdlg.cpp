@@ -32,6 +32,8 @@
 #include "engineoptionmodel.h"
 #include "engineoptiondelegate.h"
 
+#include <modeltest.h>
+
 EngineConfigurationDialog::EngineConfigurationDialog(
 	EngineConfigurationDialog::DialogMode mode, QWidget* parent)
 	: QDialog(parent),
@@ -40,6 +42,8 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	  ui(new Ui::EngineConfigurationDialog)
 {
 	ui->setupUi(this);
+
+	new ModelTest(m_engineOptionModel, this);
 
 	if (mode == EngineConfigurationDialog::AddEngine)
 		setWindowTitle(tr("Add Engine"));

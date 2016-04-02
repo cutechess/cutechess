@@ -35,9 +35,6 @@
 - Apply for the Qt Application Showroom after first public
   release: https://showroom.qt.io/
 
-- Use model testing tools to check validity of all model classes
-  during runtime (http://qt-project.org/wiki/Model_Test)
-
 - Allow setting engine options again for each game instead of only once for the whole match
 
 - Support the Xboard "draw" command

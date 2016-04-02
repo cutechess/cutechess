@@ -33,13 +33,10 @@ macx {
     ICON = res/icons/cutechess_mac.icns
 }
 
-# GUI
-include(src/src.pri)
-
-# Forms
-include(ui/ui.pri)
-
 UI_HEADERS_DIR = src
 
-# Resources
+include(src/src.pri)
+include(ui/ui.pri)
 include(res/res.pri)
+
+include(3rdparty/modeltest/modeltest.pri)

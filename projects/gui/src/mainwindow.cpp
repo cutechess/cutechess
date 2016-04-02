@@ -34,14 +34,12 @@
 #include <board/boardfactory.h>
 #include <chessgame.h>
 #include <timecontrol.h>
-#include <engineconfiguration.h>
 #include <enginemanager.h>
 #include <gamemanager.h>
 #include <playerbuilder.h>
 #include <humanbuilder.h>
 #include <enginebuilder.h>
 #include <chessplayer.h>
-#include <pgnstream.h>
 #include <tournament.h>
 
 #include "cutechessapp.h"
@@ -50,12 +48,12 @@
 #include "newgamedlg.h"
 #include "newtournamentdialog.h"
 #include "chessclock.h"
-#include "engineconfigurationmodel.h"
 #include "enginemanagementdlg.h"
 #include "plaintextlog.h"
-#include "autoverticalscroller.h"
 #include "gamedatabasemanager.h"
 #include "pgntagsmodel.h"
+
+#include <modeltest.h>
 
 MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
 	: id(game),
@@ -88,6 +86,7 @@ MainWindow::MainWindow(ChessGame* game)
 
 	m_moveList = new MoveList(this);
 	m_tagsModel = new PgnTagsModel(this);
+	new ModelTest(m_tagsModel, this);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);

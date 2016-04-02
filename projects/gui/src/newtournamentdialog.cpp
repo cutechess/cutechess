@@ -35,6 +35,8 @@
 #include "timecontroldlg.h"
 #include "engineselectiondlg.h"
 
+#include <modeltest.h>
+
 NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 					 QWidget *parent)
 	: QDialog(parent),
@@ -45,6 +47,7 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	ui->setupUi(this);
 
 	m_srcEnginesModel = new EngineConfigurationModel(engineManager, this);
+	new ModelTest(m_srcEnginesModel, this);
 
 	m_proxyModel = new EngineConfigurationProxyModel(this);
 	m_proxyModel->setSourceModel(m_srcEnginesModel);

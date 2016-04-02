@@ -40,6 +40,8 @@
 #include "gamedatabasesearchdlg.h"
 #include "threadedtask.h"
 
+#include <modeltest.h>
+
 class PgnGameIterator
 {
 	public:
@@ -252,9 +254,11 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 	ui->setupUi(this);
 
 	m_pgnDatabaseModel = new PgnDatabaseModel(m_dbManager, this);
+	new ModelTest(m_pgnDatabaseModel, this);
 
 	// Setup a filtered model
 	m_pgnGameEntryModel = new PgnGameEntryModel(this);
+	new ModelTest(m_pgnGameEntryModel, this);
 
 	ui->m_databasesListView->setModel(m_pgnDatabaseModel);
 	ui->m_databasesListView->setAlternatingRowColors(true);

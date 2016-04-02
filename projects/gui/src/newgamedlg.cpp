@@ -29,6 +29,7 @@
 #include "timecontroldlg.h"
 #include "stringvalidator.h"
 
+#include <modeltest.h>
 
 NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	: QDialog(parent),
@@ -39,6 +40,7 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	ui->setupUi(this);
 
 	m_engines = new EngineConfigurationModel(m_engineManager, this);
+	new ModelTest(m_engines, this);
 
 	connect(ui->m_configureWhiteEngineButton, SIGNAL(clicked(bool)), this,
 		SLOT(configureWhiteEngine()));
