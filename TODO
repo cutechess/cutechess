@@ -32,8 +32,8 @@
 
 - Use PgnStream for HTTP downloading
 
-- Apply for the Qt Ambassador program (application showcase) after first
-  public release: http://qt.digia.com/qtambassador/
+- Apply for the Qt Application Showroom after first public
+  release: https://showroom.qt.io/
 
 - Use model testing tools to check validity of all model classes
   during runtime (http://qt-project.org/wiki/Model_Test)
