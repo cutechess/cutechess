@@ -31,7 +31,8 @@ script:
     - cd ${TRAVIS_BUILD_DIR}/projects/lib/tests/ && qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make &&
       (cd chessboard; ./tst_board) &&
       (cd mersenne; ./tst_mersenne) &&
-      (cd sprt; ./tst_sprt)
+      (cd sprt; ./tst_sprt) &&
+      (cd tournamentplayer; ./tst_tournamentplayer)
     - cd ${TRAVIS_BUILD_DIR}/projects/lib/components/json/tests/ && qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make &&
       (cd parser; ./tst_jsonparser) &&
       (cd serializer; ./tst_jsonserializer)
