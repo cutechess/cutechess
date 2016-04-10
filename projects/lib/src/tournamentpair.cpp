@@ -21,7 +21,8 @@
 
 TournamentPair::TournamentPair(int firstPlayer,
 			       int secondPlayer)
-	: m_gamesStarted(0)
+	: m_gamesStarted(0),
+	  m_hasOriginalOrder(true)
 {
 	m_first.index = firstPlayer;
 	m_first.score = 0;
@@ -29,13 +30,16 @@ TournamentPair::TournamentPair(int firstPlayer,
 	m_second.score = 0;
 }
 
-bool TournamentPair::hasSamePlayers(const TournamentPair& other) const
+bool TournamentPair::hasSamePlayers(const TournamentPair* other) const
 {
-	if (other.firstPlayer() == firstPlayer()
-	&&  other.secondPlayer() == secondPlayer())
+	if (!other)
+		return false;
+
+	if (other->firstPlayer() == firstPlayer()
+	&&  other->secondPlayer() == secondPlayer())
 		return true;
-	if (other.secondPlayer() == firstPlayer()
-	&&  other.firstPlayer() == secondPlayer())
+	if (other->secondPlayer() == firstPlayer()
+	&&  other->firstPlayer() == secondPlayer())
 		return true;
 	return false;
 }
@@ -43,6 +47,11 @@ bool TournamentPair::hasSamePlayers(const TournamentPair& other) const
 bool TournamentPair::isValid() const
 {
 	return m_first.index != -1 && m_second.index != -1;
+}
+
+bool TournamentPair::hasOriginalOrder() const
+{
+	return m_hasOriginalOrder;
 }
 
 int TournamentPair::firstPlayer() const
@@ -57,11 +66,16 @@ int TournamentPair::secondPlayer() const
 
 int TournamentPair::leader() const
 {
-	if (m_first.index == -1 && m_second.index == -1)
-		return -1;
-	if (m_first.score >= m_second.score || m_second.index == -1)
+	if (m_first.index == -1)
+		return secondPlayer();
+	if (m_second.index == -1)
 		return firstPlayer();
-	return secondPlayer();
+
+	if (m_first.score > m_second.score)
+		return firstPlayer();
+	else if (m_first.score < m_second.score)
+		return secondPlayer();
+	return -1;
 }
 
 int TournamentPair::gamesStarted() const
@@ -117,4 +131,5 @@ void TournamentPair::addStartedGame()
 void TournamentPair::swapPlayers()
 {
 	std::swap(m_first, m_second);
+	m_hasOriginalOrder = !m_hasOriginalOrder;
 }

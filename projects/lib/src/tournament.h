@@ -270,7 +270,14 @@ class LIB_EXPORT Tournament : public QObject
 		/*! Returns the number of games in progress. */
 		int gamesInProgress() const;
 		/*! Returns the pair that started the last game. */
-		TournamentPair currentPair() const;
+		TournamentPair* currentPair() const;
+		/*!
+		 * Returns a tournament pair of \a player1 and \a player2.
+		 *
+		 * If a pair with the given players doesn't already exist,
+		 * one is created.
+		 */
+		TournamentPair* pair(int player1, int player2);
 		/*!
 		 * Initializes the pairings for the tournament.
 		 *
@@ -300,7 +307,7 @@ class LIB_EXPORT Tournament : public QObject
 		 * Sublasses can return \a (-1, -1) if the next game
 		 * should not be started yet.
 		 */
-		virtual TournamentPair nextPair(int gameNumber) = 0;
+		virtual TournamentPair* nextPair(int gameNumber) = 0;
 		/*!
 		 * Emits the \a finished() signal.
 		 *
@@ -327,7 +334,7 @@ class LIB_EXPORT Tournament : public QObject
 		 *
 		 * Reimplementations should call the base implementation.
 		 */
-		virtual void startGame(const TournamentPair& pair);
+		virtual void startGame(TournamentPair* pair);
 
 	private slots:
 		void startNextGame();
@@ -381,7 +388,8 @@ class LIB_EXPORT Tournament : public QObject
 		QTextStream m_pgnOut;
 		QString m_startFen;
 		PgnGame::PgnMode m_pgnOutMode;
-		TournamentPair m_pair;
+		TournamentPair* m_pair;
+		QMap< QPair<int, int>, TournamentPair* > m_pairs;
 		QList<TournamentPlayer> m_players;
 		QMap<int, PgnGame> m_pgnGames;
 		QMap<ChessGame*, GameData*> m_gameData;

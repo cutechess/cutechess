@@ -41,10 +41,10 @@ int GauntletTournament::gamesPerCycle() const
 	return playerCount() - 1;
 }
 
-TournamentPair GauntletTournament::nextPair(int gameNumber)
+TournamentPair* GauntletTournament::nextPair(int gameNumber)
 {
 	if (gameNumber >= finalGameCount())
-		return TournamentPair();
+		return 0;
 	if (gameNumber % gamesPerEncounter() != 0)
 		return currentPair();
 
@@ -61,5 +61,5 @@ TournamentPair GauntletTournament::nextPair(int gameNumber)
 	if (currentRound() % 2 == 0)
 		std::swap(white, black);
 
-	return TournamentPair(white, black);
+	return pair(white, black);
 }

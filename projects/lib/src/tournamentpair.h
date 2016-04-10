@@ -24,6 +24,8 @@
  * The TournamentPair class can be used to manage a single tournament
  * encounter's progress, eg. scores for each player, number of games
  * started, games finished, games left, etc.
+ *
+ * TODO: players should be pointers to TournamentPlayer objects, not indexes
  */
 class LIB_EXPORT TournamentPair
 {
@@ -43,7 +45,13 @@ class LIB_EXPORT TournamentPair
 		/*! Returns the second player's index. */
 		int secondPlayer() const;
 		/*!
+		 * Returns true if the players are in their original order,
+		 * ie. not swapped; otherwise returns false.
+		 */
+		bool hasOriginalOrder() const;
+		/*!
 		 * Returns the index of the player in the lead.
+		 * Returns -1 if both players have the same score.
 		 *
 		 * If one of the players is a BYE, the other player's index
 		 * is returned.
@@ -55,7 +63,7 @@ class LIB_EXPORT TournamentPair
 		 *
 		 * \note The players may be in different order in \a other.
 		 */
-		bool hasSamePlayers(const TournamentPair& other) const;
+		bool hasSamePlayers(const TournamentPair* other) const;
 		/*!
 		 * Returns true if both players are real (ie. not BYEs);
 		 * otherwise returns false.
@@ -113,6 +121,7 @@ class LIB_EXPORT TournamentPair
 		Player m_first;
 		Player m_second;
 		int m_gamesStarted;
+		bool m_hasOriginalOrder;
 };
 
 #endif // TOURNAMENTPAIR_H

@@ -42,7 +42,7 @@ class LIB_EXPORT RoundRobinTournament : public Tournament
 		// Inherited from Tournament
 		virtual void initializePairing();
 		virtual int gamesPerCycle() const;
-		virtual TournamentPair nextPair(int gameNumber);
+		virtual TournamentPair* nextPair(int gameNumber);
 
 	private:
 		int m_pairNumber;

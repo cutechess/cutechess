@@ -26,9 +26,6 @@
  *
  * A single-elimination tournament where the number of rounds is
  * determined by the number of players.
- *
- * TODO:
- * - Code cleanup.
  */
 class LIB_EXPORT KnockoutTournament : public Tournament
 {
@@ -38,6 +35,7 @@ class LIB_EXPORT KnockoutTournament : public Tournament
 		/*! Creates a new Knockout tournament. */
 		explicit KnockoutTournament(GameManager* gameManager,
 					    QObject *parent = 0);
+
 		// Inherited from Tournament
 		virtual QString type() const;
 		virtual bool canSetRoundMultiplier() const;
@@ -47,18 +45,18 @@ class LIB_EXPORT KnockoutTournament : public Tournament
 		// Inherited from Tournament
 		virtual void initializePairing();
 		virtual int gamesPerCycle() const;
-		virtual TournamentPair nextPair(int gameNumber);
+		virtual TournamentPair* nextPair(int gameNumber);
 		virtual void addScore(int player, int score);
 		virtual bool areAllGamesFinished() const;
-		virtual void startGame(const TournamentPair& pair);
 
 	private:
 		static int playerSeed(int rank, int bracketSize);
+
 		QList<int> firstRoundPlayers() const;
 		QList<int> lastRoundWinners() const;
-		bool needMoreGames(const TournamentPair& pair) const;
+		bool needMoreGames(const TournamentPair* pair) const;
 
-		QList< QList<TournamentPair> > m_rounds;
+		QList< QList<TournamentPair*> > m_rounds;
 };
 
 #endif // KNOCKOUTTOURNAMENT_H

@@ -51,7 +51,8 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_finished(false),
 	  m_openingSuite(0),
 	  m_sprt(new Sprt),
-	  m_pgnOutMode(PgnGame::Verbose)
+	  m_pgnOutMode(PgnGame::Verbose),
+	  m_pair(0)
 {
 	Q_ASSERT(gameManager != 0);
 }
@@ -62,6 +63,7 @@ Tournament::~Tournament()
 		qWarning("Tournament: Destroyed while games are still running.");
 
 	qDeleteAll(m_gameData);
+	qDeleteAll(m_pairs);
 	foreach (const TournamentPlayer& player, m_players)
 		delete player.builder();
 
@@ -252,9 +254,33 @@ void Tournament::addPlayer(PlayerBuilder* builder,
 	m_players.append(player);
 }
 
-TournamentPair Tournament::currentPair() const
+TournamentPair* Tournament::currentPair() const
 {
 	return m_pair;
+}
+
+TournamentPair* Tournament::pair(int player1, int player2)
+{
+	Q_ASSERT(player1 || player2);
+
+	auto order1 = qMakePair(player1, player2);
+
+	if (m_pairs.contains(order1))
+		return m_pairs[order1];
+
+	auto order2 = qMakePair(player2, player1);
+	if (m_pairs.contains(order2))
+	{
+		TournamentPair* ret = m_pairs[order2];
+		ret->swapPlayers();
+		return ret;
+	}
+
+	// Existing pair not found -> create a new one
+	TournamentPair* ret = new TournamentPair(player1, player2);
+	m_pairs[order1] = ret;
+
+	return ret;
 }
 
 bool Tournament::areAllGamesFinished() const
@@ -262,13 +288,14 @@ bool Tournament::areAllGamesFinished() const
 	return m_finishedGameCount >= m_finalGameCount;
 }
 
-void Tournament::startGame(const TournamentPair& pair)
+void Tournament::startGame(TournamentPair* pair)
 {
-	Q_ASSERT(pair.isValid());
+	Q_ASSERT(pair->isValid());
 	m_pair = pair;
+	m_pair->addStartedGame();
 
-	const TournamentPlayer& white = m_players[m_pair.firstPlayer()];
-	const TournamentPlayer& black = m_players[m_pair.secondPlayer()];
+	const TournamentPlayer& white = m_players[m_pair->firstPlayer()];
+	const TournamentPlayer& black = m_players[m_pair->secondPlayer()];
 
 	Chess::Board* board = Chess::BoardFactory::create(m_variant);
 	Q_ASSERT(board != 0);
@@ -313,8 +340,8 @@ void Tournament::startGame(const TournamentPair& pair)
 
 	GameData* data = new GameData;
 	data->number = ++m_nextGameNumber;
-	data->whiteIndex = m_pair.firstPlayer();
-	data->blackIndex = m_pair.secondPlayer();
+	data->whiteIndex = m_pair->firstPlayer();
+	data->blackIndex = m_pair->secondPlayer();
 	m_gameData[game] = data;
 
 	// Some tournament types may require more games than expected
@@ -335,14 +362,14 @@ void Tournament::startNextGame()
 	if (m_stopping)
 		return;
 
-	TournamentPair pair(nextPair(m_nextGameNumber));
-	if (!pair.isValid())
+	TournamentPair* pair(nextPair(m_nextGameNumber));
+	if (!pair || !pair->isValid())
 		return;
 
-	if (pair.hasSamePlayers(m_pair))
+	if (pair->hasSamePlayers(m_pair))
 	{
-		if (pair.firstPlayer() == m_pair.firstPlayer())
-			pair.swapPlayers();
+		if (pair->firstPlayer() == m_pair->firstPlayer())
+			pair->swapPlayers();
 	}
 	else
 	{
