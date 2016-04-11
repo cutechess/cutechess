@@ -67,10 +67,6 @@ TournamentPair* RoundRobinTournament::nextPair(int gameNumber)
 	int white = m_topHalf.at(m_pairNumber);
 	int black = m_bottomHalf.at(m_pairNumber);
 
-	// Alternate colors between rounds to make it fair
-	if (currentRound() % 2 == 0)
-		std::swap(white, black);
-
 	m_pairNumber++;
 
 	// If 'white' or 'black' equals 'playerCount()' it means

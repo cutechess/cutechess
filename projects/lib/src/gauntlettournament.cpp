@@ -57,9 +57,5 @@ TournamentPair* GauntletTournament::nextPair(int gameNumber)
 	int white = 0;
 	int black = m_opponent++;
 
-	// Alternate colors between rounds to make it fair
-	if (currentRound() % 2 == 0)
-		std::swap(white, black);
-
 	return pair(white, black);
 }
