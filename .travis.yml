@@ -12,10 +12,8 @@ env:
   - QT_BASE=53
   - QT_BASE=54
   - QT_BASE=55
-
-branches:
-  only:
-    - master
+  global:
+    - secure: "a0D9/23/IV+404/STxfr9o0eVEp8Qx1J1KZPyKepSwdky9LpmeDTt6KWtfaL4mBiGNFpIHG239LHKbjIHLouFwP9SeLottIYUe/1xO12Y2eL5uUES0SbCGwyr248s5WvT15tvkF3xHy2FLMw0lDgsLDaOiOU7STteNYlFIHEkjUTQzx5UaG5utVDwsrjPdkkyij+Z2Ztl8tXCbEeyrct5ixzJX+lhAofwE7zpKlvhD1Snf/bHh0GopYQg8nL0Cdb15uhCjwTDQuaLTT2ICr8KsllLUie1ex5zWpCu4f9vsFFWZsBfFZ3+rReHfcNzWIoJ/0YNqdNBDio+akgewW31A/yUhnIxb5RuCirDnbny++yC/ZyMJUtY0LcRWZIfqa3BCRAp/jUY0VdIbteoGQWhZergXcEQEccpJKXoALlm4KEKHnVOGLf/Ceb/exG5vv0xiCUU6RwthFpuRLVFrqkMQH/mJ7kD1N44AoGlE1ElxxiguAze8v0oCWNMEDF5LGjvifWX2i4zhsvaqmwb7atMedyTtU5Hw8s3638C+PEQ1n1anb8cYYpGlZb6G1w3mi1j186ZrL+qCdHnu6Is3zGOBK7jVMcuGE4jPKmDCA6LPl0gig72JKL5yfIkDfkAuufJXSBmNVCUbiCEA2RWAzbCWFEsymMdV14m8TQ2JtEKes="
 
 before_install:
   - if [ "$QT_BASE" = "53" ]; then sudo add-apt-repository ppa:beineri/opt-qt532-trusty -y; fi
@@ -27,6 +25,7 @@ install:
   - sudo apt-get install -yqq qt${QT_BASE}base qt${QT_BASE}svg; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
 
 script:
+    - if [ "${COVERITY_SCAN_BRANCH}" == 1 ]; then exit 0 ; fi
     - qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make
     - cd ${TRAVIS_BUILD_DIR}/projects/lib/tests/ && qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make &&
       (cd chessboard; ./tst_board) &&
@@ -36,3 +35,12 @@ script:
     - cd ${TRAVIS_BUILD_DIR}/projects/lib/components/json/tests/ && qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make &&
       (cd parser; ./tst_jsonparser) &&
       (cd serializer; ./tst_jsonserializer)
+
+addons:
+  coverity_scan:
+    project:
+      name: cutechess/cutechess
+      description: Build submitted via Travis CI
+    build_command_prepend: qmake
+    build_command: make
+    branch_pattern: coverity_scan
