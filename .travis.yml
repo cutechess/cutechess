@@ -9,9 +9,10 @@ sudo: required
 dist: trusty
 
 env:
-  - QT_BASE=53
-  - QT_BASE=54
-  - QT_BASE=55
+  matrix:
+    - QT_BASE=53
+    - QT_BASE=54
+    - QT_BASE=55
   global:
     # Coverity Scan access token
     - secure: "a0D9/23/IV+404/STxfr9o0eVEp8Qx1J1KZPyKepSwdky9LpmeDTt6KWtfaL4mBiGNFpIHG239LHKbjIHLouFwP9SeLottIYUe/1xO12Y2eL5uUES0SbCGwyr248s5WvT15tvkF3xHy2FLMw0lDgsLDaOiOU7STteNYlFIHEkjUTQzx5UaG5utVDwsrjPdkkyij+Z2Ztl8tXCbEeyrct5ixzJX+lhAofwE7zpKlvhD1Snf/bHh0GopYQg8nL0Cdb15uhCjwTDQuaLTT2ICr8KsllLUie1ex5zWpCu4f9vsFFWZsBfFZ3+rReHfcNzWIoJ/0YNqdNBDio+akgewW31A/yUhnIxb5RuCirDnbny++yC/ZyMJUtY0LcRWZIfqa3BCRAp/jUY0VdIbteoGQWhZergXcEQEccpJKXoALlm4KEKHnVOGLf/Ceb/exG5vv0xiCUU6RwthFpuRLVFrqkMQH/mJ7kD1N44AoGlE1ElxxiguAze8v0oCWNMEDF5LGjvifWX2i4zhsvaqmwb7atMedyTtU5Hw8s3638C+PEQ1n1anb8cYYpGlZb6G1w3mi1j186ZrL+qCdHnu6Is3zGOBK7jVMcuGE4jPKmDCA6LPl0gig72JKL5yfIkDfkAuufJXSBmNVCUbiCEA2RWAzbCWFEsymMdV14m8TQ2JtEKes="
