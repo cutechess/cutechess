@@ -44,6 +44,7 @@ addons:
     project:
       name: cutechess/cutechess
       description: Build submitted via Travis CI
+    notification_email: scan_notifications@artoj.fastmail.com
     build_command_prepend: qmake
     build_command: make
     branch_pattern: coverity_scan
