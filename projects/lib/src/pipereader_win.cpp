@@ -51,7 +51,7 @@ qint64 PipeReader::readData(char* data, qint64 maxSize)
 	m_usedBytes.acquire(n);
 
 	// Copy the first (possibly the only) block of data
-	int size1 = qMin(m_bufEnd - m_start, n);
+	int size1 = qMin(int(m_bufEnd - m_start), n);
 	memcpy(data, m_start, size_t(size1));
 	m_start += size1;
 
@@ -82,7 +82,7 @@ void PipeReader::run()
 
 	forever
 	{
-		int maxSize = qMin(BufSize / 10, m_bufEnd - m_end);
+		int maxSize = qMin(BufSize / 10, int(m_bufEnd - m_end));
 		m_freeBytes.acquire(maxSize);
 
 		BOOL ok = ReadFile(m_pipe, m_end, maxSize, &dwRead, 0);
