@@ -1,12 +1,17 @@
-CONFIG += staticlib
 CONFIG += c++11
 
-win32:!CONFIG(staticlib) {
-    equals(TEMPLATE, "lib") {
-	DEFINES += LIB_EXPORT="__declspec(dllexport)"
+# Static linking is used by default.
+# Set "CONFIG+=dynamic" to use dynamic linking
+VAL_LIB_EXPORT = ""
+equals(TEMPLATE, "lib") {
+    dynamic {
+	win32 {
+	    VAL_LIB_EXPORT="__declspec(dllexport)"
+	}
     } else {
-	DEFINES += LIB_EXPORT="__declspec(dllimport)"
+	CONFIG += staticlib
     }
-} else {
-    DEFINES += LIB_EXPORT=""
+} else:win32:dynamic {
+    VAL_LIB_EXPORT="__declspec(dllimport)"
 }
+DEFINES += LIB_EXPORT=$$VAL_LIB_EXPORT
