@@ -328,6 +328,11 @@ void Tournament::startGame(TournamentPair* pair)
 	if (m_repeatOpening && !isRepeat)
 	{
 		m_startFen = game->startingFen();
+		if (m_startFen.isEmpty() && board->isRandomVariant())
+		{
+			m_startFen = board->defaultFenString();
+			game->setStartingFen(m_startFen);
+		}
 		m_openingMoves = game->moves();
 	}
 
