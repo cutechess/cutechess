@@ -69,7 +69,6 @@ class GameDatabaseDialog : public QDialog
 
 		GameViewer* m_gameViewer;
 		QVector<PgnGame::MoveData> m_moves;
-		int m_moveIndex;
 
 		GameDatabaseManager* m_dbManager;
 		PgnDatabaseModel* m_pgnDatabaseModel;

@@ -94,8 +94,10 @@ PgnGame PgnGameIterator::next(bool* ok, int depth)
 		if (db->status() == PgnDatabase::Ok)
 		{
 			m_file.setFileName(db->fileName());
-			m_file.open(QIODevice::ReadOnly | QIODevice::Text);
-			m_in.setDevice(&m_file);
+			if (m_file.open(QIODevice::ReadOnly | QIODevice::Text))
+				m_in.setDevice(&m_file);
+			else
+				m_in.setDevice(0);
 		}
 	}
 
