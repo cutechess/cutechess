@@ -31,9 +31,14 @@
  */
 class LIB_EXPORT PolyglotBook: public OpeningBook
 {
+	public:
+		/*! Creates a new PolyglotBook with access mode \a mode. */
+		PolyglotBook(AccessMode mode = Ram);
+
 	protected:
 		// Inherited from OpeningBook
-		virtual void readEntry(QDataStream& in);
+		virtual int entrySize() const;
+		virtual Entry readEntry(QDataStream& in, quint64* key) const;
 		virtual void writeEntry(const Map::const_iterator& it,
 					QDataStream& out) const;
 };

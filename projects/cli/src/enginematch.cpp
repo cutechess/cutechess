@@ -30,7 +30,8 @@ EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
 	: QObject(parent),
 	  m_tournament(tournament),
 	  m_debug(false),
-	  m_ratingInterval(0)
+	  m_ratingInterval(0),
+	  m_bookMode(OpeningBook::Ram)
 {
 	Q_ASSERT(tournament != 0);
 
@@ -50,7 +51,7 @@ OpeningBook* EngineMatch::addOpeningBook(const QString& fileName)
 	if (m_books.contains(fileName))
 		return m_books[fileName];
 
-	PolyglotBook* book = new PolyglotBook;
+	PolyglotBook* book = new PolyglotBook(m_bookMode);
 	if (!book->read(fileName))
 	{
 		delete book;
@@ -92,6 +93,11 @@ void EngineMatch::setRatingInterval(int interval)
 {
 	Q_ASSERT(interval >= 0);
 	m_ratingInterval = interval;
+}
+
+void EngineMatch::setBookMode(OpeningBook::AccessMode mode)
+{
+	m_bookMode = mode;
 }
 
 void EngineMatch::onGameStarted(ChessGame* game, int number)

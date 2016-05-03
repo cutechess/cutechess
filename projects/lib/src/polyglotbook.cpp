@@ -50,19 +50,27 @@ static quint16 moveToBits(const Chess::GenericMove& move)
 	return target | source | promotion;
 }
 
-void PolyglotBook::readEntry(QDataStream& in)
+PolyglotBook::PolyglotBook(AccessMode mode)
+	: OpeningBook(mode)
 {
-	quint64 key;
+}
+
+int PolyglotBook::entrySize() const
+{
+	return 16;
+}
+
+OpeningBook::Entry PolyglotBook::readEntry(QDataStream& in, quint64* key) const
+{
 	quint16 pgMove;
 	quint16 weight;
 	quint32 learn;
 	
 	// Read the data. No need to worry about endianess,
 	// because QDataStream uses big-endian by default.
-	in >> key >> pgMove >> weight >> learn;
+	in >> *key >> pgMove >> weight >> learn;
 	
-	Entry entry = { moveFromBits(pgMove), weight };
-	addEntry(entry, key);
+	return { moveFromBits(pgMove), weight };
 }
 
 void PolyglotBook::writeEntry(const Map::const_iterator& it,

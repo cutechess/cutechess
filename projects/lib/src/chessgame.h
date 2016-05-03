@@ -115,7 +115,7 @@ class LIB_EXPORT ChessGame : public QObject
 		Chess::Board* m_board;
 		ChessPlayer* m_player[2];
 		TimeControl m_timeControl[2];
-                const OpeningBook* m_book[2];
+		const OpeningBook* m_book[2];
 		int m_bookDepth[2];
 		int m_startDelay;
 		bool m_finished;

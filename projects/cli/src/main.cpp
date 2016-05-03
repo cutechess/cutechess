@@ -250,6 +250,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-ratinginterval", QVariant::Int, 1, 1);
 	parser.addOption("-debug", QVariant::Bool, 0, 0);
 	parser.addOption("-openings", QVariant::StringList);
+	parser.addOption("-bookmode", QVariant::String);
 	parser.addOption("-pgnout", QVariant::StringList, 1, 2);
 	parser.addOption("-repeat", QVariant::Bool, 0, 0);
 	parser.addOption("-recover", QVariant::Bool, 0, 0);
@@ -449,6 +450,16 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 				else
 					delete suite;
 			}
+		}
+		else if (name == "-bookmode")
+		{
+			QString val = value.toString();
+			if (val == "ram")
+				match->setBookMode(OpeningBook::Ram);
+			else if (val == "disk")
+				match->setBookMode(OpeningBook::Disk);
+			else
+				ok = false;
 		}
 		// PGN file where the games should be saved
 		else if (name == "-pgnout")

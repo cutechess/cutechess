@@ -42,8 +42,17 @@ class PgnStream;
 class LIB_EXPORT OpeningBook
 {
 	public:
+		/*! AccessMode defines how a book is accessed during play. */
+		enum AccessMode
+		{
+			Ram,	//!< Load the entire book to RAM
+			Disk	//!< Read moves directly from disk
+		};
+
+		/*! Creates a new OpeningBook with access mode \a mode. */
+		OpeningBook(AccessMode mode = Ram);
 		/*! Destroys the opening book. */
-		virtual ~OpeningBook() {}
+		virtual ~OpeningBook();
 		
 		/*!
 		 * Imports a PGN game.
@@ -118,23 +127,29 @@ class LIB_EXPORT OpeningBook
 		/*! The type of binary tree. */
 		typedef QMultiMap<quint64, Entry> Map;
 
+		/*! Returns the book format's internal entry size in bytes. */
+		virtual int entrySize() const = 0;
 
 		/*! Adds a new entry to the book. */
 		void addEntry(const Entry& entry, quint64 key);
 		
 		/*!
-		 * Reads a new book entry from \a in.
+		 * Reads a new book entry from \a in and returns it.
 		 *
-		 * The implementation must call addEntry() to add the
-		 * entry to the book.
+		 * The implementation must set \a key to the hash that
+		 * belongs to the entry.
 		 */
-		virtual void readEntry(QDataStream& in) = 0;
+		virtual Entry readEntry(QDataStream& in, quint64* key) const = 0;
 		
 		/*! Writes the key and entry pointed to by \a it, to \a out. */
 		virtual void writeEntry(const Map::const_iterator& it,
 					QDataStream& out) const = 0;
 
 	private:
+		QList<Entry> entriesFromDisk(quint64 key) const;
+
+		AccessMode m_mode;
+		QString m_filename;
 		Map m_map;
 };
 
