@@ -446,6 +446,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 				ok = suite->initialize();
 				if (ok)
 					tournament->setOpeningSuite(suite);
+				else
+					delete suite;
 			}
 		}
 		// PGN file where the games should be saved
