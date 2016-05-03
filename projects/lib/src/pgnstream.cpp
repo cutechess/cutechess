@@ -26,6 +26,7 @@ PgnStream::PgnStream(const QString& variant)
 	: m_board(0),
 	  m_pos(0),
 	  m_lineNumber(1),
+	  m_lastChar(0),
 	  m_tokenType(NoToken),
 	  m_device(0),
 	  m_string(0),
@@ -58,6 +59,7 @@ void PgnStream::reset()
 {
 	m_pos = 0;
 	m_lineNumber = 1;
+	m_lastChar = 0;
 	m_tokenString.clear();
 	m_tagName.clear();
 	m_tagValue.clear();
