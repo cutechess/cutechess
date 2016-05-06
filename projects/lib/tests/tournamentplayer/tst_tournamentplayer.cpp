@@ -5,16 +5,23 @@
 class MockOpeningBook: public OpeningBook
 {
 	protected:
-		virtual void readEntry(QDataStream& in)
+		virtual Entry readEntry(QDataStream& in, quint64* key) const
 		{
 			Q_UNUSED(in);
-		}
+			Q_UNUSED(key);
 
+			Entry entry;
+			return entry;
+		}
 		virtual void writeEntry(const Map::const_iterator& it,
 					QDataStream& out) const
 		{
 			Q_UNUSED(it);
 			Q_UNUSED(out);
+		}
+		virtual int entrySize() const
+		{
+			return 16;
 		}
 };
 
