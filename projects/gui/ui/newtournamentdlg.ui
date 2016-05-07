@@ -272,7 +272,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="m_browseFilesBtn">
+         <widget class="QPushButton" name="m_browseOpeningSuiteBtn">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>

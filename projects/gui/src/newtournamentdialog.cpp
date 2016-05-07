@@ -84,8 +84,8 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	connect(ui->m_browsePgnoutBtn, SIGNAL(clicked()),
 		this, SLOT(browsePgnout()));
 
-	connect(ui->m_browseFilesBtn, SIGNAL(clicked()),
-		this, SLOT(browseFiles()));
+	connect(ui->m_browseOpeningSuiteBtn, SIGNAL(clicked()),
+		this, SLOT(browseOpeningSuite()));
 
 	m_addedEnginesManager = new EngineManager(this);
 	m_addedEnginesModel = new EngineConfigurationModel(
@@ -224,7 +224,7 @@ void NewTournamentDialog::browsePgnout()
 		ui->m_pgnoutEdit->setText(str);
 }
 
-void NewTournamentDialog::browseFiles()
+void NewTournamentDialog::browseOpeningSuite()
 {
 	QString str = QFileDialog::getSaveFileName(this,
 						   tr("PGN/EPD file"),
@@ -254,12 +254,12 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setGamesPerEncounter(ui->m_gamesPerEncounterSpin->value());
 	t->setRoundMultiplier(ui->m_roundsSpin->value());
 
-	const QString& fileName = ui->m_suiteFileEdit->text();
+	QString fileName = ui->m_suiteFileEdit->text();
 	if (!fileName.isEmpty())
 	{
 		OpeningSuite::Format format = OpeningSuite::PgnFormat;
-		if (fileName.endsWith(".pgn"))
-			format = OpeningSuite::PgnFormat;
+		if (fileName.endsWith(".epd"))
+			format = OpeningSuite::EpdFormat;
 
 		OpeningSuite::Order order = OpeningSuite::SequentialOrder;
 		if (ui->m_seqOrderRadio->isChecked())
@@ -278,10 +278,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 		}
 	}
 
-	if (ui->m_repeatCheckBox->isChecked())
-		t->setOpeningRepetition(true);
-	else
-		t->setOpeningRepetition(false);
+	t->setOpeningRepetition(ui->m_repeatCheckBox->isChecked());
 
 	foreach (const EngineConfiguration& config, m_addedEnginesManager->engines())
 	{

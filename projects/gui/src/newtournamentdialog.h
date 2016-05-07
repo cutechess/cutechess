@@ -56,7 +56,7 @@ class NewTournamentDialog : public QDialog
 					      const QItemSelection& deselected);
 		void changeTimeControl();
 		void browsePgnout();
-		void browseFiles();
+		void browseOpeningSuite();
 	
 	private:
 		void moveEngine(int offset);
