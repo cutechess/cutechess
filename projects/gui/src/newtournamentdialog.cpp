@@ -84,8 +84,8 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	connect(ui->m_browsePgnoutBtn, SIGNAL(clicked()),
 		this, SLOT(browsePgnout()));
 
-	connect(ui->m_browseBookFilesBtn, SIGNAL(clicked()),
-		this, SLOT(browseBookFiles()));
+	connect(ui->m_browseFilesBtn, SIGNAL(clicked()),
+		this, SLOT(browseFiles()));
 
 	m_addedEnginesManager = new EngineManager(this);
 	m_addedEnginesModel = new EngineConfigurationModel(
@@ -224,14 +224,14 @@ void NewTournamentDialog::browsePgnout()
 		ui->m_pgnoutEdit->setText(str);
 }
 
-void NewTournamentDialog::browseBookFiles()
+void NewTournamentDialog::browseFiles()
 {
 	QString str = QFileDialog::getSaveFileName(this,
-						   tr("PGN/EPD book file"),
+						   tr("PGN/EPD file"),
 						   QString(),
 						   tr("PGN/EPD files (*.pgn *.epd)"));
 	if (!str.isEmpty())
-		ui->m_bookFileEdit->setText(str);
+		ui->m_suiteFileEdit->setText(str);
 }
 
 Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) const
@@ -254,32 +254,28 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setGamesPerEncounter(ui->m_gamesPerEncounterSpin->value());
 	t->setRoundMultiplier(ui->m_roundsSpin->value());
 
-	QString bookFileName = ui->m_bookFileEdit->text();
-	if (not bookFileName.isEmpty())
+	const QString& fileName = ui->m_suiteFileEdit->text();
+	if (!fileName.isEmpty())
 	{
 		OpeningSuite::Format format = OpeningSuite::PgnFormat;
-		if (bookFileName.endsWith(".pgn"))
+		if (fileName.endsWith(".pgn"))
 			format = OpeningSuite::PgnFormat;
-		else if (bookFileName.endsWith(".epd"))
-			format = OpeningSuite::EpdFormat;
-		else
-			{} // assume the user knows what he is doing
 
 		OpeningSuite::Order order = OpeningSuite::SequentialOrder;
 		if (ui->m_seqOrderRadio->isChecked())
 			order = OpeningSuite::SequentialOrder;
 		else if (ui->m_randomOrderRadio->isChecked())
 			order = OpeningSuite::RandomOrder;
-		else
-			return 0;
 
-		OpeningSuite* suite = new OpeningSuite(ui->m_bookFileEdit->text(),
+		OpeningSuite* suite = new OpeningSuite(ui->m_suiteFileEdit->text(),
 		                         format, order, 0);
-		bool ok = suite->initialize();
-		if (ok)
+		if (suite->initialize())
 			t->setOpeningSuite(suite);
 		else
+		{
+			delete suite;
 			return 0;
+		}
 	}
 
 	if (ui->m_repeatCheckBox->isChecked())

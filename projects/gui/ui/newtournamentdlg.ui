@@ -243,23 +243,23 @@
    <item>
     <widget class="QGroupBox" name="groupBox_5">
      <property name="title">
-      <string>Opening book</string>
+      <string>Opening suite</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_13">
-        <property name="text">
-         <string>PGN/EPD file::</string>
-        </property>
-        <property name="buddy">
-         <cstring>m_pgnoutEdit</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item row="0" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QLineEdit" name="m_bookFileEdit">
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>PGN/EPD file::</string>
+          </property>
+          <property name="buddy">
+           <cstring>m_pgnoutEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="m_suiteFileEdit">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -272,7 +272,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="m_browseBookFilesBtn">
+         <widget class="QPushButton" name="m_browseFilesBtn">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -316,10 +316,10 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="2" column="0">
        <widget class="QCheckBox" name="m_repeatCheckBox">
         <property name="text">
-         <string>Play each book position twice</string>
+         <string>Play each position twice</string>
         </property>
         <property name="checked">
          <bool>true</bool>
