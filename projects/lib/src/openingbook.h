@@ -49,6 +49,25 @@ class LIB_EXPORT OpeningBook
 			Disk	//!< Read moves directly from disk
 		};
 
+		/*!
+		 * \brief An entry in the opening book.
+		 *
+		 * \note Each entry is paired with a Zobrist key.
+		 * \note The book file may not use the same structure
+		 * for the entries.
+		 */
+		struct Entry
+		{
+			/*! A book move. */
+			Chess::GenericMove move;
+			/*!
+			 * A weight or score, usually based on popularity
+			 * of the move. The higher the weight, the more
+			 * likely the move will be played.
+			 */
+			quint16 weight;
+		};
+
 		/*! Creates a new OpeningBook with access mode \a mode. */
 		OpeningBook(AccessMode mode = Ram);
 		/*! Destroys the opening book. */
@@ -88,6 +107,9 @@ class LIB_EXPORT OpeningBook
 		 */
 		Chess::GenericMove move(quint64 key) const;
 
+		/*! Returns all entries matching \a key. */
+		QList<Entry> entries(quint64 key) const;
+
 		/*!
 		 * Reads a book from \a filename.
 		 * Returns true if successful; otherwise returns false.
@@ -104,25 +126,6 @@ class LIB_EXPORT OpeningBook
 	protected:
 		friend LIB_EXPORT QDataStream& operator>>(QDataStream& in, OpeningBook* book);
 		friend LIB_EXPORT QDataStream& operator<<(QDataStream& out, const OpeningBook* book);
-
-		/*!
-		 * \brief An entry in the opening book.
-		 *
-		 * \note Each entry is paired with a Zobrist key.
-		 * \note The book file may not use the same structure
-		 * for the entries.
-		 */
-		struct Entry
-		{
-			/*! A book move. */
-			Chess::GenericMove move;
-			/*!
-			 * A weight or score, usually based on popularity
-			 * of the move. The higher the weight, the more
-			 * likely the move will be played.
-			 */
-			quint16 weight;
-		};
 
 		/*! The type of binary tree. */
 		typedef QMultiMap<quint64, Entry> Map;

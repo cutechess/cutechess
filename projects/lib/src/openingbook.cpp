@@ -216,15 +216,20 @@ QList<OpeningBook::Entry> OpeningBook::entriesFromDisk(quint64 key) const
 	return entries;
 }
 
+QList<OpeningBook::Entry> OpeningBook::entries(quint64 key) const
+{
+	if (m_mode == Ram)
+		return m_map.values(key);
+	return entriesFromDisk(key);
+}
+
 Chess::GenericMove OpeningBook::move(quint64 key) const
 {
 	Chess::GenericMove move;
 	
 	// There can be multiple entries/moves with the same key.
 	// We need to find them all to choose the best one
-	QList<Entry> entries = m_map.values(key);
-	if (entries.isEmpty() && m_mode == Disk)
-		entries = entriesFromDisk(key);
+	QList<Entry> entries = this->entries(key);
 	if (entries.isEmpty())
 		return move;
 	
