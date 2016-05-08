@@ -66,6 +66,9 @@ Options:
 			not set the opening depth is unlimited. In sequential
 			mode START is the number of the first opening that will
 			be played. The minimum value for START is 1 (default).
+  -bookmode MODE	Set Polyglot book mode to MODE, which can be one of:
+			'ram': The whole book is loaded into RAM (default)
+			'disk': The book is accessed directly on disk.
   -pgnout FILE [min]	Save the games to FILE in PGN format. Use the 'min'
 			argument to save in a minimal/compact PGN format.
   -recover		Restart crashed engines instead of stopping the match

@@ -156,6 +156,16 @@ is the number of the first opening that will be played.
 The minimum value for
 .Ar start
 is 1 (default).
+.It Fl bookmode Ar mode
+Set Polyglot book access mode, where
+.Ar mode
+is either
+.Cm ram
+(the whole book is loaded into RAM) or
+.Cm disk
+(the book is accessed directly on disk).
+The default mode is
+.Cm ram .
 .It Fl pgnout Ar file Bq Cm min
 Save the games to
 .Ar file
