@@ -28,6 +28,7 @@
 #include <timecontrol.h>
 #include <roundrobintournament.h>
 #include <gauntlettournament.h>
+#include <openingsuite.h>
 
 #include "engineconfigurationmodel.h"
 #include "engineconfigproxymodel.h"
@@ -82,6 +83,9 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 
 	connect(ui->m_browsePgnoutBtn, SIGNAL(clicked()),
 		this, SLOT(browsePgnout()));
+
+	connect(ui->m_browseOpeningSuiteBtn, SIGNAL(clicked()),
+		this, SLOT(browseOpeningSuite()));
 
 	m_addedEnginesManager = new EngineManager(this);
 	m_addedEnginesModel = new EngineConfigurationModel(
@@ -220,6 +224,16 @@ void NewTournamentDialog::browsePgnout()
 		ui->m_pgnoutEdit->setText(str);
 }
 
+void NewTournamentDialog::browseOpeningSuite()
+{
+	QString str = QFileDialog::getSaveFileName(this,
+						   tr("PGN/EPD file"),
+						   QString(),
+						   tr("PGN/EPD files (*.pgn *.epd)"));
+	if (!str.isEmpty())
+		ui->m_suiteFileEdit->setText(str);
+}
+
 Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) const
 {
 	Q_ASSERT(gameManager != 0);
@@ -239,6 +253,32 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setPgnOutput(ui->m_pgnoutEdit->text());
 	t->setGamesPerEncounter(ui->m_gamesPerEncounterSpin->value());
 	t->setRoundMultiplier(ui->m_roundsSpin->value());
+
+	QString fileName = ui->m_suiteFileEdit->text();
+	if (!fileName.isEmpty())
+	{
+		OpeningSuite::Format format = OpeningSuite::PgnFormat;
+		if (fileName.endsWith(".epd"))
+			format = OpeningSuite::EpdFormat;
+
+		OpeningSuite::Order order = OpeningSuite::SequentialOrder;
+		if (ui->m_seqOrderRadio->isChecked())
+			order = OpeningSuite::SequentialOrder;
+		else if (ui->m_randomOrderRadio->isChecked())
+			order = OpeningSuite::RandomOrder;
+
+		OpeningSuite* suite = new OpeningSuite(ui->m_suiteFileEdit->text(),
+		                         format, order, 0);
+		if (suite->initialize())
+			t->setOpeningSuite(suite);
+		else
+		{
+			delete suite;
+			return 0;
+		}
+	}
+
+	t->setOpeningRepetition(ui->m_repeatCheckBox->isChecked());
 
 	foreach (const EngineConfiguration& config, m_addedEnginesManager->engines())
 	{
