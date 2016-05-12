@@ -226,7 +226,7 @@ void NewTournamentDialog::browsePgnout()
 
 void NewTournamentDialog::browseOpeningSuite()
 {
-	QString str = QFileDialog::getSaveFileName(this,
+	QString str = QFileDialog::getOpenFileName(this,
 						   tr("PGN/EPD file"),
 						   QString(),
 						   tr("PGN/EPD files (*.pgn *.epd)"));
