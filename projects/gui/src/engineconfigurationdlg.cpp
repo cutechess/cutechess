@@ -162,13 +162,13 @@ void EngineConfigurationDialog::browseCommand()
 	// Try to open the dialog in a directory that best matches the
 	// previous command and working directory
 	QString defaultDir;
-	QFileInfo oldInfo(ui->m_commandEdit->text());
+	const QFileInfo oldInfo(ui->m_commandEdit->text());
 	if (oldInfo.exists())
 		defaultDir = oldInfo.absoluteFilePath();
 	else
 	{
-		QString relFilePath = oldInfo.filePath();
-		QDir dir(ui->m_workingDirEdit->text());
+		const QString relFilePath = oldInfo.filePath();
+		const QDir dir(ui->m_workingDirEdit->text());
 
 		if (!relFilePath.isEmpty() && dir.exists(relFilePath))
 			defaultDir = dir.absoluteFilePath(relFilePath);
@@ -181,7 +181,7 @@ void EngineConfigurationDialog::browseCommand()
 	if (fileName.isEmpty())
 		return;
 
-	QFileInfo info(fileName);
+	const QFileInfo info(fileName);
 	QString prefix;
 
 	if (ui->m_workingDirEdit->text().isEmpty())
@@ -192,7 +192,7 @@ void EngineConfigurationDialog::browseCommand()
 		ui->m_nameEdit->setText(info.completeBaseName());
 
 	// Use a relative path in the "command" field if possible
-	QDir dir(ui->m_workingDirEdit->text());
+	const QDir dir(ui->m_workingDirEdit->text());
 	if (info.absoluteFilePath().startsWith(dir.absolutePath()))
 	{
 		fileName = dir.relativeFilePath(info.absoluteFilePath());

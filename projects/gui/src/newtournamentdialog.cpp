@@ -216,8 +216,8 @@ void NewTournamentDialog::changeTimeControl()
 
 void NewTournamentDialog::browsePgnout()
 {
-	QString str = QFileDialog::getSaveFileName(this,
-						   tr("PGN output file"),
+	const QString str = QFileDialog::getSaveFileName(this,
+						   tr("Select PGN output file"),
 						   QString(),
 						   tr("Portable Game Notation (*.pgn)"));
 	if (!str.isEmpty())
@@ -226,7 +226,7 @@ void NewTournamentDialog::browsePgnout()
 
 void NewTournamentDialog::browseOpeningSuite()
 {
-	QString str = QFileDialog::getOpenFileName(this,
+	const QString str = QFileDialog::getOpenFileName(this,
 						   tr("PGN/EPD file"),
 						   QString(),
 						   tr("PGN/EPD files (*.pgn *.epd)"));
@@ -254,7 +254,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setGamesPerEncounter(ui->m_gamesPerEncounterSpin->value());
 	t->setRoundMultiplier(ui->m_roundsSpin->value());
 
-	QString fileName = ui->m_suiteFileEdit->text();
+	const QString fileName = ui->m_suiteFileEdit->text();
 	if (!fileName.isEmpty())
 	{
 		OpeningSuite::Format format = OpeningSuite::PgnFormat;
