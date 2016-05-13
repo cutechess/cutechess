@@ -19,120 +19,105 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Search:</string>
-       </property>
-       <property name="buddy">
-        <cstring>m_searchEngineEdit</cstring>
+        <string>Configured chess engines:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="m_searchEngineEdit"/>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="m_clearBtn">
-       <property name="enabled">
-        <bool>false</bool>
+      <widget class="QLineEdit" name="m_searchEngineEdit">
+       <property name="placeholderText">
+        <string>Search</string>
        </property>
-       <property name="text">
-        <string>&amp;Clear</string>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <spacer name="verticalSpacer_3">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>1</width>
-       <height>5</height>
-      </size>
-     </property>
-    </spacer>
+    <widget class="QListView" name="m_enginesList"/>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Configured chess engines</string>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="spacing">
+      <number>0</number>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <widget class="QListView" name="m_enginesList"/>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QToolButton" name="m_addBtn">
-          <property name="toolTip">
-           <string>Add a new engine</string>
-          </property>
-          <property name="text">
-           <string>Add</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../res/icons/icons.qrc">
-            <normaloff>:/icons/toolbutton/add_16x16.png</normaloff>:/icons/toolbutton/add_16x16.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="m_removeBtn">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="toolTip">
-           <string>Remove selected engine(s)</string>
-          </property>
-          <property name="text">
-           <string>Remove</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../res/icons/icons.qrc">
-            <normaloff>:/icons/toolbutton/remove_16x16.png</normaloff>:/icons/toolbutton/remove_16x16.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="m_configureBtn">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="toolTip">
-           <string>Configure selected engine(s)</string>
-          </property>
-          <property name="text">
-           <string>Configure</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../res/icons/icons.qrc">
-            <normaloff>:/icons/toolbutton/configure_16x16.png</normaloff>:/icons/toolbutton/configure_16x16.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
+     <item>
+      <widget class="QToolButton" name="m_addBtn">
+       <property name="toolTip">
+        <string>Add a new engine</string>
+       </property>
+       <property name="text">
+        <string>Add</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/icons/icons.qrc">
+         <normaloff>:/icons/toolbutton/add_16x16.png</normaloff>:/icons/toolbutton/add_16x16.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="m_removeBtn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Remove selected engine(s)</string>
+       </property>
+       <property name="text">
+        <string>Remove</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/icons/icons.qrc">
+         <normaloff>:/icons/toolbutton/remove_16x16.png</normaloff>:/icons/toolbutton/remove_16x16.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="m_configureBtn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Configure selected engine(s)</string>
+       </property>
+       <property name="text">
+        <string>Configure</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/icons/icons.qrc">
+         <normaloff>:/icons/toolbutton/configure_16x16.png</normaloff>:/icons/toolbutton/configure_16x16.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -176,22 +161,6 @@
     <hint type="destinationlabel">
      <x>490</x>
      <y>272</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_clearBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>m_searchEngineEdit</receiver>
-   <slot>clear()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>388</x>
-     <y>36</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>36</y>
     </hint>
    </hints>
   </connection>

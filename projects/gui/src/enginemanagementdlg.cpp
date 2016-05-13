@@ -90,7 +90,6 @@ void EngineManagementDialog::updateUi()
 void EngineManagementDialog::updateSearch(const QString& terms)
 {
 	m_filteredModel->setFilterWildcard(terms);
-	ui->m_clearBtn->setEnabled(!terms.isEmpty());
 }
 
 void EngineManagementDialog::addEngine()
