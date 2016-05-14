@@ -44,7 +44,7 @@ class LIB_EXPORT StandardBoard : public WesternBoard
 		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
-		virtual Result tablebaseResult(unsigned int* dtm = 0) const;
+		virtual Result tablebaseResult(unsigned int* dtm = nullptr) const;
 };
 
 } // namespace Chess

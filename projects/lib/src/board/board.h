@@ -219,7 +219,7 @@ class LIB_EXPORT Board
 		 * useful mainly for updating a graphical representation of
 		 * the board.
 		 */
-		void makeMove(const Move& move, BoardTransition* transition = 0);
+		void makeMove(const Move& move, BoardTransition* transition = nullptr);
 		/*! Reverses the last move. */
 		void undoMove();
 
@@ -277,7 +277,7 @@ class LIB_EXPORT Board
 		 *
 		 * The default implementation always returns a null result.
 		 */
-		virtual Result tablebaseResult(unsigned int* dtm = 0) const;
+		virtual Result tablebaseResult(unsigned int* dtm = nullptr) const;
 
 	protected:
 		/*!
