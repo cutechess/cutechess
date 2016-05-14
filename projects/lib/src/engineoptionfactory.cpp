@@ -37,7 +37,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 	if (name.isEmpty())
 	{
 		qWarning("Empty option name");
-		return 0;
+		return nullptr;
 	}
 
 	// Special case for the button option type: its value is the name
@@ -49,7 +49,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 		value.type() != QVariant::Int)
 	{
 		qWarning("Invalid value type for option: %s", qPrintable(name));
-		return 0;
+		return nullptr;
 	}
 
 	if (defaultValue.isNull())
@@ -59,7 +59,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 		defaultValue.type() != QVariant::Int)
 	{
 		qWarning("Invalid default value type for option: %s", qPrintable(name));
-		return 0;
+		return nullptr;
 	}
 
 	// If the option type has not been defined, use text option as
@@ -91,7 +91,7 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 	{
 		const QStringList choices(map["choices"].toStringList());
 		if (choices.isEmpty())
-			return 0;
+			return nullptr;
 
 		return new EngineComboOption(name, value.toString(),
 			defaultValue.toString(), choices, alias);
@@ -103,23 +103,23 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 
 		intValue = value.toInt(&ok);
 		if (!ok)
-			return 0;
+			return nullptr;
 
 		defaultIntValue = defaultValue.toInt(&ok);
 		if (!ok)
-			return 0;
+			return nullptr;
 
 		minValue = map["min"].toInt(&ok);
 		if (!ok)
-			return 0;
+			return nullptr;
 
 		maxValue = map["max"].toInt(&ok);
 		if (!ok)
-			return 0;
+			return nullptr;
 
 		return new EngineSpinOption(name, intValue, defaultIntValue,
 			minValue, maxValue, alias);
 	}
 
-	return 0;
+	return nullptr;
 }

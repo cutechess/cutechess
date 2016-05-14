@@ -51,7 +51,7 @@ class LIB_EXPORT EngineProcess : public QIODevice
 		};
 
 		/*! Creates a new EngineProcess. */
-		explicit EngineProcess(QObject* parent = 0);
+		explicit EngineProcess(QObject* parent = nullptr);
 		/*!
 		 * Destructs the EngineProcess and frees all resources.
 		 * If the process is still running, it is killed.
