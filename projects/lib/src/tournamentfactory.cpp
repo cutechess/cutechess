@@ -31,5 +31,5 @@ Tournament* TournamentFactory::create(const QString& type,
 	if (type == "knockout")
 		return new KnockoutTournament(manager, parent);
 
-	return 0;
+	return nullptr;
 }

@@ -205,7 +205,7 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		void addPlayer(PlayerBuilder* builder,
 			       const TimeControl& timeControl,
-			       const OpeningBook* book = 0,
+			       const OpeningBook* book = nullptr,
 			       int bookDepth = 256);
 		/*!
 		 * Returns tournament results as a string.
