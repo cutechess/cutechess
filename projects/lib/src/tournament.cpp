@@ -32,7 +32,7 @@
 Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	: QObject(parent),
 	  m_gameManager(gameManager),
-	  m_lastGame(0),
+	  m_lastGame(nullptr),
 	  m_variant("standard"),
 	  m_round(0),
 	  m_nextGameNumber(0),
@@ -49,12 +49,12 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_recover(false),
 	  m_pgnCleanup(true),
 	  m_finished(false),
-	  m_openingSuite(0),
+	  m_openingSuite(nullptr),
 	  m_sprt(new Sprt),
 	  m_pgnOutMode(PgnGame::Verbose),
-	  m_pair(0)
+	  m_pair(nullptr)
 {
-	Q_ASSERT(gameManager != 0);
+	Q_ASSERT(gameManager != nullptr);
 }
 
 Tournament::~Tournament()
@@ -248,7 +248,7 @@ void Tournament::addPlayer(PlayerBuilder* builder,
 			   const OpeningBook* book,
 			   int bookDepth)
 {
-	Q_ASSERT(builder != 0);
+	Q_ASSERT(builder != nullptr);
 
 	TournamentPlayer player(builder, timeControl, book, bookDepth);
 	m_players.append(player);
@@ -298,7 +298,7 @@ void Tournament::startGame(TournamentPair* pair)
 	const TournamentPlayer& black = m_players[m_pair->secondPlayer()];
 
 	Chess::Board* board = Chess::BoardFactory::create(m_variant);
-	Q_ASSERT(board != 0);
+	Q_ASSERT(board != nullptr);
 	ChessGame* game = new ChessGame(board, new PgnGame());
 
 	connect(game, SIGNAL(started(ChessGame*)),
@@ -321,7 +321,7 @@ void Tournament::startGame(TournamentPair* pair)
 		m_openingMoves.clear();
 		isRepeat = true;
 	}
-	else if (m_openingSuite != 0)
+	else if (m_openingSuite != nullptr)
 		game->setMoves(m_openingSuite->nextGame(m_openingDepth));
 
 	game->generateOpening();
@@ -390,7 +390,7 @@ void Tournament::startNextGame()
 
 bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
 {
-	Q_ASSERT(pgn != 0);
+	Q_ASSERT(pgn != nullptr);
 	Q_ASSERT(gameNumber > 0);
 
 	if (m_pgnFile.fileName().isEmpty())
@@ -438,7 +438,7 @@ void Tournament::addScore(int player, int score)
 
 void Tournament::onGameStarted(ChessGame* game)
 {
-	Q_ASSERT(game != 0);
+	Q_ASSERT(game != nullptr);
 	Q_ASSERT(m_gameData.contains(game));
 
 	GameData* data = m_gameData[game];
@@ -452,7 +452,7 @@ void Tournament::onGameStarted(ChessGame* game)
 
 void Tournament::onGameFinished(ChessGame* game)
 {
-	Q_ASSERT(game != 0);
+	Q_ASSERT(game != nullptr);
 
 	PgnGame* pgn(game->pgn());
 	Chess::Result result(game->result());
@@ -527,7 +527,7 @@ void Tournament::onGameDestroyed(ChessGame* game)
 	if (game != m_lastGame)
 		return;
 
-	m_lastGame = 0;
+	m_lastGame = nullptr;
 	onFinished();
 }
 

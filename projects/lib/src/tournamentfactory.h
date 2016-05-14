@@ -37,7 +37,7 @@ class LIB_EXPORT TournamentFactory
 		 */
 		static Tournament* create(const QString& type,
 					  GameManager* manager,
-					  QObject* parent = 0);
+					  QObject* parent = nullptr);
 
 	private:
 		TournamentFactory();
