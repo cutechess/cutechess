@@ -30,7 +30,7 @@ GraphicsPiece::GraphicsPiece(const Chess::Piece& piece,
 		  squareSize, squareSize),
 	  m_elementId(elementId),
 	  m_renderer(renderer),
-	  m_container(0)
+	  m_container(nullptr)
 {
 	setAcceptedMouseButtons(Qt::LeftButton);
 	setCacheMode(DeviceCoordinateCache);
@@ -89,7 +89,7 @@ void GraphicsPiece::setContainer(QGraphicsItem* item)
 
 void GraphicsPiece::restoreParent()
 {
-	if (parentItem() == 0 && m_container != 0)
+	if (parentItem() == nullptr && m_container != nullptr)
 	{
 		QPointF point(m_container->mapFromScene(pos()));
 		setParentItem(m_container);

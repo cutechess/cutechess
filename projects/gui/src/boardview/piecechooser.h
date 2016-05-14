@@ -53,14 +53,14 @@ class PieceChooser : public QGraphicsObject
 		 */
 		PieceChooser(const QList<GraphicsPiece*>& pieces,
 			     qreal squareSize,
-			     QGraphicsItem* parent = 0);
+			     QGraphicsItem* parent = nullptr);
 
 		// Inherited from QGraphicsObject
 		virtual int type() const;
 		virtual QRectF boundingRect() const;
 		virtual void paint(QPainter* painter,
 				   const QStyleOptionGraphicsItem* option,
-				   QWidget* widget = 0);
+				   QWidget* widget = nullptr);
 
 		/*! Chooses a null piece and destroys the object. */
 		void cancelChoice();

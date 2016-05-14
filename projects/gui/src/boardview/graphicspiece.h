@@ -53,14 +53,14 @@ class GraphicsPiece : public QGraphicsObject
 			      qreal squareSize,
 			      const QString& elementId,
 			      QSvgRenderer* renderer,
-			      QGraphicsItem* parent = 0);
+			      QGraphicsItem* parent = nullptr);
 
 		// Inherited from QGraphicsObject
 		virtual int type() const;
 		virtual QRectF boundingRect() const;
 		virtual void paint(QPainter* painter,
 				   const QStyleOptionGraphicsItem* option,
-				   QWidget* widget = 0);
+				   QWidget* widget = nullptr);
 
 		/*! Returns the type of the chess piece. */
 		Chess::Piece pieceType() const;

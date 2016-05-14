@@ -12,7 +12,7 @@ PieceChooser::PieceChooser(const QList<GraphicsPiece*>& pieces,
 			   QGraphicsItem* parent)
 	: QGraphicsObject(parent),
 	  m_squareSize(squareSize),
-	  m_anim(0)
+	  m_anim(nullptr)
 {
 	foreach (GraphicsPiece* piece, pieces)
 		m_pieces[piece->pieceType().side()] << piece;
@@ -107,7 +107,7 @@ void PieceChooser::reveal()
 
 void PieceChooser::destroy()
 {
-	if (m_anim == 0)
+	if (m_anim == nullptr)
 	{
 		deleteLater();
 		return;
@@ -134,7 +134,7 @@ void PieceChooser::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 	QGraphicsItem* item = scene()->itemAt(event->scenePos(), QTransform());
 	GraphicsPiece* piece = qgraphicsitem_cast<GraphicsPiece*>(item);
-	if (piece != 0 && piece->parentItem() == this)
+	if (piece != nullptr && piece->parentItem() == this)
 	{
 		emit pieceChosen(piece->pieceType());
 		destroy();
