@@ -30,8 +30,8 @@
 
 CuteChessCoreApplication::CuteChessCoreApplication(int& argc, char* argv[])
 	: QCoreApplication(argc, argv),
-	  m_engineManager(0),
-	  m_gameManager(0)
+	  m_engineManager(nullptr),
+	  m_gameManager(nullptr)
 {
 	Mersenne::initialize(QTime(0,0,0).msecsTo(QTime::currentTime()));
 
@@ -98,7 +98,7 @@ QString CuteChessCoreApplication::configPath()
 
 EngineManager* CuteChessCoreApplication::engineManager()
 {
-	if (m_engineManager == 0)
+	if (m_engineManager == nullptr)
 		m_engineManager = new EngineManager(this);
 
 	return m_engineManager;
@@ -106,7 +106,7 @@ EngineManager* CuteChessCoreApplication::engineManager()
 
 GameManager* CuteChessCoreApplication::gameManager()
 {
-	if (m_gameManager == 0)
+	if (m_gameManager == nullptr)
 		m_gameManager = new GameManager(this);
 
 	return m_gameManager;
