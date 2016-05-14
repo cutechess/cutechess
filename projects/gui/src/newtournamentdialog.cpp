@@ -69,12 +69,18 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 		this, SLOT(addEngine()));
 	connect(ui->m_removeEngineBtn, SIGNAL(clicked()),
 		this, SLOT(removeEngine()));
-	connect(ui->m_configureEngineBtn, SIGNAL(clicked()),
-		this, SLOT(configureEngine()));
-	connect(ui->m_moveEngineUpBtn, SIGNAL(clicked()),
-		this, SLOT(moveEngineUp()));
-	connect(ui->m_moveEngineDownBtn, SIGNAL(clicked()),
-		this, SLOT(moveEngineDown()));
+	connect(ui->m_configureEngineBtn, &QToolButton::clicked, [=]()
+	{
+		configureEngine(ui->m_playersList->currentIndex());
+	});
+	connect(ui->m_moveEngineUpBtn, &QToolButton::clicked, [=]()
+	{
+		moveEngine(-1);
+	});
+	connect(ui->m_moveEngineDownBtn, &QToolButton::clicked, [=]()
+	{
+		moveEngine(1);
+	});
 
 	connect(ui->m_timeControlBtn, SIGNAL(clicked()),
 		this, SLOT(changeTimeControl()));
@@ -145,11 +151,6 @@ void NewTournamentDialog::removeEngine()
 	button->setEnabled(m_addedEnginesManager->engineCount() > 1);
 }
 
-void NewTournamentDialog::configureEngine()
-{
-	configureEngine(ui->m_playersList->currentIndex());
-}
-
 void NewTournamentDialog::configureEngine(const QModelIndex& index)
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine);
@@ -177,16 +178,6 @@ void NewTournamentDialog::moveEngine(int offset)
 	m_addedEnginesManager->updateEngineAt(row2, tmp);
 
 	ui->m_playersList->setCurrentIndex(index.sibling(row2, 0));
-}
-
-void NewTournamentDialog::moveEngineUp()
-{
-	moveEngine(-1);
-}
-
-void NewTournamentDialog::moveEngineDown()
-{
-	moveEngine(1);
 }
 
 void NewTournamentDialog::onVariantChanged(const QString& variant)

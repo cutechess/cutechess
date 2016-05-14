@@ -47,10 +47,7 @@ class NewTournamentDialog : public QDialog
 	private slots:
 		void addEngine();
 		void removeEngine();
-		void configureEngine();
 		void configureEngine(const QModelIndex& index);
-		void moveEngineUp();
-		void moveEngineDown();
 		void onVariantChanged(const QString& variant);
 		void onPlayerSelectionChanged(const QItemSelection& selected,
 					      const QItemSelection& deselected);
