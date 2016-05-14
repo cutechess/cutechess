@@ -1084,7 +1084,7 @@ Result StandardBoard::tablebaseResult(unsigned int* dtm) const
 		}
 	}
 
-	GaviotaTablebase::Castling castling = 0;
+	GaviotaTablebase::Castling castling = nullptr;
 	if (hasCastlingRight(Chess::Side::White, KingSide))
 		castling |= GaviotaTablebase::WhiteKingSide;
 	if (hasCastlingRight(Chess::Side::White, QueenSide))

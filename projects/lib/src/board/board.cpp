@@ -61,7 +61,7 @@ Board::Board(Zobrist* zobrist)
 	  m_zobrist(zobrist),
 	  m_sharedZobrist(zobrist)
 {
-	Q_ASSERT(zobrist != 0);
+	Q_ASSERT(zobrist != nullptr);
 
 	setPieceType(Piece::NoPiece, QString(), QString());
 }

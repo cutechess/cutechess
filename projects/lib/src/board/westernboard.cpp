@@ -408,7 +408,7 @@ Move WesternBoard::moveFromSanString(const QString& str)
 
 	QVarLengthArray<Move> moves;
 	generateMoves(moves, piece.type());
-	const Move* match = 0;
+	const Move* match = nullptr;
 
 	// Loop through all legal moves to find a move that matches
 	// the data we got from the move string.
@@ -433,12 +433,12 @@ Move WesternBoard::moveFromSanString(const QString& str)
 
 		// Return an empty move if there are multiple moves that
 		// match the move string.
-		if (match != 0)
+		if (match != nullptr)
 			return Move();
 		match = &move;
 	}
 
-	if (match != 0)
+	if (match != nullptr)
 		return *match;
 
 	return Move();
@@ -755,7 +755,7 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 			setSquare(rookTarget, rook);
 			isReversible = false;
 
-			if (transition != 0)
+			if (transition != nullptr)
 				transition->addMove(chessSquare(rookSource),
 						    chessSquare(rookTarget));
 		}
@@ -774,7 +774,7 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 			int epTarget = target + m_arwidth * m_sign;
 			setSquare(epTarget, Piece::NoPiece);
 
-			if (transition != 0)
+			if (transition != nullptr)
 				transition->addSquare(chessSquare(epTarget));
 		}
 		// Push a pawn two squares ahead, creating an en-passant
@@ -809,7 +809,7 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 		isReversible = false;
 	}
 
-	if (transition != 0)
+	if (transition != nullptr)
 	{
 		if (source != 0)
 			transition->addMove(chessSquare(source),
