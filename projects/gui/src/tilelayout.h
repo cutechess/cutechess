@@ -26,7 +26,7 @@ class TileLayout : public QLayout
 	Q_OBJECT
 
 	public:
-		explicit TileLayout(QWidget* parent = 0);
+		explicit TileLayout(QWidget* parent = nullptr);
 		virtual ~TileLayout();
 
 		// Inherited from QLayout

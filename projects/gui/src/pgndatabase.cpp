@@ -84,8 +84,8 @@ void PgnDatabase::setDisplayName(const QString& displayName)
 PgnDatabase::Status PgnDatabase::game(const PgnGameEntry* entry,
 				      PgnGame* game)
 {
-	Q_ASSERT(entry != 0);
-	Q_ASSERT(game != 0);
+	Q_ASSERT(entry != nullptr);
+	Q_ASSERT(game != nullptr);
 
 	Status status = this->status();
 	if (status != Ok)

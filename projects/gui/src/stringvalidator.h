@@ -37,7 +37,7 @@ class StringValidator : public QValidator
 
 	public:
 		/*! Creates a new StringValidator object. */
-		explicit StringValidator(QObject* parent = 0);
+		explicit StringValidator(QObject* parent = nullptr);
 
 		/*! Uses \a model as the validation model. */
 		void setModel(const QAbstractItemModel* model);

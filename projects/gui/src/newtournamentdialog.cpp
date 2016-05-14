@@ -44,7 +44,7 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	  m_srcEngineManager(engineManager),
 	  ui(new Ui::NewTournamentDialog)
 {
-	Q_ASSERT(engineManager != 0);
+	Q_ASSERT(engineManager != nullptr);
 	ui->setupUi(this);
 
 	m_srcEnginesModel = new EngineConfigurationModel(engineManager, this);
@@ -236,15 +236,15 @@ void NewTournamentDialog::browseOpeningSuite()
 
 Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) const
 {
-	Q_ASSERT(gameManager != 0);
+	Q_ASSERT(gameManager != nullptr);
 
-	Tournament* t = 0;
+	Tournament* t = nullptr;
 	if (ui->m_roundRobinRadio->isChecked())
 		t = new RoundRobinTournament(gameManager, parent());
 	else if (ui->m_gauntletRadio->isChecked())
 		t = new GauntletTournament(gameManager, parent());
 	else
-		return 0;
+		return nullptr;
 
 	t->setPgnCleanupEnabled(false);
 	t->setName(ui->m_nameEdit->text());
@@ -274,7 +274,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 		else
 		{
 			delete suite;
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -284,7 +284,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	{
 		t->addPlayer(new EngineBuilder(config),
 			     m_timeControl,
-			     0,
+			     nullptr,
 			     256);
 	}
 

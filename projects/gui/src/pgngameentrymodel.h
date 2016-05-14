@@ -34,7 +34,7 @@ class PgnGameEntryModel : public QAbstractItemModel
 
 	public:
 		/*! Constructs a PGN game entry model with the given \a parent. */
-		PgnGameEntryModel(QObject* parent = 0);
+		PgnGameEntryModel(QObject* parent = nullptr);
 
 		/*! Returns the PGN entry at \a row. */
 		const PgnGameEntry* entryAt(int row) const;

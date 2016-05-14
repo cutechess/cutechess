@@ -51,7 +51,7 @@ class NewGameDialog : public QDialog
 		 * Creates a new game dialog with \a engineConfigurations as the
 		 * list of chess engines and given \a parent.
 		*/
-		NewGameDialog(EngineManager* engineManager, QWidget* parent = 0);
+		NewGameDialog(EngineManager* engineManager, QWidget* parent = nullptr);
 		/*! Destroys the dialog. */
 		virtual ~NewGameDialog();
 

@@ -43,7 +43,7 @@ class MoveList : public QWidget
 
 	public:
 		/*! Constructs a move list with the given \a parent. */
-		MoveList(QWidget* parent = 0);
+		MoveList(QWidget* parent = nullptr);
 
 		/*!
 		 * Associates \a game and \a pgn with this document.
@@ -51,7 +51,7 @@ class MoveList : public QWidget
 		 * Either \a game or \a pgn must not be NULL.
 		 * If \a pgn is NULL, then the PGN data is retrieved from \a game.
 		 */
-		void setGame(ChessGame* game, PgnGame* pgn = 0);
+		void setGame(ChessGame* game, PgnGame* pgn = nullptr);
 
 	public slots:
 		/*! Highlights move \a moveNum */

@@ -45,7 +45,7 @@ class PgnImporter : public QThread
 		 * Constructs a PgnImporter with \a parent and \a fileName as
 		 * database to be imported.
 		 */
-		PgnImporter(const QString& fileName, QObject* parent = 0);
+		PgnImporter(const QString& fileName, QObject* parent = nullptr);
 		/*! Returns the file name of the database to be imported. */
 		QString fileName() const;
 

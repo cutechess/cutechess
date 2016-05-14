@@ -41,10 +41,10 @@
 
 CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	: QApplication(argc, argv),
-	  m_engineManager(0),
-	  m_gameManager(0),
-	  m_gameDatabaseManager(0),
-	  m_gameDatabaseDialog(0)
+	  m_engineManager(nullptr),
+	  m_gameManager(nullptr),
+	  m_gameDatabaseManager(nullptr),
+	  m_gameDatabaseDialog(nullptr)
 {
 	Mersenne::initialize(QTime(0,0,0).msecsTo(QTime::currentTime()));
 
@@ -114,7 +114,7 @@ QString CuteChessApplication::configPath()
 
 EngineManager* CuteChessApplication::engineManager()
 {
-	if (m_engineManager == 0)
+	if (m_engineManager == nullptr)
 		m_engineManager = new EngineManager(this);
 
 	return m_engineManager;
@@ -122,7 +122,7 @@ EngineManager* CuteChessApplication::engineManager()
 
 GameManager* CuteChessApplication::gameManager()
 {
-	if (m_gameManager == 0)
+	if (m_gameManager == nullptr)
 		m_gameManager = new GameManager(this);
 
 	return m_gameManager;
@@ -156,7 +156,7 @@ void CuteChessApplication::newDefaultGame()
 
 GameDatabaseManager* CuteChessApplication::gameDatabaseManager()
 {
-	if (m_gameDatabaseManager == 0)
+	if (m_gameDatabaseManager == nullptr)
 	{
 		m_gameDatabaseManager = new GameDatabaseManager(this);
 
@@ -169,7 +169,7 @@ GameDatabaseManager* CuteChessApplication::gameDatabaseManager()
 
 void CuteChessApplication::showGameDatabaseDialog()
 {
-	if (m_gameDatabaseDialog == 0)
+	if (m_gameDatabaseDialog == nullptr)
 		m_gameDatabaseDialog = new GameDatabaseDialog(gameDatabaseManager());
 
 	m_gameDatabaseDialog->show();
@@ -185,7 +185,7 @@ void CuteChessApplication::showGameWall()
 
 void CuteChessApplication::onLastWindowClosed()
 {
-	if (m_gameManager != 0)
+	if (m_gameManager != nullptr)
 	{
 		connect(m_gameManager, SIGNAL(finished()), this, SLOT(quit()));
 		m_gameManager->finish();
