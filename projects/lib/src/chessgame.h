@@ -39,7 +39,7 @@ class LIB_EXPORT ChessGame : public QObject
 	Q_OBJECT
 
 	public:
-		ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent = 0);
+		ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent = nullptr);
 		virtual ~ChessGame();
 		
 		QString errorString() const;
@@ -91,9 +91,9 @@ class LIB_EXPORT ChessGame : public QObject
 				 const Chess::GenericMove& move,
 				 const QString& sanString,
 				 const QString& comment);
-		void started(ChessGame* game = 0);
-		void finished(ChessGame* game = 0);
-		void startFailed(ChessGame* game = 0);
+		void started(ChessGame* game = nullptr);
+		void finished(ChessGame* game = nullptr);
+		void startFailed(ChessGame* game = nullptr);
 		void playersReady();
 
 	private slots:

@@ -26,8 +26,8 @@ ChessPlayer::ChessPlayer(QObject* parent)
 	  m_timer(new QTimer(this)),
 	  m_claimedResult(false),
 	  m_validateClaims(true),
-	  m_board(0),
-	  m_opponent(0)
+	  m_board(nullptr),
+	  m_opponent(nullptr)
 {
 	m_timer->setSingleShot(true);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
@@ -53,8 +53,8 @@ bool ChessPlayer::isReady() const
 
 void ChessPlayer::newGame(Chess::Side side, ChessPlayer* opponent, Chess::Board* board)
 {
-	Q_ASSERT(opponent != 0);
-	Q_ASSERT(board != 0);
+	Q_ASSERT(opponent != nullptr);
+	Q_ASSERT(board != nullptr);
 	Q_ASSERT(isReady());
 	Q_ASSERT(m_state != Disconnected);
 
@@ -77,7 +77,7 @@ void ChessPlayer::endGame(const Chess::Result& result)
 
 	Q_ASSERT(m_state != Disconnected);
 	setState(FinishingGame);
-	m_board = 0;
+	m_board = nullptr;
 	m_timer->stop();
 	disconnect(this, SIGNAL(ready()), this, SLOT(go()));
 }
@@ -95,7 +95,7 @@ void ChessPlayer::go()
 		return;
 	}
 
-	Q_ASSERT(m_board != 0);
+	Q_ASSERT(m_board != nullptr);
 	m_side = m_board->sideToMove();
 	
 	startClock();
