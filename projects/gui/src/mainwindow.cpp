@@ -341,9 +341,9 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	if (gameData.game == m_game && m_game != 0)
 		return;
 
-	for (int i = 0; i < 2; i++)
+	for (auto & m_player : m_players)
 	{
-		ChessPlayer* player(m_players[i]);
+		ChessPlayer* player(m_player);
 		if (player != 0)
 		{
 			disconnect(player, 0, m_engineDebugLog, 0);

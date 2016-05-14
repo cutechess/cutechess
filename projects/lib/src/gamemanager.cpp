@@ -74,13 +74,13 @@ GameInitializer::GameInitializer(const PlayerBuilder* white,
 
 GameInitializer::~GameInitializer()
 {
-	for (int i = 0; i < 2; i++)
+	for (auto & i : m_player)
 	{
-		if (m_player[i] == 0)
+		if (i == 0)
 			continue;
 
-		m_player[i]->disconnect();
-		m_player[i]->kill();
+		i->disconnect();
+		i->kill();
 	}
 }
 
@@ -170,15 +170,15 @@ void GameInitializer::finish()
 		return;
 	}
 
-	for (int i = 0; i < 2; i++)
+	for (auto & i : m_player)
 	{
-		if (m_player[i] == 0)
+		if (i == 0)
 			continue;
 
-		connect(m_player[i], SIGNAL(disconnected()),
+		connect(i, SIGNAL(disconnected()),
 			this, SLOT(onPlayerQuit()),
 			Qt::QueuedConnection);
-		m_player[i]->quit();
+		i->quit();
 	}
 }
 

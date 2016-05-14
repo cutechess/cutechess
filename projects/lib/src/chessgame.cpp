@@ -142,10 +142,10 @@ void ChessGame::stop(bool emitMoveChanged)
 void ChessGame::finish()
 {
 	disconnect(this, SIGNAL(playersReady()), this, SLOT(finish()));
-	for (int i = 0; i < 2; i++)
+	for (auto & i : m_player)
 	{
-		if (m_player[i] != 0)
-			m_player[i]->disconnect(this);
+		if (i != 0)
+			i->disconnect(this);
 	}
 
 	emit finished(this);
@@ -153,10 +153,10 @@ void ChessGame::finish()
 
 void ChessGame::kill()
 {
-	for (int i = 0; i < 2; i++)
+	for (auto & i : m_player)
 	{
-		if (m_player[i] != 0)
-			m_player[i]->kill();
+		if (i != 0)
+			i->kill();
 	}
 
 	stop();
@@ -514,10 +514,10 @@ void ChessGame::onPlayerReady()
 	disconnect(sender, SIGNAL(disconnected()),
 		   this, SLOT(onPlayerReady()));
 
-	for (int i = 0; i < 2; i++)
+	for (auto & i : m_player)
 	{
-		if (!m_player[i]->isReady()
-		&&  m_player[i]->state() != ChessPlayer::Disconnected)
+		if (!i->isReady()
+		&&  i->state() != ChessPlayer::Disconnected)
 			return;
 	}
 
@@ -528,10 +528,9 @@ void ChessGame::syncPlayers()
 {
 	bool ready = true;
 
-	for (int i = 0; i < 2; i++)
+	for (auto player : m_player)
 	{
-		ChessPlayer* player = m_player[i];
-		Q_ASSERT(player != 0);
+			Q_ASSERT(player != 0);
 
 		if (!player->isReady()
 		&&  player->state() != ChessPlayer::Disconnected)
@@ -556,9 +555,9 @@ void ChessGame::start()
 		return;
 	}
 
-	for (int i = 0; i < 2; i++)
+	for (auto & i : m_player)
 	{
-		connect(m_player[i], SIGNAL(resultClaim(Chess::Result)),
+		connect(i, SIGNAL(resultClaim(Chess::Result)),
 			this, SLOT(onResultClaim(Chess::Result)));
 	}
 
@@ -613,10 +612,9 @@ void ChessGame::startGame()
 		return;
 
 	m_gameInProgress = true;
-	for (int i = 0; i < 2; i++)
+	for (auto player : m_player)
 	{
-		ChessPlayer* player = m_player[i];
-		Q_ASSERT(player != 0);
+			Q_ASSERT(player != 0);
 		Q_ASSERT(player->isReady());
 
 		if (player->state() == ChessPlayer::Disconnected)
@@ -646,10 +644,9 @@ void ChessGame::startGame()
 	}
 
 	// Play the forced opening moves first
-	for (int i = 0; i < m_moves.size(); i++)
+	for (auto move : m_moves)
 	{
-		Chess::Move move(m_moves.at(i));
-		Q_ASSERT(m_board->isLegalMove(move));
+			Q_ASSERT(m_board->isLegalMove(move));
 		
 		addPgnMove(move, "book");
 
@@ -668,12 +665,12 @@ void ChessGame::startGame()
 		}
 	}
 	
-	for (int i = 0; i < 2; i++)
+	for (auto & i : m_player)
 	{
-		connect(m_player[i], SIGNAL(moveMade(Chess::Move)),
+		connect(i, SIGNAL(moveMade(Chess::Move)),
 			this, SLOT(onMoveMade(Chess::Move)));
-		if (m_player[i]->isHuman())
-			connect(m_player[i], SIGNAL(wokeUp()),
+		if (i->isHuman())
+			connect(i, SIGNAL(wokeUp()),
 				this, SLOT(resume()));
 	}
 	
