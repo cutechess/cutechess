@@ -69,7 +69,7 @@ class LIB_EXPORT GameManager : public QObject
 		};
 
 		/*! Creates a new game manager. */
-		GameManager(QObject* parent = 0);
+		GameManager(QObject* parent = nullptr);
 
 		/*!
 		 * Returns the list of active games.

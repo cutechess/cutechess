@@ -61,22 +61,22 @@ GameInitializer::GameInitializer(const PlayerBuilder* white,
 				 const PlayerBuilder* black)
 	: m_playerCount(0),
 	  m_finishing(false),
-	  m_game(0)
+	  m_game(nullptr)
 {
-	Q_ASSERT(white != 0);
-	Q_ASSERT(black != 0);
+	Q_ASSERT(white != nullptr);
+	Q_ASSERT(black != nullptr);
 
 	m_builder[Chess::Side::White] = white;
 	m_builder[Chess::Side::Black] = black;
-	m_player[0] = 0;
-	m_player[1] = 0;
+	m_player[0] = nullptr;
+	m_player[1] = nullptr;
 }
 
 GameInitializer::~GameInitializer()
 {
 	for (int i = 0; i < 2; i++)
 	{
-		if (m_player[i] == 0)
+		if (m_player[i] == nullptr)
 			continue;
 
 		m_player[i]->disconnect();
@@ -108,10 +108,10 @@ void GameInitializer::setGame(ChessGame* game)
 void GameInitializer::deletePlayer(int index)
 {
 	ChessPlayer* player = m_player[index];
-	if (player == 0)
+	if (player == nullptr)
 		return;
 
-	m_player[index] = 0;
+	m_player[index] = nullptr;
 	if (player->state() == ChessPlayer::Disconnected)
 		player->deleteLater();
 	else
@@ -128,13 +128,13 @@ void GameInitializer::initializeGame()
 	{
 		// Delete a disconnected player (crashed engine) so that
 		// it will be restarted.
-		if (m_player[i] != 0
+		if (m_player[i] != nullptr
 		&&  m_player[i]->state() == ChessPlayer::Disconnected)
 		{
 			deletePlayer(i);
 		}
 
-		if (m_player[i] == 0)
+		if (m_player[i] == nullptr)
 		{
 			QString error;
 			m_player[i] = m_builder[i]->create(thread()->parent(),
@@ -142,7 +142,7 @@ void GameInitializer::initializeGame()
 							   this, &error);
 			m_game->setError(error);
 
-			if (m_player[i] == 0)
+			if (m_player[i] == nullptr)
 			{
 				m_playerCount = 0;
 				deletePlayer(!i);
@@ -172,7 +172,7 @@ void GameInitializer::finish()
 
 	for (int i = 0; i < 2; i++)
 	{
-		if (m_player[i] == 0)
+		if (m_player[i] == nullptr)
 			continue;
 
 		connect(m_player[i], SIGNAL(disconnected()),
@@ -234,7 +234,7 @@ GameThread::GameThread(const PlayerBuilder* white,
 	  m_ready(true),
 	  m_startMode(GameManager::StartImmediately),
 	  m_cleanupMode(GameManager::DeletePlayers),
-	  m_game(0),
+	  m_game(nullptr),
 	  m_initializer(new GameInitializer(white, black))
 {
 	connect(m_initializer, SIGNAL(gameInitialized(bool)),
@@ -272,7 +272,7 @@ void GameThread::newGame(ChessGame* game)
 
 void GameThread::finish()
 {
-	if (m_initializer == 0)
+	if (m_initializer == nullptr)
 		return;
 
 	if (m_cleanupMode == GameManager::DeletePlayers)
@@ -283,7 +283,7 @@ void GameThread::finish()
 
 	QMetaObject::invokeMethod(m_initializer, "finish",
 				  Qt::QueuedConnection);
-	m_initializer = 0;
+	m_initializer = nullptr;
 }
 
 void GameThread::finishAndDelete()
@@ -358,7 +358,7 @@ void GameManager::cleanupIdleThreads()
 	while (it != m_activeThreads.end())
 	{
 		GameThread* thread = *it;
-		Q_ASSERT(thread != 0);
+		Q_ASSERT(thread != nullptr);
 
 		if (thread->isReady())
 		{
@@ -378,7 +378,7 @@ void GameManager::cleanup()
 	QList< QPointer<GameThread> >::iterator it = m_threads.begin();
 	while (it != m_threads.end())
 	{
-		if (*it == 0 || !(*it)->isRunning())
+		if (*it == nullptr || !(*it)->isRunning())
 			it = m_threads.erase(it);
 		else
 			++it;
@@ -414,10 +414,10 @@ void GameManager::newGame(ChessGame* game,
 			  StartMode startMode,
 			  CleanupMode cleanupMode)
 {
-	Q_ASSERT(game != 0);
-	Q_ASSERT(white != 0);
-	Q_ASSERT(black != 0);
-	Q_ASSERT(game->parent() == 0);
+	Q_ASSERT(game != nullptr);
+	Q_ASSERT(white != nullptr);
+	Q_ASSERT(black != nullptr);
+	Q_ASSERT(game->parent() == nullptr);
 
 	GameEntry entry = { game, white, black, startMode, cleanupMode };
 
@@ -436,7 +436,7 @@ void GameManager::onThreadQuit()
 	GameThread* thread = qobject_cast<GameThread*>(QObject::sender());
 	m_threads.removeOne(thread);
 
-	if (thread != 0)
+	if (thread != nullptr)
 		thread->deleteLater();
 
 	if (m_threads.isEmpty())
@@ -449,11 +449,11 @@ void GameManager::onThreadQuit()
 void GameManager::onThreadReady()
 {
 	GameThread* thread = qobject_cast<GameThread*>(QObject::sender());
-	Q_ASSERT(thread != 0);
+	Q_ASSERT(thread != nullptr);
 	ChessGame* game = thread->game();
 
 	m_activeGames.removeOne(game);
-	m_threads.removeAll(0);
+	m_threads.removeAll(nullptr);
 
 	if (thread->cleanupMode() == DeletePlayers)
 	{
@@ -475,7 +475,7 @@ void GameManager::onThreadReady()
 void GameManager::onGameInitialized(bool success)
 {
 	GameThread* gameThread = qobject_cast<GameThread*>(sender());
-	Q_ASSERT(gameThread != 0);
+	Q_ASSERT(gameThread != nullptr);
 	ChessGame* game = gameThread->game();
 
 	if (!success)
@@ -509,8 +509,8 @@ void GameManager::onGameInitialized(bool success)
 GameThread* GameManager::getThread(const PlayerBuilder* white,
 				   const PlayerBuilder* black)
 {
-	Q_ASSERT(white != 0);
-	Q_ASSERT(black != 0);
+	Q_ASSERT(white != nullptr);
+	Q_ASSERT(black != nullptr);
 
 	foreach (GameThread* thread, m_activeThreads)
 	{
@@ -541,7 +541,7 @@ GameThread* GameManager::getThread(const PlayerBuilder* white,
 void GameManager::startGame(const GameEntry& entry)
 {
 	GameThread* gameThread = getThread(entry.white, entry.black);
-	Q_ASSERT(gameThread != 0);
+	Q_ASSERT(gameThread != nullptr);
 
 	gameThread->setStartMode(entry.startMode);
 	gameThread->setCleanupMode(entry.cleanupMode);
