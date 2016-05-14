@@ -28,6 +28,7 @@
 #include <timecontrol.h>
 #include <roundrobintournament.h>
 #include <gauntlettournament.h>
+#include <knockouttournament.h>
 #include <openingsuite.h>
 
 #include "engineconfigurationmodel.h"
@@ -97,6 +98,11 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 		this, SLOT(onPlayerSelectionChanged(QItemSelection, QItemSelection)));
 	connect(ui->m_playersList, SIGNAL(doubleClicked(QModelIndex)),
 		this, SLOT(configureEngine(QModelIndex)));
+
+	connect(ui->m_knockoutRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		ui->m_roundsSpin->setDisabled(checked);
+	});
 
 	ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
@@ -243,6 +249,8 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 		t = new RoundRobinTournament(gameManager, parent());
 	else if (ui->m_gauntletRadio->isChecked())
 		t = new GauntletTournament(gameManager, parent());
+	else if (ui->m_knockoutRadio->isChecked())
+		t = new KnockoutTournament(gameManager, parent());
 	else
 		return 0;
 
@@ -252,7 +260,8 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setVariant(ui->m_variantCombo->currentText());
 	t->setPgnOutput(ui->m_pgnoutEdit->text());
 	t->setGamesPerEncounter(ui->m_gamesPerEncounterSpin->value());
-	t->setRoundMultiplier(ui->m_roundsSpin->value());
+	if (t->canSetRoundMultiplier())
+		t->setRoundMultiplier(ui->m_roundsSpin->value());
 
 	const QString fileName = ui->m_suiteFileEdit->text();
 	if (!fileName.isEmpty())
