@@ -149,6 +149,7 @@ void MainWindow::createActions()
 	m_gameViewer->addAction(copyFenSequence);
 
 	m_quitGameAct = new QAction(tr("&Quit"), this);
+	m_quitGameAct->setMenuRole(QAction::QuitRole);
 	#ifdef Q_OS_WIN32
 	m_quitGameAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
 	#else
@@ -164,7 +165,8 @@ void MainWindow::createActions()
 
 	m_showGameWallAct = new QAction(tr("Game Wall"), this);
 
-	m_aboutAct = new QAction(tr("About CuteChess..."), this);
+	m_aboutAct = new QAction(tr("About Cute Chess..."), this);
+	m_aboutAct->setMenuRole(QAction::AboutRole);
 
 	connect(m_newGameAct, SIGNAL(triggered()), this, SLOT(newGame()));
 	connect(m_copyFenAct, SIGNAL(triggered()), this, SLOT(copyFen()));
