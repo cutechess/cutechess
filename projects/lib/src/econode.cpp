@@ -24,7 +24,7 @@
 #include "pgnstream.h"
 
 static QStringList s_openings;
-static EcoNode* s_root = 0;
+static EcoNode* s_root = nullptr;
 
 class EcoDeleter
 {
@@ -121,7 +121,7 @@ void EcoNode::initialize(PgnStream& in)
 		{
 			QString san = move.moveString;
 			EcoNode* node = current->child(san);
-			if (node == 0)
+			if (node == nullptr)
 			{
 				node = new EcoNode;
 				current->addChild(san, node);
@@ -160,22 +160,22 @@ const EcoNode* EcoNode::root()
 const EcoNode* EcoNode::find(const QVector<PgnGame::MoveData>& moves)
 {
 	if (!s_root)
-		return 0;
+		return nullptr;
 
 	EcoNode* current = s_root;
-	EcoNode* valid = 0;
+	EcoNode* valid = nullptr;
 
 	foreach (const PgnGame::MoveData& move, moves)
 	{
 		EcoNode* node = current->child(move.moveString);
-		if (node == 0)
+		if (node == nullptr)
 			return valid;
 		if (!node->opening().isEmpty())
 			valid = node;
 		current = node;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 void EcoNode::write(const QString& fileName)

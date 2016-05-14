@@ -198,8 +198,8 @@ void UciEngine::startThinking()
 		return;
 	}
 
-	const TimeControl* whiteTc = 0;
-	const TimeControl* blackTc = 0;
+	const TimeControl* whiteTc = nullptr;
+	const TimeControl* blackTc = nullptr;
 	const TimeControl* myTc = timeControl();
 	if (side() == Chess::Side::White)
 	{
@@ -497,7 +497,7 @@ EngineOption* UciEngine::parseOption(const QStringRef& line)
 		}
 	}
 	if (name.isEmpty())
-		return 0;
+		return nullptr;
 
 	if (type == "button")
 		return new EngineButtonOption(name);
@@ -518,7 +518,7 @@ EngineOption* UciEngine::parseOption(const QStringRef& line)
 		return new EngineTextOption(name, value, value, QString(),
 					    EngineTextOption::FileDialog);
 
-	return 0;
+	return nullptr;
 }
 
 void UciEngine::parseLine(const QString& line)
@@ -615,7 +615,7 @@ void UciEngine::parseLine(const QString& line)
 		EngineOption* option = parseOption(command);
 		QString variant;
 
-		if (option == 0 || !option->isValid())
+		if (option == nullptr || !option->isValid())
 			qDebug("Invalid UCI option from %s: %s",
 				qPrintable(name()), qPrintable(line));
 		else if (!(variant = variantFromUci(option->name())).isEmpty())

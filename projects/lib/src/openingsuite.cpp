@@ -32,20 +32,20 @@ OpeningSuite::OpeningSuite(const QString& fileName,
 	  m_gameIndex(0),
 	  m_startIndex(startIndex),
 	  m_fileName(fileName),
-	  m_file(0),
-	  m_epdStream(0),
-	  m_pgnStream(0)
+	  m_file(nullptr),
+	  m_epdStream(nullptr),
+	  m_pgnStream(nullptr)
 {
 }
 
 OpeningSuite::~OpeningSuite()
 {
-	if (m_epdStream != 0)
+	if (m_epdStream != nullptr)
 	{
 		delete m_epdStream->device();
 		delete m_epdStream;
 	}
-	if (m_pgnStream != 0)
+	if (m_pgnStream != nullptr)
 	{
 		delete m_pgnStream->device();
 		delete m_pgnStream;
@@ -64,7 +64,7 @@ OpeningSuite::Order OpeningSuite::order() const
 
 bool OpeningSuite::isNull() const
 {
-	return m_epdStream == 0 && m_pgnStream == 0;
+	return m_epdStream == nullptr && m_pgnStream == nullptr;
 }
 
 bool OpeningSuite::initialize()
@@ -73,17 +73,17 @@ bool OpeningSuite::initialize()
 	m_gameIndex = 0;
 	m_filePositions.clear();
 
-	if (m_epdStream != 0)
+	if (m_epdStream != nullptr)
 	{
 		delete m_epdStream->device();
 		delete m_epdStream;
-		m_epdStream = 0;
+		m_epdStream = nullptr;
 	}
-	if (m_pgnStream != 0)
+	if (m_pgnStream != nullptr)
 	{
 		delete m_pgnStream->device();
 		delete m_pgnStream;
-		m_pgnStream = 0;
+		m_pgnStream = nullptr;
 	}
 
 	m_file = new QFile(m_fileName);

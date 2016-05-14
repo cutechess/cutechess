@@ -212,7 +212,7 @@ TournamentPair* KnockoutTournament::nextPair(int gameNumber)
 
 	QList<int> winners(lastRoundWinners());
 	if (winners.size() <= 1 || gamesInProgress())
-		return 0;
+		return nullptr;
 
 	QList<TournamentPair*> nextRound;
 	for (int i = 0; i < winners.size(); i += 2)
@@ -229,7 +229,7 @@ TournamentPair* KnockoutTournament::nextPair(int gameNumber)
 	}
 
 	Q_UNREACHABLE();
-	return 0;
+	return nullptr;
 }
 
 QString KnockoutTournament::results() const

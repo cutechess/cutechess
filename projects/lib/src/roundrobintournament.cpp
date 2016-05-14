@@ -52,7 +52,7 @@ int RoundRobinTournament::gamesPerCycle() const
 TournamentPair* RoundRobinTournament::nextPair(int gameNumber)
 {
 	if (gameNumber >= finalGameCount())
-		return 0;
+		return nullptr;
 	if (gameNumber % gamesPerEncounter() != 0)
 		return currentPair();
 
