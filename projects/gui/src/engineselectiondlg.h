@@ -33,7 +33,7 @@ class EngineSelectionDialog : public QDialog
 
 	public:
 		explicit EngineSelectionDialog(EngineConfigurationProxyModel* model,
-					       QWidget* parent = 0);
+					       QWidget* parent = nullptr);
 		virtual ~EngineSelectionDialog();
 
 		QItemSelection selection() const;

@@ -47,7 +47,7 @@ class EngineConfigurationModel : public QAbstractListModel
 		/*!
 		 * Creates an empty model.
 		*/
-		EngineConfigurationModel(EngineManager* engineManager, QObject* parent = 0);
+		EngineConfigurationModel(EngineManager* engineManager, QObject* parent = nullptr);
 		
 		// Inherited from QAbstractListModel
 		virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;

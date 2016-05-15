@@ -22,7 +22,7 @@
 EngineConfigurationModel::EngineConfigurationModel(EngineManager* engineManager, QObject* parent)
 	: QAbstractListModel(parent), m_engineManager(engineManager)
 {
-	Q_ASSERT(m_engineManager != 0);
+	Q_ASSERT(m_engineManager != nullptr);
 
 	connect(m_engineManager, SIGNAL(engineAdded(int)), this,
 		SLOT(onEngineAdded(int)));

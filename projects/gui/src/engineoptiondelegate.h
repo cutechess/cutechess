@@ -25,7 +25,7 @@ class EngineOptionDelegate : public QStyledItemDelegate
 	Q_OBJECT
 
 	public:
-		EngineOptionDelegate(QWidget* parent = 0);
+		EngineOptionDelegate(QWidget* parent = nullptr);
 
 		// Inherited from QStyledItemDelegate
 		virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,

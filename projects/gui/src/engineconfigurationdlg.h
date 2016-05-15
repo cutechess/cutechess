@@ -53,7 +53,7 @@ class EngineConfigurationDialog : public QDialog
 		 * Creates a new engine configuration dialog with \a parent as
 		 * parent
 		*/
-		EngineConfigurationDialog(DialogMode mode, QWidget* parent = 0);
+		EngineConfigurationDialog(DialogMode mode, QWidget* parent = nullptr);
 		/*! Destroys the dialog. */
 		virtual ~EngineConfigurationDialog();
 

@@ -27,8 +27,8 @@ class EngineOptionModel : public QAbstractItemModel
 	Q_OBJECT
 
 	public:
-		EngineOptionModel(QObject* parent = 0);
-		EngineOptionModel(QList<EngineOption*> options, QObject* parent = 0);
+		EngineOptionModel(QObject* parent = nullptr);
+		EngineOptionModel(QList<EngineOption*> options, QObject* parent = nullptr);
 
 		void setOptions(const QList<EngineOption*>& options);
 
