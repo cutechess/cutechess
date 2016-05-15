@@ -57,7 +57,7 @@ class BoardScene : public QGraphicsScene
 
 	public:
 		/*! Creates a new BoardScene object. */
-		BoardScene(QObject* parent = 0);
+		BoardScene(QObject* parent = nullptr);
 		/*! Destroys the scene and all its items. */
 		~BoardScene();
 

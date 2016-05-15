@@ -50,14 +50,14 @@ class GraphicsBoard : public QGraphicsItem
 		GraphicsBoard(int files,
 			      int ranks,
 			      qreal squareSize,
-			      QGraphicsItem* parent = 0);
+			      QGraphicsItem* parent = nullptr);
 
 		// Inherited from QGraphicsItem
 		virtual int type() const;
 		virtual QRectF boundingRect() const;
 		virtual void paint(QPainter* painter,
 				   const QStyleOptionGraphicsItem* option,
-				   QWidget* widget = 0);
+				   QWidget* widget = nullptr);
 
 		/*!
 		 * Returns the chess square at \a point.
