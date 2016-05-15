@@ -165,6 +165,20 @@ void MainWindow::createActions()
 
 	m_showGameWallAct = new QAction(tr("Game Wall"), this);
 
+	m_showPreviousTabAct = new QAction(tr("Show Previous Tab"), this);
+	#ifdef Q_OS_MAC
+	m_showPreviousTabAct->setShortcut(QKeySequence(Qt::MetaModifier + Qt::ShiftModifier + Qt::Key_Tab));
+	#else
+	m_showPreviousTabAct->setShortcut(QKeySequence(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_Tab));
+	#endif
+
+	m_showNextTabAct = new QAction(tr("Show Next Tab"), this);
+	#ifdef Q_OS_MAC
+	m_showNextTabAct->setShortcut(QKeySequence(Qt::MetaModifier + Qt::Key_Tab));
+	#else
+	m_showNextTabAct->setShortcut(QKeySequence(Qt::ControlModifier + Qt::Key_Tab));
+	#endif
+
 	m_aboutAct = new QAction(tr("About Cute Chess..."), this);
 	m_aboutAct->setMenuRole(QAction::AboutRole);
 
@@ -186,6 +200,9 @@ void MainWindow::createActions()
 
 	connect(m_showGameWallAct, SIGNAL(triggered()),
 		CuteChessApplication::instance(), SLOT(showGameWall()));
+
+	connect(m_showPreviousTabAct, SIGNAL(triggered()), this, SLOT(showPreviousTab()));
+	connect(m_showNextTabAct, SIGNAL(triggered()), this, SLOT(showNextTab()));
 
 	connect(m_aboutAct, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 }
@@ -215,6 +232,9 @@ void MainWindow::createMenus()
 	m_windowMenu = menuBar()->addMenu(tr("&Window"));
 	m_windowMenu->addAction(m_showGameWallAct);
 	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
+	m_windowMenu->addSeparator();
+	m_windowMenu->addAction(m_showPreviousTabAct);
+	m_windowMenu->addAction(m_showNextTabAct);
 
 	m_helpMenu = menuBar()->addMenu(tr("&Help"));
 	m_helpMenu->addAction(m_aboutAct);
@@ -836,4 +856,26 @@ bool MainWindow::askToSave()
 			return false;
 	}
 	return true;
+}
+
+void MainWindow::showNextTab()
+{
+	if (m_tabBar->count() < 2)
+		return;
+
+	if (m_tabBar->currentIndex() == m_tabBar->count() - 1)
+		m_tabBar->setCurrentIndex(0);
+	else
+		m_tabBar->setCurrentIndex(m_tabBar->currentIndex() + 1);
+}
+
+void MainWindow::showPreviousTab()
+{
+	if (m_tabBar->count() < 2)
+		return;
+
+	if (m_tabBar->currentIndex() == 0)
+		m_tabBar->setCurrentIndex(m_tabBar->count() - 1);
+	else
+		m_tabBar->setCurrentIndex(m_tabBar->currentIndex() - 1);
 }

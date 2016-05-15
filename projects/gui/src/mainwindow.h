@@ -73,6 +73,8 @@ class MainWindow : public QMainWindow
 		void editMoveComment(int ply, const QString& comment);
 		void copyFen();
 		void showAboutDialog();
+		void showPreviousTab();
+		void showNextTab();
 
 	private:
 		struct TabData
@@ -126,6 +128,8 @@ class MainWindow : public QMainWindow
 		QAction* m_manageEnginesAct;
 		QAction* m_showGameDatabaseWindowAct;
 		QAction* m_showGameWallAct;
+		QAction* m_showPreviousTabAct;
+		QAction* m_showNextTabAct;
 		QAction* m_aboutAct;
 
 		PlainTextLog* m_engineDebugLog;
