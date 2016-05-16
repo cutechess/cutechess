@@ -60,7 +60,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void setTimeControl(const TimeControl& timeControl,
 				    Chess::Side side = Chess::Side());
 		void setMoves(const QVector<Chess::Move>& moves);
-		void setMoves(const PgnGame& pgn);
+		bool setMoves(const PgnGame& pgn);
 		void setOpeningBook(const OpeningBook* book,
 				    Chess::Side side = Chess::Side(),
 				    int depth = 1000);

@@ -379,9 +379,10 @@ void ChessGame::setMoves(const QVector<Chess::Move>& moves)
 	m_moves = moves;
 }
 
-void ChessGame::setMoves(const PgnGame& pgn)
+bool ChessGame::setMoves(const PgnGame& pgn)
 {
-	Q_ASSERT(pgn.variant() == m_board->variant());
+	if (pgn.variant() != m_board->variant())
+		return false;
 
 	setStartingFen(pgn.startingFenString());
 	resetBoard();
@@ -394,10 +395,12 @@ void ChessGame::setMoves(const PgnGame& pgn)
 
 		m_board->makeMove(move);
 		if (!m_board->result().isNone())
-			return;
+			return true;
 
 		m_moves.append(move);
 	}
+
+	return true;
 }
 
 void ChessGame::setOpeningBook(const OpeningBook* book,
