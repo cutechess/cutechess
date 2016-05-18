@@ -39,14 +39,14 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 	if (cmd.isEmpty())
 	{
 		setError(error, tr("Empty engine command"));
-		return 0;
+		return nullptr;
 	}
 
 	if (!EngineFactory::protocols().contains(m_config.protocol()))
 	{
 		setError(error, tr("Unknown chess protocol: %1")
 			 .arg(m_config.protocol()));
-		return 0;
+		return nullptr;
 	}
 
 	EngineProcess* process = new EngineProcess();
@@ -76,14 +76,14 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		setError(error, tr("Cannot execute command: %1")
 			 .arg(m_config.command()));
 		delete process;
-		return 0;
+		return nullptr;
 	}
 
 	ChessEngine* engine = EngineFactory::create(m_config.protocol());
-	Q_ASSERT(engine != 0);
+	Q_ASSERT(engine != nullptr);
 
 	engine->setParent(parent);
-	if (receiver != 0 && method != 0)
+	if (receiver != nullptr && method != nullptr)
 		QObject::connect(engine, SIGNAL(debugMessage(QString)),
 				 receiver, method);
 	engine->setDevice(process);
@@ -99,7 +99,7 @@ void EngineBuilder::setError(QString* error, const QString& message) const
 	QString str(tr("Cannot start engine %1:%2%3")
 		    .arg(name()).arg(sep).arg(message));
 
-	if (error != 0)
+	if (error != nullptr)
 		*error = str;
 	else
 		qWarning("%s", qPrintable(str));
