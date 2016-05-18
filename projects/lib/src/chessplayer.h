@@ -52,7 +52,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		};
 
 		/*! Creates and initializes a new ChessPlayer object. */
-		ChessPlayer(QObject* parent = 0);
+		ChessPlayer(QObject* parent = nullptr);
 		virtual ~ChessPlayer();
 		
 		/*!

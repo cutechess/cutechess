@@ -54,7 +54,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		};
 
 		/*! Creates and initializes a new ChessEngine. */
-		ChessEngine(QObject* parent = 0);
+		ChessEngine(QObject* parent = nullptr);
 		virtual ~ChessEngine();
 
 		/*! Returns the current device associated with the engine. */
