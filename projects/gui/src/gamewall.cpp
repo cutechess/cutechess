@@ -51,7 +51,7 @@ GameWall::GameWall(GameManager* manager, QWidget *parent)
 
 void GameWall::addGame(ChessGame* game)
 {
-	Q_ASSERT(game != 0);
+	Q_ASSERT(game != nullptr);
 
 	QWidget* widget = new QWidget(this);
 

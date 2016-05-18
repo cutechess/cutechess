@@ -113,7 +113,7 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 
 void GameViewer::setGame(ChessGame* game)
 {
-	Q_ASSERT(game != 0);
+	Q_ASSERT(game != nullptr);
 
 	setGame(game->pgn());
 	m_game = game;
@@ -142,7 +142,7 @@ void GameViewer::setGame(ChessGame* game)
 
 void GameViewer::setGame(const PgnGame* pgn)
 {
-	Q_ASSERT(pgn != 0);
+	Q_ASSERT(pgn != nullptr);
 
 	disconnectGame();
 
@@ -170,18 +170,18 @@ void GameViewer::disconnectGame()
 	if (m_game.isNull())
 		return;
 
-	disconnect(m_game, 0, m_boardScene, 0);
-	disconnect(m_game, 0, m_boardView, 0);
-	disconnect(m_game, 0, this, 0);
+	disconnect(m_game, nullptr, m_boardScene, nullptr);
+	disconnect(m_game, nullptr, m_boardView, nullptr);
+	disconnect(m_game, nullptr, this, nullptr);
 
 	for (int i = 0; i < 2; i++)
 	{
 		ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
-		if (player != 0)
-			disconnect(m_boardScene, 0, player, 0);
+		if (player != nullptr)
+			disconnect(m_boardScene, nullptr, player, nullptr);
 	}
 
-	m_game = 0;
+	m_game = nullptr;
 }
 
 Chess::Board* GameViewer::board() const

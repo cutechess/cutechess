@@ -31,7 +31,7 @@ class GameWall : public QWidget
 
 	public:
 		explicit GameWall(GameManager* manager,
-				  QWidget *parent = 0);
+				  QWidget *parent = nullptr);
 
 	public slots:
 		void addGame(ChessGame* game);

@@ -36,7 +36,7 @@ class GameDatabaseSearchDialog : public QDialog
 
 	public:
 		/*! Constructs a new GameDatabaseSearchDialog. */
-		GameDatabaseSearchDialog(QWidget* parent = 0);
+		GameDatabaseSearchDialog(QWidget* parent = nullptr);
 		/*! Destroys the dialog. */
 		virtual ~GameDatabaseSearchDialog();
 

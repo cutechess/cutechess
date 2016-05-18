@@ -46,7 +46,7 @@ class GameDatabaseDialog : public QDialog
 	public:
 		/*! Constructs a new GameDatabaseDialog. */
 		GameDatabaseDialog(GameDatabaseManager* dbManager,
-				   QWidget* parent = 0);
+				   QWidget* parent = nullptr);
 		/*! Destroys the dialog. */
 		virtual ~GameDatabaseDialog();
 
