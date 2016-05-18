@@ -33,7 +33,7 @@ EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
 	  m_ratingInterval(0),
 	  m_bookMode(OpeningBook::Ram)
 {
-	Q_ASSERT(tournament != 0);
+	Q_ASSERT(tournament != nullptr);
 
 	m_startTime.start();
 }
@@ -46,7 +46,7 @@ EngineMatch::~EngineMatch()
 OpeningBook* EngineMatch::addOpeningBook(const QString& fileName)
 {
 	if (fileName.isEmpty())
-		return 0;
+		return nullptr;
 
 	if (m_books.contains(fileName))
 		return m_books[fileName];
@@ -56,7 +56,7 @@ OpeningBook* EngineMatch::addOpeningBook(const QString& fileName)
 	{
 		delete book;
 		qWarning("Can't read opening book file %s", qPrintable(fileName));
-		return 0;
+		return nullptr;
 	}
 
 	m_books[fileName] = book;
@@ -102,7 +102,7 @@ void EngineMatch::setBookMode(OpeningBook::AccessMode mode)
 
 void EngineMatch::onGameStarted(ChessGame* game, int number)
 {
-	Q_ASSERT(game != 0);
+	Q_ASSERT(game != nullptr);
 
 	qDebug("Started game %d of %d (%s vs %s)",
 	       number,
@@ -113,7 +113,7 @@ void EngineMatch::onGameStarted(ChessGame* game, int number)
 
 void EngineMatch::onGameFinished(ChessGame* game, int number)
 {
-	Q_ASSERT(game != 0);
+	Q_ASSERT(game != nullptr);
 
 	Chess::Result result(game->result());
 	qDebug("Finished game %d (%s vs %s): %s",
