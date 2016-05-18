@@ -39,7 +39,7 @@ class NewTournamentDialog : public QDialog
 
 	public:
 		explicit NewTournamentDialog(EngineManager* engineManager,
-					     QWidget* parent = 0);
+					     QWidget* parent = nullptr);
 		virtual ~NewTournamentDialog();
 
 		Tournament* createTournament(GameManager* gameManager) const;

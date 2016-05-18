@@ -20,7 +20,7 @@
 
 StringValidator::StringValidator(QObject* parent)
 	: QValidator(parent),
-	  m_model(0)
+	  m_model(nullptr)
 {
 }
 
@@ -39,7 +39,7 @@ QValidator::State StringValidator::validate(QString& input, int& pos) const
 {
 	Q_UNUSED(pos);
 
-	if (m_model == 0 || m_model->rowCount() == 0)
+	if (m_model == nullptr || m_model->rowCount() == 0)
 		return Acceptable;
 
 	if (input.isEmpty())

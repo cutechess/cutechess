@@ -32,12 +32,12 @@ class PlainTextLog : public QPlainTextEdit
 
 	public:
 		/*! Constructs a new plain text log with the given \a parent. */
-		PlainTextLog(QWidget* parent = 0);
+		PlainTextLog(QWidget* parent = nullptr);
 		/*!
 		 * Constructs a new plain text log with the initial text \a text and
 		 * given \a parent.
 		 */
-		PlainTextLog(const QString& text, QWidget* parent = 0);
+		PlainTextLog(const QString& text, QWidget* parent = nullptr);
 
 	signals:
 		/*!

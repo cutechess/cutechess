@@ -36,7 +36,7 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	  m_engineManager(engineManager),
 	  ui(new Ui::NewGameDialog)
 {
-	Q_ASSERT(engineManager != 0);
+	Q_ASSERT(engineManager != nullptr);
 	ui->setupUi(this);
 
 	m_engines = new EngineConfigurationModel(m_engineManager, this);

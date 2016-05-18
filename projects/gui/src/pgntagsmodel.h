@@ -31,7 +31,7 @@ class PgnTagsModel : public QAbstractItemModel
 
 	public:
 		/*! Constructs a model with the given \a parent. */
-		PgnTagsModel(QObject* parent = 0);
+		PgnTagsModel(QObject* parent = nullptr);
 		/*! Associates \a tags with this model. */
 		void setTags(const QList<QPair<QString, QString> >& tags);
 

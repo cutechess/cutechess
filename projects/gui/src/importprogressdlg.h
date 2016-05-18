@@ -38,7 +38,7 @@ class ImportProgressDialog : public QDialog
 	public:
 		/*! Constructs a new ImportProgressDialog with \a importer. */
 		ImportProgressDialog(PgnImporter* pgnImporter,
-				     QWidget* parent = 0);
+				     QWidget* parent = nullptr);
 		/*! Destroys the dialog. */
 		virtual ~ImportProgressDialog();
 
