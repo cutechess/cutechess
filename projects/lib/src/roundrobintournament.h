@@ -34,7 +34,7 @@ class LIB_EXPORT RoundRobinTournament : public Tournament
 	public:
 		/*! Creates a new Round-robin tournament. */
 		explicit RoundRobinTournament(GameManager* gameManager,
-					      QObject *parent = 0);
+					      QObject *parent = nullptr);
 		// Inherited from Tournament
 		virtual QString type() const;
 

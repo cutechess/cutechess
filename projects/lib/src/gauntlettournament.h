@@ -33,7 +33,7 @@ class LIB_EXPORT GauntletTournament : public Tournament
 	public:
 		/*! Creates a new Gauntlet tournament. */
 		explicit GauntletTournament(GameManager* gameManager,
-					    QObject *parent = 0);
+					    QObject *parent = nullptr);
 		// Inherited from Tournament
 		virtual QString type() const;
 

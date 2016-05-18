@@ -34,7 +34,7 @@ ChessPlayer* HumanBuilder::create(QObject *receiver,
 	if (!name().isEmpty())
 		player->setName(name());
 
-	if (receiver != 0 && method != 0)
+	if (receiver != nullptr && method != nullptr)
 		QObject::connect(player, SIGNAL(debugMessage(QString)),
 				 receiver, method);
 

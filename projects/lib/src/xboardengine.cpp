@@ -353,7 +353,7 @@ EngineOption* XboardEngine::parseOption(const QString& line)
 {
 	int start = line.indexOf('-');
 	if (start < 2)
-		return 0;
+		return nullptr;
 
 	QString name(line.left(start - 1));
 
@@ -388,20 +388,20 @@ EngineOption* XboardEngine::parseOption(const QString& line)
 	{
 		QStringList params(line.mid(end + 1).split(' ', QString::SkipEmptyParts));
 		if (params.size() != 3)
-			return 0;
+			return nullptr;
 
 		bool ok = false;
 		int value = params.at(0).toInt(&ok);
 		if (!ok)
-			return 0;
+			return nullptr;
 
 		int min = params.at(1).toInt(&ok);
 		if (!ok || min > value)
-			return 0;
+			return nullptr;
 
 		int max = params.at(2).toInt(&ok);
 		if (!ok || max < value)
-			return 0;
+			return nullptr;
 
 		return new EngineSpinOption(name, value, value, min, max);
 	}
@@ -409,7 +409,7 @@ EngineOption* XboardEngine::parseOption(const QString& line)
 	{
 		QStringList choices = line.mid(end + 1).split(" /// ", QString::SkipEmptyParts);
 		if (choices.isEmpty())
-			return 0;
+			return nullptr;
 
 		QString value;
 		QStringList::iterator it;
@@ -427,7 +427,7 @@ EngineOption* XboardEngine::parseOption(const QString& line)
 		return new EngineComboOption(name, value, value, choices);
 	}
 
-	return 0;
+	return nullptr;
 }
 
 void XboardEngine::setFeature(const QString& name, const QString& val)
@@ -491,7 +491,7 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	else if (name == "option")
 	{
 		EngineOption* option = parseOption(val);
-		if (option == 0 || !option->isValid())
+		if (option == nullptr || !option->isValid())
 			qDebug() << "Invalid Xboard option from" << this->name()
 				 << ":" << val;
 		else
