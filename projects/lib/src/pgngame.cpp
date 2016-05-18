@@ -39,7 +39,7 @@ QTextStream& operator<<(QTextStream& out, const PgnGame& game)
 PgnGame::PgnGame()
 	: m_startingSide(Chess::Side::White),
 	  m_eco(EcoNode::root()),
-	  m_tagReceiver(0)
+	  m_tagReceiver(nullptr)
 {
 }
 
@@ -91,7 +91,7 @@ void PgnGame::addMove(const MoveData& data)
 {
 	m_moves.append(data);
 
-	m_eco = (m_eco && isStandard()) ? m_eco->child(data.moveString) : 0;
+	m_eco = (m_eco && isStandard()) ? m_eco->child(data.moveString) : nullptr;
 	if (m_eco && m_eco->isLeaf())
 	{
 		setTag("ECO", m_eco->ecoCode());
@@ -108,8 +108,8 @@ void PgnGame::setMove(int ply, const MoveData& data)
 Chess::Board* PgnGame::createBoard() const
 {
 	Chess::Board* board = Chess::BoardFactory::create(variant());
-	if (board == 0)
-		return 0;
+	if (board == nullptr)
+		return nullptr;
 
 	bool ok = true;
 
@@ -124,7 +124,7 @@ Chess::Board* PgnGame::createBoard() const
 	if (!ok)
 	{
 		delete board;
-		return 0;
+		return nullptr;
 	}
 
 	return board;
