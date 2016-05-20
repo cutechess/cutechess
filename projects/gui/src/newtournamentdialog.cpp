@@ -274,6 +274,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 		else
 		{
 			delete suite;
+			delete t;
 			return nullptr;
 		}
 	}
