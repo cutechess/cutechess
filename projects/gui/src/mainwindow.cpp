@@ -230,11 +230,14 @@ void MainWindow::createMenus()
 	m_enginesMenu->addAction(m_manageEnginesAct);
 
 	m_windowMenu = menuBar()->addMenu(tr("&Window"));
-	m_windowMenu->addAction(m_showGameWallAct);
-	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
-	m_windowMenu->addSeparator();
-	m_windowMenu->addAction(m_showPreviousTabAct);
-	m_windowMenu->addAction(m_showNextTabAct);
+
+	// On OSX the menu is hidden if it's created
+	// empty. Add a dummy item so that the menu
+	// is always visible.
+	m_windowMenu->addAction(QString());
+
+	connect(m_windowMenu, SIGNAL(aboutToShow()), this,
+		SLOT(onWindowMenuAboutToShow()));
 
 	m_helpMenu = menuBar()->addMenu(tr("&Help"));
 	m_helpMenu->addAction(m_aboutAct);
@@ -687,6 +690,40 @@ void MainWindow::saveLogToFile()
 
 	QTextStream out(&file);
 	out << log->toPlainText();
+}
+
+void MainWindow::onWindowMenuAboutToShow()
+{
+	m_windowMenu->clear();
+
+	m_windowMenu->addAction(m_showGameWallAct);
+	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
+	m_windowMenu->addSeparator();
+	m_windowMenu->addAction(m_showPreviousTabAct);
+	m_windowMenu->addAction(m_showNextTabAct);
+	m_windowMenu->addSeparator();
+
+	const QList<MainWindow*> gameWindows =
+		CuteChessApplication::instance()->gameWindows();
+
+	for (int i = 0; i < gameWindows.size(); i++)
+	{
+		MainWindow* gameWindow = gameWindows.at(i);
+
+		QAction* showWindowAction = m_windowMenu->addAction(
+			gameWindow->windowListTitle(), this, SLOT(showGameWindow()));
+		showWindowAction->setData(i);
+		showWindowAction->setCheckable(true);
+
+		if (gameWindow == this)
+			showWindowAction->setChecked(true);
+	}
+}
+
+void MainWindow::showGameWindow()
+{
+	if (QAction* action = qobject_cast<QAction*>(sender()))
+		CuteChessApplication::instance()->showGameWindow(action->data().toInt());
 }
 
 void MainWindow::updateWindowTitle()
