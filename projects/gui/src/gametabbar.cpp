@@ -20,6 +20,7 @@
 GameTabBar::GameTabBar(QWidget* parent)
 	: QTabBar(parent)
 {
+	setMovable(true);
 }
 
 void GameTabBar::showNextTab()
