@@ -227,11 +227,7 @@ void MainWindow::createMenus()
 	m_enginesMenu->addAction(m_manageEnginesAct);
 
 	m_windowMenu = menuBar()->addMenu(tr("&Window"));
-
-	// On OSX the menu is hidden if it's created
-	// empty. Add a dummy item so that the menu
-	// is always visible.
-	m_windowMenu->addAction(QString());
+	addDefaultWindowMenu();
 
 	connect(m_windowMenu, SIGNAL(aboutToShow()), this,
 		SLOT(onWindowMenuAboutToShow()));
@@ -697,11 +693,7 @@ void MainWindow::onWindowMenuAboutToShow()
 {
 	m_windowMenu->clear();
 
-	m_windowMenu->addAction(m_showGameWallAct);
-	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
-	m_windowMenu->addSeparator();
-	m_windowMenu->addAction(m_showPreviousTabAct);
-	m_windowMenu->addAction(m_showNextTabAct);
+	addDefaultWindowMenu();
 	m_windowMenu->addSeparator();
 
 	const QList<MainWindow*> gameWindows =
@@ -894,4 +886,13 @@ bool MainWindow::askToSave()
 			return false;
 	}
 	return true;
+}
+
+void MainWindow::addDefaultWindowMenu()
+{
+	m_windowMenu->addAction(m_showGameWallAct);
+	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
+	m_windowMenu->addSeparator();
+	m_windowMenu->addAction(m_showPreviousTabAct);
+	m_windowMenu->addAction(m_showNextTabAct);
 }

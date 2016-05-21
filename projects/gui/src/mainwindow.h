@@ -103,6 +103,7 @@ class MainWindow : public QMainWindow
 		void removeGame(int index);
 		int tabIndex(ChessGame* game) const;
 		int tabIndex(Tournament* tournament, bool freeTab = false) const;
+		void addDefaultWindowMenu();
 
 		QMenu* m_gameMenu;
 		QMenu* m_tournamentMenu;
