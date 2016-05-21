@@ -22,7 +22,6 @@
 #include <QStatusBar>
 #include <QMenu>
 #include <QMenuBar>
-#include <QTabBar>
 #include <QToolBar>
 #include <QDockWidget>
 #include <QTreeView>
@@ -52,6 +51,7 @@
 #include "plaintextlog.h"
 #include "gamedatabasemanager.h"
 #include "pgntagsmodel.h"
+#include "gametabbar.h"
 
 #include <modeltest.h>
 
@@ -201,9 +201,6 @@ void MainWindow::createActions()
 	connect(m_showGameWallAct, SIGNAL(triggered()),
 		CuteChessApplication::instance(), SLOT(showGameWall()));
 
-	connect(m_showPreviousTabAct, SIGNAL(triggered()), this, SLOT(showPreviousTab()));
-	connect(m_showNextTabAct, SIGNAL(triggered()), this, SLOT(showNextTab()));
-
 	connect(m_aboutAct, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 }
 
@@ -245,7 +242,7 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
-	m_tabBar = new QTabBar();
+	m_tabBar = new GameTabBar();
 	m_tabBar->setDocumentMode(true);
 	m_tabBar->setTabsClosable(true);
 	m_tabBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -258,6 +255,10 @@ void MainWindow::createToolBars()
 		this, SLOT(onTabChanged(int)));
 	connect(m_tabBar, SIGNAL(tabCloseRequested(int)),
 		this, SLOT(onTabCloseRequested(int)));
+	connect(m_showPreviousTabAct, SIGNAL(triggered()),
+		m_tabBar, SLOT(showPreviousTab()));
+	connect(m_showNextTabAct, SIGNAL(triggered()),
+		m_tabBar, SLOT(showNextTab()));
 
 	QToolBar* toolBar = new QToolBar(tr("Game Tabs"));
 	toolBar->setVisible(false);
@@ -893,26 +894,4 @@ bool MainWindow::askToSave()
 			return false;
 	}
 	return true;
-}
-
-void MainWindow::showNextTab()
-{
-	if (m_tabBar->count() < 2)
-		return;
-
-	if (m_tabBar->currentIndex() == m_tabBar->count() - 1)
-		m_tabBar->setCurrentIndex(0);
-	else
-		m_tabBar->setCurrentIndex(m_tabBar->currentIndex() + 1);
-}
-
-void MainWindow::showPreviousTab()
-{
-	if (m_tabBar->count() < 2)
-		return;
-
-	if (m_tabBar->currentIndex() == 0)
-		m_tabBar->setCurrentIndex(m_tabBar->count() - 1);
-	else
-		m_tabBar->setCurrentIndex(m_tabBar->currentIndex() - 1);
 }

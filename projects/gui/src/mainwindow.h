@@ -36,6 +36,7 @@ class ChessGame;
 class ChessPlayer;
 class PgnTagsModel;
 class Tournament;
+class GameTabBar;
 
 /**
  * MainWindow
@@ -75,8 +76,6 @@ class MainWindow : public QMainWindow
 		void editMoveComment(int ply, const QString& comment);
 		void copyFen();
 		void showAboutDialog();
-		void showPreviousTab();
-		void showNextTab();
 
 	private:
 		struct TabData
@@ -112,7 +111,7 @@ class MainWindow : public QMainWindow
 		QMenu* m_windowMenu;
 		QMenu* m_helpMenu;
 
-		QTabBar* m_tabBar;
+		GameTabBar* m_tabBar;
 
 		GameViewer* m_gameViewer;
 		MoveList* m_moveList;
