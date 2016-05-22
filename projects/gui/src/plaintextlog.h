@@ -39,12 +39,9 @@ class PlainTextLog : public QPlainTextEdit
 		 */
 		PlainTextLog(const QString& text, QWidget* parent = nullptr);
 
-	signals:
-		/*!
-		 * Signals that the user has requested the log to be saved to a
-		 * file.
-		 */
-		void saveLogToFileRequest();
+	public slots:
+		/*! Save the log to file \a filename. */
+		void saveLogToFile(const QString& fileName);
 
 	protected:
 		// Inherited from QPlainTextEdit

@@ -266,8 +266,6 @@ void MainWindow::createDockWindows()
 	// Engine debug
 	QDockWidget* engineDebugDock = new QDockWidget(tr("Engine Debug"), this);
 	m_engineDebugLog = new PlainTextLog(engineDebugDock);
-	connect(m_engineDebugLog, SIGNAL(saveLogToFileRequest()), this,
-		SLOT(saveLogToFile()));
 	engineDebugDock->setWidget(m_engineDebugLog);
 
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
@@ -622,67 +620,6 @@ void MainWindow::manageEngines()
 		CuteChessApplication::instance()->engineManager()->saveEngines(
 			CuteChessApplication::instance()->configPath() + QLatin1String("/engines.json"));
 	}
-}
-
-void MainWindow::saveLogToFile()
-{
-	PlainTextLog* log = qobject_cast<PlainTextLog*>(QObject::sender());
-	Q_ASSERT(log != nullptr);
-
-	const QString fileName = QFileDialog::getSaveFileName(this, tr("Save Log"),
-		QString(), tr("Text Files (*.txt);;All Files (*.*)"));
-
-	if (fileName.isEmpty())
-		return;
-
-	QFile file(fileName);
-	if (!file.open(QFile::WriteOnly | QFile::Text))
-	{
-		QFileInfo fileInfo(file);
-
-		QMessageBox msgBox;
-		msgBox.setIcon(QMessageBox::Warning);
-		msgBox.setWindowTitle("Cute Chess");
-
-		switch (file.error())
-		{
-			case QFile::OpenError:
-			case QFile::PermissionsError:
-				msgBox.setText(
-					tr("The file \"%1\" could not be saved because "
-					   "of insufficient privileges.")
-					.arg(fileInfo.fileName()));
-
-				msgBox.setInformativeText(
-					tr("Try selecting a location where you have "
-					   "the permissions to create files."));
-			break;
-
-			case QFile::TimeOutError:
-				msgBox.setText(
-					tr("The file \"%1\" could not be saved because "
-					   "the operation timed out.")
-					.arg(fileInfo.fileName()));
-
-				msgBox.setInformativeText(
-					tr("Try saving the file to a local or another "
-					   "network disk."));
-			break;
-
-			default:
-				msgBox.setText(tr("The file \"%1\" could not be saved.")
-					.arg(fileInfo.fileName()));
-
-				msgBox.setInformativeText(file.errorString());
-			break;
-		}
-		msgBox.exec();
-
-		return;
-	}
-
-	QTextStream out(&file);
-	out << log->toPlainText();
 }
 
 void MainWindow::onWindowMenuAboutToShow()
