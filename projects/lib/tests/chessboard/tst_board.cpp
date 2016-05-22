@@ -18,6 +18,9 @@ class tst_Board: public QObject
 		void moveStrings_data() const;
 		void moveStrings();
 		
+		void results_data() const;
+		void results();
+
 		void perft_data() const;
 		void perft();
 
@@ -219,6 +222,76 @@ void tst_Board::moveStrings()
 	for (int i = 0; i < moveList.size(); i++)
 		m_board->undoMove();
 	QCOMPARE(m_board->fenString(), startfen);
+}
+
+void tst_Board::results_data() const
+{
+	QTest::addColumn<QString>("variant");
+	QTest::addColumn<QString>("fen");
+	QTest::addColumn<QString>("result");
+
+	QString variant = "standard";
+
+	QTest::newRow("standard startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "*";
+	QTest::newRow("unfinished #1")
+		<< variant
+		<< "2K1k3/8/2r5/8/8/8/8/8 w - - 0 1"
+		<< "*";
+	QTest::newRow("mate #1")
+		<< variant
+		<< "2K1r3/8/2k5/8/8/8/8/8 w - - 0 1"
+		<< "0-1";
+	QTest::newRow("stalemate #1")
+		<< variant
+		<< "k7/8/K7/8/1R6/8/8/8 b - - 0 1"
+		<< "1/2-1/2";
+	QTest::newRow("Kk")
+		<< variant
+		<< "2K5/8/2k5/8/8/8/8/8 w - - 0 1"
+		<< "1/2-1/2";
+	QTest::newRow("KNk")
+		<< variant
+		<< "2K5/4N3/2k5/8/8/8/8/8 b - - 0 1"
+		<< "1/2-1/2";
+	QTest::newRow("KBk")
+		<< variant
+		<< "2K5/4B3/2k5/8/8/8/8/8 b - - 0 1"
+		<< "1/2-1/2";
+	QTest::newRow("KBNk")
+		<< variant
+		<< "2K5/4BN2/2k5/8/8/8/8/8 b - - 0 1"
+		<< "*";
+	QTest::newRow("KBBk #1")
+		<< variant
+		<< "2K5/4BB2/2k5/8/8/8/8/8 b - - 0 1"
+		<< "*";
+	QTest::newRow("KBBkb #1")
+		<< variant
+		<< "2K5/4B3/2k2B2/8/8/3b4/8/8 b - - 0 1"
+		<< "*";
+	// TODO: improve draw by insufficient material detection
+	//QTest::newRow("KBBk #2")
+	//	<< variant
+	//	<< "2K5/4B3/2k2B2/8/8/8/8/8 b - - 0 1"
+	//	<< "1/2-1/2";
+	//QTest::newRow("KBBkb #2")
+	//	<< variant
+	//	<< "2K5/4B3/2k2B2/8/8/4b3/8/8 b - - 0 1"
+	//	<< "1/2-1/2";
+}
+
+void tst_Board::results()
+{
+	QFETCH(QString, variant);
+	QFETCH(QString, fen);
+	QFETCH(QString, result);
+
+	setVariant(variant);
+	QVERIFY(m_board->setFenString(fen));
+	QCOMPARE(m_board->result().toShortString(), result);
 }
 
 void tst_Board::perft_data() const
