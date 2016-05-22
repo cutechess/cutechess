@@ -1202,19 +1202,38 @@ Result WesternBoard::result()
 	}
 
 	// Insufficient mating material
-	int material[2] = { 0, 0 };
+	int material = 0;
+	bool bishops[] = { false, false };
 	for (int i = 0; i < arraySize(); i++)
 	{
 		const Piece& piece = pieceAt(i);
 		if (!piece.isValid())
 			continue;
 
-		if (piece.type() == Knight || piece.type() == Bishop)
-			material[piece.side()] += 1;
-		else
-			material[piece.side()] += 2;
+		switch (piece.type())
+		{
+		case King:
+			break;
+		case Bishop:
+		{
+			auto color = chessSquare(i).color();
+			Q_ASSERT(color != Square::NoColor);
+			if (!bishops[color])
+			{
+				material++;
+				bishops[color] = true;
+			}
+			break;
+		}
+		case Knight:
+			material++;
+			break;
+		default:
+			material += 2;
+			break;
+		}
 	}
-	if (material[Side::White] <= 3 && material[Side::Black] <= 3)
+	if (material <= 1)
 	{
 		str = tr("Draw by insufficient mating material");
 		return Result(Result::Draw, Side::NoSide, str);

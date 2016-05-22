@@ -272,15 +272,14 @@ void tst_Board::results_data() const
 		<< variant
 		<< "2K5/4B3/2k2B2/8/8/3b4/8/8 b - - 0 1"
 		<< "*";
-	// TODO: improve draw by insufficient material detection
-	//QTest::newRow("KBBk #2")
-	//	<< variant
-	//	<< "2K5/4B3/2k2B2/8/8/8/8/8 b - - 0 1"
-	//	<< "1/2-1/2";
-	//QTest::newRow("KBBkb #2")
-	//	<< variant
-	//	<< "2K5/4B3/2k2B2/8/8/4b3/8/8 b - - 0 1"
-	//	<< "1/2-1/2";
+	QTest::newRow("KBBk #2")
+		<< variant
+		<< "2K5/4B3/2k2B2/8/8/8/8/8 b - - 0 1"
+		<< "1/2-1/2";
+	QTest::newRow("KBBkb #2")
+		<< variant
+		<< "2K5/4B3/2k2B2/8/8/4b3/8/8 b - - 0 1"
+		<< "1/2-1/2";
 }
 
 void tst_Board::results()
