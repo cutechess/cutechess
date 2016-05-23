@@ -39,7 +39,7 @@ class NewTournamentDialog : public QDialog
 
 	public:
 		explicit NewTournamentDialog(EngineManager* engineManager,
-					     QWidget* parent = 0);
+					     QWidget* parent = nullptr);
 		virtual ~NewTournamentDialog();
 
 		Tournament* createTournament(GameManager* gameManager) const;
@@ -47,10 +47,7 @@ class NewTournamentDialog : public QDialog
 	private slots:
 		void addEngine();
 		void removeEngine();
-		void configureEngine();
 		void configureEngine(const QModelIndex& index);
-		void moveEngineUp();
-		void moveEngineDown();
 		void onVariantChanged(const QString& variant);
 		void onPlayerSelectionChanged(const QItemSelection& selected,
 					      const QItemSelection& deselected);

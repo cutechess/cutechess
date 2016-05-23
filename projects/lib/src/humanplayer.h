@@ -38,7 +38,7 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 
 	public:
 		/*! Creates a new human player. */
-		HumanPlayer(QObject* parent = 0);
+		HumanPlayer(QObject* parent = nullptr);
 
 		// Inherted from ChessPlayer
 		virtual void endGame(const Chess::Result& result);

@@ -32,6 +32,14 @@ namespace Chess {
 class LIB_EXPORT Square
 {
 	public:
+		/*! Square color */
+		enum Color
+		{
+			Light,	//!< Light-colored square.
+			Dark,	//!< Dark-colored square.
+			NoColor	//!< Color for invalid squares.
+		};
+
 		/*! Creates a new square with invalid defaults. */
 		Square();
 		/*! Creates a new square from \a file and \a rank. */
@@ -49,6 +57,8 @@ class LIB_EXPORT Square
 		int file() const;
 		/*! Zero-based rank of the square. 0 is white's first rank. */
 		int rank() const;
+		/*! Returns the color of the square. */
+		Color color() const;
 
 		/*! Sets the file to \a file. */
 		void setFile(int file);

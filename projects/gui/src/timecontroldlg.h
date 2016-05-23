@@ -39,7 +39,7 @@ class TimeControlDialog : public QDialog
 		 * The dialog is initialized according to \a tc.
 		 */
 		explicit TimeControlDialog(const TimeControl& tc,
-					   QWidget *parent = 0);
+					   QWidget *parent = nullptr);
 		/*! Destroys the dialog. */
 		virtual ~TimeControlDialog();
 

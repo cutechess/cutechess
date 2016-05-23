@@ -52,7 +52,7 @@ class PgnDatabase : public QObject
 		 * Constructs a new PgnDatabase with \a parent and \a fileName as
 		 * the underlying database.
 		 */
-		PgnDatabase(const QString& fileName, QObject* parent = 0);
+		PgnDatabase(const QString& fileName, QObject* parent = nullptr);
 		/*! Destroys the database and the game entries it contains. */
 		virtual ~PgnDatabase();
 

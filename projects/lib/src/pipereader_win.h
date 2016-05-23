@@ -43,7 +43,7 @@ class LIB_EXPORT PipeReader : public QThread
 
 	public:
 		/*! Creates a new PipeReader and starts the read loop. */
-		PipeReader(HANDLE pipe, QObject* parent = 0);
+		PipeReader(HANDLE pipe, QObject* parent = nullptr);
 
 		/*!
 		 * Read up to \a maxSize bytes into \a data.

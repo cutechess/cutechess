@@ -34,7 +34,7 @@ class EngineConfigurationProxyModel : public QSortFilterProxyModel
 
 	public:
 		/*! Creates a new EngineConfigurationProxyModel. */
-		explicit EngineConfigurationProxyModel(QObject *parent = 0);
+		explicit EngineConfigurationProxyModel(QObject *parent = nullptr);
 
 		/*!
 		 * Sets the chess variant used to filter the contents

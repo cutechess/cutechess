@@ -44,7 +44,7 @@ int GauntletTournament::gamesPerCycle() const
 TournamentPair* GauntletTournament::nextPair(int gameNumber)
 {
 	if (gameNumber >= finalGameCount())
-		return 0;
+		return nullptr;
 	if (gameNumber % gamesPerEncounter() != 0)
 		return currentPair();
 

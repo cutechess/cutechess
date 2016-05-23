@@ -33,8 +33,9 @@ Options:
 			tablebase files. At the moment only scheme 4 compression
 			is supported.
   -tournament TYPE	Set the tournament type to TYPE, which can be one of:
+			'round-robin': Round-robin tournament (default)
 			'gauntlet': First engine plays against the rest
-			'round-robin': Round-robin tournament (default).
+			'knockout': Single-elimination tournament.
   -event EVENT		Set the event/tournament name to EVENT
   -games N		Play N games per encounter. This value should be set to
 			an even number in tournaments with more than two players
@@ -74,6 +75,7 @@ Options:
   -recover		Restart crashed engines instead of stopping the match
   -repeat		Play each opening twice so that both players get
 			to play it on both sides
+  -seeds N		Set the first N engines as seeds in the tournament
   -site SITE		Set the site/location to SITE
   -srand N		Set the seed for the random number generator to N
   -wait N		Wait N milliseconds between games. The default is 0.

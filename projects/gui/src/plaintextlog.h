@@ -32,19 +32,16 @@ class PlainTextLog : public QPlainTextEdit
 
 	public:
 		/*! Constructs a new plain text log with the given \a parent. */
-		PlainTextLog(QWidget* parent = 0);
+		PlainTextLog(QWidget* parent = nullptr);
 		/*!
 		 * Constructs a new plain text log with the initial text \a text and
 		 * given \a parent.
 		 */
-		PlainTextLog(const QString& text, QWidget* parent = 0);
+		PlainTextLog(const QString& text, QWidget* parent = nullptr);
 
-	signals:
-		/*!
-		 * Signals that the user has requested the log to be saved to a
-		 * file.
-		 */
-		void saveLogToFileRequest();
+	public slots:
+		/*! Save the log to file \a filename. */
+		void saveLogToFile(const QString& fileName);
 
 	protected:
 		// Inherited from QPlainTextEdit

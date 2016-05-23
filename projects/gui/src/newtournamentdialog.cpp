@@ -28,6 +28,7 @@
 #include <timecontrol.h>
 #include <roundrobintournament.h>
 #include <gauntlettournament.h>
+#include <knockouttournament.h>
 #include <openingsuite.h>
 
 #include "engineconfigurationmodel.h"
@@ -44,7 +45,7 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	  m_srcEngineManager(engineManager),
 	  ui(new Ui::NewTournamentDialog)
 {
-	Q_ASSERT(engineManager != 0);
+	Q_ASSERT(engineManager != nullptr);
 	ui->setupUi(this);
 
 	m_srcEnginesModel = new EngineConfigurationModel(engineManager, this);
@@ -68,12 +69,18 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 		this, SLOT(addEngine()));
 	connect(ui->m_removeEngineBtn, SIGNAL(clicked()),
 		this, SLOT(removeEngine()));
-	connect(ui->m_configureEngineBtn, SIGNAL(clicked()),
-		this, SLOT(configureEngine()));
-	connect(ui->m_moveEngineUpBtn, SIGNAL(clicked()),
-		this, SLOT(moveEngineUp()));
-	connect(ui->m_moveEngineDownBtn, SIGNAL(clicked()),
-		this, SLOT(moveEngineDown()));
+	connect(ui->m_configureEngineBtn, &QToolButton::clicked, [=]()
+	{
+		configureEngine(ui->m_playersList->currentIndex());
+	});
+	connect(ui->m_moveEngineUpBtn, &QToolButton::clicked, [=]()
+	{
+		moveEngine(-1);
+	});
+	connect(ui->m_moveEngineDownBtn, &QToolButton::clicked, [=]()
+	{
+		moveEngine(1);
+	});
 
 	connect(ui->m_timeControlBtn, SIGNAL(clicked()),
 		this, SLOT(changeTimeControl()));
@@ -97,6 +104,11 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 		this, SLOT(onPlayerSelectionChanged(QItemSelection, QItemSelection)));
 	connect(ui->m_playersList, SIGNAL(doubleClicked(QModelIndex)),
 		this, SLOT(configureEngine(QModelIndex)));
+
+	connect(ui->m_knockoutRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		ui->m_roundsSpin->setDisabled(checked);
+	});
 
 	ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
@@ -139,11 +151,6 @@ void NewTournamentDialog::removeEngine()
 	button->setEnabled(m_addedEnginesManager->engineCount() > 1);
 }
 
-void NewTournamentDialog::configureEngine()
-{
-	configureEngine(ui->m_playersList->currentIndex());
-}
-
 void NewTournamentDialog::configureEngine(const QModelIndex& index)
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine);
@@ -171,16 +178,6 @@ void NewTournamentDialog::moveEngine(int offset)
 	m_addedEnginesManager->updateEngineAt(row2, tmp);
 
 	ui->m_playersList->setCurrentIndex(index.sibling(row2, 0));
-}
-
-void NewTournamentDialog::moveEngineUp()
-{
-	moveEngine(-1);
-}
-
-void NewTournamentDialog::moveEngineDown()
-{
-	moveEngine(1);
 }
 
 void NewTournamentDialog::onVariantChanged(const QString& variant)
@@ -236,15 +233,17 @@ void NewTournamentDialog::browseOpeningSuite()
 
 Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) const
 {
-	Q_ASSERT(gameManager != 0);
+	Q_ASSERT(gameManager != nullptr);
 
-	Tournament* t = 0;
+	Tournament* t = nullptr;
 	if (ui->m_roundRobinRadio->isChecked())
 		t = new RoundRobinTournament(gameManager, parent());
 	else if (ui->m_gauntletRadio->isChecked())
 		t = new GauntletTournament(gameManager, parent());
+	else if (ui->m_knockoutRadio->isChecked())
+		t = new KnockoutTournament(gameManager, parent());
 	else
-		return 0;
+		return nullptr;
 
 	t->setPgnCleanupEnabled(false);
 	t->setName(ui->m_nameEdit->text());
@@ -252,7 +251,8 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setVariant(ui->m_variantCombo->currentText());
 	t->setPgnOutput(ui->m_pgnoutEdit->text());
 	t->setGamesPerEncounter(ui->m_gamesPerEncounterSpin->value());
-	t->setRoundMultiplier(ui->m_roundsSpin->value());
+	if (t->canSetRoundMultiplier())
+		t->setRoundMultiplier(ui->m_roundsSpin->value());
 
 	const QString fileName = ui->m_suiteFileEdit->text();
 	if (!fileName.isEmpty())
@@ -274,7 +274,8 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 		else
 		{
 			delete suite;
-			return 0;
+			delete t;
+			return nullptr;
 		}
 	}
 
@@ -284,7 +285,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	{
 		t->addPlayer(new EngineBuilder(config),
 			     m_timeControl,
-			     0,
+			     nullptr,
 			     256);
 	}
 

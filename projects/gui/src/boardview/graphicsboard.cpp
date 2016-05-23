@@ -25,7 +25,7 @@
 class TargetHighlights : public QGraphicsObject
 {
 	public:
-		TargetHighlights(QGraphicsItem* parentItem = 0)
+		TargetHighlights(QGraphicsItem* parentItem = nullptr)
 			: QGraphicsObject(parentItem)
 		{
 			setFlag(ItemHasNoContents);
@@ -55,7 +55,7 @@ GraphicsBoard::GraphicsBoard(int files,
 	  m_lightColor(QColor("#ffce9e")),
 	  m_darkColor(QColor("#d18b47")),
 	  m_squares(files * ranks),
-	  m_highlightAnim(0)
+	  m_highlightAnim(nullptr)
 {
 	Q_ASSERT(files > 0);
 	Q_ASSERT(ranks > 0);
@@ -129,7 +129,7 @@ QPointF GraphicsBoard::squarePos(const Chess::Square& square) const
 Chess::Piece GraphicsBoard::pieceTypeAt(const Chess::Square& square) const
 {
 	GraphicsPiece* piece = pieceAt(square);
-	if (piece == 0)
+	if (piece == nullptr)
 		return Chess::Piece();
 	return piece->pieceType();
 }
@@ -137,10 +137,10 @@ Chess::Piece GraphicsBoard::pieceTypeAt(const Chess::Square& square) const
 GraphicsPiece* GraphicsBoard::pieceAt(const Chess::Square& square) const
 {
 	if (!square.isValid())
-		return 0;
+		return nullptr;
 
 	GraphicsPiece* piece = m_squares.at(squareIndex(square));
-	Q_ASSERT(piece == 0 || piece->container() == this);
+	Q_ASSERT(piece == nullptr || piece->container() == this);
 	return piece;
 }
 
@@ -148,15 +148,15 @@ GraphicsPiece* GraphicsBoard::takePieceAt(const Chess::Square& square)
 {
 	int index = squareIndex(square);
 	if (index == -1)
-		return 0;
+		return nullptr;
 
 	GraphicsPiece* piece = m_squares.at(index);
-	if (piece == 0)
-		return 0;
+	if (piece == nullptr)
+		return nullptr;
 
-	m_squares[index] = 0;
-	piece->setParentItem(0);
-	piece->setContainer(0);
+	m_squares[index] = nullptr;
+	piece->setParentItem(nullptr);
+	piece->setContainer(nullptr);
 
 	return piece;
 }
@@ -174,8 +174,8 @@ void GraphicsBoard::setSquare(const Chess::Square& square, GraphicsPiece* piece)
 	int index = squareIndex(square);
 	delete m_squares[index];
 
-	if (piece == 0)
-		m_squares[index] = 0;
+	if (piece == nullptr)
+		m_squares[index] = nullptr;
 	else
 	{
 		m_squares[index] = piece;
@@ -189,9 +189,9 @@ void GraphicsBoard::movePiece(const Chess::Square& source,
 			      const Chess::Square& target)
 {
 	GraphicsPiece* piece = pieceAt(source);
-	Q_ASSERT(piece != 0);
+	Q_ASSERT(piece != nullptr);
 
-	m_squares[squareIndex(source)] = 0;
+	m_squares[squareIndex(source)] = nullptr;
 	setSquare(target, piece);
 }
 
@@ -205,11 +205,11 @@ int GraphicsBoard::squareIndex(const Chess::Square& square) const
 
 void GraphicsBoard::clearHighlights()
 {
-	if (m_highlightAnim != 0)
+	if (m_highlightAnim != nullptr)
 	{
 		m_highlightAnim->setDirection(QAbstractAnimation::Backward);
 		m_highlightAnim->start(QAbstractAnimation::DeleteWhenStopped);
-		m_highlightAnim = 0;
+		m_highlightAnim = nullptr;
 	}
 }
 

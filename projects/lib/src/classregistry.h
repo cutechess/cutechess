@@ -76,7 +76,7 @@ class ClassRegistry
 		T* create(const QString& key)
 		{
 			if (!m_items.contains(key))
-				return 0;
+				return nullptr;
 
 			return m_items[key]();
 		}

@@ -87,7 +87,7 @@ GraphicsPiece* GraphicsPieceReserve::piece(const Chess::Piece& piece) const
 GraphicsPiece* GraphicsPieceReserve::takePiece(const Chess::Piece& piece)
 {
 	GraphicsPiece* gpiece = m_pieces.take(piece);
-	Q_ASSERT(gpiece != 0);
+	Q_ASSERT(gpiece != nullptr);
 
 	if (!m_pieces.contains(piece))
 	{
@@ -105,15 +105,15 @@ GraphicsPiece* GraphicsPieceReserve::takePiece(const Chess::Piece& piece)
 			list[index] = Chess::Piece();
 	}
 	update(textRect(piece));
-	gpiece->setParentItem(0);
-	gpiece->setContainer(0);
+	gpiece->setParentItem(nullptr);
+	gpiece->setContainer(nullptr);
 
 	return gpiece;
 }
 
 void GraphicsPieceReserve::addPiece(GraphicsPiece* piece)
 {
-	Q_ASSERT(piece != 0);
+	Q_ASSERT(piece != nullptr);
 
 	Chess::Piece type(piece->pieceType());
 	GraphicsPiece* old = m_pieces.value(type);
@@ -122,7 +122,7 @@ void GraphicsPieceReserve::addPiece(GraphicsPiece* piece)
 	piece->setContainer(this);
 	piece->setParentItem(this);
 
-	if (old != 0)
+	if (old != nullptr)
 		piece->setPos(old->pos());
 	else
 	{

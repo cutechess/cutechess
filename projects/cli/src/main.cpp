@@ -42,12 +42,12 @@
 #include "enginematch.h"
 
 
-static EngineMatch* match = 0;
+static EngineMatch* match = nullptr;
 
 void sigintHandler(int param)
 {
 	Q_UNUSED(param);
-	if (match != 0)
+	if (match != nullptr)
 		match->stop();
 	else
 		abort();
@@ -258,7 +258,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-wait", QVariant::Int, 1, 1);
 	parser.addOption("-seeds", QVariant::UInt, 1, 1);
 	if (!parser.parse())
-		return 0;
+		return nullptr;
 
 	GameManager* manager = CuteChessCoreApplication::instance()->gameManager();
 
@@ -266,10 +266,10 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	if (ttype.isEmpty())
 		ttype = "round-robin";
 	Tournament* tournament = TournamentFactory::create(ttype, manager, parent);
-	if (tournament == 0)
+	if (tournament == nullptr)
 	{
 		qWarning("Invalid tournament type: %s", qPrintable(ttype));
-		return 0;
+		return nullptr;
 	}
 
 	EngineMatch* match = new EngineMatch(tournament, parent);
@@ -528,7 +528,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 			delete match;
 			delete tournament;
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -584,7 +584,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	{
 		delete match;
 		delete tournament;
-		return 0;
+		return nullptr;
 	}
 
 	tournament->setAdjudicator(adjudicator);
@@ -594,7 +594,7 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 int main(int argc, char* argv[])
 {
-	setvbuf(stdout, NULL, _IONBF, 0);
+	setvbuf(stdout, nullptr, _IONBF, 0);
 	signal(SIGINT, sigintHandler);
 
 	CuteChessCoreApplication app(argc, argv);
@@ -638,7 +638,7 @@ int main(int argc, char* argv[])
 	}
 
 	match = parseMatch(arguments, &app);
-	if (match == 0)
+	if (match == nullptr)
 		return 1;
 	QObject::connect(match, SIGNAL(finished()), &app, SLOT(quit()));
 

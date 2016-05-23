@@ -263,22 +263,20 @@ TournamentPair* Tournament::pair(int player1, int player2)
 {
 	Q_ASSERT(player1 || player2);
 
-	auto order1 = qMakePair(player1, player2);
+	QPair<int,int> pairs[] = {
+		qMakePair(player1, player2),
+		qMakePair(player2, player1)
+	};
 
-	if (m_pairs.contains(order1))
-		return m_pairs[order1];
-
-	auto order2 = qMakePair(player2, player1);
-	if (m_pairs.contains(order2))
+	for (auto & p: pairs)
 	{
-		TournamentPair* ret = m_pairs[order2];
-		ret->swapPlayers();
-		return ret;
+		if (m_pairs.contains(p))
+			return m_pairs[p];
 	}
 
 	// Existing pair not found -> create a new one
-	TournamentPair* ret = new TournamentPair(player1, player2);
-	m_pairs[order1] = ret;
+	auto ret = new TournamentPair(player1, player2);
+	m_pairs[pairs[0]] = ret;
 
 	return ret;
 }
@@ -322,7 +320,11 @@ void Tournament::startGame(TournamentPair* pair)
 		isRepeat = true;
 	}
 	else if (m_openingSuite != nullptr)
-		game->setMoves(m_openingSuite->nextGame(m_openingDepth));
+	{
+		if (!game->setMoves(m_openingSuite->nextGame(m_openingDepth)))
+			qWarning("The opening suite is incompatible with the "
+				 "current chess variant");
+	}
 
 	game->generateOpening();
 	if (m_repeatOpening && !isRepeat)
@@ -353,6 +355,10 @@ void Tournament::startGame(TournamentPair* pair)
 	if (m_nextGameNumber > m_finalGameCount)
 		m_finalGameCount = m_nextGameNumber;
 
+	// Make sure the next game (if any) between the pair will
+	// start with reversed colors.
+	m_pair->swapPlayers();
+
 	connect(game, SIGNAL(startFailed(ChessGame*)),
 		this, SLOT(onGameStartFailed(ChessGame*)));
 	m_gameManager->newGame(game,
@@ -371,18 +377,10 @@ void Tournament::startNextGame()
 	if (!pair || !pair->isValid())
 		return;
 
-	if (pair->hasSamePlayers(m_pair))
+	if (!pair->hasSamePlayers(m_pair) && m_players.size() > 2)
 	{
-		if (pair->firstPlayer() == m_pair->firstPlayer())
-			pair->swapPlayers();
-	}
-	else
-	{
-		if (m_players.size() > 2)
-		{
-			m_startFen.clear();
-			m_openingMoves.clear();
-		}
+		m_startFen.clear();
+		m_openingMoves.clear();
 	}
 
 	startGame(pair);

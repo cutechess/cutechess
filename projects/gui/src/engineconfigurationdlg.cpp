@@ -38,7 +38,7 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	EngineConfigurationDialog::DialogMode mode, QWidget* parent)
 	: QDialog(parent),
 	  m_engineOptionModel(new EngineOptionModel(this)),
-	  m_engine(0),
+	  m_engine(nullptr),
 	  ui(new Ui::EngineConfigurationDialog)
 {
 	ui->setupUi(this);
@@ -229,7 +229,7 @@ void EngineConfigurationDialog::browseWorkingDir()
 
 void EngineConfigurationDialog::detectEngineOptions()
 {
-	if (m_engine != 0)
+	if (m_engine != nullptr)
 		return;
 
 	if (QObject::sender() != ui->m_detectBtn
@@ -251,9 +251,9 @@ void EngineConfigurationDialog::detectEngineOptions()
 
 	EngineBuilder builder(engineConfiguration());
 	QString error;
-	m_engine = qobject_cast<ChessEngine*>(builder.create(0, 0, this, &error));
+	m_engine = qobject_cast<ChessEngine*>(builder.create(nullptr, nullptr, this, &error));
 
-	if (m_engine != 0)
+	if (m_engine != nullptr)
 	{
 		connect(m_engine, SIGNAL(ready()),
 			this, SLOT(onEngineReady()));
@@ -279,7 +279,7 @@ void EngineConfigurationDialog::detectEngineOptions()
 
 void EngineConfigurationDialog::onEngineReady()
 {
-	Q_ASSERT(m_engine != 0);
+	Q_ASSERT(m_engine != nullptr);
 	Q_ASSERT(m_engine->state() != ChessPlayer::Disconnected);
 
 	qDeleteAll(m_options);
@@ -297,14 +297,14 @@ void EngineConfigurationDialog::onEngineReady()
 
 void EngineConfigurationDialog::onEngineQuit()
 {
-	Q_ASSERT(m_engine != 0);
+	Q_ASSERT(m_engine != nullptr);
 	Q_ASSERT(m_engine->state() == ChessPlayer::Disconnected);
 
-	disconnect(m_optionDetectionTimer, 0, m_engine, 0);
+	disconnect(m_optionDetectionTimer, nullptr, m_engine, nullptr);
 	m_optionDetectionTimer->stop();
 
 	m_engine->deleteLater();
-	m_engine = 0;
+	m_engine = nullptr;
 
 	ui->m_detectBtn->setEnabled(true);
 	ui->m_restoreBtn->setDisabled(m_options.isEmpty());

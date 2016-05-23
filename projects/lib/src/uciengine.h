@@ -33,7 +33,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 
 	public:
 		/*! Creates a new UciEngine. */
-		UciEngine(QObject* parent = 0);
+		UciEngine(QObject* parent = nullptr);
 
 		// Inherited from ChessEngine
 		virtual void endGame(const Chess::Result& result);

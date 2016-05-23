@@ -42,7 +42,7 @@ class EngineManagementDialog : public QDialog
 		 * Creates a new engine management window with \a engineConfigurations
 		 * and \a parent as parent.
 		*/
-		EngineManagementDialog(QWidget* parent = 0);
+		EngineManagementDialog(QWidget* parent = nullptr);
 		/*! Destroys the dialog. */
 		virtual ~EngineManagementDialog();
 

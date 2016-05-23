@@ -45,14 +45,14 @@ class GraphicsPieceReserve : public QGraphicsItem
 		 * needed.
 		 */
 		explicit GraphicsPieceReserve(qreal squareSize,
-					      QGraphicsItem* parent = 0);
+					      QGraphicsItem* parent = nullptr);
 
 		// Inherited from QGraphicsItem
 		virtual int type() const;
 		virtual QRectF boundingRect() const;
 		virtual void paint(QPainter* painter,
 				   const QStyleOptionGraphicsItem* option,
-				   QWidget* widget = 0);
+				   QWidget* widget = nullptr);
 
 		/*! Returns the number of pieces of type \a piece. */
 		int pieceCount(const Chess::Piece& piece) const;

@@ -28,7 +28,7 @@ int ChessEngine::s_count = 0;
 QStringRef ChessEngine::nextToken(const QStringRef& previous, bool untilEnd)
 {
 	const QString* str = previous.string();
-	if (str == 0)
+	if (str == nullptr)
 		return QStringRef();
 
 	int i;
@@ -79,7 +79,7 @@ ChessEngine::ChessEngine(QObject* parent)
 	  m_quitTimer(new QTimer(this)),
 	  m_idleTimer(new QTimer(this)),
 	  m_protocolStartTimer(new QTimer(this)),
-	  m_ioDevice(0),
+	  m_ioDevice(nullptr),
 	  m_restartMode(EngineConfiguration::RestartAuto)
 {
 	m_pingTimer->setSingleShot(true);
@@ -112,7 +112,7 @@ QIODevice* ChessEngine::device() const
 
 void ChessEngine::setDevice(QIODevice* device)
 {
-	Q_ASSERT(device != 0);
+	Q_ASSERT(device != nullptr);
 
 	m_ioDevice = device;
 	m_ioDevice->setParent(this);
@@ -140,7 +140,7 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 
 void ChessEngine::addOption(EngineOption* option)
 {
-	Q_ASSERT(option != 0);
+	Q_ASSERT(option != nullptr);
 	m_options.append(option);
 }
 
@@ -152,7 +152,7 @@ EngineOption* ChessEngine::getOption(const QString& name) const
 			return option;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 void ChessEngine::setOption(const QString& name, const QVariant& value)
@@ -164,7 +164,7 @@ void ChessEngine::setOption(const QString& name, const QVariant& value)
 	}
 
 	EngineOption* option = getOption(name);
-	if (option == 0)
+	if (option == nullptr)
 	{
 		qDebug("%s doesn't have option %s", qPrintable(this->name()), qPrintable(name));
 		return;

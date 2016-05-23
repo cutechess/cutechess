@@ -97,7 +97,7 @@ PgnGame PgnGameIterator::next(bool* ok, int depth)
 			if (m_file.open(QIODevice::ReadOnly | QIODevice::Text))
 				m_in.setDevice(&m_file);
 			else
-				m_in.setDevice(0);
+				m_in.setDevice(nullptr);
 		}
 	}
 
@@ -246,13 +246,13 @@ void PgnExportTask::run()
 
 GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* parent)
 	: QDialog(parent, Qt::Window),
-	  m_gameViewer(0),
+	  m_gameViewer(nullptr),
 	  m_dbManager(dbManager),
-	  m_pgnDatabaseModel(0),
-	  m_pgnGameEntryModel(0),
+	  m_pgnDatabaseModel(nullptr),
+	  m_pgnGameEntryModel(nullptr),
 	  ui(new Ui::GameDatabaseDialog)
 {
-	Q_ASSERT(dbManager != 0);
+	Q_ASSERT(dbManager != nullptr);
 	ui->setupUi(this);
 
 	m_pgnDatabaseModel = new PgnDatabaseModel(m_dbManager, this);
@@ -475,7 +475,7 @@ void GameDatabaseDialog::exportPgn()
 		tr("Export game collection"),
 		QString(),
 		tr("Portable Game Notation (*.pgn)"),
-		0,
+		nullptr,
 		QFileDialog::DontConfirmOverwrite);
 	if (fileName.isEmpty())
 		return;

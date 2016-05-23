@@ -32,7 +32,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 
 	public:
 		/*! Creates a new XboardEngine. */
-		XboardEngine(QObject* parent = 0);
+		XboardEngine(QObject* parent = nullptr);
 
 		// Inherited from ChessEngine
 		virtual void endGame(const Chess::Result& result);

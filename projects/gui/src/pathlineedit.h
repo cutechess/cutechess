@@ -33,7 +33,7 @@ class PathLineEdit : public QLineEdit
 			FolderPath
 		};
 
-		explicit PathLineEdit(PathType pathType, QWidget* parent = 0);
+		explicit PathLineEdit(PathType pathType, QWidget* parent = nullptr);
 
 		void setDefaultDirectory(const QString& dir);
 

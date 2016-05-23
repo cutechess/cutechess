@@ -15,28 +15,32 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "humanbuilder.h"
-#include "humanplayer.h"
+#include "gametabbar.h"
 
-HumanBuilder::HumanBuilder(const QString& name)
-	: PlayerBuilder(name)
+GameTabBar::GameTabBar(QWidget* parent)
+	: QTabBar(parent)
 {
+	setMovable(true);
 }
 
-ChessPlayer* HumanBuilder::create(QObject *receiver,
-				  const char *method,
-				  QObject *parent,
-				  QString* error) const
+void GameTabBar::showNextTab()
 {
-	Q_UNUSED(error);
+	if (count() < 2)
+		return;
 
-	ChessPlayer* player = new HumanPlayer(parent);
-	if (!name().isEmpty())
-		player->setName(name());
+	if (currentIndex() == count() - 1)
+		setCurrentIndex(0);
+	else
+		setCurrentIndex(currentIndex() + 1);
+}
 
-	if (receiver != nullptr && method != nullptr)
-		QObject::connect(player, SIGNAL(debugMessage(QString)),
-				 receiver, method);
+void GameTabBar::showPreviousTab()
+{
+	if (count() < 2)
+		return;
 
-	return player;
+	if (currentIndex() == 0)
+		setCurrentIndex(count() - 1);
+	else
+		setCurrentIndex(currentIndex() - 1);
 }

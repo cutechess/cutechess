@@ -34,7 +34,7 @@ class EngineMatch : public QObject
 	Q_OBJECT
 
 	public:
-		EngineMatch(Tournament* tournament, QObject* parent = 0);
+		EngineMatch(Tournament* tournament, QObject* parent = nullptr);
 		virtual ~EngineMatch();
 
 		OpeningBook* addOpeningBook(const QString& fileName);

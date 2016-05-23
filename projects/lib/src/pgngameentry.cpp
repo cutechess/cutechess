@@ -49,8 +49,8 @@ PgnGameEntry::PgnGameEntry()
 
 static int s_stringContains(const char* s1, const char* s2, int size)
 {
-	Q_ASSERT(s1 != 0);
-	Q_ASSERT(s2 != 0);
+	Q_ASSERT(s1 != nullptr);
+	Q_ASSERT(s2 != nullptr);
 	Q_ASSERT(size >= 0);
 
 	if (!*s2)

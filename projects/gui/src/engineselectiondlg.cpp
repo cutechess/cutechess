@@ -25,7 +25,7 @@ EngineSelectionDialog::EngineSelectionDialog(EngineConfigurationProxyModel* mode
 	  m_model(model),
 	  ui(new Ui::EngineSelectionDialog)
 {
-	Q_ASSERT(model != 0);
+	Q_ASSERT(model != nullptr);
 	ui->setupUi(this);
 
 	ui->m_enginesList->setModel(m_model);

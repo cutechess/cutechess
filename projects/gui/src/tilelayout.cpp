@@ -48,7 +48,7 @@ int TileLayout::count() const
 
 QLayoutItem* TileLayout::itemAt(int index) const
 {
-	return m_items.value(index, 0);
+	return m_items.value(index, nullptr);
 }
 
 QSize TileLayout::minimumSize() const
@@ -80,7 +80,7 @@ QLayoutItem* TileLayout::takeAt(int index)
 	if (index >= 0 && index < m_items.size())
 		return m_items.takeAt(index);
 	else
-		return 0;
+		return nullptr;
 }
 
 int TileLayout::horizontalSpacing() const
@@ -181,7 +181,7 @@ int TileLayout::smartSpacing(QStyle::PixelMetric pm) const
 	if (parent->isWidgetType())
 	{
 		QWidget* pw = static_cast<QWidget*>(parent);
-		return pw->style()->pixelMetric(pm, 0, pw);
+		return pw->style()->pixelMetric(pm, nullptr, pw);
 	}
 	return static_cast<QLayout*>(parent)->spacing();
 }

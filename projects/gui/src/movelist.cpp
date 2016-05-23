@@ -25,7 +25,7 @@
 
 MoveList::MoveList(QWidget* parent)
 	: QWidget(parent),
-	  m_game(0),
+	  m_game(nullptr),
 	  m_moveCount(0),
 	  m_startingSide(0),
 	  m_selectedMove(-1),
@@ -98,13 +98,13 @@ void MoveList::insertMove(int ply,
 
 void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 {
-	if (m_game != 0)
+	if (m_game != nullptr)
 		m_game->disconnect(this);
 	m_game = game;
 
-	if (pgn == 0)
+	if (pgn == nullptr)
 	{
-		Q_ASSERT(game != 0);
+		Q_ASSERT(game != nullptr);
 		pgn = m_game->pgn();
 	}
 
@@ -126,7 +126,7 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 	}
 	cursor.endEditBlock();
 
-	if (m_game != 0)
+	if (m_game != nullptr)
 	{
 		connect(m_game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
 			this, SLOT(onMoveMade(Chess::GenericMove, QString, QString)));

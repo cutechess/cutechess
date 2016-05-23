@@ -86,11 +86,11 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 	if (map.contains("options"))
 	{
 		const QVariantList optionsList = map["options"].toList();
-		EngineOption* option = 0;
+		EngineOption* option = nullptr;
 
 		foreach (const QVariant& optionVariant, optionsList)
 		{
-			if ((option = EngineOptionFactory::create(optionVariant.toMap())) != 0)
+			if ((option = EngineOptionFactory::create(optionVariant.toMap())) != nullptr)
 				addOption(option);
 		}
 	}
@@ -262,7 +262,7 @@ void EngineConfiguration::setOptions(const QList<EngineOption*>& options)
 
 void EngineConfiguration::addOption(EngineOption* option)
 {
-	Q_ASSERT(option != 0);
+	Q_ASSERT(option != nullptr);
 
 	m_options << option;
 }

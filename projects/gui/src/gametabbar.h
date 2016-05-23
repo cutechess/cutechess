@@ -15,39 +15,28 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GAMEDATABASESEARCHDIALOG_H
-#define GAMEDATABASESEARCHDIALOG_H
+#ifndef GAME_TAB_BAR_H
+#define GAME_TAB_BAR_H
 
-#include <QDialog>
-#include <pgngamefilter.h>
-
-namespace Ui {
-	class GameDatabaseSearchDialog;
-}
+#include <QTabBar>
 
 /*!
- * \brief Dialog for searching and filtering game databases.
- *
- * \sa GameDatabaseDialog
+ * \brief Provides a game tab bar for game windows.
  */
-class GameDatabaseSearchDialog : public QDialog
+class GameTabBar : public QTabBar
 {
 	Q_OBJECT
 
 	public:
-		/*! Constructs a new GameDatabaseSearchDialog. */
-		GameDatabaseSearchDialog(QWidget* parent = nullptr);
-		/*! Destroys the dialog. */
-		virtual ~GameDatabaseSearchDialog();
+		GameTabBar(QWidget* parent = nullptr);
 
-		/*! Returns the PGN filter. */
-		PgnGameFilter filter() const;
+	public slots:
+		/*! Show the next tab in the tab bar. */
+		void showNextTab();
+		/*! Show the previous tab in the tab bar. */
+		void showPreviousTab();
 
-	private slots:
-		void onResultChanged(int index);
-
-	private:
-		Ui::GameDatabaseSearchDialog* ui;
 };
 
-#endif // GAMEDATABASESEARCHDIALOG_H
+#endif // GAME_TAB_BAR_H
+

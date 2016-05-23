@@ -23,13 +23,13 @@
 
 
 PgnStream::PgnStream(const QString& variant)
-	: m_board(0),
+	: m_board(nullptr),
 	  m_pos(0),
 	  m_lineNumber(1),
 	  m_lastChar(0),
 	  m_tokenType(NoToken),
-	  m_device(0),
-	  m_string(0),
+	  m_device(nullptr),
+	  m_string(nullptr),
 	  m_status(Ok),
 	  m_phase(OutOfGame)
 {
@@ -37,14 +37,14 @@ PgnStream::PgnStream(const QString& variant)
 }
 
 PgnStream::PgnStream(QIODevice* device, const QString& variant)
-	: m_board(0)
+	: m_board(nullptr)
 {
 	setVariant(variant);
 	setDevice(device);
 }
 
 PgnStream::PgnStream(const QByteArray* string, const QString& variant)
-	: m_board(0)
+	: m_board(nullptr)
 {
 	setVariant(variant);
 	setString(string);
@@ -64,8 +64,8 @@ void PgnStream::reset()
 	m_tagName.clear();
 	m_tagValue.clear();
 	m_tokenType = NoToken;
-	m_device = 0;
-	m_string = 0;
+	m_device = nullptr;
+	m_string = nullptr;
 	m_status = Ok;
 	m_phase = OutOfGame;
 }
@@ -82,7 +82,7 @@ QIODevice* PgnStream::device() const
 
 void PgnStream::setDevice(QIODevice* device)
 {
-	Q_ASSERT(device != 0);
+	Q_ASSERT(device != nullptr);
 
 	reset();
 	m_device = device;
@@ -95,27 +95,27 @@ const QByteArray* PgnStream::string() const
 
 void PgnStream::setString(const QByteArray* string)
 {
-	Q_ASSERT(string != 0);
+	Q_ASSERT(string != nullptr);
 	reset();
 	m_string = string;
 }
 
 QString PgnStream::variant() const
 {
-	Q_ASSERT(m_board != 0);
+	Q_ASSERT(m_board != nullptr);
 	return m_board->variant();
 }
 
 bool PgnStream::setVariant(const QString& variant)
 {
-	if (m_board != 0 && m_board->variant() == variant)
+	if (m_board != nullptr && m_board->variant() == variant)
 		return true;
 	if (!Chess::BoardFactory::variants().contains(variant))
 		return false;
 
 	delete m_board;
 	m_board = Chess::BoardFactory::create(variant);
-	Q_ASSERT(m_board != 0);
+	Q_ASSERT(m_board != nullptr);
 
 	return true;
 }
@@ -224,7 +224,7 @@ PgnStream::Status PgnStream::status() const
 
 void PgnStream::parseUntil(const char* chars)
 {
-	Q_ASSERT(chars != 0);
+	Q_ASSERT(chars != nullptr);
 
 	char c;
 	while ((c = readChar()) != 0)

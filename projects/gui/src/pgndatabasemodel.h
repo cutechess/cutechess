@@ -39,7 +39,7 @@ class PgnDatabaseModel : public QAbstractItemModel
 		 * \a gameDatabaseManager.
 		 */
 		PgnDatabaseModel(GameDatabaseManager* gameDatabaseManager,
-		                 QObject* parent = 0);
+		                 QObject* parent = nullptr);
 
 		// Inherited from QAbstractItemModel
 		virtual QModelIndex index(int row, int column,
