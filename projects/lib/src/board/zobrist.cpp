@@ -82,7 +82,7 @@ void Zobrist::initialize(int squareCount,
 	m_squareCount = squareCount;
 	m_pieceTypeCount = pieceTypeCount;
 
-	if (m_keys == 0)
+	if (m_keys == nullptr)
 	{
 		// Initialize the global zobrist array
 		if (s_keys.isEmpty())

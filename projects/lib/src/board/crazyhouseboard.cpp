@@ -183,7 +183,7 @@ void CrazyhouseBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	{
 		Piece reservePiece(sideToMove(), reserveType(ctype));
 		addToReserve(reservePiece);
-		if (transition != 0)
+		if (transition != nullptr)
 			transition->addReservePiece(reservePiece);
 	}
 	else if (source == 0)

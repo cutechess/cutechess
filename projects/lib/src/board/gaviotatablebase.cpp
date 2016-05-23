@@ -20,8 +20,8 @@
 #include <gtb-probe.h>
 #include "westernboard.h"
 
-const char** s_paths = 0;
-char* s_initInfo = 0;
+const char** s_paths = nullptr;
+char* s_initInfo = nullptr;
 
 
 bool GaviotaTablebase::initialize(const QStringList& paths)
@@ -30,7 +30,7 @@ bool GaviotaTablebase::initialize(const QStringList& paths)
 	foreach (const QString& path, paths)
 	{
 		s_paths = tbpaths_add(s_paths, path.toLatin1().constData());
-		if (s_paths == 0)
+		if (s_paths == nullptr)
 			return false;
 	}
 
@@ -38,18 +38,18 @@ bool GaviotaTablebase::initialize(const QStringList& paths)
 	tbcache_init(32*1024*1024, 96);
 	tbstats_reset();
 
-	return s_initInfo != 0;
+	return s_initInfo != nullptr;
 }
 
 void GaviotaTablebase::cleanup()
 {
-	if (s_initInfo == 0)
+	if (s_initInfo == nullptr)
 		return;
 
 	tbcache_done();
 	tb_done();
 	s_paths = tbpaths_done(s_paths);
-	s_initInfo = 0;
+	s_initInfo = nullptr;
 }
 
 bool GaviotaTablebase::tbAvailable(int pieces)
@@ -94,7 +94,7 @@ Chess::Result GaviotaTablebase::result(const Chess::Side& side,
 {
 	Q_ASSERT(pieces.size() <= 5);
 
-	if (s_initInfo == 0)
+	if (s_initInfo == nullptr)
 		return Chess::Result();
 
 	TB_sides stm = (side == Chess::Side::White) ? tb_WHITE_TO_MOVE : tb_BLACK_TO_MOVE;
@@ -118,7 +118,7 @@ Chess::Result GaviotaTablebase::result(const Chess::Side& side,
 
 	unsigned info = tb_UNKNOWN;
 	bool ok = false;
-	if (dtm == 0)
+	if (dtm == nullptr)
 		ok = tb_probe_WDL_hard(stm, epsq, castling,
 				       sq[0], sq[1], pc[0], pc[1],
 				       &info);

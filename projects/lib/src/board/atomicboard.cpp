@@ -139,7 +139,7 @@ void AtomicBoard::vMakeMove(const Move& move, BoardTransition* transition)
 			removeCastlingRights(sq);
 			setSquare(sq, Piece::NoPiece);
 
-			if (transition != 0)
+			if (transition != nullptr)
 				transition->addSquare(chessSquare(sq));
 		}
 	}
