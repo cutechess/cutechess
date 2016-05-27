@@ -11,7 +11,7 @@ Installing
 ----------
 
 Binaries are available for `cutechess-cli`, the command-line interface of Cute
-Chess. The latest version is 0.8.0.
+Chess. The latest version is 0.8.1.
 
 * [cutechess-cli GNU/Linux 64-bit](http://ilaripih.mbnet.fi/bin/cutechess-cli-linux64.tar.gz)
 * [cutechess-cli OS X 64-bit](http://ilaripih.mbnet.fi/bin/cutechess-cli-osx.zip)
