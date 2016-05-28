@@ -86,7 +86,7 @@ class LIB_EXPORT GaviotaTablebase
 					    const Chess::Square& enpassantSq,
 					    Castling castling,
 					    const PieceList& pieces,
-					    unsigned int* dtm = 0);
+					    unsigned int* dtm = nullptr);
 
 	private:
 		GaviotaTablebase();
