@@ -30,7 +30,7 @@ TournamentPlayer::TournamentPlayer(PlayerBuilder* builder,
 	  m_draws(0),
 	  m_losses(0)
 {
-	Q_ASSERT(builder != 0);
+	Q_ASSERT(builder != nullptr);
 }
 
 const PlayerBuilder* TournamentPlayer::builder() const
