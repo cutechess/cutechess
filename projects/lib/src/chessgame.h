@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QVector>
 #include <QStringList>
+#include <QMap>
 #include <QSemaphore>
 #include "pgngame.h"
 #include "board/result.h"
@@ -52,6 +53,7 @@ class LIB_EXPORT ChessGame : public QObject
 		Chess::Board* board() const;
 		QString startingFen() const;
 		const QVector<Chess::Move>& moves() const;
+		const QMap<int,int>& scores() const;
 		Chess::Result result() const;
 
 		void setError(const QString& message);
@@ -91,6 +93,7 @@ class LIB_EXPORT ChessGame : public QObject
 				 const Chess::GenericMove& move,
 				 const QString& sanString,
 				 const QString& comment);
+		void scoreChanged(int ply, int score);
 		void started(ChessGame* game = nullptr);
 		void finished(ChessGame* game = nullptr);
 		void startFailed(ChessGame* game = nullptr);
@@ -126,6 +129,7 @@ class LIB_EXPORT ChessGame : public QObject
 		QString m_startingFen;
 		Chess::Result m_result;
 		QVector<Chess::Move> m_moves;
+		QMap<int,int> m_scores;
 		PgnGame* m_pgn;
 		QSemaphore m_pauseSem;
 		QSemaphore m_resumeSem;

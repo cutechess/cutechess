@@ -84,6 +84,11 @@ const QVector<Chess::Move>& ChessGame::moves() const
 	return m_moves;
 }
 
+const QMap<int,int>& ChessGame::scores() const
+{
+	return m_scores;
+}
+
 Chess::Result ChessGame::result() const
 {
 	return m_result;
@@ -220,7 +225,11 @@ void ChessGame::addPgnMove(const Chess::Move& move, const QString& comment)
 
 void ChessGame::emitLastMove()
 {
-	PgnGame::MoveData md(m_pgn->moves().last());
+	int ply = m_moves.size() - 1;
+	if (m_scores.contains(ply))
+		emit scoreChanged(ply, m_scores[ply]);
+
+	auto md = m_pgn->moves().last();
 	emit moveMade(md.move, md.moveString, md.comment);
 }
 
@@ -237,6 +246,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 		return;
 	}
 
+	m_scores[m_moves.size()] = sender->evaluation().score();
 	m_moves.append(move);
 	addPgnMove(move, evalString(sender->evaluation()));
 
@@ -376,6 +386,7 @@ void ChessGame::setTimeControl(const TimeControl& timeControl, Chess::Side side)
 void ChessGame::setMoves(const QVector<Chess::Move>& moves)
 {
 	Q_ASSERT(!m_gameInProgress);
+	m_scores.clear();
 	m_moves = moves;
 }
 
@@ -386,6 +397,7 @@ bool ChessGame::setMoves(const PgnGame& pgn)
 
 	setStartingFen(pgn.startingFenString());
 	resetBoard();
+	m_scores.clear();
 	m_moves.clear();
 
 	foreach (const PgnGame::MoveData& md, pgn.moves())

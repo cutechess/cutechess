@@ -20,7 +20,7 @@ macx-xcode {
     DEFINES += CUTECHESS_VERSION=\\\"$$CUTECHESS_VERSION\\\"
 }
 
-QT += svg widgets concurrent
+QT += svg widgets concurrent printsupport
 
 win32 {
     CONFIG(debug, debug|release) {
@@ -40,3 +40,4 @@ include(ui/ui.pri)
 include(res/res.pri)
 
 include(3rdparty/modeltest/modeltest.pri)
+include(3rdparty/qcustomplot/qcustomplot.pri)

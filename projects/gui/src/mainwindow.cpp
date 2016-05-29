@@ -52,6 +52,7 @@
 #include "gamedatabasemanager.h"
 #include "pgntagsmodel.h"
 #include "gametabbar.h"
+#include "evalhistory.h"
 
 #include <modeltest.h>
 
@@ -87,6 +88,8 @@ MainWindow::MainWindow(ChessGame* game)
 	m_moveList = new MoveList(this);
 	m_tagsModel = new PgnTagsModel(this);
 	new ModelTest(m_tagsModel, this);
+
+	m_evalHistory = new EvalHistory(this);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
@@ -270,6 +273,11 @@ void MainWindow::createDockWindows()
 
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
 
+	// Evaluation history
+	auto evalHistoryDock = new QDockWidget(tr("Evaluation history"), this);
+	evalHistoryDock->setWidget(m_evalHistory);
+	addDockWidget(Qt::BottomDockWidgetArea, evalHistoryDock);
+
 	// Move list
 	QDockWidget* moveListDock = new QDockWidget(tr("Moves"), this);
 	moveListDock->setWidget(m_moveList);
@@ -398,6 +406,7 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	m_engineDebugLog->clear();
 
 	m_moveList->setGame(m_game, gameData.pgn);
+	m_evalHistory->setGame(m_game);
 
 	if (m_game == nullptr)
 	{

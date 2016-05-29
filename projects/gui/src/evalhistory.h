@@ -1,0 +1,46 @@
+/*
+    This file is part of Cute Chess.
+
+    Cute Chess is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Cute Chess is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef EVALHISTORY_H
+#define EVALHISTORY_H
+
+#include <QWidget>
+#include <QPointer>
+
+class QCustomPlot;
+class ChessGame;
+
+class EvalHistory : public QWidget
+{
+	Q_OBJECT
+
+	public:
+		explicit EvalHistory(QWidget* parent = nullptr);
+		void setGame(ChessGame* game);
+
+	private slots:
+		void onScore(int ply, int score);
+
+	private:
+		void addData(int ply, int score);
+		void replot(int maxPly);
+
+		QCustomPlot* m_plot;
+		QPointer<ChessGame> m_game;
+};
+
+#endif // EVALHISTORY_H

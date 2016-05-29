@@ -37,6 +37,7 @@ class ChessPlayer;
 class PgnTagsModel;
 class Tournament;
 class GameTabBar;
+class EvalHistory;
 
 /**
  * MainWindow
@@ -134,6 +135,8 @@ class MainWindow : public QMainWindow
 		QAction* m_aboutAct;
 
 		PlainTextLog* m_engineDebugLog;
+
+		EvalHistory* m_evalHistory;
 
 		QPointer<ChessGame> m_game;
 		QPointer<ChessPlayer> m_players[2];
