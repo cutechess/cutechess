@@ -43,8 +43,10 @@ class EvalHistory : public QWidget
 		 */
 		void setGame(ChessGame* game);
 
-	private:
+	private slots:
 		void onScore(int ply, int score);
+
+	private:
 		void addData(int ply, int score);
 		void replot(int maxPly);
 
