@@ -58,8 +58,8 @@ void EvalHistory::setGame(ChessGame* game)
 		return;
 	}
 
-	connect(m_game, &ChessGame::scoreChanged,
-		this, &EvalHistory::onScore);
+	connect(m_game, SIGNAL(scoreChanged(int,int)),
+		this, SLOT(onScore(int,int)));
 
 	m_plot->clearGraphs();
 	m_plot->addGraph();
