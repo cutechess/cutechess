@@ -24,18 +24,27 @@
 class QCustomPlot;
 class ChessGame;
 
+/*!
+ * \brief A widget that shows engines' move evaluation history.
+ *
+ * The fullmove number is on the X axis and score (from white's
+ * perspective) is on the Y axis.
+ */
 class EvalHistory : public QWidget
 {
 	Q_OBJECT
 
 	public:
+		/*! Creates a new EvalHistory widget. */
 		explicit EvalHistory(QWidget* parent = nullptr);
+		/*!
+		 * Connects the widget to \a game and disconnects
+		 * from the previous game (if any).
+		 */
 		void setGame(ChessGame* game);
 
-	private slots:
-		void onScore(int ply, int score);
-
 	private:
+		void onScore(int ply, int score);
 		void addData(int ply, int score);
 		void replot(int maxPly);
 

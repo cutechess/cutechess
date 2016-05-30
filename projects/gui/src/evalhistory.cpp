@@ -32,10 +32,12 @@ EvalHistory::EvalHistory(QWidget *parent)
 	x->setLabel(tr("move"));
 	x->setAutoTickStep(false);
 	x->setTickStep(1);
+	x->setAutoSubTicks(false);
 	x->setSubTickCount(0);
 	x->setRangeLower(1);
 
 	y->setLabel(tr("score"));
+	y->setAutoSubTicks(false);
 	y->setSubTickCount(0);
 	y->setRange(-1, 1);
 
@@ -56,18 +58,19 @@ void EvalHistory::setGame(ChessGame* game)
 		return;
 	}
 
-	connect(m_game, SIGNAL(scoreChanged(int,int)),
-		this, SLOT(onScore(int,int)));
+	connect(m_game, &ChessGame::scoreChanged,
+		this, &EvalHistory::onScore);
 
 	m_plot->clearGraphs();
 	m_plot->addGraph();
 	m_plot->addGraph();
+
 	auto cWhite = QColor("#ffce9e");
 	auto cBlack = QColor("#d18b47");
-	m_plot->graph(0)->setPen(QPen(cWhite));
+	m_plot->graph(0)->setPen(QPen(cWhite.darker(150)));
 	cWhite.setAlpha(200);
 	m_plot->graph(0)->setBrush(QBrush(cWhite));
-	m_plot->graph(1)->setPen(cBlack);
+	m_plot->graph(1)->setPen(cBlack.darker());
 	cBlack.setAlpha(128);
 	m_plot->graph(1)->setBrush(QBrush(cBlack));
 
