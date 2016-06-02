@@ -392,18 +392,17 @@ void ChessGame::setMoves(const QVector<Chess::Move>& moves)
 
 bool ChessGame::setMoves(const PgnGame& pgn)
 {
-	if (pgn.variant() != m_board->variant())
-		return false;
-
 	setStartingFen(pgn.startingFenString());
-	resetBoard();
+	if (!resetBoard())
+		return false;
 	m_scores.clear();
 	m_moves.clear();
 
 	foreach (const PgnGame::MoveData& md, pgn.moves())
 	{
 		Chess::Move move(m_board->moveFromGenericMove(md.move));
-		Q_ASSERT(m_board->isLegalMove(move));
+		if (!m_board->isLegalMove(move))
+			return false;
 
 		m_board->makeMove(move);
 		if (!m_board->result().isNone())
@@ -442,7 +441,8 @@ void ChessGame::generateOpening()
 {
 	if (m_book[Chess::Side::White] == nullptr || m_book[Chess::Side::Black] == nullptr)
 		return;
-	resetBoard();
+	if (!resetBoard())
+		return;
 
 	// First play moves that are already in the opening
 	foreach (const Chess::Move& move, m_moves)
@@ -503,7 +503,7 @@ void ChessGame::unlockThread()
 	m_resumeSem.release();
 }
 
-void ChessGame::resetBoard()
+bool ChessGame::resetBoard()
 {
 	QString fen(m_startingFen);
 	if (fen.isEmpty())
@@ -514,9 +514,15 @@ void ChessGame::resetBoard()
 	}
 
 	if (!m_board->setFenString(fen))
-		qFatal("Invalid FEN string: %s", qPrintable(fen));
+	{
+		qWarning("Invalid FEN string: %s", qPrintable(fen));
+		m_board->reset();
+		return false;
+	}
 	else if (!m_startingFen.isEmpty())
 		m_startingFen = m_board->fenString();
+
+	return true;
 }
 
 void ChessGame::onPlayerReady()

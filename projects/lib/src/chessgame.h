@@ -110,7 +110,7 @@ class LIB_EXPORT ChessGame : public QObject
 
 	private:
 		Chess::Move bookMove(Chess::Side side);
-		void resetBoard();
+		bool resetBoard();
 		void initializePgn();
 		void addPgnMove(const Chess::Move& move, const QString& comment);
 		void emitLastMove();
