@@ -424,9 +424,6 @@ QString Board::fenString(FenNotation notation) const
 		i++;
 	}
 
-	// Side to move
-	fen += QString(" %1 ").arg(m_side.symbol());
-
 	// Hand pieces
 	if (variantHasDrops())
 	{
@@ -445,10 +442,12 @@ QString Board::fenString(FenNotation notation) const
 				str += pieceSymbol(Piece(side, j));
 			}
 		}
-		if (str.isEmpty())
-			str = "-";
-		fen += str + " ";
+		if (!str.isEmpty())
+			fen += QString("[%1]").arg(str);
 	}
+
+	// Side to move
+	fen += QString(" %1 ").arg(m_side.symbol());
 
 	return fen + vFenString(notation);
 }
@@ -475,6 +474,7 @@ bool Board::setFenString(const QString& fen)
 	m_key = 0;
 
 	// Get the board contents (squares)
+	int handPieceIndex = -1;
 	QString pieceStr;
 	for (int i = 0; i < token->length(); i++)
 	{
@@ -493,6 +493,13 @@ bool Board::setFenString(const QString& fen)
 			rankEndSquare = square;
 			k += 2;
 			continue;
+		}
+		// Start of hand pieces
+		if (c == '[')
+		{
+			if (!variantHasDrops())
+				return false;
+			handPieceIndex = i + 1;
 		}
 		// Add empty squares
 		if (c.isDigit())
@@ -538,6 +545,35 @@ bool Board::setFenString(const QString& fen)
 	if (square != boardSize || square - rankEndSquare != m_width)
 		return false;
 
+	// Hand pieces
+	m_reserve[Side::White].clear();
+	m_reserve[Side::Black].clear();
+	if (handPieceIndex != -1)
+	{
+		for (int i = handPieceIndex; i < token->length(); i++)
+		{
+			QChar c = token->at(i);
+			if (c == ']')
+				break;
+
+			int count = 1;
+			if (c.isDigit())
+			{
+				count = c.digitValue();
+				if (count <= 0)
+					return false;
+				++i;
+				if (i >= token->length() - 1)
+					return false;
+				c = token->at(i);
+			}
+			Piece tmp = pieceFromSymbol(c);
+			if (!tmp.isValid())
+				return false;
+			addToReserve(tmp, count);
+		}
+	}
+
 	// Side to move
 	if (++token == strList.end())
 		return false;
@@ -545,33 +581,6 @@ bool Board::setFenString(const QString& fen)
 	m_startingSide = m_side;
 	if (m_side.isNull())
 		return false;
-
-	// Hand pieces
-	m_reserve[Side::White].clear();
-	m_reserve[Side::Black].clear();
-	if (variantHasDrops()
-	&&  ++token != strList.end()
-	&&  *token != "-")
-	{
-		QString::const_iterator it;
-		for (it = token->constBegin(); it != token->constEnd(); ++it)
-		{
-			int count = 1;
-			if (it->isDigit())
-			{
-				count = it->digitValue();
-				if (count <= 0)
-					return false;
-				++it;
-				if (it == token->constEnd())
-					return false;
-			}
-			Piece tmp = pieceFromSymbol(*it);
-			if (!tmp.isValid())
-				return false;
-			addToReserve(tmp, count);
-		}
-	}
 
 	m_moveHistory.clear();
 	m_startingFen = fen;

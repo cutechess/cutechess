@@ -365,7 +365,7 @@ void tst_Board::perft_data() const
 	variant = "crazyhouse";
 	QTest::newRow("crazyhouse startpos")
 		<< variant
-		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - KQkq - 0 1"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 5
 		<< Q_UINT64_C(4888832);
 }
