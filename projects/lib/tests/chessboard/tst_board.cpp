@@ -198,6 +198,16 @@ void tst_Board::moveStrings_data() const
 		<< "g7f6"
 		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
 		<< "3r1rk1/8/1p1pbq1p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
+	QTest::newRow("crazyhouse1")
+		<< "crazyhouse"
+		<< "Qd4"
+		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
+		<< "3r1rk1/8/1p1pb2p/p1p2np1/P1Pq1p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
+	QTest::newRow("crazyhouse2")
+		<< "crazyhouse"
+		<< "d4 h6 Bxh6 gxh6 g4 h5 gxh5"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "rnbqkbnr/pppppp2/8/7P/3P4/8/PPP1PP1P/RN1QKBNR[2Pb] b KQkq - 0 4";
 }
 
 void tst_Board::moveStrings()
