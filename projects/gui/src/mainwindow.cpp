@@ -312,6 +312,9 @@ void MainWindow::createDockWindows()
 	m_viewMenu->addAction(moveListDock->toggleViewAction());
 	m_viewMenu->addAction(tagsDock->toggleViewAction());
 	m_viewMenu->addAction(engineDebugDock->toggleViewAction());
+	m_viewMenu->addAction(evalHistoryDock->toggleViewAction());
+	m_viewMenu->addAction(whiteEvalDock->toggleViewAction());
+	m_viewMenu->addAction(blackEvalDock->toggleViewAction());
 }
 
 void MainWindow::addGame(ChessGame* game)
