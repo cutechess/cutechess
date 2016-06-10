@@ -24,6 +24,7 @@
 #include <board/genericmove.h>
 #include <board/move.h>
 #include <board/side.h>
+#include <moveevaluation.h>
 
 int main(int argc, char* argv[])
 {
@@ -31,6 +32,7 @@ int main(int argc, char* argv[])
 	qRegisterMetaType<Chess::GenericMove>("Chess::GenericMove");
 	qRegisterMetaType<Chess::Move>("Chess::Move");
 	qRegisterMetaType<Chess::Side>("Chess::Side");
+	qRegisterMetaType<MoveEvaluation>("MoveEvaluation");
 
 	CuteChessApplication app(argc, argv);
 

@@ -19,6 +19,7 @@
 #define MOVEEVALUATION_H
 
 #include <QString>
+#include <QMetaType>
 
 /*!
  * \brief Evaluation data for a chess move.
@@ -35,6 +36,11 @@ class LIB_EXPORT MoveEvaluation
 	public:
 		/*! Constructs an empty MoveEvaluation object. */
 		MoveEvaluation();
+
+		/*! Returns true if \a other is the same as this eval. */
+		bool operator==(const MoveEvaluation& other) const;
+		/*! Returns true if \a other is different from this eval. */
+		bool operator!=(const MoveEvaluation& other) const;
 
 		/*! Returns true if the evaluation is empty. */
 		bool isEmpty() const;
@@ -101,5 +107,7 @@ class LIB_EXPORT MoveEvaluation
 		quint64 m_nodeCount;
 		QString m_pv;
 };
+
+Q_DECLARE_METATYPE(MoveEvaluation)
 
 #endif // MOVEEVALUATION_H

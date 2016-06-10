@@ -53,6 +53,7 @@
 #include "pgntagsmodel.h"
 #include "gametabbar.h"
 #include "evalhistory.h"
+#include "evalwidget.h"
 
 #include <modeltest.h>
 
@@ -90,6 +91,8 @@ MainWindow::MainWindow(ChessGame* game)
 	new ModelTest(m_tagsModel, this);
 
 	m_evalHistory = new EvalHistory(this);
+	m_evalWidgets[0] = new EvalWidget(this);
+	m_evalWidgets[1] = new EvalWidget(this);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
 	mainLayout->addLayout(clockLayout);
@@ -270,13 +273,21 @@ void MainWindow::createDockWindows()
 	QDockWidget* engineDebugDock = new QDockWidget(tr("Engine Debug"), this);
 	m_engineDebugLog = new PlainTextLog(engineDebugDock);
 	engineDebugDock->setWidget(m_engineDebugLog);
-
+	engineDebugDock->close();
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
 
 	// Evaluation history
 	auto evalHistoryDock = new QDockWidget(tr("Evaluation history"), this);
 	evalHistoryDock->setWidget(m_evalHistory);
 	addDockWidget(Qt::BottomDockWidgetArea, evalHistoryDock);
+
+	// Players' eval widgets
+	auto whiteEvalDock = new QDockWidget(tr("White's evaluation"), this);
+	whiteEvalDock->setWidget(m_evalWidgets[Chess::Side::White]);
+	addDockWidget(Qt::BottomDockWidgetArea, whiteEvalDock);
+	auto blackEvalDock = new QDockWidget(tr("Black's evaluation"), this);
+	blackEvalDock->setWidget(m_evalWidgets[Chess::Side::Black]);
+	addDockWidget(Qt::BottomDockWidgetArea, blackEvalDock);
 
 	// Move list
 	QDockWidget* moveListDock = new QDockWidget(tr("Moves"), this);
@@ -456,6 +467,7 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 			clock, SLOT(start(int)));
 		connect(player, SIGNAL(stoppedThinking()),
 			clock, SLOT(stop()));
+		m_evalWidgets[i]->setPlayer(player);
 	}
 
 	updateWindowTitle();

@@ -426,12 +426,16 @@ void UciEngine::parseInfo(const QStringRef& line)
 	int type = -1;
 	QStringRef token(nextToken(line));
 	QVarLengthArray<QStringRef> tokens;
+	auto oldEval = m_eval;
 
 	while (!token.isNull())
 	{
 		token = parseUciTokens(token, types, 16, tokens, type);
 		parseInfo(tokens, type);
 	}
+
+	if (oldEval != m_eval)
+		emit thinking(m_eval);
 }
 
 EngineOption* UciEngine::parseOption(const QStringRef& line)

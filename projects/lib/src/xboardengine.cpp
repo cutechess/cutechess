@@ -603,6 +603,8 @@ void XboardEngine::parseLine(const QString& line)
 			return;
 		m_eval.setPv(ref.toString());
 
+		emit thinking(m_eval);
+
 		return;
 	}
 

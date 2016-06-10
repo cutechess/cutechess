@@ -26,6 +26,28 @@ MoveEvaluation::MoveEvaluation()
 {
 }
 
+bool MoveEvaluation::operator==(const MoveEvaluation& other) const
+{
+	if (m_isBookEval == other.m_isBookEval
+	&&  m_depth == other.m_depth
+	&&  m_score == other.m_score
+	&&  m_time == other.m_time
+	&&  m_nodeCount == other.m_nodeCount)
+		return true;
+	return false;
+}
+
+bool MoveEvaluation::operator!=(const MoveEvaluation& other) const
+{
+	if (m_isBookEval != other.m_isBookEval
+	||  m_depth != other.m_depth
+	||  m_score != other.m_score
+	||  m_time != other.m_time
+	||  m_nodeCount != other.m_nodeCount)
+		return true;
+	return false;
+}
+
 bool MoveEvaluation::isEmpty() const
 {
 	if (m_depth == 0

@@ -188,6 +188,12 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		void stoppedThinking() const;
 
+		/*!
+		 * This signal is emitted when the player's evaluation of the
+		 * current position changes.
+		 */
+		void thinking(const MoveEvaluation& eval) const;
+
 		/*! Signals the player's move. */
 		void moveMade(const Chess::Move& move) const;
 		

@@ -36,7 +36,8 @@ HEADERS += $$PWD/chessclock.h \
     $$PWD/movetoken.h \
     $$PWD/movecommenttoken.h \
     $$PWD/gametabbar.h \
-    $$PWD/evalhistory.h
+    $$PWD/evalhistory.h \
+    $$PWD/evalwidget.h
 SOURCES += $$PWD/main.cpp \
     $$PWD/chessclock.cpp \
     $$PWD/engineconfigurationmodel.cpp \
@@ -74,4 +75,5 @@ SOURCES += $$PWD/main.cpp \
     $$PWD/movetoken.cpp \
     $$PWD/movecommenttoken.cpp \
     $$PWD/gametabbar.cpp \
-    $$PWD/evalhistory.cpp
+    $$PWD/evalhistory.cpp \
+    $$PWD/evalwidget.cpp
