@@ -275,8 +275,13 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 
 	ui->m_splitter->setSizes(QList<int>() << 100 << 500 << 300);
 
-	connect(ui->m_importBtn, SIGNAL(clicked(bool)), this,
-		SLOT(import()));
+	connect(ui->m_importBtn, &QPushButton::clicked, this, [=]()
+	{
+		auto dlg = new QFileDialog(this, tr("Import Game"), QString(),
+			tr("Portable Game Notation (*.pgn);;All Files (*.*)"));
+		connect(dlg, &QFileDialog::fileSelected, m_dbManager, &GameDatabaseManager::importPgnFile);
+		dlg->open();
+	});
 	connect(ui->m_exportBtn, SIGNAL(clicked()), this,
 		SLOT(exportPgn()));
 	connect(ui->m_createOpeningBookBtn, SIGNAL(clicked(bool)), this,
@@ -455,17 +460,6 @@ int GameDatabaseDialog::databaseIndexFromGame(int game) const
 	}
 
 	return -1;
-}
-
-void GameDatabaseDialog::import()
-{
-	const QString fileName = QFileDialog::getOpenFileName(this, tr("Import Game"),
-		QString(), tr("Portable Game Notation (*.pgn);;All Files (*.*)"));
-
-	if (fileName.isEmpty())
-		return;
-
-	m_dbManager->importPgnFile(fileName);
 }
 
 void GameDatabaseDialog::exportPgn()

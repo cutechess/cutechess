@@ -57,15 +57,6 @@ class GameDatabaseManager : public QObject
 		 */
 		bool readState(const QString& fileName);
 
-		/*!
-		 * Imports a game database pointed by \a fileName in PGN format.
-		 *
-		 * This function is asynchronous and thus returns immediately.
-		 *
-		 * \sa importStarted
-		 */
-		void importPgnFile(const QString& fileName);
-
 		/*! Returns true if the current state has been modified. */
 		bool isModified() const;
 
@@ -85,7 +76,14 @@ class GameDatabaseManager : public QObject
 		 * databases.
 		 */
 		void importDatabaseAgain(int index);
-
+		/*!
+		 * Imports a game database pointed by \a fileName in PGN format.
+		 *
+		 * This function is asynchronous and thus returns immediately.
+		 *
+		 * \sa importStarted
+		 */
+		void importPgnFile(const QString& fileName);
 	signals:
 		/*!
 		 * Emitted when database is added at \a index.
