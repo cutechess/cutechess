@@ -21,6 +21,7 @@
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QVector>
+#include <QTime>
 #include <chessplayer.h>
 
 EvalWidget::EvalWidget(QWidget *parent)
@@ -60,7 +61,6 @@ void EvalWidget::setPlayer(ChessPlayer* player)
 	if (m_player)
 	{
 		m_player->disconnect(this);
-		m_player->disconnect(m_table);
 		clear();
 	}
 	m_player = player;
@@ -75,10 +75,21 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 {
 	QVector<QTableWidgetItem*> items;
 
+	QString time;
+	int ms = eval.time();
+	if (ms < 1000)
+		time = QString("%1 ms").arg(ms);
+	else if (ms < 1000 * 60 * 60)
+		time = QTime(0, 0).addMSecs(eval.time()).toString("mm:ss");
+	else
+		time = QTime(0, 0).addMSecs(eval.time()).toString("hh:mm:ss");
+
+	QString score = QString::number(double(eval.score()) / 100.0);
+
 	items << new QTableWidgetItem(QString::number(eval.depth()))
-	      << new QTableWidgetItem(QString::number(eval.time()))
+	      << new QTableWidgetItem(time)
 	      << new QTableWidgetItem(QString::number(eval.nodeCount()))
-	      << new QTableWidgetItem(QString::number(eval.score()))
+	      << new QTableWidgetItem(score)
 	      << new QTableWidgetItem(eval.pv());
 
 	if (eval.depth() != m_depth)
