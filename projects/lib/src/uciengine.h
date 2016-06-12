@@ -73,6 +73,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		QString positionString();
 		void sendPosition();
 		void setPonderMove(const QString& moveString);
+		QString sanPv(const QVarLengthArray<QStringRef>& tokens);
 		
 		QString m_variantOption;
 		QString m_startFen;

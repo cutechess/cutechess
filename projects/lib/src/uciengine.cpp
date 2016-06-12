@@ -30,6 +30,52 @@
 #include "enginespinoption.h"
 #include "enginetextoption.h"
 
+namespace {
+
+QString variantFromUci(const QString& str)
+{
+	if (str.size() < 5 || !str.startsWith("UCI_"))
+		return QString();
+
+	QString variant;
+
+	if (str == "UCI_Chess960")
+		variant = "fischerandom";
+	else
+		variant = str.mid(4).toLower();
+
+	if (!Chess::BoardFactory::variants().contains(variant))
+		return QString();
+	return variant;
+}
+
+QString variantToUci(const QString& str)
+{
+	if (str.isEmpty() || str == "standard")
+		return QString();
+
+	if (str == "fischerandom")
+		return "UCI_Chess960";
+	if (str == "caparandom")
+		return "UCI_CapaRandom";
+
+	QString tmp = QString("UCI_%1").arg(str);
+	tmp[4] = tmp.at(4).toUpper();
+	return tmp;
+}
+
+QStringRef joinTokens(const QVarLengthArray<QStringRef>& tokens)
+{
+	Q_ASSERT(!tokens.isEmpty());
+
+	const QStringRef& last = tokens[tokens.size() - 1];
+	int start = tokens[0].position();
+	int end = last.position() + last.size();
+
+	return QStringRef(last.string(), start, end - start);
+}
+
+} // namespace
 
 UciEngine::UciEngine(QObject* parent)
 	: ChessEngine(parent),
@@ -67,38 +113,6 @@ QString UciEngine::positionString()
 void UciEngine::sendPosition()
 {
 	write(positionString());
-}
-
-static QString variantFromUci(const QString& str)
-{
-	if (str.size() < 5 || !str.startsWith("UCI_"))
-		return QString();
-
-	QString variant;
-
-	if (str == "UCI_Chess960")
-		variant = "fischerandom";
-	else
-		variant = str.mid(4).toLower();
-
-	if (!Chess::BoardFactory::variants().contains(variant))
-		return QString();
-	return variant;
-}
-
-static QString variantToUci(const QString& str)
-{
-	if (str.isEmpty() || str == "standard")
-		return QString();
-
-	if (str == "fischerandom")
-		return "UCI_Chess960";
-	if (str == "caparandom")
-		return "UCI_CapaRandom";
-
-	QString tmp = QString("UCI_%1").arg(str);
-	tmp[4] = tmp.at(4).toUpper();
-	return tmp;
 }
 
 void UciEngine::startGame()
@@ -317,17 +331,6 @@ QStringRef UciEngine::parseUciTokens(const QStringRef& first,
 	return token;
 }
 
-static QStringRef joinTokens(const QVarLengthArray<QStringRef>& tokens)
-{
-	Q_ASSERT(!tokens.isEmpty());
-
-	const QStringRef& last = tokens[tokens.size() - 1];
-	int start = tokens[0].position();
-	int end = last.position() + last.size();
-
-	return QStringRef(last.string(), start, end - start);
-}
-
 void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 			  int type)
 {
@@ -366,7 +369,7 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 		m_eval.setNodeCount(tokens[0].toString().toULongLong());
 		break;
 	case InfoPv:
-		m_eval.setPv(joinTokens(tokens).toString());
+		m_eval.setPv(sanPv(tokens));
 		break;
 	case InfoScore:
 		{
@@ -663,6 +666,41 @@ void UciEngine::setPonderMove(const QString& moveString)
 			m_ponderMove = Chess::Move();
 		board->undoMove();
 	}
+}
+
+QString UciEngine::sanPv(const QVarLengthArray<QStringRef>& tokens)
+{
+	Chess::Board* board = this->board();
+	QString pv;
+	int movesMade = 0;
+
+	if (!m_ponderMove.isNull())
+	{
+		board->makeMove(m_ponderMove);
+		movesMade++;
+	}
+
+	for (auto token : tokens)
+	{
+		auto move = board->moveFromString(token.toString());
+		if (move.isNull())
+		{
+			qWarning("Illegal PV move %s from %s",
+				 qPrintable(token.toString()),
+				 qPrintable(name()));
+			break;
+		}
+		if (!pv.isEmpty())
+			pv += " ";
+		pv += board->moveString(move, Chess::Board::StandardAlgebraic);
+		board->makeMove(move);
+		movesMade++;
+	}
+
+	for (int i = 0; i < movesMade; i++)
+		board->undoMove();
+
+	return pv;
 }
 
 void UciEngine::sendOption(const QString& name, const QVariant& value)
