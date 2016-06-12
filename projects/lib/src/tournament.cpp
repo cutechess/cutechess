@@ -268,7 +268,7 @@ TournamentPair* Tournament::pair(int player1, int player2)
 		qMakePair(player2, player1)
 	};
 
-	for (auto & p: pairs)
+	for (const auto& p: pairs)
 	{
 		if (m_pairs.contains(p))
 			return m_pairs[p];

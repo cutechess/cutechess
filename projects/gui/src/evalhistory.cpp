@@ -74,7 +74,7 @@ void EvalHistory::setGame(ChessGame* game)
 	cBlack.setAlpha(128);
 	m_plot->graph(1)->setBrush(QBrush(cBlack));
 
-	auto scores = game->scores();
+	const auto& scores = game->scores();
 	int ply = 0;
 
 	for (auto it = scores.constBegin(); it != scores.constEnd(); ++it)
