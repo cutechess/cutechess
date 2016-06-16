@@ -49,6 +49,7 @@ class EvalWidget : public QWidget
 		ChessPlayer* m_player;
 		QTableWidget* m_table;
 		int m_depth;
+		QString m_pv;
 };
 
 #endif // EVALWIDGET_H

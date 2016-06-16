@@ -52,6 +52,7 @@ EvalWidget::EvalWidget(QWidget *parent)
 void EvalWidget::clear()
 {
 	m_depth = -1;
+	m_pv.clear();
 	m_table->clearContents();
 	m_table->setRowCount(0);
 }
@@ -92,10 +93,11 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 	      << new QTableWidgetItem(score)
 	      << new QTableWidgetItem(eval.pv());
 
-	if (eval.depth() != m_depth)
+	if (eval.depth() != m_depth || (eval.pv() != m_pv && !m_pv.isEmpty()))
 	{
 		m_table->insertRow(0);
 		m_depth = eval.depth();
+		m_pv = eval.pv();
 	}
 	for (int i = 0; i < items.size(); i++)
 		m_table->setItem(0, i, items.at(i));
