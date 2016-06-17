@@ -332,7 +332,8 @@ QStringRef UciEngine::parseUciTokens(const QStringRef& first,
 }
 
 void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
-			  int type)
+			  int type,
+			  MoveEvaluation* eval)
 {
 	enum Keyword
 	{
@@ -360,16 +361,16 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 	switch (type)
 	{
 	case InfoDepth:
-		m_eval.setDepth(tokens[0].toString().toInt());
+		eval->setDepth(tokens[0].toString().toInt());
 		break;
 	case InfoTime:
-		m_eval.setTime(tokens[0].toString().toInt());
+		eval->setTime(tokens[0].toString().toInt());
 		break;
 	case InfoNodes:
-		m_eval.setNodeCount(tokens[0].toString().toULongLong());
+		eval->setNodeCount(tokens[0].toString().toULongLong());
 		break;
 	case InfoPv:
-		m_eval.setPv(sanPv(tokens));
+		eval->setPv(sanPv(tokens));
 		break;
 	case InfoScore:
 		{
@@ -396,7 +397,7 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 					return;
 				i++;
 			}
-			m_eval.setScore(score);
+			eval->setScore(score);
 		}
 		break;
 	default:
@@ -429,16 +430,22 @@ void UciEngine::parseInfo(const QStringRef& line)
 	int type = -1;
 	QStringRef token(nextToken(line));
 	QVarLengthArray<QStringRef> tokens;
-	auto oldEval = m_eval;
+	MoveEvaluation eval;
 
 	while (!token.isNull())
 	{
 		token = parseUciTokens(token, types, 16, tokens, type);
-		parseInfo(tokens, type);
+		parseInfo(tokens, type, &eval);
 	}
+	if (eval.isEmpty())
+		return;
 
-	if (oldEval != m_eval)
-		emit thinking(m_eval);
+	m_eval.merge(eval);
+	if (eval.depth() && eval.depth() != m_currentEval.depth())
+		m_currentEval.clear();
+	m_currentEval.merge(eval);
+
+	emit thinking(m_currentEval);
 }
 
 EngineOption* UciEngine::parseOption(const QStringRef& line)

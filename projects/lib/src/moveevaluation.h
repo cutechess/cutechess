@@ -34,6 +34,9 @@
 class LIB_EXPORT MoveEvaluation
 {
 	public:
+		/*! A value for a null or empty score. */
+		static const int NULL_SCORE = 0xFFFFFFF;
+
 		/*! Constructs an empty MoveEvaluation object. */
 		MoveEvaluation();
 
@@ -98,6 +101,9 @@ class LIB_EXPORT MoveEvaluation
 
 		/*! Sets the principal variation to \a pv. */
 		void setPv(const QString& pv);
+
+		/*! Merges non-empty parameters of \a other into this eval. */
+		void merge(const MoveEvaluation& other);
 
 	private:
 		bool m_isBookEval;

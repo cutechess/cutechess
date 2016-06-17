@@ -67,7 +67,8 @@ class LIB_EXPORT UciEngine : public ChessEngine
 						 QVarLengthArray<QStringRef>& tokens,
 						 int& type);
 		void parseInfo(const QVarLengthArray<QStringRef>& tokens,
-			       int type);
+			       int type,
+			       MoveEvaluation* eval);
 		void parseInfo(const QStringRef& line);
 		EngineOption* parseOption(const QStringRef& line);
 		QString positionString();
@@ -87,6 +88,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		Chess::Move m_ponderMove;
 		bool m_ignoreThinking;
 		bool m_rePing;
+		MoveEvaluation m_currentEval;
 };
 
 #endif // UCIENGINE_H

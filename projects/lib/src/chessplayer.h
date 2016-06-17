@@ -261,7 +261,13 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Sets the player's state to \a state. */
 		void setState(State state);
 		
-		/*! The current evaluation. */
+		/*!
+		 * Move evaluation for the current move.
+		 *
+		 * This move evaluation may have eval info from multiple search
+		 * depths if the highest depth doesn't contain a complete
+		 * evaluation.
+		 */
 		MoveEvaluation m_eval;
 
 	private:

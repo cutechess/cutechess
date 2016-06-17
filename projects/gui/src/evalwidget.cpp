@@ -74,31 +74,41 @@ void EvalWidget::setPlayer(ChessPlayer* player)
 
 void EvalWidget::onEval(const MoveEvaluation& eval)
 {
-	QVector<QTableWidgetItem*> items;
+	QString depth;
+	if (eval.depth())
+		depth = QString::number(eval.depth());
 
 	QString time;
 	int ms = eval.time();
-	if (ms < 1000)
+	if (!ms)
+		time = "";
+	else if (ms < 1000)
 		time = QString("%1 ms").arg(ms);
 	else if (ms < 1000 * 60 * 60)
 		time = QTime(0, 0).addMSecs(eval.time()).toString("mm:ss");
 	else
 		time = QTime(0, 0).addMSecs(eval.time()).toString("hh:mm:ss");
 
-	QString score = QString::number(double(eval.score()) / 100.0);
+	QString nodeCount;
+	if (eval.nodeCount())
+		nodeCount = QString::number(eval.nodeCount());
 
-	items << new QTableWidgetItem(QString::number(eval.depth()))
+	QString score;
+	if (eval.score() != MoveEvaluation::NULL_SCORE)
+		score = QString::number(double(eval.score()) / 100.0);
+
+	QVector<QTableWidgetItem*> items;
+	items << new QTableWidgetItem(depth)
 	      << new QTableWidgetItem(time)
-	      << new QTableWidgetItem(QString::number(eval.nodeCount()))
+	      << new QTableWidgetItem(nodeCount)
 	      << new QTableWidgetItem(score)
 	      << new QTableWidgetItem(eval.pv());
 
 	if (eval.depth() != m_depth || (eval.pv() != m_pv && !m_pv.isEmpty()))
-	{
 		m_table->insertRow(0);
-		m_depth = eval.depth();
-		m_pv = eval.pv();
-	}
+	m_depth = eval.depth();
+	m_pv = eval.pv();
+
 	for (int i = 0; i < items.size(); i++)
 		m_table->setItem(0, i, items.at(i));
 }
