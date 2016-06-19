@@ -88,11 +88,22 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	m_timeControl.setTimePerTc(300000);
 	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
 
-	connect(ui->m_browsePgnoutBtn, SIGNAL(clicked()),
-		this, SLOT(browsePgnout()));
+	connect(ui->m_browsePgnoutBtn, &QPushButton::clicked, this, [=]()
+	{
+		auto dlg = new QFileDialog(this, tr("Select PGN output file"),
+			QString(), tr("Portable Game Notation (*.pgn)"));
+		connect(dlg, &QFileDialog::fileSelected, ui->m_pgnoutEdit, &QLineEdit::setText);
+		dlg->setAcceptMode(QFileDialog::AcceptSave);
+		dlg->open();
+	});
 
-	connect(ui->m_browseOpeningSuiteBtn, SIGNAL(clicked()),
-		this, SLOT(browseOpeningSuite()));
+	connect(ui->m_browseOpeningSuiteBtn, &QPushButton::clicked, this, [=]()
+	{
+		auto dlg = new QFileDialog(this, tr("Select opening suite"), QString(),
+			tr("PGN/EPD files (*.pgn *.epd)"));
+		connect(dlg, &QFileDialog::fileSelected, ui->m_suiteFileEdit, &QLineEdit::setText);
+		dlg->open();
+	});
 
 	m_addedEnginesManager = new EngineManager(this);
 	m_addedEnginesModel = new EngineConfigurationModel(
@@ -209,26 +220,6 @@ void NewTournamentDialog::changeTimeControl()
 		m_timeControl = dlg.timeControl();
 		ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
 	}
-}
-
-void NewTournamentDialog::browsePgnout()
-{
-	const QString str = QFileDialog::getSaveFileName(this,
-						   tr("Select PGN output file"),
-						   QString(),
-						   tr("Portable Game Notation (*.pgn)"));
-	if (!str.isEmpty())
-		ui->m_pgnoutEdit->setText(str);
-}
-
-void NewTournamentDialog::browseOpeningSuite()
-{
-	const QString str = QFileDialog::getOpenFileName(this,
-						   tr("PGN/EPD file"),
-						   QString(),
-						   tr("PGN/EPD files (*.pgn *.epd)"));
-	if (!str.isEmpty())
-		ui->m_suiteFileEdit->setText(str);
 }
 
 Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) const
