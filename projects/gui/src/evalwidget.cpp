@@ -95,7 +95,7 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 
 	QString score;
 	if (eval.score() != MoveEvaluation::NULL_SCORE)
-		score = QString::number(double(eval.score()) / 100.0);
+		score = QString::number(double(eval.score()) / 100.0, 'f', 2);
 
 	QVector<QTableWidgetItem*> items;
 	items << new QTableWidgetItem(depth)
@@ -103,6 +103,9 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 	      << new QTableWidgetItem(nodeCount)
 	      << new QTableWidgetItem(score)
 	      << new QTableWidgetItem(eval.pv());
+
+	for (int i = 0; i < 4; i++)
+		items[i]->setTextAlignment(Qt::AlignVCenter | Qt::AlignRight);
 
 	if (eval.depth() != m_depth || (eval.pv() != m_pv && !m_pv.isEmpty()))
 		m_table->insertRow(0);
