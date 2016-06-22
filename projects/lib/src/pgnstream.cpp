@@ -21,6 +21,40 @@
 #include <QIODevice>
 #include "board/boardfactory.h"
 
+namespace {
+
+void skipSection(PgnStream* in, char start)
+{
+	char end;
+	switch (start)
+	{
+	case '(':
+		end = ')';
+		break;
+	case '{':
+		end = '}';
+		break;
+	case ';':
+	case '%':
+		start = 0;
+		end = '\n';
+		break;
+	default:
+		return;
+	}
+
+	int level = 1;
+	char c;
+	while ((c = in->readChar()) != 0)
+	{
+		if (c == end && --level == 0)
+			break;
+		if (c == start)
+			level++;
+	}
+}
+
+} // anonymous namespace
 
 PgnStream::PgnStream(const QString& variant)
 	: m_board(nullptr),
@@ -312,37 +346,6 @@ void PgnStream::parseComment(char opBracket)
 
 		if (c != '\n' || !m_tokenString.isEmpty())
 			m_tokenString.append(c);
-	}
-}
-
-static void skipSection(PgnStream* in, char start)
-{
-	char end;
-	switch (start)
-	{
-	case '(':
-		end = ')';
-		break;
-	case '{':
-		end = '}';
-		break;
-	case ';':
-	case '%':
-		start = 0;
-		end = '\n';
-		break;
-	default:
-		return;
-	}
-
-	int level = 1;
-	char c;
-	while ((c = in->readChar()) != 0)
-	{
-		if (c == end && --level == 0)
-			break;
-		if (c == start)
-			level++;
 	}
 }
 

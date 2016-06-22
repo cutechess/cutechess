@@ -18,12 +18,13 @@
 #include "caparandomboard.h"
 #include <mersenne.h>
 
+namespace {
 
-static void addPiece(QVector<int>& pieces,
-		     int piece,
-		     int pos,
-		     int start = 0,
-		     int step = 1)
+void addPiece(QVector<int>& pieces,
+	      int piece,
+	      int pos,
+	      int start = 0,
+	      int step = 1)
 {
 	int i = 0;
 	for (int j = start; j < pieces.size(); j += step)
@@ -39,6 +40,7 @@ static void addPiece(QVector<int>& pieces,
 	}
 }
 
+} // anonymous namespace
 
 namespace Chess {
 

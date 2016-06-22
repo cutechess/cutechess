@@ -23,8 +23,10 @@
 #include "pgngame.h"
 #include "pgnstream.h"
 
-static QStringList s_openings;
-static EcoNode* s_root = nullptr;
+namespace {
+
+QStringList s_openings;
+EcoNode* s_root = nullptr;
 
 class EcoDeleter
 {
@@ -34,7 +36,23 @@ class EcoDeleter
 			delete s_root;
 		}
 };
-static EcoDeleter s_ecoDeleter;
+EcoDeleter s_ecoDeleter;
+
+int ecoFromString(const QString& ecoString)
+{
+	if (ecoString.length() < 2)
+		return -1;
+	int hundreds = ecoString.at(0).toUpper().toLatin1() - 'A';
+
+	bool ok = false;
+	int tens = ecoString.right(ecoString.length() - 1).toInt(&ok);
+	if (!ok)
+		return -1;
+
+	return hundreds * 100 + tens;
+}
+
+} // anonymous namespace
 
 QDataStream& operator<<(QDataStream& out, const EcoNode* node)
 {
@@ -58,20 +76,6 @@ QDataStream& operator>>(QDataStream& in, EcoNode*& node)
 	   >> node->m_children;
 
 	return in;
-}
-
-static int ecoFromString(const QString& ecoString)
-{
-	if (ecoString.length() < 2)
-		return -1;
-	int hundreds = ecoString.at(0).toUpper().toLatin1() - 'A';
-
-	bool ok = false;
-	int tens = ecoString.right(ecoString.length() - 1).toInt(&ok);
-	if (!ok)
-		return -1;
-
-	return hundreds * 100 + tens;
 }
 
 void EcoNode::initialize()

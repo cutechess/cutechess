@@ -22,32 +22,9 @@
 #include "pgnstream.h"
 #include "pgngamefilter.h"
 
+namespace {
 
-PgnStream& operator>>(PgnStream& in, PgnGameEntry& entry)
-{
-	entry.read(in);
-	return in;
-}
-
-QDataStream& operator>>(QDataStream& in, PgnGameEntry& entry)
-{
-	entry.read(in);
-	return in;
-}
-
-QDataStream& operator<<(QDataStream& out, const PgnGameEntry& entry)
-{
-	entry.write(out);
-	return out;
-}
-
-PgnGameEntry::PgnGameEntry()
-	: m_pos(0),
-	  m_lineNumber(1)
-{
-}
-
-static int s_stringContains(const char* s1, const char* s2, int size)
+int s_stringContains(const char* s1, const char* s2, int size)
 {
 	Q_ASSERT(s1 != nullptr);
 	Q_ASSERT(s2 != nullptr);
@@ -85,7 +62,7 @@ static int s_stringContains(const char* s1, const char* s2, int size)
 	return -1;
 }
 
-static int s_stringToInt(const char *s, int size)
+int s_stringToInt(const char *s, int size)
 {
 	int num = 0;
 	for (int i = 0; i < size; i++)
@@ -96,6 +73,32 @@ static int s_stringToInt(const char *s, int size)
 	}
 
 	return num;
+}
+
+} // anonymous namespace
+
+PgnStream& operator>>(PgnStream& in, PgnGameEntry& entry)
+{
+	entry.read(in);
+	return in;
+}
+
+QDataStream& operator>>(QDataStream& in, PgnGameEntry& entry)
+{
+	entry.read(in);
+	return in;
+}
+
+QDataStream& operator<<(QDataStream& out, const PgnGameEntry& entry)
+{
+	entry.write(out);
+	return out;
+}
+
+PgnGameEntry::PgnGameEntry()
+	: m_pos(0),
+	  m_lineNumber(1)
+{
 }
 
 bool PgnGameEntry::match(const PgnGameFilter& filter) const

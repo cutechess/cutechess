@@ -18,10 +18,12 @@
 #include "mersenne.h"
 #include <QMutex>
 
-static int s_index = 0;
-static quint32 s_mt[624];
+namespace {
 
-static void generateNumbers()
+int s_index = 0;
+quint32 s_mt[624];
+
+void generateNumbers()
 {
 	for (int i = 0; i < 624; i++)
 	{
@@ -32,6 +34,8 @@ static void generateNumbers()
 			s_mt[i] ^= 0x9908B0DF;
 	}
 }
+
+} // anonymous namespace
 
 void Mersenne::initialize(quint32 seed)
 {

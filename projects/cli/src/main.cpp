@@ -41,8 +41,9 @@
 #include "matchparser.h"
 #include "enginematch.h"
 
+namespace {
 
-static EngineMatch* match = nullptr;
+EngineMatch* match = nullptr;
 
 void sigintHandler(int param)
 {
@@ -62,7 +63,7 @@ struct EngineData
 	int bookDepth;
 };
 
-static bool readEngineConfig(const QString& name, EngineConfiguration& config)
+bool readEngineConfig(const QString& name, EngineConfiguration& config)
 {
 	const QList<EngineConfiguration> engines =
 		CuteChessCoreApplication::instance()->engineManager()->engines();
@@ -78,7 +79,7 @@ static bool readEngineConfig(const QString& name, EngineConfiguration& config)
 	return false;
 }
 
-static bool parseEngine(const QStringList& args, EngineData& data)
+bool parseEngine(const QStringList& args, EngineData& data)
 {
 	foreach (const QString& arg, args)
 	{
@@ -231,7 +232,7 @@ static bool parseEngine(const QStringList& args, EngineData& data)
 	return true;
 }
 
-static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
+EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 {
 	MatchParser parser(args);
 	parser.addOption("-srand", QVariant::UInt, 1, 1);
@@ -591,6 +592,8 @@ static EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 	return match;
 }
+
+} // anonymous namespace
 
 int main(int argc, char* argv[])
 {

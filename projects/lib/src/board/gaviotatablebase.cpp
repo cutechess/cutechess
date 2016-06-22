@@ -20,9 +20,40 @@
 #include <gtb-probe.h>
 #include "westernboard.h"
 
+namespace {
+
 const char** s_paths = nullptr;
 char* s_initInfo = nullptr;
 
+TB_squares tbSquare(const Chess::Square& square)
+{
+	if (!square.isValid())
+		return tb_NOSQUARE;
+	return TB_squares(square.rank() * 8 + square.file());
+}
+
+TB_pieces tbPiece(int pieceType)
+{
+	switch (pieceType)
+	{
+	case Chess::WesternBoard::Pawn:
+		return tb_PAWN;
+	case Chess::WesternBoard::Knight:
+		return tb_KNIGHT;
+	case Chess::WesternBoard::Bishop:
+		return tb_BISHOP;
+	case Chess::WesternBoard::Rook:
+		return tb_ROOK;
+	case Chess::WesternBoard::Queen:
+		return tb_QUEEN;
+	case Chess::WesternBoard::King:
+		return tb_KING;
+	default:
+		return tb_NOPIECE;
+	}
+}
+
+} // anonymous namespace
 
 bool GaviotaTablebase::initialize(const QStringList& paths)
 {
@@ -56,34 +87,6 @@ bool GaviotaTablebase::tbAvailable(int pieces)
 {
 	int bit = (pieces - 3) * 2;
 	return tb_availability() & (1 << bit);
-}
-
-static TB_squares tbSquare(const Chess::Square& square)
-{
-	if (!square.isValid())
-		return tb_NOSQUARE;
-	return TB_squares(square.rank() * 8 + square.file());
-}
-
-static TB_pieces tbPiece(int pieceType)
-{
-	switch (pieceType)
-	{
-	case Chess::WesternBoard::Pawn:
-		return tb_PAWN;
-	case Chess::WesternBoard::Knight:
-		return tb_KNIGHT;
-	case Chess::WesternBoard::Bishop:
-		return tb_BISHOP;
-	case Chess::WesternBoard::Rook:
-		return tb_ROOK;
-	case Chess::WesternBoard::Queen:
-		return tb_QUEEN;
-	case Chess::WesternBoard::King:
-		return tb_KING;
-	default:
-		return tb_NOPIECE;
-	}
 }
 
 Chess::Result GaviotaTablebase::result(const Chess::Side& side,

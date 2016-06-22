@@ -23,6 +23,18 @@
 #include "econode.h"
 #include "pgnstream.h"
 
+namespace {
+
+void writeTag(QTextStream& out, const QString& tag, const QString& value)
+{
+	if (!value.isEmpty())
+		out << "[" << tag << " \"" << value << "\"]\n";
+	else
+		out << "[" << tag << " \"?\"]\n";
+}
+
+} // anonymous namespace
+
 PgnStream& operator>>(PgnStream& in, PgnGame& game)
 {
 	game.read(in);
@@ -248,14 +260,6 @@ bool PgnGame::read(PgnStream& in, int maxMoves)
 	setTag("PlyCount", QString::number(m_moves.size()));
 
 	return true;
-}
-
-static void writeTag(QTextStream& out, const QString& tag, const QString& value)
-{
-	if (!value.isEmpty())
-		out << "[" << tag << " \"" << value << "\"]\n";
-	else
-		out << "[" << tag << " \"?\"]\n";
 }
 
 bool PgnGame::write(QTextStream& out, PgnMode mode) const

@@ -26,8 +26,9 @@
 #include "jsonserializer.h"
 #include <QTextStream>
 
+namespace {
 
-static QString jsonString(const QString& source)
+QString jsonString(const QString& source)
 {
 	QString str;
 	foreach (const QChar& c, source)
@@ -70,6 +71,7 @@ static QString jsonString(const QString& source)
 	return str;
 }
 
+} // anonymous namespace
 
 JsonSerializer::JsonSerializer(const QVariant& data)
 	: m_error(false),

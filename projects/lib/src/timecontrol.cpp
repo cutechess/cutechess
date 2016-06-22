@@ -18,6 +18,27 @@
 #include "timecontrol.h"
 #include <QStringList>
 
+namespace {
+
+QString s_timeString(int ms)
+{
+	if (ms == 0 || ms % 60000 != 0)
+		return TimeControl::tr("%1 sec").arg(double(ms) / 1000.0);
+	if (ms % 3600000 != 0)
+		return TimeControl::tr("%1 min").arg(ms / 60000);
+	return TimeControl::tr("%1 h").arg(ms / 3600000);
+}
+
+QString s_nodeString(int nodes)
+{
+	if (nodes == 0 || nodes % 1000 != 0)
+		return QString::number(nodes);
+	else if (nodes % 1000000 != 0)
+		return TimeControl::tr("%1 k").arg(nodes / 1000);
+	return TimeControl::tr("%1 M").arg(nodes / 1000000);
+}
+
+} // anonymous namespace
 
 TimeControl::TimeControl()
 	: m_movesPerTc(0),
@@ -137,24 +158,6 @@ QString TimeControl::toString() const
 	if (m_increment > 0)
 		str += QString("+") + QString::number((double)m_increment / 1000);
 	return str;
-}
-
-static QString s_timeString(int ms)
-{
-	if (ms == 0 || ms % 60000 != 0)
-		return TimeControl::tr("%1 sec").arg(double(ms) / 1000.0);
-	if (ms % 3600000 != 0)
-		return TimeControl::tr("%1 min").arg(ms / 60000);
-	return TimeControl::tr("%1 h").arg(ms / 3600000);
-}
-
-static QString s_nodeString(int nodes)
-{
-	if (nodes == 0 || nodes % 1000 != 0)
-		return QString::number(nodes);
-	else if (nodes % 1000000 != 0)
-		return TimeControl::tr("%1 k").arg(nodes / 1000);
-	return TimeControl::tr("%1 M").arg(nodes / 1000000);
 }
 
 QString TimeControl::toVerboseString() const

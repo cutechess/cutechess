@@ -18,8 +18,9 @@
 #include "polyglotbook.h"
 #include <QDataStream>
 
+namespace {
 
-static Chess::GenericMove moveFromBits(quint16 pgMove)
+Chess::GenericMove moveFromBits(quint16 pgMove)
 {
 	using Chess::Square;
 	
@@ -34,7 +35,7 @@ static Chess::GenericMove moveFromBits(quint16 pgMove)
 	return Chess::GenericMove(source, target, promotion);
 }
 
-static quint16 moveToBits(const Chess::GenericMove& move)
+quint16 moveToBits(const Chess::GenericMove& move)
 {
 	using Chess::Square;
 	
@@ -49,6 +50,8 @@ static quint16 moveToBits(const Chess::GenericMove& move)
 	
 	return target | source | promotion;
 }
+
+} // anonymous namespace
 
 PolyglotBook::PolyglotBook(AccessMode mode)
 	: OpeningBook(mode)

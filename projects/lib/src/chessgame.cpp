@@ -22,6 +22,54 @@
 #include "chessplayer.h"
 #include "openingbook.h"
 
+namespace {
+
+QString evalString(const MoveEvaluation& eval)
+{
+	if (eval.isBookEval())
+		return "book";
+	if (eval.isEmpty())
+		return QString();
+
+	QString str;
+	if (eval.depth() > 0)
+	{
+		int score = eval.score();
+		int absScore = qAbs(score);
+		if (score > 0)
+			str += "+";
+
+		// Detect mate-in-n scores
+		if (absScore > 9900
+		&&  (absScore = 1000 - (absScore % 1000)) < 100)
+		{
+			if (score < 0)
+				str += "-";
+			str += "M" + QString::number(absScore);
+		}
+		else
+			str += QString::number(double(score) / 100.0, 'f', 2);
+
+		str += "/" + QString::number(eval.depth()) + " ";
+	}
+
+	int t = eval.time();
+	if (t == 0)
+		return str + "0s";
+
+	int precision = 0;
+	if (t < 100)
+		precision = 3;
+	else if (t < 1000)
+		precision = 2;
+	else if (t < 10000)
+		precision = 1;
+	str += QString::number(double(t / 1000.0), 'f', precision) + 's';
+
+	return str;
+}
+
+} // anonymous namespace
 
 ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	: QObject(parent),
@@ -165,51 +213,6 @@ void ChessGame::kill()
 	}
 
 	stop();
-}
-
-static QString evalString(const MoveEvaluation& eval)
-{
-	if (eval.isBookEval())
-		return "book";
-	if (eval.isEmpty())
-		return QString();
-
-	QString str;
-	if (eval.depth() > 0)
-	{
-		int score = eval.score();
-		int absScore = qAbs(score);
-		if (score > 0)
-			str += "+";
-
-		// Detect mate-in-n scores
-		if (absScore > 9900
-		&&  (absScore = 1000 - (absScore % 1000)) < 100)
-		{
-			if (score < 0)
-				str += "-";
-			str += "M" + QString::number(absScore);
-		}
-		else
-			str += QString::number(double(score) / 100.0, 'f', 2);
-
-		str += "/" + QString::number(eval.depth()) + " ";
-	}
-
-	int t = eval.time();
-	if (t == 0)
-		return str + "0s";
-
-	int precision = 0;
-	if (t < 100)
-		precision = 3;
-	else if (t < 1000)
-		precision = 2;
-	else if (t < 10000)
-		precision = 1;
-	str += QString::number(double(t / 1000.0), 'f', precision) + 's';
-
-	return str;
 }
 
 void ChessGame::addPgnMove(const Chess::Move& move, const QString& comment)

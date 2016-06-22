@@ -28,8 +28,11 @@
 #include "graphicspiece.h"
 #include "piecechooser.h"
 
+namespace {
 
-static qreal s_squareSize = 50;
+const qreal s_squareSize = 50;
+
+} // anonymous namespace
 
 BoardScene::BoardScene(QObject* parent)
 	: QGraphicsScene(parent),

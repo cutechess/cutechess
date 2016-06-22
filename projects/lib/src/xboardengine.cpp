@@ -31,8 +31,9 @@
 #include "enginespinoption.h"
 #include "enginetextoption.h"
 
+namespace {
 
-static QString msToXboardTime(int ms)
+QString msToXboardTime(int ms)
 {
 	int sec = ms / 1000;
 
@@ -43,7 +44,25 @@ static QString msToXboardTime(int ms)
 	return number;
 }
 
-static const int s_infiniteSec = 86400;
+QString variantFromXboard(const QString& str)
+{
+	if (str == "normal")
+		return "standard";
+
+	return str;
+}
+
+QString variantToXboard(const QString& str)
+{
+	if (str == "standard")
+		return "normal";
+
+	return str;
+}
+
+const int s_infiniteSec = 86400;
+
+} // anonymous namespace
 
 XboardEngine::XboardEngine(QObject* parent)
 	: ChessEngine(parent),
@@ -88,22 +107,6 @@ void XboardEngine::initialize()
 		onProtocolStart();
 		emit ready();
 	}
-}
-
-static QString variantFromXboard(const QString& str)
-{
-	if (str == "normal")
-		return "standard";
-
-	return str;
-}
-
-static QString variantToXboard(const QString& str)
-{
-	if (str == "standard")
-		return "normal";
-
-	return str;
 }
 
 void XboardEngine::startGame()

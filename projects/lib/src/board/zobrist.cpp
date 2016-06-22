@@ -21,10 +21,12 @@
 #include <QMutexLocker>
 #include "piece.h"
 
+namespace {
 
-static QVarLengthArray<quint64, 0x2000> s_keys;
-static QMutex s_mutex;
+QVarLengthArray<quint64, 0x2000> s_keys;
+QMutex s_mutex;
 
+} // anonymous namespace
 
 namespace Chess {
 
