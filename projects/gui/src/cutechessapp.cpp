@@ -24,6 +24,7 @@
 #include <QFileInfo>
 
 #include <mersenne.h>
+#include <settingsmanager.h>
 #include <enginemanager.h>
 #include <gamemanager.h>
 #include <board/boardfactory.h>
@@ -32,6 +33,7 @@
 #include <humanbuilder.h>
 
 #include "mainwindow.h"
+#include "settingsdlg.h"
 #include "gamedatabasedlg.h"
 #include "gamedatabasemanager.h"
 #include "importprogressdlg.h"
@@ -41,6 +43,8 @@
 
 CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	: QApplication(argc, argv),
+	  m_settingsManager(nullptr),
+	  m_settingsDialog(nullptr),
 	  m_engineManager(nullptr),
 	  m_gameManager(nullptr),
 	  m_gameDatabaseManager(nullptr),
@@ -70,6 +74,9 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	// Use Ini format on all platforms
 	QSettings::setDefaultFormat(QSettings::IniFormat);
 
+	// Load general settings
+	settingsManager()->load();
+
 	// Load the engines
 	engineManager()->loadEngines(configPath() + QLatin1String("/engines.json"));
 
@@ -82,6 +89,7 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 
 CuteChessApplication::~CuteChessApplication()
 {
+	delete m_settingsDialog;
 	delete m_gameDatabaseDialog;
 }
 
@@ -111,6 +119,14 @@ QString CuteChessApplication::configPath()
 		dir.mkpath(fi.absolutePath());
 
 	return fi.absolutePath();
+}
+
+SettingsManager* CuteChessApplication::settingsManager()
+{
+	if (m_settingsManager == nullptr)
+		m_settingsManager = new SettingsManager(configPath() + QLatin1String("/settings.json"));
+
+	return m_settingsManager;
 }
 
 EngineManager* CuteChessApplication::engineManager()
@@ -186,6 +202,14 @@ GameDatabaseManager* CuteChessApplication::gameDatabaseManager()
 	}
 
 	return m_gameDatabaseManager;
+}
+
+void CuteChessApplication::showSettingsDialog()
+{
+	if (m_settingsDialog == nullptr)
+		m_settingsDialog = new SettingsDialog(settingsManager());
+
+	m_settingsDialog->show();
 }
 
 void CuteChessApplication::showGameDatabaseDialog()

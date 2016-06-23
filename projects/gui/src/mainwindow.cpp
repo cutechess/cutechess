@@ -167,6 +167,8 @@ void MainWindow::createActions()
 
 	m_manageEnginesAct = new QAction(tr("Manage..."), this);
 
+	m_showSettingsAct = new QAction(tr("Settings"), this);
+
 	m_showGameDatabaseWindowAct = new QAction(tr("&Game Database"), this);
 
 	m_showGameWallAct = new QAction(tr("Game Wall"), this);
@@ -200,6 +202,9 @@ void MainWindow::createActions()
 
 	connect(m_manageEnginesAct, SIGNAL(triggered()),
 		this, SLOT(manageEngines()));
+
+	connect(m_showSettingsAct, SIGNAL(triggered()),
+		CuteChessApplication::instance(), SLOT(showSettingsDialog()));
 
 	connect(m_showGameDatabaseWindowAct, SIGNAL(triggered()),
 		CuteChessApplication::instance(), SLOT(showGameDatabaseDialog()));
@@ -847,6 +852,7 @@ bool MainWindow::askToSave()
 
 void MainWindow::addDefaultWindowMenu()
 {
+	m_windowMenu->addAction(m_showSettingsAct);
 	m_windowMenu->addAction(m_showGameWallAct);
 	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
 	m_windowMenu->addSeparator();

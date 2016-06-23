@@ -134,6 +134,7 @@ class MainWindow : public QMainWindow
 		QAction* m_showPreviousTabAct;
 		QAction* m_showNextTabAct;
 		QAction* m_aboutAct;
+		QAction* m_showSettingsAct;
 
 		PlainTextLog* m_engineDebugLog;
 
