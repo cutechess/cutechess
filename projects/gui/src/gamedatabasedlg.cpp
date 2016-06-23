@@ -280,6 +280,7 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 		auto dlg = new QFileDialog(this, tr("Import Game"), QString(),
 			tr("Portable Game Notation (*.pgn);;All Files (*.*)"));
 		connect(dlg, &QFileDialog::fileSelected, m_dbManager, &GameDatabaseManager::importPgnFile);
+		dlg->setAttribute(Qt::WA_DeleteOnClose);
 		dlg->open();
 	});
 	connect(ui->m_exportBtn, SIGNAL(clicked()), this,

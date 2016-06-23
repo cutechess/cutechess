@@ -93,6 +93,7 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 		auto dlg = new QFileDialog(this, tr("Select PGN output file"),
 			QString(), tr("Portable Game Notation (*.pgn)"));
 		connect(dlg, &QFileDialog::fileSelected, ui->m_pgnoutEdit, &QLineEdit::setText);
+		dlg->setAttribute(Qt::WA_DeleteOnClose);
 		dlg->setAcceptMode(QFileDialog::AcceptSave);
 		dlg->open();
 	});
@@ -102,6 +103,7 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 		auto dlg = new QFileDialog(this, tr("Select opening suite"), QString(),
 			tr("PGN/EPD files (*.pgn *.epd)"));
 		connect(dlg, &QFileDialog::fileSelected, ui->m_suiteFileEdit, &QLineEdit::setText);
+		dlg->setAttribute(Qt::WA_DeleteOnClose);
 		dlg->open();
 	});
 

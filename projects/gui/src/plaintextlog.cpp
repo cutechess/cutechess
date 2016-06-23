@@ -50,6 +50,7 @@ void PlainTextLog::contextMenuEvent(QContextMenuEvent* event)
 		auto dlg = new QFileDialog(this, tr("Save Log"), QString(),
 			tr("Text Files (*.txt);;All Files (*.*)"));
 		connect(dlg, &QFileDialog::fileSelected, this, &PlainTextLog::saveLogToFile);
+		dlg->setAttribute(Qt::WA_DeleteOnClose);
 		dlg->setAcceptMode(QFileDialog::AcceptSave);
 		dlg->open();
 	});
