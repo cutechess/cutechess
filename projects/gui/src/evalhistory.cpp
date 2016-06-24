@@ -67,10 +67,15 @@ void EvalHistory::setGame(ChessGame* game)
 
 	auto cWhite = QColor("#ffce9e");
 	auto cBlack = QColor("#d18b47");
-	m_plot->graph(0)->setPen(QPen(cWhite.darker(150)));
+	auto pWhite = QPen(cWhite.darker(150));
+	pWhite.setWidth(2);
+	auto pBlack = QPen(cBlack.darker());
+	pBlack.setWidth(2);
+
+	m_plot->graph(0)->setPen(pWhite);
 	cWhite.setAlpha(200);
 	m_plot->graph(0)->setBrush(QBrush(cWhite));
-	m_plot->graph(1)->setPen(cBlack.darker());
+	m_plot->graph(1)->setPen(pBlack);
 	cBlack.setAlpha(128);
 	m_plot->graph(1)->setBrush(QBrush(cBlack));
 
