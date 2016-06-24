@@ -230,7 +230,11 @@ void ChessGame::emitLastMove()
 {
 	int ply = m_moves.size() - 1;
 	if (m_scores.contains(ply))
-		emit scoreChanged(ply, m_scores[ply]);
+	{
+		int score = m_scores[ply];
+		if (score != MoveEvaluation::NULL_SCORE)
+			emit scoreChanged(ply, score);
+	}
 
 	const auto& md = m_pgn->moves().last();
 	emit moveMade(md.move, md.moveString, md.comment);
