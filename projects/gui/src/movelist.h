@@ -54,8 +54,13 @@ class MoveList : public QWidget
 		void setGame(ChessGame* game, PgnGame* pgn = nullptr);
 
 	public slots:
-		/*! Highlights move \a moveNum */
-		void selectMove(int moveNum);
+		/*!
+		 * Highlights move \a moveNum.
+		 *
+		 * Returns true if \a moveNum is a valid move index;
+		 * otherwise returns false.
+		 */
+		bool selectMove(int moveNum);
 		/*! Updates the move at \a ply */
 		void setMove(int ply,
 			     const Chess::GenericMove& move,
@@ -67,11 +72,15 @@ class MoveList : public QWidget
 		void moveClicked(int num);
 		/*! Emitted when the user clicks comment \a num. */
 		void commentClicked(int num, const QString& comment);
-	
+
+	protected:
+		// Reimplemented from QWidget
+		virtual bool eventFilter(QObject* obj, QEvent* event);
+
 	private slots:
 		void onMoveMade(const Chess::GenericMove& move,
-		                const QString& sanString,
-		                const QString& comment);
+				const QString& sanString,
+				const QString& comment);
 		void onLinkClicked(const QUrl& url);
 		void selectChosenMove();
 

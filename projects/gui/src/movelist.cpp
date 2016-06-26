@@ -20,6 +20,7 @@
 #include <QVBoxLayout>
 #include <QScrollBar>
 #include <QTimer>
+#include <QKeyEvent>
 #include <chessgame.h>
 
 
@@ -65,6 +66,8 @@ MoveList::MoveList(QWidget* parent)
 	QTextCharFormat format(m_moveList->currentCharFormat());
 	m_defaultTextFormat.setForeground(format.foreground());
 	m_defaultTextFormat.setBackground(format.background());
+
+	m_moveList->installEventFilter(this);
 }
 
 void MoveList::insertMove(int ply,
@@ -138,6 +141,32 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 	sb->setValue(sb->maximum());
 
 	selectMove(m_moveCount - 1);
+}
+
+bool MoveList::eventFilter(QObject* obj, QEvent* event)
+{
+	if (obj == m_moveList)
+	{
+		if (event->type() == QEvent::KeyPress)
+		{
+			QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+			int index = m_moveToBeSelected;
+			if (index == -1)
+				index = m_selectedMove;
+			if (keyEvent->key() == Qt::Key_Left)
+				index--;
+			else if (keyEvent->key() == Qt::Key_Right)
+				index++;
+			else
+				return true;
+
+			if (selectMove(index))
+				emit moveClicked(index);
+		}
+		return false;
+	}
+
+	return QWidget::eventFilter(obj, event);
 }
 
 void MoveList::onMoveMade(const Chess::GenericMove& move,
@@ -229,17 +258,18 @@ void MoveList::selectChosenMove()
 	c.endEditBlock();
 }
 
-void MoveList::selectMove(int moveNum)
+bool MoveList::selectMove(int moveNum)
 {
 	if (moveNum == -1)
 		moveNum = 0;
 	if (moveNum >= m_moveCount || m_moveCount <= 0)
-		return;
+		return false;
 	if (moveNum == m_selectedMove)
-		return;
+		return false;
 
 	m_moveToBeSelected = moveNum;
 	m_selectionTimer->start();
+	return true;
 }
 
 void MoveList::onLinkClicked(const QUrl& url)
