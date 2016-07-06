@@ -58,7 +58,7 @@ class GameDatabaseDialog : public QDialog
 		void updateSearch(const QString& terms = QString());
 		void onSearchTimeout();
 		void onAdvancedSearch();
-		void exportPgn();
+		void exportPgn(const QString& filename);
 		void createOpeningBook();
 		void updateUi();
 

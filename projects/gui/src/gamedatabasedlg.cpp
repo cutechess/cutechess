@@ -283,8 +283,15 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 		dlg->setAttribute(Qt::WA_DeleteOnClose);
 		dlg->open();
 	});
-	connect(ui->m_exportBtn, SIGNAL(clicked()), this,
-		SLOT(exportPgn()));
+	connect(ui->m_exportBtn, &QPushButton::clicked, this, [=]()
+	{
+		auto dlg = new QFileDialog(this, tr("Export game collection"), QString(),
+			tr("Portable Game Notation (*.pgn)"));
+		connect(dlg, &QFileDialog::fileSelected, this, &GameDatabaseDialog::exportPgn);
+		dlg->setAttribute(Qt::WA_DeleteOnClose);
+		dlg->setAcceptMode(QFileDialog::AcceptSave);
+		dlg->open();
+	});
 	connect(ui->m_createOpeningBookBtn, SIGNAL(clicked(bool)), this,
 		SLOT(createOpeningBook()));
 
@@ -463,18 +470,8 @@ int GameDatabaseDialog::databaseIndexFromGame(int game) const
 	return -1;
 }
 
-void GameDatabaseDialog::exportPgn()
+void GameDatabaseDialog::exportPgn(const QString& fileName)
 {
-	const QString fileName = QFileDialog::getSaveFileName(
-		this,
-		tr("Export game collection"),
-		QString(),
-		tr("Portable Game Notation (*.pgn)"),
-		nullptr,
-		QFileDialog::DontConfirmOverwrite);
-	if (fileName.isEmpty())
-		return;
-
 	QFile* file = new QFile(fileName);
 	if (!file->open(QIODevice::WriteOnly | QIODevice::Append))
 	{
