@@ -54,6 +54,7 @@
 #include "gametabbar.h"
 #include "evalhistory.h"
 #include "evalwidget.h"
+#include "boardview/boardscene.h"
 
 #include <modeltest.h>
 
@@ -84,6 +85,7 @@ MainWindow::MainWindow(ChessGame* game)
 	clockLayout->insertSpacing(1, 20);
 
 	m_gameViewer = new GameViewer;
+	m_gameViewer->boardScene()->setHighlightLegalMoves(true);
 	m_gameViewer->setContentsMargins(6, 6, 6, 6);
 
 	m_moveList = new MoveList(this);

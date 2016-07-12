@@ -3,7 +3,7 @@
 
 #include <QVariantMap>
 
-class SettingsManager
+class LIB_EXPORT SettingsManager
 {
 	public:
 		SettingsManager(const QString& filename);

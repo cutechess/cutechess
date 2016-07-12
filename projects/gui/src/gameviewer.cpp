@@ -189,6 +189,11 @@ Chess::Board* GameViewer::board() const
 	return m_boardScene->board();
 }
 
+BoardScene* GameViewer::boardScene() const
+{
+	return m_boardScene;
+}
+
 void GameViewer::viewFirstMoveClicked()
 {
 	viewFirstMove();

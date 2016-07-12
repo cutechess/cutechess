@@ -45,6 +45,7 @@ class GameViewer : public QWidget
 		void setGame(const PgnGame* pgn);
 		void disconnectGame();
 		Chess::Board* board() const;
+		BoardScene* boardScene() const;
 
 	public slots:
 		void viewMove(int index);
