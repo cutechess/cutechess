@@ -22,11 +22,13 @@
 #include <chessplayer.h>
 #include <chessgame.h>
 #include <gamemanager.h>
+#include <settingsmanager.h>
 
 #include "tilelayout.h"
 #include "boardview/boardscene.h"
 #include "boardview/boardview.h"
 #include "chessclock.h"
+#include "cutechessapp.h"
 
 GameWall::GameWall(GameManager* manager, QWidget *parent)
 	: QWidget(parent),
@@ -68,6 +70,10 @@ void GameWall::addGame(ChessGame* game)
 	clockLayout->insertSpacing(1, 20);
 
 	BoardScene* scene = new BoardScene();
+	auto smgr = CuteChessApplication::instance()->settingsManager();
+	bool hlm = smgr->value("highlight_legal_moves").toBool();
+	scene->setHighlightLegalMoves(hlm);
+
 	BoardView* view = new BoardView(scene);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();

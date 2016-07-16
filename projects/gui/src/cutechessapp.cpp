@@ -207,7 +207,11 @@ GameDatabaseManager* CuteChessApplication::gameDatabaseManager()
 void CuteChessApplication::showSettingsDialog()
 {
 	if (m_settingsDialog == nullptr)
+	{
 		m_settingsDialog = new SettingsDialog(settingsManager());
+		connect(m_settingsDialog, SIGNAL(accepted()),
+			this, SIGNAL(settingsChanged()));
+	}
 
 	m_settingsDialog->show();
 }

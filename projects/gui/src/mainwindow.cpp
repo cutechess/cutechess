@@ -40,6 +40,7 @@
 #include <enginebuilder.h>
 #include <chessplayer.h>
 #include <tournament.h>
+#include <settingsmanager.h>
 
 #include "cutechessapp.h"
 #include "gameviewer.h"
@@ -85,7 +86,6 @@ MainWindow::MainWindow(ChessGame* game)
 	clockLayout->insertSpacing(1, 20);
 
 	m_gameViewer = new GameViewer;
-	m_gameViewer->boardScene()->setHighlightLegalMoves(true);
 	m_gameViewer->setContentsMargins(6, 6, 6, 6);
 
 	m_moveList = new MoveList(this);
@@ -215,6 +215,10 @@ void MainWindow::createActions()
 		CuteChessApplication::instance(), SLOT(showGameWall()));
 
 	connect(m_aboutAct, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
+
+	onSettingsChanged();
+	connect(CuteChessApplication::instance(), SIGNAL(settingsChanged()),
+		this, SLOT(onSettingsChanged()));
 }
 
 void MainWindow::createMenus()
@@ -755,6 +759,13 @@ void MainWindow::showAboutDialog()
 	html += "<a href=\"http://cutechess.com\">cutechess.com</a><br>";
 
 	QMessageBox::about(this, tr("About CuteChess"), html);
+}
+
+void MainWindow::onSettingsChanged()
+{
+	auto manager = CuteChessApplication::instance()->settingsManager();
+	bool hlm = manager->value("highlight_legal_moves").toBool();
+	m_gameViewer->boardScene()->setHighlightLegalMoves(hlm);
 }
 
 void MainWindow::lockCurrentGame()
