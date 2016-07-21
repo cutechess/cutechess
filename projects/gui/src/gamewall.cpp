@@ -18,11 +18,11 @@
 #include "gamewall.h"
 
 #include <QTimer>
+#include <QSettings>
 
 #include <chessplayer.h>
 #include <chessgame.h>
 #include <gamemanager.h>
-#include <settingsmanager.h>
 
 #include "tilelayout.h"
 #include "boardview/boardscene.h"
@@ -70,9 +70,10 @@ void GameWall::addGame(ChessGame* game)
 	clockLayout->insertSpacing(1, 20);
 
 	BoardScene* scene = new BoardScene();
-	auto smgr = CuteChessApplication::instance()->settingsManager();
-	bool hlm = smgr->value("highlight_legal_moves").toBool();
-	scene->setHighlightLegalMoves(hlm);
+	QSettings s;
+	s.beginGroup("ui");
+	scene->setHighlightLegalMoves(s.value("highlight_legal_moves").toBool());
+	s.endGroup();
 
 	BoardView* view = new BoardView(scene);
 

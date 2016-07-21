@@ -8,15 +8,12 @@ namespace Ui {
 	class SettingsDialog;
 }
 
-class SettingsManager;
-
 class SettingsDialog : public QDialog
 {
 	Q_OBJECT
 
 	public:
-		SettingsDialog(SettingsManager* manager,
-			       QWidget* parent = nullptr);
+		SettingsDialog(QWidget* parent = nullptr);
 		/*! Destroys the dialog. */
 		virtual ~SettingsDialog();
 
@@ -24,9 +21,11 @@ class SettingsDialog : public QDialog
 		// reimplemented from QDialog
 		void showEvent(QShowEvent* event);
 
+	private slots:
+		void onAccepted();
+
 	private:
 		Ui::SettingsDialog* ui;
-		SettingsManager* m_manager;
 };
 
 #endif // SETTINGSDIALOG_H

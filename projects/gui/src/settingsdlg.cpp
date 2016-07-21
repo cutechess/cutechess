@@ -1,26 +1,15 @@
 #include "settingsdlg.h"
 #include "ui_settingsdlg.h"
 #include <QShowEvent>
-#include <settingsmanager.h>
+#include <QSettings>
 
-SettingsDialog::SettingsDialog(SettingsManager* manager, QWidget* parent)
+SettingsDialog::SettingsDialog(QWidget* parent)
 	: QDialog(parent),
-	  ui(new Ui::SettingsDialog),
-	  m_manager(manager)
+	  ui(new Ui::SettingsDialog)
 {
 	ui->setupUi(this);
-
-	connect(ui->m_buttonBox, &QDialogButtonBox::accepted, this, [=]()
-	{
-		// General settings
-		m_manager->setValue("highlight_legal_moves", ui->m_highlightLegalMovesCheck->isChecked());
-
-		// Tournament settings
-		m_manager->setValue("concurrency", ui->m_concurrencySpin->value());
-
-		m_manager->save();
-		accept();
-	});
+	connect(ui->m_buttonBox, SIGNAL(accepted()),
+		this, SLOT(onAccepted()));
 }
 
 SettingsDialog::~SettingsDialog()
@@ -28,13 +17,32 @@ SettingsDialog::~SettingsDialog()
 	delete ui;
 }
 
+void SettingsDialog::onAccepted()
+{
+	QSettings s;
+
+	s.beginGroup("ui");
+	s.setValue("highlight_legal_moves", ui->m_highlightLegalMovesCheck->isChecked());
+	s.endGroup();
+
+	s.beginGroup("tournament");
+	s.setValue("concurrency", ui->m_concurrencySpin->value());
+	s.endGroup();
+
+	accept();
+}
+
 void SettingsDialog::showEvent(QShowEvent* event)
 {
-	// General settings
-	ui->m_highlightLegalMovesCheck->setChecked(m_manager->value("highlight_legal_moves").toBool());
+	QSettings s;
 
-	// Tournament settings
-	ui->m_concurrencySpin->setValue(m_manager->value("concurrency").toInt());
+	s.beginGroup("ui");
+	ui->m_highlightLegalMovesCheck->setChecked(s.value("highlight_legal_moves").toBool());
+	s.endGroup();
+
+	s.beginGroup("tournament");
+	ui->m_concurrencySpin->setValue(s.value("concurrency").toInt());
+	s.endGroup();
 
 	QDialog::showEvent(event);
 }

@@ -29,7 +29,6 @@ class GameDatabaseManager;
 class GameDatabaseDialog;
 class PgnImporter;
 class ChessGame;
-class SettingsManager;
 
 class CuteChessApplication : public QApplication
 {
@@ -40,7 +39,6 @@ class CuteChessApplication : public QApplication
 		virtual ~CuteChessApplication();
 
 		QString configPath();
-		SettingsManager* settingsManager();
 		EngineManager* engineManager();
 		GameManager* gameManager();
 		GameDatabaseManager* gameDatabaseManager();
@@ -64,7 +62,6 @@ class CuteChessApplication : public QApplication
 		void showImportProgressDialog(PgnImporter* importer);
 
 	private:
-		SettingsManager* m_settingsManager;
 		SettingsDialog* m_settingsDialog;
 		EngineManager* m_engineManager;
 		GameManager* m_gameManager;

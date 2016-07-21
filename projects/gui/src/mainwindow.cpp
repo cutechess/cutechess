@@ -29,6 +29,7 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QClipboard>
+#include <QSettings>
 
 #include <board/boardfactory.h>
 #include <chessgame.h>
@@ -40,7 +41,6 @@
 #include <enginebuilder.h>
 #include <chessplayer.h>
 #include <tournament.h>
-#include <settingsmanager.h>
 
 #include "cutechessapp.h"
 #include "gameviewer.h"
@@ -763,9 +763,12 @@ void MainWindow::showAboutDialog()
 
 void MainWindow::onSettingsChanged()
 {
-	auto manager = CuteChessApplication::instance()->settingsManager();
-	bool hlm = manager->value("highlight_legal_moves").toBool();
+	QSettings s;
+
+	s.beginGroup("ui");
+	bool hlm = s.value("highlight_legal_moves").toBool();
 	m_gameViewer->boardScene()->setHighlightLegalMoves(hlm);
+	s.endGroup();
 }
 
 void MainWindow::lockCurrentGame()
