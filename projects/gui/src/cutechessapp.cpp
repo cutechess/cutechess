@@ -62,7 +62,7 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	setQuitOnLastWindowClosed(false);
 
 	QCoreApplication::setOrganizationName("cutechess");
-	QCoreApplication::setOrganizationDomain("cutechess.org");
+	QCoreApplication::setOrganizationDomain("cutechess.com");
 	QCoreApplication::setApplicationName("cutechess");
 	QCoreApplication::setApplicationVersion(CUTECHESS_VERSION);
 
