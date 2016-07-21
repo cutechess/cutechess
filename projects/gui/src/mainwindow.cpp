@@ -215,10 +215,6 @@ void MainWindow::createActions()
 		CuteChessApplication::instance(), SLOT(showGameWall()));
 
 	connect(m_aboutAct, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
-
-	onSettingsChanged();
-	connect(CuteChessApplication::instance(), SIGNAL(settingsChanged()),
-		this, SLOT(onSettingsChanged()));
 }
 
 void MainWindow::createMenus()
@@ -759,16 +755,6 @@ void MainWindow::showAboutDialog()
 	html += "<a href=\"http://cutechess.com\">cutechess.com</a><br>";
 
 	QMessageBox::about(this, tr("About CuteChess"), html);
-}
-
-void MainWindow::onSettingsChanged()
-{
-	QSettings s;
-
-	s.beginGroup("ui");
-	bool hlm = s.value("highlight_legal_moves").toBool();
-	m_gameViewer->boardScene()->setHighlightLegalMoves(hlm);
-	s.endGroup();
 }
 
 void MainWindow::lockCurrentGame()

@@ -21,6 +21,7 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QGraphicsPolygonItem>
+#include <QSettings>
 #include <algorithm>
 #include <board/board.h>
 #include "graphicsboard.h"
@@ -44,8 +45,7 @@ BoardScene::BoardScene(QObject* parent)
 	  m_anim(nullptr),
 	  m_renderer(new QSvgRenderer(QString(":/default.svg"), this)),
 	  m_highlightPiece(nullptr),
-	  m_moveArrows(nullptr),
-	  m_legalMoveHighlights(true)
+	  m_moveArrows(nullptr)
 {
 }
 
@@ -74,16 +74,6 @@ void BoardScene::setBoard(Chess::Board* board)
 	m_highlightPiece = nullptr;
 	m_moveArrows = nullptr;
 	m_board = board;
-}
-
-void BoardScene::setHighlightLegalMoves(bool enabled)
-{
-	m_legalMoveHighlights = enabled;
-	if (!enabled && m_squares)
-	{
-		m_highlightPiece = nullptr;
-		m_squares->clearHighlights();
-	}
 }
 
 void BoardScene::populate()
@@ -197,14 +187,12 @@ void BoardScene::cancelUserMove()
 
 void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
-	if (!m_legalMoveHighlights)
-		return QGraphicsScene::mouseMoveEvent(event);
-
 	GraphicsPiece* piece = pieceAt(event->scenePos());
 	if (piece == m_highlightPiece || m_anim != nullptr || m_chooser != nullptr)
 		return QGraphicsScene::mouseMoveEvent(event);
 
-	if (m_targets.contains(piece))
+	if (m_targets.contains(piece)
+	&&  QSettings().value("ui/highlight_legal_moves").toBool())
 	{
 		m_highlightPiece = piece;
 		m_squares->setHighlights(m_targets.values(piece));

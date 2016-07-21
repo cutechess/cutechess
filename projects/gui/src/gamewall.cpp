@@ -70,11 +70,6 @@ void GameWall::addGame(ChessGame* game)
 	clockLayout->insertSpacing(1, 20);
 
 	BoardScene* scene = new BoardScene();
-	QSettings s;
-	s.beginGroup("ui");
-	scene->setHighlightLegalMoves(s.value("highlight_legal_moves").toBool());
-	s.endGroup();
-
 	BoardView* view = new BoardView(scene);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();

@@ -8,8 +8,20 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 	  ui(new Ui::SettingsDialog)
 {
 	ui->setupUi(this);
-	connect(ui->m_buttonBox, SIGNAL(accepted()),
-		this, SLOT(onAccepted()));
+
+	readSettings();
+
+	connect(ui->m_highlightLegalMovesCheck, &QCheckBox::toggled,
+		this, [=](bool checked)
+	{
+		QSettings().setValue("ui/highlight_legal_moves", checked);
+	});
+
+	connect(ui->m_concurrencySpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		this, [=](int value)
+	{
+		QSettings().setValue("tournament/concurrency", value);
+	});
 }
 
 SettingsDialog::~SettingsDialog()
@@ -17,22 +29,7 @@ SettingsDialog::~SettingsDialog()
 	delete ui;
 }
 
-void SettingsDialog::onAccepted()
-{
-	QSettings s;
-
-	s.beginGroup("ui");
-	s.setValue("highlight_legal_moves", ui->m_highlightLegalMovesCheck->isChecked());
-	s.endGroup();
-
-	s.beginGroup("tournament");
-	s.setValue("concurrency", ui->m_concurrencySpin->value());
-	s.endGroup();
-
-	accept();
-}
-
-void SettingsDialog::showEvent(QShowEvent* event)
+void SettingsDialog::readSettings()
 {
 	QSettings s;
 
@@ -43,6 +40,4 @@ void SettingsDialog::showEvent(QShowEvent* event)
 	s.beginGroup("tournament");
 	ui->m_concurrencySpin->setValue(s.value("concurrency").toInt());
 	s.endGroup();
-
-	QDialog::showEvent(event);
 }

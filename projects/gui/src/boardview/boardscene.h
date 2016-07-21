@@ -71,13 +71,6 @@ class BoardScene : public QGraphicsScene
 		 */
 		void setBoard(Chess::Board* board);
 
-		/*!
-		 * Sets legal move highlighting to \a enabled.
-		 *
-		 * By default legal move highlights are enabled.
-		 */
-		void setHighlightLegalMoves(bool enabled);
-
 	public slots:
 		/*!
 		 * Clears the scene, creates a new board, and populates
@@ -156,7 +149,6 @@ class BoardScene : public QGraphicsScene
 		Chess::GenericMove m_promotionMove;
 		GraphicsPiece* m_highlightPiece;
 		QGraphicsItemGroup* m_moveArrows;
-		bool m_legalMoveHighlights;
 };
 
 #endif // BOARDSCENE_H

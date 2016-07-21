@@ -55,9 +55,6 @@ class CuteChessApplication : public QApplication
 		void showGameDatabaseDialog();
 		void showGameWall();
 
-	signals:
-		void settingsChanged();
-
 	private slots:
 		void showImportProgressDialog(PgnImporter* importer);
 

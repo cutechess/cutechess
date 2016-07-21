@@ -17,14 +17,9 @@ class SettingsDialog : public QDialog
 		/*! Destroys the dialog. */
 		virtual ~SettingsDialog();
 
-	protected:
-		// reimplemented from QDialog
-		void showEvent(QShowEvent* event);
-
-	private slots:
-		void onAccepted();
-
 	private:
+		void readSettings();
+
 		Ui::SettingsDialog* ui;
 };
 
