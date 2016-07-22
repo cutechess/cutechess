@@ -2,6 +2,8 @@
 #include "ui_settingsdlg.h"
 #include <QShowEvent>
 #include <QSettings>
+#include <gamemanager.h>
+#include "cutechessapp.h"
 
 SettingsDialog::SettingsDialog(QWidget* parent)
 	: QDialog(parent),
@@ -21,6 +23,7 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 		this, [=](int value)
 	{
 		QSettings().setValue("tournament/concurrency", value);
+		CuteChessApplication::instance()->gameManager()->setConcurrency(value);
 	});
 }
 

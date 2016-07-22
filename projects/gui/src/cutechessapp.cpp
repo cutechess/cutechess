@@ -127,7 +127,11 @@ EngineManager* CuteChessApplication::engineManager()
 GameManager* CuteChessApplication::gameManager()
 {
 	if (m_gameManager == nullptr)
+	{
 		m_gameManager = new GameManager(this);
+		int concurrency = QSettings().value("tournament/concurrency").toInt();
+		m_gameManager->setConcurrency(concurrency);
+	}
 
 	return m_gameManager;
 }
