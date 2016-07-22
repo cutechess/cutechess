@@ -19,6 +19,7 @@
 #define EVALWIDGET_H
 
 #include <QWidget>
+#include <QPointer>
 #include <moveevaluation.h>
 
 class QTableWidget;
@@ -46,7 +47,7 @@ class EvalWidget : public QWidget
 		void onEval(const MoveEvaluation& eval);
 
 	private:
-		ChessPlayer* m_player;
+		QPointer<ChessPlayer> m_player;
 		QTableWidget* m_table;
 		int m_depth;
 		QString m_pv;
