@@ -622,23 +622,28 @@ void MainWindow::onTournamentFinished()
 	Q_ASSERT(tournament != nullptr);
 
 	QString error = tournament->errorString();
+	QString name = tournament->name();
+
+	tournament->deleteLater();
+	m_stopTournamentAct->setEnabled(false);
+
+	if (m_closing)
+		return;
+
 	if (!error.isEmpty())
 	{
 		QMessageBox::critical(this,
-				      tr("Tournament Error"),
+				      tr("Tournament error"),
 				      tr("Tournament \"%1\" finished with an error.\n\n%2")
-				      .arg(tournament->name()).arg(error));
+				      .arg(name).arg(error));
 	}
 	else
 	{
 		QMessageBox::information(this,
 					 tr("Tournament finished"),
 					 tr("Tournament \"%1\" is finished")
-					 .arg(tournament->name()));
+					 .arg(name));
 	}
-
-	tournament->deleteLater();
-	m_stopTournamentAct->setEnabled(false);
 }
 
 void MainWindow::manageEngines()
@@ -824,6 +829,9 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	if (askToSave())
 	{
 		m_closing = true;
+
+		if (m_stopTournamentAct->isEnabled())
+			m_stopTournamentAct->trigger();
 
 		for (int i = m_tabs.size() - 1; i >= 0; i--)
 			onTabCloseRequested(i);
