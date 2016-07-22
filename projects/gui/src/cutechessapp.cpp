@@ -44,7 +44,8 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	  m_engineManager(nullptr),
 	  m_gameManager(nullptr),
 	  m_gameDatabaseManager(nullptr),
-	  m_gameDatabaseDialog(nullptr)
+	  m_gameDatabaseDialog(nullptr),
+	  m_initialWindowCreated(false)
 {
 	Mersenne::initialize(QTime(0,0,0).msecsTo(QTime::currentTime()));
 
@@ -144,6 +145,7 @@ MainWindow* CuteChessApplication::newGameWindow(ChessGame* game)
 	MainWindow* mainWindow = new MainWindow(game);
 	m_gameWindows.prepend(mainWindow);
 	mainWindow->show();
+	m_initialWindowCreated = true;
 
 	return mainWindow;
 }
@@ -204,6 +206,9 @@ void CuteChessApplication::showGameWall()
 
 void CuteChessApplication::onLastWindowClosed()
 {
+	if (!m_initialWindowCreated)
+		return;
+
 	if (m_gameManager != nullptr)
 	{
 		connect(m_gameManager, SIGNAL(finished()), this, SLOT(quit()));

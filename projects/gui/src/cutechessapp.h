@@ -62,6 +62,7 @@ class CuteChessApplication : public QApplication
 		GameDatabaseManager* m_gameDatabaseManager;
 		QList<QPointer<MainWindow> > m_gameWindows;
 		GameDatabaseDialog* m_gameDatabaseDialog;
+		bool m_initialWindowCreated;
 
 	private slots:
 		void onLastWindowClosed();
