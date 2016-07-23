@@ -167,12 +167,18 @@ void EngineManagementWidget::removeEngine()
 
 void EngineManagementWidget::browseDefaultLocation()
 {
-	QString dir = QFileDialog::getExistingDirectory(
-		this, tr("Select Directory"),
+	auto dlg = new QFileDialog(
+		this, tr("Export game collection"),
 		ui->m_defaultLocationEdit->text());
-	if (dir.isEmpty())
-		return;
+	dlg->setFileMode(QFileDialog::Directory);
+	dlg->setOption(QFileDialog::ShowDirsOnly);
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->setAcceptMode(QFileDialog::AcceptOpen);
 
-	ui->m_defaultLocationEdit->setText(dir);
-	QSettings().setValue("ui/default_engine_location", dir);
+	connect(dlg, &QFileDialog::fileSelected, [=](const QString& dir)
+	{
+		ui->m_defaultLocationEdit->setText(dir);
+		QSettings().setValue("ui/default_engine_location", dir);
+	});
+	dlg->open();
 }
