@@ -168,7 +168,7 @@ void EngineManagementWidget::removeEngine()
 void EngineManagementWidget::browseDefaultLocation()
 {
 	auto dlg = new QFileDialog(
-		this, tr("Export game collection"),
+		this, tr("Choose Directory"),
 		ui->m_defaultLocationEdit->text());
 	dlg->setFileMode(QFileDialog::Directory);
 	dlg->setOption(QFileDialog::ShowDirsOnly);
