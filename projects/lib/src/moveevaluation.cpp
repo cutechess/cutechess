@@ -20,6 +20,7 @@
 MoveEvaluation::MoveEvaluation()
 	: m_isBookEval(false),
 	  m_depth(0),
+	  m_selDepth(0),
 	  m_score(NULL_SCORE),
 	  m_time(0),
 	  m_pvNumber(0),
@@ -31,8 +32,10 @@ bool MoveEvaluation::operator==(const MoveEvaluation& other) const
 {
 	if (m_isBookEval == other.m_isBookEval
 	&&  m_depth == other.m_depth
+	&&  m_selDepth == other.m_selDepth
 	&&  m_score == other.m_score
 	&&  m_time == other.m_time
+	&&  m_pvNumber == other.m_pvNumber
 	&&  m_nodeCount == other.m_nodeCount)
 		return true;
 	return false;
@@ -42,8 +45,10 @@ bool MoveEvaluation::operator!=(const MoveEvaluation& other) const
 {
 	if (m_isBookEval != other.m_isBookEval
 	||  m_depth != other.m_depth
+	||  m_selDepth != other.m_selDepth
 	||  m_score != other.m_score
 	||  m_time != other.m_time
+	||  m_pvNumber != other.m_pvNumber
 	||  m_nodeCount != other.m_nodeCount)
 		return true;
 	return false;
@@ -52,8 +57,10 @@ bool MoveEvaluation::operator!=(const MoveEvaluation& other) const
 bool MoveEvaluation::isEmpty() const
 {
 	if (m_depth == 0
+	&&  m_selDepth == 0
 	&&  m_score == NULL_SCORE
 	&&  m_time < 500
+	&&  m_pvNumber == 0
 	&&  m_nodeCount == 0)
 		return true;
 	return false;
@@ -67,6 +74,11 @@ bool MoveEvaluation::isBookEval() const
 int MoveEvaluation::depth() const
 {
 	return m_depth;
+}
+
+int MoveEvaluation::selectiveDepth() const
+{
+	return m_selDepth;
 }
 
 int MoveEvaluation::score() const
@@ -98,8 +110,10 @@ void MoveEvaluation::clear()
 {
 	m_isBookEval = false;
 	m_depth = 0;
+	m_selDepth = 0;
 	m_score = NULL_SCORE;
 	m_time = 0;
+	m_pvNumber = 0;
 	m_nodeCount = 0;
 	m_pv.clear();
 }
@@ -112,6 +126,11 @@ void MoveEvaluation::setBookEval(bool isBookEval)
 void MoveEvaluation::setDepth(int depth)
 {
 	m_depth = depth;
+}
+
+void MoveEvaluation::setSelectiveDepth(int depth)
+{
+	m_selDepth = depth;
 }
 
 void MoveEvaluation::setScore(int score)
@@ -143,6 +162,8 @@ void MoveEvaluation::merge(const MoveEvaluation& other)
 {
 	if (other.m_depth)
 		m_depth = other.m_depth;
+	if (other.m_selDepth)
+		m_selDepth = other.m_selDepth;
 	m_isBookEval = other.m_isBookEval;
 	if (other.m_nodeCount)
 		m_nodeCount = other.m_nodeCount;

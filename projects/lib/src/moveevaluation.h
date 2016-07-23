@@ -58,6 +58,12 @@ class LIB_EXPORT MoveEvaluation
 		int depth() const;
 
 		/*!
+		 * How many plies were searched in selective search lines?
+		 * \note For human players this is always 0.
+		 */
+		int selectiveDepth() const;
+
+		/*!
 		 * Score in centipawns from the player's point of view.
 		 * \note For human player this always 0.
 		 */
@@ -80,7 +86,10 @@ class LIB_EXPORT MoveEvaluation
 		 */
 		QString pv() const;
 
-		/*! Returns the principal variation number (default 0). */
+		/*!
+		 * Returns the principal variation number (default 0).
+		 * \note For human players this is always 0.
+		 */
 		int pvNumber() const;
 
 
@@ -92,6 +101,9 @@ class LIB_EXPORT MoveEvaluation
 
 		/*! Sets the search depth to \a depth. */
 		void setDepth(int depth);
+
+		/*! Sets the selective search depth to \a depth. */
+		void setSelectiveDepth(int depth);
 
 		/*! Sets the score to \a score. */
 		void setScore(int score);
@@ -114,6 +126,7 @@ class LIB_EXPORT MoveEvaluation
 	private:
 		bool m_isBookEval;
 		int m_depth;
+		int m_selDepth;
 		int m_score;
 		int m_time;
 		int m_pvNumber;

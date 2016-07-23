@@ -76,7 +76,11 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 {
 	QString depth;
 	if (eval.depth())
+	{
 		depth = QString::number(eval.depth());
+		if (eval.selectiveDepth())
+			depth += "/" + QString::number(eval.selectiveDepth());
+	}
 
 	QString time;
 	int ms = eval.time();

@@ -363,6 +363,9 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 	case InfoDepth:
 		eval->setDepth(tokens[0].toString().toInt());
 		break;
+	case InfoSelDepth:
+		eval->setSelectiveDepth(tokens[0].toString().toInt());
+		break;
 	case InfoTime:
 		eval->setTime(tokens[0].toString().toInt());
 		break;
