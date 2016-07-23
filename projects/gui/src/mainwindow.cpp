@@ -167,6 +167,7 @@ void MainWindow::createActions()
 	m_stopTournamentAct = new QAction(tr("Stop"), this);
 
 	m_showSettingsAct = new QAction(tr("Settings"), this);
+	m_showSettingsAct->setMenuRole(QAction::PreferencesRole);
 
 	m_showGameDatabaseWindowAct = new QAction(tr("&Game Database"), this);
 

@@ -200,7 +200,9 @@ void CuteChessApplication::showSettingsDialog()
 	if (m_settingsDialog == nullptr)
 		m_settingsDialog = new SettingsDialog();
 
-	m_settingsDialog->open();
+	m_settingsDialog->show();
+	m_settingsDialog->raise();
+	m_settingsDialog->activateWindow();
 }
 
 void CuteChessApplication::showGameDatabaseDialog()
