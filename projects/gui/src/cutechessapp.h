@@ -47,6 +47,7 @@ class CuteChessApplication : public QApplication
 		QList<MainWindow*> gameWindows();
 		void showGameWindow(int index);
 		WorkerPool* workerPool();
+		TournamentResultsDialog* tournamentResultsDialog();
 
 		static CuteChessApplication* instance();
 		static QString userName();

@@ -55,6 +55,7 @@
 #include "evalhistory.h"
 #include "evalwidget.h"
 #include "boardview/boardscene.h"
+#include "tournamentresultsdlg.h"
 
 #include <modeltest.h>
 
@@ -607,6 +608,8 @@ void MainWindow::newTournament()
 		this, SLOT(onTournamentFinished()));
 	connect(t, SIGNAL(gameStarted(ChessGame*, int, int, int)),
 		this, SLOT(addGame(ChessGame*)));
+	connect(t, SIGNAL(gameFinished(ChessGame*, int, int, int)),
+		CuteChessApplication::instance()->tournamentResultsDialog(), SLOT(update()));
 	t->start();
 
 	connect(m_stopTournamentAct, SIGNAL(triggered()), t, SLOT(stop()));

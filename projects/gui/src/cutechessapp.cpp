@@ -206,12 +206,18 @@ void CuteChessApplication::showSettingsDialog()
 
 void CuteChessApplication::showTournamentResultsDialog()
 {
+	auto dlg = tournamentResultsDialog();
+	dlg->show();
+	dlg->raise();
+	dlg->activateWindow();
+}
+
+TournamentResultsDialog*CuteChessApplication::tournamentResultsDialog()
+{
 	if (m_tournamentResultsDialog == nullptr)
 		m_tournamentResultsDialog = new TournamentResultsDialog();
 
-	m_tournamentResultsDialog->show();
-	m_tournamentResultsDialog->raise();
-	m_tournamentResultsDialog->activateWindow();
+	return m_tournamentResultsDialog;
 }
 
 WorkerPool* CuteChessApplication::workerPool()

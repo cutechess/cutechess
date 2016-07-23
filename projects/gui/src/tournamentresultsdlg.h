@@ -32,7 +32,7 @@ class TournamentResultsDialog : public QDialog
 	    virtual ~TournamentResultsDialog();
 
 	public slots:
-	    void setResults(const QString& results);
+		void update();
 
 	private:
 		QPlainTextEdit* m_resultsEdit;

@@ -21,6 +21,8 @@
 #include <QBoxLayout>
 #include <QFont>
 
+#include <tournament.h>
+
 TournamentResultsDialog::TournamentResultsDialog(QWidget* parent)
 	: QDialog(parent)
 {
@@ -45,7 +47,9 @@ TournamentResultsDialog::~TournamentResultsDialog()
 {
 }
 
-void TournamentResultsDialog::setResults(const QString& results)
+void TournamentResultsDialog::update()
 {
-	m_resultsEdit->setPlainText(results);
+	auto* tournament = qobject_cast<Tournament*>(QObject::sender());
+	Q_ASSERT(tournament != nullptr);
+	m_resultsEdit->setPlainText(tournament->results());
 }
