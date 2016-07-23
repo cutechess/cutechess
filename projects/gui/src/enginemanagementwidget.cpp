@@ -109,13 +109,17 @@ void EngineManagementWidget::updateSearch(const QString& terms)
 
 void EngineManagementWidget::addEngine()
 {
-	EngineConfigurationDialog dlg(EngineConfigurationDialog::AddEngine, this);
-	dlg.setReservedNames(m_engineManager->engineNames());
-	if (dlg.exec() == QDialog::Accepted)
+	auto dlg = new EngineConfigurationDialog(
+		EngineConfigurationDialog::AddEngine, this);
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->setReservedNames(m_engineManager->engineNames());
+
+	connect(dlg, &EngineConfigurationDialog::accepted, [=]()
 	{
-		m_engineManager->addEngine(dlg.engineConfiguration());
+		m_engineManager->addEngine(dlg->engineConfiguration());
 		m_hasChanged = true;
-	}
+	});
+	dlg->open();
 }
 
 void EngineManagementWidget::configureEngine()
@@ -129,18 +133,21 @@ void EngineManagementWidget::configureEngine(const QModelIndex& index)
 	int row = m_filteredModel->mapToSource(index).row();
 	const EngineConfiguration& config = m_engineManager->engineAt(row);
 
-	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
-	dlg.applyEngineInformation(config);
-
 	QSet<QString> names = m_engineManager->engineNames();
 	names.remove(config.name());
-	dlg.setReservedNames(names);
 
-	if (dlg.exec() == QDialog::Accepted)
+	auto dlg = new EngineConfigurationDialog(
+		EngineConfigurationDialog::ConfigureEngine, this);
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->applyEngineInformation(config);
+	dlg->setReservedNames(names);
+
+	connect(dlg, &EngineConfigurationDialog::accepted, [=]()
 	{
-		m_engineManager->updateEngineAt(row, dlg.engineConfiguration());
+		m_engineManager->updateEngineAt(row, dlg->engineConfiguration());
 		m_hasChanged = true;
-	}
+	});
+	dlg->open();
 }
 
 void EngineManagementWidget::removeEngine()
