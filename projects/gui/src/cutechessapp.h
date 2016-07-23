@@ -25,6 +25,7 @@ class EngineManager;
 class GameManager;
 class MainWindow;
 class SettingsDialog;
+class TournamentResultsDialog;
 class GameDatabaseManager;
 class GameDatabaseDialog;
 class PgnImporter;
@@ -54,11 +55,13 @@ class CuteChessApplication : public QApplication
 		MainWindow* newGameWindow(ChessGame* game);
 		void newDefaultGame();
 		void showSettingsDialog();
+		void showTournamentResultsDialog();
 		void showGameDatabaseDialog();
 		void showGameWall();
 
 	private:
 		SettingsDialog* m_settingsDialog;
+		TournamentResultsDialog* m_tournamentResultsDialog;
 		EngineManager* m_engineManager;
 		GameManager* m_gameManager;
 		GameDatabaseManager* m_gameDatabaseManager;

@@ -125,6 +125,7 @@ class MainWindow : public QMainWindow
 		QAction* m_copyFenAct;
 		QAction* m_newTournamentAct;
 		QAction* m_stopTournamentAct;
+		QAction* m_showTournamentResultsAct;
 		QAction* m_showGameDatabaseWindowAct;
 		QAction* m_showGameWallAct;
 		QAction* m_showPreviousTabAct;

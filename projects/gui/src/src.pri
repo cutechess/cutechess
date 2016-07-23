@@ -38,7 +38,8 @@ HEADERS += $$PWD/chessclock.h \
     $$PWD/evalhistory.h \
     $$PWD/evalwidget.h \
     $$PWD/settingsdlg.h \
-    $$PWD/enginemanagementwidget.h
+    $$PWD/enginemanagementwidget.h \
+    $$PWD/tournamentresultsdlg.h
 SOURCES += $$PWD/main.cpp \
     $$PWD/chessclock.cpp \
     $$PWD/engineconfigurationmodel.cpp \
@@ -78,4 +79,5 @@ SOURCES += $$PWD/main.cpp \
     $$PWD/evalhistory.cpp \
     $$PWD/evalwidget.cpp \
     $$PWD/settingsdlg.cpp \
-    $$PWD/enginemanagementwidget.cpp
+    $$PWD/enginemanagementwidget.cpp \
+    $$PWD/tournamentresultsdlg.cpp

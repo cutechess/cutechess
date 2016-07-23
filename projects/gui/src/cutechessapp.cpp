@@ -34,6 +34,7 @@
 
 #include "mainwindow.h"
 #include "settingsdlg.h"
+#include "tournamentresultsdlg.h"
 #include "gamedatabasedlg.h"
 #include "gamedatabasemanager.h"
 #include "importprogressdlg.h"
@@ -44,6 +45,7 @@
 CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	: QApplication(argc, argv),
 	  m_settingsDialog(nullptr),
+	  m_tournamentResultsDialog(nullptr),
 	  m_engineManager(nullptr),
 	  m_gameManager(nullptr),
 	  m_gameDatabaseManager(nullptr),
@@ -87,6 +89,7 @@ CuteChessApplication::~CuteChessApplication()
 {
 	delete m_gameDatabaseDialog;
 	delete m_settingsDialog;
+	delete m_tournamentResultsDialog;
 }
 
 CuteChessApplication* CuteChessApplication::instance()
@@ -199,6 +202,16 @@ void CuteChessApplication::showSettingsDialog()
 	m_settingsDialog->show();
 	m_settingsDialog->raise();
 	m_settingsDialog->activateWindow();
+}
+
+void CuteChessApplication::showTournamentResultsDialog()
+{
+	if (m_tournamentResultsDialog == nullptr)
+		m_tournamentResultsDialog = new TournamentResultsDialog();
+
+	m_tournamentResultsDialog->show();
+	m_tournamentResultsDialog->raise();
+	m_tournamentResultsDialog->activateWindow();
 }
 
 WorkerPool* CuteChessApplication::workerPool()

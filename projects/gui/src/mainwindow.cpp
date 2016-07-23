@@ -165,6 +165,7 @@ void MainWindow::createActions()
 
 	m_newTournamentAct = new QAction(tr("New..."), this);
 	m_stopTournamentAct = new QAction(tr("Stop"), this);
+	m_showTournamentResultsAct = new QAction(tr("Results..."), this);
 
 	m_showSettingsAct = new QAction(tr("Settings"), this);
 	m_showSettingsAct->setMenuRole(QAction::PreferencesRole);
@@ -203,6 +204,9 @@ void MainWindow::createActions()
 	connect(m_showSettingsAct, SIGNAL(triggered()),
 		CuteChessApplication::instance(), SLOT(showSettingsDialog()));
 
+	connect(m_showTournamentResultsAct, SIGNAL(triggered()),
+		CuteChessApplication::instance(), SLOT(showTournamentResultsDialog()));
+
 	connect(m_showGameDatabaseWindowAct, SIGNAL(triggered()),
 		CuteChessApplication::instance(), SLOT(showGameDatabaseDialog()));
 
@@ -227,6 +231,7 @@ void MainWindow::createMenus()
 	m_tournamentMenu = menuBar()->addMenu(tr("&Tournament"));
 	m_tournamentMenu->addAction(m_newTournamentAct);
 	m_tournamentMenu->addAction(m_stopTournamentAct);
+	m_tournamentMenu->addAction(m_showTournamentResultsAct);
 	m_stopTournamentAct->setEnabled(false);
 
 	m_viewMenu = menuBar()->addMenu(tr("&View"));
