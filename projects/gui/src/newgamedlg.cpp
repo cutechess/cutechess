@@ -42,10 +42,10 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	m_engines = new EngineConfigurationModel(m_engineManager, this);
 	new ModelTest(m_engines, this);
 
-	connect(ui->m_configureWhiteEngineButton, SIGNAL(clicked(bool)), this,
-		SLOT(configureWhiteEngine()));
-	connect(ui->m_configureBlackEngineButton, SIGNAL(clicked(bool)), this,
-		SLOT(configureBlackEngine()));
+	connect(ui->m_configureWhiteEngineButton, SIGNAL(clicked()),
+		this, SLOT(configureEngine()));
+	connect(ui->m_configureBlackEngineButton, SIGNAL(clicked()),
+		this, SLOT(configureEngine()));
 
 	connect(ui->m_timeControlBtn, SIGNAL(clicked()),
 		this, SLOT(showTimeControlDialog()));
@@ -63,6 +63,13 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	ui->m_whiteEngineComboBox->setValidator(engineValidator);
 	ui->m_blackEngineComboBox->setModel(m_proxyModel);
 	ui->m_blackEngineComboBox->setValidator(engineValidator);
+
+	connect(ui->m_whiteEngineComboBox, SIGNAL(activated(int)),
+		this, SLOT(onEngineChanged(int)));
+	connect(ui->m_blackEngineComboBox, SIGNAL(activated(int)),
+		this, SLOT(onEngineChanged(int)));
+	onEngineChanged(0, Chess::Side::White);
+	onEngineChanged(0, Chess::Side::Black);
 
 	ui->m_variantComboBox->addItems(Chess::BoardFactory::variants());
 	connect(ui->m_variantComboBox, SIGNAL(currentIndexChanged(QString)),
@@ -91,17 +98,9 @@ NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
 		return (ui->m_blackPlayerHumanRadio->isChecked()) ? Human : CPU;
 }
 
-int NewGameDialog::selectedEngineIndex(Chess::Side side) const
+EngineConfiguration NewGameDialog::engineConfig(Chess::Side side) const
 {
-	Q_ASSERT(!side.isNull());
-
-	int i;
-	if (side == Chess::Side::White)
-		i = ui->m_whiteEngineComboBox->currentIndex();
-	else
-		i = ui->m_blackEngineComboBox->currentIndex();
-
-	return m_proxyModel->mapToSource(m_proxyModel->index(i, 0)).row();
+	return m_engineConfig[side];
 }
 
 QString NewGameDialog::selectedVariant() const
@@ -114,36 +113,19 @@ TimeControl NewGameDialog::timeControl() const
 	return m_timeControl;
 }
 
-void NewGameDialog::configureWhiteEngine()
+void NewGameDialog::configureEngine()
 {
+	Chess::Side side;
+	if (QObject::sender() == ui->m_configureWhiteEngineButton)
+		side = Chess::Side::White;
+	else
+		side = Chess::Side::Black;
+
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
-
-	int i = selectedEngineIndex(Chess::Side::White);
-	const EngineConfiguration& config = m_engineManager->engineAt(i);
-	dlg.applyEngineInformation(config);
-
-	QSet<QString> names = m_engineManager->engineNames();
-	names.remove(config.name());
-	dlg.setReservedNames(names);
+	dlg.applyEngineInformation(m_engineConfig[side]);
 
 	if (dlg.exec() == QDialog::Accepted)
-		m_engineManager->updateEngineAt(i, dlg.engineConfiguration());
-}
-
-void NewGameDialog::configureBlackEngine()
-{
-	EngineConfigurationDialog dlg(EngineConfigurationDialog::ConfigureEngine, this);
-
-	int i = selectedEngineIndex(Chess::Side::Black);
-	const EngineConfiguration& config = m_engineManager->engineAt(i);
-	dlg.applyEngineInformation(config);
-
-	QSet<QString> names = m_engineManager->engineNames();
-	names.remove(config.name());
-	dlg.setReservedNames(names);
-
-	if (dlg.exec() == QDialog::Accepted)
-		m_engineManager->updateEngineAt(i, dlg.engineConfiguration());
+		m_engineConfig[side] = dlg.engineConfiguration();
 }
 
 void NewGameDialog::showTimeControlDialog()
@@ -169,4 +151,18 @@ void NewGameDialog::onVariantChanged(const QString& variant)
 
 	ui->m_whitePlayerCpuRadio->setDisabled(empty);
 	ui->m_blackPlayerCpuRadio->setDisabled(empty);
+}
+
+void NewGameDialog::onEngineChanged(int index, Chess::Side side)
+{
+	if (side == Chess::Side::NoSide)
+	{
+		if (QObject::sender() == ui->m_whiteEngineComboBox)
+			side = Chess::Side::White;
+		else
+			side = Chess::Side::Black;
+	}
+
+	int i = m_proxyModel->mapToSource(m_proxyModel->index(index, 0)).row();
+	m_engineConfig[side] = m_engineManager->engineAt(i);
 }

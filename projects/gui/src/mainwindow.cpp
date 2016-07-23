@@ -568,8 +568,7 @@ void MainWindow::newGame()
 
 		if (dlg.playerType(side) == NewGameDialog::CPU)
 		{
-			int index = dlg.selectedEngineIndex(side);
-			player[i] = new EngineBuilder(engineManager->engineAt(index));
+			player[i] = new EngineBuilder(dlg.engineConfig(side));
 		}
 		else
 		{

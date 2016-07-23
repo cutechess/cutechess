@@ -21,6 +21,7 @@
 #include <QDialog>
 #include <board/side.h>
 #include <timecontrol.h>
+#include <engineconfiguration.h>
 
 class EngineConfigurationModel;
 class EngineConfigurationProxyModel;
@@ -58,12 +59,8 @@ class NewGameDialog : public QDialog
 		/*! Returns the user selected player type for \a side. */
 		PlayerType playerType(Chess::Side side) const;
 
-		/*!
-		 * Returns the user selected chess engine for \a side.
-		 *
-		 * The return value is an index to the list of engines.
-		*/
-		int selectedEngineIndex(Chess::Side side) const;
+		/*! Returns the engine configuration for \a side. */
+		EngineConfiguration engineConfig(Chess::Side side) const;
 
 		/*! Returns the user-selected chess variant. */
 		QString selectedVariant() const;
@@ -72,16 +69,17 @@ class NewGameDialog : public QDialog
 		TimeControl timeControl() const;
 
 	private slots:
-		void configureWhiteEngine();
-		void configureBlackEngine();
+		void configureEngine();
 		void showTimeControlDialog();
 		void onVariantChanged(const QString& variant);
+		void onEngineChanged(int index, Chess::Side = Chess::Side::NoSide);
 
 	private:
 		EngineManager* m_engineManager;
 		EngineConfigurationModel* m_engines;
 		EngineConfigurationProxyModel* m_proxyModel;
 		TimeControl m_timeControl;
+		EngineConfiguration m_engineConfig[2];
 		Ui::NewGameDialog* ui;
 };
 
