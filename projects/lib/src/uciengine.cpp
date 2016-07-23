@@ -369,6 +369,9 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 	case InfoNodes:
 		eval->setNodeCount(tokens[0].toString().toULongLong());
 		break;
+	case InfoMultiPv:
+		eval->setPvNumber(tokens[0].toString().toInt());
+		break;
 	case InfoPv:
 		eval->setPv(sanPv(tokens));
 		break;
@@ -440,12 +443,18 @@ void UciEngine::parseInfo(const QStringRef& line)
 	if (eval.isEmpty())
 		return;
 
-	m_eval.merge(eval);
-	if (eval.depth() && eval.depth() != m_currentEval.depth())
-		m_currentEval.clear();
-	m_currentEval.merge(eval);
+	// Only the primary PV can be considered the current eval
+	if (eval.pvNumber() <= 1)
+	{
+		m_eval.merge(eval);
+		if (eval.depth() && eval.depth() != m_currentEval.depth())
+			m_currentEval.clear();
+		m_currentEval.merge(eval);
 
-	emit thinking(m_currentEval);
+		emit thinking(m_currentEval);
+	}
+	else
+		emit thinking(eval);
 }
 
 EngineOption* UciEngine::parseOption(const QStringRef& line)

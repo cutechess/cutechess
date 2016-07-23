@@ -80,6 +80,9 @@ class LIB_EXPORT MoveEvaluation
 		 */
 		QString pv() const;
 
+		/*! Returns the principal variation number (default 0). */
+		int pvNumber() const;
+
 
 		/*! Resets everything to zero. */
 		void clear();
@@ -102,6 +105,9 @@ class LIB_EXPORT MoveEvaluation
 		/*! Sets the principal variation to \a pv. */
 		void setPv(const QString& pv);
 
+		/*! Sets the principal variation number to \a number. */
+		void setPvNumber(int number);
+
 		/*! Merges non-empty parameters of \a other into this eval. */
 		void merge(const MoveEvaluation& other);
 
@@ -110,6 +116,7 @@ class LIB_EXPORT MoveEvaluation
 		int m_depth;
 		int m_score;
 		int m_time;
+		int m_pvNumber;
 		quint64 m_nodeCount;
 		QString m_pv;
 };

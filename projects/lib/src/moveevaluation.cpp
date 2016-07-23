@@ -22,6 +22,7 @@ MoveEvaluation::MoveEvaluation()
 	  m_depth(0),
 	  m_score(NULL_SCORE),
 	  m_time(0),
+	  m_pvNumber(0),
 	  m_nodeCount(0)
 {
 }
@@ -88,6 +89,11 @@ QString MoveEvaluation::pv() const
 	return m_pv;
 }
 
+int MoveEvaluation::pvNumber() const
+{
+	return m_pvNumber;
+}
+
 void MoveEvaluation::clear()
 {
 	m_isBookEval = false;
@@ -128,6 +134,11 @@ void MoveEvaluation::setPv(const QString& pv)
 	m_pv = pv;
 }
 
+void MoveEvaluation::setPvNumber(int number)
+{
+	m_pvNumber = number;
+}
+
 void MoveEvaluation::merge(const MoveEvaluation& other)
 {
 	if (other.m_depth)
@@ -136,7 +147,9 @@ void MoveEvaluation::merge(const MoveEvaluation& other)
 	if (other.m_nodeCount)
 		m_nodeCount = other.m_nodeCount;
 	if (!other.m_pv.isEmpty())
-		m_pv = other.pv();
+		m_pv = other.m_pv;
+	if (other.m_pvNumber)
+		m_pvNumber = other.m_pvNumber;
 	if (other.m_score != NULL_SCORE)
 		m_score = other.m_score;
 	if (other.m_time)
