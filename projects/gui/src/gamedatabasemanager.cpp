@@ -20,9 +20,13 @@
 #include <QFileInfo>
 #include <QDataStream>
 
+#include <pgngameentry.h>
+#include <workerpool.h>
+
 #include "pgndatabase.h"
 #include "pgnimporter.h"
-#include <pgngameentry.h>
+#include "importprogressdlg.h"
+#include "cutechessapp.h"
 
 #define GAME_DATABASE_STATE_MAGIC   0xDEADD00D
 #define GAME_DATABASE_STATE_VERSION 1
@@ -35,12 +39,6 @@ GameDatabaseManager::GameDatabaseManager(QObject* parent)
 
 GameDatabaseManager::~GameDatabaseManager()
 {
-	foreach (PgnImporter* importer, m_pgnImporters)
-	{
-		importer->disconnect();
-		importer->wait();
-	}
-
 	qDeleteAll(m_databases);
 }
 
@@ -177,15 +175,16 @@ bool GameDatabaseManager::readState(const QString& fileName)
 
 void GameDatabaseManager::importPgnFile(const QString& fileName)
 {
-	PgnImporter* pgnImporter = new PgnImporter(fileName, this);
-	m_pgnImporters << pgnImporter;
-
+	PgnImporter* pgnImporter = new PgnImporter(fileName);
 	connect(pgnImporter, SIGNAL(databaseRead(PgnDatabase*)),
 		this, SLOT(addDatabase(PgnDatabase*)));
 
-	emit importStarted(pgnImporter);
+	auto dlg = new ImportProgressDialog(pgnImporter);
+	dlg->show();
+	dlg->raise();
+	dlg->activateWindow();
 
-	pgnImporter->start();
+	CuteChessApplication::instance()->workerPool()->start(pgnImporter);
 }
 
 void GameDatabaseManager::addDatabase(PgnDatabase* database)

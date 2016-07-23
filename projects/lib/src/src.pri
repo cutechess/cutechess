@@ -43,7 +43,9 @@ HEADERS += $$PWD/chessengine.h \
     $$PWD/elo.h \
     $$PWD/knockouttournament.h \
     $$PWD/tournamentplayer.h \
-    $$PWD/tournamentpair.h
+    $$PWD/tournamentpair.h \
+    $$PWD/worker.h \
+    $$PWD/workerpool.h
 SOURCES += $$PWD/chessengine.cpp \
     $$PWD/chessgame.cpp \
     $$PWD/chessplayer.cpp \
@@ -85,7 +87,9 @@ SOURCES += $$PWD/chessengine.cpp \
     $$PWD/elo.cpp \
     $$PWD/knockouttournament.cpp \
     $$PWD/tournamentplayer.cpp \
-    $$PWD/tournamentpair.cpp
+    $$PWD/tournamentpair.cpp \
+    $$PWD/worker.cpp \
+    $$PWD/workerpool.cpp
 win32 { 
     HEADERS += $$PWD/engineprocess_win.h \
 	$$PWD/pipereader_win.h

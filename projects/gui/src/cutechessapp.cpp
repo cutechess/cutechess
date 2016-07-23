@@ -30,6 +30,7 @@
 #include <chessgame.h>
 #include <timecontrol.h>
 #include <humanbuilder.h>
+#include <workerpool.h>
 
 #include "mainwindow.h"
 #include "settingsdlg.h"
@@ -185,12 +186,7 @@ void CuteChessApplication::showGameWindow(int index)
 GameDatabaseManager* CuteChessApplication::gameDatabaseManager()
 {
 	if (m_gameDatabaseManager == nullptr)
-	{
 		m_gameDatabaseManager = new GameDatabaseManager(this);
-
-		connect(m_gameDatabaseManager, SIGNAL(importStarted(PgnImporter*)),
-			this, SLOT(showImportProgressDialog(PgnImporter*)));
-	}
 
 	return m_gameDatabaseManager;
 }
@@ -203,6 +199,14 @@ void CuteChessApplication::showSettingsDialog()
 	m_settingsDialog->show();
 	m_settingsDialog->raise();
 	m_settingsDialog->activateWindow();
+}
+
+WorkerPool* CuteChessApplication::workerPool()
+{
+	if (m_workerPool == nullptr)
+		m_workerPool = new WorkerPool(this);
+
+	return m_workerPool;
 }
 
 void CuteChessApplication::showGameDatabaseDialog()
@@ -239,13 +243,4 @@ void CuteChessApplication::onAboutToQuit()
 {
 	if (gameDatabaseManager()->isModified())
 		gameDatabaseManager()->writeState(configPath() + QLatin1String("/gamedb.bin"));
-}
-
-void CuteChessApplication::showImportProgressDialog(PgnImporter* importer)
-{
-	ImportProgressDialog* dlg = new ImportProgressDialog(importer);
-
-	dlg->show();
-	dlg->raise();
-	dlg->activateWindow();
 }

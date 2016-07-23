@@ -24,10 +24,10 @@
 #include <pgngameentry.h>
 #include "pgndatabase.h"
 
-PgnImporter::PgnImporter(const QString& fileName, QObject* parent)
-	: QThread(parent), m_fileName(fileName)
+PgnImporter::PgnImporter(const QString& fileName)
+	: Worker(QString("PGN import: %1").arg(fileName)),
+	  m_fileName(fileName)
 {
-	m_abort = false;
 }
 
 QString PgnImporter::fileName() const
@@ -35,16 +35,10 @@ QString PgnImporter::fileName() const
 	return m_fileName;
 }
 
-void PgnImporter::abort()
-{
-	m_abort = true;
-}
-
-void PgnImporter::run()
+void PgnImporter::work()
 {
 	QFile file(m_fileName);
 	QFileInfo fileInfo(m_fileName);
-	const QTime startTime = QTime::currentTime();
 	static const int updateInterval = 1024;
 	int numReadGames = 0;
 
@@ -66,7 +60,7 @@ void PgnImporter::run()
 	forever
 	{
 		PgnGameEntry* game = new PgnGameEntry;
-		if (m_abort || !game->read(pgnStream))
+		if (cancelRequested() || !game->read(pgnStream))
 		{
 			delete game;
 			break;
@@ -76,7 +70,7 @@ void PgnImporter::run()
 		numReadGames++;
 
 		if (numReadGames % updateInterval == 0)
-			emit databaseReadStatus(startTime, numReadGames,
+			emit databaseReadStatus(startTime(), numReadGames,
 			    pgnStream.pos());
 	}
 	PgnDatabase* db = new PgnDatabase(m_fileName);

@@ -106,15 +106,8 @@ class GameDatabaseManager : public QObject
 		 * \sa databases()
 		 */
 		void databasesReset();
-		/*!
-		 * Emitted when database import is started using \a importer.
-		 *
-		 * \sa importPgnFile
-		 */
-		void importStarted(PgnImporter* importer);
 
 	private:
-		QList<PgnImporter*> m_pgnImporters;
 		QList<PgnDatabase*> m_databases;
 		bool m_modified;
 

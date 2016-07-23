@@ -50,7 +50,6 @@ class ImportProgressDialog : public QDialog
 	private:
 		QString humaniseTime(int sec);
 		qint64 m_totalFileSize;
-		PgnImporter* m_pgnImporter;
 		int m_lastUpdateSecs;
 		bool m_importError;
 		Ui::ImportProgressDialog* ui;

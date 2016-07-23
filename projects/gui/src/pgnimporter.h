@@ -18,9 +18,7 @@
 #ifndef PGN_IMPORTER_H
 #define PGN_IMPORTER_H
 
-#include <QThread>
-#include <QString>
-#include <QTime>
+#include <worker.h>
 
 class PgnDatabase;
 
@@ -29,7 +27,7 @@ class PgnDatabase;
  *
  * \sa PgnDatabase
  */
-class PgnImporter : public QThread
+class PgnImporter : public Worker
 {
 	Q_OBJECT
 
@@ -42,19 +40,15 @@ class PgnImporter : public QThread
 		};
 
 		/*!
-		 * Constructs a PgnImporter with \a parent and \a fileName as
+		 * Constructs a PgnImporter with \a fileName as
 		 * database to be imported.
 		 */
-		PgnImporter(const QString& fileName, QObject* parent = nullptr);
+		PgnImporter(const QString& fileName);
 		/*! Returns the file name of the database to be imported. */
 		QString fileName() const;
 
-		// Inherited from QThread
-		virtual void run();
-
-	public slots:
-		/*! Aborts the import. */
-		void abort();
+	protected:
+		void work() override;
 
 	signals:
 		/*! Emitted when \a database is read. */
@@ -66,16 +60,9 @@ class PgnImporter : public QThread
 		 * and \a numReadBytes bytes have been read.
 		 */
 		void databaseReadStatus(const QTime& started, int numReadGames, qint64 numReadBytes);
-		/*!
-		 * Emitted when an error is encountered during the import.
-		 *
-		 * \sa Error
-		 */
-		void error(int error);
 
 	private:
 		QString m_fileName;
-		bool m_abort;
 
 };
 

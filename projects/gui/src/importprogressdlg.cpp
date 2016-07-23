@@ -24,7 +24,6 @@
 ImportProgressDialog::ImportProgressDialog(PgnImporter* pgnImporter,
 					   QWidget* parent)
 	: QDialog(parent),
-	  m_pgnImporter(pgnImporter),
 	  m_lastUpdateSecs(0),
 	  m_importError(false),
 	  ui(new Ui::ImportProgressDialog)
@@ -33,20 +32,20 @@ ImportProgressDialog::ImportProgressDialog(PgnImporter* pgnImporter,
 
 	setAttribute(Qt::WA_DeleteOnClose, true);
 
-	QFileInfo info(m_pgnImporter->fileName());
+	QFileInfo info(pgnImporter->fileName());
 
 	ui->m_fileNameLabel->setText(
 	    QString(tr("Importing \"%1\"").arg(info.fileName())));
 
 	m_totalFileSize = info.size();
 
-	connect(ui->m_buttonBox, SIGNAL(rejected()), m_pgnImporter,
-		SLOT(abort()));
-	connect(m_pgnImporter, SIGNAL(finished()), this,
+	connect(ui->m_buttonBox, SIGNAL(rejected()), pgnImporter,
+		SLOT(cancel()));
+	connect(pgnImporter, SIGNAL(finished()), this,
 		SLOT(onImporterFinished()));
-	connect(m_pgnImporter, SIGNAL(error(int)), this,
+	connect(pgnImporter, SIGNAL(error(int)), this,
 		SLOT(onImportError(int)));
-	connect(m_pgnImporter, SIGNAL(databaseReadStatus(const QTime&, int, qint64)),
+	connect(pgnImporter, SIGNAL(databaseReadStatus(const QTime&, int, qint64)),
 		this, SLOT(updateImportStatus(const QTime&, int, qint64)));
 }
 
