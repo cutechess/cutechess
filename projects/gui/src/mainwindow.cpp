@@ -605,6 +605,7 @@ void MainWindow::newTournament()
 	t->start();
 
 	connect(m_stopTournamentAct, SIGNAL(triggered()), t, SLOT(stop()));
+	m_newTournamentAct->setEnabled(false);
 	m_stopTournamentAct->setEnabled(true);
 }
 
@@ -617,6 +618,7 @@ void MainWindow::onTournamentFinished()
 	QString name = tournament->name();
 
 	tournament->deleteLater();
+	m_newTournamentAct->setEnabled(true);
 	m_stopTournamentAct->setEnabled(false);
 
 	if (m_closing)
