@@ -75,6 +75,7 @@ class MainWindow : public QMainWindow
 		void editMoveComment(int ply, const QString& comment);
 		void copyFen();
 		void showAboutDialog();
+		void closeAllGames();
 
 	private:
 		struct TabData

@@ -630,7 +630,10 @@ void MainWindow::onTournamentFinished()
 	m_stopTournamentAct->setEnabled(false);
 
 	if (m_closing)
+	{
+		closeAllGames();
 		return;
+	}
 
 	if (!error.isEmpty())
 	{
@@ -808,6 +811,15 @@ void MainWindow::onGameManagerFinished()
 	close();
 }
 
+void MainWindow::closeAllGames()
+{
+	for (int i = m_tabs.size() - 1; i >= 0; i--)
+		onTabCloseRequested(i);
+
+	if (m_tabs.isEmpty())
+		CuteChessApplication::instance()->gameManager()->finish();
+}
+
 void MainWindow::closeEvent(QCloseEvent* event)
 {
 	if (m_readyToClose)
@@ -822,12 +834,8 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 		if (m_stopTournamentAct->isEnabled())
 			m_stopTournamentAct->trigger();
-
-		for (int i = m_tabs.size() - 1; i >= 0; i--)
-			onTabCloseRequested(i);
-
-		if (m_tabs.isEmpty())
-			CuteChessApplication::instance()->gameManager()->finish();
+		else
+			closeAllGames();
 	}
 
 	event->ignore();
