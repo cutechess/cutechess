@@ -79,6 +79,7 @@ class EngineConfigurationDialog : public QDialog
 	
 	private slots:
 		void browseCommand();
+		void setExecutable(const QString& file);
 		void browseWorkingDir();
 		void detectEngineOptions();
 		void restoreDefaults();

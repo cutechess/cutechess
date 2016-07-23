@@ -180,11 +180,21 @@ void EngineConfigurationDialog::browseCommand()
 			defaultDir = QSettings().value("ui/default_engine_location").toString();
 	}
 
-	QString fileName = QFileDialog::getOpenFileName(
-		this, tr("Select Engine Executable"), defaultDir, filter);
-	if (fileName.isEmpty())
-		return;
+	auto dlg = new QFileDialog(
+		this, tr("Select Engine Executable"),
+		defaultDir, filter);
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->setAcceptMode(QFileDialog::AcceptOpen);
 
+
+	connect(dlg, &QFileDialog::fileSelected,
+		this, &EngineConfigurationDialog::setExecutable);
+	dlg->open();
+}
+
+void EngineConfigurationDialog::setExecutable(const QString& file)
+{
+	QString fileName = file;
 	const QFileInfo info(fileName);
 	QString prefix;
 
@@ -222,13 +232,19 @@ void EngineConfigurationDialog::browseCommand()
 
 void EngineConfigurationDialog::browseWorkingDir()
 {
-	const QString directory = QFileDialog::getExistingDirectory(this,
-		tr("Select Engine Working Directory"), ui->m_workingDirEdit->text());
+	auto dlg = new QFileDialog(
+		this, tr("Select Engine Working Directory"),
+		ui->m_workingDirEdit->text());
+	dlg->setFileMode(QFileDialog::Directory);
+	dlg->setOption(QFileDialog::ShowDirsOnly);
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->setAcceptMode(QFileDialog::AcceptOpen);
 
-	if (directory.isEmpty())
-		return;
-
-	ui->m_workingDirEdit->setText(QDir::toNativeSeparators(directory));
+	connect(dlg, &QFileDialog::fileSelected, [=](const QString& dir)
+	{
+		ui->m_workingDirEdit->setText(QDir::toNativeSeparators(dir));
+	});
+	dlg->open();
 }
 
 void EngineConfigurationDialog::detectEngineOptions()
