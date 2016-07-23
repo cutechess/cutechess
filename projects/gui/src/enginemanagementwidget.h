@@ -59,6 +59,7 @@ class EngineManagementWidget : public QWidget
 		void configureEngine();
 		void configureEngine(const QModelIndex& index);
 		void removeEngine();
+		void browseDefaultLocation();
 
 	private:
 		EngineManager* m_engineManager;

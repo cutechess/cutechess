@@ -23,6 +23,7 @@
 #include <QDir>
 #include <QTimer>
 #include <QMessageBox>
+#include <QSettings>
 
 #include <enginefactory.h>
 #include <engineoption.h>
@@ -168,12 +169,15 @@ void EngineConfigurationDialog::browseCommand()
 	else
 	{
 		const QString relFilePath = oldInfo.filePath();
-		const QDir dir(ui->m_workingDirEdit->text());
+		const QString wdir = ui->m_workingDirEdit->text();
+		const QDir dir(wdir);
 
 		if (!relFilePath.isEmpty() && dir.exists(relFilePath))
 			defaultDir = dir.absoluteFilePath(relFilePath);
-		else if (dir.exists())
+		else if (!wdir.isEmpty() && dir.exists())
 			defaultDir = dir.absolutePath();
+		else
+			defaultDir = QSettings().value("ui/default_engine_location").toString();
 	}
 
 	QString fileName = QFileDialog::getOpenFileName(

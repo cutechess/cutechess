@@ -19,6 +19,8 @@
 #include "ui_enginemanagementwidget.h"
 
 #include <QSortFilterProxyModel>
+#include <QFileDialog>
+#include <QSettings>
 #include <functional>
 #include <algorithm>
 
@@ -66,6 +68,12 @@ EngineManagementWidget::EngineManagementWidget(QWidget* parent)
 	
 	// Remove button
 	connect(ui->m_removeBtn, SIGNAL(clicked(bool)), this, SLOT(removeEngine()));
+
+	// Default location for new engines
+	QString dir = QSettings().value("ui/default_engine_location").toString();
+	ui->m_defaultLocationEdit->setText(dir);
+	connect(ui->m_browseDefaultLocationBtn, SIGNAL(clicked()),
+		this, SLOT(browseDefaultLocation()));
 }
 
 EngineManagementWidget::~EngineManagementWidget()
@@ -155,4 +163,16 @@ void EngineManagementWidget::removeEngine()
 			m_engineManager->removeEngineAt(index.row());
 		m_hasChanged = true;
 	}
+}
+
+void EngineManagementWidget::browseDefaultLocation()
+{
+	QString dir = QFileDialog::getExistingDirectory(
+		this, tr("Select Directory"),
+		ui->m_defaultLocationEdit->text());
+	if (dir.isEmpty())
+		return;
+
+	ui->m_defaultLocationEdit->setText(dir);
+	QSettings().setValue("ui/default_engine_location", dir);
 }
