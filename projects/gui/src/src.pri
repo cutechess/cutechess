@@ -3,7 +3,6 @@ DEPENDPATH += $$PWD
 HEADERS += $$PWD/chessclock.h \
     $$PWD/engineconfigurationmodel.h \
     $$PWD/engineconfigurationdlg.h \
-    $$PWD/enginemanagementdlg.h \
     $$PWD/mainwindow.h \
     $$PWD/plaintextlog.h \
     $$PWD/newgamedlg.h \
@@ -38,12 +37,12 @@ HEADERS += $$PWD/chessclock.h \
     $$PWD/gametabbar.h \
     $$PWD/evalhistory.h \
     $$PWD/evalwidget.h \
-    $$PWD/settingsdlg.h
+    $$PWD/settingsdlg.h \
+    $$PWD/enginemanagementwidget.h
 SOURCES += $$PWD/main.cpp \
     $$PWD/chessclock.cpp \
     $$PWD/engineconfigurationmodel.cpp \
     $$PWD/engineconfigurationdlg.cpp \
-    $$PWD/enginemanagementdlg.cpp \
     $$PWD/mainwindow.cpp \
     $$PWD/plaintextlog.cpp \
     $$PWD/newgamedlg.cpp \
@@ -78,4 +77,5 @@ SOURCES += $$PWD/main.cpp \
     $$PWD/gametabbar.cpp \
     $$PWD/evalhistory.cpp \
     $$PWD/evalwidget.cpp \
-    $$PWD/settingsdlg.cpp
+    $$PWD/settingsdlg.cpp \
+    $$PWD/enginemanagementwidget.cpp

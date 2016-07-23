@@ -15,10 +15,10 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ENGINEMANAGEMENTDIALOG_H
-#define ENGINEMANAGEMENTDIALOG_H
+#ifndef ENGINEMANAGEMENTWIDGET_H
+#define ENGINEMANAGEMENTWIDGET_H
 
-#include <QDialog>
+#include <QWidget>
 #include <engineconfiguration.h>
 
 class EngineManager;
@@ -26,27 +26,31 @@ class QSortFilterProxyModel;
 class QModelIndex;
 
 namespace Ui {
-	class EngineManagementDialog;
+	class EngineManagementWidget;
 }
 
 /*!
- * \brief The EngineManagementDialog class provides a dialog for chess engine
+ * \brief The EngineManagementWidget class provides a dialog for chess engine
  * management.
 */
-class EngineManagementDialog : public QDialog
+class EngineManagementWidget : public QWidget
 {
 	Q_OBJECT
 
 	public:
-		/*!
-		 * Creates a new engine management window with \a engineConfigurations
-		 * and \a parent as parent.
-		*/
-		EngineManagementDialog(QWidget* parent = nullptr);
-		/*! Destroys the dialog. */
-		virtual ~EngineManagementDialog();
+		/*! Creates a new engine management widget. */
+		EngineManagementWidget(QWidget* parent = nullptr);
+		/*! Destroys the widget. */
+		virtual ~EngineManagementWidget();
 
-		QList<EngineConfiguration> engines() const;
+		/*!
+		 * Returns true if configuration has changed;
+		 * otherwise returns false.
+		 */
+		bool hasConfigChanged() const;
+
+		/*! Saves the engine configuration to engines.json. */
+		void saveConfig();
 	
 	private slots:
 		void updateUi();
@@ -58,8 +62,9 @@ class EngineManagementDialog : public QDialog
 
 	private:
 		EngineManager* m_engineManager;
+		bool m_hasChanged;
 		QSortFilterProxyModel* m_filteredModel;
-		Ui::EngineManagementDialog* ui;
+		Ui::EngineManagementWidget* ui;
 };
 
-#endif // ENGINEMANAGEMENTDIALOG_H
+#endif // ENGINEMANAGEMENTWIDGET_H

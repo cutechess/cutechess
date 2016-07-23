@@ -20,6 +20,10 @@ class SettingsDialog : public QDialog
 		/*! Destroys the dialog. */
 		virtual ~SettingsDialog();
 
+	protected:
+		// Inherited from QDialog
+		virtual void closeEvent(QCloseEvent* event);
+
 	private:
 		void readSettings();
 

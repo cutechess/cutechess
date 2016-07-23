@@ -32,6 +32,14 @@ SettingsDialog::~SettingsDialog()
 	delete ui;
 }
 
+void SettingsDialog::closeEvent(QCloseEvent* event)
+{
+	if (ui->m_engineManagementWidget->hasConfigChanged())
+		ui->m_engineManagementWidget->saveConfig();
+
+	QDialog::closeEvent(event);
+}
+
 void SettingsDialog::readSettings()
 {
 	QSettings s;

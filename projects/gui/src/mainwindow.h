@@ -28,7 +28,6 @@ class QCloseEvent;
 class QTabBar;
 class GameViewer;
 class MoveList;
-class EngineConfigurationModel;
 class ChessClock;
 class PlainTextLog;
 class PgnGame;
@@ -61,7 +60,6 @@ class MainWindow : public QMainWindow
 	private slots:
 		void newGame();
 		void newTournament();
-		void manageEngines();
 		void onWindowMenuAboutToShow();
 		void showGameWindow();
 		void updateWindowTitle();
@@ -109,7 +107,6 @@ class MainWindow : public QMainWindow
 		QMenu* m_gameMenu;
 		QMenu* m_tournamentMenu;
 		QMenu* m_viewMenu;
-		QMenu* m_enginesMenu;
 		QMenu* m_windowMenu;
 		QMenu* m_helpMenu;
 
@@ -128,7 +125,6 @@ class MainWindow : public QMainWindow
 		QAction* m_copyFenAct;
 		QAction* m_newTournamentAct;
 		QAction* m_stopTournamentAct;
-		QAction* m_manageEnginesAct;
 		QAction* m_showGameDatabaseWindowAct;
 		QAction* m_showGameWallAct;
 		QAction* m_showPreviousTabAct;

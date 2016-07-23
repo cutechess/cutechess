@@ -40,6 +40,11 @@
       <attribute name="title">
        <string>Engines</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="EngineManagementWidget" name="m_engineManagementWidget" native="true"/>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="m_tournamentsTab">
       <attribute name="title">
@@ -75,6 +80,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>EngineManagementWidget</class>
+   <extends>QWidget</extends>
+   <header>src/enginemanagementwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

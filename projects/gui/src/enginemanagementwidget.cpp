@@ -15,8 +15,8 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "enginemanagementdlg.h"
-#include "ui_enginemanagementdlg.h"
+#include "enginemanagementwidget.h"
+#include "ui_enginemanagementwidget.h"
 
 #include <QSortFilterProxyModel>
 #include <functional>
@@ -29,18 +29,14 @@
 #include "engineconfigurationdlg.h"
 
 
-EngineManagementDialog::EngineManagementDialog(QWidget* parent)
-	: QDialog(parent),
+EngineManagementWidget::EngineManagementWidget(QWidget* parent)
+	: QWidget(parent),
+	  m_engineManager(CuteChessApplication::instance()->engineManager()),
+	  m_hasChanged(false),
 	  m_filteredModel(new QSortFilterProxyModel(this)),
-	  ui(new Ui::EngineManagementDialog)
+	  ui(new Ui::EngineManagementWidget)
 {
 	ui->setupUi(this);
-
-	// Setup a copy of the Engine Manager to manage adding, deleting and
-	// configuring engines _within_ this dialog.
-	m_engineManager = new EngineManager(this);
-	m_engineManager->setEngines(
-		CuteChessApplication::instance()->engineManager()->engines());
 
 	// Set up a filtered model
 	m_filteredModel->setSourceModel(new EngineConfigurationModel(
@@ -72,12 +68,23 @@ EngineManagementDialog::EngineManagementDialog(QWidget* parent)
 	connect(ui->m_removeBtn, SIGNAL(clicked(bool)), this, SLOT(removeEngine()));
 }
 
-EngineManagementDialog::~EngineManagementDialog()
+EngineManagementWidget::~EngineManagementWidget()
 {
 	delete ui;
 }
 
-void EngineManagementDialog::updateUi()
+bool EngineManagementWidget::hasConfigChanged() const
+{
+	return m_hasChanged;
+}
+
+void EngineManagementWidget::saveConfig()
+{
+	QString confPath = CuteChessApplication::instance()->configPath();
+	m_engineManager->saveEngines(confPath + QLatin1String("/engines.json"));
+}
+
+void EngineManagementWidget::updateUi()
 {
 	// Enable buttons depending on item selections
 	ui->m_configureBtn->setEnabled(
@@ -87,25 +94,28 @@ void EngineManagementDialog::updateUi()
 		ui->m_enginesList->selectionModel()->hasSelection());
 }
 
-void EngineManagementDialog::updateSearch(const QString& terms)
+void EngineManagementWidget::updateSearch(const QString& terms)
 {
 	m_filteredModel->setFilterWildcard(terms);
 }
 
-void EngineManagementDialog::addEngine()
+void EngineManagementWidget::addEngine()
 {
 	EngineConfigurationDialog dlg(EngineConfigurationDialog::AddEngine, this);
 	dlg.setReservedNames(m_engineManager->engineNames());
 	if (dlg.exec() == QDialog::Accepted)
+	{
 		m_engineManager->addEngine(dlg.engineConfiguration());
+		m_hasChanged = true;
+	}
 }
 
-void EngineManagementDialog::configureEngine()
+void EngineManagementWidget::configureEngine()
 {
 	configureEngine(ui->m_enginesList->currentIndex());
 }
 
-void EngineManagementDialog::configureEngine(const QModelIndex& index)
+void EngineManagementWidget::configureEngine(const QModelIndex& index)
 {
 	// Map the index from the filtered model to the original model
 	int row = m_filteredModel->mapToSource(index).row();
@@ -119,10 +129,13 @@ void EngineManagementDialog::configureEngine(const QModelIndex& index)
 	dlg.setReservedNames(names);
 
 	if (dlg.exec() == QDialog::Accepted)
+	{
 		m_engineManager->updateEngineAt(row, dlg.engineConfiguration());
+		m_hasChanged = true;
+	}
 }
 
-void EngineManagementDialog::removeEngine()
+void EngineManagementWidget::removeEngine()
 {
 	const QItemSelection selection =
 		m_filteredModel->mapSelectionToSource(ui->m_enginesList->selectionModel()->selection());
@@ -136,11 +149,10 @@ void EngineManagementDialog::removeEngine()
 		return b < a;
 	});
 
-	foreach (const QModelIndex& index, selected)
-		m_engineManager->removeEngineAt(index.row());
-}
-
-QList<EngineConfiguration> EngineManagementDialog::engines() const
-{
-	return m_engineManager->engines();
+	if (!selected.isEmpty())
+	{
+		foreach (const QModelIndex& index, selected)
+			m_engineManager->removeEngineAt(index.row());
+		m_hasChanged = true;
+	}
 }

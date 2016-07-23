@@ -48,7 +48,6 @@
 #include "newgamedlg.h"
 #include "newtournamentdialog.h"
 #include "chessclock.h"
-#include "enginemanagementdlg.h"
 #include "plaintextlog.h"
 #include "gamedatabasemanager.h"
 #include "pgntagsmodel.h"
@@ -167,8 +166,6 @@ void MainWindow::createActions()
 	m_newTournamentAct = new QAction(tr("New..."), this);
 	m_stopTournamentAct = new QAction(tr("Stop"), this);
 
-	m_manageEnginesAct = new QAction(tr("Manage..."), this);
-
 	m_showSettingsAct = new QAction(tr("Settings"), this);
 
 	m_showGameDatabaseWindowAct = new QAction(tr("&Game Database"), this);
@@ -202,9 +199,6 @@ void MainWindow::createActions()
 
 	connect(m_newTournamentAct, SIGNAL(triggered()), this, SLOT(newTournament()));
 
-	connect(m_manageEnginesAct, SIGNAL(triggered()),
-		this, SLOT(manageEngines()));
-
 	connect(m_showSettingsAct, SIGNAL(triggered()),
 		CuteChessApplication::instance(), SLOT(showSettingsDialog()));
 
@@ -235,9 +229,6 @@ void MainWindow::createMenus()
 	m_stopTournamentAct->setEnabled(false);
 
 	m_viewMenu = menuBar()->addMenu(tr("&View"));
-
-	m_enginesMenu = menuBar()->addMenu(tr("En&gines"));
-	m_enginesMenu->addAction(m_manageEnginesAct);
 
 	m_windowMenu = menuBar()->addMenu(tr("&Window"));
 	addDefaultWindowMenu();
@@ -643,18 +634,6 @@ void MainWindow::onTournamentFinished()
 					 tr("Tournament finished"),
 					 tr("Tournament \"%1\" is finished")
 					 .arg(name));
-	}
-}
-
-void MainWindow::manageEngines()
-{
-	EngineManagementDialog dlg(this);
-
-	if (dlg.exec() == QDialog::Accepted)
-	{
-		CuteChessApplication::instance()->engineManager()->setEngines(dlg.engines());
-		CuteChessApplication::instance()->engineManager()->saveEngines(
-			CuteChessApplication::instance()->configPath() + QLatin1String("/engines.json"));
 	}
 }
 
