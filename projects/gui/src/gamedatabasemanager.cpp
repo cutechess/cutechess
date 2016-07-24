@@ -19,9 +19,9 @@
 
 #include <QFileInfo>
 #include <QDataStream>
+#include <QThreadPool>
 
 #include <pgngameentry.h>
-#include <workerpool.h>
 
 #include "pgndatabase.h"
 #include "pgnimporter.h"
@@ -184,7 +184,7 @@ void GameDatabaseManager::importPgnFile(const QString& fileName)
 	dlg->raise();
 	dlg->activateWindow();
 
-	CuteChessApplication::instance()->workerPool()->start(pgnImporter);
+	QThreadPool::globalInstance()->start(pgnImporter);
 }
 
 void GameDatabaseManager::addDatabase(PgnDatabase* database)

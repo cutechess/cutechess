@@ -30,7 +30,6 @@
 #include <chessgame.h>
 #include <timecontrol.h>
 #include <humanbuilder.h>
-#include <workerpool.h>
 
 #include "mainwindow.h"
 #include "settingsdlg.h"
@@ -51,8 +50,7 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	  m_gameDatabaseManager(nullptr),
 	  m_gameDatabaseDialog(nullptr),
 	  m_gameWall(nullptr),
-	  m_initialWindowCreated(false),
-	  m_workerPool(nullptr)
+	  m_initialWindowCreated(false)
 {
 	Mersenne::initialize(QTime(0,0,0).msecsTo(QTime::currentTime()));
 
@@ -216,14 +214,6 @@ TournamentResultsDialog*CuteChessApplication::tournamentResultsDialog()
 		m_tournamentResultsDialog = new TournamentResultsDialog();
 
 	return m_tournamentResultsDialog;
-}
-
-WorkerPool* CuteChessApplication::workerPool()
-{
-	if (m_workerPool == nullptr)
-		m_workerPool = new WorkerPool(this);
-
-	return m_workerPool;
 }
 
 void CuteChessApplication::showGameDatabaseDialog()

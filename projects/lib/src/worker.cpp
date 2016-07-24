@@ -18,7 +18,7 @@
 #include "worker.h"
 
 Worker::Worker(const QString& title)
-	: QObject(nullptr), m_cancel(false), m_title(title)
+	: QObject(nullptr), QRunnable(), m_cancel(false), m_title(title)
 {
 }
 
@@ -46,7 +46,7 @@ QString Worker::title() const
 	return m_title;
 }
 
-void Worker::start()
+void Worker::run()
 {
 	m_startTime = QTime::currentTime();
 	emit started();

@@ -19,6 +19,7 @@
 #define WORKER_H
 
 #include <QObject>
+#include <QRunnable>
 #include <QTime>
 #include <QString>
 
@@ -29,7 +30,7 @@
  * threads of execution. The Worker class itself has no knowledge of
  * threads. Instead, WorkerPool is used to run the task in another thread.
  */
-class Worker : public QObject
+class Worker : public QObject, public QRunnable
 {
 	Q_OBJECT
 
@@ -40,16 +41,15 @@ class Worker : public QObject
 		 * identified.
 		 */
 		explicit Worker(const QString& title);
-		/*! Destructs the Worker object.
-		 *
-		 * \note WorkerPool should be responsible for destructing the Worker and
-		 * freeing its resources.
-		 */
+		/*! Destructs the Worker object. */
 		virtual ~Worker();
 		/*! Returns the time when the worker was started. */
 		QTime startTime() const;
 		/*! Returns the title of the worker. */
 		QString title() const;
+
+		// Inherited from QRunnable
+		void run() override;
 
 	signals:
 		/*! Emitted after the worker has been started but before any tasks are performed. */
@@ -74,7 +74,6 @@ class Worker : public QObject
 		void error(int error);
 
 	public slots:
-		void start();
 		/*! Request cancellation of the worker.
 		 *
 		 * After this slot has been called the worker tries to cancel its tasks
@@ -88,7 +87,7 @@ class Worker : public QObject
 		 *
 		 * Periodically check for cancelRequested() to see if the work should be cancelled.
 		 *
-		 * Emit the progressChanged and statusChanged to reflect the current status of the work.
+		 * Optionally emit the progressChanged and statusChanged to reflect the current status of the work.
 		 *
 		 * If any error occurs emit the error and statusChanged signals and return from the function.
 		 */

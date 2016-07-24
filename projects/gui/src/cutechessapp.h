@@ -30,7 +30,6 @@ class GameDatabaseManager;
 class GameDatabaseDialog;
 class PgnImporter;
 class ChessGame;
-class WorkerPool;
 class GameWall;
 
 class CuteChessApplication : public QApplication
@@ -47,7 +46,6 @@ class CuteChessApplication : public QApplication
 		GameDatabaseManager* gameDatabaseManager();
 		QList<MainWindow*> gameWindows();
 		void showGameWindow(int index);
-		WorkerPool* workerPool();
 		TournamentResultsDialog* tournamentResultsDialog();
 
 		static CuteChessApplication* instance();
@@ -72,7 +70,6 @@ class CuteChessApplication : public QApplication
 		GameDatabaseDialog* m_gameDatabaseDialog;
 		GameWall* m_gameWall;
 		bool m_initialWindowCreated;
-		WorkerPool* m_workerPool;
 
 	private slots:
 		void onLastWindowClosed();
