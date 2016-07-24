@@ -127,7 +127,7 @@ int PgnGameEntryModel::rowCount(const QModelIndex& parent) const
 	if (parent.isValid())
 		return 0;
 
-	return m_entryCount;
+	return qMin(m_entryCount, m_filtered.resultCount());
 }
 
 int PgnGameEntryModel::columnCount(const QModelIndex& parent) const
@@ -141,6 +141,9 @@ int PgnGameEntryModel::columnCount(const QModelIndex& parent) const
 QVariant PgnGameEntryModel::data(const QModelIndex& index, int role) const
 {
 	if (!index.isValid())
+		return QVariant();
+
+	if (index.row() >= m_filtered.resultCount() || index.row() < 0)
 		return QVariant();
 
 	if (role == Qt::DisplayRole || role == Qt::EditRole)
@@ -194,9 +197,7 @@ void PgnGameEntryModel::fetchMore(const QModelIndex& parent)
 
 	int remainder = m_filtered.resultCount() - m_entryCount;
 	int entriesToFetch = qMin(1024, remainder);
-
-	Q_ASSERT(entriesToFetch >= 0);
-	if (entriesToFetch == 0)
+	if (entriesToFetch <= 0)
 		return;
 
 	beginInsertRows(QModelIndex(), m_entryCount, m_entryCount + entriesToFetch - 1);
