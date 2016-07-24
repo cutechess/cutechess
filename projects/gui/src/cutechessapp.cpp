@@ -50,6 +50,7 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	  m_gameManager(nullptr),
 	  m_gameDatabaseManager(nullptr),
 	  m_gameDatabaseDialog(nullptr),
+	  m_gameWall(nullptr),
 	  m_initialWindowCreated(false)
 {
 	Mersenne::initialize(QTime(0,0,0).msecsTo(QTime::currentTime()));
@@ -90,6 +91,7 @@ CuteChessApplication::~CuteChessApplication()
 	delete m_gameDatabaseDialog;
 	delete m_settingsDialog;
 	delete m_tournamentResultsDialog;
+	delete m_gameWall;
 }
 
 CuteChessApplication* CuteChessApplication::instance()
@@ -199,17 +201,12 @@ void CuteChessApplication::showSettingsDialog()
 	if (m_settingsDialog == nullptr)
 		m_settingsDialog = new SettingsDialog();
 
-	m_settingsDialog->show();
-	m_settingsDialog->raise();
-	m_settingsDialog->activateWindow();
+	showDialog(m_settingsDialog);
 }
 
 void CuteChessApplication::showTournamentResultsDialog()
 {
-	auto dlg = tournamentResultsDialog();
-	dlg->show();
-	dlg->raise();
-	dlg->activateWindow();
+	showDialog(tournamentResultsDialog());
 }
 
 TournamentResultsDialog*CuteChessApplication::tournamentResultsDialog()
@@ -233,15 +230,15 @@ void CuteChessApplication::showGameDatabaseDialog()
 	if (m_gameDatabaseDialog == nullptr)
 		m_gameDatabaseDialog = new GameDatabaseDialog(gameDatabaseManager());
 
-	m_gameDatabaseDialog->show();
-	m_gameDatabaseDialog->raise();
-	m_gameDatabaseDialog->activateWindow();
+	showDialog(m_gameDatabaseDialog);
 }
 
 void CuteChessApplication::showGameWall()
 {
-	GameWall* gameWall = new GameWall(gameManager());
-	gameWall->show();
+	if (m_gameWall == nullptr)
+		m_gameWall = new GameWall(gameManager());
+
+	showDialog(m_gameWall);
 }
 
 void CuteChessApplication::onLastWindowClosed()
@@ -262,4 +259,17 @@ void CuteChessApplication::onAboutToQuit()
 {
 	if (gameDatabaseManager()->isModified())
 		gameDatabaseManager()->writeState(configPath() + QLatin1String("/gamedb.bin"));
+}
+
+void CuteChessApplication::showDialog(QDialog* dlg)
+{
+	Q_ASSERT(dlg != nullptr);
+
+	if (dlg->isMinimized())
+		dlg->showNormal();
+	else
+		dlg->show();
+
+	dlg->raise();
+	dlg->activateWindow();
 }

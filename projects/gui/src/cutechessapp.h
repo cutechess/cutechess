@@ -31,6 +31,7 @@ class GameDatabaseDialog;
 class PgnImporter;
 class ChessGame;
 class WorkerPool;
+class GameWall;
 
 class CuteChessApplication : public QApplication
 {
@@ -61,6 +62,7 @@ class CuteChessApplication : public QApplication
 		void showGameWall();
 
 	private:
+		void showDialog(QDialog* dlg);
 		SettingsDialog* m_settingsDialog;
 		TournamentResultsDialog* m_tournamentResultsDialog;
 		EngineManager* m_engineManager;
@@ -68,6 +70,7 @@ class CuteChessApplication : public QApplication
 		GameDatabaseManager* m_gameDatabaseManager;
 		QList<QPointer<MainWindow> > m_gameWindows;
 		GameDatabaseDialog* m_gameDatabaseDialog;
+		GameWall* m_gameWall;
 		bool m_initialWindowCreated;
 		WorkerPool* m_workerPool;
 

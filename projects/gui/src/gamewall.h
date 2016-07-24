@@ -18,14 +18,15 @@
 #ifndef GAMEWALL_H
 #define GAMEWALL_H
 
-#include <QWidget>
+#include <QDialog>
 #include <QMap>
 #include <QList>
+
 class QTimer;
 class ChessGame;
 class GameManager;
 
-class GameWall : public QWidget
+class GameWall : public QDialog
 {
 	Q_OBJECT
 
