@@ -81,11 +81,8 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
 
 	// Initialize engine configs for both players
-	if (m_engineManager->engineCount() > 0)
-	{
-		onEngineChanged(0, Chess::Side::White);
-		onEngineChanged(0, Chess::Side::Black);
-	}
+	onEngineChanged(0, Chess::Side::White);
+	onEngineChanged(0, Chess::Side::Black);
 }
 
 NewGameDialog::~NewGameDialog()
@@ -168,6 +165,10 @@ void NewGameDialog::onEngineChanged(int index, Chess::Side side)
 			side = Chess::Side::Black;
 	}
 
-	int i = m_proxyModel->mapToSource(m_proxyModel->index(index, 0)).row();
-	m_engineConfig[side] = m_engineManager->engineAt(i);
+	auto modelIndex = m_proxyModel->index(index, 0);
+	if (modelIndex.isValid())
+	{
+		int i = m_proxyModel->mapToSource(modelIndex).row();
+		m_engineConfig[side] = m_engineManager->engineAt(i);
+	}
 }
