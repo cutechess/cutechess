@@ -44,7 +44,9 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 {
 	ui->setupUi(this);
 
+	#ifdef QT_DEBUG
 	new ModelTest(m_engineOptionModel, this);
+	#endif
 
 	if (mode == EngineConfigurationDialog::AddEngine)
 		setWindowTitle(tr("Add Engine"));

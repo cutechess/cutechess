@@ -49,7 +49,9 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	ui->setupUi(this);
 
 	m_srcEnginesModel = new EngineConfigurationModel(engineManager, this);
+	#ifdef QT_DEBUG
 	new ModelTest(m_srcEnginesModel, this);
+	#endif
 
 	m_proxyModel = new EngineConfigurationProxyModel(this);
 	m_proxyModel->setSourceModel(m_srcEnginesModel);

@@ -91,7 +91,9 @@ MainWindow::MainWindow(ChessGame* game)
 
 	m_moveList = new MoveList(this);
 	m_tagsModel = new PgnTagsModel(this);
+	#ifdef QT_DEBUG
 	new ModelTest(m_tagsModel, this);
+	#endif
 
 	m_evalHistory = new EvalHistory(this);
 	m_evalWidgets[0] = new EvalWidget(this);
