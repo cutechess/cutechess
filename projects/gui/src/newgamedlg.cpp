@@ -59,15 +59,15 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	StringValidator* engineValidator = new StringValidator(this);
 	engineValidator->setModel(m_proxyModel);
 
+	connect(ui->m_whiteEngineComboBox, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onEngineChanged(int)));
+	connect(ui->m_blackEngineComboBox, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onEngineChanged(int)));
+
 	ui->m_whiteEngineComboBox->setModel(m_proxyModel);
 	ui->m_whiteEngineComboBox->setValidator(engineValidator);
 	ui->m_blackEngineComboBox->setModel(m_proxyModel);
 	ui->m_blackEngineComboBox->setValidator(engineValidator);
-
-	connect(ui->m_whiteEngineComboBox, SIGNAL(activated(int)),
-		this, SLOT(onEngineChanged(int)));
-	connect(ui->m_blackEngineComboBox, SIGNAL(activated(int)),
-		this, SLOT(onEngineChanged(int)));
 
 	ui->m_variantComboBox->addItems(Chess::BoardFactory::variants());
 	connect(ui->m_variantComboBox, SIGNAL(currentIndexChanged(QString)),
@@ -79,10 +79,6 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	m_timeControl.setMovesPerTc(40);
 	m_timeControl.setTimePerTc(300000);
 	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
-
-	// Initialize engine configs for both players
-	onEngineChanged(0, Chess::Side::White);
-	onEngineChanged(0, Chess::Side::Black);
 }
 
 NewGameDialog::~NewGameDialog()
