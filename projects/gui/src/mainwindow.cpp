@@ -30,6 +30,7 @@
 #include <QInputDialog>
 #include <QClipboard>
 #include <QSettings>
+#include <QWindow>
 
 #include <board/boardfactory.h>
 #include <chessgame.h>
@@ -175,6 +176,9 @@ void MainWindow::createActions()
 
 	m_showGameWallAct = new QAction(tr("Game Wall"), this);
 
+	m_minimizeAct = new QAction(tr("Minimize"), this);
+	m_minimizeAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
+
 	m_showPreviousTabAct = new QAction(tr("Show Previous Tab"), this);
 	#ifdef Q_OS_MAC
 	m_showPreviousTabAct->setShortcut(QKeySequence(Qt::MetaModifier + Qt::ShiftModifier + Qt::Key_Tab));
@@ -201,6 +205,15 @@ void MainWindow::createActions()
 	connect(m_quitGameAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
 	connect(m_newTournamentAct, SIGNAL(triggered()), this, SLOT(newTournament()));
+
+	connect(m_minimizeAct, &QAction::triggered, this, [=]()
+	{
+		auto focusWindow = CuteChessApplication::instance()->focusWindow();
+		if (focusWindow != nullptr)
+		{
+			focusWindow->showMinimized();
+		}
+	});
 
 	connect(m_showSettingsAct, SIGNAL(triggered()),
 		CuteChessApplication::instance(), SLOT(showSettingsDialog()));
@@ -859,6 +872,8 @@ bool MainWindow::askToSave()
 
 void MainWindow::addDefaultWindowMenu()
 {
+	m_windowMenu->addAction(m_minimizeAct);
+	m_windowMenu->addSeparator();
 	m_windowMenu->addAction(m_showSettingsAct);
 	m_windowMenu->addAction(m_showGameWallAct);
 	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
