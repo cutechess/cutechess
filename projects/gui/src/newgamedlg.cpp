@@ -68,8 +68,6 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 		this, SLOT(onEngineChanged(int)));
 	connect(ui->m_blackEngineComboBox, SIGNAL(activated(int)),
 		this, SLOT(onEngineChanged(int)));
-	onEngineChanged(0, Chess::Side::White);
-	onEngineChanged(0, Chess::Side::Black);
 
 	ui->m_variantComboBox->addItems(Chess::BoardFactory::variants());
 	connect(ui->m_variantComboBox, SIGNAL(currentIndexChanged(QString)),
@@ -81,6 +79,13 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	m_timeControl.setMovesPerTc(40);
 	m_timeControl.setTimePerTc(300000);
 	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
+
+	// Initialize engine configs for both players
+	if (m_engineManager->engineCount() > 0)
+	{
+		onEngineChanged(0, Chess::Side::White);
+		onEngineChanged(0, Chess::Side::Black);
+	}
 }
 
 NewGameDialog::~NewGameDialog()
