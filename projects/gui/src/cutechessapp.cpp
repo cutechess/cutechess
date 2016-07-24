@@ -51,7 +51,8 @@ CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
 	  m_gameDatabaseManager(nullptr),
 	  m_gameDatabaseDialog(nullptr),
 	  m_gameWall(nullptr),
-	  m_initialWindowCreated(false)
+	  m_initialWindowCreated(false),
+	  m_workerPool(nullptr)
 {
 	Mersenne::initialize(QTime(0,0,0).msecsTo(QTime::currentTime()));
 
