@@ -26,7 +26,7 @@
 /*!
  * An abstraction of a long-running task.
  */
-class Worker : public QObject, public QRunnable
+class LIB_EXPORT Worker : public QObject, public QRunnable
 {
 	Q_OBJECT
 
