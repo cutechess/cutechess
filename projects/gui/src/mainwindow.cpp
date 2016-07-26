@@ -29,7 +29,6 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QClipboard>
-#include <QSettings>
 #include <QWindow>
 
 #include <board/boardfactory.h>

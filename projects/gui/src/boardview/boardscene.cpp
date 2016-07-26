@@ -192,7 +192,7 @@ void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 		return QGraphicsScene::mouseMoveEvent(event);
 
 	if (m_targets.contains(piece)
-	&&  QSettings().value("ui/highlight_legal_moves").toBool())
+	&&  QSettings().value("ui/highlight_legal_moves", true).toBool())
 	{
 		m_highlightPiece = piece;
 		m_squares->setHighlights(m_targets.values(piece));

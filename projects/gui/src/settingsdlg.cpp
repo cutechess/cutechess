@@ -62,10 +62,11 @@ void SettingsDialog::readSettings()
 	QSettings s;
 
 	s.beginGroup("ui");
-	ui->m_highlightLegalMovesCheck->setChecked(s.value("highlight_legal_moves").toBool());
+	ui->m_highlightLegalMovesCheck->setChecked(
+		s.value("highlight_legal_moves", true).toBool());
 	s.endGroup();
 
 	s.beginGroup("tournament");
-	ui->m_concurrencySpin->setValue(s.value("concurrency").toInt());
+	ui->m_concurrencySpin->setValue(s.value("concurrency", 1).toInt());
 	s.endGroup();
 }

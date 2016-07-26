@@ -18,7 +18,6 @@
 #include "gamewall.h"
 
 #include <QTimer>
-#include <QSettings>
 
 #include <chessplayer.h>
 #include <chessgame.h>

@@ -16,7 +16,6 @@
 */
 
 #include "enginemanager.h"
-#include <QSettings>
 #include <QFile>
 #include <QTextStream>
 #include <jsonparser.h>
