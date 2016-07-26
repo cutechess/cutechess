@@ -33,6 +33,7 @@ GameWall::GameWall(GameManager* manager, QWidget *parent)
 	: QDialog(parent),
 	  m_timer(new QTimer(this))
 {
+	setAttribute(Qt::WA_DeleteOnClose, true);
 	setWindowTitle(tr("Game Wall"));
 	setLayout(new TileLayout());
 
