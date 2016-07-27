@@ -60,7 +60,7 @@ class CuteChessApplication : public QApplication
 		void showGameWall();
 
 	private:
-		void showDialog(QDialog* dlg);
+		void showDialog(QWidget* dlg);
 		SettingsDialog* m_settingsDialog;
 		TournamentResultsDialog* m_tournamentResultsDialog;
 		EngineManager* m_engineManager;

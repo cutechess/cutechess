@@ -26,7 +26,7 @@ class QTimer;
 class ChessGame;
 class GameManager;
 
-class GameWall : public QDialog
+class GameWall : public QWidget
 {
 	Q_OBJECT
 

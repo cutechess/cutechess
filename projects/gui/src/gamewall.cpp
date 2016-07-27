@@ -30,11 +30,11 @@
 #include "cutechessapp.h"
 
 GameWall::GameWall(GameManager* manager, QWidget *parent)
-	: QDialog(parent),
+	: QWidget(parent),
 	  m_timer(new QTimer(this))
 {
-	setAttribute(Qt::WA_DeleteOnClose, true);
-	setWindowTitle(tr("Game Wall"));
+	Q_ASSERT(manager != nullptr);
+
 	setLayout(new TileLayout());
 
 	foreach (ChessGame* game, manager->activeGames())

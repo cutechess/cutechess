@@ -228,7 +228,13 @@ void CuteChessApplication::showGameDatabaseDialog()
 void CuteChessApplication::showGameWall()
 {
 	if (m_gameWall == nullptr)
+	{
 		m_gameWall = new GameWall(gameManager());
+		auto flags = m_gameWall->windowFlags();
+		m_gameWall->setWindowFlags(flags | Qt::Window);
+		m_gameWall->setAttribute(Qt::WA_DeleteOnClose, true);
+		m_gameWall->setWindowTitle(tr("Game Wall"));
+	}
 
 	showDialog(m_gameWall);
 }
@@ -253,7 +259,7 @@ void CuteChessApplication::onAboutToQuit()
 		gameDatabaseManager()->writeState(configPath() + QLatin1String("/gamedb.bin"));
 }
 
-void CuteChessApplication::showDialog(QDialog* dlg)
+void CuteChessApplication::showDialog(QWidget* dlg)
 {
 	Q_ASSERT(dlg != nullptr);
 
