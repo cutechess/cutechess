@@ -57,9 +57,9 @@ class BoardScene : public QGraphicsScene
 
 	public:
 		/*! Creates a new BoardScene object. */
-		BoardScene(QObject* parent = nullptr);
+		explicit BoardScene(QObject* parent = nullptr);
 		/*! Destroys the scene and all its items. */
-		~BoardScene();
+		virtual ~BoardScene();
 
 		/*! Returns the current internal board object. */
 		Chess::Board* board() const;
@@ -70,6 +70,9 @@ class BoardScene : public QGraphicsScene
 		 * best to give the scene its own copy of a board.
 		 */
 		void setBoard(Chess::Board* board);
+
+		/*! Returns the GraphicsBoard object. */
+		GraphicsBoard* graphicsBoard() const;
 
 	public slots:
 		/*!

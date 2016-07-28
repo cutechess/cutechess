@@ -21,6 +21,7 @@
 #include <board/square.h>
 #include "graphicspiece.h"
 
+namespace {
 
 class TargetHighlights : public QGraphicsObject
 {
@@ -44,6 +45,8 @@ class TargetHighlights : public QGraphicsObject
 		}
 };
 
+} // anonymous namespace
+
 GraphicsBoard::GraphicsBoard(int files,
 			     int ranks,
 			     qreal squareSize,
@@ -55,7 +58,8 @@ GraphicsBoard::GraphicsBoard(int files,
 	  m_lightColor(QColor("#ffce9e")),
 	  m_darkColor(QColor("#d18b47")),
 	  m_squares(files * ranks),
-	  m_highlightAnim(nullptr)
+	  m_highlightAnim(nullptr),
+	  m_flipped(false)
 {
 	Q_ASSERT(files > 0);
 	Q_ASSERT(ranks > 0);
@@ -109,6 +113,8 @@ Chess::Square GraphicsBoard::squareAt(const QPointF& point) const
 	int col = (point.x() + m_rect.width() / 2) / m_squareSize;
 	int row = (point.y() + m_rect.height() / 2) / m_squareSize;
 
+	if (m_flipped)
+		return Chess::Square(m_files - col - 1, row);
 	return Chess::Square(col, m_ranks - row - 1);
 }
 
@@ -117,11 +123,19 @@ QPointF GraphicsBoard::squarePos(const Chess::Square& square) const
 	if (!square.isValid())
 		return QPointF();
 
-	qreal left = m_rect.left() + m_squareSize / 2;
-	qreal top = m_rect.top() + m_squareSize / 2;
+	qreal x = m_rect.left() + m_squareSize / 2;
+	qreal y = m_rect.top() + m_squareSize / 2;
 
-	qreal x = left + m_squareSize * square.file();
-	qreal y = top + m_squareSize * (m_ranks - square.rank() - 1);
+	if (m_flipped)
+	{
+		x += m_squareSize * (m_files - square.file() - 1);
+		y += m_squareSize * square.rank();
+	}
+	else
+	{
+		x += m_squareSize * square.file();
+		y += m_squareSize * (m_ranks - square.rank() - 1);
+	}
 
 	return QPointF(x, y);
 }
@@ -245,4 +259,29 @@ void GraphicsBoard::setHighlights(const QList<Chess::Square>& squares)
 	m_highlightAnim->setDuration(500);
 	m_highlightAnim->setEasingCurve(QEasingCurve::InOutQuad);
 	m_highlightAnim->start(QAbstractAnimation::KeepWhenStopped);
+}
+
+bool GraphicsBoard::isFlipped() const
+{
+	return m_flipped;
+}
+
+void GraphicsBoard::setFlipped(bool flipped)
+{
+	if (flipped == m_flipped)
+		return;
+
+	clearHighlights();
+	m_flipped = flipped;
+	for (int y = 0; y < m_ranks; y++)
+	{
+		for (int x = 0; x < m_files; x++)
+		{
+			auto sq = Chess::Square(x, y);
+			auto pc = pieceAt(sq);
+			if (!pc)
+				continue;
+			pc->setPos(squarePos(sq));
+		}
+	}
 }

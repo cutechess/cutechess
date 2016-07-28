@@ -47,10 +47,10 @@ class GraphicsBoard : public QGraphicsItem
 		 * ranks/rows, and the squares' width and height will be
 		 * \a squareSize.
 		 */
-		GraphicsBoard(int files,
-			      int ranks,
-			      qreal squareSize,
-			      QGraphicsItem* parent = nullptr);
+		explicit GraphicsBoard(int files,
+				       int ranks,
+				       qreal squareSize,
+				       QGraphicsItem* parent = nullptr);
 
 		// Inherited from QGraphicsItem
 		virtual int type() const;
@@ -122,6 +122,15 @@ class GraphicsBoard : public QGraphicsItem
 		 */
 		void setHighlights(const QList<Chess::Square>& squares);
 
+		/*!
+		 * Returns true if the board is flipped;
+		 * otherwise returns false.
+		 */
+		bool isFlipped() const;
+
+		/*! Sets board flipping to \a flipped. */
+		void setFlipped(bool flipped);
+
 	private:
 		int squareIndex(const Chess::Square& square) const;
 
@@ -133,6 +142,7 @@ class GraphicsBoard : public QGraphicsItem
 		QColor m_darkColor;
 		QVector<GraphicsPiece*> m_squares;
 		QPropertyAnimation* m_highlightAnim;
+		bool m_flipped;
 };
 
 #endif // GRAPHICSBOARD_H

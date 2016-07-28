@@ -158,6 +158,8 @@ void MainWindow::createActions()
 	copyFenSequence->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 	m_gameViewer->addAction(copyFenSequence);
 
+	m_flipBoardAct = new QAction(tr("Flip Board"), this);
+
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	m_quitGameAct->setMenuRole(QAction::QuitRole);
 	#ifdef Q_OS_WIN32
@@ -200,6 +202,8 @@ void MainWindow::createActions()
 	connect(m_newGameAct, SIGNAL(triggered()), this, SLOT(newGame()));
 	connect(m_copyFenAct, SIGNAL(triggered()), this, SLOT(copyFen()));
 	connect(copyFenSequence, SIGNAL(triggered()), this, SLOT(copyFen()));
+	connect(m_flipBoardAct, SIGNAL(triggered()),
+		m_gameViewer, SLOT(flipBoard()));
 	connect(m_closeGameAct, SIGNAL(triggered()), this, SLOT(closeCurrentGame()));
 	connect(m_saveGameAct, SIGNAL(triggered()), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
@@ -240,6 +244,7 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_saveGameAct);
 	m_gameMenu->addAction(m_saveGameAsAct);
 	m_gameMenu->addAction(m_copyFenAct);
+	m_gameMenu->addAction(m_flipBoardAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 

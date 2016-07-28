@@ -76,6 +76,11 @@ void BoardScene::setBoard(Chess::Board* board)
 	m_board = board;
 }
 
+GraphicsBoard* BoardScene::graphicsBoard() const
+{
+	return m_squares;
+}
+
 void BoardScene::populate()
 {
 	Q_ASSERT(m_board != nullptr);
