@@ -23,7 +23,6 @@
 #include <pgngame.h>
 #include <chessgame.h>
 #include <chessplayer.h>
-#include "boardview/graphicsboard.h"
 #include "boardview/boardscene.h"
 #include "boardview/boardview.h"
 
@@ -304,12 +303,6 @@ void GameViewer::viewMove(int index)
 		while (index + 1 > m_moveIndex)
 			viewNextMove();
 	}
-}
-
-void GameViewer::flipBoard()
-{
-	auto b = m_boardScene->graphicsBoard();
-	b->setFlipped(!b->isFlipped());
 }
 
 void GameViewer::onFenChanged(const QString& fen)

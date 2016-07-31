@@ -273,15 +273,4 @@ void GraphicsBoard::setFlipped(bool flipped)
 
 	clearHighlights();
 	m_flipped = flipped;
-	for (int y = 0; y < m_ranks; y++)
-	{
-		for (int x = 0; x < m_files; x++)
-		{
-			auto sq = Chess::Square(x, y);
-			auto pc = pieceAt(sq);
-			if (!pc)
-				continue;
-			pc->setPos(squarePos(sq));
-		}
-	}
 }

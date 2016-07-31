@@ -203,7 +203,7 @@ void MainWindow::createActions()
 	connect(m_copyFenAct, SIGNAL(triggered()), this, SLOT(copyFen()));
 	connect(copyFenSequence, SIGNAL(triggered()), this, SLOT(copyFen()));
 	connect(m_flipBoardAct, SIGNAL(triggered()),
-		m_gameViewer, SLOT(flipBoard()));
+		m_gameViewer->boardScene(), SLOT(flip()));
 	connect(m_closeGameAct, SIGNAL(triggered()), this, SLOT(closeCurrentGame()));
 	connect(m_saveGameAct, SIGNAL(triggered()), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));

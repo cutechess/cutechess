@@ -76,11 +76,6 @@ void BoardScene::setBoard(Chess::Board* board)
 	m_board = board;
 }
 
-GraphicsBoard* BoardScene::graphicsBoard() const
-{
-	return m_squares;
-}
-
 void BoardScene::populate()
 {
 	Q_ASSERT(m_board != nullptr);
@@ -148,6 +143,7 @@ void BoardScene::makeMove(const Chess::Move& move)
 	stopAnimation();
 	delete m_moveArrows;
 	m_moveArrows = new QGraphicsItemGroup(m_squares);
+	m_moveArrows->setZValue(1);
 
 	Q_ASSERT(!move.isNull());
 	Q_ASSERT(m_board->isLegalMove(move));
@@ -188,6 +184,35 @@ void BoardScene::cancelUserMove()
 
 	m_highlightPiece = nullptr;
 	m_squares->clearHighlights();
+}
+
+void BoardScene::flip()
+{
+	stopAnimation();
+	m_squares->setFlipped(!m_squares->isFlipped());
+
+	QParallelAnimationGroup* group = new QParallelAnimationGroup;
+	m_anim = group;
+
+	for (int y = 0; y < m_board->height(); y++)
+	{
+		for (int x = 0; x < m_board->width(); x++)
+		{
+			auto sq = Chess::Square(x, y);
+			auto pc = m_squares->pieceAt(sq);
+			if (!pc)
+				continue;
+			group->addAnimation(pieceAnimation(pc, squarePos(sq)));
+		}
+	}
+
+	if (m_moveArrows)
+	{
+		qreal angle = 180 - m_moveArrows->rotation();
+		m_moveArrows->setRotation(angle);
+	}
+
+	group->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)

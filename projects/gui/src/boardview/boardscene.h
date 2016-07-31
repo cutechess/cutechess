@@ -71,9 +71,6 @@ class BoardScene : public QGraphicsScene
 		 */
 		void setBoard(Chess::Board* board);
 
-		/*! Returns the GraphicsBoard object. */
-		GraphicsBoard* graphicsBoard() const;
-
 	public slots:
 		/*!
 		 * Clears the scene, creates a new board, and populates
@@ -94,6 +91,8 @@ class BoardScene : public QGraphicsScene
 		void undoMove();
 		/*! Cancels any move that the user is attempting to make. */
 		void cancelUserMove();
+		/*! Flips the board, with animation. */
+		void flip();
 
 	signals:
 		/*!

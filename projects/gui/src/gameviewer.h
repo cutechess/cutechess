@@ -49,7 +49,6 @@ class GameViewer : public QWidget
 
 	public slots:
 		void viewMove(int index);
-		void flipBoard();
 
 	signals:
 		void moveSelected(int moveNumber);
