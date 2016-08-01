@@ -8,5 +8,6 @@ FORMS += $$PWD/engineconfigdlg.ui \
 	 $$PWD/timecontroldlg.ui \
 	 $$PWD/newtournamentdlg.ui \
 	 $$PWD/engineselectiondlg.ui \
-    $$PWD/settingsdlg.ui \
-    $$PWD/enginemanagementwidget.ui
+	 $$PWD/settingsdlg.ui \
+	 $$PWD/enginemanagementwidget.ui \
+	 $$PWD/gamesettingswidget.ui

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GameSettingsWidget</class>
+ <widget class="QWidget" name="GameSettingsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>243</width>
+    <height>114</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout_2">
+     <item row="1" column="1">
+      <widget class="QComboBox" name="m_variantCombo"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="m_variantLabel">
+       <property name="text">
+        <string>Variant:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_variantCombo</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="m_timeControlBtn">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="m_timeControlLabel">
+       <property name="text">
+        <string>Time Control:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_timeControlBtn</cstring>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="m_ponderingCheck">
+     <property name="text">
+      <string>Thinking on opponent's time</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
