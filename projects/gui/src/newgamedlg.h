@@ -70,7 +70,6 @@ class NewGameDialog : public QDialog
 
 	private slots:
 		void configureEngine();
-		void showTimeControlDialog();
 		void onVariantChanged(const QString& variant);
 		void onEngineChanged(int index, Chess::Side = Chess::Side::NoSide);
 
@@ -78,7 +77,6 @@ class NewGameDialog : public QDialog
 		EngineManager* m_engineManager;
 		EngineConfigurationModel* m_engines;
 		EngineConfigurationProxyModel* m_proxyModel;
-		TimeControl m_timeControl;
 		EngineConfiguration m_engineConfig[2];
 		Ui::NewGameDialog* ui;
 };

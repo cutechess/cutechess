@@ -49,9 +49,6 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	connect(ui->m_configureBlackEngineButton, SIGNAL(clicked()),
 		this, SLOT(configureEngine()));
 
-	connect(ui->m_timeControlBtn, SIGNAL(clicked()),
-		this, SLOT(showTimeControlDialog()));
-
 	m_proxyModel = new EngineConfigurationProxyModel(this);
 	m_proxyModel->setSourceModel(m_engines);
 	m_proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
@@ -71,16 +68,9 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	ui->m_blackEngineComboBox->setModel(m_proxyModel);
 	ui->m_blackEngineComboBox->setValidator(engineValidator);
 
-	ui->m_variantComboBox->addItems(Chess::BoardFactory::variants());
-	connect(ui->m_variantComboBox, SIGNAL(currentIndexChanged(QString)),
+	connect(ui->m_gameSettings, SIGNAL(variantChanged(QString)),
 		this, SLOT(onVariantChanged(QString)));
-
-	int index = ui->m_variantComboBox->findText("standard");
-	ui->m_variantComboBox->setCurrentIndex(index);
-
-	m_timeControl.setMovesPerTc(40);
-	m_timeControl.setTimePerTc(300000);
-	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
+	onVariantChanged(ui->m_gameSettings->chessVariant());
 }
 
 NewGameDialog::~NewGameDialog()
@@ -105,12 +95,12 @@ EngineConfiguration NewGameDialog::engineConfig(Chess::Side side) const
 
 QString NewGameDialog::selectedVariant() const
 {
-	return ui->m_variantComboBox->currentText();
+	return ui->m_gameSettings->chessVariant();
 }
 
 TimeControl NewGameDialog::timeControl() const
 {
-	return m_timeControl;
+	return ui->m_gameSettings->timeControl();
 }
 
 void NewGameDialog::configureEngine()
@@ -126,16 +116,6 @@ void NewGameDialog::configureEngine()
 
 	if (dlg.exec() == QDialog::Accepted)
 		m_engineConfig[side] = dlg.engineConfiguration();
-}
-
-void NewGameDialog::showTimeControlDialog()
-{
-	TimeControlDialog dlg(m_timeControl);
-	if (dlg.exec() == QDialog::Accepted)
-	{
-		m_timeControl = dlg.timeControl();
-		ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
-	}
 }
 
 void NewGameDialog::onVariantChanged(const QString& variant)

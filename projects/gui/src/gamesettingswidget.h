@@ -35,6 +35,7 @@ class GameSettingsWidget : public QWidget
 
 		QString chessVariant() const;
 		TimeControl timeControl() const;
+		bool pondering() const;
 
 	signals:
 		void variantChanged(const QString& variant);
