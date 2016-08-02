@@ -152,7 +152,7 @@ void KnockoutTournament::addScore(int player, int score)
 QList<int> KnockoutTournament::lastRoundWinners() const
 {
 	QList<int> winners;
-	for (const TournamentPair* pair : m_rounds.last())
+	foreach (const TournamentPair* pair, m_rounds.last())
 		winners << pair->leader();
 
 	return winners;

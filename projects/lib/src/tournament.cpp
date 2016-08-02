@@ -263,7 +263,7 @@ TournamentPair* Tournament::pair(int player1, int player2)
 {
 	Q_ASSERT(player1 || player2);
 
-	QPair<int,int> pairs[] = {
+	const QPair<int,int> pairs[] = {
 		qMakePair(player1, player2),
 		qMakePair(player2, player1)
 	};
