@@ -23,6 +23,11 @@ HumanBuilder::HumanBuilder(const QString& name)
 {
 }
 
+bool HumanBuilder::isHuman() const
+{
+	return true;
+}
+
 ChessPlayer* HumanBuilder::create(QObject *receiver,
 				  const char *method,
 				  QObject *parent,

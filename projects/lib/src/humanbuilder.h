@@ -35,6 +35,7 @@ class LIB_EXPORT HumanBuilder : public PlayerBuilder
 		HumanBuilder(const QString& playerName = QString());
 
 		// Inherited from PlayerBuilder
+		virtual bool isHuman() const;
 		virtual ChessPlayer* create(QObject* receiver,
 					    const char* method,
 					    QObject* parent,

@@ -37,8 +37,6 @@
 #include <enginemanager.h>
 #include <gamemanager.h>
 #include <playerbuilder.h>
-#include <humanbuilder.h>
-#include <enginebuilder.h>
 #include <chessplayer.h>
 #include <tournament.h>
 
@@ -575,27 +573,12 @@ void MainWindow::newGame()
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
-	PlayerBuilder* player[2] = { nullptr, nullptr };
-	ChessGame* game = new ChessGame(Chess::BoardFactory::create(dlg.selectedVariant()),
-		new PgnGame());
+	auto game = dlg.createGame();
+	auto whiteBuilder = dlg.createPlayerBuilder(Chess::Side::White);
+	auto blackBuilder = dlg.createPlayerBuilder(Chess::Side::Black);
 
-	game->setTimeControl(dlg.timeControl());
-
-	for (int i = 0; i < 2; i++)
-	{
-		Chess::Side side = Chess::Side::Type(i);
-
-		if (dlg.playerType(side) == NewGameDialog::CPU)
-		{
-			player[i] = new EngineBuilder(dlg.engineConfig(side));
-		}
-		else
-		{
-			player[i] = new HumanBuilder(CuteChessApplication::userName());
-			if (side == Chess::Side::White)
-				game->pause();
-		}
-	}
+	if (whiteBuilder->isHuman())
+		game->pause();
 
 	// Start the game in a new tab
 	connect(game, SIGNAL(started(ChessGame*)),
@@ -603,7 +586,7 @@ void MainWindow::newGame()
 	connect(game, SIGNAL(startFailed(ChessGame*)),
 		this, SLOT(onGameStartFailed(ChessGame*)));
 	CuteChessApplication::instance()->gameManager()->newGame(game,
-		player[0], player[1]);
+		whiteBuilder, blackBuilder);
 }
 
 void MainWindow::onGameStartFailed(ChessGame* game)

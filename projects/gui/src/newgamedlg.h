@@ -20,9 +20,10 @@
 
 #include <QDialog>
 #include <board/side.h>
-#include <timecontrol.h>
 #include <engineconfiguration.h>
 
+class ChessGame;
+class PlayerBuilder;
 class EngineConfigurationModel;
 class EngineConfigurationProxyModel;
 class EngineManager;
@@ -33,7 +34,7 @@ namespace Ui {
 
 /*!
  * \brief The NewGameDialog class provides a dialog for creating a new game.
-*/
+ */
 class NewGameDialog : public QDialog
 {
 	Q_OBJECT
@@ -49,24 +50,18 @@ class NewGameDialog : public QDialog
 		};
 
 		/*!
-		 * Creates a new game dialog with \a engineConfigurations as the
-		 * list of chess engines and given \a parent.
-		*/
-		NewGameDialog(EngineManager* engineManager, QWidget* parent = nullptr);
+		 * Creates a "New Game" dialog with \a engineManager as the
+		 * source of engine configurations.
+		 */
+		NewGameDialog(EngineManager* engineManager,
+			      QWidget* parent = nullptr);
 		/*! Destroys the dialog. */
 		virtual ~NewGameDialog();
 
-		/*! Returns the user selected player type for \a side. */
-		PlayerType playerType(Chess::Side side) const;
-
-		/*! Returns the engine configuration for \a side. */
-		EngineConfiguration engineConfig(Chess::Side side) const;
-
-		/*! Returns the user-selected chess variant. */
-		QString selectedVariant() const;
-
-		/*! Returns the chosen time control. */
-		TimeControl timeControl() const;
+		/*! Creates and returns the ChessGame object. */
+		ChessGame* createGame() const;
+		/*! Creates and returns the PlayerBuilder for \a side. */
+		PlayerBuilder* createPlayerBuilder(Chess::Side side) const;
 
 	private slots:
 		void configureEngine();
@@ -74,6 +69,8 @@ class NewGameDialog : public QDialog
 		void onEngineChanged(int index, Chess::Side = Chess::Side::NoSide);
 
 	private:
+		PlayerType playerType(Chess::Side side) const;
+
 		EngineManager* m_engineManager;
 		EngineConfigurationModel* m_engines;
 		EngineConfigurationProxyModel* m_proxyModel;

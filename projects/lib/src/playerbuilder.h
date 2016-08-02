@@ -42,6 +42,11 @@ class LIB_EXPORT PlayerBuilder
 		/*! Destroys the player builder. */
 		virtual ~PlayerBuilder();
 
+		/*!
+		 * Returns true if the builder is for a human player;
+		 * otherwise returns false.
+		 */
+		virtual bool isHuman() const = 0;
 		/*! Returns the player's name. */
 		QString name() const;
 		/*! Sets the player's name to \a name. */

@@ -27,6 +27,11 @@ EngineBuilder::EngineBuilder(const EngineConfiguration& config)
 {
 }
 
+bool EngineBuilder::isHuman() const
+{
+	return false;
+}
+
 ChessPlayer* EngineBuilder::create(QObject* receiver,
 				   const char* method,
 				   QObject* parent,

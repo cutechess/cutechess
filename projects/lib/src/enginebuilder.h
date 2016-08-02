@@ -33,6 +33,7 @@ class LIB_EXPORT EngineBuilder : public PlayerBuilder
 		EngineBuilder(const EngineConfiguration& config);
 
 		// Inherited from PlayerBuilder
+		virtual bool isHuman() const;
 		virtual ChessPlayer* create(QObject* receiver,
 					    const char* method,
 					    QObject* parent,

@@ -21,8 +21,12 @@
 #include <QAbstractItemView>
 
 #include <board/boardfactory.h>
+#include <chessgame.h>
+#include <enginebuilder.h>
+#include <humanbuilder.h>
 #include <enginemanager.h>
 
+#include "cutechessapp.h"
 #include "engineconfigurationmodel.h"
 #include "engineconfigproxymodel.h"
 #include "engineconfigurationdlg.h"
@@ -78,6 +82,23 @@ NewGameDialog::~NewGameDialog()
 	delete ui;
 }
 
+ChessGame* NewGameDialog::createGame() const
+{
+	const QString variant = ui->m_gameSettings->chessVariant();
+	auto board = Chess::BoardFactory::create(variant);
+	auto game = new ChessGame(board, new PgnGame());
+
+	game->setTimeControl(ui->m_gameSettings->timeControl());
+	return game;
+}
+
+PlayerBuilder* NewGameDialog::createPlayerBuilder(Chess::Side side) const
+{
+	if (playerType(side) == CPU)
+		return new EngineBuilder(m_engineConfig[side]);
+	return new HumanBuilder(CuteChessApplication::userName());
+}
+
 NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
 {
 	Q_ASSERT(!side.isNull());
@@ -86,21 +107,6 @@ NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const
 		return (ui->m_whitePlayerHumanRadio->isChecked()) ? Human : CPU;
 	else
 		return (ui->m_blackPlayerHumanRadio->isChecked()) ? Human : CPU;
-}
-
-EngineConfiguration NewGameDialog::engineConfig(Chess::Side side) const
-{
-	return m_engineConfig[side];
-}
-
-QString NewGameDialog::selectedVariant() const
-{
-	return ui->m_gameSettings->chessVariant();
-}
-
-TimeControl NewGameDialog::timeControl() const
-{
-	return ui->m_gameSettings->timeControl();
 }
 
 void NewGameDialog::configureEngine()
