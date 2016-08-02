@@ -60,12 +60,9 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	m_proxyModel->sort(0);
 	m_proxyModel->setDynamicSortFilter(true);
 
-	ui->m_variantCombo->addItems(Chess::BoardFactory::variants());
-	connect(ui->m_variantCombo, SIGNAL(currentIndexChanged(QString)),
+	connect(ui->m_gameSettings, SIGNAL(variantChanged(QString)),
 		this, SLOT(onVariantChanged(QString)));
-
-	int index = ui->m_variantCombo->findText("standard");
-	ui->m_variantCombo->setCurrentIndex(index);
+	onVariantChanged(ui->m_gameSettings->chessVariant());
 
 	connect(ui->m_addEngineBtn, SIGNAL(clicked()),
 		this, SLOT(addEngine()));
@@ -83,12 +80,6 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	{
 		moveEngine(1);
 	});
-
-	connect(ui->m_timeControlBtn, SIGNAL(clicked()),
-		this, SLOT(changeTimeControl()));
-	m_timeControl.setMovesPerTc(40);
-	m_timeControl.setTimePerTc(300000);
-	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
 
 	connect(ui->m_browsePgnoutBtn, &QPushButton::clicked, this, [=]()
 	{
@@ -216,16 +207,6 @@ void NewTournamentDialog::onPlayerSelectionChanged(const QItemSelection& selecte
 	ui->m_moveEngineDownBtn->setEnabled(enable && i < m_addedEnginesManager->engineCount() - 1);
 }
 
-void NewTournamentDialog::changeTimeControl()
-{
-	TimeControlDialog dlg(m_timeControl);
-	if (dlg.exec() == QDialog::Accepted)
-	{
-		m_timeControl = dlg.timeControl();
-		ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
-	}
-}
-
 Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) const
 {
 	Q_ASSERT(gameManager != nullptr);
@@ -243,7 +224,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setPgnCleanupEnabled(false);
 	t->setName(ui->m_nameEdit->text());
 	t->setSite(ui->m_siteEdit->text());
-	t->setVariant(ui->m_variantCombo->currentText());
+	t->setVariant(ui->m_gameSettings->chessVariant());
 	t->setPgnOutput(ui->m_pgnoutEdit->text());
 	t->setGamesPerEncounter(ui->m_gamesPerEncounterSpin->value());
 	if (t->canSetRoundMultiplier())
@@ -279,7 +260,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	foreach (const EngineConfiguration& config, m_addedEnginesManager->engines())
 	{
 		t->addPlayer(new EngineBuilder(config),
-			     m_timeControl,
+			     ui->m_gameSettings->timeControl(),
 			     nullptr,
 			     256);
 	}

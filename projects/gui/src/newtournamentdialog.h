@@ -51,7 +51,6 @@ class NewTournamentDialog : public QDialog
 		void onVariantChanged(const QString& variant);
 		void onPlayerSelectionChanged(const QItemSelection& selected,
 					      const QItemSelection& deselected);
-		void changeTimeControl();
 	
 	private:
 		void moveEngine(int offset);
@@ -62,7 +61,6 @@ class NewTournamentDialog : public QDialog
 		EngineConfigurationModel* m_addedEnginesModel;
 		EngineConfigurationProxyModel* m_proxyModel;
 		Ui::NewTournamentDialog* ui;
-		TimeControl m_timeControl;
 };
 
 #endif // NEWTOURNAMENTDIALOG_H
