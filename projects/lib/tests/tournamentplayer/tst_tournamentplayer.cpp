@@ -33,6 +33,11 @@ class MockPlayerBuilder: public PlayerBuilder
 		{
 		}
 
+		virtual bool isHuman() const
+		{
+			return false;
+		}
+
 		virtual ChessPlayer* create(QObject* receiver,
 					    const char* method,
 					    QObject* parent,
