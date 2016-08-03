@@ -24,6 +24,7 @@
 namespace Ui {
 	class GameSettingsWidget;
 }
+class EngineConfiguration;
 
 class GameSettingsWidget : public QWidget
 {
@@ -36,6 +37,8 @@ class GameSettingsWidget : public QWidget
 		QString chessVariant() const;
 		TimeControl timeControl() const;
 		bool pondering() const;
+
+		void applyEngineConfiguration(EngineConfiguration* config);
 
 	signals:
 		void variantChanged(const QString& variant);

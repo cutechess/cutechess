@@ -257,8 +257,9 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 
 	t->setOpeningRepetition(ui->m_repeatCheckBox->isChecked());
 
-	foreach (const EngineConfiguration& config, m_addedEnginesManager->engines())
+	foreach (EngineConfiguration config, m_addedEnginesManager->engines())
 	{
+		ui->m_gameSettings->applyEngineConfiguration(&config);
 		t->addPlayer(new EngineBuilder(config),
 			     ui->m_gameSettings->timeControl(),
 			     nullptr,

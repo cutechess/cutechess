@@ -19,6 +19,7 @@
 #include "ui_gamesettingswidget.h"
 
 #include <board/boardfactory.h>
+#include <engineconfiguration.h>
 #include "timecontroldlg.h"
 
 GameSettingsWidget::GameSettingsWidget(QWidget *parent)
@@ -58,6 +59,13 @@ TimeControl GameSettingsWidget::timeControl() const
 bool GameSettingsWidget::pondering() const
 {
 	return ui->m_ponderingCheck->isChecked();
+}
+
+void GameSettingsWidget::applyEngineConfiguration(EngineConfiguration* config)
+{
+	Q_ASSERT(config != nullptr);
+
+	config->setPondering(pondering());
 }
 
 void GameSettingsWidget::showTimeControlDialog()
