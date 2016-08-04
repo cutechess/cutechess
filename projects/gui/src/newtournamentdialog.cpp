@@ -229,6 +229,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setGamesPerEncounter(ui->m_gamesPerEncounterSpin->value());
 	if (t->canSetRoundMultiplier())
 		t->setRoundMultiplier(ui->m_roundsSpin->value());
+	t->setAdjudicator(ui->m_gameSettings->adjudicator());
 
 	const QString fileName = ui->m_suiteFileEdit->text();
 	if (!fileName.isEmpty())

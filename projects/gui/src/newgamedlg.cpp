@@ -89,6 +89,8 @@ ChessGame* NewGameDialog::createGame() const
 	auto game = new ChessGame(board, new PgnGame());
 
 	game->setTimeControl(ui->m_gameSettings->timeControl());
+	game->setAdjudicator(ui->m_gameSettings->adjudicator());
+
 	return game;
 }
 

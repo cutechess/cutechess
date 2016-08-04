@@ -61,6 +61,16 @@ bool GameSettingsWidget::pondering() const
 	return ui->m_ponderingCheck->isChecked();
 }
 
+GameAdjudicator GameSettingsWidget::adjudicator() const
+{
+	GameAdjudicator ret;
+	ret.setDrawThreshold(ui->m_drawMoveNumberSpin->value(),
+			     ui->m_drawMoveCountSpin->value(),
+			     ui->m_drawScoreSpin->value());
+
+	return ret;
+}
+
 void GameSettingsWidget::applyEngineConfiguration(EngineConfiguration* config)
 {
 	Q_ASSERT(config != nullptr);

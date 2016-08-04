@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include <timecontrol.h>
+#include <gameadjudicator.h>
 
 namespace Ui {
 	class GameSettingsWidget;
@@ -37,6 +38,7 @@ class GameSettingsWidget : public QWidget
 		QString chessVariant() const;
 		TimeControl timeControl() const;
 		bool pondering() const;
+		GameAdjudicator adjudicator() const;
 
 		void applyEngineConfiguration(EngineConfiguration* config);
 
