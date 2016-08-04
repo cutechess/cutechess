@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>243</width>
-    <height>231</height>
+    <width>406</width>
+    <height>233</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,88 +68,147 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Draw adjudication</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::ExpandingFieldsGrow</enum>
-      </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="m_drawMoveNumberLabel">
-        <property name="text">
-         <string>Move number:</string>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Draw adjudication</string>
+       </property>
+       <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::ExpandingFieldsGrow</enum>
         </property>
-        <property name="buddy">
-         <cstring>m_drawMoveNumberSpin</cstring>
+        <item row="0" column="0">
+         <widget class="QLabel" name="m_drawMoveNumberLabel">
+          <property name="text">
+           <string>Move number:</string>
+          </property>
+          <property name="buddy">
+           <cstring>m_drawMoveNumberSpin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="m_drawMoveNumberSpin">
+          <property name="toolTip">
+           <string>The game can be adjudicated as a draw after this many full moves have been played. A value of 0 disables draw adjudication.</string>
+          </property>
+          <property name="specialValueText">
+           <string>Off</string>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>999</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="m_drawMoveCountLabel">
+          <property name="text">
+           <string>Move count:</string>
+          </property>
+          <property name="buddy">
+           <cstring>m_drawMoveCountSpin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="m_drawMoveCountSpin">
+          <property name="toolTip">
+           <string>The scores of both players need to be within the chosen threshold for this many consecutive moves.</string>
+          </property>
+          <property name="maximum">
+           <number>999</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="m_drawScoreLabel">
+          <property name="text">
+           <string>Score:</string>
+          </property>
+          <property name="buddy">
+           <cstring>m_drawScoreSpin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="m_drawScoreSpin">
+          <property name="toolTip">
+           <string>Both players' scores must be within this many centipawns from zero.</string>
+          </property>
+          <property name="suffix">
+           <string> cp</string>
+          </property>
+          <property name="maximum">
+           <number>999</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>Resign adjudication</string>
+       </property>
+       <layout class="QFormLayout" name="formLayout_3">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::ExpandingFieldsGrow</enum>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="m_drawMoveNumberSpin">
-        <property name="toolTip">
-         <string>The game can be adjudicated as a draw after this many full moves have been played. A value of 0 disables draw adjudication.</string>
-        </property>
-        <property name="specialValueText">
-         <string>Off</string>
-        </property>
-        <property name="minimum">
-         <number>0</number>
-        </property>
-        <property name="maximum">
-         <number>999</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="m_drawMoveCountLabel">
-        <property name="text">
-         <string>Move count:</string>
-        </property>
-        <property name="buddy">
-         <cstring>m_drawMoveCountSpin</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="m_drawMoveCountSpin">
-        <property name="toolTip">
-         <string>The scores of both players need to be within the chosen threshold for this many consecutive moves.</string>
-        </property>
-        <property name="maximum">
-         <number>999</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="m_drawScoreLabel">
-        <property name="text">
-         <string>Score:</string>
-        </property>
-        <property name="buddy">
-         <cstring>m_drawScoreSpin</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="m_drawScoreSpin">
-        <property name="toolTip">
-         <string>Both players' scores must be within this many centipawns from zero.</string>
-        </property>
-        <property name="suffix">
-         <string> cp</string>
-        </property>
-        <property name="maximum">
-         <number>999</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+        <item row="0" column="0">
+         <widget class="QLabel" name="m_resignMoveCountLabel">
+          <property name="text">
+           <string>Move count:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="m_resignMoveCountSpin">
+          <property name="toolTip">
+           <string>Resign adjudication is used if an engine's score is below the threshold for at least this many consecutive moves.</string>
+          </property>
+          <property name="specialValueText">
+           <string>Off</string>
+          </property>
+          <property name="maximum">
+           <number>999</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="m_resignScoreLabel">
+          <property name="text">
+           <string>Score:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="m_resignScoreSpin">
+          <property name="toolTip">
+           <string>The score must be at least this many centipawns below zero.</string>
+          </property>
+          <property name="specialValueText">
+           <string>Off</string>
+          </property>
+          <property name="suffix">
+           <string> cp</string>
+          </property>
+          <property name="maximum">
+           <number>999</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

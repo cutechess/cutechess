@@ -67,6 +67,8 @@ GameAdjudicator GameSettingsWidget::adjudicator() const
 	ret.setDrawThreshold(ui->m_drawMoveNumberSpin->value(),
 			     ui->m_drawMoveCountSpin->value(),
 			     ui->m_drawScoreSpin->value());
+	ret.setResignThreshold(ui->m_resignMoveCountSpin->value(),
+			       -ui->m_resignScoreSpin->value());
 
 	return ret;
 }
