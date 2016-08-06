@@ -296,11 +296,19 @@ bool ChessEngine::supportsVariant(const QString& variant) const
 
 bool ChessEngine::stopThinking()
 {
-	if ((state() == Thinking || isPondering()) && !m_pinging)
+	if (state() == Thinking || isPondering())
 	{
-		m_idleTimer->start();
-		sendStop();
-		return true;
+		if (!m_pinging)
+		{
+			m_idleTimer->start();
+			sendStop();
+			return true;
+		}
+		// A bit of a hack: if the engine is set to thinking or
+		// pondering state and is being pinged, we can assume that
+		// whatever is in the write buffer is obsolete by now because
+		// the engine is being told to stop.
+		m_writeBuffer.clear();
 	}
 	return false;
 }
