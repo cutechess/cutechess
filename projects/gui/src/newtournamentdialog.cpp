@@ -91,15 +91,6 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 		dlg->open();
 	});
 
-	connect(ui->m_browseOpeningSuiteBtn, &QPushButton::clicked, this, [=]()
-	{
-		auto dlg = new QFileDialog(this, tr("Select opening suite"), QString(),
-			tr("PGN/EPD files (*.pgn *.epd)"));
-		connect(dlg, &QFileDialog::fileSelected, ui->m_suiteFileEdit, &QLineEdit::setText);
-		dlg->setAttribute(Qt::WA_DeleteOnClose);
-		dlg->open();
-	});
-
 	m_addedEnginesManager = new EngineManager(this);
 	m_addedEnginesModel = new EngineConfigurationModel(
 		m_addedEnginesManager, this);
@@ -117,6 +108,8 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	});
 
 	ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
+	ui->m_gameSettings->onHumanCountChanged(0);
 }
 
 NewTournamentDialog::~NewTournamentDialog()
@@ -231,30 +224,12 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 		t->setRoundMultiplier(ui->m_roundsSpin->value());
 	t->setAdjudicator(ui->m_gameSettings->adjudicator());
 
-	const QString fileName = ui->m_suiteFileEdit->text();
-	if (!fileName.isEmpty())
-	{
-		OpeningSuite::Format format = OpeningSuite::PgnFormat;
-		if (fileName.endsWith(".epd"))
-			format = OpeningSuite::EpdFormat;
+	t->setOpeningSuite(ui->m_gameSettings->openingSuite());
+	t->setOpeningDepth(ui->m_gameSettings->openingSuiteDepth());
 
-		OpeningSuite::Order order = OpeningSuite::SequentialOrder;
-		if (ui->m_seqOrderRadio->isChecked())
-			order = OpeningSuite::SequentialOrder;
-		else if (ui->m_randomOrderRadio->isChecked())
-			order = OpeningSuite::RandomOrder;
-
-		OpeningSuite* suite = new OpeningSuite(ui->m_suiteFileEdit->text(),
-		                         format, order, 0);
-		if (suite->initialize())
-			t->setOpeningSuite(suite);
-		else
-		{
-			delete suite;
-			delete t;
-			return nullptr;
-		}
-	}
+	t->setOpeningBookOwnership(true);
+	auto book = ui->m_gameSettings->openingBook();
+	int bookDepth = ui->m_gameSettings->bookDepth();
 
 	t->setOpeningRepetition(ui->m_repeatCheckBox->isChecked());
 
@@ -263,8 +238,8 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 		ui->m_gameSettings->applyEngineConfiguration(&config);
 		t->addPlayer(new EngineBuilder(config),
 			     ui->m_gameSettings->timeControl(),
-			     nullptr,
-			     256);
+			     book,
+			     bookDepth);
 	}
 
 	return t;

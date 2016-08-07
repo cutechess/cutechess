@@ -151,6 +151,11 @@ class LIB_EXPORT Tournament : public QObject
 		 * whole tournament stops when a player crashes.
 		 */
 		void setRecoveryMode(bool recover);
+		/*!
+		 * Sets the game adjudicator to \a adjudicator.
+		 *
+		 * The default adjudicator does nothing.
+		 */
 		void setAdjudicator(const GameAdjudicator& adjudicator);
 		/*!
 		 * Uses \a suite as the opening suite (a collection of openings)
@@ -189,6 +194,13 @@ class LIB_EXPORT Tournament : public QObject
 		 * rounds; otherwise each game gets its own opening.
 		 */
 		void setOpeningRepetition(bool repeat);
+		/*!
+		 * Sets opening book ownerhip to \a enabled.
+		 *
+		 * By default the \a Tournament object doesn't take ownership of
+		 * its opening books.
+		 */
+		void setOpeningBookOwnership(bool enabled);
 		/*!
 		 * Sets the maximum number of players that should be seeded in
 		 * the tournament.
@@ -381,6 +393,7 @@ class LIB_EXPORT Tournament : public QObject
 		bool m_recover;
 		bool m_pgnCleanup;
 		bool m_finished;
+		bool m_bookOwnership;
 		GameAdjudicator m_adjudicator;
 		OpeningSuite* m_openingSuite;
 		Sprt* m_sprt;

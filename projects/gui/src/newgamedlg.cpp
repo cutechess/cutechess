@@ -25,6 +25,7 @@
 #include <enginebuilder.h>
 #include <humanbuilder.h>
 #include <enginemanager.h>
+#include <openingsuite.h>
 
 #include "cutechessapp.h"
 #include "engineconfigurationmodel.h"
@@ -75,6 +76,17 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	connect(ui->m_gameSettings, SIGNAL(variantChanged(QString)),
 		this, SLOT(onVariantChanged(QString)));
 	onVariantChanged(ui->m_gameSettings->chessVariant());
+
+	connect(ui->m_whitePlayerCpuRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		auto type = checked ? CPU : Human;
+		setPlayerType(Chess::Side::White, type);
+	});
+	connect(ui->m_blackPlayerCpuRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		auto type = checked ? CPU : Human;
+		setPlayerType(Chess::Side::Black, type);
+	});
 }
 
 NewGameDialog::~NewGameDialog()
@@ -91,6 +103,28 @@ ChessGame* NewGameDialog::createGame() const
 	game->setTimeControl(ui->m_gameSettings->timeControl());
 	game->setAdjudicator(ui->m_gameSettings->adjudicator());
 
+	auto suite = ui->m_gameSettings->openingSuite();
+	if (suite)
+	{
+		int depth = ui->m_gameSettings->openingSuiteDepth();
+		game->setMoves(suite->nextGame(depth));
+		delete suite;
+	}
+
+	auto book = ui->m_gameSettings->openingBook();
+	if (book)
+	{
+		int depth = ui->m_gameSettings->bookDepth();
+		game->setBookOwnership(true);
+
+		for (int i = 0; i < 2; i++)
+		{
+			auto side = Chess::Side::Type(i);
+			if (playerType(side) == CPU)
+				game->setOpeningBook(book, side, depth);
+		}
+	}
+
 	return game;
 }
 
@@ -104,6 +138,27 @@ PlayerBuilder* NewGameDialog::createPlayerBuilder(Chess::Side side) const
 		return new EngineBuilder(config);
 	}
 	return new HumanBuilder(CuteChessApplication::userName());
+}
+
+void NewGameDialog::setPlayerType(Chess::Side side, PlayerType type)
+{
+	if (side == Chess::Side::White)
+	{
+		ui->m_whiteEngineComboBox->setEnabled(type == CPU);
+		ui->m_configureWhiteEngineButton->setEnabled(type == CPU);
+	}
+	else
+	{
+		ui->m_blackEngineComboBox->setEnabled(type == CPU);
+		ui->m_configureBlackEngineButton->setEnabled(type == CPU);
+	}
+
+	int humanCount = 0;
+	if (playerType(Chess::Side::White) == Human)
+		humanCount++;
+	if (playerType(Chess::Side::Black) == Human)
+		humanCount++;
+	ui->m_gameSettings->onHumanCountChanged(humanCount);
 }
 
 NewGameDialog::PlayerType NewGameDialog::playerType(Chess::Side side) const

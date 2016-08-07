@@ -26,6 +26,8 @@ namespace Ui {
 	class GameSettingsWidget;
 }
 class EngineConfiguration;
+class OpeningSuite;
+class OpeningBook;
 
 class GameSettingsWidget : public QWidget
 {
@@ -39,8 +41,15 @@ class GameSettingsWidget : public QWidget
 		TimeControl timeControl() const;
 		bool pondering() const;
 		GameAdjudicator adjudicator() const;
+		OpeningSuite* openingSuite() const;
+		int openingSuiteDepth() const;
+		OpeningBook* openingBook() const;
+		int bookDepth() const;
 
 		void applyEngineConfiguration(EngineConfiguration* config);
+
+	public slots:
+		void onHumanCountChanged(int count);
 
 	signals:
 		void variantChanged(const QString& variant);

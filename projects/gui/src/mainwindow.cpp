@@ -574,10 +574,12 @@ void MainWindow::newGame()
 		return;
 
 	auto game = dlg.createGame();
-	auto whiteBuilder = dlg.createPlayerBuilder(Chess::Side::White);
-	auto blackBuilder = dlg.createPlayerBuilder(Chess::Side::Black);
+	PlayerBuilder* builders[2] = {
+		dlg.createPlayerBuilder(Chess::Side::White),
+		dlg.createPlayerBuilder(Chess::Side::Black)
+	};
 
-	if (whiteBuilder->isHuman())
+	if (builders[game->board()->sideToMove()]->isHuman())
 		game->pause();
 
 	// Start the game in a new tab
@@ -586,7 +588,7 @@ void MainWindow::newGame()
 	connect(game, SIGNAL(startFailed(ChessGame*)),
 		this, SLOT(onGameStartFailed(ChessGame*)));
 	CuteChessApplication::instance()->gameManager()->newGame(game,
-		whiteBuilder, blackBuilder);
+		builders[Chess::Side::White], builders[Chess::Side::Black]);
 }
 
 void MainWindow::onGameStartFailed(ChessGame* game)

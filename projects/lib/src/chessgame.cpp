@@ -79,6 +79,7 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	  m_gameInProgress(false),
 	  m_paused(false),
 	  m_pgnInitialized(false),
+	  m_bookOwnership(false),
 	  m_pgn(pgn)
 {
 	Q_ASSERT(pgn != nullptr);
@@ -94,6 +95,13 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 ChessGame::~ChessGame()
 {
 	delete m_board;
+	if (m_bookOwnership)
+	{
+		bool same = (m_book[0] == m_book[1]);
+		delete m_book[0];
+		if (!same)
+			delete m_book[1];
+	}
 }
 
 QString ChessGame::errorString() const
@@ -272,11 +280,15 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	m_board->makeMove(move);
 
 	if (m_result.isNone())
+	{
+		emitLastMove();
 		startTurn();
+	}
 	else
+	{
 		stop(false);
-
-	emitLastMove();
+		emitLastMove();
+	}
 }
 
 void ChessGame::startTurn()
@@ -485,6 +497,11 @@ void ChessGame::setStartDelay(int time)
 {
 	Q_ASSERT(time >= 0);
 	m_startDelay = time;
+}
+
+void ChessGame::setBookOwnership(bool enabled)
+{
+	m_bookOwnership = enabled;
 }
 
 void ChessGame::pauseThread()

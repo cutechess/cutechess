@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>406</width>
-    <height>233</height>
+    <height>468</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,16 +61,236 @@
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="m_ponderingCheck">
-     <property name="text">
-      <string>Thinking on opponent's time</string>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="enabled">
+      <bool>true</bool>
      </property>
+     <property name="title">
+      <string>Opening suite</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_4">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::ExpandingFieldsGrow</enum>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="m_pgnEpdLabel">
+        <property name="text">
+         <string>PGN/EPD file:</string>
+        </property>
+        <property name="buddy">
+         <cstring>m_openingSuiteEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLineEdit" name="m_openingSuiteEdit"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="m_browseOpeningSuiteBtn">
+          <property name="text">
+           <string>Browse...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="m_openingOrderLabel">
+        <property name="text">
+         <string>Opening order:</string>
+        </property>
+        <property name="buddy">
+         <cstring>m_seqOrderRadio</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QRadioButton" name="m_seqOrderRadio">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Sequential</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="m_randomOrderRadio">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Random</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="m_openingSuiteDepth">
+        <property name="text">
+         <string>Depth:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="m_openingSuiteDepthSpin">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="suffix">
+         <string> plies</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>999</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="m_openingBookGroup">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>Opening book</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_5">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::ExpandingFieldsGrow</enum>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="m_polyglotFileLabel">
+        <property name="text">
+         <string>Polyglot file:</string>
+        </property>
+        <property name="buddy">
+         <cstring>m_polyglotFileEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QLineEdit" name="m_polyglotFileEdit"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="m_browsePolyglotFile">
+          <property name="text">
+           <string>Browse...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="m_polyglotDepthLabel">
+        <property name="text">
+         <string>Depth:</string>
+        </property>
+        <property name="buddy">
+         <cstring>m_polyglotDepthSpin</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="m_polyglotDepthSpin">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="suffix">
+         <string> full moves</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="m_polyglotAccessMode">
+        <property name="text">
+         <string>Access mode:</string>
+        </property>
+        <property name="buddy">
+         <cstring>m_ramAccessRadio</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QRadioButton" name="m_ramAccessRadio">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Ram</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="m_diskAccessRadio">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Disk</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QGroupBox" name="groupBox">
+      <widget class="QGroupBox" name="m_drawAdjudicationGroup">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="title">
         <string>Draw adjudication</string>
        </property>
@@ -119,6 +339,9 @@
         </item>
         <item row="1" column="1">
          <widget class="QSpinBox" name="m_drawMoveCountSpin">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="toolTip">
            <string>The scores of both players need to be within the chosen threshold for this many consecutive moves.</string>
           </property>
@@ -139,6 +362,9 @@
         </item>
         <item row="2" column="1">
          <widget class="QSpinBox" name="m_drawScoreSpin">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="toolTip">
            <string>Both players' scores must be within this many centipawns from zero.</string>
           </property>
@@ -154,7 +380,10 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBox_2">
+      <widget class="QGroupBox" name="m_resignAdjudicationGroup">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="title">
         <string>Resign adjudication</string>
        </property>
@@ -166,6 +395,9 @@
          <widget class="QLabel" name="m_resignMoveCountLabel">
           <property name="text">
            <string>Move count:</string>
+          </property>
+          <property name="buddy">
+           <cstring>m_resignMoveCountSpin</cstring>
           </property>
          </widget>
         </item>
@@ -187,15 +419,21 @@
           <property name="text">
            <string>Score:</string>
           </property>
+          <property name="buddy">
+           <cstring>m_resignScoreSpin</cstring>
+          </property>
          </widget>
         </item>
         <item row="1" column="1">
          <widget class="QSpinBox" name="m_resignScoreSpin">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="toolTip">
            <string>The score must be at least this many centipawns below zero.</string>
           </property>
           <property name="specialValueText">
-           <string>Off</string>
+           <string/>
           </property>
           <property name="suffix">
            <string> cp</string>
@@ -209,6 +447,16 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="m_ponderingCheck">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Thinking on opponent's time</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

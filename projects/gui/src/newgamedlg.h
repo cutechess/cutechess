@@ -69,6 +69,7 @@ class NewGameDialog : public QDialog
 		void onEngineChanged(int index, Chess::Side = Chess::Side::NoSide);
 
 	private:
+		void setPlayerType(Chess::Side side, PlayerType type);
 		PlayerType playerType(Chess::Side side) const;
 
 		EngineManager* m_engineManager;

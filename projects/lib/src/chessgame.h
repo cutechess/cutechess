@@ -68,6 +68,7 @@ class LIB_EXPORT ChessGame : public QObject
 				    int depth = 1000);
 		void setAdjudicator(const GameAdjudicator& adjudicator);
 		void setStartDelay(int time);
+		void setBookOwnership(bool enabled);
 
 		void generateOpening();
 
@@ -125,6 +126,7 @@ class LIB_EXPORT ChessGame : public QObject
 		bool m_gameInProgress;
 		bool m_paused;
 		bool m_pgnInitialized;
+		bool m_bookOwnership;
 		QString m_error;
 		QString m_startingFen;
 		Chess::Result m_result;

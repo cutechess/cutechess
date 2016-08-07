@@ -19,6 +19,7 @@
 #include "tournament.h"
 #include <QFile>
 #include <QMultiMap>
+#include <QSet>
 #include "gamemanager.h"
 #include "playerbuilder.h"
 #include "board/boardfactory.h"
@@ -26,6 +27,7 @@
 #include "chessgame.h"
 #include "pgnstream.h"
 #include "openingsuite.h"
+#include "openingbook.h"
 #include "sprt.h"
 #include "elo.h"
 
@@ -49,6 +51,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_recover(false),
 	  m_pgnCleanup(true),
 	  m_finished(false),
+	  m_bookOwnership(false),
 	  m_openingSuite(nullptr),
 	  m_sprt(new Sprt),
 	  m_pgnOutMode(PgnGame::Verbose),
@@ -64,8 +67,16 @@ Tournament::~Tournament()
 
 	qDeleteAll(m_gameData);
 	qDeleteAll(m_pairs);
+
+	QSet<const OpeningBook*> books;
 	foreach (const TournamentPlayer& player, m_players)
+	{
+		books.insert(player.book());
 		delete player.builder();
+	}
+
+	if (m_bookOwnership)
+		qDeleteAll(books);
 
 	delete m_openingSuite;
 	delete m_sprt;
@@ -241,6 +252,11 @@ void Tournament::setPgnCleanupEnabled(bool enabled)
 void Tournament::setOpeningRepetition(bool repeat)
 {
 	m_repeatOpening = repeat;
+}
+
+void Tournament::setOpeningBookOwnership(bool enabled)
+{
+	m_bookOwnership = enabled;
 }
 
 void Tournament::addPlayer(PlayerBuilder* builder,
