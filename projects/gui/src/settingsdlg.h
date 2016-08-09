@@ -41,6 +41,9 @@ class SettingsDialog : public QDialog
 		// Inherited from QDialog
 		virtual void closeEvent(QCloseEvent* event);
 
+	private slots:
+		void browseTbPath();
+
 	private:
 		void readSettings();
 

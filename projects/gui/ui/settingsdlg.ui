@@ -34,6 +34,27 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="m_tbPathLabel">
+         <property name="text">
+          <string>Gaviota tablebases path:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLineEdit" name="m_tbPathEdit"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_browseTbPathBtn">
+           <property name="text">
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="m_enginesTab">

@@ -18,8 +18,10 @@
 #include "gamesettingswidget.h"
 #include "ui_gamesettingswidget.h"
 #include <QFileDialog>
+#include <QSettings>
 
 #include <board/boardfactory.h>
+#include <board/gaviotatablebase.h>
 #include <engineconfiguration.h>
 #include <openingsuite.h>
 #include <polyglotbook.h>
@@ -97,6 +99,16 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 		ui->m_ramAccessRadio->setEnabled(!str.isEmpty());
 		ui->m_diskAccessRadio->setEnabled(!str.isEmpty());
 	});
+
+	QString tbPath = QSettings().value("ui/tb_path").toString();
+	if (!tbPath.isEmpty())
+	{
+		bool ok = GaviotaTablebase::initialize({ tbPath }) &&
+			  GaviotaTablebase::tbAvailable(3);
+		ui->m_tbCheck->setEnabled(ok);
+		if (!ok)
+			ui->m_tbCheck->setChecked(false);
+	}
 }
 
 GameSettingsWidget::~GameSettingsWidget()
@@ -127,6 +139,7 @@ GameAdjudicator GameSettingsWidget::adjudicator() const
 			     ui->m_drawScoreSpin->value());
 	ret.setResignThreshold(ui->m_resignMoveCountSpin->value(),
 			       -ui->m_resignScoreSpin->value());
+	ret.setTablebaseAdjudication(ui->m_tbCheck->isChecked());
 
 	return ret;
 }

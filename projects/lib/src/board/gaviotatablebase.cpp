@@ -22,6 +22,7 @@
 
 namespace {
 
+bool s_initialized = false;
 const char** s_paths = nullptr;
 char* s_initInfo = nullptr;
 
@@ -57,6 +58,10 @@ TB_pieces tbPiece(int pieceType)
 
 bool GaviotaTablebase::initialize(const QStringList& paths)
 {
+	if (s_initialized)
+		return s_initInfo != nullptr;
+	s_initialized = true;
+
 	s_paths = tbpaths_init();
 	foreach (const QString& path, paths)
 	{

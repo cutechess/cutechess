@@ -19,6 +19,7 @@
 #include "ui_settingsdlg.h"
 #include <QShowEvent>
 #include <QSettings>
+#include <QFileDialog>
 #include <gamemanager.h>
 #include "cutechessapp.h"
 
@@ -42,6 +43,9 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 		QSettings().setValue("tournament/concurrency", value);
 		CuteChessApplication::instance()->gameManager()->setConcurrency(value);
 	});
+
+	connect(ui->m_browseTbPathBtn, &QPushButton::clicked,
+		this, &SettingsDialog::browseTbPath);
 }
 
 SettingsDialog::~SettingsDialog()
@@ -57,6 +61,24 @@ void SettingsDialog::closeEvent(QCloseEvent* event)
 	QDialog::closeEvent(event);
 }
 
+void SettingsDialog::browseTbPath()
+{
+	auto dlg = new QFileDialog(
+		this, tr("Choose Directory"),
+		ui->m_tbPathEdit->text());
+	dlg->setFileMode(QFileDialog::Directory);
+	dlg->setOption(QFileDialog::ShowDirsOnly);
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->setAcceptMode(QFileDialog::AcceptOpen);
+
+	connect(dlg, &QFileDialog::fileSelected, [=](const QString& dir)
+	{
+		ui->m_tbPathEdit->setText(dir);
+		QSettings().setValue("ui/tb_path", dir);
+	});
+	dlg->open();
+}
+
 void SettingsDialog::readSettings()
 {
 	QSettings s;
@@ -64,6 +86,7 @@ void SettingsDialog::readSettings()
 	s.beginGroup("ui");
 	ui->m_highlightLegalMovesCheck->setChecked(
 		s.value("highlight_legal_moves", true).toBool());
+	ui->m_tbPathEdit->setText(s.value("tb_path").toString());
 	s.endGroup();
 
 	s.beginGroup("tournament");
