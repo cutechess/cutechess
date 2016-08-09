@@ -54,6 +54,10 @@ class LIB_EXPORT OpeningSuite
 		};
 
 		/*!
+		 * Creates a new opening suite that starts every game at \a fen.
+		 */
+		OpeningSuite(const QString& fen);
+		/*!
 		 * Creates a new opening suite that reads the openings
 		 * from \a fileName in \a format format.
 		 *
@@ -117,6 +121,7 @@ class LIB_EXPORT OpeningSuite
 		int m_gameIndex;
 		int m_startIndex;
 		QString m_fileName;
+		QString m_fen;
 		QFile* m_file;
 		QTextStream* m_epdStream;
 		PgnStream* m_pgnStream;

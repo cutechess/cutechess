@@ -74,11 +74,21 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 		ui->m_resignScoreSpin->setEnabled(value > 0);
 	});
 
+	connect(ui->m_fenEdit, &QLineEdit::textChanged, [=](const QString& str)
+	{
+		ui->m_openingSuiteEdit->setEnabled(str.isEmpty());
+		ui->m_browseOpeningSuiteBtn->setEnabled(str.isEmpty());
+		ui->m_openingSuiteDepthSpin->setEnabled(str.isEmpty());
+		ui->m_seqOrderRadio->setEnabled(str.isEmpty());
+		ui->m_randomOrderRadio->setEnabled(str.isEmpty());
+	});
+
 	connect(ui->m_openingSuiteEdit, &QLineEdit::textChanged, [=](const QString& str)
 	{
 		ui->m_openingSuiteDepthSpin->setEnabled(!str.isEmpty());
 		ui->m_seqOrderRadio->setEnabled(!str.isEmpty());
 		ui->m_randomOrderRadio->setEnabled(!str.isEmpty());
+		ui->m_fenEdit->setEnabled(str.isEmpty());
 	});
 
 	connect(ui->m_polyglotFileEdit, &QLineEdit::textChanged, [=](const QString& str)
@@ -123,6 +133,10 @@ GameAdjudicator GameSettingsWidget::adjudicator() const
 
 OpeningSuite* GameSettingsWidget::openingSuite() const
 {
+	QString fen = ui->m_fenEdit->text();
+	if (!fen.isEmpty())
+		return new OpeningSuite(fen);
+
 	QString file = ui->m_openingSuiteEdit->text();
 	if (file.isEmpty())
 		return nullptr;

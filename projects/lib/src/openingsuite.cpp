@@ -22,6 +22,18 @@
 #include "epdrecord.h"
 #include "mersenne.h"
 
+OpeningSuite::OpeningSuite(const QString& fen)
+	: m_format(EpdFormat),
+	  m_gamesRead(0),
+	  m_gameIndex(0),
+	  m_startIndex(0),
+	  m_fen(fen),
+	  m_file(nullptr),
+	  m_epdStream(nullptr),
+	  m_pgnStream(nullptr)
+{
+}
+
 OpeningSuite::OpeningSuite(const QString& fileName,
 			   Format format,
 			   Order order,
@@ -69,6 +81,9 @@ bool OpeningSuite::isNull() const
 
 bool OpeningSuite::initialize()
 {
+	if (!m_fen.isEmpty())
+		return true;
+
 	m_gamesRead = 0;
 	m_gameIndex = 0;
 	m_filePositions.clear();
@@ -149,6 +164,12 @@ bool OpeningSuite::initialize()
 PgnGame OpeningSuite::nextGame(int maxPlies)
 {
 	PgnGame game;
+
+	if (!m_fen.isEmpty())
+	{
+		Chess::Side side(m_fen.section(' ', 1, 1));
+		game.setStartingFenString(side, m_fen);
+	}
 	if (isNull())
 		return game;
 
