@@ -25,6 +25,9 @@
 namespace Ui {
 	class GameSettingsWidget;
 }
+namespace Chess {
+	class Board;
+}
 class EngineConfiguration;
 class OpeningSuite;
 class OpeningBook;
@@ -53,6 +56,7 @@ class GameSettingsWidget : public QWidget
 
 	signals:
 		void variantChanged(const QString& variant);
+		void statusChanged(bool ok);
 
 	private slots:
 		void showTimeControlDialog();
@@ -60,6 +64,8 @@ class GameSettingsWidget : public QWidget
 	private:
 		Ui::GameSettingsWidget *ui;
 		TimeControl m_timeControl;
+		Chess::Board* m_board;
+		QPalette m_defaultPalette;
 };
 
 #endif // GAMESETTINGSWIDGET_H

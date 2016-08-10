@@ -108,6 +108,12 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	});
 
 	ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+	connect(ui->m_gameSettings, &GameSettingsWidget::statusChanged, [=](bool ok)
+	{
+		if (ok)
+			ok = m_addedEnginesManager->engineCount() > 1;
+		ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ok);
+	});
 
 	ui->m_gameSettings->onHumanCountChanged(0);
 }

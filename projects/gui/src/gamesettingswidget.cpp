@@ -29,7 +29,8 @@
 
 GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 	: QWidget(parent),
-	  ui(new Ui::GameSettingsWidget)
+	  ui(new Ui::GameSettingsWidget),
+	  m_board(nullptr)
 {
 	ui->setupUi(this);
 
@@ -76,6 +77,7 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 		ui->m_resignScoreSpin->setEnabled(value > 0);
 	});
 
+	m_defaultPalette = ui->m_fenEdit->palette();
 	connect(ui->m_fenEdit, &QLineEdit::textChanged, [=](const QString& str)
 	{
 		ui->m_openingSuiteEdit->setEnabled(str.isEmpty());
@@ -83,6 +85,25 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 		ui->m_openingSuiteDepthSpin->setEnabled(str.isEmpty());
 		ui->m_seqOrderRadio->setEnabled(str.isEmpty());
 		ui->m_randomOrderRadio->setEnabled(str.isEmpty());
+
+		QString variant = chessVariant();
+		if (!m_board || m_board->variant() != variant)
+		{
+			delete m_board;
+			m_board = Chess::BoardFactory::create(variant);
+		}
+		if (!str.isEmpty() && !m_board->setFenString(str))
+		{
+			auto palette = ui->m_fenEdit->palette();
+			palette.setColor(QPalette::Text, Qt::red);
+			ui->m_fenEdit->setPalette(palette);
+			emit statusChanged(false);
+		}
+		else
+		{
+			ui->m_fenEdit->setPalette(m_defaultPalette);
+			emit statusChanged(true);
+		}
 	});
 
 	connect(ui->m_openingSuiteEdit, &QLineEdit::textChanged, [=](const QString& str)
@@ -113,6 +134,7 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 
 GameSettingsWidget::~GameSettingsWidget()
 {
+	delete m_board;
 	delete ui;
 }
 

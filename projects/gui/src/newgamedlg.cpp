@@ -87,6 +87,11 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 		auto type = checked ? CPU : Human;
 		setPlayerType(Chess::Side::Black, type);
 	});
+
+	connect(ui->m_gameSettings, &GameSettingsWidget::statusChanged, [=](bool ok)
+	{
+		ui->m_buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ok);
+	});
 }
 
 NewGameDialog::~NewGameDialog()
