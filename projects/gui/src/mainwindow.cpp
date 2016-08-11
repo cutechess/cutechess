@@ -607,17 +607,19 @@ void MainWindow::newTournament()
 	GameManager* manager = CuteChessApplication::instance()->gameManager();
 
 	Tournament* t = dlg.createTournament(manager);
+	auto resultsDialog = CuteChessApplication::instance()->tournamentResultsDialog();
 	connect(t, SIGNAL(finished()),
 		this, SLOT(onTournamentFinished()));
 	connect(t, SIGNAL(gameStarted(ChessGame*, int, int, int)),
 		this, SLOT(addGame(ChessGame*)));
 	connect(t, SIGNAL(gameFinished(ChessGame*, int, int, int)),
-		CuteChessApplication::instance()->tournamentResultsDialog(), SLOT(update()));
+		resultsDialog, SLOT(update()));
 	t->start();
 
 	connect(m_stopTournamentAct, SIGNAL(triggered()), t, SLOT(stop()));
 	m_newTournamentAct->setEnabled(false);
 	m_stopTournamentAct->setEnabled(true);
+	resultsDialog->setTournament(t);
 }
 
 void MainWindow::onTournamentFinished()

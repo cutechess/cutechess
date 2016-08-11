@@ -21,6 +21,7 @@
 #include <QDialog>
 
 class QPlainTextEdit;
+class Tournament;
 
 class TournamentResultsDialog : public QDialog
 {
@@ -30,6 +31,9 @@ class TournamentResultsDialog : public QDialog
 	    /* Creates a new TournamentResultsDialog. */
 	    TournamentResultsDialog(QWidget* parent = nullptr);
 	    virtual ~TournamentResultsDialog();
+
+	    /*! Sets \a tournament as the current tournament. */
+	    void setTournament(Tournament* tournament);
 
 	public slots:
 		void update();

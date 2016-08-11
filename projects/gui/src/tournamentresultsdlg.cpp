@@ -40,16 +40,27 @@ TournamentResultsDialog::TournamentResultsDialog(QWidget* parent)
 	layout->setContentsMargins(0, 0, 0, 0);
 
 	setLayout(layout);
-	resize(400, 400);
+	resize(700, 400);
 }
 
 TournamentResultsDialog::~TournamentResultsDialog()
 {
 }
 
+void TournamentResultsDialog::setTournament(Tournament* tournament)
+{
+	setWindowTitle(tournament->name());
+	m_resultsEdit->setPlainText(tournament->results());
+}
+
 void TournamentResultsDialog::update()
 {
-	auto* tournament = qobject_cast<Tournament*>(QObject::sender());
+	auto tournament = qobject_cast<Tournament*>(QObject::sender());
 	Q_ASSERT(tournament != nullptr);
-	m_resultsEdit->setPlainText(tournament->results());
+
+	QString text = tournament->results();
+	text += tr("\n\n%1 of %2 games finished.")
+		.arg(tournament->finishedGameCount())
+		.arg(tournament->finalGameCount());
+	m_resultsEdit->setPlainText(text);
 }
