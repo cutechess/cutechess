@@ -574,6 +574,14 @@ void MainWindow::newGame()
 		return;
 
 	auto game = dlg.createGame();
+	if (!game)
+	{
+		QMessageBox::critical(this, tr("Could not initialize game"),
+				      tr("The game could not be initialized "
+					 "due to an invalid opening."));
+		return;
+	}
+
 	PlayerBuilder* builders[2] = {
 		dlg.createPlayerBuilder(Chess::Side::White),
 		dlg.createPlayerBuilder(Chess::Side::Black)

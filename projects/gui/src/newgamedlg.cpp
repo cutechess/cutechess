@@ -101,6 +101,7 @@ NewGameDialog::~NewGameDialog()
 
 ChessGame* NewGameDialog::createGame() const
 {
+	bool ok = true;
 	const QString variant = ui->m_gameSettings->chessVariant();
 	auto board = Chess::BoardFactory::create(variant);
 	auto game = new ChessGame(board, new PgnGame());
@@ -112,7 +113,7 @@ ChessGame* NewGameDialog::createGame() const
 	if (suite)
 	{
 		int depth = ui->m_gameSettings->openingSuiteDepth();
-		game->setMoves(suite->nextGame(depth));
+		ok = game->setMoves(suite->nextGame(depth));
 		delete suite;
 	}
 
@@ -128,6 +129,12 @@ ChessGame* NewGameDialog::createGame() const
 			if (playerType(side) == CPU)
 				game->setOpeningBook(book, side, depth);
 		}
+	}
+
+	if (!ok)
+	{
+		delete game;
+		return nullptr;
 	}
 
 	return game;
