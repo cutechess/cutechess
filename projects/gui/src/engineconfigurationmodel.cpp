@@ -17,6 +17,7 @@
 
 #include "engineconfigurationmodel.h"
 #include <enginemanager.h>
+#include <QBrush>
 
 
 EngineConfigurationModel::EngineConfigurationModel(EngineManager* engineManager, QObject* parent)
@@ -32,6 +33,25 @@ EngineConfigurationModel::EngineConfigurationModel(EngineManager* engineManager,
 		SLOT(onEngineUpdated(int)));
 	connect(m_engineManager, SIGNAL(enginesReset()), this,
 		SLOT(onEnginesReset()));
+}
+
+EngineConfigurationModel::~EngineConfigurationModel()
+{
+}
+
+QString EngineConfigurationModel::chessVariant() const
+{
+	return m_chessVariant;
+}
+
+void EngineConfigurationModel::setChessVariant(const QString& variant)
+{
+	if (variant == m_chessVariant)
+		return;
+
+	beginResetModel();
+	m_chessVariant = variant;
+	endResetModel();
 }
 
 int EngineConfigurationModel::rowCount(const QModelIndex& parent) const
@@ -72,6 +92,17 @@ QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) cons
 		default:
 			return QVariant();
 		}
+	}
+	else if (role == Qt::ForegroundRole)
+	{
+		if (m_chessVariant.isEmpty())
+			return QVariant();
+
+		const auto engine = m_engineManager->engineAt(index.row());
+		if (!engine.supportsVariant(m_chessVariant))
+			return QBrush(Qt::red);
+
+		return QVariant();
 	}
 
 	return QVariant();

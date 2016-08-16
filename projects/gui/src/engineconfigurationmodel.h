@@ -48,6 +48,18 @@ class EngineConfigurationModel : public QAbstractListModel
 		 * Creates an empty model.
 		*/
 		EngineConfigurationModel(EngineManager* engineManager, QObject* parent = nullptr);
+		/*! Destroys the model. */
+		virtual ~EngineConfigurationModel();
+
+		/*!
+		 * Returns the chosen chess variant.
+		 *
+		 * By default an empty string is returned, meaning that engines
+		 * are not filtered by their supported variants.
+		 */
+		QString chessVariant() const;
+		/*! Sets the chosen chess variant to \a variant. */
+		void setChessVariant(const QString& variant);
 		
 		// Inherited from QAbstractListModel
 		virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
@@ -64,6 +76,7 @@ class EngineConfigurationModel : public QAbstractListModel
 
 	private:
 		EngineManager* m_engineManager;
+		QString m_chessVariant;
 };
 
 #endif // ENGINE_CONFIGURATION_MODEL_H

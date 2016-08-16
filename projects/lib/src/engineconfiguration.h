@@ -152,6 +152,11 @@ class LIB_EXPORT EngineConfiguration
 		 * Returns a list containing variant \a "standard" by default.
 		 */
 		QStringList supportedVariants() const;
+		/*!
+		 * Returns true if the engine can play \a variant;
+		 * otherwise returns false.
+		 */
+		bool supportsVariant(const QString& variant) const;
 		/*! Sets the list of supported variants to \a variants. */
 		void setSupportedVariants(const QStringList& variants);
 

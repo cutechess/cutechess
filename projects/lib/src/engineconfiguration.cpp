@@ -244,6 +244,11 @@ QStringList EngineConfiguration::supportedVariants() const
 	return m_variants;
 }
 
+bool EngineConfiguration::supportsVariant(const QString& variant) const
+{
+	return m_variants.contains(variant);
+}
+
 void EngineConfiguration::setSupportedVariants(const QStringList& variants)
 {
 	m_variants = variants;

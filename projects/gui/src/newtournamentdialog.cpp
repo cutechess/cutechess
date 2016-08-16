@@ -62,7 +62,6 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 
 	connect(ui->m_gameSettings, SIGNAL(variantChanged(QString)),
 		this, SLOT(onVariantChanged(QString)));
-	onVariantChanged(ui->m_gameSettings->chessVariant());
 
 	connect(ui->m_addEngineBtn, SIGNAL(clicked()),
 		this, SLOT(addEngine()));
@@ -116,6 +115,7 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	});
 
 	ui->m_gameSettings->onHumanCountChanged(0);
+	onVariantChanged(ui->m_gameSettings->chessVariant());
 }
 
 NewTournamentDialog::~NewTournamentDialog()
@@ -189,6 +189,8 @@ void NewTournamentDialog::onVariantChanged(const QString& variant)
 {
 	m_proxyModel->setFilterVariant(variant);
 	ui->m_addEngineBtn->setEnabled(m_proxyModel->rowCount() > 0);
+
+	m_addedEnginesModel->setChessVariant(variant);
 }
 
 void NewTournamentDialog::onPlayerSelectionChanged(const QItemSelection& selected,
