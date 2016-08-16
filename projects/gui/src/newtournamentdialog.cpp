@@ -110,7 +110,7 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	connect(ui->m_gameSettings, &GameSettingsWidget::statusChanged, [=](bool ok)
 	{
 		if (ok)
-			ok = m_addedEnginesManager->engineCount() > 1;
+			ok = canStart();
 		ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ok);
 	});
 
@@ -134,7 +134,7 @@ void NewTournamentDialog::addEngine()
 		m_addedEnginesManager->addEngine(m_srcEngineManager->engineAt(index.row()));
 
 	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
-	button->setEnabled(m_addedEnginesManager->engineCount() > 1);
+	button->setEnabled(canStart());
 }
 
 void NewTournamentDialog::removeEngine()
@@ -153,7 +153,7 @@ void NewTournamentDialog::removeEngine()
 		m_addedEnginesManager->removeEngineAt(index.row());
 
 	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
-	button->setEnabled(m_addedEnginesManager->engineCount() > 1);
+	button->setEnabled(canStart());
 }
 
 void NewTournamentDialog::configureEngine(const QModelIndex& index)
@@ -185,12 +185,23 @@ void NewTournamentDialog::moveEngine(int offset)
 	ui->m_playersList->setCurrentIndex(index.sibling(row2, 0));
 }
 
+bool NewTournamentDialog::canStart() const
+{
+	if (!ui->m_gameSettings->isValid())
+		return false;
+
+	QString variant = ui->m_gameSettings->chessVariant();
+	return m_addedEnginesManager->supportsVariant(variant);
+}
+
 void NewTournamentDialog::onVariantChanged(const QString& variant)
 {
 	m_proxyModel->setFilterVariant(variant);
 	ui->m_addEngineBtn->setEnabled(m_proxyModel->rowCount() > 0);
 
 	m_addedEnginesModel->setChessVariant(variant);
+	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
+	button->setEnabled(canStart());
 }
 
 void NewTournamentDialog::onPlayerSelectionChanged(const QItemSelection& selected,

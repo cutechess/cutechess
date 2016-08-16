@@ -48,6 +48,7 @@ class GameSettingsWidget : public QWidget
 		int openingSuiteDepth() const;
 		OpeningBook* openingBook() const;
 		int bookDepth() const;
+		bool isValid() const;
 
 		void applyEngineConfiguration(EngineConfiguration* config);
 
@@ -66,6 +67,7 @@ class GameSettingsWidget : public QWidget
 		TimeControl m_timeControl;
 		Chess::Board* m_board;
 		QPalette m_defaultPalette;
+		bool m_isValid;
 };
 
 #endif // GAMESETTINGSWIDGET_H

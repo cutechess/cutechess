@@ -74,6 +74,20 @@ void EngineManager::setEngines(const QList<EngineConfiguration>& engines)
 	emit enginesReset();
 }
 
+bool EngineManager::supportsVariant(const QString& variant) const
+{
+	if (m_engines.isEmpty())
+		return false;
+
+	foreach (const auto& config, m_engines)
+	{
+		if (!config.supportsVariant(variant))
+			return false;
+	}
+
+	return true;
+}
+
 void EngineManager::loadEngines(const QString& fileName)
 {
 	if (!QFile::exists(fileName))

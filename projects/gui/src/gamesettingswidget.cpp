@@ -30,7 +30,8 @@
 GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 	: QWidget(parent),
 	  ui(new Ui::GameSettingsWidget),
-	  m_board(nullptr)
+	  m_board(nullptr),
+	  m_isValid(true)
 {
 	ui->setupUi(this);
 
@@ -97,11 +98,13 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 			auto palette = ui->m_fenEdit->palette();
 			palette.setColor(QPalette::Text, Qt::red);
 			ui->m_fenEdit->setPalette(palette);
+			m_isValid = false;
 			emit statusChanged(false);
 		}
 		else
 		{
 			ui->m_fenEdit->setPalette(m_defaultPalette);
+			m_isValid = true;
 			emit statusChanged(true);
 		}
 	});
@@ -136,6 +139,11 @@ GameSettingsWidget::~GameSettingsWidget()
 {
 	delete m_board;
 	delete ui;
+}
+
+bool GameSettingsWidget::isValid() const
+{
+	return m_isValid;
 }
 
 QString GameSettingsWidget::chessVariant() const

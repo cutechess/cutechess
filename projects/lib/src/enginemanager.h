@@ -52,6 +52,12 @@ class LIB_EXPORT EngineManager : public QObject
 		/*! Sets the available engines to \a engines. */
 		void setEngines(const QList<EngineConfiguration>& engines);
 
+		/*!
+		 * Returns true if \a variant is supported by all engines;
+		 * otherwise returns false.
+		 */
+		bool supportsVariant(const QString& variant) const;
+
 		void loadEngines(const QString& fileName);
 		void saveEngines(const QString& fileName);
 
