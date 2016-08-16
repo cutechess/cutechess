@@ -480,6 +480,9 @@ void GameManager::onGameInitialized(bool success)
 
 	if (!success)
 	{
+		if (gameThread->startMode() == Enqueue)
+			m_activeQueuedGameCount--;
+
 		m_threads.removeOne(gameThread);
 		m_activeThreads.removeOne(gameThread);
 
@@ -492,10 +495,7 @@ void GameManager::onGameInitialized(bool success)
 
 	m_activeGames << game;
 	if (gameThread->startMode() == Enqueue)
-	{
-		m_activeQueuedGameCount++;
 		cleanupIdleThreads();
-	}
 
 	game->moveToThread(gameThread);
 	connect(game, SIGNAL(started(ChessGame*)),
@@ -558,6 +558,7 @@ void GameManager::startQueuedGame()
 		return;
 	}
 
+	m_activeQueuedGameCount++;
 	startGame(m_gameEntries.takeFirst());
 }
 
