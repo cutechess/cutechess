@@ -21,6 +21,7 @@
 #include <QElapsedTimer>
 #include <QString>
 #include <QCoreApplication>
+class QSettings;
 
 /*!
  * \brief Time controls of a chess game.
@@ -190,6 +191,12 @@ class LIB_EXPORT TimeControl
 		 */
 		int activeTimeLeft() const;
 
+		/*! Reads time control settings from \a settings. */
+		void readSettings(QSettings* settings);
+
+		/*! Writes this time control to \a settings. */
+		void writeSettings(QSettings* settings);
+
 	private:
 		int m_movesPerTc;
 		int m_timePerTc;
@@ -204,7 +211,6 @@ class LIB_EXPORT TimeControl
 		bool m_expired;
 		bool m_infinite;
 		QElapsedTimer m_time;
-
 };
 
 #endif // TIMECONTROL_H

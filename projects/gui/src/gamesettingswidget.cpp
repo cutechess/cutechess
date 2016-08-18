@@ -124,15 +124,7 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 		ui->m_diskAccessRadio->setEnabled(!str.isEmpty());
 	});
 
-	QString tbPath = QSettings().value("ui/tb_path").toString();
-	if (!tbPath.isEmpty())
-	{
-		bool ok = GaviotaTablebase::initialize({ tbPath }) &&
-			  GaviotaTablebase::tbAvailable(3);
-		ui->m_tbCheck->setEnabled(ok);
-		if (!ok)
-			ui->m_tbCheck->setChecked(false);
-	}
+	readSettings();
 }
 
 GameSettingsWidget::~GameSettingsWidget()
@@ -238,6 +230,150 @@ void GameSettingsWidget::applyEngineConfiguration(EngineConfiguration* config)
 	config->setPondering(pondering());
 }
 
+void GameSettingsWidget::readSettings()
+{
+	QSettings s;
+
+	bool tbOk = false;
+	QString tbPath = s.value("ui/tb_path").toString();
+	if (!tbPath.isEmpty())
+	{
+		tbOk = GaviotaTablebase::initialize({ tbPath }) &&
+		       GaviotaTablebase::tbAvailable(3);
+		ui->m_tbCheck->setEnabled(tbOk);
+	}
+
+	s.beginGroup("games");
+
+	ui->m_variantCombo->setCurrentText(s.value("variant").toString());
+	m_timeControl.readSettings(&s);
+	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
+
+	s.beginGroup("opening_suite");
+	ui->m_fenEdit->setText(s.value("fen").toString());
+	ui->m_openingSuiteEdit->setText(s.value("file").toString());
+	ui->m_openingSuiteDepthSpin->setValue(s.value("depth", 1).toInt());
+	if (s.value("random_order").toBool())
+		ui->m_randomOrderRadio->setChecked(true);
+	s.endGroup();
+
+	s.beginGroup("opening_book");
+	ui->m_polyglotFileEdit->setText(s.value("file").toString());
+	ui->m_polyglotDepthSpin->setValue(s.value("depth", 1).toInt());
+	if (s.value("disk_access").toBool())
+		ui->m_diskAccessRadio->setChecked(true);
+	s.endGroup();
+
+	s.beginGroup("draw_adjudication");
+	ui->m_drawMoveNumberSpin->setValue(s.value("move_number").toInt());
+	ui->m_drawMoveCountSpin->setValue(s.value("move_count").toInt());
+	ui->m_drawScoreSpin->setValue(s.value("score").toInt());
+	s.endGroup();
+
+	s.beginGroup("resign_adjudication");
+	ui->m_resignMoveCountSpin->setValue(s.value("move_count").toInt());
+	ui->m_resignScoreSpin->setValue(s.value("score").toInt());
+	s.endGroup();
+
+	ui->m_tbCheck->setChecked(tbOk && s.value("use_tb").toBool());
+	ui->m_ponderingCheck->setChecked(s.value("pondering").toBool());
+
+	s.endGroup();
+}
+
+void GameSettingsWidget::enableSettingsUpdates()
+{
+	connect(ui->m_variantCombo, &QComboBox::currentTextChanged,
+		[=](const QString& variant)
+	{
+		QSettings().setValue("games/variant", variant);
+	});
+
+	connect(this, &GameSettingsWidget::timeControlChanged, [=]()
+	{
+		QSettings s;
+		s.beginGroup("games");
+		m_timeControl.writeSettings(&s);
+		s.endGroup();
+	});
+
+	connect(ui->m_tbCheck, &QCheckBox::toggled, [=](bool checked)
+	{
+		QSettings().setValue("games/use_tb", checked);
+	});
+
+	connect(ui->m_fenEdit, &QLineEdit::textChanged, [=](const QString& fen)
+	{
+		QSettings().setValue("games/opening_suite/fen", fen);
+	});
+	connect(ui->m_openingSuiteEdit, &QLineEdit::textChanged,
+		[=](const QString& file)
+	{
+		QSettings().setValue("games/opening_suite/file", file);
+	});
+	connect(ui->m_openingSuiteDepthSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		[=](int depth)
+	{
+		QSettings().setValue("games/opening_suite/depth", depth);
+	});
+	connect(ui->m_randomOrderRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		QSettings().setValue("games/opening_suite/random_order", checked);
+	});
+
+	connect(ui->m_polyglotFileEdit, &QLineEdit::textChanged,
+		[=](const QString& file)
+	{
+		QSettings().setValue("games/opening_book/file", file);
+	});
+	connect(ui->m_polyglotDepthSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		[=](int depth)
+	{
+		QSettings().setValue("games/opening_book/depth", depth);
+	});
+	connect(ui->m_diskAccessRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		QSettings().setValue("games/opening_book/disk_access", checked);
+	});
+
+	connect(ui->m_drawMoveNumberSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		[=](int moveNumber)
+	{
+		QSettings().setValue("games/draw_adjudication/move_number", moveNumber);
+	});
+	connect(ui->m_drawMoveCountSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		[=](int moveCount)
+	{
+		QSettings().setValue("games/draw_adjudication/move_count", moveCount);
+	});
+	connect(ui->m_drawScoreSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		[=](int score)
+	{
+		QSettings().setValue("games/draw_adjudication/score", score);
+	});
+
+	connect(ui->m_resignMoveCountSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		[=](int moveCount)
+	{
+		QSettings().setValue("games/resign_adjudication/move_count", moveCount);
+	});
+	connect(ui->m_resignScoreSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		[=](int score)
+	{
+		QSettings().setValue("games/resign_adjudication/score", score);
+	});
+
+	connect(ui->m_tbCheck, &QCheckBox::toggled, [=](bool checked)
+	{
+		QSettings().setValue("games/use_tb", checked);
+	});
+
+	connect(ui->m_ponderingCheck, &QCheckBox::toggled, [=](bool checked)
+	{
+		QSettings().setValue("games/pondering", checked);
+	});
+}
+
 void GameSettingsWidget::onHumanCountChanged(int count)
 {
 	ui->m_drawAdjudicationGroup->setEnabled(count == 0);
@@ -253,5 +389,6 @@ void GameSettingsWidget::showTimeControlDialog()
 	{
 		m_timeControl = dlg.timeControl();
 		ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
+		emit timeControlChanged();
 	}
 }

@@ -46,6 +46,9 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 
 	connect(ui->m_browseTbPathBtn, &QPushButton::clicked,
 		this, &SettingsDialog::browseTbPath);
+
+	ui->m_gameSettings->onHumanCountChanged(0);
+	ui->m_gameSettings->enableSettingsUpdates();
 }
 
 SettingsDialog::~SettingsDialog()

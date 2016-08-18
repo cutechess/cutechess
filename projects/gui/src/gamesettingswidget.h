@@ -51,18 +51,22 @@ class GameSettingsWidget : public QWidget
 		bool isValid() const;
 
 		void applyEngineConfiguration(EngineConfiguration* config);
+		void enableSettingsUpdates();
 
 	public slots:
 		void onHumanCountChanged(int count);
 
 	signals:
 		void variantChanged(const QString& variant);
+		void timeControlChanged();
 		void statusChanged(bool ok);
 
 	private slots:
 		void showTimeControlDialog();
 
 	private:
+		void readSettings();
+
 		Ui::GameSettingsWidget *ui;
 		TimeControl m_timeControl;
 		Chess::Board* m_board;

@@ -17,6 +17,7 @@
 
 #include "timecontrol.h"
 #include <QStringList>
+#include <QSettings>
 
 namespace {
 
@@ -364,4 +365,34 @@ bool TimeControl::expired() const
 int TimeControl::activeTimeLeft() const
 {
 	return m_timeLeft - m_time.elapsed();
+}
+
+void TimeControl::readSettings(QSettings* settings)
+{
+	settings->beginGroup("time_control");
+
+	m_movesPerTc = settings->value("moves_per_tc", m_movesPerTc).toInt();
+	m_timePerTc = settings->value("time_per_tc", m_timePerTc).toInt();
+	m_timePerMove = settings->value("time_per_move", m_timePerMove).toInt();
+	m_increment = settings->value("increment", m_increment).toInt();
+	m_plyLimit = settings->value("ply_limit", m_plyLimit).toInt();
+	m_nodeLimit = settings->value("node_limit", m_nodeLimit).toInt();
+	m_expiryMargin = settings->value("expiry_margin", m_expiryMargin).toInt();
+	m_infinite = settings->value("infinite", m_infinite).toBool();
+
+	settings->endGroup();
+}
+
+void TimeControl::writeSettings(QSettings* settings)
+{
+	settings->beginGroup("time_control");
+
+	settings->setValue("moves_per_tc", m_movesPerTc);
+	settings->setValue("time_per_tc", m_timePerTc);
+	settings->setValue("time_per_move", m_timePerMove);
+	settings->setValue("increment", m_increment);
+	settings->setValue("ply_limit", m_plyLimit);
+	settings->setValue("node_limit", m_nodeLimit);
+	settings->setValue("expiry_margin", m_expiryMargin);
+	settings->setValue("infinite", m_infinite);
 }

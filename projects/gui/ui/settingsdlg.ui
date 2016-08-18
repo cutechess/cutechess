@@ -62,8 +62,45 @@
        <string>Engines</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="EngineManagementWidget" name="m_engineManagementWidget" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="m_gamesTab">
+      <attribute name="title">
+       <string>Games</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>9</number>
+       </property>
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="rightMargin">
+        <number>9</number>
+       </property>
+       <property name="bottomMargin">
+        <number>9</number>
+       </property>
+       <item>
+        <widget class="GameSettingsWidget" name="m_gameSettings" native="true"/>
        </item>
       </layout>
      </widget>
@@ -106,6 +143,12 @@
    <class>EngineManagementWidget</class>
    <extends>QWidget</extends>
    <header>src/enginemanagementwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GameSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>src/gamesettingswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
