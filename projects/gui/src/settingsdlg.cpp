@@ -44,6 +44,12 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 		CuteChessApplication::instance()->gameManager()->setConcurrency(value);
 	});
 
+	connect(ui->m_siteEdit, &QLineEdit::textChanged,
+		[=](const QString& site)
+	{
+		QSettings().setValue("pgn/site", site);
+	});
+
 	connect(ui->m_browseTbPathBtn, &QPushButton::clicked,
 		this, &SettingsDialog::browseTbPath);
 
@@ -90,6 +96,10 @@ void SettingsDialog::readSettings()
 	ui->m_highlightLegalMovesCheck->setChecked(
 		s.value("highlight_legal_moves", true).toBool());
 	ui->m_tbPathEdit->setText(s.value("tb_path").toString());
+	s.endGroup();
+
+	s.beginGroup("pgn");
+	ui->m_siteEdit->setText(s.value("site").toString());
 	s.endGroup();
 
 	s.beginGroup("tournament");

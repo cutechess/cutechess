@@ -55,6 +55,7 @@ class NewTournamentDialog : public QDialog
 	private:
 		void moveEngine(int offset);
 		bool canStart() const;
+		void readSettings();
 
 		EngineManager* m_srcEngineManager;
 		EngineManager* m_addedEnginesManager;

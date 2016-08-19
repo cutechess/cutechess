@@ -35,13 +35,20 @@
         </widget>
        </item>
        <item row="1" column="0">
+        <widget class="QLabel" name="m_siteLabel">
+         <property name="text">
+          <string>PGN Site:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
         <widget class="QLabel" name="m_tbPathLabel">
          <property name="text">
           <string>Gaviota tablebases path:</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="2" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLineEdit" name="m_tbPathEdit"/>
@@ -54,6 +61,9 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="m_siteEdit"/>
        </item>
       </layout>
      </widget>
@@ -140,15 +150,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>EngineManagementWidget</class>
-   <extends>QWidget</extends>
-   <header>src/enginemanagementwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>GameSettingsWidget</class>
    <extends>QWidget</extends>
    <header>src/gamesettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>EngineManagementWidget</class>
+   <extends>QWidget</extends>
+   <header>src/enginemanagementwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

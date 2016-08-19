@@ -19,6 +19,7 @@
 #include "ui_newgamedlg.h"
 
 #include <QAbstractItemView>
+#include <QSettings>
 
 #include <board/boardfactory.h>
 #include <chessgame.h>
@@ -104,7 +105,9 @@ ChessGame* NewGameDialog::createGame() const
 	bool ok = true;
 	const QString variant = ui->m_gameSettings->chessVariant();
 	auto board = Chess::BoardFactory::create(variant);
-	auto game = new ChessGame(board, new PgnGame());
+	auto pgn = new PgnGame();
+	pgn->setSite(QSettings().value("pgn/site").toString());
+	auto game = new ChessGame(board, pgn);
 
 	game->setTimeControl(ui->m_gameSettings->timeControl());
 	game->setAdjudicator(ui->m_gameSettings->adjudicator());

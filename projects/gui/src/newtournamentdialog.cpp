@@ -19,6 +19,7 @@
 #include "ui_newtournamentdlg.h"
 
 #include <QFileDialog>
+#include <QSettings>
 #include <functional>
 #include <algorithm>
 
@@ -116,6 +117,7 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 
 	ui->m_gameSettings->onHumanCountChanged(0);
 	onVariantChanged(ui->m_gameSettings->chessVariant());
+	readSettings();
 }
 
 NewTournamentDialog::~NewTournamentDialog()
@@ -262,4 +264,9 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	}
 
 	return t;
+}
+
+void NewTournamentDialog::readSettings()
+{
+	ui->m_siteEdit->setText(QSettings().value("pgn/site").toString());
 }
