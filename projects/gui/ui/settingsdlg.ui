@@ -39,12 +39,18 @@
          <property name="text">
           <string>PGN Site:</string>
          </property>
+         <property name="buddy">
+          <cstring>m_siteEdit</cstring>
+         </property>
         </widget>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="m_tbPathLabel">
          <property name="text">
           <string>Gaviota tablebases path:</string>
+         </property>
+         <property name="buddy">
+          <cstring>m_tbPathEdit</cstring>
          </property>
         </widget>
        </item>
@@ -123,6 +129,9 @@
         <widget class="QLabel" name="m_concurrencyLabel">
          <property name="text">
           <string>Maximum number of concurrent games</string>
+         </property>
+         <property name="buddy">
+          <cstring>m_concurrencySpin</cstring>
          </property>
         </widget>
        </item>
