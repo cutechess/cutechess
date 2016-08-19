@@ -363,7 +363,7 @@ void MainWindow::addGame(ChessGame* game)
 	m_tabs.append(tab);
 	m_tabBar->setCurrentIndex(m_tabBar->addTab(genericTitle(tab)));
 
-	if (m_tabs.size() == 2)
+	if (m_tabs.size() >= 2)
 		m_tabBar->parentWidget()->show();
 }
 
