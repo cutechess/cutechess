@@ -17,7 +17,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="3,0,2">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,0">
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
@@ -105,118 +105,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Tournament type</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QRadioButton" name="m_roundRobinRadio">
-            <property name="text">
-             <string>Round Robin</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="m_gauntletRadio">
-            <property name="text">
-             <string>&amp;Gauntlet</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="m_knockoutRadio">
-            <property name="text">
-             <string>Knockout</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox_4">
-         <property name="title">
-          <string>Rounds</string>
-         </property>
-         <layout class="QFormLayout" name="formLayout_3">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::ExpandingFieldsGrow</enum>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Games per encounter:</string>
-            </property>
-            <property name="buddy">
-             <cstring>m_gamesPerEncounterSpin</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="m_gamesPerEncounterSpin">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>999999</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Rounds:</string>
-            </property>
-            <property name="buddy">
-             <cstring>m_roundsSpin</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QSpinBox" name="m_roundsSpin">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>999999</number>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="m_repeatCheckBox">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="toolTip">
-             <string>If an opening book or opening suite is used, play each opening twice so that both players get to play it on both sides.</string>
-            </property>
-            <property name="text">
-             <string>Play each opening twice</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+        <widget class="TournamentSettingsWidget" name="m_tournamentSettings" native="true"/>
        </item>
        <item>
         <spacer name="verticalSpacer_3">
@@ -427,6 +316,12 @@
    <class>GameSettingsWidget</class>
    <extends>QWidget</extends>
    <header>src/gamesettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TournamentSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>src/tournamentsettingswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -27,9 +27,8 @@
 #include <enginemanager.h>
 #include <enginebuilder.h>
 #include <timecontrol.h>
-#include <roundrobintournament.h>
-#include <gauntlettournament.h>
-#include <knockouttournament.h>
+#include <tournament.h>
+#include <tournamentfactory.h>
 #include <openingsuite.h>
 
 #include "engineconfigurationmodel.h"
@@ -101,11 +100,6 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 		this, SLOT(onPlayerSelectionChanged(QItemSelection, QItemSelection)));
 	connect(ui->m_playersList, SIGNAL(doubleClicked(QModelIndex)),
 		this, SLOT(configureEngine(QModelIndex)));
-
-	connect(ui->m_knockoutRadio, &QRadioButton::toggled, [=](bool checked)
-	{
-		ui->m_roundsSpin->setDisabled(checked);
-	});
 
 	ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 	connect(ui->m_gameSettings, &GameSettingsWidget::statusChanged, [=](bool ok)
@@ -224,25 +218,23 @@ void NewTournamentDialog::onPlayerSelectionChanged(const QItemSelection& selecte
 Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) const
 {
 	Q_ASSERT(gameManager != nullptr);
+	auto ts = ui->m_tournamentSettings;
 
-	Tournament* t = nullptr;
-	if (ui->m_roundRobinRadio->isChecked())
-		t = new RoundRobinTournament(gameManager, parent());
-	else if (ui->m_gauntletRadio->isChecked())
-		t = new GauntletTournament(gameManager, parent());
-	else if (ui->m_knockoutRadio->isChecked())
-		t = new KnockoutTournament(gameManager, parent());
-	else
-		return nullptr;
+	auto t = TournamentFactory::create(
+		ts->tournamentType(), gameManager, parent());
 
 	t->setPgnCleanupEnabled(false);
 	t->setName(ui->m_nameEdit->text());
 	t->setSite(ui->m_siteEdit->text());
 	t->setVariant(ui->m_gameSettings->chessVariant());
 	t->setPgnOutput(ui->m_pgnoutEdit->text());
-	t->setGamesPerEncounter(ui->m_gamesPerEncounterSpin->value());
+
+	t->setSeedCount(ts->seedCount());
+	t->setGamesPerEncounter(ts->gamesPerEncounter());
 	if (t->canSetRoundMultiplier())
-		t->setRoundMultiplier(ui->m_roundsSpin->value());
+		t->setRoundMultiplier(ts->rounds());
+	t->setStartDelay(ts->delayBetweenGames());
+
 	t->setAdjudicator(ui->m_gameSettings->adjudicator());
 
 	t->setOpeningSuite(ui->m_gameSettings->openingSuite());
@@ -252,7 +244,8 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	auto book = ui->m_gameSettings->openingBook();
 	int bookDepth = ui->m_gameSettings->bookDepth();
 
-	t->setOpeningRepetition(ui->m_repeatCheckBox->isChecked());
+	t->setOpeningRepetition(ts->openingRepetition());
+	t->setRecoveryMode(ts->engineRecovery());
 
 	foreach (EngineConfiguration config, m_addedEnginesManager->engines())
 	{

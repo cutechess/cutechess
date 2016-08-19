@@ -55,6 +55,7 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 
 	ui->m_gameSettings->onHumanCountChanged(0);
 	ui->m_gameSettings->enableSettingsUpdates();
+	ui->m_tournamentSettings->enableSettingsUpdates();
 }
 
 SettingsDialog::~SettingsDialog()
