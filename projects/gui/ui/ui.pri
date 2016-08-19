@@ -10,4 +10,5 @@ FORMS += $$PWD/engineconfigdlg.ui \
 	 $$PWD/engineselectiondlg.ui \
 	 $$PWD/settingsdlg.ui \
 	 $$PWD/enginemanagementwidget.ui \
-	 $$PWD/gamesettingswidget.ui
+	 $$PWD/gamesettingswidget.ui \
+    $$PWD/tournamentsettingswidget.ui
