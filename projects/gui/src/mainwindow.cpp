@@ -648,19 +648,14 @@ void MainWindow::onTournamentFinished()
 		return;
 	}
 
+	m_showTournamentResultsAct->trigger();
+
 	if (!error.isEmpty())
 	{
 		QMessageBox::critical(this,
 				      tr("Tournament error"),
 				      tr("Tournament \"%1\" finished with an error.\n\n%2")
 				      .arg(name).arg(error));
-	}
-	else
-	{
-		QMessageBox::information(this,
-					 tr("Tournament finished"),
-					 tr("Tournament \"%1\" is finished")
-					 .arg(name));
 	}
 }
 
