@@ -45,6 +45,8 @@ EvalHistory::EvalHistory(QWidget *parent)
 	layout->addWidget(m_plot);
 	layout->setContentsMargins(0, 0, 0, 0);
 	setLayout(layout);
+
+	setMinimumHeight(120);
 }
 
 void EvalHistory::setGame(ChessGame* game)

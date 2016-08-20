@@ -71,6 +71,7 @@ MainWindow::MainWindow(ChessGame* game)
 	  m_readyToClose(false)
 {
 	setAttribute(Qt::WA_DeleteOnClose, true);
+	setDockNestingEnabled(true);
 
 	QHBoxLayout* clockLayout = new QHBoxLayout();
 	for (int i = 0; i < 2; i++)
@@ -306,16 +307,17 @@ void MainWindow::createDockWindows()
 	// Players' eval widgets
 	auto whiteEvalDock = new QDockWidget(tr("White's evaluation"), this);
 	whiteEvalDock->setWidget(m_evalWidgets[Chess::Side::White]);
-	addDockWidget(Qt::BottomDockWidgetArea, whiteEvalDock);
+	addDockWidget(Qt::RightDockWidgetArea, whiteEvalDock);
 	auto blackEvalDock = new QDockWidget(tr("Black's evaluation"), this);
 	blackEvalDock->setWidget(m_evalWidgets[Chess::Side::Black]);
-	addDockWidget(Qt::BottomDockWidgetArea, blackEvalDock);
+	addDockWidget(Qt::RightDockWidgetArea, blackEvalDock);
 
 	// Move list
 	QDockWidget* moveListDock = new QDockWidget(tr("Moves"), this);
 	moveListDock->setWidget(m_moveList);
-
 	addDockWidget(Qt::RightDockWidgetArea, moveListDock);
+	splitDockWidget(moveListDock, whiteEvalDock, Qt::Horizontal);
+	splitDockWidget(whiteEvalDock, blackEvalDock, Qt::Vertical);
 
 	// Tags
 	QDockWidget* tagsDock = new QDockWidget(tr("Tags"), this);
