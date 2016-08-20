@@ -94,6 +94,7 @@ class MainWindow : public QMainWindow
 		void createToolBars();
 		void createDockWindows();
 		void readSettings();
+		void writeSettings();
 		QString genericTitle(const TabData& gameData) const;
 		void lockCurrentGame();
 		void unlockCurrentGame();

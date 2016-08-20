@@ -30,6 +30,7 @@
 #include <QInputDialog>
 #include <QClipboard>
 #include <QWindow>
+#include <QSettings>
 
 #include <board/boardfactory.h>
 #include <chessgame.h>
@@ -126,6 +127,7 @@ MainWindow::MainWindow(ChessGame* game)
 		SIGNAL(finished()), this, SLOT(onGameManagerFinished()),
 		Qt::QueuedConnection);
 
+	readSettings();
 	addGame(game);
 }
 
@@ -282,6 +284,7 @@ void MainWindow::createToolBars()
 		m_tabBar, SLOT(showNextTab()));
 
 	QToolBar* toolBar = new QToolBar(tr("Game Tabs"));
+	toolBar->setObjectName("GameTabs");
 	toolBar->setVisible(false);
 	toolBar->setFloatable(false);
 	toolBar->setMovable(false);
@@ -294,6 +297,7 @@ void MainWindow::createDockWindows()
 {
 	// Engine debug
 	QDockWidget* engineDebugDock = new QDockWidget(tr("Engine Debug"), this);
+	engineDebugDock->setObjectName("EngineDebugDock");
 	m_engineDebugLog = new PlainTextLog(engineDebugDock);
 	engineDebugDock->setWidget(m_engineDebugLog);
 	engineDebugDock->close();
@@ -301,19 +305,23 @@ void MainWindow::createDockWindows()
 
 	// Evaluation history
 	auto evalHistoryDock = new QDockWidget(tr("Evaluation history"), this);
+	evalHistoryDock->setObjectName("EvalHistoryDock");
 	evalHistoryDock->setWidget(m_evalHistory);
 	addDockWidget(Qt::BottomDockWidgetArea, evalHistoryDock);
 
 	// Players' eval widgets
 	auto whiteEvalDock = new QDockWidget(tr("White's evaluation"), this);
+	whiteEvalDock->setObjectName("WhiteEvalDock");
 	whiteEvalDock->setWidget(m_evalWidgets[Chess::Side::White]);
 	addDockWidget(Qt::RightDockWidgetArea, whiteEvalDock);
 	auto blackEvalDock = new QDockWidget(tr("Black's evaluation"), this);
+	blackEvalDock->setObjectName("BlackEvalDock");
 	blackEvalDock->setWidget(m_evalWidgets[Chess::Side::Black]);
 	addDockWidget(Qt::RightDockWidgetArea, blackEvalDock);
 
 	// Move list
 	QDockWidget* moveListDock = new QDockWidget(tr("Moves"), this);
+	moveListDock->setObjectName("MoveListDock");
 	moveListDock->setWidget(m_moveList);
 	addDockWidget(Qt::RightDockWidgetArea, moveListDock);
 	splitDockWidget(moveListDock, whiteEvalDock, Qt::Horizontal);
@@ -321,6 +329,7 @@ void MainWindow::createDockWindows()
 
 	// Tags
 	QDockWidget* tagsDock = new QDockWidget(tr("Tags"), this);
+	tagsDock->setObjectName("TagsDock");
 	QTreeView* tagsView = new QTreeView(tagsDock);
 	tagsView->setModel(m_tagsModel);
 	tagsView->setAlternatingRowColors(true);
@@ -339,6 +348,32 @@ void MainWindow::createDockWindows()
 	m_viewMenu->addAction(evalHistoryDock->toggleViewAction());
 	m_viewMenu->addAction(whiteEvalDock->toggleViewAction());
 	m_viewMenu->addAction(blackEvalDock->toggleViewAction());
+}
+
+void MainWindow::readSettings()
+{
+	QSettings s;
+	s.beginGroup("ui");
+	s.beginGroup("mainwindow");
+
+	restoreGeometry(s.value("geometry").toByteArray());
+	restoreState(s.value("window_state").toByteArray());
+
+	s.endGroup();
+	s.endGroup();
+}
+
+void MainWindow::writeSettings()
+{
+	QSettings s;
+	s.beginGroup("ui");
+	s.beginGroup("mainwindow");
+
+	s.setValue("geometry", saveGeometry());
+	s.setValue("window_state", saveState());
+
+	s.endGroup();
+	s.endGroup();
 }
 
 void MainWindow::addGame(ChessGame* game)
@@ -834,6 +869,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 {
 	if (m_readyToClose)
 	{
+		writeSettings();
 		event->accept();
 		return;
 	}
