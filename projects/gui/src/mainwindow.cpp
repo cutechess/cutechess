@@ -272,6 +272,7 @@ void MainWindow::createToolBars()
 	m_tabBar = new GameTabBar();
 	m_tabBar->setDocumentMode(true);
 	m_tabBar->setTabsClosable(true);
+	m_tabBar->setMovable(false);
 	m_tabBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
 	connect(m_tabBar, SIGNAL(currentChanged(int)),
