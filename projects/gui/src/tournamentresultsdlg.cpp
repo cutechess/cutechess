@@ -33,6 +33,7 @@ TournamentResultsDialog::TournamentResultsDialog(QWidget* parent)
 
 	QFont font("Courier New");
 	font.setStyleHint(QFont::Monospace);
+	font.setPointSize(font.pointSize() - 1);
 	m_resultsEdit->document()->setDefaultFont(font);
 
 	auto layout = new QBoxLayout(QBoxLayout::TopToBottom);
