@@ -213,6 +213,7 @@ void ChessPlayer::claimResult(const Chess::Result& result)
 		return;
 
 	m_timer->stop();
+	m_timeControl.update();
 	if (m_state == Thinking)
 		setState(Observing);
 	m_claimedResult = true;
