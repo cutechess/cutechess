@@ -142,7 +142,7 @@
           <bool>false</bool>
          </property>
          <property name="title">
-          <string>Participants</string>
+          <string>Players</string>
          </property>
          <property name="flat">
           <bool>false</bool>
