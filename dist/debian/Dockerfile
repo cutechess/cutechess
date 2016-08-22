@@ -36,8 +36,8 @@ RUN \
   mkdir -p DEBIAN && \
   mv /cutechess_deb_control DEBIAN/control && \
   cd /cutechess_deb && \
-  mv cutechess cutechess_0.9.0-1_amd64 && \
-  dpkg-deb --build cutechess_0.9.0-1_amd64
+  mv cutechess cutechess_20160822+0.8.3+0.9.0-1_amd64 && \
+  dpkg-deb --build cutechess_20160822+0.8.3+0.9.0-1_amd64
 
 # Copy the .deb package to the host
 CMD cp /cutechess_deb/cutechess*.deb /package
