@@ -74,6 +74,8 @@ class LIB_EXPORT GameAdjudicator
 		 * the game should be adjudicated.
 		 */
 		void addEval(const Chess::Board* board, const MoveEvaluation& eval);
+		/*! Sets draw move count to 0. */
+		void resetDrawMoveCount();
 		/*!
 		 * Returns the adjudication result.
 		 *

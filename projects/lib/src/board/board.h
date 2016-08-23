@@ -198,6 +198,12 @@ class LIB_EXPORT Board
 		 */
 		int repeatCount() const;
 		/*!
+		 * Returns the number of consecutive reversible moves made.
+		 *
+		 * The default implementation always returns -1.
+		 */
+		virtual int reversibleMoveCount() const;
+		/*!
 		 * Returns the number of reserve pieces of type \a piece.
 		 *
 		 * On variants that don't have piece drops this function

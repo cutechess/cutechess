@@ -773,6 +773,11 @@ int Board::repeatCount() const
 	return repeatCount;
 }
 
+int Board::reversibleMoveCount() const
+{
+	return -1;
+}
+
 bool Board::isRepetition(const Chess::Move& move)
 {
 	Q_ASSERT(!move.isNull());

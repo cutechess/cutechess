@@ -108,6 +108,11 @@ void GameAdjudicator::addEval(const Chess::Board* board, const MoveEvaluation& e
 	}
 }
 
+void GameAdjudicator::resetDrawMoveCount()
+{
+	m_drawScoreCount = 0;
+}
+
 Chess::Result GameAdjudicator::result() const
 {
 	return m_result;
