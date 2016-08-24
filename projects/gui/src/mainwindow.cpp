@@ -56,7 +56,9 @@
 #include "boardview/boardscene.h"
 #include "tournamentresultsdlg.h"
 
+#ifdef QT_DEBUG
 #include <modeltest.h>
+#endif
 
 MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
 	: id(game),

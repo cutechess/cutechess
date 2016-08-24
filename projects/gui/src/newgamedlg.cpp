@@ -35,7 +35,9 @@
 #include "timecontroldlg.h"
 #include "stringvalidator.h"
 
+#ifdef QT_DEBUG
 #include <modeltest.h>
+#endif
 
 NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	: QDialog(parent),

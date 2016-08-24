@@ -56,7 +56,6 @@ Source: "{#QtLibPath}\Qt5Svg.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\Qt5PrintSupport.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\Qt5Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\Qt5Concurrent.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\Qt5Test.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

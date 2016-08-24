@@ -33,7 +33,9 @@
 #include "engineoptionmodel.h"
 #include "engineoptiondelegate.h"
 
+#ifdef QT_DEBUG
 #include <modeltest.h>
+#endif
 
 EngineConfigurationDialog::EngineConfigurationDialog(
 	EngineConfigurationDialog::DialogMode mode, QWidget* parent)

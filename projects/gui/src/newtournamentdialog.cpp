@@ -37,7 +37,9 @@
 #include "timecontroldlg.h"
 #include "engineselectiondlg.h"
 
+#ifdef QT_DEBUG
 #include <modeltest.h>
+#endif
 
 NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 					 QWidget *parent)

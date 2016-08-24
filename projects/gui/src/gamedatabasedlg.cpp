@@ -40,7 +40,9 @@
 #include "gamedatabasesearchdlg.h"
 #include "threadedtask.h"
 
+#ifdef QT_DEBUG
 #include <modeltest.h>
+#endif
 
 class PgnGameIterator
 {

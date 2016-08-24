@@ -38,6 +38,8 @@ UI_HEADERS_DIR = src
 include(src/src.pri)
 include(ui/ui.pri)
 include(res/res.pri)
-
-include(3rdparty/modeltest/modeltest.pri)
 include(3rdparty/qcustomplot/qcustomplot.pri)
+
+CONFIG(debug, debug|release) {
+    include(3rdparty/modeltest/modeltest.pri)
+}
