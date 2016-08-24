@@ -20,6 +20,7 @@
 #include <QtGlobal>
 #include <qcustomplot.h>
 #include <chessgame.h>
+#include <moveevaluation.h>
 
 EvalHistory::EvalHistory(QWidget *parent)
 	: QWidget(parent),
@@ -94,6 +95,9 @@ void EvalHistory::setGame(ChessGame* game)
 
 void EvalHistory::addData(int ply, int score)
 {
+	if (score == MoveEvaluation::NULL_SCORE)
+		return;
+
 	int side = (ply % 2 == 0) ? 0 : 1;
 	double x = double(ply + 2) / 2;
 	double y = qBound(-15.0, double(score) / 100.0, 15.0);
