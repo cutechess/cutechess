@@ -83,7 +83,7 @@ void EvalHistory::setGame(ChessGame* game)
 	m_plot->graph(1)->setBrush(QBrush(cBlack));
 
 	const auto& scores = game->scores();
-	int ply = 0;
+	int ply = -1;
 
 	for (auto it = scores.constBegin(); it != scores.constEnd(); ++it)
 	{
@@ -109,9 +109,12 @@ void EvalHistory::addData(int ply, int score)
 
 void EvalHistory::replot(int maxPly)
 {
-	int step = qMax(1, maxPly / 20);
-	m_plot->xAxis->setTickStep(double(step));
-	m_plot->rescaleAxes();
+	if (maxPly != -1)
+	{
+		int step = qMax(1, maxPly / 20);
+		m_plot->xAxis->setTickStep(double(step));
+		m_plot->rescaleAxes();
+	}
 	m_plot->replot();
 }
 
