@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:wheezy-backports
 
 RUN \
   apt-get update && apt-get install -y \
