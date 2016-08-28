@@ -73,4 +73,4 @@ qtc-gdbmacros/
 *.o
 
 # Installation packages
-dist/debian/package
+dist/linux/package
