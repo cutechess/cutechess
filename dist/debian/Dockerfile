@@ -6,8 +6,7 @@ RUN \
     build-essential \
     qt5-default \
     qt5-qmake \
-    libqt5svg5-dev \
-    imagemagick
+    libqt5svg5-dev
 
 # Download and build cutechess
 RUN \
@@ -36,7 +35,7 @@ RUN \
   cp /cutechess/projects/gui/cutechess usr/games && \
   cp /cutechess_menu/cutechess usr/share/menu && \
   cp /cutechess/projects/gui/res/icons/cutechess_128x128.png usr/share/pixmaps/cutechess.png && \
-  convert usr/share/pixmaps/cutechess.png usr/share/pixmaps/cutechess.xpm && \
+  cp /cutechess/projects/gui/res/icons/cutechess_32x32.xpm usr/share/pixmaps/cutechess.xpm && \
   cp /cutechess.desktop usr/share/applications && \
   cp /cutechess/docs/cutechess-cli.6 usr/share/man/man6 && \
   gzip usr/share/man/man6/cutechess-cli.6 && \
