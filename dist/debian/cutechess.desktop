@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Cute Chess
+Comment=Interface for playing chess
+GenericName=Chess Game
+Icon=cutechess
+Exec=cutechess
+Terminal=false
+Type=Application
+Categories=Game;BoardGame;
+Keywords=PGN;FEN;Database;

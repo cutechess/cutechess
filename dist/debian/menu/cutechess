@@ -1,0 +1,6 @@
+?package(cutechess):needs="X11" \
+  section="Games/Board"\
+  title="Cute Chess" \
+  longtitle="Cute Chess - interface for playing chess" \
+  icon="/usr/share/pixmaps/cutechess.xpm" \
+  command="/usr/games/cutechess"
