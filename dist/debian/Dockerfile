@@ -3,6 +3,7 @@ FROM debian:wheezy-backports
 # Install dependencies and build tools
 RUN \
   apt-get update && apt-get install -y \
+    git \
     build-essential \
     qt5-default \
     qt5-qmake \
@@ -10,7 +11,6 @@ RUN \
 
 # Download and build cutechess
 RUN \
-  apt-get install -y git && \
   git clone https://github.com/cutechess/cutechess.git && \
   cd /cutechess && \
   qmake && \
