@@ -9,18 +9,28 @@ RUN \
     qt5-qmake \
     libqt5svg5-dev \
     ruby-dev \
-    rpm && \
-  gem install fpm
+    rpm \
+    wget \
+    bsdmainutils \
+    zlib1g-dev && \
+  gem install fpm && \
+  wget http://mdocml.bsd.lv/snapshots/mdocml.tar.gz && \
+  tar fzx mdocml.tar.gz && \
+  cd mdocml-* && \
+  ./configure && make && make install
 
 # Download and build cutechess
 RUN \
   git clone https://github.com/cutechess/cutechess.git && \
   cd /cutechess && \
   qmake && \
-  make -j4
+  make -j4 && \
+  make doc-txt && \
+  make doc-html
 
 COPY menu /cutechess_menu
 COPY cutechess.desktop /cutechess.desktop
+COPY cutechess-cli.sh /cutechess-cli.sh
 
 # Create .deb and .rpm packages
 RUN \
@@ -82,6 +92,24 @@ RUN \
     -d "qt5-qtbase >= 5.3.2" \
     -d "qt5-qtsvg >= 5.3.2" && \
   mv /cutechess_pkg/*.rpm /finished_pkg/
+
+# Create .tar.gz package for cutechess-cli
+RUN \
+  mkdir -p /cutechess_pkg/cutechess-cli && \
+  cd /cutechess_pkg && \
+  mkdir -p ./cutechess-cli/lib && \
+  cp /usr/lib/x86_64-linux-gnu/libQt5Core.so.5 cutechess-cli/lib/ && \
+  cp /cutechess/projects/cli/cutechess-cli cutechess-cli/ && \
+  cp /cutechess/COPYING cutechess-cli/ && \
+  cp /cutechess/docs/man-style.css cutechess-cli/ && \
+  cp /cutechess/tools/clop-cutechess-cli.py cutechess-cli/ && \
+  cp /cutechess-cli.sh cutechess-cli/ && \
+  cp /cutechess/docs/cutechess-cli.6.html cutechess-cli/ && \
+  cp /cutechess/docs/cutechess-cli.6.txt cutechess-cli/ && \
+  cp /cutechess/docs/engines.json.5.html cutechess-cli/ && \
+  cp /cutechess/docs/engines.json.5.txt cutechess-cli/ && \
+  tar -zcvf cutechess-cli-linux64.tar.gz cutechess-cli && \
+  mv cutechess-cli-linux64.tar.gz /finished_pkg/
 
 # Copy the .deb package to the host
 CMD cp /finished_pkg/cutechess*.* /package
