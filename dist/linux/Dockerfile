@@ -46,12 +46,15 @@ RUN \
   cp /cutechess/COPYING usr/share/doc/cutechess/copyright && \
   cp /cutechess/README.md usr/share/doc/cutechess/README && \
   mkdir /finished_pkg && \
+  export CUTECHESS_CLI_VERSION=$(grep "^CUTECHESS_CLI_VERSION" /cutechess/projects/cli/cli.pro | awk '{print $NF}') && \
+  export CUTECHESS_GUI_VERSION=$(grep "^CUTECHESS_VERSION" /cutechess/projects/gui/gui.pro | awk '{print $NF}') && \
+  export TODAY=$(date +%Y%m%d) && \
   fpm -s dir -t deb -C /cutechess_pkg \
     -a "amd64" \
     --license "GPLv3" \
     --url "https://github.com/cutechess/cutechess" \
     -n "cutechess" \
-    -v "20160822+0.8.3+0.9.0" \
+    -v "$TODAY+$CUTECHESS_CLI_VERSION+$CUTECHESS_GUI_VERSION" \
     --iteration 1 \
     --category "games" \
     -m "Ilari Pihlajisto <ilari.pihlajisto@mbnet.fi>" \
@@ -71,7 +74,7 @@ RUN \
     --license "GPLv3" \
     --url "https://github.com/cutechess/cutechess" \
     -n "cutechess" \
-    -v "20160822+0.8.3+0.9.0" \
+    -v "$TODAY+$CUTECHESS_CLI_VERSION+$CUTECHESS_GUI_VERSION" \
     --iteration 1 \
     --category "Amusements/Games/Board/Chess" \
     -m "Ilari Pihlajisto <ilari.pihlajisto@mbnet.fi>" \
