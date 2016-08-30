@@ -96,7 +96,8 @@ class LIB_EXPORT ChessGame : public QObject
 				 const QString& comment);
 		void scoreChanged(int ply, int score);
 		void started(ChessGame* game = nullptr);
-		void finished(ChessGame* game = nullptr);
+		void finished(ChessGame* game = nullptr,
+			      Chess::Result result = Chess::Result());
 		void startFailed(ChessGame* game = nullptr);
 		void playersReady();
 

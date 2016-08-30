@@ -24,6 +24,7 @@
 #include <board/square.h>
 #include <board/genericmove.h>
 #include <board/boardtransition.h>
+#include <board/result.h>
 namespace Chess
 {
 	class Board;
@@ -31,6 +32,7 @@ namespace Chess
 	class Side;
 	class Piece;
 }
+class ChessGame;
 class QSvgRenderer;
 class QAbstractAnimation;
 class QPropertyAnimation;
@@ -89,10 +91,13 @@ class BoardScene : public QGraphicsScene
 		void makeMove(const Chess::GenericMove& move);
 		/*! Reverses the last move that was made in the scene. */
 		void undoMove();
-		/*! Cancels any move that the user is attempting to make. */
-		void cancelUserMove();
 		/*! Flips the board, with animation. */
 		void flip();
+		/*!
+		 * Cancels any ongoing user move and flashes \a result
+		 * over the board.
+		 */
+		void onGameFinished(ChessGame* game, Chess::Result result);
 
 	signals:
 		/*!
@@ -115,6 +120,8 @@ class BoardScene : public QGraphicsScene
 		void onPromotionChosen(const Chess::Piece& promotion);
 
 	private:
+		void cancelUserMove();
+
 		enum MoveDirection
 		{
 			Forward,

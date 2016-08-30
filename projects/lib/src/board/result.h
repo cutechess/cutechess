@@ -19,6 +19,7 @@
 #define RESULT_H
 
 #include "side.h"
+#include <QMetaType>
 #include <QCoreApplication>
 
 namespace Chess {
@@ -114,4 +115,7 @@ class LIB_EXPORT Result
 };
 
 } // namespace Chess
+
+Q_DECLARE_METATYPE(Chess::Result)
+
 #endif // RESULT_H

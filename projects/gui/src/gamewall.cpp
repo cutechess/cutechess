@@ -46,7 +46,7 @@ GameWall::GameWall(GameManager* manager, QWidget *parent)
 		this, SLOT(removeGame(ChessGame*)));
 
 	m_timer->setSingleShot(true);
-	m_timer->setInterval(2000);
+	m_timer->setInterval(3000);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(cleanupWidgets()));
 }
 
@@ -86,6 +86,8 @@ void GameWall::addGame(ChessGame* game)
 		scene, SLOT(makeMove(Chess::GenericMove)));
 	connect(game, SIGNAL(humanEnabled(bool)),
 		view, SLOT(setEnabled(bool)));
+	connect(game, SIGNAL(finished(ChessGame*, Chess::Result)),
+		scene, SLOT(onGameFinished(ChessGame*, Chess::Result)));
 
 	for (int i = 0; i < 2; i++)
 	{

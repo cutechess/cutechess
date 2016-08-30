@@ -20,7 +20,9 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
+#include <QSequentialAnimationGroup>
 #include <QGraphicsPolygonItem>
+#include <QGraphicsTextItem>
 #include <QSettings>
 #include <algorithm>
 #include <board/board.h>
@@ -51,6 +53,7 @@ BoardScene::BoardScene(QObject* parent)
 
 BoardScene::~BoardScene()
 {
+	stopAnimation();
 	delete m_board;
 }
 
@@ -336,6 +339,47 @@ void BoardScene::onPromotionChosen(const Chess::Piece& promotion)
 		m_promotionMove.setPromotion(promotion.type());
 		emit humanMove(m_promotionMove, m_board->sideToMove());
 	}
+}
+
+void BoardScene::onGameFinished(ChessGame* game, Chess::Result result)
+{
+	Q_UNUSED(game);
+
+	stopAnimation();
+	cancelUserMove();
+
+	auto text = new QGraphicsTextItem(result.toShortString(), m_squares);
+	auto font = text->font();
+	font.setPointSize(10);
+	font.setBold(true);
+	text->setFont(font);
+	text->setOpacity(0.6);
+	const auto rect = text->boundingRect();
+	qreal x = rect.width() / 2;
+	qreal y = rect.height() / 2;
+	text->setPos(-x, -y);
+	text->setTransformOriginPoint(x, y);
+
+	auto group = new QSequentialAnimationGroup;
+	connect(group, &QSequentialAnimationGroup::finished,
+		text, &QGraphicsTextItem::deleteLater);
+	m_anim = group;
+
+	auto scAnim = new QPropertyAnimation(text, "scale");
+	scAnim->setStartValue(text->scale());
+	scAnim->setEndValue(6.5);
+	scAnim->setEasingCurve(QEasingCurve::InOutQuad);
+	scAnim->setDuration(500);
+	group->addAnimation(scAnim);
+
+	auto opAnim = new QPropertyAnimation(text, "opacity");
+	opAnim->setStartValue(text->opacity());
+	opAnim->setEndValue(0.0);
+	opAnim->setEasingCurve(QEasingCurve::InOutQuad);
+	opAnim->setDuration(2500);
+	group->addAnimation(opAnim);
+
+	group->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 QPointF BoardScene::squarePos(const Chess::Square& square) const

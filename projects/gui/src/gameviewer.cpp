@@ -135,7 +135,8 @@ void GameViewer::setGame(ChessGame* game)
 				player, SLOT(onHumanMove(Chess::GenericMove, Chess::Side)));
 	}
 
-	connect(m_game, SIGNAL(finished()), m_boardScene, SLOT(cancelUserMove()));
+	connect(m_game, SIGNAL(finished(ChessGame*, Chess::Result)),
+		m_boardScene, SLOT(onGameFinished(ChessGame*, Chess::Result)));
 	m_boardView->setEnabled(!m_game->isFinished() &&
 				m_game->playerToMove()->isHuman());
 }

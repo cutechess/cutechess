@@ -209,7 +209,7 @@ void ChessGame::finish()
 			m_player[i]->disconnect(this);
 	}
 
-	emit finished(this);
+	emit finished(this, m_result);
 }
 
 void ChessGame::kill()
