@@ -497,6 +497,8 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 		}
 
 		updateWindowTitle();
+		for (auto evalWidget : m_evalWidgets)
+			evalWidget->setPlayer(nullptr);
 
 		return;
 	}

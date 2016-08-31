@@ -59,12 +59,13 @@ void EvalWidget::clear()
 
 void EvalWidget::setPlayer(ChessPlayer* player)
 {
-	if (m_player)
-	{
-		m_player->disconnect(this);
+	if (player != m_player || !player)
 		clear();
-	}
+	if (m_player)
+		m_player->disconnect(this);
 	m_player = player;
+	if (!player)
+		return;
 
 	connect(player, SIGNAL(startedThinking(int)),
 		this, SLOT(clear()));
