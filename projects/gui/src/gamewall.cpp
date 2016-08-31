@@ -68,7 +68,7 @@ void GameWall::addGame(ChessGame* game)
 	}
 	clockLayout->insertSpacing(1, 20);
 
-	BoardScene* scene = new BoardScene();
+	BoardScene* scene = new BoardScene(widget);
 	BoardView* view = new BoardView(scene);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
