@@ -54,6 +54,9 @@ void GameWall::addGame(ChessGame* game)
 {
 	Q_ASSERT(game != nullptr);
 
+	if (m_games.contains(game))
+		return;
+
 	QWidget* widget = new QWidget(this);
 
 	ChessClock* clock[2] = { new ChessClock(), new ChessClock() };
