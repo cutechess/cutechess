@@ -353,7 +353,7 @@ void BoardScene::onGameFinished(ChessGame* game, Chess::Result result)
 	font.setPointSize(10);
 	font.setBold(true);
 	text->setFont(font);
-	text->setOpacity(0.6);
+	text->setOpacity(0.9);
 	const auto rect = text->boundingRect();
 	qreal x = rect.width() / 2;
 	qreal y = rect.height() / 2;
