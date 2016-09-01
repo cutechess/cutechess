@@ -21,7 +21,10 @@
 #include <QMainWindow>
 #include <QPointer>
 
-namespace Chess { class Board; class Move; }
+namespace Chess {
+	class Board;
+	class Move;
+}
 class QMenu;
 class QAction;
 class QCloseEvent;
@@ -72,6 +75,7 @@ class MainWindow : public QMainWindow
 		void onTournamentFinished();
 		void onGameManagerFinished();
 		void onGameStartFailed(ChessGame* game);
+		void onGameFinished(ChessGame* game);
 		void editMoveComment(int ply, const QString& comment);
 		void copyFen();
 		void showAboutDialog();

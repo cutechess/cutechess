@@ -405,6 +405,9 @@ void MainWindow::addGame(ChessGame* game)
 
 	if (m_tabs.size() >= 2)
 		m_tabBar->parentWidget()->show();
+
+	connect(game, SIGNAL(finished(ChessGame*)),
+		this, SLOT(onGameFinished(ChessGame*)));
 }
 
 void MainWindow::removeGame(int index)
@@ -648,6 +651,18 @@ void MainWindow::onGameStartFailed(ChessGame* game)
 	game->deleteLater();
 }
 
+void MainWindow::onGameFinished(ChessGame* game)
+{
+	int tIndex = tabIndex(game);
+	if (tIndex == -1)
+		return;
+
+	QString title = genericTitle(m_tabs[tIndex]);
+	m_tabBar->setTabText(tIndex, title);
+	if (game == m_game)
+		updateWindowTitle();
+}
+
 void MainWindow::newTournament()
 {
 	NewTournamentDialog dlg(CuteChessApplication::instance()->engineManager(), this);
@@ -752,14 +767,28 @@ QString MainWindow::windowListTitle() const
 
 QString MainWindow::genericTitle(const TabData& gameData) const
 {
-	if (gameData.game != nullptr)
-		return tr("%1 vs %2")
-			.arg(gameData.game->player(Chess::Side::White)->name())
-			.arg(gameData.game->player(Chess::Side::Black)->name());
+	QString white;
+	QString black;
+	Chess::Result result;
+	if (gameData.game)
+	{
+		white = gameData.game->player(Chess::Side::White)->name();
+		black = gameData.game->player(Chess::Side::Black)->name();
+		result = gameData.game->result();
+	}
+	else
+	{
+		white = gameData.pgn->playerName(Chess::Side::White);
+		black = gameData.pgn->playerName(Chess::Side::Black);
+		result = gameData.pgn->result();
+	}
 
-	return tr("%1 vs %2")
-		.arg(gameData.pgn->playerName(Chess::Side::White))
-		.arg(gameData.pgn->playerName(Chess::Side::Black));
+	if (result.isNone())
+		return tr("%1 vs %2").arg(white).arg(black);
+	else
+		return tr("%1 vs %2 (%3)")
+		       .arg(white).arg(black)
+		       .arg(result.toShortString());
 }
 
 void MainWindow::editMoveComment(int ply, const QString& comment)
