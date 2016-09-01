@@ -358,7 +358,8 @@ void Tournament::startGame(TournamentPair* pair)
 	game->pgn()->setSite(m_site);
 	game->pgn()->setRound(m_round);
 
-	game->setStartDelay(m_startDelay);
+	if (m_finishedGameCount > 0)
+		game->setStartDelay(m_startDelay);
 	game->setAdjudicator(m_adjudicator);
 
 	GameData* data = new GameData;
