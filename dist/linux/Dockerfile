@@ -28,10 +28,6 @@ RUN \
   make doc-txt && \
   make doc-html
 
-COPY menu /cutechess_menu
-COPY cutechess.desktop /cutechess.desktop
-COPY cutechess-cli.sh /cutechess-cli.sh
-
 # Create .deb and .rpm packages
 RUN \
   mkdir -p /cutechess_pkg && \
@@ -45,10 +41,10 @@ RUN \
   mkdir -p usr/share/doc/cutechess && \
   cp /cutechess/projects/cli/cutechess-cli usr/games && \
   cp /cutechess/projects/gui/cutechess usr/games && \
-  cp /cutechess_menu/cutechess usr/share/menu && \
+  cp /cutechess/dist/linux/menu/cutechess usr/share/menu && \
   cp /cutechess/projects/gui/res/icons/cutechess_128x128.png usr/share/pixmaps/cutechess.png && \
   cp /cutechess/projects/gui/res/icons/cutechess_32x32.xpm usr/share/pixmaps/cutechess.xpm && \
-  cp /cutechess.desktop usr/share/applications && \
+  cp /cutechess/dist/linux/cutechess.desktop usr/share/applications && \
   cp /cutechess/docs/cutechess-cli.6 usr/share/man/man6 && \
   gzip usr/share/man/man6/cutechess-cli.6 && \
   cp /cutechess/docs/engines.json.5 usr/share/man/man5 && \
@@ -95,6 +91,8 @@ RUN \
 
 # Create .tar.gz package for cutechess-cli
 RUN \
+  cd /cutechess && \
+  export CUTECHESS_CLI_GIT_VERSION=$(git describe --tags --match "cli-*") && \
   mkdir -p /cutechess_pkg/cutechess-cli && \
   cd /cutechess_pkg && \
   mkdir -p ./cutechess-cli/lib && \
@@ -103,13 +101,13 @@ RUN \
   cp /cutechess/COPYING cutechess-cli/ && \
   cp /cutechess/docs/man-style.css cutechess-cli/ && \
   cp /cutechess/tools/clop-cutechess-cli.py cutechess-cli/ && \
-  cp /cutechess-cli.sh cutechess-cli/ && \
+  cp /cutechess/dist/linux/cutechess-cli.sh cutechess-cli/ && \
   cp /cutechess/docs/cutechess-cli.6.html cutechess-cli/ && \
   cp /cutechess/docs/cutechess-cli.6.txt cutechess-cli/ && \
   cp /cutechess/docs/engines.json.5.html cutechess-cli/ && \
   cp /cutechess/docs/engines.json.5.txt cutechess-cli/ && \
   tar -zcvf cutechess-cli-linux64.tar.gz cutechess-cli && \
-  mv cutechess-cli-linux64.tar.gz /finished_pkg/
+  mv cutechess-cli-linux64.tar.gz /finished_pkg/cutechess-$CUTECHESS_CLI_GIT_VERSION-linux64.tar.gz
 
 # Copy the .deb package to the host
 CMD cp /finished_pkg/cutechess*.* /package
