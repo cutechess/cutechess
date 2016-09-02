@@ -17,6 +17,8 @@
 
 #include "gamewall.h"
 
+#include <QPointer>
+
 #include <chessplayer.h>
 #include <chessgame.h>
 #include <gamemanager.h>
@@ -39,9 +41,10 @@ class GameWallWidget : public QWidget
 		void setGame(ChessGame* game);
 
 	private:
-		ChessClock* m_clock[2];
+		ChessClock* m_clocks[2];
 		BoardScene* m_scene;
 		BoardView* m_view;
+		QPointer<ChessPlayer> m_players[2];
 };
 
 GameWallWidget::GameWallWidget(QWidget* parent)
@@ -50,11 +53,13 @@ GameWallWidget::GameWallWidget(QWidget* parent)
 	QHBoxLayout* clockLayout = new QHBoxLayout();
 	for (int i = 0; i < 2; i++)
 	{
-		m_clock[i] = new ChessClock();
-		clockLayout->addWidget(m_clock[i]);
+		m_players[i] = nullptr;
+
+		m_clocks[i] = new ChessClock();
+		clockLayout->addWidget(m_clocks[i]);
 
 		Chess::Side side = Chess::Side::Type(i);
-		m_clock[i]->setPlayerName(side.toString());
+		m_clocks[i]->setPlayerName(side.toString());
 	}
 	clockLayout->insertSpacing(1, 20);
 
@@ -87,27 +92,31 @@ void GameWallWidget::setGame(ChessGame* game)
 
 	for (int i = 0; i < 2; i++)
 	{
+		if (m_players[i])
+			m_players[i]->disconnect(m_clocks[i]);
+
 		ChessPlayer* player(game->player(Chess::Side::Type(i)));
+		m_players[i] = player;
 
 		if (player->isHuman())
 			connect(m_scene, SIGNAL(humanMove(Chess::GenericMove, Chess::Side)),
 				player, SLOT(onHumanMove(Chess::GenericMove, Chess::Side)));
 
-		m_clock[i]->setPlayerName(player->name());
+		m_clocks[i]->setPlayerName(player->name());
 		connect(player, SIGNAL(nameChanged(QString)),
-			m_clock[i], SLOT(setPlayerName(QString)));
+			m_clocks[i], SLOT(setPlayerName(QString)));
 
-		m_clock[i]->setInfiniteTime(player->timeControl()->isInfinite());
+		m_clocks[i]->setInfiniteTime(player->timeControl()->isInfinite());
 
 		if (player->state() == ChessPlayer::Thinking)
-			m_clock[i]->start(player->timeControl()->activeTimeLeft());
+			m_clocks[i]->start(player->timeControl()->activeTimeLeft());
 		else
-			m_clock[i]->setTime(player->timeControl()->timeLeft());
+			m_clocks[i]->setTime(player->timeControl()->timeLeft());
 
 		connect(player, SIGNAL(startedThinking(int)),
-			m_clock[i], SLOT(start(int)));
+			m_clocks[i], SLOT(start(int)));
 		connect(player, SIGNAL(stoppedThinking()),
-			m_clock[i], SLOT(stop()));
+			m_clocks[i], SLOT(stop()));
 	}
 
 	m_scene->setBoard(game->pgn()->createBoard());
