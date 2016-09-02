@@ -17,8 +17,6 @@
 
 #include "gamewall.h"
 
-#include <QTimer>
-
 #include <chessplayer.h>
 #include <chessgame.h>
 #include <gamemanager.h>
@@ -29,9 +27,104 @@
 #include "chessclock.h"
 #include "cutechessapp.h"
 
+
+class GameWallWidget : public QWidget
+{
+	Q_OBJECT
+
+	public:
+		explicit GameWallWidget(QWidget* parent);
+		virtual ~GameWallWidget();
+
+		void setGame(ChessGame* game);
+
+	private:
+		ChessClock* m_clock[2];
+		BoardScene* m_scene;
+		BoardView* m_view;
+};
+
+GameWallWidget::GameWallWidget(QWidget* parent)
+	: QWidget(parent)
+{
+	QHBoxLayout* clockLayout = new QHBoxLayout();
+	for (int i = 0; i < 2; i++)
+	{
+		m_clock[i] = new ChessClock();
+		clockLayout->addWidget(m_clock[i]);
+
+		Chess::Side side = Chess::Side::Type(i);
+		m_clock[i]->setPlayerName(side.toString());
+	}
+	clockLayout->insertSpacing(1, 20);
+
+	m_scene = new BoardScene(this);
+	m_view = new BoardView(m_scene);
+
+	QVBoxLayout* mainLayout = new QVBoxLayout();
+	mainLayout->addLayout(clockLayout);
+	mainLayout->addWidget(m_view);
+	mainLayout->setContentsMargins(0, 0, 0, 0);
+
+	setLayout(mainLayout);
+}
+
+GameWallWidget::~GameWallWidget()
+{
+}
+
+void GameWallWidget::setGame(ChessGame* game)
+{
+	game->lockThread();
+	connect(game, SIGNAL(fenChanged(QString)),
+		m_scene, SLOT(setFenString(QString)));
+	connect(game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
+		m_scene, SLOT(makeMove(Chess::GenericMove)));
+	connect(game, SIGNAL(humanEnabled(bool)),
+		m_view, SLOT(setEnabled(bool)));
+	connect(game, SIGNAL(finished(ChessGame*, Chess::Result)),
+		m_scene, SLOT(onGameFinished(ChessGame*, Chess::Result)));
+
+	for (int i = 0; i < 2; i++)
+	{
+		ChessPlayer* player(game->player(Chess::Side::Type(i)));
+
+		if (player->isHuman())
+			connect(m_scene, SIGNAL(humanMove(Chess::GenericMove, Chess::Side)),
+				player, SLOT(onHumanMove(Chess::GenericMove, Chess::Side)));
+
+		m_clock[i]->setPlayerName(player->name());
+		connect(player, SIGNAL(nameChanged(QString)),
+			m_clock[i], SLOT(setPlayerName(QString)));
+
+		m_clock[i]->setInfiniteTime(player->timeControl()->isInfinite());
+
+		if (player->state() == ChessPlayer::Thinking)
+			m_clock[i]->start(player->timeControl()->activeTimeLeft());
+		else
+			m_clock[i]->setTime(player->timeControl()->timeLeft());
+
+		connect(player, SIGNAL(startedThinking(int)),
+			m_clock[i], SLOT(start(int)));
+		connect(player, SIGNAL(stoppedThinking()),
+			m_clock[i], SLOT(stop()));
+	}
+
+	m_scene->setBoard(game->pgn()->createBoard());
+	m_scene->populate();
+
+	foreach (const Chess::Move& move, game->moves())
+		m_scene->makeMove(move);
+
+	game->unlockThread();
+
+	m_view->setEnabled(!game->isFinished() &&
+			   game->playerToMove()->isHuman());
+}
+
+
 GameWall::GameWall(GameManager* manager, QWidget *parent)
-	: QWidget(parent),
-	  m_timer(new QTimer(this))
+	: QWidget(parent)
 {
 	Q_ASSERT(manager != nullptr);
 
@@ -44,10 +137,17 @@ GameWall::GameWall(GameManager* manager, QWidget *parent)
 		this, SLOT(addGame(ChessGame*)));
 	connect(manager, SIGNAL(gameDestroyed(ChessGame*)),
 		this, SLOT(removeGame(ChessGame*)));
+}
 
-	m_timer->setSingleShot(true);
-	m_timer->setInterval(3000);
-	connect(m_timer, SIGNAL(timeout()), this, SLOT(cleanupWidgets()));
+GameWallWidget* GameWall::getFreeWidget()
+{
+	if (!m_gamesToRemove.isEmpty())
+		return m_gamesToRemove.takeFirst();
+
+	auto widget = new GameWallWidget(this);
+	layout()->addWidget(widget);
+
+	return widget;
 }
 
 void GameWall::addGame(ChessGame* game)
@@ -57,99 +157,16 @@ void GameWall::addGame(ChessGame* game)
 	if (m_games.contains(game))
 		return;
 
-	QWidget* widget = new QWidget(this);
+	auto widget = getFreeWidget();
+	widget->setGame(game);
 
-	ChessClock* clock[2] = { new ChessClock(), new ChessClock() };
-	QHBoxLayout* clockLayout = new QHBoxLayout();
-	for (int i = 0; i < 2; i++)
-	{
-		clock[i] = new ChessClock();
-		clockLayout->addWidget(clock[i]);
-
-		Chess::Side side = Chess::Side::Type(i);
-		clock[i]->setPlayerName(side.toString());
-	}
-	clockLayout->insertSpacing(1, 20);
-
-	BoardScene* scene = new BoardScene(widget);
-	BoardView* view = new BoardView(scene);
-
-	QVBoxLayout* mainLayout = new QVBoxLayout();
-	mainLayout->addLayout(clockLayout);
-	mainLayout->addWidget(view);
-	mainLayout->setContentsMargins(0, 0, 0, 0);
-
-	widget->setLayout(mainLayout);
-	layout()->addWidget(widget);
-
-	game->lockThread();
-	connect(game, SIGNAL(fenChanged(QString)),
-		scene, SLOT(setFenString(QString)));
-	connect(game, SIGNAL(moveMade(Chess::GenericMove, QString, QString)),
-		scene, SLOT(makeMove(Chess::GenericMove)));
-	connect(game, SIGNAL(humanEnabled(bool)),
-		view, SLOT(setEnabled(bool)));
-	connect(game, SIGNAL(finished(ChessGame*, Chess::Result)),
-		scene, SLOT(onGameFinished(ChessGame*, Chess::Result)));
-
-	for (int i = 0; i < 2; i++)
-	{
-		ChessPlayer* player(game->player(Chess::Side::Type(i)));
-
-		if (player->isHuman())
-			connect(scene, SIGNAL(humanMove(Chess::GenericMove, Chess::Side)),
-				player, SLOT(onHumanMove(Chess::GenericMove, Chess::Side)));
-
-		clock[i]->setPlayerName(player->name());
-		connect(player, SIGNAL(nameChanged(QString)),
-			clock[i], SLOT(setPlayerName(QString)));
-
-		clock[i]->setInfiniteTime(player->timeControl()->isInfinite());
-
-		if (player->state() == ChessPlayer::Thinking)
-			clock[i]->start(player->timeControl()->activeTimeLeft());
-		else
-			clock[i]->setTime(player->timeControl()->timeLeft());
-
-		connect(player, SIGNAL(startedThinking(int)),
-			clock[i], SLOT(start(int)));
-		connect(player, SIGNAL(stoppedThinking()),
-			clock[i], SLOT(stop()));
-	}
-
-	scene->setBoard(game->pgn()->createBoard());
-	scene->populate();
-
-	foreach (const Chess::Move& move, game->moves())
-		scene->makeMove(move);
-
-	game->unlockThread();
-
-	view->setEnabled(!game->isFinished() &&
-			 game->playerToMove()->isHuman());
 	m_games[game] = widget;
-
-	cleanupWidgets();
 }
 
 void GameWall::removeGame(ChessGame* game)
 {
 	Q_ASSERT(m_games.contains(game));
 	m_gamesToRemove.append(m_games.take(game));
-
-	if (!m_timer->isActive())
-		m_timer->start();
 }
 
-void GameWall::cleanupWidgets()
-{
-	m_timer->stop();
-	if (m_gamesToRemove.isEmpty())
-		return;
-
-	qDeleteAll(m_gamesToRemove);
-	m_gamesToRemove.clear();
-
-	if (m_games.isEmpty())
-		close();
-}
+#include "gamewall.moc"
