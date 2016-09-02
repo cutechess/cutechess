@@ -59,6 +59,7 @@ class MainWindow : public QMainWindow
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);
+		void closeCurrentGame();
 
 	private slots:
 		void newGame();
@@ -70,7 +71,6 @@ class MainWindow : public QMainWindow
 		bool saveAs();
 		void onTabChanged(int index);
 		void onTabCloseRequested(int index);
-		void closeCurrentGame();
 		void destroyGame(ChessGame* game);
 		void onTournamentFinished();
 		void onGameManagerFinished();

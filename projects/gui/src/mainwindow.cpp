@@ -207,7 +207,21 @@ void MainWindow::createActions()
 	connect(copyFenSequence, SIGNAL(triggered()), this, SLOT(copyFen()));
 	connect(m_flipBoardAct, SIGNAL(triggered()),
 		m_gameViewer->boardScene(), SLOT(flip()));
-	connect(m_closeGameAct, SIGNAL(triggered()), this, SLOT(closeCurrentGame()));
+	connect(m_closeGameAct, &QAction::triggered, this, [=]()
+	{
+		auto focusMainWindow = qobject_cast<MainWindow*>(CuteChessApplication::instance()->focusObject());
+		if (focusMainWindow != nullptr)
+		{
+			focusMainWindow->closeCurrentGame();
+		}
+
+		auto focusWindow = CuteChessApplication::instance()->focusWindow();
+		if (focusWindow != nullptr)
+		{
+			focusWindow->close();
+		}
+	});
+
 	connect(m_saveGameAct, SIGNAL(triggered()), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 	connect(m_quitGameAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
