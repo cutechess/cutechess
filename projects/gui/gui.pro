@@ -9,7 +9,7 @@ DESTDIR = $$PWD
 include(../lib/lib.pri)
 include(../lib/libexport.pri)
 
-CUTECHESS_VERSION = unknown
+CUTECHESS_VERSION = 0.9.0
 
 macx-xcode {
     DEFINES += CUTECHESS_VERSION=\"$$CUTECHESS_VERSION\"
