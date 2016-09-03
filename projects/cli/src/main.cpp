@@ -23,6 +23,7 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QFile>
+#include <QMetaType>
 
 #include <mersenne.h>
 #include <enginemanager.h>
@@ -36,6 +37,7 @@
 #include <openingsuite.h>
 #include <sprt.h>
 #include <board/gaviotatablebase.h>
+#include <board/result.h>
 
 #include "cutechesscoreapp.h"
 #include "matchparser.h"
@@ -597,6 +599,9 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 int main(int argc, char* argv[])
 {
+	// Register types for signal / slot connections
+	qRegisterMetaType<Chess::Result>("Chess::Result");
+
 	setvbuf(stdout, nullptr, _IONBF, 0);
 	signal(SIGINT, sigintHandler);
 
