@@ -667,7 +667,10 @@ void XboardEngine::parseLine(const QString& line)
 		{
 			list = rx.cap().split('=');
 			if (list.count() != 2)
+			{
+				pos += rx.matchedLength();
 				continue;
+			}
 			feature = list.at(0).trimmed();
 			
 			QString val = list.at(1).trimmed();
