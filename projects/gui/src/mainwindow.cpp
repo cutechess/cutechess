@@ -155,13 +155,13 @@ void MainWindow::createActions()
 	m_saveGameAsAct = new QAction(tr("Save &As..."), this);
 	m_saveGameAsAct->setShortcut(QKeySequence::SaveAs);
 
-	m_copyFenAct = new QAction(tr("Copy FEN"), this);
+	m_copyFenAct = new QAction(tr("Copy F&EN"), this);
 	QAction* copyFenSequence = new QAction(m_gameViewer);
 	copyFenSequence->setShortcut(QKeySequence::Copy);
 	copyFenSequence->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 	m_gameViewer->addAction(copyFenSequence);
 
-	m_flipBoardAct = new QAction(tr("Flip Board"), this);
+	m_flipBoardAct = new QAction(tr("&Flip Board"), this);
 
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	m_quitGameAct->setMenuRole(QAction::QuitRole);
@@ -171,35 +171,35 @@ void MainWindow::createActions()
 	m_quitGameAct->setShortcut(QKeySequence::Quit);
 	#endif
 
-	m_newTournamentAct = new QAction(tr("New..."), this);
-	m_stopTournamentAct = new QAction(tr("Stop"), this);
-	m_showTournamentResultsAct = new QAction(tr("Results..."), this);
+	m_newTournamentAct = new QAction(tr("&New..."), this);
+	m_stopTournamentAct = new QAction(tr("&Stop"), this);
+	m_showTournamentResultsAct = new QAction(tr("&Results..."), this);
 
-	m_showSettingsAct = new QAction(tr("Settings"), this);
+	m_showSettingsAct = new QAction(tr("&Settings"), this);
 	m_showSettingsAct->setMenuRole(QAction::PreferencesRole);
 
 	m_showGameDatabaseWindowAct = new QAction(tr("&Game Database"), this);
 
-	m_showGameWallAct = new QAction(tr("Game Wall"), this);
+	m_showGameWallAct = new QAction(tr("Game &Wall"), this);
 
-	m_minimizeAct = new QAction(tr("Minimize"), this);
+	m_minimizeAct = new QAction(tr("&Minimize"), this);
 	m_minimizeAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
 
-	m_showPreviousTabAct = new QAction(tr("Show Previous Tab"), this);
+	m_showPreviousTabAct = new QAction(tr("Show &Previous Tab"), this);
 	#ifdef Q_OS_MAC
 	m_showPreviousTabAct->setShortcut(QKeySequence(Qt::MetaModifier + Qt::ShiftModifier + Qt::Key_Tab));
 	#else
 	m_showPreviousTabAct->setShortcut(QKeySequence(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_Tab));
 	#endif
 
-	m_showNextTabAct = new QAction(tr("Show Next Tab"), this);
+	m_showNextTabAct = new QAction(tr("Show &Next Tab"), this);
 	#ifdef Q_OS_MAC
 	m_showNextTabAct->setShortcut(QKeySequence(Qt::MetaModifier + Qt::Key_Tab));
 	#else
 	m_showNextTabAct->setShortcut(QKeySequence(Qt::ControlModifier + Qt::Key_Tab));
 	#endif
 
-	m_aboutAct = new QAction(tr("About Cute Chess..."), this);
+	m_aboutAct = new QAction(tr("&About Cute Chess..."), this);
 	m_aboutAct->setMenuRole(QAction::AboutRole);
 
 	connect(m_newGameAct, SIGNAL(triggered()), this, SLOT(newGame()));
