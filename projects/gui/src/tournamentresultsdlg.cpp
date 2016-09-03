@@ -58,8 +58,24 @@ void TournamentResultsDialog::update()
 {
 	auto tournament = qobject_cast<Tournament*>(QObject::sender());
 	Q_ASSERT(tournament != nullptr);
+	QString text;
 
-	QString text = tournament->results();
+	// A quick fix, copied from the CLI side.
+	if (tournament->playerCount() == 2 && tournament->type() != "knockout")
+	{
+		TournamentPlayer fcp = tournament->playerAt(0);
+		TournamentPlayer scp = tournament->playerAt(1);
+		int totalResults = fcp.gamesFinished();
+		text = tr("Score of %1 vs %2: %3 - %4 - %5 [%6]\n")
+		       .arg(fcp.name())
+		       .arg(scp.name())
+		       .arg(fcp.wins())
+		       .arg(scp.wins())
+		       .arg(fcp.draws())
+		       .arg(double(fcp.score() / (totalResults * 2)), 0, 'f', 3);
+	}
+
+	text += tournament->results();
 	text += tr("\n\n%1 of %2 games finished.")
 		.arg(tournament->finishedGameCount())
 		.arg(tournament->finalGameCount());
