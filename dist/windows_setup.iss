@@ -10,8 +10,9 @@
 #define MyAppExeName "cutechess.exe"
 #define MinGWLibPath "C:\QtSDK\mingw\bin"
 #define MSVCLibPath "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x64\Microsoft.VC140.CRT"
-#define QtLibPath "C:\Qt\5.7\msvc2015_64\bin"
+#define QtLibPath "C:\Qt\5.7\msvc2015_64"
 #define CuteChessPath "C:\cutechess"
+#define DocPath "C:\cutechess_docs"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -50,12 +51,16 @@ Source: "{#CuteChessPath}\projects\cli\cutechess-cli.exe"; DestDir: "{app}"; Fla
   Source: "{#MSVCLibPath}\msvcp140.dll"; DestDir: "{app}"; Flags: ignoreversion
   Source: "{#MSVCLibPath}\vcruntime140.dll"; DestDir: "{app}"; Flags: ignoreversion
 #endif
-Source: "{#QtLibPath}\Qt5Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\Qt5Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\Qt5Svg.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\Qt5PrintSupport.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\Qt5Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\Qt5Concurrent.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt5Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt5Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt5Svg.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt5PrintSupport.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt5Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt5Concurrent.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
+Source: "{#DocPath}\COPYING"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#DocPath}\engines.json.5.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#DocPath}\cutechess-cli.6.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
