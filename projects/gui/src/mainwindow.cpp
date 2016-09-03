@@ -213,6 +213,7 @@ void MainWindow::createActions()
 		if (focusMainWindow != nullptr)
 		{
 			focusMainWindow->closeCurrentGame();
+			return;
 		}
 
 		auto focusWindow = CuteChessApplication::instance()->focusWindow();
