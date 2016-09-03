@@ -835,7 +835,7 @@ void MainWindow::copyFen()
 void MainWindow::showAboutDialog()
 {
 	QString html;
-	html += "<h3>" + QString("CuteChess %1")
+	html += "<h3>" + QString("Cute Chess %1")
 		.arg(CuteChessApplication::applicationVersion()) + "</h3>";
 	html += "<p>" + tr("Using Qt version %1").arg(qVersion()) + "</p>";
 	html += "<p>" + tr("Copyright 2008-2016 "
@@ -846,7 +846,7 @@ void MainWindow::showAboutDialog()
 			   "PURPOSE.") + "</p>";
 	html += "<a href=\"http://cutechess.com\">cutechess.com</a><br>";
 
-	QMessageBox::about(this, tr("About CuteChess"), html);
+	QMessageBox::about(this, tr("About Cute Chess"), html);
 }
 
 void MainWindow::lockCurrentGame()
