@@ -354,7 +354,7 @@ void XboardEngine::sendQuit()
 
 EngineOption* XboardEngine::parseOption(const QString& line)
 {
-	int start = line.indexOf('-');
+	int start = line.indexOf(" -") + 1;
 	if (start < 2)
 		return nullptr;
 
@@ -665,18 +665,17 @@ void XboardEngine::parseLine(const QString& line)
 		
 		while ((pos = rx.indexIn(args, pos)) != -1)
 		{
-			list = rx.cap().split('=');
-			if (list.count() != 2)
+			QString cap = rx.cap();
+			int index = cap.indexOf('=');
+			if (index != -1)
 			{
-				pos += rx.matchedLength();
-				continue;
+				QString feature = cap.left(index).trimmed();
+				QString val = cap.mid(index + 1).trimmed();
+				val.remove('\"');
+
+				setFeature(feature, val);
 			}
-			feature = list.at(0).trimmed();
-			
-			QString val = list.at(1).trimmed();
-			val.remove('\"');
-			
-			setFeature(feature, val);
+
 			pos += rx.matchedLength();
 		}
 	}
