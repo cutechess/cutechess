@@ -289,6 +289,7 @@ void GameViewer::viewPosition(int index)
 
 void GameViewer::viewMove(int index)
 {
+	Q_ASSERT(index >= 0);
 	Q_ASSERT(!m_moves.isEmpty());
 
 	if (index < m_moveIndex)

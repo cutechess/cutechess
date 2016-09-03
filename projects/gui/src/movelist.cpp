@@ -160,7 +160,7 @@ bool MoveList::eventFilter(QObject* obj, QEvent* event)
 			else
 				return true;
 
-			if (selectMove(index))
+			if (index != -1 && selectMove(index))
 				emit moveClicked(index);
 		}
 		return false;
