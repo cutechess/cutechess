@@ -395,6 +395,9 @@ void MainWindow::writeSettings()
 
 void MainWindow::addGame(ChessGame* game)
 {
+	connect(game, SIGNAL(finished(ChessGame*)),
+		this, SLOT(onGameFinished(ChessGame*)));
+
 	Tournament* tournament = qobject_cast<Tournament*>(QObject::sender());
 	TabData tab(game, tournament);
 
@@ -419,9 +422,6 @@ void MainWindow::addGame(ChessGame* game)
 
 	if (m_tabs.size() >= 2)
 		m_tabBar->parentWidget()->show();
-
-	connect(game, SIGNAL(finished(ChessGame*)),
-		this, SLOT(onGameFinished(ChessGame*)));
 }
 
 void MainWindow::removeGame(int index)
