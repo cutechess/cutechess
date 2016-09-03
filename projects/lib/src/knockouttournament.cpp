@@ -277,8 +277,8 @@ QString KnockoutTournament::results() const
 					std::swap(score1, score2);
 
 				text += QString(" (%1-%2)")
-					.arg(score1)
-					.arg(score2);
+					.arg(double(score1) / 2)
+					.arg(double(score2) / 2);
 			}
 			lines[lineNum] += text;
 			x++;
