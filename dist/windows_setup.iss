@@ -9,7 +9,7 @@
 #define MyAppURL "https://github.com/cutechess/cutechess"
 #define MyAppExeName "cutechess.exe"
 #define MinGWLibPath "C:\QtSDK\mingw\bin"
-#define MSVCLibPath "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x64\Microsoft.VC140.CRT"
+#define MSVCLibPath "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\1033"
 #define QtLibPath "C:\Qt\5.7\msvc2015_64"
 #define CuteChessPath "C:\cutechess"
 #define DocPath "C:\cutechess_docs"
@@ -48,8 +48,7 @@ Source: "{#CuteChessPath}\projects\cli\cutechess-cli.exe"; DestDir: "{app}"; Fla
   Source: "{#MinGWLibPath}\libgcc_s_dw2-1.dll"; DestDir: "{app}"; Flags: ignoreversion
 #endif
 #ifdef MSVC
-  Source: "{#MSVCLibPath}\msvcp140.dll"; DestDir: "{app}"; Flags: ignoreversion
-  Source: "{#MSVCLibPath}\vcruntime140.dll"; DestDir: "{app}"; Flags: ignoreversion
+  Source: "{#MSVCLibPath}\vcredist_x64.exe"; DestDir: "{app}"; Flags: ignoreversion
 #endif
 Source: "{#QtLibPath}\bin\Qt5Core.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\bin\Qt5Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -69,5 +68,6 @@ Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\cutechess.exe"; Tasks: desktopicon
 
 [Run]
+Filename: "{app}\vcredist_x64.exe"; Parameters: "/install /quiet /norestart"; StatusMsg: Installing Visual Studio 2015 RunTime...
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
