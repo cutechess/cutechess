@@ -259,7 +259,7 @@ void GameSettingsWidget::readSettings()
 
 	s.beginGroup("opening_book");
 	ui->m_polyglotFileEdit->setText(s.value("file").toString());
-	ui->m_polyglotDepthSpin->setValue(s.value("depth", 1).toInt());
+	ui->m_polyglotDepthSpin->setValue(s.value("depth", 10).toInt());
 	if (s.value("disk_access").toBool())
 		ui->m_diskAccessRadio->setChecked(true);
 	s.endGroup();

@@ -265,6 +265,9 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="toolTip">
+           <string>The whole book is loaded in memory. This makes book access a bit faster but uses more memory.</string>
+          </property>
           <property name="text">
            <string>Ram</string>
           </property>
@@ -277,6 +280,9 @@
          <widget class="QRadioButton" name="m_diskAccessRadio">
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>The book is accessed directly from disk. This is a good choice for very large books.</string>
           </property>
           <property name="text">
            <string>Disk</string>
