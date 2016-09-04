@@ -17,6 +17,8 @@
 
 #include "tournamentresultsdlg.h"
 
+#include <limits>
+
 #include <QPlainTextEdit>
 #include <QBoxLayout>
 #include <QFont>
@@ -66,13 +68,16 @@ void TournamentResultsDialog::update()
 		TournamentPlayer fcp = tournament->playerAt(0);
 		TournamentPlayer scp = tournament->playerAt(1);
 		int totalResults = fcp.gamesFinished();
+		double scoreRatio = std::numeric_limits<double>::quiet_NaN();
+		if (totalResults > 0)
+			scoreRatio = double(fcp.score()) / (totalResults * 2);
 		text = tr("Score of %1 vs %2: %3 - %4 - %5 [%6]\n")
 		       .arg(fcp.name())
 		       .arg(scp.name())
 		       .arg(fcp.wins())
 		       .arg(scp.wins())
 		       .arg(fcp.draws())
-		       .arg(double(fcp.score() / (totalResults * 2)), 0, 'f', 3);
+		       .arg(scoreRatio, 0, 'f', 3);
 	}
 
 	text += tournament->results();
