@@ -55,6 +55,7 @@ void EvalHistory::setGame(ChessGame* game)
 	if (m_game)
 		m_game->disconnect(this);
 	m_game = game;
+	m_plot->clearGraphs();
 	if (!game)
 	{
 		replot(0);
@@ -64,7 +65,6 @@ void EvalHistory::setGame(ChessGame* game)
 	connect(m_game, SIGNAL(scoreChanged(int,int)),
 		this, SLOT(onScore(int,int)));
 
-	m_plot->clearGraphs();
 	m_plot->addGraph();
 	m_plot->addGraph();
 
