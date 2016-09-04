@@ -20,6 +20,7 @@
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QSlider>
+#include <QMessageBox>
 #include <pgngame.h>
 #include <chessgame.h>
 #include <chessplayer.h>
@@ -147,8 +148,18 @@ void GameViewer::setGame(const PgnGame* pgn)
 
 	disconnectGame();
 
-	m_boardScene->setBoard(pgn->createBoard());
-	m_boardScene->populate();
+	auto board = pgn->createBoard();
+	if (board)
+	{
+		m_boardScene->setBoard(board);
+		m_boardScene->populate();
+	}
+	else
+	{
+		QMessageBox::critical(
+			this, tr("Cannot show game"),
+			tr("This game is incompatible with Cute Chess and cannot be shown."));
+	}
 	m_moveIndex = 0;
 
 	m_moves.clear();
