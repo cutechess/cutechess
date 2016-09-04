@@ -729,6 +729,8 @@ void MainWindow::onTournamentFinished()
 				      tr("Tournament \"%1\" finished with an error.\n\n%2")
 				      .arg(name).arg(error));
 	}
+
+	CuteChessApplication::alert(this);
 }
 
 void MainWindow::onWindowMenuAboutToShow()
