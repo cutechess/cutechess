@@ -86,10 +86,10 @@ void ChessClock::setTime(int totalTime)
 void ChessClock::start(int totalTime)
 {
 	QPalette tmp = m_timeLabel->palette();
-	tmp.setColor(QPalette::Normal, QPalette::WindowText,
-		     m_defaultPalette.color(QPalette::Normal, QPalette::Window));
-	tmp.setColor(QPalette::Normal, QPalette::Window,
-		     m_defaultPalette.color(QPalette::Normal, QPalette::WindowText));
+	tmp.setColor(QPalette::WindowText,
+		     m_defaultPalette.color(QPalette::Window));
+	tmp.setColor(QPalette::Window,
+		     m_defaultPalette.color(QPalette::WindowText));
 	m_timeLabel->setPalette(tmp);
 
 	if (!m_infiniteTime)
