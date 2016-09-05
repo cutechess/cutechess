@@ -272,6 +272,11 @@ void MainWindow::createMenus()
 	m_tournamentMenu->addAction(m_showTournamentResultsAct);
 	m_stopTournamentAct->setEnabled(false);
 
+	#ifndef Q_OS_MAC
+	m_toolsMenu = menuBar()->addMenu(tr("T&ools"));
+	m_toolsMenu->addAction(m_showSettingsAct);
+	#endif
+
 	m_viewMenu = menuBar()->addMenu(tr("&View"));
 
 	m_windowMenu = menuBar()->addMenu(tr("&Window"));
@@ -959,7 +964,6 @@ void MainWindow::addDefaultWindowMenu()
 {
 	m_windowMenu->addAction(m_minimizeAct);
 	m_windowMenu->addSeparator();
-	m_windowMenu->addAction(m_showSettingsAct);
 	m_windowMenu->addAction(m_showGameWallAct);
 	m_windowMenu->addAction(m_showGameDatabaseWindowAct);
 	m_windowMenu->addSeparator();

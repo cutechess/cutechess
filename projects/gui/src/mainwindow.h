@@ -112,6 +112,7 @@ class MainWindow : public QMainWindow
 
 		QMenu* m_gameMenu;
 		QMenu* m_tournamentMenu;
+		QMenu* m_toolsMenu;
 		QMenu* m_viewMenu;
 		QMenu* m_windowMenu;
 		QMenu* m_helpMenu;
