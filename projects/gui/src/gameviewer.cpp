@@ -126,8 +126,6 @@ void GameViewer::setGame(ChessGame* game)
 	connect(m_game, SIGNAL(humanEnabled(bool)),
 		m_boardView, SLOT(setEnabled(bool)));
 
-	viewLastMove();
-
 	for (int i = 0; i < 2; i++)
 	{
 		ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
@@ -174,6 +172,8 @@ void GameViewer::setGame(const PgnGame* pgn)
 	m_moveNumberSlider->setEnabled(!m_moves.isEmpty());
 	m_moveNumberSlider->setMaximum(m_moves.count());
 	m_moveNumberSlider->setValue(0);
+
+	viewLastMove();
 }
 
 void GameViewer::disconnectGame()
