@@ -209,18 +209,18 @@ void MainWindow::createActions()
 		m_gameViewer->boardScene(), SLOT(flip()));
 	connect(m_closeGameAct, &QAction::triggered, this, [=]()
 	{
-		auto focusMainWindow = qobject_cast<MainWindow*>(CuteChessApplication::instance()->focusObject());
-		if (focusMainWindow != nullptr)
+		auto focusWindow = CuteChessApplication::activeWindow();
+		if (!focusWindow)
+			return;
+
+		auto focusMainWindow = qobject_cast<MainWindow*>(focusWindow);
+		if (focusMainWindow)
 		{
 			focusMainWindow->closeCurrentGame();
 			return;
 		}
 
-		auto focusWindow = CuteChessApplication::instance()->focusWindow();
-		if (focusWindow != nullptr)
-		{
-			focusWindow->close();
-		}
+		focusWindow->close();
 	});
 
 	connect(m_saveGameAct, SIGNAL(triggered()), this, SLOT(save()));
