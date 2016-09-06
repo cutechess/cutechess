@@ -200,6 +200,8 @@ void NewTournamentDialog::onVariantChanged(const QString& variant)
 	m_addedEnginesModel->setChessVariant(variant);
 	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
 	button->setEnabled(canStart());
+
+	onPlayerSelectionChanged(QItemSelection(), QItemSelection());
 }
 
 void NewTournamentDialog::onPlayerSelectionChanged(const QItemSelection& selected,
