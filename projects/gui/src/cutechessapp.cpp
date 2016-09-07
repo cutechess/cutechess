@@ -233,7 +233,7 @@ void CuteChessApplication::showGameWall()
 		auto flags = m_gameWall->windowFlags();
 		m_gameWall->setWindowFlags(flags | Qt::Window);
 		m_gameWall->setAttribute(Qt::WA_DeleteOnClose, true);
-		m_gameWall->setWindowTitle(tr("Game Wall"));
+		m_gameWall->setWindowTitle(tr("Active Games"));
 	}
 
 	showDialog(m_gameWall);

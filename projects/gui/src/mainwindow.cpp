@@ -180,7 +180,7 @@ void MainWindow::createActions()
 
 	m_showGameDatabaseWindowAct = new QAction(tr("&Game Database"), this);
 
-	m_showGameWallAct = new QAction(tr("Game &Wall"), this);
+	m_showGameWallAct = new QAction(tr("&Active Games"), this);
 
 	m_minimizeAct = new QAction(tr("&Minimize"), this);
 	m_minimizeAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
@@ -274,7 +274,6 @@ void MainWindow::createMenus()
 
 	m_toolsMenu = menuBar()->addMenu(tr("T&ools"));
 	m_toolsMenu->addAction(m_showSettingsAct);
-        m_toolsMenu->addAction(m_showGameWallAct);
         m_toolsMenu->addAction(m_showGameDatabaseWindowAct);
 
 	m_viewMenu = menuBar()->addMenu(tr("&View"));
@@ -963,6 +962,8 @@ bool MainWindow::askToSave()
 void MainWindow::addDefaultWindowMenu()
 {
 	m_windowMenu->addAction(m_minimizeAct);
+	m_windowMenu->addSeparator();
+	m_windowMenu->addAction(m_showGameWallAct);
 	m_windowMenu->addSeparator();
 	m_windowMenu->addAction(m_showPreviousTabAct);
 	m_windowMenu->addAction(m_showNextTabAct);
