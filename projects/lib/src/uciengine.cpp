@@ -438,6 +438,11 @@ void UciEngine::parseInfo(const QStringRef& line)
 	QVarLengthArray<QStringRef> tokens;
 	MoveEvaluation eval;
 
+	// The "string" info is not supported and it can't be parsed
+	// like other info lines.
+	if (token == "string")
+		return;
+
 	while (!token.isNull())
 	{
 		token = parseUciTokens(token, types, 16, tokens, type);
