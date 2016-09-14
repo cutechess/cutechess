@@ -400,9 +400,6 @@ void MainWindow::writeSettings()
 
 void MainWindow::addGame(ChessGame* game)
 {
-	connect(game, SIGNAL(finished(ChessGame*)),
-		this, SLOT(onGameFinished(ChessGame*)));
-
 	Tournament* tournament = qobject_cast<Tournament*>(QObject::sender());
 	TabData tab(game, tournament);
 
@@ -421,6 +418,9 @@ void MainWindow::addGame(ChessGame* game)
 			return;
 		}
 	}
+	else
+		connect(game, SIGNAL(finished(ChessGame*)),
+			this, SLOT(onGameFinished(ChessGame*)));
 
 	m_tabs.append(tab);
 	m_tabBar->setCurrentIndex(m_tabBar->addTab(genericTitle(tab)));
@@ -698,6 +698,8 @@ void MainWindow::newTournament()
 		this, SLOT(addGame(ChessGame*)));
 	connect(t, SIGNAL(gameFinished(ChessGame*, int, int, int)),
 		resultsDialog, SLOT(update()));
+	connect(t, SIGNAL(gameFinished(ChessGame*, int, int, int)),
+		this, SLOT(onGameFinished(ChessGame*)));
 	t->start();
 
 	connect(m_stopTournamentAct, SIGNAL(triggered()), t, SLOT(stop()));
