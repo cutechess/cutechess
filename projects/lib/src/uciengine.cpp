@@ -688,8 +688,9 @@ void UciEngine::parseLine(const QString& line)
 
 void UciEngine::setPonderMove(const QString& moveString)
 {
-	// Stockfish sends (none) when it responds to "ponderhit"
-	if (moveString == "(none)")
+	// Stockfish sends "(none)" and Komodo sends "0000"
+	// when it responds to "ponderhit".
+	if (moveString == "(none)" || moveString == "0000")
 	{
 		m_ponderMove = Chess::Move();
 		return;
