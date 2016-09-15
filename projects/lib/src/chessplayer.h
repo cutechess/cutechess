@@ -110,7 +110,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void makeMove(const Chess::Move& move) = 0;
 		
 		/*! Forces the player to play \a move as its next move. */
-		void makeBookMove(const Chess::Move& move);
+		virtual void makeBookMove(const Chess::Move& move);
 		
 		/*! Returns the player's name. */
 		QString name() const;
@@ -126,6 +126,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 * opponent's move). The default implementation does nothing.
 		 */
 		virtual void startPondering();
+
+		/*! Clears the player's pondering state. */
+		virtual void clearPonderState();
 
 		/*! Returns true if the player is human. */
 		virtual bool isHuman() const = 0;

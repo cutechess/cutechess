@@ -197,6 +197,10 @@ void ChessPlayer::startPondering()
 {
 }
 
+void ChessPlayer::clearPonderState()
+{
+}
+
 bool ChessPlayer::areClaimsValidated() const
 {
 	return m_validateClaims;

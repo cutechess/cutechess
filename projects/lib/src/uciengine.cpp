@@ -203,6 +203,15 @@ void UciEngine::makeMove(const Chess::Move& move)
 	}
 }
 
+void UciEngine::makeBookMove(const Chess::Move& move)
+{
+	if (stopThinking())
+		ping(false);
+	clearPonderState();
+
+	ChessEngine::makeBookMove(move);
+}
+
 void UciEngine::startThinking()
 {
 	if (m_ponderState == PonderHit)
@@ -271,6 +280,12 @@ void UciEngine::startPondering()
 	sendPosition();
 	ping();
 	startThinking();
+}
+
+void UciEngine::clearPonderState()
+{
+	m_ponderState = NotPondering;
+	m_ponderMove = Chess::Move();
 }
 
 bool UciEngine::isPondering() const

@@ -311,7 +311,10 @@ void ChessGame::startTurn()
 		m_player[side.opposite()]->startPondering();
 	}
 	else
+	{
+		m_player[side.opposite()]->clearPonderState();
 		m_player[side]->makeBookMove(move);
+	}
 }
 
 void ChessGame::onResultClaim(const Chess::Result& result)
