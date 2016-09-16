@@ -347,6 +347,14 @@ class LIB_EXPORT Tournament : public QObject
 		 * Reimplementations should call the base implementation.
 		 */
 		virtual void startGame(TournamentPair* pair);
+		/*!
+		 * Returns true if Gauntlet ordering is used for the ratings
+		 * table (ie. first engine always at the top and the rest
+		 * ordered by ELO); otherwise returns false.
+		 *
+		 * The default implementation always returns false.
+		 */
+		virtual bool hasGauntletRatingsOrder() const;
 
 	private slots:
 		void startNextGame();
@@ -370,6 +378,7 @@ class LIB_EXPORT Tournament : public QObject
 			qreal score;
 			qreal draws;
 			qreal errorMargin;
+			qreal eloDiff;
 		};
 
 		GameManager* m_gameManager;

@@ -302,6 +302,11 @@ bool Tournament::areAllGamesFinished() const
 	return m_finishedGameCount >= m_finalGameCount;
 }
 
+bool Tournament::hasGauntletRatingsOrder() const
+{
+	return false;
+}
+
 void Tournament::startGame(TournamentPair* pair)
 {
 	Q_ASSERT(pair->isValid());
@@ -630,8 +635,21 @@ QString Tournament::results() const
 				     player.gamesFinished(),
 				     elo.pointRatio(),
 				     elo.drawRatio(),
-				     elo.errorMargin() };
-		ranking.insert(-elo.diff(), data);
+				     elo.errorMargin(),
+				     elo.diff() };
+		// Order players like this:
+		// 1. Gauntlet player (if any)
+		// 2. Players with finished games, sorted by point ratio
+		// 3. Players without finished games
+		qreal key = -1.0;
+		if (i > 0 || !hasGauntletRatingsOrder())
+		{
+			if (data.games)
+				key = 1.0 - data.score;
+			else
+				key = 2.0;
+		}
+		ranking.insert(key, data);
 	}
 
 	if (!ranking.isEmpty())
@@ -645,14 +663,13 @@ QString Tournament::results() const
 			.arg("Draws", 7);
 
 	int rank = 0;
-	QMultiMap<qreal, RankingData>::const_iterator it;
-	for (it = ranking.constBegin(); it != ranking.constEnd(); ++it)
+	for (auto it = ranking.constBegin(); it != ranking.constEnd(); ++it)
 	{
 		const RankingData& data = it.value();
 		ret += QString("\n%1 %2 %3 %4 %5 %6% %7%")
 			.arg(++rank, 4)
 			.arg(data.name, -25)
-			.arg(-it.key(), 7, 'f', 0)
+			.arg(data.eloDiff, 7, 'f', 0)
 			.arg(data.errorMargin, 7, 'f', 0)
 			.arg(data.games, 7)
 			.arg(data.score * 100.0, 6, 'f', 0)

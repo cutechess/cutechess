@@ -59,3 +59,8 @@ TournamentPair* GauntletTournament::nextPair(int gameNumber)
 
 	return pair(white, black);
 }
+
+bool GauntletTournament::hasGauntletRatingsOrder() const
+{
+	return true;
+}

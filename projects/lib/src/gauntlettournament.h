@@ -42,6 +42,7 @@ class LIB_EXPORT GauntletTournament : public Tournament
 		virtual void initializePairing();
 		virtual int gamesPerCycle() const;
 		virtual TournamentPair* nextPair(int gameNumber);
+		virtual bool hasGauntletRatingsOrder() const;
 
 	private:
 		int m_opponent;
