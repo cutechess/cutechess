@@ -55,7 +55,9 @@ QVariant MatchParser::takeOption(const QString& name)
 QList<MatchParser::Option> MatchParser::options() const
 {
 	QList<Option> list;
-	foreach (int key, m_options.uniqueKeys())
+
+	const auto uniqueKeys = m_options.uniqueKeys();
+	for (int key : uniqueKeys)
 	{
 		QList<Option> values(m_options.values(key));
 		while (!values.isEmpty())
@@ -162,7 +164,8 @@ QMap<QString, QString> MatchParser::Option::toMap(const QString& validArgs) cons
 	QMap<QString, QString> defaults;
 	QMap<QString, QString> map;
 
-	foreach (const QString& arg, validArgs.split('|'))
+	const auto splitArgs = validArgs.split('|');
+	for (const auto& arg : splitArgs)
 	{
 		QString argName = arg.section('=', 0, 0);
 		QString argVal = arg.section('=', 1);
@@ -173,7 +176,7 @@ QMap<QString, QString> MatchParser::Option::toMap(const QString& validArgs) cons
 			defaults[argName] = argVal;
 	}
 
-	foreach (const QString& arg, args)
+	for (const auto& arg : args)
 	{
 		QString argName = arg.section('=', 0, 0);
 		QString argVal = arg.section('=', 1);
