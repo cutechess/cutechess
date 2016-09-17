@@ -129,8 +129,12 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 	foreach (const QString& str, configuration.initStrings())
 		write(str);
 
-	foreach (EngineOption* option, configuration.options())
-		setOption(option->name(), option->value());
+	const auto options = configuration.options();
+	for (const auto option : options)
+	{
+		if (option->isEditable())
+			setOption(option->name(), option->value());
+	}
 
 	m_whiteEvalPov = configuration.whiteEvalPov();
 	m_pondering = configuration.pondering();

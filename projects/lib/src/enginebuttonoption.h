@@ -28,6 +28,7 @@ class LIB_EXPORT EngineButtonOption : public EngineOption
 		// Inherited from EngineOption
 		virtual EngineOption* copy() const;
 		virtual bool isValid(const QVariant& value) const;
+		virtual bool isEditable() const;
 		virtual QVariant toVariant() const;
 };
 

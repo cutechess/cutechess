@@ -37,6 +37,7 @@ class LIB_EXPORT EngineOption
 		QVariant::Type valueType() const;
 		bool isValid() const;
 		virtual bool isValid(const QVariant& value) const = 0;
+		virtual bool isEditable() const;
 
 		QString name() const;
 		QVariant value() const;

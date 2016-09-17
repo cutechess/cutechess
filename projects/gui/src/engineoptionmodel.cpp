@@ -162,15 +162,12 @@ Qt::ItemFlags EngineOptionModel::flags(const QModelIndex& index) const
 
 	if (index.column() == 1)
 	{
-		// option values are editable except button options
-		EngineButtonOption* buttonOption =
-			dynamic_cast<EngineButtonOption*>(m_options.at(index.row()));
-
-		if (buttonOption)
+		const auto option = m_options.at(index.row());
+		if (!option->isEditable())
 			return defaultFlags;
 
 		// make check options checkable
-		if (m_options.at(index.row())->value().type() == QVariant::Bool)
+		if (option->value().type() == QVariant::Bool)
 			return Qt::ItemFlags(defaultFlags | Qt::ItemIsUserCheckable);
 
 		return Qt::ItemFlags(defaultFlags | Qt::ItemIsEditable);

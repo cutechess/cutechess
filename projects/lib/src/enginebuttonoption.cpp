@@ -32,6 +32,11 @@ bool EngineButtonOption::isValid(const QVariant& value) const
 	return value.isNull();
 }
 
+bool EngineButtonOption::isEditable() const
+{
+	return false;
+}
+
 QVariant EngineButtonOption::toVariant() const
 {
 	QVariantMap map;

@@ -57,6 +57,11 @@ bool EngineOption::isValid() const
 	return true;
 }
 
+bool EngineOption::isEditable() const
+{
+	return true;
+}
+
 QString EngineOption::name() const
 {
 	return m_name;
