@@ -662,7 +662,7 @@ QString Tournament::results() const
 			.arg("Score", 7)
 			.arg("Draws", 7);
 
-	int rank = 0;
+	int rank = hasGauntletRatingsOrder() ? -1 : 0;
 	for (auto it = ranking.constBegin(); it != ranking.constEnd(); ++it)
 	{
 		const RankingData& data = it.value();
