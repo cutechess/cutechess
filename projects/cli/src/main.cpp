@@ -67,10 +67,9 @@ struct EngineData
 
 bool readEngineConfig(const QString& name, EngineConfiguration& config)
 {
-	const QList<EngineConfiguration> engines =
-		CuteChessCoreApplication::instance()->engineManager()->engines();
-
-	foreach (const EngineConfiguration& engine, engines)
+    const auto app = CuteChessCoreApplication::instance();
+    const auto engines = app->engineManager()->engines();
+    for (const auto& engine : engines)
 	{
 		if (engine.name() == name)
 		{
@@ -83,7 +82,7 @@ bool readEngineConfig(const QString& name, EngineConfiguration& config)
 
 bool parseEngine(const QStringList& args, EngineData& data)
 {
-	foreach (const QString& arg, args)
+    for (const auto& arg : args)
 	{
 		QString name = arg.section('=', 0, 0);
 		QString val = arg.section('=', 1);
@@ -281,7 +280,8 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	QStringList eachOptions;
 	GameAdjudicator adjudicator;
 
-	foreach (const MatchParser::Option& option, parser.options())
+    const auto options = parser.options();
+    for (const auto& option : options)
 	{
 		bool ok = true;
 		const QString& name = option.name;
@@ -548,7 +548,8 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		}
 	}
 
-	foreach (const EngineData& engine, engines)
+    const auto& constEngines = engines;
+    for (const auto& engine : constEngines)
 	{
 		if (!engine.tc.isValid())
 		{
@@ -607,12 +608,13 @@ int main(int argc, char* argv[])
 
 	CuteChessCoreApplication app(argc, argv);
 
-	QStringList arguments = CuteChessCoreApplication::arguments();
+    QStringList arguments = CuteChessCoreApplication::arguments();
 	arguments.takeFirst(); // application name
 
 	// Use trivial command-line parsing for now
 	QTextStream out(stdout);
-	foreach (const QString& arg, arguments)
+    const auto& constArguments = arguments;
+    for (const auto& arg : constArguments)
 	{
 		if (arg == "-v" || arg == "--version" || arg == "-version")
 		{
@@ -628,10 +630,9 @@ int main(int argc, char* argv[])
 		}
 		else if (arg == "--engines" || arg == "-engines")
 		{
-			const QList<EngineConfiguration> engines =
-				CuteChessCoreApplication::instance()->engineManager()->engines();
-
-			foreach (const EngineConfiguration& engine, engines)
+            const auto app = CuteChessCoreApplication::instance();
+            const auto engines = app->engineManager()->engines();
+            for (const auto& engine : engines)
 				out << engine.name() << endl;
 
 			return 0;
