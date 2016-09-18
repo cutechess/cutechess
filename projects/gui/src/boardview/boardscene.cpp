@@ -105,8 +105,8 @@ void BoardScene::populate()
 		m_reserve->setX(m_squares->boundingRect().right() +
 				m_reserve->boundingRect().right() + 7);
 
-		QList<Chess::Piece> types(m_board->reservePieceTypes());
-		foreach (const Chess::Piece& piece, types)
+		const auto types = m_board->reservePieceTypes();
+		for (const auto& piece : types)
 		{
 			int count = m_board->reserveCount(piece);
 			for (int i = 0; i < count; i++)
@@ -281,7 +281,8 @@ void BoardScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
 void BoardScene::onTransitionFinished()
 {
-	foreach (const Chess::BoardTransition::Move& move, m_transition.moves())
+	const auto moves = m_transition.moves();
+	for (const auto& move : moves)
 	{
 		if (m_direction == Forward)
 			m_squares->movePiece(move.source, move.target);
@@ -289,7 +290,8 @@ void BoardScene::onTransitionFinished()
 			m_squares->movePiece(move.target, move.source);
 	}
 
-	foreach (const Chess::BoardTransition::Drop& drop, m_transition.drops())
+	const auto drops = m_transition.drops();
+	for (const auto& drop : drops)
 	{
 		if (m_direction == Forward)
 			m_squares->setSquare(drop.target,
@@ -298,14 +300,16 @@ void BoardScene::onTransitionFinished()
 			m_reserve->addPiece(m_squares->takePieceAt(drop.target));
 	}
 
-	foreach (const Chess::Square& square, m_transition.squares())
+	const auto squares = m_transition.squares();
+	for (const auto& square : squares)
 	{
 		Chess::Piece type = m_board->pieceAt(square);
 		if (type != m_squares->pieceTypeAt(square))
 			m_squares->setSquare(square, createPiece(type));
 	}
 
-	foreach (const Chess::Piece& piece, m_transition.reserve())
+	const auto reserve = m_transition.reserve();
+	for (const auto& piece : reserve)
 	{
 		int count = m_reserve->pieceCount(piece);
 		int newCount = m_board->reserveCount(piece);
@@ -389,7 +393,8 @@ QPointF BoardScene::squarePos(const Chess::Square& square) const
 
 GraphicsPiece* BoardScene::pieceAt(const QPointF& pos) const
 {
-	foreach (QGraphicsItem* item, items(pos))
+	const auto items = this->items(pos);
+	for (auto item : items)
 	{
 		GraphicsPiece* piece = qgraphicsitem_cast<GraphicsPiece*>(item);
 		if (piece != nullptr)
@@ -456,7 +461,8 @@ void BoardScene::tryMove(GraphicsPiece* piece, const QPointF& targetPos)
 		Chess::Square source(m_squares->squareAt(m_squares->mapFromScene(m_sourcePos)));
 
 		QList<Chess::Piece> promotions;
-		foreach (const Chess::GenericMove& move, m_moves)
+		const auto moves = m_moves;
+		for (const auto& move : moves)
 		{
 			if (move.sourceSquare() != source
 			||  move.targetSquare() != target)
@@ -498,7 +504,7 @@ void BoardScene::selectPiece(const QList<Chess::Piece>& types,
 			     const char* member)
 {
 	QList<GraphicsPiece*> list;
-	foreach (const Chess::Piece& type, types)
+	for (const auto& type : types)
 		list << createPiece(type);
 
 	m_chooser = new PieceChooser(list, s_squareSize);
@@ -540,7 +546,8 @@ void BoardScene::applyTransition(const Chess::BoardTransition& transition,
 	connect(group, SIGNAL(finished()), this, SLOT(onTransitionFinished()));
 	m_anim = group;
 
-	foreach (const Chess::BoardTransition::Move& move, transition.moves())
+	const auto moves = transition.moves();
+	for (const auto& move : moves)
 	{
 		Chess::Square source = move.source;
 		Chess::Square target = move.target;
@@ -560,7 +567,8 @@ void BoardScene::applyTransition(const Chess::BoardTransition& transition,
 		group->addAnimation(pieceAnimation(piece, squarePos(target)));
 	}
 
-	foreach (const Chess::BoardTransition::Drop& drop, transition.drops())
+	const auto drops = transition.drops();
+	for (const auto& drop : drops)
 	{
 		if (direction == Forward)
 		{
@@ -587,8 +595,8 @@ void BoardScene::updateMoves()
 	if (!m_board->result().isNone())
 		return;
 
-	QVector<Chess::Move> moves(m_board->legalMoves());
-	foreach (const Chess::Move& move, moves)
+	const auto moves = m_board->legalMoves();
+	for (const auto& move : moves)
 	{
 		Chess::GenericMove gmove(m_board->genericMove(move));
 		m_moves << gmove;
