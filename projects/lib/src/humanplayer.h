@@ -72,6 +72,7 @@ class LIB_EXPORT HumanPlayer : public ChessPlayer
 		
 	protected:
 		// Inherited from ChessPlayer
+		virtual bool canPlayAfterTimeout() const;
 		virtual void startGame();
 		virtual void startThinking();
 

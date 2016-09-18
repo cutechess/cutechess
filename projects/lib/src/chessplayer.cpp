@@ -193,6 +193,11 @@ void ChessPlayer::setName(const QString& name)
 	emit nameChanged(m_name);
 }
 
+bool ChessPlayer::canPlayAfterTimeout() const
+{
+	return false;
+}
+
 void ChessPlayer::startPondering()
 {
 }
@@ -245,7 +250,7 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 	m_eval.setTime(m_timeControl.lastMoveTime());
 
 	m_timer->stop();
-	if (m_timeControl.expired())
+	if (m_timeControl.expired() && !canPlayAfterTimeout())
 	{
 		forfeit(Chess::Result::Timeout);
 		return;
@@ -268,5 +273,6 @@ void ChessPlayer::onCrashed()
 
 void ChessPlayer::onTimeout()
 {
-	forfeit(Chess::Result::Timeout);
+	if (!canPlayAfterTimeout())
+		forfeit(Chess::Result::Timeout);
 }

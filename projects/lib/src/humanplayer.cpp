@@ -26,6 +26,11 @@ HumanPlayer::HumanPlayer(QObject* parent)
 	setName("Human");
 }
 
+bool HumanPlayer::canPlayAfterTimeout() const
+{
+	return true;
+}
+
 void HumanPlayer::startGame()
 {
 	Q_ASSERT(m_bufferMove.isNull());

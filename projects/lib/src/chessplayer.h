@@ -242,6 +242,14 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		virtual void startThinking() = 0;
 
+		/*!
+		 * Returns true if this player can keep player after running
+		 * out of time; otherwise returns false.
+		 *
+		 * By default this method always returns false.
+		 */
+		virtual bool canPlayAfterTimeout() const;
+
 		/*! Emits the resultClaim() signal with result \a result. */
 		void claimResult(const Chess::Result& result);
 		/*!
