@@ -86,7 +86,7 @@ class EngineConfigurationDialog : public QDialog
 		void onEngineReady();
 		void onEngineQuit();
 		void onTabChanged(int index);
-		void onCommandChanged(const QString& text);
+		void onNameOrCommandChanged();
 		void onAccepted();
 		void resizeColumns();
 

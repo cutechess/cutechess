@@ -83,8 +83,10 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 		this, SLOT(restoreDefaults()));
 	connect(ui->m_tabs, SIGNAL(currentChanged(int)),
 		this, SLOT(onTabChanged(int)));
+	connect(ui->m_nameEdit, SIGNAL(textChanged(QString)),
+		this, SLOT(onNameOrCommandChanged()));
 	connect(ui->m_commandEdit, SIGNAL(textChanged(QString)),
-		this, SLOT(onCommandChanged(QString)));
+		this, SLOT(onNameOrCommandChanged()));
 	connect(ui->m_buttonBox, SIGNAL(accepted()),
 		this, SLOT(onAccepted()));
 
@@ -343,11 +345,13 @@ void EngineConfigurationDialog::onTabChanged(int index)
 		detectEngineOptions();
 }
 
-void EngineConfigurationDialog::onCommandChanged(const QString& text)
+void EngineConfigurationDialog::onNameOrCommandChanged()
 {
-	bool enable = !text.isEmpty();
-	ui->m_tabs->setTabEnabled(1, enable);
-	ui->m_buttonBox->button(QDialogButtonBox::Ok)->setEnabled(enable);
+	bool ok = !ui->m_nameEdit->text().isEmpty() &&
+		  !ui->m_commandEdit->text().isEmpty();
+
+	ui->m_tabs->setTabEnabled(1, ok);
+	ui->m_buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ok);
 }
 
 void EngineConfigurationDialog::onAccepted()
