@@ -262,7 +262,6 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_saveGameAct);
 	m_gameMenu->addAction(m_saveGameAsAct);
 	m_gameMenu->addAction(m_copyFenAct);
-	m_gameMenu->addAction(m_flipBoardAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 
@@ -277,6 +276,8 @@ void MainWindow::createMenus()
         m_toolsMenu->addAction(m_showGameDatabaseWindowAct);
 
 	m_viewMenu = menuBar()->addMenu(tr("&View"));
+	m_viewMenu->addAction(m_flipBoardAct);
+	m_viewMenu->addSeparator();
 
 	m_windowMenu = menuBar()->addMenu(tr("&Window"));
 	addDefaultWindowMenu();
