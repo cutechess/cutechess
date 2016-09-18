@@ -201,13 +201,16 @@ void EngineConfigurationDialog::setExecutable(const QString& file)
 	QString fileName = file;
 	const QFileInfo info(fileName);
 	QString prefix;
+	QString suffix(info.suffix().toLower());
+	bool isExe = (suffix == "exe" || suffix == "bat" || suffix == "cmd");
+	QString name = isExe ? info.completeBaseName() : info.fileName();
 
 	if (ui->m_workingDirEdit->text().isEmpty())
 		ui->m_workingDirEdit->setText(QDir::toNativeSeparators(
 			info.absolutePath()));
 
 	if (ui->m_nameEdit->text().isEmpty())
-		ui->m_nameEdit->setText(info.completeBaseName());
+		ui->m_nameEdit->setText(name);
 
 	// Use a relative path in the "command" field if possible
 	const QDir dir(ui->m_workingDirEdit->text());
@@ -216,8 +219,7 @@ void EngineConfigurationDialog::setExecutable(const QString& file)
 		fileName = dir.relativeFilePath(info.absoluteFilePath());
 
 		#ifndef Q_OS_WIN32
-		QString suffix(info.suffix().toLower());
-		if (suffix == "exe" || suffix == "bat" || suffix == "cmd")
+		if (isExe)
 			prefix = "wine ";
 		else if (fileName == info.fileName())
 			fileName.prepend("./");
