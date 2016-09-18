@@ -14,7 +14,7 @@ PieceChooser::PieceChooser(const QList<GraphicsPiece*>& pieces,
 	  m_squareSize(squareSize),
 	  m_anim(nullptr)
 {
-	foreach (GraphicsPiece* piece, pieces)
+	for (auto piece : pieces)
 		m_pieces[piece->pieceType().side()] << piece;
 
 	int columns = qMax(m_pieces[0].size(), m_pieces[1].size());

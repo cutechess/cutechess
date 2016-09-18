@@ -241,7 +241,7 @@ void GraphicsBoard::setHighlights(const QList<Chess::Square>& squares)
 	QPen pen(Qt::white, m_squareSize / 20);
 	QBrush brush(Qt::black);
 
-	foreach (const Chess::Square& sq, squares)
+	for (const auto& sq : squares)
 	{
 		QGraphicsEllipseItem* dot = new QGraphicsEllipseItem(rect, targets);
 

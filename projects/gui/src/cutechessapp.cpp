@@ -147,7 +147,8 @@ QList<MainWindow*> CuteChessApplication::gameWindows()
 	m_gameWindows.removeAll(nullptr);
 
 	QList<MainWindow*> gameWindowList;
-	foreach (const auto& window, m_gameWindows)
+	const auto gameWindows = m_gameWindows;
+	for (const auto& window : gameWindows)
 		gameWindowList << window.data();
 
 	return gameWindowList;
