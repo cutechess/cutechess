@@ -91,6 +91,7 @@ class MainWindow : public QMainWindow
 			QPointer<ChessGame> game;
 			PgnGame* pgn;
 			Tournament* tournament;
+			bool finished;
 		};
 
 		void createActions();

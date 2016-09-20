@@ -64,7 +64,8 @@ MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
 	: id(game),
 	  game(game),
 	  pgn(game->pgn()),
-	  tournament(tournament)
+	  tournament(tournament),
+	  finished(false)
 {
 }
 
@@ -586,7 +587,7 @@ int MainWindow::tabIndex(Tournament* tournament, bool freeTab) const
 		const TabData& tab = m_tabs.at(i);
 
 		if (tab.tournament == tournament
-		&&  (!freeTab || (tab.game == nullptr || tab.game->isFinished())))
+		&&  (!freeTab || (tab.game == nullptr || tab.finished)))
 			return i;
 	}
 
@@ -616,7 +617,7 @@ void MainWindow::onTabCloseRequested(int index)
 		return;
 	}
 
-	if (tab.game->isFinished())
+	if (tab.finished)
 		destroyGame(tab.game);
 	else
 	{
@@ -677,6 +678,7 @@ void MainWindow::onGameFinished(ChessGame* game)
 	if (tIndex == -1)
 		return;
 
+	m_tabs[tIndex].finished = true;
 	QString title = genericTitle(m_tabs[tIndex]);
 	m_tabBar->setTabText(tIndex, title);
 	if (game == m_game)
