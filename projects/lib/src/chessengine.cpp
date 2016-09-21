@@ -201,6 +201,13 @@ void ChessEngine::addVariant(const QString& variant)
 		m_variants << variant;
 }
 
+void ChessEngine::addVariantsFromList(const QStringList& variantsList)
+{
+	for ( const QString& variant: variantsList )
+		if (!variant.isEmpty() && !m_variants.contains(variant))
+		  {m_variants << variant;}
+}
+
 void ChessEngine::clearVariants()
 {
 	m_variants.clear();

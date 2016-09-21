@@ -131,16 +131,29 @@ void UciEngine::startGame()
 	else
 		m_startFen = board()->fenString(Chess::Board::XFen);
 	
-	QString uciVariant(variantToUci(board()->variant()));
-	if (uciVariant != m_variantOption)
-	{
-		if (!m_variantOption.isEmpty())
-			sendOption(m_variantOption, false);
-		m_variantOption = uciVariant;
-	}
-	if (!m_variantOption.isEmpty())
-		sendOption(m_variantOption, true);
 
+	EngineComboOption *opv = (EngineComboOption *)getOption("UCI_Variant");
+	if ( opv && opv->choices().size() > 0 )
+	{
+		qDebug("Use UCI_Variant %s", qPrintable(board()->variant()));
+		if (opv->choices().contains(board()->variant()))
+		{
+			opv->setValue(board()->variant());
+			sendOption(opv->name(), opv->value());
+		}
+	}
+	else
+	{
+		QString uciVariant(variantToUci(board()->variant()));
+		if (uciVariant != m_variantOption)
+		{
+			if (!m_variantOption.isEmpty())
+				sendOption(m_variantOption, false);
+			m_variantOption = uciVariant;
+		}
+		if (!m_variantOption.isEmpty())
+			sendOption(m_variantOption, true);
+	}
 	write("ucinewgame");
 
 	if (m_canPonder)
@@ -664,12 +677,23 @@ void UciEngine::parseLine(const QString& line)
 		if (option == nullptr || !option->isValid())
 			qDebug("Invalid UCI option from %s: %s",
 				qPrintable(name()), qPrintable(line));
+
 		else if (!(variant = variantFromUci(option->name())).isEmpty())
 			addVariant(variant);
 		else if (option->name() == "UCI_Opponent")
 			m_sendOpponentsName = true;
 		else if (option->name() == "Ponder")
 			m_canPonder = true;
+		else if (option->name() == "UCI_Variant" &&
+			 option->valueType() == QVariant::String )
+		{
+			addOption(option);
+			addVariantsFromList(((EngineComboOption *)option)->choices());
+			qDebug("Listed: %d variants", variants().size());
+			for (QString s: variants())
+				qDebug("Variant %s", qPrintable(s));
+			return;
+		}
 		else if (option->name().startsWith("UCI_") &&
 			 option->name() != "UCI_LimitStrength" &&
 			 option->name() != "UCI_Elo")
