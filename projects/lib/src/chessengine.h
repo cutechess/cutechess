@@ -196,6 +196,11 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 
 		/*! Adds \a variant to the list of supported variants. */
 		void addVariant(const QString& variant);
+		/*!
+		 * Adds variants from \a variantsList to the list of
+		 * supported variants.
+		 */
+		void addVariantsFromList(const QStringList& variantsList);
 		/*! Clears the list of supported variants. */
 		void clearVariants();
 
