@@ -133,14 +133,12 @@ void UciEngine::startGame()
 	
 
 	EngineComboOption *opv = (EngineComboOption *)getOption("UCI_Variant");
-	if ( opv && opv->choices().size() > 0 )
+	if ( opv && opv->choices().size() > 0 &&
+	            opv->choices().contains(board()->variant()) )
 	{
 		qDebug("Use UCI_Variant %s", qPrintable(board()->variant()));
-		if (opv->choices().contains(board()->variant()))
-		{
-			opv->setValue(board()->variant());
-			sendOption(opv->name(), opv->value());
-		}
+		opv->setValue(board()->variant());
+		sendOption(opv->name(), opv->value());
 	}
 	else
 	{
