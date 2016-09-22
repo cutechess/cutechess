@@ -89,6 +89,17 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 		this, SLOT(onNameOrCommandChanged()));
 	connect(ui->m_buttonBox, SIGNAL(accepted()),
 		this, SLOT(onAccepted()));
+	connect(ui->m_protocolCombo, &QComboBox::currentTextChanged,
+		[=](const QString& text)
+	{
+		if (text == "xboard")
+			ui->m_whitePovCheck->setEnabled(true);
+		else
+		{
+			ui->m_whitePovCheck->setChecked(false);
+			ui->m_whitePovCheck->setEnabled(false);
+		}
+	});
 
 	ui->m_tabs->setTabEnabled(1, false);
 	ui->m_buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);

@@ -117,6 +117,12 @@
        </item>
        <item row="5" column="1">
         <widget class="QCheckBox" name="m_whitePovCheck">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="toolTip">
+          <string>This option should be checked for Xboard/Winboard engines that report their scores from white's perspective.</string>
+         </property>
          <property name="text">
           <string>Scores from &amp;white's perspective</string>
          </property>
