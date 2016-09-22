@@ -32,30 +32,35 @@
 
 namespace {
 
-QString variantFromUci(const QString& str)
+QString variantFromUci(QString str, bool uciPrefix = true)
 {
-	if (str.size() < 5 || !str.startsWith("UCI_"))
+	if (uciPrefix)
+	{
+		if (!str.startsWith("UCI_"))
+			return QString();
+		str = str.mid(4);
+	}
+	if (str.isEmpty())
 		return QString();
 
-	QString variant;
+	str = str.toLower();
+	if (str == "chess960")
+		str = "fischerandom";
 
-	if (str == "UCI_Chess960")
-		variant = "fischerandom";
-	else
-		variant = str.mid(4).toLower();
-
-	if (!Chess::BoardFactory::variants().contains(variant))
+	if (!Chess::BoardFactory::variants().contains(str))
 		return QString();
-	return variant;
+	return str;
 }
 
-QString variantToUci(const QString& str)
+QString variantToUci(const QString& str, bool uciPrefix = true)
 {
 	if (str.isEmpty() || str == "standard")
 		return QString();
 
 	if (str == "fischerandom")
-		return "UCI_Chess960";
+		return uciPrefix ? "UCI_Chess960" : "chess960";
+	if (!uciPrefix)
+		return str;
 	if (str == "caparandom")
 		return "UCI_CapaRandom";
 
@@ -130,16 +135,7 @@ void UciEngine::startGame()
 		m_startFen = board()->fenString(Chess::Board::ShredderFen);
 	else
 		m_startFen = board()->fenString(Chess::Board::XFen);
-	
-	QString uciVariant(variantToUci(board()->variant()));
-	if (uciVariant != m_variantOption)
-	{
-		if (!m_variantOption.isEmpty())
-			sendOption(m_variantOption, false);
-		m_variantOption = uciVariant;
-	}
-	if (!m_variantOption.isEmpty())
-		sendOption(m_variantOption, true);
+	setVariant(board()->variant());
 
 	write("ucinewgame");
 
@@ -666,6 +662,8 @@ void UciEngine::parseLine(const QString& line)
 				qPrintable(name()), qPrintable(line));
 		else if (!(variant = variantFromUci(option->name())).isEmpty())
 			addVariant(variant);
+		else if (option->name() == "UCI_Variant")
+			addVariantsFromOption(option);
 		else if (option->name() == "UCI_Opponent")
 			m_sendOpponentsName = true;
 		else if (option->name() == "Ponder")
@@ -683,6 +681,46 @@ void UciEngine::parseLine(const QString& line)
 		}
 
 		delete option;
+	}
+}
+
+void UciEngine::addVariantsFromOption(const EngineOption* option)
+{
+	const auto combo = dynamic_cast<const EngineComboOption*>(option);
+	if (!combo)
+	{
+		qWarning("Option %s from %s is not a combo option",
+			 qPrintable(option->name()),
+			 qPrintable(name()));
+		return;
+	}
+
+	const auto choices = combo->choices();
+	for (const auto& choice : choices)
+	{
+		QString variant = variantFromUci(choice, false);
+		if (!variant.isEmpty())
+			addVariant(variant);
+	}
+	m_comboVariants = choices;
+}
+
+void UciEngine::setVariant(const QString& variant)
+{
+	QString uciVariant(variantToUci(variant));
+	if (uciVariant != m_variantOption && !m_variantOption.isEmpty())
+		sendOption(m_variantOption, false);
+
+	if (m_comboVariants.contains(variant))
+	{
+		m_variantOption.clear();
+		sendOption("UCI_Variant", variantToUci(variant, false));
+	}
+	else
+	{
+		m_variantOption = uciVariant;
+		if (!uciVariant.isEmpty())
+			sendOption(uciVariant, true);
 	}
 }
 

@@ -73,6 +73,8 @@ class LIB_EXPORT UciEngine : public ChessEngine
 			       MoveEvaluation* eval);
 		void parseInfo(const QStringRef& line);
 		EngineOption* parseOption(const QStringRef& line);
+		void addVariantsFromOption(const EngineOption* option);
+		void setVariant(const QString& variant);
 		QString positionString();
 		void sendPosition();
 		void setPonderMove(const QString& moveString);
@@ -91,6 +93,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		bool m_ignoreThinking;
 		bool m_rePing;
 		MoveEvaluation m_currentEval;
+		QStringList m_comboVariants;
 };
 
 #endif // UCIENGINE_H
