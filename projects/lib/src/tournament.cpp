@@ -672,8 +672,8 @@ QString Tournament::results() const
 			.arg(data.eloDiff, 7, 'f', 0)
 			.arg(data.errorMargin, 7, 'f', 0)
 			.arg(data.games, 7)
-			.arg(data.score * 100.0, 6, 'f', 0)
-			.arg(data.draws * 100.0, 6, 'f', 0);
+			.arg(data.score * 100.0, 6, 'f', 1)
+			.arg(data.draws * 100.0, 6, 'f', 1);
 	}
 
 	Sprt::Status sprtStatus = sprt()->status();
