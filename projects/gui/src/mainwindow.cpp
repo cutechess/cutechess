@@ -705,7 +705,18 @@ void MainWindow::newTournament()
 		this, SLOT(onGameFinished(ChessGame*)));
 	t->start();
 
-	connect(m_stopTournamentAct, SIGNAL(triggered()), t, SLOT(stop()));
+	connect(m_stopTournamentAct, &QAction::triggered, [=]()
+	{
+		auto btn = QMessageBox::question(this, tr("Stop tournament"),
+			   tr("Do you really want to stop the ongoing tournament?"));
+		if (btn != QMessageBox::Yes)
+		{
+			m_closing = false;
+			return;
+		}
+
+		t->stop();
+	});
 	m_newTournamentAct->setEnabled(false);
 	m_stopTournamentAct->setEnabled(true);
 	resultsDialog->setTournament(t);
@@ -715,6 +726,8 @@ void MainWindow::onTournamentFinished()
 {
 	Tournament* tournament = qobject_cast<Tournament*>(QObject::sender());
 	Q_ASSERT(tournament != nullptr);
+
+	m_stopTournamentAct->disconnect();
 
 	QString error = tournament->errorString();
 	QString name = tournament->name();
