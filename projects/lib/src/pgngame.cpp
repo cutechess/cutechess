@@ -451,6 +451,9 @@ void PgnGame::setResult(const Chess::Result& result)
 	case Chess::Result::Disconnection:
 		setTag("Termination", "abandoned");
 		break;
+	case Chess::Result::StalledConnection:
+		setTag("Termination", "stalled connection");
+		break;
 	case Chess::Result::IllegalMove:
 		setTag("Termination", "illegal move");
 		break;
