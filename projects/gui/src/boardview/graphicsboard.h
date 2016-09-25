@@ -51,6 +51,8 @@ class GraphicsBoard : public QGraphicsItem
 				       int ranks,
 				       qreal squareSize,
 				       QGraphicsItem* parent = nullptr);
+		/*! Destroys the GraphicsBoard object. */
+		virtual ~GraphicsBoard();
 
 		// Inherited from QGraphicsItem
 		virtual int type() const;

@@ -70,6 +70,11 @@ GraphicsBoard::GraphicsBoard(int files,
 	setCacheMode(DeviceCoordinateCache);
 }
 
+GraphicsBoard::~GraphicsBoard()
+{
+	delete m_highlightAnim;
+}
+
 int GraphicsBoard::type() const
 {
 	return Type;
