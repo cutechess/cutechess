@@ -365,8 +365,7 @@ void BoardScene::onGameFinished(ChessGame* game, Chess::Result result)
 	text->setTransformOriginPoint(x, y);
 
 	auto group = new QSequentialAnimationGroup;
-	connect(group, &QSequentialAnimationGroup::finished,
-		text, &QGraphicsTextItem::deleteLater);
+	text->setParent(group);
 	m_anim = group;
 
 	auto scAnim = new QPropertyAnimation(text, "scale");
