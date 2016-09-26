@@ -208,6 +208,11 @@ void tst_Board::moveStrings_data() const
 		<< "d4 h6 Bxh6 gxh6 g4 h5 gxh5"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< "rnbqkbnr/pppppp2/8/7P/3P4/8/PPP1PP1P/RN1QKBNR[2Pb] b KQkq - 0 4";
+	QTest::newRow("crazyhouse3")
+		<< "crazyhouse"
+		<< "N@f3+ gxf3"
+		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[NPn] b kq - 0 1"
+		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N2P2/PPP2P1P/R1B2RK1[2NP] b kq - 0 2";
 }
 
 void tst_Board::moveStrings()

@@ -500,6 +500,7 @@ bool Board::setFenString(const QString& fen)
 			if (!variantHasDrops())
 				return false;
 			handPieceIndex = i + 1;
+			break;
 		}
 		// Add empty squares
 		if (c.isDigit())
