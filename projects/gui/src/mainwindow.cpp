@@ -224,15 +224,18 @@ void MainWindow::createActions()
 		focusWindow->close();
 	});
 
+	auto app = CuteChessApplication::instance();
+
 	connect(m_saveGameAct, SIGNAL(triggered()), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
-	connect(m_quitGameAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+	connect(m_quitGameAct, &QAction::triggered,
+		app, &CuteChessApplication::onQuitAction);
 
 	connect(m_newTournamentAct, SIGNAL(triggered()), this, SLOT(newTournament()));
 
 	connect(m_minimizeAct, &QAction::triggered, this, [=]()
 	{
-		auto focusWindow = CuteChessApplication::instance()->focusWindow();
+		auto focusWindow = app->focusWindow();
 		if (focusWindow != nullptr)
 		{
 			focusWindow->showMinimized();
@@ -240,16 +243,16 @@ void MainWindow::createActions()
 	});
 
 	connect(m_showSettingsAct, SIGNAL(triggered()),
-		CuteChessApplication::instance(), SLOT(showSettingsDialog()));
+		app, SLOT(showSettingsDialog()));
 
 	connect(m_showTournamentResultsAct, SIGNAL(triggered()),
-		CuteChessApplication::instance(), SLOT(showTournamentResultsDialog()));
+		app, SLOT(showTournamentResultsDialog()));
 
 	connect(m_showGameDatabaseWindowAct, SIGNAL(triggered()),
-		CuteChessApplication::instance(), SLOT(showGameDatabaseDialog()));
+		app, SLOT(showGameDatabaseDialog()));
 
 	connect(m_showGameWallAct, SIGNAL(triggered()),
-		CuteChessApplication::instance(), SLOT(showGameWall()));
+		app, SLOT(showGameWall()));
 
 	connect(m_aboutAct, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 }
@@ -931,11 +934,14 @@ void MainWindow::onGameManagerFinished()
 
 void MainWindow::closeAllGames()
 {
+	auto app = CuteChessApplication::instance();
+	app->closeDialogs();
+
 	for (int i = m_tabs.size() - 1; i >= 0; i--)
 		onTabCloseRequested(i);
 
 	if (m_tabs.isEmpty())
-		CuteChessApplication::instance()->gameManager()->finish();
+		app->gameManager()->finish();
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)

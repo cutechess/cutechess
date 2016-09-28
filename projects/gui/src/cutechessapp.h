@@ -58,9 +58,12 @@ class CuteChessApplication : public QApplication
 		void showTournamentResultsDialog();
 		void showGameDatabaseDialog();
 		void showGameWall();
+		void closeDialogs();
+		void onQuitAction();
 
 	private:
 		void showDialog(QWidget* dlg);
+
 		SettingsDialog* m_settingsDialog;
 		TournamentResultsDialog* m_tournamentResultsDialog;
 		EngineManager* m_engineManager;

@@ -240,6 +240,12 @@ void CuteChessApplication::showGameWall()
 	showDialog(m_gameWall);
 }
 
+void CuteChessApplication::onQuitAction()
+{
+	closeDialogs();
+	closeAllWindows();
+}
+
 void CuteChessApplication::onLastWindowClosed()
 {
 	if (!m_initialWindowCreated)
@@ -271,4 +277,16 @@ void CuteChessApplication::showDialog(QWidget* dlg)
 
 	dlg->raise();
 	dlg->activateWindow();
+}
+
+void CuteChessApplication::closeDialogs()
+{
+	if (m_tournamentResultsDialog)
+		m_tournamentResultsDialog->close();
+	if (m_gameDatabaseDialog)
+		m_gameDatabaseDialog->close();
+	if (m_settingsDialog)
+		m_settingsDialog->close();
+	if (m_gameWall)
+		m_gameWall->close();
 }
