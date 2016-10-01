@@ -62,6 +62,7 @@ class GameSettingsWidget : public QWidget
 		void statusChanged(bool ok);
 
 	private slots:
+		void validateFen(const QString& fen);
 		void showTimeControlDialog();
 
 	private:

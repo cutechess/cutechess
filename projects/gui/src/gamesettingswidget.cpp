@@ -79,34 +79,11 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 	});
 
 	m_defaultPalette = ui->m_fenEdit->palette();
-	connect(ui->m_fenEdit, &QLineEdit::textChanged, [=](const QString& str)
+	connect(ui->m_fenEdit, &QLineEdit::textChanged,
+		this, &GameSettingsWidget::validateFen);
+	connect(this, &GameSettingsWidget::variantChanged, [=]()
 	{
-		ui->m_openingSuiteEdit->setEnabled(str.isEmpty());
-		ui->m_browseOpeningSuiteBtn->setEnabled(str.isEmpty());
-		ui->m_openingSuiteDepthSpin->setEnabled(str.isEmpty());
-		ui->m_seqOrderRadio->setEnabled(str.isEmpty());
-		ui->m_randomOrderRadio->setEnabled(str.isEmpty());
-
-		QString variant = chessVariant();
-		if (!m_board || m_board->variant() != variant)
-		{
-			delete m_board;
-			m_board = Chess::BoardFactory::create(variant);
-		}
-		if (!str.isEmpty() && !m_board->setFenString(str))
-		{
-			auto palette = ui->m_fenEdit->palette();
-			palette.setColor(QPalette::Text, Qt::red);
-			ui->m_fenEdit->setPalette(palette);
-			m_isValid = false;
-			emit statusChanged(false);
-		}
-		else
-		{
-			ui->m_fenEdit->setPalette(m_defaultPalette);
-			m_isValid = true;
-			emit statusChanged(true);
-		}
+		validateFen(ui->m_fenEdit->text());
 	});
 
 	connect(ui->m_openingSuiteEdit, &QLineEdit::textChanged, [=](const QString& str)
@@ -380,6 +357,36 @@ void GameSettingsWidget::onHumanCountChanged(int count)
 	ui->m_resignAdjudicationGroup->setEnabled(count < 2);
 	ui->m_ponderingCheck->setEnabled(count < 2);
 	ui->m_openingBookGroup->setEnabled(count < 2);
+}
+
+void GameSettingsWidget::validateFen(const QString& fen)
+{
+	ui->m_openingSuiteEdit->setEnabled(fen.isEmpty());
+	ui->m_browseOpeningSuiteBtn->setEnabled(fen.isEmpty());
+	ui->m_openingSuiteDepthSpin->setEnabled(fen.isEmpty());
+	ui->m_seqOrderRadio->setEnabled(fen.isEmpty());
+	ui->m_randomOrderRadio->setEnabled(fen.isEmpty());
+
+	QString variant = chessVariant();
+	if (!m_board || m_board->variant() != variant)
+	{
+		delete m_board;
+		m_board = Chess::BoardFactory::create(variant);
+	}
+	if (!fen.isEmpty() && !m_board->setFenString(fen))
+	{
+		auto palette = ui->m_fenEdit->palette();
+		palette.setColor(QPalette::Text, Qt::red);
+		ui->m_fenEdit->setPalette(palette);
+		m_isValid = false;
+		emit statusChanged(false);
+	}
+	else
+	{
+		ui->m_fenEdit->setPalette(m_defaultPalette);
+		m_isValid = true;
+		emit statusChanged(true);
+	}
 }
 
 void GameSettingsWidget::showTimeControlDialog()
