@@ -434,12 +434,8 @@ QString Board::fenString(FenNotation notation) const
 			for (int j = m_reserve[i].size() - 1; j >= 1; j--)
 			{
 				int count = m_reserve[i].at(j);
-				if (count <= 0)
-					continue;
-
-				if (count > 1)
-					str += QString::number(count);
-				str += pieceSymbol(Piece(side, j));
+				for (int k = 0; k < count; k++)
+					str += pieceSymbol(Piece(side, j));
 			}
 		}
 		if (!str.isEmpty())
