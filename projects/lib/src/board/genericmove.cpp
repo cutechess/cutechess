@@ -53,7 +53,8 @@ bool GenericMove::operator!=(const GenericMove& other) const
 
 bool GenericMove::isNull() const
 {
-	return !(m_sourceSquare.isValid() && m_targetSquare.isValid());
+	bool validSource = (m_sourceSquare.isValid() || m_promotion);
+	return !(validSource && m_targetSquare.isValid());
 }
 
 Square GenericMove::sourceSquare() const
