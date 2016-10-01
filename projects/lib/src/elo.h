@@ -21,9 +21,9 @@
 #include <QtGlobal>
 
 /*!
- * \brief Utility class for calculating ELO statistics for a single player
+ * \brief Utility class for calculating Elo statistics for a single player
  *
- * The Elo class can be used to calculate ELO difference, ELO error margin,
+ * The Elo class can be used to calculate Elo difference, Elo error margin,
  * etc. based on player's W/D/L statistics. At its present state it's very
  * suitable for matches between two players but not that accurate when
  * there are more than 2 players in a tournament. This is because the ratings
@@ -35,9 +35,9 @@ class LIB_EXPORT Elo
 		/*! Creates a new Elo object. */
 		Elo(int wins, int losses, int draws);
 
-		/*! Returns the ELO difference. */
+		/*! Returns the Elo difference. */
 		qreal diff() const;
-		/*! Returns the error margin in ELO points. */
+		/*! Returns the error margin in Elo points. */
 		qreal errorMargin() const;
 		/*! Returns the ratio of points won. */
 		qreal pointRatio() const;

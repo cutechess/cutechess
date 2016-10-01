@@ -23,7 +23,7 @@
  *
  * The Sprt class implements a Sequential Probability Ratio Test (SPRT) that
  * can be used as a termination criterion for stopping a match between two
- * players when the ELO difference is known to be outside of the specified
+ * players when the Elo difference is known to be outside of the specified
  * interval.
  *
  * \sa http://en.wikipedia.org/wiki/Sequential_probability_ratio_test
@@ -69,7 +69,7 @@ class LIB_EXPORT Sprt
 		/*!
 		 * Initializes the SPRT.
 		 *
-		 * \a elo0 is the ELO difference between player A and
+		 * \a elo0 is the Elo difference between player A and
 		 * player B for H0 and \a elo1 for H1.
 		 *
 		 * \a alpha is the maximum probability for a type I error and

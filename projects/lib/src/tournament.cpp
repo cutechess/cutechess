@@ -625,7 +625,7 @@ QString Tournament::results() const
 
 		if (playerCount() == 2)
 		{
-			ret += QString("ELO difference: %1 +/- %2")
+			ret += QString("Elo difference: %1 +/- %2")
 				.arg(elo.diff(), 0, 'f', 2)
 				.arg(elo.errorMargin(), 0, 'f', 2);
 			break;
@@ -656,7 +656,7 @@ QString Tournament::results() const
 		ret += QString("%1 %2 %3 %4 %5 %6 %7")
 			.arg("Rank", 4)
 			.arg("Name", -25)
-			.arg("ELO", 7)
+			.arg("Elo", 7)
 			.arg("+/-", 7)
 			.arg("Games", 7)
 			.arg("Score", 7)

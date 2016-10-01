@@ -350,7 +350,7 @@ class LIB_EXPORT Tournament : public QObject
 		/*!
 		 * Returns true if Gauntlet ordering is used for the ratings
 		 * table (ie. first engine always at the top and the rest
-		 * ordered by ELO); otherwise returns false.
+		 * ordered by Elo); otherwise returns false.
 		 *
 		 * The default implementation always returns false.
 		 */
