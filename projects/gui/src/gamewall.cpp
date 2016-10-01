@@ -140,7 +140,10 @@ GameWall::GameWall(GameManager* manager, QWidget *parent)
 	setLayout(new TileLayout());
 
 	foreach (ChessGame* game, manager->activeGames())
-		addGame(game);
+	{
+		if (!game->isFinished())
+			addGame(game);
+	}
 
 	connect(manager, SIGNAL(gameStarted(ChessGame*)),
 		this, SLOT(addGame(ChessGame*)));
@@ -174,7 +177,8 @@ void GameWall::addGame(ChessGame* game)
 
 void GameWall::removeGame(ChessGame* game)
 {
-	Q_ASSERT(m_games.contains(game));
+	if (!m_games.contains(game))
+		return;
 	m_gamesToRemove.append(m_games.take(game));
 }
 

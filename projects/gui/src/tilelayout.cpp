@@ -57,6 +57,9 @@ QSize TileLayout::minimumSize() const
 	foreach (const QLayoutItem* item, m_items)
 		size = size.expandedTo(item->minimumSize());
 
+	if (!size.isValid())
+		return QLayout::minimumSize();
+
 	return size;
 }
 
