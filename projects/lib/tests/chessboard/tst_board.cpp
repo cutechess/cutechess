@@ -213,6 +213,16 @@ void tst_Board::moveStrings_data() const
 		<< "N@f3+ gxf3"
 		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[NPn] b kq - 0 1"
 		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N2P2/PPP2P1P/R1B2RK1[NNP] b kq - 0 2";
+	QTest::newRow("crazyhouse4")
+		<< "crazyhouse"
+		<< ""
+		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[] b kq - 0 1"
+		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1 b kq - 0 1";
+	QTest::newRow("crazyhouse5")
+		<< "crazyhouse"
+		<< ""
+		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[-] b kq - 0 1"
+		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1 b kq - 0 1";
 }
 
 void tst_Board::moveStrings()
@@ -225,7 +235,7 @@ void tst_Board::moveStrings()
 	setVariant(variant);
 	QVERIFY(m_board->setFenString(startfen));
 
-	QStringList moveList = moves.split(' ');
+	QStringList moveList = moves.split(' ', QString::SkipEmptyParts);
 	foreach (const QString& moveStr, moveList)
 	{
 		Chess::Move move = m_board->moveFromString(moveStr);
@@ -234,9 +244,14 @@ void tst_Board::moveStrings()
 	}
 	QCOMPARE(m_board->fenString(), endfen);
 
-	for (int i = 0; i < moveList.size(); i++)
-		m_board->undoMove();
-	QCOMPARE(m_board->fenString(), startfen);
+	if (!moveList.isEmpty())
+	{
+		for (int i = 0; i < moveList.size(); i++)
+			m_board->undoMove();
+		QCOMPARE(m_board->fenString(), startfen);
+	}
+	else
+		QCOMPARE(m_board->fenString(), endfen);
 }
 
 void tst_Board::results_data() const

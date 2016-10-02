@@ -552,6 +552,8 @@ bool Board::setFenString(const QString& fen)
 			QChar c = token->at(i);
 			if (c == ']')
 				break;
+			if (c == '-' && i == handPieceIndex)
+				continue;
 
 			int count = 1;
 			if (c.isDigit())
