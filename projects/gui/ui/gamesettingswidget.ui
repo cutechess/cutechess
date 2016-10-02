@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>406</width>
-    <height>534</height>
+    <width>415</width>
+    <height>562</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -462,7 +462,7 @@
            <string> cp</string>
           </property>
           <property name="maximum">
-           <number>999</number>
+           <number>9999</number>
           </property>
          </widget>
         </item>
