@@ -486,8 +486,12 @@ void Tournament::onGameFinished(ChessGame* game)
 
 	int iWhite = data->whiteIndex;
 	int iBlack = data->blackIndex;
-	m_players[iWhite].setName(pgn->playerName(Chess::Side::White));
-	m_players[iBlack].setName(pgn->playerName(Chess::Side::Black));
+	const auto whiteName = pgn->playerName(Chess::Side::White);
+	if (!whiteName.isEmpty())
+		m_players[iWhite].setName(whiteName);
+	const auto blackName = pgn->playerName(Chess::Side::Black);
+	if (!blackName.isEmpty())
+		m_players[iBlack].setName(blackName);
 
 	switch (game->result().winner())
 	{
