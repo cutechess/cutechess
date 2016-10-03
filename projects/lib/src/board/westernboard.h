@@ -76,6 +76,29 @@ class LIB_EXPORT WesternBoard : public Board
 		/*! Movement mask for Rook moves. */
 		static const unsigned RookMovement = 8;
 
+		/*! Types of Pawn moves. */
+		enum StepType: const char
+		{
+			 Free = (char) 1,      //!< May move if target is empty
+			 Capture = (char) 2,   //!< Capture opposing piece only
+			 /* FreeOrCapture = Free|Capture, //!< like King or Sergeant */
+			 None =(char) 0        //!< Cannot move here
+		} stepTypeEnum;
+
+		/*!
+		 * Movement mask for Pawn moves.
+		 * Forward: Left diagonal, straight, right diagonal.
+		 * \sa BerolinaBoard
+		 *
+		 * Default: A pawn can step straight ahead onto a free square or
+		 * capture diagonally forward.
+		 */
+		struct PawnStep { StepType type; int file; };
+		QList<PawnStep>  pawnSteps = { {Capture, -1}, {Free, 0}, {Capture, 1} }; 
+		/*! Helper function for Pawn moves. Returns true if two or more
+		 * moves of the given \a type are specified in pawnSteps. */
+		bool pawnAmbiguity( StepType type = StepType::Free ) const;
+
 		/*!
 		 * Returns true if the king can capture opposing pieces.
 		 * The default value is true.
@@ -150,6 +173,7 @@ class LIB_EXPORT WesternBoard : public Board
 		{
 			Piece capture;
 			int enpassantSquare;
+			int enpassantTarget;
 			CastlingRights castlingRights;
 			CastlingSide castlingSide;
 			int reversibleMoveCount;
@@ -163,17 +187,22 @@ class LIB_EXPORT WesternBoard : public Board
 		QString castlingRightsString(FenNotation notation) const;
 		bool parseCastlingRights(QChar c);
 		CastlingSide castlingSide(const Move& move) const;
-		void setEnpassantSquare(int square);
+		void setEnpassantSquare(int square, int target=0);
 		void setCastlingSquare(Side side,
 				       CastlingSide cside,
 				       int square);
+		/*! Helper for Pawn moves. Returns square offset for the
+		 *  given \a step with orientation \a sign. */
+		inline int getPawnPush( const PawnStep& ps, int sign ) const;
 
 		int m_arwidth;
 		int m_sign;
 		int m_kingSquare[2];
 		int m_enpassantSquare;
+		int m_enpassantTarget;
 		int m_reversibleMoveCount;
 		bool m_kingCanCapture;
+		bool m_pawnAmbiguous;
 		QVector<MoveData> m_history;
 		CastlingRights m_castlingRights;
 		int m_castleTarget[2][2];
