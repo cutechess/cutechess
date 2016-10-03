@@ -24,10 +24,12 @@
 #include "gothicboard.h"
 #include "losersboard.h"
 #include "standardboard.h"
+#include "berolinaboard.h"
 
 namespace Chess {
 
 REGISTER_BOARD(AtomicBoard, "atomic")
+REGISTER_BOARD(BerolinaBoard, "berolina")
 REGISTER_BOARD(CapablancaBoard, "capablanca")
 REGISTER_BOARD(CaparandomBoard, "caparandom")
 REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")

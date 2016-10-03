@@ -3,6 +3,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/westernboard.cpp \
     $$PWD/square.cpp \
     $$PWD/standardboard.cpp \
+    $$PWD/berolinaboard.cpp \
     $$PWD/capablancaboard.cpp \
     $$PWD/zobrist.cpp \
     $$PWD/westernzobrist.cpp \
@@ -24,6 +25,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/westernboard.h \
     $$PWD/square.h \
     $$PWD/standardboard.h \
+    $$PWD/berolinaboard.h \
     $$PWD/capablancaboard.h \
     $$PWD/zobrist.h \
     $$PWD/westernzobrist.h \
