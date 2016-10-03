@@ -201,12 +201,12 @@ void tst_Board::moveStrings_data() const
 	QTest::newRow("crazyhouse1")
 		<< "crazyhouse"
 		<< "Qd4"
-		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
-		<< "3r1rk1/8/1p1pb2p/p1p2np1/P1Pq1p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
+		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K[-] b - - 2 1"
+		<< "3r1rk1/8/1p1pb2p/p1p2np1/P1Pq1p2/1PNP4/1Q2PPBP/1R2R2K[-] w - - 3 1";
 	QTest::newRow("crazyhouse2")
 		<< "crazyhouse"
 		<< "d4 h6 Bxh6 gxh6 g4 h5 gxh5"
-		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[-] w KQkq - 0 1"
 		<< "rnbqkbnr/pppppp2/8/7P/3P4/8/PPP1PP1P/RN1QKBNR[PPb] b KQkq - 0 4";
 	QTest::newRow("crazyhouse3")
 		<< "crazyhouse"
@@ -216,13 +216,13 @@ void tst_Board::moveStrings_data() const
 	QTest::newRow("crazyhouse4")
 		<< "crazyhouse"
 		<< ""
-		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[] b kq - 0 1"
-		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1 b kq - 0 1";
+		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1 b kq - 0 1"
+		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[-] b kq - 0 1";
 	QTest::newRow("crazyhouse5")
 		<< "crazyhouse"
 		<< ""
-		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[-] b kq - 0 1"
-		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1 b kq - 0 1";
+		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[] b kq - 0 1"
+		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[-] b kq - 0 1";
 }
 
 void tst_Board::moveStrings()

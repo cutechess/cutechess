@@ -438,8 +438,9 @@ QString Board::fenString(FenNotation notation) const
 					str += pieceSymbol(Piece(side, j));
 			}
 		}
-		if (!str.isEmpty())
-			fen += QString("[%1]").arg(str);
+		if (str.isEmpty())
+			str = "-";
+		fen += QString("[%1]").arg(str);
 	}
 
 	// Side to move
