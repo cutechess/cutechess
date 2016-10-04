@@ -223,6 +223,31 @@ void tst_Board::moveStrings_data() const
 		<< ""
 		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[] b kq - 0 1"
 		<< "r1bqkbnr/pp3ppp/2ppp3/8/2BQP3/2N5/PPP2PPP/R1B2RK1[-] b kq - 0 1";
+	QTest::newRow("berolina san1a")
+		<< "berolina"
+		<< "e2c4 Nc6 c4d5 e7c5 d5xd6 Bxd6 Qe2+ Nge7 a2c4 O-O"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "r1bq1rk1/ppppnppp/2nb4/8/2P5/8/1PPPQPPP/RNB1KBNR w KQ - 0 6";
+	QTest::newRow("berolina san1b")
+		<< "berolina"
+		<< "ec4 Nc6 cd5 ec5 dxd6 Bxd6 Qe2+ Nge7 ac4 O-O"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "r1bq1rk1/ppppnppp/2nb4/8/2P5/8/1PPPQPPP/RNB1KBNR w KQ - 0 6";
+	QTest::newRow("berolina san1c")
+		<< "berolina"
+		<< "ec4 Nc6 d5 ec5 dxd6 Bxd6 Qe2 Nge7 c4 O-O"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "r1bq1rk1/ppppnppp/2nb4/8/2P5/8/1PPPQPPP/RNB1KBNR w KQ - 0 6";
+	QTest::newRow("berolina coord1")
+		<< "berolina"
+		<< "e2c4 b8c6 c4d5 e7c5"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "r1bqkbnr/pppp1ppp/2n5/2pP4/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3";
+	QTest::newRow("berolina san2")
+		<< "berolina"
+		<< "Qd4"
+		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
+		<< "3r1rk1/8/1p1pb2p/p1p2np1/P1Pq1p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
 }
 
 void tst_Board::moveStrings()
@@ -398,6 +423,17 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 5
 		<< Q_UINT64_C(4888832);
+	variant = "berolina";
+	QTest::newRow("berolina startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 4  //4 plies: 882717, 5 plies: 29119802
+		<< Q_UINT64_C(882717);
+	QTest::newRow("berolina1")
+		<< variant
+		<< "3k1r2/1pp3p1/3P2p1/PR4p1/6p1/2P2Pn1/b3r1BP/3KN3 b - - 1 26"
+		<< 4  //4 plies: 909365, 5 plies: 37601709
+		<< Q_UINT64_C(909365);
 }
 
 void tst_Board::perft()

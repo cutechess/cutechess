@@ -28,6 +28,7 @@ WesternBoard::WesternBoard(WesternZobrist* zobrist)
 	  m_arwidth(0),
 	  m_sign(1),
 	  m_enpassantSquare(0),
+	  m_enpassantTarget(0),
 	  m_reversibleMoveCount(0),
 	  m_kingCanCapture(true),
 	  m_zobrist(zobrist)
@@ -38,6 +39,10 @@ WesternBoard::WesternBoard(WesternZobrist* zobrist)
 	setPieceType(Rook, tr("rook"), "R", RookMovement);
 	setPieceType(Queen, tr("queen"), "Q", BishopMovement | RookMovement);
 	setPieceType(King, tr("king"), "K");
+
+	m_pawnSteps += {CaptureStep, -1};
+	m_pawnSteps += {FreeStep, 0};
+	m_pawnSteps += {CaptureStep, 1};
 }
 
 int WesternBoard::width() const
@@ -94,6 +99,13 @@ void WesternBoard::vInitialize()
 	m_rookOffsets[1] = -1;
 	m_rookOffsets[2] = 1;
 	m_rookOffsets[3] = m_arwidth;
+
+	m_pawnAmbiguous = (pawnAmbiguity(FreeStep) > 1);
+}
+
+inline int WesternBoard::pawnPushOffset(const PawnStep& ps, int sign) const
+{
+	return sign * ps.file - sign * m_arwidth * 1;
 }
 
 int WesternBoard::captureType(const Move& move) const
@@ -165,6 +177,11 @@ QString WesternBoard::sanMoveString(const Move& move)
 
 	if (piece.type() == Pawn)
 	{
+		if (m_pawnAmbiguous)
+		{
+			needFile = true;
+			needRank = true; // for Xboard-compatibility
+		}
 		if (target == m_enpassantSquare)
 			capture = Piece(side.opposite(), Pawn);
 		if (capture.isValid())
@@ -297,10 +314,11 @@ Move WesternBoard::moveFromSanString(const QString& str)
 	QString::const_iterator it = mstr.begin();
 
 	// A SAN move can't start with the capture mark, and
-	// a pawn move must not specify the piece type
-	if (*it == 'x' || pieceFromSymbol(*it) == Pawn)
+	if (*it == 'x')
 		return Move();
-
+	// a pawn move should not specify the piece type
+	if (pieceFromSymbol(*it) == Pawn)
+		it++; // ignore character
 	// Piece type
 	Piece piece = pieceFromSymbol(*it);
 	if (piece.side() != Side::White)
@@ -496,6 +514,17 @@ QString WesternBoard::castlingRightsString(FenNotation notation) const
 	return str;
 }
 
+int WesternBoard::pawnAmbiguity(StepType t) const
+{
+	int count = 0;
+	for (const auto a: m_pawnSteps)
+	{
+		if (a.type == t)
+			++count;
+	}
+	return count;
+}
+
 QString WesternBoard::vFenString(FenNotation notation) const
 {
 	// Castling rights
@@ -504,6 +533,7 @@ QString WesternBoard::vFenString(FenNotation notation) const
 	// En-passant square
 	if (m_enpassantSquare != 0)
 		fen += squareString(m_enpassantSquare);
+		//TODO:  HOW to achieve Berolina disambiguation?
 	else
 		fen += '-';
 
@@ -631,17 +661,32 @@ bool WesternBoard::vSetFenString(const QStringList& fen)
 	m_sign = (side == Side::White) ? 1 : -1;
 	if (*token != "-")
 	{
-		setEnpassantSquare(squareIndex(*token));
+		int epSq = squareIndex(*token);
+		setEnpassantSquare(epSq);
 		if (m_enpassantSquare == 0)
 			return false;
 
+		Piece ownPawn(side, Pawn);
+		Piece opPawn(side.opposite(), Pawn);
+		int matchesOwn = 0;
+		int epTgt = 0;
+
+		for (const PawnStep& pStep: m_pawnSteps)
+		{
+			int sq = epSq - pawnPushOffset(pStep, m_sign);
+			Piece piece = pieceAt(sq);
+			if (pStep.type == CaptureStep && piece == ownPawn)
+				matchesOwn++;
+			else if (pStep.type == FreeStep && piece == opPawn)
+				epTgt = epTgt ? sq : sq;
+		}
 		// Ignore the en-passant square if an en-passant
 		// capture isn't possible.
-		int pawnSq = m_enpassantSquare + m_arwidth * m_sign;
-		Piece ownPawn(side, Pawn);
-		if (pieceAt(pawnSq - 1) != ownPawn
-		&&  pieceAt(pawnSq + 1) != ownPawn)
+		if (!matchesOwn)
 			setEnpassantSquare(0);
+		else
+			// set ep square and target
+			setEnpassantSquare(epSq, epTgt);
 	}
 
 	// Reversible halfmove count
@@ -663,8 +708,10 @@ bool WesternBoard::vSetFenString(const QStringList& fen)
 	return true;
 }
 
-void WesternBoard::setEnpassantSquare(int square)
+void WesternBoard::setEnpassantSquare(int square, int target)
 {
+
+	m_enpassantTarget = square ? target : 0;
 	if (square == m_enpassantSquare)
 		return;
 
@@ -715,13 +762,14 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	int promotionType = move.promotion();
 	int pieceType = pieceAt(source).type();
 	int epSq = m_enpassantSquare;
+	int epTgt = m_enpassantTarget;
 	int* rookSq = m_castlingRights.rookSquare[side];
 	bool clearSource = true;
 	bool isReversible = true;
 
 	Q_ASSERT(target != 0);
 
-	MoveData md = { capture, epSq, m_castlingRights,
+	MoveData md = { capture, epSq, epTgt, m_castlingRights,
 			NoCastlingSide, m_reversibleMoveCount };
 
 	if (source == 0)
@@ -771,7 +819,7 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 		// Make an en-passant capture
 		if (target == epSq)
 		{
-			int epTarget = target + m_arwidth * m_sign;
+			int epTarget = epTgt;
 			setSquare(epTarget, Piece::NoPiece);
 
 			if (transition != nullptr)
@@ -779,12 +827,18 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 		}
 		// Push a pawn two squares ahead, creating an en-passant
 		// opportunity for the opponent.
-		else if ((source - target) * m_sign == m_arwidth * 2)
+		else if ((source / m_arwidth - target / m_arwidth) * m_sign == 2)
 		{
-			Piece opPawn(side.opposite(), Pawn);
-			if (pieceAt(target - 1) == opPawn
-			||  pieceAt(target + 1) == opPawn)
-				setEnpassantSquare(source - m_arwidth * m_sign);
+			int epSq = (source + target) / 2;
+			const Piece opPawn(side.opposite(), Pawn);
+			for (const PawnStep& pstep: m_pawnSteps)
+			{
+				if (pstep.type == CaptureStep 
+				 && opPawn == pieceAt(epSq + pawnPushOffset(pstep, m_sign)))
+				{
+					setEnpassantSquare(epSq, target);
+				}
+			}
 		}
 		else if (promotionType != Piece::NoPiece)
 			pieceType = promotionType;
@@ -841,7 +895,7 @@ void WesternBoard::vUndoMove(const Move& move)
 	m_sign *= -1;
 	Side side = sideToMove();
 
-	setEnpassantSquare(md.enpassantSquare);
+	setEnpassantSquare(md.enpassantSquare, md.enpassantTarget);
 	m_reversibleMoveCount = md.reversibleMoveCount;
 	m_castlingRights = md.castlingRights;
 
@@ -867,7 +921,7 @@ void WesternBoard::vUndoMove(const Move& move)
 	else if (target == m_enpassantSquare)
 	{
 		// Restore the pawn captured by the en-passant move
-		int epTarget = target + m_arwidth * m_sign;
+		int epTarget = m_enpassantTarget;
 		setSquare(epTarget, Piece(side.opposite(), Pawn));
 	}
 
@@ -912,13 +966,17 @@ bool WesternBoard::inCheck(Side side, int square) const
 		square = m_kingSquare[side];
 	
 	// Pawn attacks
-	int step = (side == Side::White) ? -m_arwidth : m_arwidth;
-	// Left side
-	if (pieceAt(square + step - 1) == Piece(opSide, Pawn))
-		return true;
-	// Right side
-	if (pieceAt(square + step + 1) == Piece(opSide, Pawn))
-		return true;
+	int sign = (side == Side::White) ? 1 : -1;
+
+	for (const PawnStep& pStep: m_pawnSteps)
+	{
+		if (pStep.type == CaptureStep)
+		{
+			int fromSquare = square - pawnPushOffset(pStep, -sign);
+			if (pieceAt(fromSquare) == Piece(opSide, Pawn))
+				return true;
+		}
+	}
 
 	Piece piece;
 	
@@ -1051,41 +1109,33 @@ void WesternBoard::generatePawnMoves(int sourceSquare,
 	int step = m_sign * m_arwidth;
 	bool isPromotion = pieceAt(sourceSquare - step * 2).isWall();
 
-	// One square ahead
-	targetSquare = sourceSquare - step;
-	capture = pieceAt(targetSquare);
-	if (capture.isEmpty())
-	{
-		if (isPromotion)
-			addPromotions(sourceSquare, targetSquare, moves);
-		else
-		{
-			moves.append(Move(sourceSquare, targetSquare));
-
-			// Two squares ahead
-			if (pieceAt(sourceSquare + step * 2).isWall())
-			{
-				targetSquare -= step;
-				capture = pieceAt(targetSquare);
-				if (capture.isEmpty())
-					moves.append(Move(sourceSquare, targetSquare));
-			}
-		}
-	}
-
-	// Captures, including en-passant moves
+	// Normal moves, Captures, including en-passant moves
 	Side opSide(sideToMove().opposite());
-	for (int i = -1; i <= 1; i += 2)
+
+	for (const PawnStep& pStep: m_pawnSteps)
 	{
-		targetSquare = sourceSquare - step + i;
+		targetSquare = sourceSquare + pawnPushOffset(pStep, m_sign);
 		capture = pieceAt(targetSquare);
-		if (capture.side() == opSide
-		||  targetSquare == m_enpassantSquare)
+		bool isCapture = capture.side() == opSide
+				||  targetSquare == enpassantSquare();
+		bool isNormalStep = capture.isEmpty();
+
+		if ((isNormalStep && pStep.type == FreeStep)
+		||  (isCapture && pStep.type == CaptureStep))
 		{
 			if (isPromotion)
 				addPromotions(sourceSquare, targetSquare, moves);
 			else
 				moves.append(Move(sourceSquare, targetSquare));
+
+			// Double step
+			if (isNormalStep && pieceAt(sourceSquare + step * 2).isWall())
+			{
+				targetSquare += pawnPushOffset(pStep, m_sign);
+				capture = pieceAt(targetSquare);
+				if (capture.isEmpty())
+					moves.append(Move(sourceSquare, targetSquare));
+			}
 		}
 	}
 }

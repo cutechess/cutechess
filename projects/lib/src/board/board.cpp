@@ -319,14 +319,15 @@ QString Board::moveString(const Move& move, MoveNotation notation)
 	return lanMoveString(move);
 }
 
-Move Board::moveFromLanString(const QString& str)
+Move Board::moveFromLanString(const QString& istr)
 {
+	QString str(istr);
+	str.remove(QRegExp("[x+#!?]"));
 	int len = str.length();
 	if (len < 4)
 		return Move();
 
 	Piece promotion;
-
 	int drop = str.indexOf('@');
 	if (drop > 0)
 	{
