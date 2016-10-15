@@ -335,6 +335,22 @@ void tst_Board::results_data() const
 		<< variant
 		<< "2K5/4B3/2k2B2/8/8/4b3/8/8 b - - 0 1"
 		<< "1/2-1/2";
+
+	variant = "kingofthehill";
+
+	QTest::newRow("KOTH unfinished #1")
+		<< variant
+		<< "r1b3nr/1pp2ppp/p7/2kp4/BP1p4/2PK1N2/P4PPP/R1R5 b - - 0 18"
+		<< "*";
+	QTest::newRow("KOTH center #1")
+		<< variant
+		<< "r1b3nr/1pp2ppp/pk6/3p4/BP1K4/2P2N2/P4PPP/R1R5 b - - 0 19"
+		<< "1-0";
+	QTest::newRow("KOTH center #2")
+		<< variant
+		<< "1q6/8/2B2p2/4k3/P1p5/1p1pn3/5K2/8 w - - 1 71"
+		<< "0-1";
+
 }
 
 void tst_Board::results()
@@ -423,6 +439,7 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 5
 		<< Q_UINT64_C(4888832);
+
 	variant = "berolina";
 	QTest::newRow("berolina startpos")
 		<< variant
