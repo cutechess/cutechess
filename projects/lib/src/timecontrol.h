@@ -173,8 +173,14 @@ class LIB_EXPORT TimeControl
 		/*! Start the timer. */
 		void startTimer();
 		
-		/*! Update the time control with the elapsed time. */
-		void update();
+		/*!
+		 * Update the time control with the elapsed time.
+		 * A move time increment will only be applied if
+		 * \a applyIncrement is true. This is the default.
+		 * Set this value to false if no increment is necessary for
+		 * the current move, e.g. for a book move.
+		 */
+		void update(bool applyIncrement = true);
 
 		/*! Returns the last elapsed move time. */
 		int lastMoveTime() const;

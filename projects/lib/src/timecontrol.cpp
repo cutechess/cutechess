@@ -321,7 +321,7 @@ void TimeControl::startTimer()
 	m_time.start();
 }
 
-void TimeControl::update()
+void TimeControl::update(bool applyIncrement)
 {
 	/*
 	 * This will overflow after roughly 49 days however it's unlikely
@@ -336,7 +336,10 @@ void TimeControl::update()
 		setTimeLeft(m_timePerMove);
 	else
 	{
-		setTimeLeft(m_timeLeft + m_increment - m_lastMoveTime);
+	        int newTimeLeft = m_timeLeft - m_lastMoveTime;
+		if (applyIncrement)
+			newTimeLeft += m_increment;
+		setTimeLeft(newTimeLeft);
 		
 		if (m_movesPerTc > 0)
 		{
