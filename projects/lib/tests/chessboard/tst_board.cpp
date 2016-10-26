@@ -351,6 +351,25 @@ void tst_Board::results_data() const
 		<< "1q6/8/2B2p2/4k3/P1p5/1p1pn3/5K2/8 w - - 1 71"
 		<< "0-1";
 
+	variant = "racingkings";
+
+	QTest::newRow("Race black win")
+		<< variant
+		<< "6k1/3K4/3B4/8/8/8/8/8 w - - 0 1"
+		<< "0-1";
+	QTest::newRow("Race unfinished")
+		<< variant
+		<< "6K1/3k4/3b4/8/8/8/8/8 b - - 0 1"
+		<< "*";
+	QTest::newRow("Race white win")
+		<< variant
+		<< "6K1/8/3bk3/8/8/8/8/8 b - - 0 1"
+		<< "1-0";
+	QTest::newRow("Race drawn")
+		<< variant
+		<< "3k2K1/8/3b4/8/8/8/8/8 w - - 1 1"
+		<< "1/2-1/2";
+
 }
 
 void tst_Board::results()
@@ -451,6 +470,14 @@ void tst_Board::perft_data() const
 		<< "3k1r2/1pp3p1/3P2p1/PR4p1/6p1/2P2Pn1/b3r1BP/3KN3 b - - 1 26"
 		<< 4  //4 plies: 909365, 5 plies: 37601709
 		<< Q_UINT64_C(909365);
+
+	variant = "racingkings";
+	QTest::newRow("racingkings startpos")
+		<< variant
+		<< "8/8/8/8/8/8/krbnNBRK/qrbnNBRQ w - - 0 1"
+		<< 4  //4 plies: 296242, 5 plies: 9472927
+		<< Q_UINT64_C(296242);
+
 }
 
 void tst_Board::perft()
