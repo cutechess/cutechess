@@ -4,6 +4,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/square.cpp \
     $$PWD/standardboard.cpp \
     $$PWD/berolinaboard.cpp \
+    $$PWD/racingkingsboard.cpp \
     $$PWD/capablancaboard.cpp \
     $$PWD/kingofthehillboard.cpp \
     $$PWD/zobrist.cpp \
@@ -27,6 +28,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/square.h \
     $$PWD/standardboard.h \
     $$PWD/berolinaboard.h \
+    $$PWD/racingkingsboard.h \
     $$PWD/capablancaboard.h \
     $$PWD/kingofthehillboard.h \
     $$PWD/zobrist.h \

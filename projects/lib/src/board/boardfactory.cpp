@@ -26,6 +26,7 @@
 #include "standardboard.h"
 #include "berolinaboard.h"
 #include "kingofthehillboard.h"
+#include "racingkingsboard.h"
 
 namespace Chess {
 
@@ -38,6 +39,7 @@ REGISTER_BOARD(FrcBoard, "fischerandom")
 REGISTER_BOARD(GothicBoard, "gothic")
 REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
 REGISTER_BOARD(LosersBoard, "losers")
+REGISTER_BOARD(RacingKingsBoard, "racingkings")
 REGISTER_BOARD(StandardBoard, "standard")
 
 
