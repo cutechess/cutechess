@@ -21,7 +21,7 @@
 #include <QSettings>
 
 #include <board/boardfactory.h>
-#include <board/gaviotatablebase.h>
+#include <board/syzygytablebase.h>
 #include <engineconfiguration.h>
 #include <openingsuite.h>
 #include <polyglotbook.h>
@@ -215,8 +215,8 @@ void GameSettingsWidget::readSettings()
 	QString tbPath = s.value("ui/tb_path").toString();
 	if (!tbPath.isEmpty())
 	{
-		tbOk = GaviotaTablebase::initialize({ tbPath }) &&
-		       GaviotaTablebase::tbAvailable(3);
+		tbOk = SyzygyTablebase::initialize({ tbPath }) &&
+		       SyzygyTablebase::tbAvailable(3);
 		ui->m_tbCheck->setEnabled(tbOk);
 	}
 

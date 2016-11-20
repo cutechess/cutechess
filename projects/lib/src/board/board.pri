@@ -20,7 +20,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/crazyhouseboard.cpp \
     $$PWD/boardfactory.cpp \
     $$PWD/boardtransition.cpp \
-    $$PWD/gaviotatablebase.cpp
+    $$PWD/syzygytablebase.cpp
 HEADERS += $$PWD/board.h \
     $$PWD/move.h \
     $$PWD/piece.h \
@@ -44,4 +44,4 @@ HEADERS += $$PWD/board.h \
     $$PWD/crazyhouseboard.h \
     $$PWD/boardfactory.h \
     $$PWD/boardtransition.h \
-    $$PWD/gaviotatablebase.h
+    $$PWD/syzygytablebase.h

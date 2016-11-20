@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = chessboard gtb sprt mersenne tournamentplayer tournamentpair polyglotbook
+SUBDIRS = chessboard tb sprt mersenne tournamentplayer tournamentpair polyglotbook
