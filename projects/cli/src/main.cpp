@@ -36,7 +36,7 @@
 #include <enginetextoption.h>
 #include <openingsuite.h>
 #include <sprt.h>
-#include <board/gaviotatablebase.h>
+#include <board/syzygytablebase.h>
 #include <board/result.h>
 
 #include "cutechesscoreapp.h"
@@ -244,7 +244,9 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-concurrency", QVariant::Int, 1, 1);
 	parser.addOption("-draw", QVariant::StringList);
 	parser.addOption("-resign", QVariant::StringList);
-	parser.addOption("-gtb", QVariant::String, 1, 1);
+	parser.addOption("-tb", QVariant::String, 1, 1);
+	parser.addOption("-tbpieces", QVariant::Int, 1, 1);
+	parser.addOption("-tbignore50", QVariant::Bool, 0, 0);
 	parser.addOption("-event", QVariant::String, 1, 1);
 	parser.addOption("-games", QVariant::Int, 1, 1);
 	parser.addOption("-rounds", QVariant::Int, 1, 1);
@@ -342,17 +344,27 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			if (ok)
 				adjudicator.setResignThreshold(moveCount, -score);
 		}
-		// Gaviota tablebase adjudication
-		else if (name == "-gtb")
+		// Syzygy tablebase adjudication
+		else if (name == "-tb")
 		{
 			adjudicator.setTablebaseAdjudication(true);
-			QStringList paths = QStringList() << value.toString();
+			QString path = value.toString();
 
-			ok = GaviotaTablebase::initialize(paths) &&
-			     GaviotaTablebase::tbAvailable(3);
+			ok = SyzygyTablebase::initialize(path) &&
+			     SyzygyTablebase::tbAvailable(3);
 			if (!ok)
-				qWarning("Could not load Gaviota tablebases");
+				qWarning("Could not load Syzygy tablebases");
 		}
+		// Syzygy tablebase pieces
+		else if (name == "-tbpieces")
+		{
+			ok = value.toInt() > 2;
+			if (ok)
+				SyzygyTablebase::setPieces(value.toInt());
+		}
+		// Syzygy ignore 50-move-rule
+		else if (name == "-tbignore50")
+			SyzygyTablebase::setNoRule50();
 		// Event name
 		else if (name == "-event")
 			tournament->setName(value.toString());

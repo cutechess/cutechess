@@ -17,7 +17,7 @@
 
 #include "standardboard.h"
 #include "westernzobrist.h"
-#include "gaviotatablebase.h"
+#include "syzygytablebase.h"
 
 namespace {
 
@@ -1071,36 +1071,37 @@ QString StandardBoard::defaultFenString() const
 	return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 }
 
-Result StandardBoard::tablebaseResult(unsigned int* dtm) const
+Result StandardBoard::tablebaseResult(unsigned int* dtz) const
 {
-	GaviotaTablebase::PieceList pieces;
+	SyzygyTablebase::PieceList pieces;
 
 	for (int i = 0; i < arraySize(); i++)
 	{
 		Piece piece(pieceAt(i));
 		if (piece.isValid())
 		{
-			if (pieces.size() >= 5)
+			if (pieces.size() > 6)
 				return Result();
 			pieces.append(qMakePair(chessSquare(i), piece));
 		}
 	}
 
-	GaviotaTablebase::Castling castling = 0;
+	SyzygyTablebase::Castling castling = 0;
 	if (hasCastlingRight(Chess::Side::White, KingSide))
-		castling |= GaviotaTablebase::WhiteKingSide;
+		castling |= SyzygyTablebase::WhiteKingSide;
 	if (hasCastlingRight(Chess::Side::White, QueenSide))
-		castling |= GaviotaTablebase::WhiteQueenSide;
+		castling |= SyzygyTablebase::WhiteQueenSide;
 	if (hasCastlingRight(Chess::Side::Black, KingSide))
-		castling |= GaviotaTablebase::BlackKingSide;
+		castling |= SyzygyTablebase::BlackKingSide;
 	if (hasCastlingRight(Chess::Side::Black, QueenSide))
-		castling |= GaviotaTablebase::BlackQueenSide;
+		castling |= SyzygyTablebase::BlackQueenSide;
 
-	return GaviotaTablebase::result(sideToMove(),
+	return SyzygyTablebase::result(sideToMove(),
 					chessSquare(enpassantSquare()),
 					castling,
+					reversibleMoveCount(),
 					pieces,
-					dtm);
+					dtz);
 }
 
 } // namespace Chess
