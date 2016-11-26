@@ -73,7 +73,13 @@ consecutive moves.
 Adjudicate games using Syzygy tablebases.
 .Ar Paths
 should be semicolon-delimited list of paths to the compressed tablebase files.
-At the moment only scheme 4 compression is supported.
+Only the DTZ tablebase files are required.
+.It Fl tbpieces Ar N
+Only use tablebase adjudication for positions with
+.Ar N
+pieces or less. 
+.It Fl tbignore50
+Disable the fifty move rule for tablebase adjudication.
 .It Fl tournament Ar type
 Set the tournament type, where
 .Ar type
