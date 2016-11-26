@@ -1,6 +1,7 @@
 DEFINES += Z_PREFIX
 CONFIG(release, debug|release):DEFINES += NDEBUG
 
+QMAKE_CFLAGS += -std=c99
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 SOURCES += $$PWD/tbprobe.c
