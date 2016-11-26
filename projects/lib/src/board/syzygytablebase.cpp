@@ -16,6 +16,7 @@
 */
 
 #include "syzygytablebase.h"
+#include <QMutex>
 #include <QStringList>
 #include <tbprobe.h>
 #include "westernboard.h"
@@ -24,6 +25,7 @@ namespace {
 
 static bool s_initialized = false, s_initOK = false, s_noRule50 = false;
 static int s_pieces = INT_MAX;
+static QMutex s_mutex;
 
 static int tbSquare(const Chess::Square& square)
 {
@@ -108,8 +110,10 @@ Chess::Result SyzygyTablebase::result(const Chess::Side& side,
 		}
 	}
 
+	s_mutex.lock();
 	unsigned result = tb_probe_root(white, black, kings, queens, rooks,
 		bishops, knights, pawns, rule50, 0, ep, wtm, nullptr);
+	s_mutex.unlock();
 
 	Chess::Side winner(Chess::Side::NoSide); 
 	if (result == TB_RESULT_FAILED)
