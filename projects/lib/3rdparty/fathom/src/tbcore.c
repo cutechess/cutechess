@@ -86,6 +86,54 @@ static uint64_t calc_key_from_pcs(int *pcs, int mirror);
 static void free_wdl_entry(struct TBEntry *entry);
 static void free_dtz_entry(struct TBEntry *entry);
 
+/* A replacement for strncpy().
+   Uses NUL termination even when the string has to be truncated.  */
+static size_t safe_strncpy(char *dst, const char *src, size_t size)
+{
+  char *dstptr = dst;
+  size_t tocopy = size;
+  const char *srcptr = src;
+
+  if (tocopy && --tocopy) {
+    do {
+      if (!(*dstptr++ = *srcptr++))
+	break;
+    } while (--tocopy);
+  }
+  if (!tocopy) {
+    if (size) *dstptr = 0;
+    while (*srcptr++);
+  }
+
+  return (srcptr - src - 1);
+}
+
+/* A replacement for strncat().
+   <size> is the size of <dst>, not space left.  */
+static size_t safe_strncat(char *dst, const char *src, size_t size)
+{
+  char *dstptr = dst;
+  size_t dstlen;
+  size_t tocopy = size;
+  const char *srcptr = src;
+
+  while (tocopy-- && *dstptr)
+    dstptr++;
+  dstlen = dstptr - dst;
+  if (!(tocopy = size - dstlen))
+    return (dstlen + strlen(src));
+  while (*srcptr) {
+    if (tocopy != 1) {
+      *dstptr++ = *srcptr;
+      tocopy--;
+    }
+    srcptr++;
+  }
+  *dstptr = 0;
+
+  return (dstlen + (srcptr - src));
+}
+
 static FD open_tb(const char *str, const char *suffix)
 {
   int i;
@@ -93,14 +141,14 @@ static FD open_tb(const char *str, const char *suffix)
   char file[256];
 
   for (i = 0; i < num_paths; i++) {
-    strcpy(file, paths[i]);
+    safe_strncpy(file, paths[i], 256);
 #ifndef _WIN32
-    strcat(file, "/");
+    safe_strncat(file, "/", 256);
 #else
-    strcat(file, "\\");
+    safe_strncat(file, "\\", 256);
 #endif
-    strcat(file, str);
-    strcat(file, suffix);
+    safe_strncat(file, str, 256);
+    safe_strncat(file, suffix, 256);
 #ifndef _WIN32
     fd = open(file, O_RDONLY);
 #else
@@ -309,8 +357,9 @@ void init_tablebases(const char *path)
 
   const char *p = path;
   if (strlen(p) == 0 || !strcmp(p, "<empty>")) return;
-  path_string = (char *)malloc(strlen(p) + 1);
-  strcpy(path_string, p);
+  const size_t len = strlen(p) + 1;
+  path_string = (char *)malloc(len);
+  safe_strncpy(path_string, p, len);
   num_paths = 0;
   for (i = 0;; i++) {
     if (path_string[i] != SEP_CHAR)
@@ -342,33 +391,33 @@ void init_tablebases(const char *path)
     DTZ_table[i].entry = NULL;
 
   for (i = 1; i < 6; i++) {
-    sprintf(str, "K%cvK", pchr[i]);
+    snprintf(str, 16, "K%cvK", pchr[i]);
     init_tb(str);
   }
 
   for (i = 1; i < 6; i++)
     for (j = i; j < 6; j++) {
-      sprintf(str, "K%cvK%c", pchr[i], pchr[j]);
+      snprintf(str, 16, "K%cvK%c", pchr[i], pchr[j]);
       init_tb(str);
     }
 
   for (i = 1; i < 6; i++)
     for (j = i; j < 6; j++) {
-      sprintf(str, "K%c%cvK", pchr[i], pchr[j]);
+      snprintf(str, 16, "K%c%cvK", pchr[i], pchr[j]);
       init_tb(str);
     }
 
   for (i = 1; i < 6; i++)
     for (j = i; j < 6; j++)
       for (k = 1; k < 6; k++) {
-	sprintf(str, "K%c%cvK%c", pchr[i], pchr[j], pchr[k]);
+	snprintf(str, 16, "K%c%cvK%c", pchr[i], pchr[j], pchr[k]);
 	init_tb(str);
       }
 
   for (i = 1; i < 6; i++)
     for (j = i; j < 6; j++)
       for (k = j; k < 6; k++) {
-	sprintf(str, "K%c%c%cvK", pchr[i], pchr[j], pchr[k]);
+	snprintf(str, 16, "K%c%c%cvK", pchr[i], pchr[j], pchr[k]);
 	init_tb(str);
       }
 
@@ -376,7 +425,7 @@ void init_tablebases(const char *path)
     for (j = i; j < 6; j++)
       for (k = i; k < 6; k++)
 	for (l = (i == k) ? j : k; l < 6; l++) {
-	  sprintf(str, "K%c%cvK%c%c", pchr[i], pchr[j], pchr[k], pchr[l]);
+	  snprintf(str, 16, "K%c%cvK%c%c", pchr[i], pchr[j], pchr[k], pchr[l]);
 	  init_tb(str);
 	}
 
@@ -384,7 +433,7 @@ void init_tablebases(const char *path)
     for (j = i; j < 6; j++)
       for (k = j; k < 6; k++)
 	for (l = 1; l < 6; l++) {
-	  sprintf(str, "K%c%c%cvK%c", pchr[i], pchr[j], pchr[k], pchr[l]);
+	  snprintf(str, 16, "K%c%c%cvK%c", pchr[i], pchr[j], pchr[k], pchr[l]);
 	  init_tb(str);
 	}
 
@@ -392,7 +441,7 @@ void init_tablebases(const char *path)
     for (j = i; j < 6; j++)
       for (k = j; k < 6; k++)
 	for (l = k; l < 6; l++) {
-	  sprintf(str, "K%c%c%c%cvK", pchr[i], pchr[j], pchr[k], pchr[l]);
+	  snprintf(str, 16, "K%c%c%c%cvK", pchr[i], pchr[j], pchr[k], pchr[l]);
 	  init_tb(str);
 	}
 
@@ -1052,7 +1101,7 @@ static uint64 calc_factors_piece(int *factor, int num, int order, ubyte *norm, u
   f = 1;
   for (i = norm[0], k = 0; i < num || k == order; k++) {
     if (k == order) {
-      factor[0] = f;
+      factor[0] = (int)f;
 #ifndef CONNECTED_KINGS
       f *= pivfac[enc_type];
 #else
@@ -1062,7 +1111,7 @@ static uint64 calc_factors_piece(int *factor, int num, int order, ubyte *norm, u
 	f *= mfactor[enc_type - 2];
 #endif
     } else {
-      factor[i] = f;
+      factor[i] = (int)f;
       f *= subfactor(norm[i], n);
       n -= norm[i];
       i += norm[i];
@@ -1084,13 +1133,13 @@ static uint64 calc_factors_pawn(int *factor, int num, int order, int order2, uby
   f = 1;
   for (k = 0; i < num || k == order || k == order2; k++) {
     if (k == order) {
-      factor[0] = f;
+      factor[0] = (int)f;
       f *= pfactor[norm[0] - 1][file];
     } else if (k == order2) {
-      factor[norm[0]] = f;
+      factor[norm[0]] = (int)f;
       f *= subfactor(norm[norm[0]], 48 - norm[0]);
     } else {
-      factor[i] = f;
+      factor[i] = (int)f;
       f *= subfactor(norm[i], n);
       n -= norm[i];
       i += norm[i];
@@ -1256,7 +1305,7 @@ static struct PairsData *setup_pairs(unsigned char *data, uint64 tb_size, uint64
   d->min_len = min_len;
   *next = &data[12 + 2 * h + 3 * num_syms + (num_syms & 1)];
 
-  int num_indices = (tb_size + (1ULL << idxbits) - 1) >> idxbits;
+  int num_indices = (int)((tb_size + (1ULL << idxbits) - 1) >> idxbits);
   size[0] = 6ULL * num_indices;
   size[1] = 2ULL * num_blocks;
   size[2] = (1ULL << blocksize) * real_num_blocks;
@@ -1433,7 +1482,7 @@ static int init_table_dtz(struct TBEntry *entry)
     if (ptr->flags & 2) {
       int i;
       for (i = 0; i < 4; i++) {
-	ptr->map_idx[i] = (data + 1 - ptr->map);
+	ptr->map_idx[i] = (ushort)(data + 1 - ptr->map);
 	data += 1 + data[0];
       }
       data += ((uintptr_t)data) & 0x01;
@@ -1467,7 +1516,7 @@ static int init_table_dtz(struct TBEntry *entry)
       if (ptr->flags[f] & 2) {
 	int i;
 	for (i = 0; i < 4; i++) {
-	  ptr->map_idx[f][i] = (data + 1 - ptr->map);
+	  ptr->map_idx[f][i] = (ushort)(data + 1 - ptr->map);
 	  data += 1 + data[0];
 	}
       }
@@ -1499,8 +1548,8 @@ static ubyte decompress_pairs(struct PairsData *d, uint64 idx)
   if (!d->idxbits)
     return d->min_len;
 
-  uint32 mainidx = idx >> d->idxbits;
-  int litidx = (idx & ((1 << d->idxbits) - 1)) - (1 << (d->idxbits - 1));
+  uint32 mainidx = (uint32)(idx >> d->idxbits);
+  int litidx = (idx & (((uint64)1 << d->idxbits) - 1)) - ((uint64)1 << (d->idxbits - 1));
   uint32 block = *(uint32 *)(d->indextable + 6 * mainidx);
   litidx += *(ushort *)(d->indextable + 6 * mainidx + 4);
   if (litidx < 0) {
