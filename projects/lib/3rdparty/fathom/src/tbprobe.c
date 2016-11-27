@@ -126,6 +126,13 @@ unsigned TB_LARGEST = 0;
 #define board(s)                ((uint64_t)1 << (s))
 #ifdef TB_CUSTOM_LSB
 #define lsb(b) TB_CUSTOM_LSB(b)
+#elif defined(_MSC_VER)
+static inline unsigned lsb(uint64_t b)
+{
+    unsigned long ret = 0;
+    _BitScanForward64(&ret, b);
+    return ret;
+}
 #else
 static inline unsigned lsb(uint64_t b)
 {

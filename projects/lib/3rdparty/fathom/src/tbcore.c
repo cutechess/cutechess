@@ -52,12 +52,16 @@ static LOCK_T TB_MUTEX;
 
 #ifdef TB_CUSTOM_BSWAP32
 #define internal_bswap32(x) TB_CUSTOM_BSWAP32(x)
+#elif defined(_MSC_VER)
+#define internal_bswap32(x) _byteswap_ulong(x)
 #else
 #define internal_bswap32(x) __builtin_bswap32(x)
 #endif
 
 #ifdef TB_CUSTOM_BSWAP64
 #define internal_bswap64(x) TB_CUSTOM_BSWAP64(x)
+#elif defined(_MSC_VER)
+#define internal_bswap64(x) _byteswap_uint64(x)
 #else
 #define internal_bswap64(x) __builtin_bswap64(x)
 #endif
@@ -90,13 +94,17 @@ static FD open_tb(const char *str, const char *suffix)
 
   for (i = 0; i < num_paths; i++) {
     strcpy(file, paths[i]);
+#ifndef _WIN32
     strcat(file, "/");
+#else
+    strcat(file, "\\");
+#endif
     strcat(file, str);
     strcat(file, suffix);
 #ifndef _WIN32
     fd = open(file, O_RDONLY);
 #else
-    fd = CreateFile(file, GENERIC_READ, FILE_SHARE_READ, NULL,
+    fd = CreateFileA(file, GENERIC_READ, FILE_SHARE_READ, NULL,
 			  OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 #endif
     if (fd != FD_ERR) return fd;

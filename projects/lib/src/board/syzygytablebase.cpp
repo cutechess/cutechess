@@ -16,6 +16,7 @@
 */
 
 #include "syzygytablebase.h"
+#include <QDir>
 #include <QMutex>
 #include <QStringList>
 #include <tbprobe.h>
@@ -23,11 +24,11 @@
 
 namespace {
 
-static bool s_initialized = false, s_initOK = false, s_noRule50 = false;
-static int s_pieces = INT_MAX;
-static QMutex s_mutex;
+bool s_initialized = false, s_initOK = false, s_noRule50 = false;
+int s_pieces = INT_MAX;
+QMutex s_mutex;
 
-static int tbSquare(const Chess::Square& square)
+int tbSquare(const Chess::Square& square)
 {
 	if (!square.isValid())
 		return -1;
@@ -42,7 +43,8 @@ bool SyzygyTablebase::initialize(const QString& path)
 		return s_initOK;
 	s_initialized = true;
 
-	s_initOK = tb_init(path.toStdString().c_str());
+	const auto nativePath = QDir::toNativeSeparators(path);
+	s_initOK = tb_init(nativePath.toStdString().c_str());
 
 	return s_initOK;
 }
