@@ -31,6 +31,7 @@ WesternBoard::WesternBoard(WesternZobrist* zobrist)
 	  m_enpassantTarget(0),
 	  m_reversibleMoveCount(0),
 	  m_kingCanCapture(true),
+	  m_pawnAmbiguous(false),
 	  m_zobrist(zobrist)
 {
 	setPieceType(Pawn, tr("pawn"), "P");
