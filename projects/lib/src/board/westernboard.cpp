@@ -1277,8 +1277,7 @@ Result WesternBoard::result()
 		case Bishop:
 		{
 			auto color = chessSquare(i).color();
-			Q_ASSERT(color != Square::NoColor);
-			if (!bishops[color])
+			if (color != Square::NoColor && !bishops[color])
 			{
 				material++;
 				bishops[color] = true;
