@@ -370,6 +370,20 @@ void tst_Board::results_data() const
 		<< "3k2K1/8/3b4/8/8/8/8/8 w - - 1 1"
 		<< "1/2-1/2";
 
+	variant = "horde";
+
+	QTest::newRow("Horde black win")
+		<< variant
+		<< "8/8/4k3/8/8/8/8/8 w - - 0 1"
+		<< "0-1";
+	QTest::newRow("Horde draw stalemate")
+		<< variant
+		<< "8/8/1k6/5p2/5P2/5P2/8/8 w - - 0 1"
+		<< "1/2-1/2";
+	QTest::newRow("Horde white win")
+		<< variant
+		<< "2k4R/R7/8/3PP3/8/8/8/8 b - - 0 1"
+		<< "1-0";
 }
 
 void tst_Board::results()
@@ -477,6 +491,23 @@ void tst_Board::perft_data() const
 		<< "8/8/8/8/8/8/krbnNBRK/qrbnNBRQ w - - 0 1"
 		<< 4  //4 plies: 296242, 5 plies: 9472927
 		<< Q_UINT64_C(296242);
+
+	variant = "horde";
+	QTest::newRow("horde v2 startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/1PP2PP1/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP w kq - 0 1"
+		<< 6  //5 plies: 265223, 6 plies: 5396554
+		<< Q_UINT64_C(5396554);
+	QTest::newRow("horde dunsany startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP b kq - 0 1"
+		<< 5  //5 plies: 775839, 6 plies: 59231536
+		<< Q_UINT64_C(775839);
+	QTest::newRow("horde3")
+		<< variant
+		<< "rnbqkbnr/6p1/2p1Pp1P/P1PPPP2/Pp4PP/1p2PPPP/1P2PPPP/PP1nPPPP b kq a3 0 18"
+		<< 5  //4 plies: 197287, 5 plies: 6429490
+		<< Q_UINT64_C(6429490);
 
 }
 

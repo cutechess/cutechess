@@ -55,6 +55,11 @@ int WesternBoard::height() const
 	return 8;
 }
 
+bool WesternBoard::kingsCountAssertion(int whiteKings, int blackKings) const
+{
+	return whiteKings == 1 && blackKings == 1;
+}
+
 bool WesternBoard::kingCanCapture() const
 {
 	return true;
@@ -636,9 +641,9 @@ bool WesternBoard::vSetFenString(const QStringList& fen)
 			kingCount[tmp.side()]++;
 		}
 	}
-	if (kingCount[Side::White] != 1 || kingCount[Side::Black] != 1)
+	if (!kingsCountAssertion(kingCount[Side::White],
+				 kingCount[Side::Black]))
 		return false;
-
 	// Castling rights
 	m_castlingRights.rookSquare[Side::White][QueenSide] = 0;
 	m_castlingRights.rookSquare[Side::White][KingSide] = 0;
@@ -963,8 +968,13 @@ bool WesternBoard::inCheck(Side side, int square) const
 {
 	Side opSide = side.opposite();
 	if (square == 0)
+	{
 		square = m_kingSquare[side];
-	
+		// In the "horde" variant the horde side has no king
+		if (square == 0)
+			return false;
+	}
+
 	// Pawn attacks
 	int sign = (side == Side::White) ? 1 : -1;
 

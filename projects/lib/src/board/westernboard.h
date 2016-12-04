@@ -101,7 +101,15 @@ class LIB_EXPORT WesternBoard : public Board
 		 * of the given \a type that are specified in pawnSteps.
 		 */
 		int pawnAmbiguity(StepType type = FreeStep) const;
-
+		/*!
+		 * Returns true if both counts of kings given by
+		 * \a whiteKings and \a blackKings are correct.
+		 * WesternBoard expects exactly one king per side.
+		 * \sa AntiBoard
+		 * \sa HordeBoard
+		 */
+		virtual bool kingsCountAssertion(int whiteKings,
+						 int blackKings) const;
 		/*!
 		 * Returns true if the king can capture opposing pieces.
 		 * The default value is true.
