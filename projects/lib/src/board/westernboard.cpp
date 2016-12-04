@@ -684,7 +684,7 @@ bool WesternBoard::vSetFenString(const QStringList& fen)
 			if (pStep.type == CaptureStep && piece == ownPawn)
 				matchesOwn++;
 			else if (pStep.type == FreeStep && piece == opPawn)
-				epTgt = epTgt ? sq : sq;
+				epTgt = sq;
 		}
 		// Ignore the en-passant square if an en-passant
 		// capture isn't possible.
