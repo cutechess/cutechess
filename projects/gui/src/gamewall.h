@@ -43,7 +43,6 @@ class GameWall : public QWidget
 
 		QMap<ChessGame*, GameWallWidget*> m_games;
 		QList<GameWallWidget*> m_gamesToRemove;
-		QTimer* m_timer;
 };
 
 #endif // GAMEWALL_H
