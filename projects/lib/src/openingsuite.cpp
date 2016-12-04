@@ -24,6 +24,7 @@
 
 OpeningSuite::OpeningSuite(const QString& fen)
 	: m_format(EpdFormat),
+	  m_order(SequentialOrder),
 	  m_gamesRead(0),
 	  m_gameIndex(0),
 	  m_startIndex(0),
