@@ -248,6 +248,16 @@ void tst_Board::moveStrings_data() const
 		<< "Qd4"
 		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
 		<< "3r1rk1/8/1p1pb2p/p1p2np1/P1Pq1p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
+	QTest::newRow("3check san1")
+		<< "3check"
+		<< "e4 e5 Nf3 Nc6 d4 exd4"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 3+3 0 1"
+		<< "r1bqkbnr/pppp1ppp/2n5/8/3pP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 3+3 0 4";
+	QTest::newRow("3check san2")
+		<< "3check"
+		<< "e4 e5 Nf3 d6 Bb5+ c6 Bxc6+"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 3+3 0 1"
+		<< "rnbqkbnr/pp3ppp/2Bp4/4p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 1+3 0 4";
 }
 
 void tst_Board::moveStrings()
