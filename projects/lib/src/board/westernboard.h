@@ -153,6 +153,15 @@ class LIB_EXPORT WesternBoard : public Board
 		 */
 		virtual bool inCheck(Side side, int square = 0) const;
 
+		/*!
+		 * Returns FEN extensions. The default is an empty string.
+		 *
+		 * This function is called by fenString() via vFenString().
+		 * Returns additional parts of the current position's (extended)
+		 * FEN string which succeed the en passant field.
+		 */
+		virtual QString vFenIncludeString(FenNotation notation) const;
+
 		// Inherited from Board
 		virtual void vInitialize();
 		virtual QString vFenString(FenNotation notation) const;

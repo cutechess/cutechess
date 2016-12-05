@@ -531,6 +531,12 @@ int WesternBoard::pawnAmbiguity(StepType t) const
 	return count;
 }
 
+QString WesternBoard::vFenIncludeString(FenNotation notation) const
+{
+	Q_UNUSED(notation);
+	return "";
+}
+
 QString WesternBoard::vFenString(FenNotation notation) const
 {
 	// Castling rights
@@ -542,6 +548,8 @@ QString WesternBoard::vFenString(FenNotation notation) const
 		//TODO:  HOW to achieve Berolina disambiguation?
 	else
 		fen += '-';
+
+	fen +=vFenIncludeString(notation);
 
 	// Reversible halfmove count
 	fen += ' ';

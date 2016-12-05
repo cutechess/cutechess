@@ -27,10 +27,13 @@
 #include "standardboard.h"
 #include "berolinaboard.h"
 #include "kingofthehillboard.h"
+#include "ncheckboard.h"
 #include "racingkingsboard.h"
 
 namespace Chess {
 
+REGISTER_BOARD(ThreeCheckBoard, "3check")
+REGISTER_BOARD(FiveCheckBoard, "5check")
 REGISTER_BOARD(AtomicBoard, "atomic")
 REGISTER_BOARD(BerolinaBoard, "berolina")
 REGISTER_BOARD(CapablancaBoard, "capablanca")
