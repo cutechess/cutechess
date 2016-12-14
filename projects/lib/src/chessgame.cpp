@@ -71,7 +71,10 @@ QString evalString(const MoveEvaluation& eval)
 
 } // anonymous namespace
 
-ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
+ChessGame::ChessGame(Chess::Board* board,
+		     PgnGame* pgn,
+		     QObject* parent,
+		     const Tournament* tournament)
 	: QObject(parent),
 	  m_board(board),
 	  m_startDelay(0),
@@ -80,10 +83,10 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	  m_paused(false),
 	  m_pgnInitialized(false),
 	  m_bookOwnership(false),
-	  m_pgn(pgn)
+	  m_pgn(pgn),
+	  m_tournament(tournament)
 {
 	Q_ASSERT(pgn != nullptr);
-
 	for (int i = 0; i < 2; i++)
 	{
 		m_player[i] = nullptr;
@@ -148,6 +151,11 @@ const QMap<int,int>& ChessGame::scores() const
 Chess::Result ChessGame::result() const
 {
 	return m_result;
+}
+
+const Tournament* ChessGame::tournament() const
+{
+	return m_tournament;
 }
 
 ChessPlayer* ChessGame::playerToMove() const

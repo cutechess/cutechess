@@ -28,6 +28,7 @@
 #include "board/move.h"
 #include "timecontrol.h"
 #include "gameadjudicator.h"
+#include "tournament.h"
 
 namespace Chess { class Board; }
 class ChessPlayer;
@@ -40,7 +41,10 @@ class LIB_EXPORT ChessGame : public QObject
 	Q_OBJECT
 
 	public:
-		ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent = nullptr);
+		ChessGame(Chess::Board* board,
+			  PgnGame* pgn,
+			  QObject* parent = nullptr,
+			  const Tournament* tournament = nullptr);
 		virtual ~ChessGame();
 		
 		QString errorString() const;
@@ -74,6 +78,7 @@ class LIB_EXPORT ChessGame : public QObject
 
 		void lockThread();
 		void unlockThread();
+		const Tournament* tournament() const;
 
 	public slots:
 		void start();
@@ -137,6 +142,7 @@ class LIB_EXPORT ChessGame : public QObject
 		QSemaphore m_pauseSem;
 		QSemaphore m_resumeSem;
 		GameAdjudicator m_adjudicator;
+		const Tournament* m_tournament;
 };
 
 #endif // CHESSGAME_H
