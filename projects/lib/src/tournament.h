@@ -106,6 +106,11 @@ class LIB_EXPORT Tournament : public QObject
 		/*! Returns the number of participants in the tournament. */
 		int playerCount() const;
 		/*!
+		 * Returns the index of the player in \a game with given
+		 * \a side. Returns -1 if invalid.
+		 */
+		int playerIndex(ChessGame* game, Chess::Side side) const;
+		/*!
 		 * Returns the maximum number of players that can be seeded
 		 * in the tournament.
 		 */

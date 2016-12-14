@@ -147,6 +147,15 @@ int Tournament::playerCount() const
 	return m_players.size();
 }
 
+int Tournament::playerIndex(ChessGame* game, Chess::Side side) const
+{
+	if (side.isNull() || !m_gameData.contains(game))
+		return -1;
+
+	const GameData* gd = m_gameData[game];
+	return side == Chess::Side::White ? gd->whiteIndex : gd->blackIndex;
+}
+
 int Tournament::seedCount() const
 {
 	return m_seedCount;
@@ -318,7 +327,7 @@ void Tournament::startGame(TournamentPair* pair)
 
 	Chess::Board* board = Chess::BoardFactory::create(m_variant);
 	Q_ASSERT(board != nullptr);
-	ChessGame* game = new ChessGame(board, new PgnGame());
+	ChessGame* game = new ChessGame(board, new PgnGame(), nullptr, this);
 
 	connect(game, SIGNAL(started(ChessGame*)),
 		this, SLOT(onGameStarted(ChessGame*)));

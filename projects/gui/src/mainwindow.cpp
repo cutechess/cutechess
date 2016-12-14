@@ -565,7 +565,14 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	}
 
 	// if a human plays the black side against an engine then flip the board
-	if (m_players[Chess::Side::Black]->isHuman() && !m_players[Chess::Side::White]->isHuman())
+	// also flip the board if gauntlet player 0 has black pieces
+	const Tournament* t = m_game->tournament();
+	bool gPlayer0Black = t
+			  && t->type() == "gauntlet"
+			  && t->playerIndex(m_game, Chess::Side::Black) == 0;
+
+	if (!m_players[Chess::Side::White]->isHuman()
+	&& ( m_players[Chess::Side::Black]->isHuman() || gPlayer0Black ))
 		m_gameViewer->boardScene()->flip();
 
 	updateWindowTitle();

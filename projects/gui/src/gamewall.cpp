@@ -122,6 +122,17 @@ void GameWallWidget::setGame(ChessGame* game)
 	m_scene->setBoard(game->pgn()->createBoard());
 	m_scene->populate();
 
+	// flip scene if human plays black and engine plays white
+	// also flip scene if player 0 of a gauntlet plays black
+	const Tournament *t = game->tournament();
+	bool gPlayer0Black = t
+			  && t->type() == "gauntlet"
+			  && t->playerIndex(game, Chess::Side::Black) == 0;
+
+	if ((m_players[Chess::Side::Black]->isHuman() || gPlayer0Black)
+	&&  !m_players[Chess::Side::White]->isHuman())
+		m_scene->flip();
+
 	foreach (const Chess::Move& move, game->moves())
 		m_scene->makeMove(move);
 
