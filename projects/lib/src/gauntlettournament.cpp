@@ -18,6 +18,7 @@
 
 #include "gauntlettournament.h"
 #include <algorithm>
+#include "chessgame.h"
 
 GauntletTournament::GauntletTournament(GameManager* gameManager,
 				       QObject *parent)
@@ -29,6 +30,16 @@ GauntletTournament::GauntletTournament(GameManager* gameManager,
 QString GauntletTournament::type() const
 {
 	return "gauntlet";
+}
+
+void GauntletTournament::onGameAboutToStart(ChessGame* game,
+					    const PlayerBuilder* white,
+					    const PlayerBuilder* black)
+{
+	Q_UNUSED(black);
+	const int blackIndex = playerIndex(game, Chess::Side::Black);
+	if (!white->isHuman() && blackIndex == 0)
+		game->setBoardShouldBeFlipped(true);
 }
 
 void GauntletTournament::initializePairing()

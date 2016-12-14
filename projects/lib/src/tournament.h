@@ -291,6 +291,28 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		TournamentPair* pair(int player1, int player2);
 		/*!
+		 * This member function is called by \a startNextGame() to
+		 * start a new tournament game between \a pair.
+		 *
+		 * Reimplementations should call the base implementation.
+		 */
+		void startGame(TournamentPair* pair);
+		/*!
+		 * This member function is called by \a startGame() right
+		 * before the game is actually started.
+		 *
+		 * The default implementation does nothing.
+		 */
+		virtual void onGameAboutToStart(ChessGame* game,
+						const PlayerBuilder* white,
+						const PlayerBuilder* black);
+		/*!
+		 * Returns the index of player \a side in \a game.
+		 *
+		 * \note \a game must belong to this tournament.
+		 */
+		int playerIndex(ChessGame* game, Chess::Side side) const;
+		/*!
 		 * Initializes the pairings for the tournament.
 		 *
 		 * Subclasses that implement this member function should prepare
@@ -340,13 +362,6 @@ class LIB_EXPORT Tournament : public QObject
 		 * otherwise returns false.
 		 */
 		virtual bool areAllGamesFinished() const;
-		/*!
-		 * This member function is called by \a startNextGame() to
-		 * start a new tournament game between \a pair.
-		 *
-		 * Reimplementations should call the base implementation.
-		 */
-		virtual void startGame(TournamentPair* pair);
 		/*!
 		 * Returns true if Gauntlet ordering is used for the ratings
 		 * table (ie. first engine always at the top and the rest

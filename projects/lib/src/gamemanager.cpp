@@ -420,6 +420,8 @@ void GameManager::newGame(ChessGame* game,
 	Q_ASSERT(game->parent() == nullptr);
 
 	GameEntry entry = { game, white, black, startMode, cleanupMode };
+	if (!white->isHuman() && black->isHuman())
+		game->setBoardShouldBeFlipped(true);
 
 	if (startMode == StartImmediately)
 	{

@@ -80,6 +80,7 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	  m_paused(false),
 	  m_pgnInitialized(false),
 	  m_bookOwnership(false),
+	  m_boardShouldBeFlipped(false),
 	  m_pgn(pgn)
 {
 	Q_ASSERT(pgn != nullptr);
@@ -118,6 +119,16 @@ ChessPlayer* ChessGame::player(Chess::Side side) const
 bool ChessGame::isFinished() const
 {
 	return m_finished;
+}
+
+bool ChessGame::boardShouldBeFlipped() const
+{
+	return m_boardShouldBeFlipped;
+}
+
+void ChessGame::setBoardShouldBeFlipped(bool flip)
+{
+	m_boardShouldBeFlipped = flip;
 }
 
 PgnGame* ChessGame::pgn() const

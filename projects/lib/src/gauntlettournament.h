@@ -39,6 +39,9 @@ class LIB_EXPORT GauntletTournament : public Tournament
 
 	protected:
 		// Inherited from Tournament
+		virtual void onGameAboutToStart(ChessGame* game,
+						const PlayerBuilder* white,
+						const PlayerBuilder* black);
 		virtual void initializePairing();
 		virtual int gamesPerCycle() const;
 		virtual TournamentPair* nextPair(int gameNumber);

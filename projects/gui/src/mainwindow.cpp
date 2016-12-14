@@ -564,8 +564,7 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 		m_evalWidgets[i]->setPlayer(player);
 	}
 
-	// if a human plays the black side against an engine then flip the board
-	if (m_players[Chess::Side::Black]->isHuman() && !m_players[Chess::Side::White]->isHuman())
+	if (m_game->boardShouldBeFlipped())
 		m_gameViewer->boardScene()->flip();
 
 	updateWindowTitle();

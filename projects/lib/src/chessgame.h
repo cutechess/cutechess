@@ -48,6 +48,8 @@ class LIB_EXPORT ChessGame : public QObject
 		ChessPlayer* playerToMove() const;
 		ChessPlayer* playerToWait() const;
 		bool isFinished() const;
+		bool boardShouldBeFlipped() const;
+		void setBoardShouldBeFlipped(bool flip);
 
 		PgnGame* pgn() const;
 		Chess::Board* board() const;
@@ -128,6 +130,7 @@ class LIB_EXPORT ChessGame : public QObject
 		bool m_paused;
 		bool m_pgnInitialized;
 		bool m_bookOwnership;
+		bool m_boardShouldBeFlipped;
 		QString m_error;
 		QString m_startingFen;
 		Chess::Result m_result;

@@ -381,13 +381,31 @@ void Tournament::startGame(TournamentPair* pair)
 	// start with reversed colors.
 	m_pair->swapPlayers();
 
+	auto whiteBuilder = white.builder();
+	auto blackBuilder = black.builder();
+	onGameAboutToStart(game, whiteBuilder, blackBuilder);
 	connect(game, SIGNAL(startFailed(ChessGame*)),
 		this, SLOT(onGameStartFailed(ChessGame*)));
 	m_gameManager->newGame(game,
-			       white.builder(),
-			       black.builder(),
+			       whiteBuilder,
+			       blackBuilder,
 			       GameManager::Enqueue,
 			       GameManager::ReusePlayers);
+}
+
+void Tournament::onGameAboutToStart(ChessGame *game,
+				    const PlayerBuilder* white,
+				    const PlayerBuilder* black)
+{
+	Q_UNUSED(game);
+	Q_UNUSED(white);
+	Q_UNUSED(black);
+}
+
+int Tournament::playerIndex(ChessGame* game, Chess::Side side) const
+{
+	auto gd = m_gameData[game];
+	return side == Chess::Side::White ? gd->whiteIndex : gd->blackIndex;
 }
 
 void Tournament::startNextGame()
