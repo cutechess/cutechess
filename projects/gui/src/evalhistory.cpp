@@ -29,18 +29,16 @@ EvalHistory::EvalHistory(QWidget *parent)
 {
 	auto x = m_plot->xAxis;
 	auto y = m_plot->yAxis;
+	auto ticker = new QCPAxisTickerFixed;
 
 	x->setLabel(tr("move"));
-	x->setAutoTickStep(false);
-	x->setTickStep(1);
-	x->setAutoSubTicks(false);
-	x->setSubTickCount(0);
 	x->setRangeLower(1);
+	x->setTicker(QSharedPointer<QCPAxisTicker>(ticker));
+	x->setSubTicks(false);
 
 	y->setLabel(tr("score"));
-	y->setAutoSubTicks(false);
-	y->setSubTickCount(0);
 	y->setRange(-1, 1);
+	y->setSubTicks(false);
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addWidget(m_plot);
@@ -111,8 +109,10 @@ void EvalHistory::replot(int maxPly)
 {
 	if (maxPly != -1)
 	{
-		int step = qMax(1, maxPly / 20);
-		m_plot->xAxis->setTickStep(double(step));
+		const int step = qMax(1, maxPly / 20);
+		auto ticker = m_plot->xAxis->ticker().dynamicCast<QCPAxisTickerFixed>();
+		Q_ASSERT(!ticker.isNull());
+		ticker->setTickStep(double(step));
 		m_plot->rescaleAxes();
 	}
 	m_plot->replot();
