@@ -5,7 +5,7 @@ install:
     # https://www.appveyor.com/docs/installed-software/#qt
     - set QTDIR=C:\Qt\5.7\msvc2015_64
     - set PATH=%QTDIR%\bin;%PATH%
-    - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
+    - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat amd64"
     - qmake -v
 
 build_script:
