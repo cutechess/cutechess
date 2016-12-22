@@ -126,6 +126,32 @@ unsigned TB_LARGEST = 0;
 #define board(s)                ((uint64_t)1 << (s))
 #ifdef TB_CUSTOM_LSB
 #define lsb(b) TB_CUSTOM_LSB(b)
+#elif !defined(_WIN64) && !defined(__x86_64__)
+static const int lsb_64_table[64] =
+{
+    63, 30,  3, 32, 59, 14, 11, 33,
+    60, 24, 50,  9, 55, 19, 21, 34,
+    61, 29,  2, 53, 51, 23, 41, 18,
+    56, 28,  1, 43, 46, 27,  0, 35,
+    62, 31, 58,  4,  5, 49, 54,  6,
+    15, 52, 12, 40,  7, 42, 45, 16,
+    25, 57, 48, 13, 10, 39,  8, 44,
+    20, 47, 38, 22, 17, 37, 36, 26
+};
+
+/**
+ * @author Matt Taylor (2003)
+ * @param b bitboard to scan
+ * @precondition b != 0
+ * @return index (0..63) of least significant one bit
+ */
+static inline unsigned lsb(uint64_t b)
+{
+    unsigned int folded;
+    b ^= b - 1;
+    folded = (int) b ^ (b >> 32);
+    return lsb_64_table[folded * 0x78291ACF >> 26];
+}
 #elif defined(_MSC_VER)
 static inline unsigned lsb(uint64_t b)
 {
