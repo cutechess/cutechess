@@ -114,6 +114,31 @@ EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
 		addOption(option->copy());
 }
 
+EngineConfiguration& EngineConfiguration::operator=(EngineConfiguration&& other)
+{
+	if (this == &other)
+		return *this;
+
+	qDeleteAll(m_options);
+	m_name = other.m_name;
+	m_command = other.m_command;
+	m_workingDirectory = other.m_workingDirectory;
+	m_stderrFile = other.m_stderrFile;
+	m_protocol = other.m_protocol;
+	m_arguments = other.m_arguments;
+	m_initStrings = other.m_initStrings;
+	m_variants = other.m_variants;
+	m_whiteEvalPov = other.m_whiteEvalPov;
+	m_pondering = other.m_pondering;
+	m_validateClaims = other.m_validateClaims;
+	m_restartMode = other.m_restartMode;
+	m_options = other.m_options;
+
+	// other's destructor will cause a mess if its m_options isn't cleared
+	other.m_options.clear();
+	return *this;
+}
+
 EngineConfiguration::~EngineConfiguration()
 {
 	qDeleteAll(m_options);

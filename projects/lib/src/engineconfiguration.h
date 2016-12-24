@@ -56,6 +56,8 @@ class LIB_EXPORT EngineConfiguration
 		EngineConfiguration(const QVariant& variant);
 		/*! Creates a new chess engine configuration from \a other. */
 		EngineConfiguration(const EngineConfiguration& other);
+		/*! Move assignment operator. */
+		EngineConfiguration& operator=(EngineConfiguration&& other);
 
 		/*! Destroys the engine configuration. */
 		~EngineConfiguration();
