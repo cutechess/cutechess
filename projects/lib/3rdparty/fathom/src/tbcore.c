@@ -176,7 +176,10 @@ static char *map_file(const char *name, const char *suffix, uint64 *mapping)
     return NULL;
 #ifndef _WIN32
   struct stat statbuf;
-  fstat(fd, &statbuf);
+  if (fstat(fd, &statbuf) == -1) {
+    printf("Could not get file status\n");
+    return NULL;
+  }
   *mapping = statbuf.st_size;
   char *data = (char *)mmap(NULL, statbuf.st_size, PROT_READ,
 			      MAP_SHARED, fd, 0);
