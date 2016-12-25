@@ -323,17 +323,12 @@ static const uint64_t anti2board_table[15] =
     0x0001020408102040ull,
 };
 
-static inline size_t diag2index(uint64_t b, unsigned d)
+static inline size_t diag2index(uint64_t b)
 {
     b *= 0x0101010101010101ull;
     b >>= 56;
     b >>= 1;
     return (size_t)b;
-}
-
-static inline size_t anti2index(uint64_t b, unsigned a)
-{
-    return diag2index(b, a);
 }
 
 #define diag(s)                 square2diag_table[(s)]
@@ -347,8 +342,8 @@ static uint64_t bishop_attacks(unsigned sq, uint64_t occ)
     unsigned d = diag(sq), a = anti(sq);
     uint64_t d_occ = occ & (diag2board(d) & ~BOARD_EDGE);
     uint64_t a_occ = occ & (anti2board(a) & ~BOARD_EDGE);
-    size_t d_idx = diag2index(d_occ, d);
-    size_t a_idx = anti2index(a_occ, a);
+    size_t d_idx = diag2index(d_occ);
+    size_t a_idx = diag2index(a_occ);
     uint64_t d_attacks = diag_attacks_table[sq][d_idx];
     uint64_t a_attacks = anti_attacks_table[sq][a_idx];
     return d_attacks | a_attacks;
