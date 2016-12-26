@@ -22,3 +22,9 @@ test_script:
     - '%cd%\sprt\release\tst_sprt'
     - '%cd%\tournamentpair\release\tst_tournamentpair'
     - '%cd%\tournamentplayer\release\tst_tournamentplayer'
+    - '%cd%\pipereader\release\tst_pipereader'
+    - cd %APPVEYOR_BUILD_FOLDER%\projects\lib\components\json\tests\
+    - qmake
+    - nmake /NOLOGO
+    - cd parser & release\tst_jsonparser & cd..
+    - cd serializer & release\tst_jsonserializer & cd..
