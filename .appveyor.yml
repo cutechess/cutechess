@@ -17,3 +17,8 @@ test_script:
     - qmake
     - nmake /NOLOGO
     - '%cd%\chessboard\release\tst_board'
+    - '%cd%\mersenne\release\tst_mersenne'
+    - cd polyglotbook & release\tst_polyglotbook & cd..
+    - '%cd%\sprt\release\tst_sprt'
+    - '%cd%\tournamentpair\release\tst_tournamentpair'
+    - '%cd%\tournamentplayer\release\tst_tournamentplayer'
