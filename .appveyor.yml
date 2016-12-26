@@ -16,4 +16,4 @@ test_script:
     - cd %APPVEYOR_BUILD_FOLDER%\projects\lib\tests\
     - qmake
     - nmake /NOLOGO
-    - '%cd%\chessboard\tst_board'
+    - %cd%\chessboard\release\tst_board
