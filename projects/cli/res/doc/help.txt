@@ -10,13 +10,19 @@ Options:
   -engine OPTIONS	Add an engine defined by OPTIONS to the tournament
   -each OPTIONS		Apply OPTIONS to each engine in the tournament
   -variant VARIANT	Set the chess variant to VARIANT, which can be one of:
+			'3check': Three-check Chess
+			'5check': Five-check Chess
 			'atomic': Atomic Chess
+			'berolina': Berolina Chess
 			'capablanca': Capablanca Chess
 			'caparandom': Capablanca Random Chess
 			'crazyhouse': Crazyhouse/Drop Chess
 			'fischerandom': Fischer Random Chess/Chess 960
 			'gothic': Gothic Chess
+			'horde': Horde Chess (v2)
+			'kingofthehill': King of the Hill Chess
 			'losers': Loser's Chess
+			'racingkings': Racing Kings Chess
 			'standard': Standard Chess (default).
   -concurrency N	Set the maximum number of concurrent games to N
   -draw movenumber=NUMBER movecount=COUNT score=SCORE
