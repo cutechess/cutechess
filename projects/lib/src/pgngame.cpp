@@ -283,6 +283,9 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 	int movenum = 0;
 	int side = m_startingSide;
 
+	if (m_moves.isEmpty() && !m_initialComment.isEmpty())
+		out << "\n" << "{" << m_initialComment << "}";
+
 	for (int i = 0; i < m_moves.size(); i++)
 	{
 		const MoveData& data = m_moves.at(i);
@@ -496,8 +499,13 @@ void PgnGame::setStartingFenString(Chess::Side side, const QString& fen)
 
 void PgnGame::setResultDescription(const QString& description)
 {
-	if (description.isEmpty() || m_moves.isEmpty())
+	if (description.isEmpty())
 		return;
+	if (m_moves.isEmpty())
+	{
+		m_initialComment = description;
+		return;
+	}
 
 	QString& comment = m_moves.last().comment;
 	if (!comment.isEmpty())

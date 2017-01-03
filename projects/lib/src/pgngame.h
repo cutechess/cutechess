@@ -201,6 +201,7 @@ class LIB_EXPORT PgnGame
 		QMap<QString, QString> m_tags;
 		QVector<MoveData> m_moves;
 		QObject* m_tagReceiver;
+		QString m_initialComment;
 };
 
 /*! Reads a PGN game from a PGN stream. */
