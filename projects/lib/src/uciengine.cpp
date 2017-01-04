@@ -575,6 +575,7 @@ void UciEngine::parseLine(const QString& line)
 	}
 	else if (command == "bestmove")
 	{
+		bool wasPondering = isPondering();
 		m_ponderState = NotPondering;
 		if (m_ignoreThinking)
 		{
@@ -587,6 +588,15 @@ void UciEngine::parseLine(const QString& line)
 			}
 			else
 				pong();
+			return;
+		}
+		else if (wasPondering)
+		{
+			qWarning("Premature bestmove while pondering from %s",
+				 qPrintable(name()));
+			m_ponderMove = Chess::Move();
+			m_moveStrings.truncate(m_moveStrings.lastIndexOf(' '));
+			pong();
 			return;
 		}
 
