@@ -113,8 +113,8 @@ int NCheckBoard::checksToWin(Side side) const
  * The numbers of checks to win the game are given for both sides in succession
  * of the the en passant field. They are separated by a single plus sign "+"
  * (check symbol) without any other character in between (like 3+3).
- * In contrast Lichess uses two plus signs and *forward counters* (like +0+0)
- * appended to the normal FEN.
+ * In contrast SCIDB and Lichess use two plus signs and *forward counters*
+ * (like +0+0) appended to the normal FEN.
  */
 QString NCheckBoard::vFenIncludeString(Board::FenNotation notation) const
 {
@@ -129,7 +129,7 @@ QString NCheckBoard::vFenIncludeString(Board::FenNotation notation) const
 
  /*!
   * This method extracts check counters from extended FEN (like Xboard /
-  * Stockfish and Lichess formats) and is tolerant to standard FEN.
+  * Stockfish and SCIDB / Lichess formats) and is tolerant to standard FEN.
   * If no counters can be extracted (e.g. from a standard FEN) the number of
   * checks to win will be set to checkLimit.
   * Calls StandardBoard method for FEN handling.
@@ -161,7 +161,7 @@ bool NCheckBoard::vSetFenString(const QStringList& fen)
 				// reverse counter style (like 3+3)
 				setChecksToWin(counterW, counterB);
 			else
-				// lichess style forward counter +0+0
+				// scidb style forward counter +0+0
 				setChecksToWin(checkLimit() - counterW,
 					       checkLimit() - counterB);
 			sfen.removeOne(field);
