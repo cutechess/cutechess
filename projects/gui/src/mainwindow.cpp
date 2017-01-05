@@ -610,6 +610,19 @@ void MainWindow::onTabChanged(int index)
 
 void MainWindow::onTabCloseRequested(int index)
 {
+	if (m_tabs.at(index).tournament)
+	{
+		auto btn = QMessageBox::question(this, tr("End tournament game"),
+			   tr("Do you really want to end the active tournament game?"));
+		if (btn != QMessageBox::Yes)
+			return;
+	}
+
+	closeTab(index);
+}
+
+void MainWindow::closeTab(int index)
+{
 	const TabData& tab = m_tabs.at(index);
 
 	if (tab.game == nullptr)
@@ -635,7 +648,7 @@ void MainWindow::onTabCloseRequested(int index)
 
 void MainWindow::closeCurrentGame()
 {
-	onTabCloseRequested(m_tabBar->currentIndex());
+	closeTab(m_tabBar->currentIndex());
 }
 
 void MainWindow::newGame()
@@ -684,11 +697,18 @@ void MainWindow::onGameFinished(ChessGame* game)
 	if (tIndex == -1)
 		return;
 
-	m_tabs[tIndex].finished = true;
-	QString title = genericTitle(m_tabs[tIndex]);
+	auto& tab = m_tabs[tIndex];
+	tab.finished = true;
+	QString title = genericTitle(tab);
 	m_tabBar->setTabText(tIndex, title);
 	if (game == m_game)
+	{
+		// Finished tournament games are destroyed immediately
+		// so we can't touch the game object any more.
+		if (tab.tournament)
+			m_game = nullptr;
 		updateWindowTitle();
+	}
 }
 
 void MainWindow::newTournament()
@@ -941,7 +961,7 @@ void MainWindow::closeAllGames()
 	app->closeDialogs();
 
 	for (int i = m_tabs.size() - 1; i >= 0; i--)
-		onTabCloseRequested(i);
+		closeTab(i);
 
 	if (m_tabs.isEmpty())
 		app->gameManager()->finish();

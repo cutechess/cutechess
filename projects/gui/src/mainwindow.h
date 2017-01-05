@@ -71,6 +71,7 @@ class MainWindow : public QMainWindow
 		bool saveAs();
 		void onTabChanged(int index);
 		void onTabCloseRequested(int index);
+		void closeTab(int index);
 		void destroyGame(ChessGame* game);
 		void onTournamentFinished();
 		void onGameManagerFinished();
