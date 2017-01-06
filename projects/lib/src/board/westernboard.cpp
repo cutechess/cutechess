@@ -544,8 +544,11 @@ QString WesternBoard::vFenString(FenNotation notation) const
 
 	// En-passant square
 	if (m_enpassantSquare != 0)
+	{
 		fen += squareString(m_enpassantSquare);
-		//TODO:  HOW to achieve Berolina disambiguation?
+		if (m_pawnAmbiguous)
+			fen += squareString(m_enpassantTarget);
+	}
 	else
 		fen += '-';
 
@@ -676,6 +679,18 @@ bool WesternBoard::vSetFenString(const QStringList& fen)
 	if (*token != "-")
 	{
 		int epSq = squareIndex(*token);
+		int fenEpTgt = 0;
+		// ambiguous ep variants: read ep square [and target]
+		if (m_pawnAmbiguous)
+		{
+			for (int i = 2; i <= token->length(); i++)
+			{
+				epSq = squareIndex(token->left(i));
+				fenEpTgt = squareIndex(token->mid(i));
+				if (epSq != 0 && fenEpTgt != 0)
+					break;
+			}
+		}
 		setEnpassantSquare(epSq);
 		if (m_enpassantSquare == 0)
 			return false;
@@ -691,7 +706,8 @@ bool WesternBoard::vSetFenString(const QStringList& fen)
 			Piece piece = pieceAt(sq);
 			if (pStep.type == CaptureStep && piece == ownPawn)
 				matchesOwn++;
-			else if (pStep.type == FreeStep && piece == opPawn)
+			else if (pStep.type == FreeStep && piece == opPawn
+			&&      (fenEpTgt == 0 || fenEpTgt == sq))
 				epTgt = sq;
 		}
 		// Ignore the en-passant square if an en-passant
