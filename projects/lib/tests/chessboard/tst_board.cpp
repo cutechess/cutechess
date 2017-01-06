@@ -242,7 +242,7 @@ void tst_Board::moveStrings_data() const
 		<< "berolina"
 		<< "e2c4 b8c6 c4d5 e7c5"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-		<< "r1bqkbnr/pppp1ppp/2n5/2pP4/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3";
+		<< "r1bqkbnr/pppp1ppp/2n5/2pP4/8/8/PPPP1PPP/RNBQKBNR w KQkq d6c5 0 3";
 	QTest::newRow("berolina san2")
 		<< "berolina"
 		<< "Qd4"
