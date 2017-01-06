@@ -156,7 +156,7 @@ bool PgnGame::parseMove(PgnStream& in)
 	// set the board when we get the first move
 	if (m_moves.isEmpty())
 	{
-		QString tmp(m_tags.value("Variant"));
+		QString tmp(m_tags.value("Variant").toLower());
 
 		if (!tmp.isEmpty() && !in.setVariant(tmp))
 		{
