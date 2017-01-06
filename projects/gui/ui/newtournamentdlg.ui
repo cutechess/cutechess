@@ -6,14 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
-    <height>438</height>
+    <width>572</width>
+    <height>203</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>New Tournament</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetFixedSize</enum>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="3,0,2">
      <item>
@@ -157,7 +160,7 @@
              <widget class="QListView" name="m_playersList">
               <property name="minimumSize">
                <size>
-                <width>120</width>
+                <width>140</width>
                 <height>0</height>
                </size>
               </property>
