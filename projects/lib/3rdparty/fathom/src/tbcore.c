@@ -178,6 +178,7 @@ static char *map_file(const char *name, const char *suffix, uint64 *mapping)
   struct stat statbuf;
   if (fstat(fd, &statbuf) == -1) {
     printf("Could not get file status\n");
+    close_tb(fd);
     return NULL;
   }
   *mapping = statbuf.st_size;
