@@ -62,6 +62,8 @@ class EngineManagementWidget : public QWidget
 		void browseDefaultLocation();
 
 	private:
+		void updateEngineCount();
+
 		EngineManager* m_engineManager;
 		bool m_hasChanged;
 		QSortFilterProxyModel* m_filteredModel;

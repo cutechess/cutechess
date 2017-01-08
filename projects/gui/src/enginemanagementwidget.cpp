@@ -74,6 +74,8 @@ EngineManagementWidget::EngineManagementWidget(QWidget* parent)
 	ui->m_defaultLocationEdit->setText(dir);
 	connect(ui->m_browseDefaultLocationBtn, SIGNAL(clicked()),
 		this, SLOT(browseDefaultLocation()));
+
+	updateEngineCount();
 }
 
 EngineManagementWidget::~EngineManagementWidget()
@@ -105,6 +107,15 @@ void EngineManagementWidget::updateUi()
 void EngineManagementWidget::updateSearch(const QString& terms)
 {
 	m_filteredModel->setFilterWildcard(terms);
+	updateEngineCount();
+}
+
+void EngineManagementWidget::updateEngineCount()
+{
+	QString text = tr("Showing %1 of %2 engines")
+		       .arg(m_filteredModel->rowCount())
+		       .arg(m_engineManager->engineCount());
+	ui->m_engineCountLabel->setText(text);
 }
 
 void EngineManagementWidget::addEngine()
