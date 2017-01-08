@@ -610,7 +610,9 @@ void MainWindow::onTabChanged(int index)
 
 void MainWindow::onTabCloseRequested(int index)
 {
-	if (m_tabs.at(index).tournament)
+	const TabData& tab = m_tabs.at(index);
+
+	if (tab.tournament && tab.game)
 	{
 		auto btn = QMessageBox::question(this, tr("End tournament game"),
 			   tr("Do you really want to end the active tournament game?"));
