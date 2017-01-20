@@ -483,6 +483,31 @@ void tst_Board::perft_data() const
 		<< 5
 		<< Q_UINT64_C(4888832);
 
+	variant = "loop";
+	QTest::newRow("loop startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[-] w KQkq - 0 1"
+		<< 5  //4 plies: 197281, 5 plies: 4888832
+		<< Q_UINT64_C(4888832);
+	QTest::newRow("loop2")
+		<< variant
+		<< "5R2/2p1Nb2/2B4k/6p1/8/P3PP2/1PPqR3/3R1BKn[QBNPPPPrrrnppp] b - - 1 1"
+		<< 3 // 1 ply:157, 2 plies: 31983, 3 plies: 4144334
+		<< Q_UINT64_C(4144334);
+
+	variant = "chessgi";
+	QTest::newRow("chessgi startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[-] w KQkq - 0 1"
+		<< 5  //4 plies: 197281, 5 plies: 4889167
+		<< Q_UINT64_C(4889167);
+	QTest::newRow("chessgi2")
+		<< variant
+		<< "5Rp1/2p1Nb2/2B4k/6p1/8/P3PP2/1PPqR3/3R1BKn[QBNPPPPrrrnpp] b - - 1 48"
+		<< 3 // 1 ply:162, 2 plies: 33032, 3 plies: 4493963
+		<< Q_UINT64_C(4493963);
+		// TBD sjaakii (/wo dbl steps from first rank) 1 ply:161, 2 plies: 32816, 3 plies: 4434101
+
 	variant = "berolina";
 	QTest::newRow("berolina startpos")
 		<< variant
@@ -518,7 +543,6 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/6p1/2p1Pp1P/P1PPPP2/Pp4PP/1p2PPPP/1P2PPPP/PP1nPPPP b kq a3 0 18"
 		<< 5  //4 plies: 197287, 5 plies: 6429490
 		<< Q_UINT64_C(6429490);
-
 }
 
 void tst_Board::perft()

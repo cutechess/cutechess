@@ -59,6 +59,14 @@ class LIB_EXPORT CrazyhouseBoard : public WesternBoard
 			PromotedQueen,		//!< Promoted Queen
 		};
 
+		/*!
+		 * Returns promoted piece type corresponding to normal \a type.
+		 */
+		virtual int promotedPieceType(int type);
+		/*!
+		 * Asserts side to move may drop pawns on given \a rank.
+		 */
+		virtual bool pawnDropOkOnRank(int rank) const;
 		// Inherited from WesternBoard
 		virtual int reserveType(int pieceType) const;
 		virtual QString sanMoveString(const Move& move);
@@ -72,7 +80,6 @@ class LIB_EXPORT CrazyhouseBoard : public WesternBoard
 
 	private:
 		static int normalPieceType(int type);
-		static int promotedPieceType(int type);
 		void normalizePieces(Piece piece, QVarLengthArray<int>& squares);
 		void restorePieces(Piece piece, const QVarLengthArray<int>& squares);
 };
