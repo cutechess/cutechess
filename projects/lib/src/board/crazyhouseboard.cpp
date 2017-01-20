@@ -211,6 +211,11 @@ void CrazyhouseBoard::vUndoMove(const Move& move)
 		addToReserve(Piece(sideToMove(), prom));
 }
 
+bool CrazyhouseBoard::pawnDropOkOnRank(int rank) const
+{
+	return rank > 0 && rank < height() - 1;
+}
+
 void CrazyhouseBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
 					    int pieceType,
 					    int square) const
@@ -219,7 +224,6 @@ void CrazyhouseBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
 	if (square == 0)
 	{
 		const int size = arraySize();
-		const int maxRank = height() - 2;
 		for (int i = 0; i < size; i++)
 		{
 			Piece tmp = pieceAt(i);
@@ -228,10 +232,9 @@ void CrazyhouseBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
 			if (pieceType == Pawn)
 			{
 				Square sq(chessSquare(i));
-				if (sq.rank() < 1 || sq.rank() > maxRank)
+				if (!pawnDropOkOnRank(sq.rank()))
 					continue;
 			}
-
 			moves.append(Move(0, i, pieceType));
 		}
 	}

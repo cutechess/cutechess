@@ -16,11 +16,13 @@ Options:
 			'berolina': Berolina Chess
 			'capablanca': Capablanca Chess
 			'caparandom': Capablanca Random Chess
-			'crazyhouse': Crazyhouse/Drop Chess
+			'chessgi': Chessgi (Drop Chess)
+			'crazyhouse': Crazyhouse (Drop Chess)
 			'fischerandom': Fischer Random Chess/Chess 960
 			'gothic': Gothic Chess
 			'horde': Horde Chess (v2)
 			'kingofthehill': King of the Hill Chess
+			'loop': Loop Chess (Drop Chess)
 			'losers': Loser's Chess
 			'racingkings': Racing Kings Chess
 			'standard': Standard Chess (default).

@@ -26,7 +26,9 @@
 #include "losersboard.h"
 #include "standardboard.h"
 #include "berolinaboard.h"
+#include "chessgiboard.h"
 #include "kingofthehillboard.h"
+#include "loopboard.h"
 #include "ncheckboard.h"
 #include "racingkingsboard.h"
 
@@ -38,11 +40,13 @@ REGISTER_BOARD(AtomicBoard, "atomic")
 REGISTER_BOARD(BerolinaBoard, "berolina")
 REGISTER_BOARD(CapablancaBoard, "capablanca")
 REGISTER_BOARD(CaparandomBoard, "caparandom")
+REGISTER_BOARD(ChessgiBoard, "chessgi")
 REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
 REGISTER_BOARD(FrcBoard, "fischerandom")
 REGISTER_BOARD(GothicBoard, "gothic")
 REGISTER_BOARD(HordeBoard, "horde")
 REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
+REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
 REGISTER_BOARD(StandardBoard, "standard")

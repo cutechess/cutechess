@@ -20,6 +20,8 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/losersboard.cpp \
     $$PWD/gothicboard.cpp \
     $$PWD/crazyhouseboard.cpp \
+    $$PWD/loopboard.cpp \
+    $$PWD/chessgiboard.cpp \
     $$PWD/boardfactory.cpp \
     $$PWD/boardtransition.cpp \
     $$PWD/syzygytablebase.cpp
@@ -46,6 +48,8 @@ HEADERS += $$PWD/board.h \
     $$PWD/losersboard.h \
     $$PWD/gothicboard.h \
     $$PWD/crazyhouseboard.h \
+    $$PWD/loopboard.h \
+    $$PWD/chessgiboard.h \
     $$PWD/boardfactory.h \
     $$PWD/boardtransition.h \
     $$PWD/syzygytablebase.h
