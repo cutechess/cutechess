@@ -394,6 +394,32 @@ void tst_Board::results_data() const
 		<< variant
 		<< "2k4R/R7/8/3PP3/8/8/8/8 b - - 0 1"
 		<< "1-0";
+
+	variant = "extinction";
+
+	QTest::newRow("extinction white win")
+		<< variant
+		<< "6k1/5p2/7p/3p4/p2pr3/b1BQ2Pq/r1B1P1RP/N6K b - - 0 34"
+		<< "1-0";
+	QTest::newRow("extinction black win")
+		<< variant
+		<< "rn1qkbnr/ppp1pppp/3p4/8/4P1b1/8/PPPP1PPP/RNB1KBNR w KQkq - 0 3"
+		<< "0-1";
+
+	variant = "kinglet";
+
+	QTest::newRow("kinglet white win")
+		<< variant
+		<< "8/8/4P3/2Q5/1P6/1P6/8/8 b - - 0 1"
+		<< "1-0";
+	QTest::newRow("kinglet black win")
+		<< variant
+		<< "2k5/1pp3R1/6p1/r7/8/4K3/8/8 w - - 0 1"
+		<< "0-1";
+	QTest::newRow("kinglet two")
+		<< variant
+		<< "8/8/6p1/8/8/4P3/8/8 w - - 0 1"
+		<< "*";
 }
 
 void tst_Board::results()
@@ -543,6 +569,13 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/6p1/2p1Pp1P/P1PPPP2/Pp4PP/1p2PPPP/1P2PPPP/PP1nPPPP b kq a3 0 18"
 		<< 5  //4 plies: 197287, 5 plies: 6429490
 		<< Q_UINT64_C(6429490);
+
+	variant = "extinction";
+	QTest::newRow("extinction startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5
+		<< Q_UINT64_C(4897256);
 }
 
 void tst_Board::perft()
