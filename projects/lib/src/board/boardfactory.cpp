@@ -20,6 +20,7 @@
 #include "capablancaboard.h"
 #include "caparandomboard.h"
 #include "crazyhouseboard.h"
+#include "extinctionboard.h"
 #include "frcboard.h"
 #include "gothicboard.h"
 #include "hordeboard.h"
@@ -42,6 +43,8 @@ REGISTER_BOARD(CapablancaBoard, "capablanca")
 REGISTER_BOARD(CaparandomBoard, "caparandom")
 REGISTER_BOARD(ChessgiBoard, "chessgi")
 REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
+REGISTER_BOARD(ExtinctionBoard, "extinction")
+REGISTER_BOARD(KingletBoard, "kinglet")
 REGISTER_BOARD(FrcBoard, "fischerandom")
 REGISTER_BOARD(GothicBoard, "gothic")
 REGISTER_BOARD(HordeBoard, "horde")

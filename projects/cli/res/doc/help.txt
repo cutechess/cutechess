@@ -18,9 +18,11 @@ Options:
 			'caparandom': Capablanca Random Chess
 			'chessgi': Chessgi (Drop Chess)
 			'crazyhouse': Crazyhouse (Drop Chess)
+			'extinction': Extinction Chess
 			'fischerandom': Fischer Random Chess/Chess 960
 			'gothic': Gothic Chess
 			'horde': Horde Chess (v2)
+			'kinglet': Kinglet Chess
 			'kingofthehill': King of the Hill Chess
 			'loop': Loop Chess (Drop Chess)
 			'losers': Loser's Chess
