@@ -401,6 +401,24 @@ GenericMove Board::genericMove(const Move& move) const
 			   move.promotion());
 }
 
+QStringList Board::pieceList(Side side) const
+{
+	QStringList list;
+	for (int file = 0; file < height(); file++)
+		for (int rank = 0; rank < width(); rank++)
+		{
+			Square sq = Chess::Square(file, rank);
+			const Piece piece = pieceAt(sq);
+			if (piece.side() != side)
+				continue;
+
+			QString s = pieceSymbol(piece).toUpper();
+			s.append(squareString(sq));
+			list.append(s);
+		}
+	return list;
+}
+
 QString Board::fenString(FenNotation notation) const
 {
 	QString fen;
