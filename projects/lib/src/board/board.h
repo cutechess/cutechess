@@ -366,6 +366,8 @@ class LIB_EXPORT Board
 		virtual Move moveFromLanString(const QString& str);
 		/*! Converts a string in SAN format into a Move object. */
 		virtual Move moveFromSanString(const QString& str) = 0;
+		/*! Returns the maximal length of a piece symbol */
+		virtual int maxPieceSymbolLength() const;
 
 		/*!
 		 * Returns the latter part of the current position's FEN string.
@@ -514,6 +516,7 @@ class LIB_EXPORT Board
 		Side m_side;
 		Side m_startingSide;
 		QString m_startingFen;
+		int m_maxPieceSymbolLength;
 		quint64 m_key;
 		Zobrist* m_zobrist;
 		QSharedPointer<Zobrist> m_sharedZobrist;

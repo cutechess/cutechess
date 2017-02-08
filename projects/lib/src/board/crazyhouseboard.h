@@ -62,11 +62,12 @@ class LIB_EXPORT CrazyhouseBoard : public WesternBoard
 		/*!
 		 * Returns promoted piece type corresponding to normal \a type.
 		 */
-		virtual int promotedPieceType(int type);
+		virtual int promotedPieceType(int type) const;
 		/*!
 		 * Asserts side to move may drop pawns on given \a rank.
 		 */
 		virtual bool pawnDropOkOnRank(int rank) const;
+
 		// Inherited from WesternBoard
 		virtual int reserveType(int pieceType) const;
 		virtual QString sanMoveString(const Move& move);
