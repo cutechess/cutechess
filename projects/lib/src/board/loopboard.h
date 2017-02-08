@@ -50,6 +50,7 @@ class LIB_EXPORT LoopBoard : public CrazyhouseBoard
 	protected:
 		// Inherited from CrazyhouseBoard
 		virtual int promotedPieceType(int type) const;
+		virtual int maxPieceSymbolLength() const;
 };
 
 } // namespace Chess

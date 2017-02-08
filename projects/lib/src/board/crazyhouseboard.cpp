@@ -87,7 +87,7 @@ int CrazyhouseBoard::normalPieceType(int type)
 	}
 }
 
-int CrazyhouseBoard::promotedPieceType(int type)
+int CrazyhouseBoard::promotedPieceType(int type) const
 {
 	switch (type)
 	{

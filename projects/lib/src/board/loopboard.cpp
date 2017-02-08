@@ -44,4 +44,10 @@ int LoopBoard::promotedPieceType(int type) const
 	return type;
 }
 
+int LoopBoard::maxPieceSymbolLength() const
+{
+	// prevent reading of Crazyhouse's promoted piece types
+	return 1;
+}
+
 } // namespace Chess

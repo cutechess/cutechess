@@ -57,6 +57,7 @@ Board::Board(Zobrist* zobrist)
 	  m_height(0),
 	  m_side(Side::White),
 	  m_startingSide(Side::White),
+	  m_maxPieceSymbolLength(1),
 	  m_key(0),
 	  m_zobrist(zobrist),
 	  m_sharedZobrist(zobrist)
@@ -114,7 +115,17 @@ void Board::initialize()
 		m_squares.append(Piece::WallPiece);
 	vInitialize();
 
+	m_maxPieceSymbolLength = 1;
+	for (const PieceData& pd: m_pieceData)
+		if (pd.symbol.length() > m_maxPieceSymbolLength)
+			m_maxPieceSymbolLength = pd.symbol.length();
+
 	m_zobrist->initialize((m_width + 2) * (m_height + 4), m_pieceData.size());
+}
+
+int Board::maxPieceSymbolLength() const
+{
+	return m_maxPieceSymbolLength;
 }
 
 void Board::setPieceType(int type,
@@ -473,6 +484,7 @@ bool Board::setFenString(const QString& fen)
 
 	// Get the board contents (squares)
 	int handPieceIndex = -1;
+	int maxsymlen = maxPieceSymbolLength();
 	QString pieceStr;
 	for (int i = 0; i < token->length(); i++)
 	{
@@ -529,14 +541,21 @@ bool Board::setFenString(const QString& fen)
 		if (square >= boardSize)
 			return false;
 
-		pieceStr.append(c);
-		Piece piece = pieceFromSymbol(pieceStr);
-		if (!piece.isValid())
-			continue;
+		// read ahead for multi-character symbols
+		for (int l = qMin(maxsymlen, token->length() - i); l > 0; l--)
+		{
+			pieceStr = token->mid(i, l);
+			Piece piece = pieceFromSymbol(pieceStr);
+			if (piece.isValid())
+			{
+				setSquare(k++, piece);
+				i += l - 1;
+				break;
+			}
+		}
 
 		pieceStr.clear();
 		square++;
-		setSquare(k++, piece);
 	}
 
 	// The board must have exactly 'boardSize' squares and each rank

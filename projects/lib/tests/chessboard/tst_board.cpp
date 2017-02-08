@@ -508,6 +508,11 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 5
 		<< Q_UINT64_C(4888832);
+	QTest::newRow("crazyhouse promo1")
+		<< variant
+		<< "3q1bkr/2p1pBp1/q1n3p1/1N2p3/1Pp5/P4Q~2/BBPp1PPP/R2K2NR[RPPn] b - - 0 28"
+		<< 3
+		<< Q_UINT64_C(6386);
 
 	variant = "loop";
 	QTest::newRow("loop startpos")
