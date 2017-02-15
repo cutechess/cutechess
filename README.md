@@ -25,7 +25,7 @@ In the simplest case you only have to issue:
 If you are using the Visual C++ compiler replace `make` with `nmake`.
 
 Documentation is available as Unix manual pages in the `docs/` directory. API
-documentation can be built by issuing `make doc-api` (requires Doxygen).
+documentation can be built by issuing `make doc-api` (requires [Doxygen](http://www.doxygen.org/)).
 
 Running
 -------
