@@ -155,6 +155,10 @@ class LIB_EXPORT Board
 		bool isValidSquare(const Square& square) const;
 
 		/*!
+		 * Returns list of the pieces of \a side in current position.
+		 */
+		QStringList pieceList(Side side) const;
+		/*!
 		 * Returns the FEN string of the current board position in
 		 * X-Fen or Shredder FEN notation
 		 */

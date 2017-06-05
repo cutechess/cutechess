@@ -126,7 +126,17 @@ void XboardEngine::startGame()
 		if (m_ftSetboard)
 			write("setboard " + board()->fenString());
 		else
-			qDebug("%s doesn't support the setboard command", qPrintable(name()));
+		{
+			qDebug("%s does not support the setboard command, using the edit command now", qPrintable(name()));
+			write("edit");
+			write("#"); // clear board on engine
+			for (const auto& s: board()->pieceList(Chess::Side::White))
+				write(s); // set a piece
+			write("c");
+			for (const auto& s: board()->pieceList(Chess::Side::Black))
+				write(s); // set a piece
+			write("."); // finished
+		}
 	}
 	
 	// Send the time controls
