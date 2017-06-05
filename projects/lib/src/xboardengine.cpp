@@ -564,7 +564,8 @@ void XboardEngine::parseLine(const QString& line)
 
 		return;
 	}
-	else if (command.at(0).isDigit()) // principal variation
+	else if (command.at(0).isDigit()
+	     && !command.contains("."))	// principal variation
 	{
 		bool ok = false;
 		int val = 0;
@@ -611,9 +612,11 @@ void XboardEngine::parseLine(const QString& line)
 		return;
 	}
 
-	const QString args(nextToken(command, true).toString());
+	// move format of old CECP engines: 1. ... e2e4
+	bool testDigitAndDot = command.at(0).isDigit() && command.contains(".");
 
-	if (command == "move")
+	const QString args(nextToken(command, true).toString());
+	if (command == "move" || (testDigitAndDot && args.startsWith("...")))
 	{
 		if (state() != Thinking)
 		{
@@ -624,10 +627,14 @@ void XboardEngine::parseLine(const QString& line)
 			return;
 		}
 
-		Chess::Move move = board()->moveFromString(args);
+		// remove "..." of old format if necessary
+		int mark = (args.indexOf("..."));
+		const QString movestr = mark < 0 ? args : args.mid(4);
+
+		Chess::Move move = board()->moveFromString(movestr);
 		if (move.isNull())
 		{
-			forfeit(Chess::Result::IllegalMove, args);
+			forfeit(Chess::Result::IllegalMove, movestr);
 			return;
 		}
 
