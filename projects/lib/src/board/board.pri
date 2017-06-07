@@ -19,6 +19,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/genericmove.cpp \
     $$PWD/atomicboard.cpp \
     $$PWD/losersboard.cpp \
+    $$PWD/checklessboard.cpp \
     $$PWD/gothicboard.cpp \
     $$PWD/crazyhouseboard.cpp \
     $$PWD/loopboard.cpp \
@@ -48,6 +49,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/genericmove.h \
     $$PWD/atomicboard.h \
     $$PWD/losersboard.h \
+    $$PWD/checklessboard.h \
     $$PWD/gothicboard.h \
     $$PWD/crazyhouseboard.h \
     $$PWD/loopboard.h \

@@ -16,6 +16,7 @@ Options:
 			'berolina': Berolina Chess
 			'capablanca': Capablanca Chess
 			'caparandom': Capablanca Random Chess
+			'checkless': Checkless Chess
 			'chessgi': Chessgi (Drop Chess)
 			'crazyhouse': Crazyhouse (Drop Chess)
 			'extinction': Extinction Chess
