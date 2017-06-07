@@ -19,6 +19,7 @@
 #include "atomicboard.h"
 #include "capablancaboard.h"
 #include "caparandomboard.h"
+#include "checklessboard.h"
 #include "crazyhouseboard.h"
 #include "extinctionboard.h"
 #include "frcboard.h"
@@ -41,6 +42,7 @@ REGISTER_BOARD(AtomicBoard, "atomic")
 REGISTER_BOARD(BerolinaBoard, "berolina")
 REGISTER_BOARD(CapablancaBoard, "capablanca")
 REGISTER_BOARD(CaparandomBoard, "caparandom")
+REGISTER_BOARD(ChecklessBoard, "checkless")
 REGISTER_BOARD(ChessgiBoard, "chessgi")
 REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
 REGISTER_BOARD(ExtinctionBoard, "extinction")

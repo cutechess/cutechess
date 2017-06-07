@@ -420,6 +420,13 @@ void tst_Board::results_data() const
 		<< variant
 		<< "8/8/6p1/8/8/4P3/8/8 w - - 0 1"
 		<< "*";
+
+	variant = "checkless";
+
+	QTest::newRow("checkless white win")
+		<< variant
+		<< "K5kr/5Q2/8/8/8/8/8/8 b - - 0 1"
+		<< "1-0";
 }
 
 void tst_Board::results()
@@ -574,6 +581,13 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/6p1/2p1Pp1P/P1PPPP2/Pp4PP/1p2PPPP/1P2PPPP/PP1nPPPP b kq a3 0 18"
 		<< 5  //4 plies: 197287, 5 plies: 6429490
 		<< Q_UINT64_C(6429490);
+
+	variant = "checkless";
+	QTest::newRow("checkless startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5
+		<< Q_UINT64_C(4835050);
 
 	variant = "extinction";
 	QTest::newRow("extinction startpos")
