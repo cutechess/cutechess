@@ -40,6 +40,15 @@ QString evalString(const MoveEvaluation& eval)
 			str += "+";
 
 		// Detect mate-in-n scores
+
+		// convert new CECP mate scores to old ones if needed
+		if (absScore > 99900 && absScore < 100100)
+		{
+			absScore = 200000 - 2 * absScore + 30000;
+			if (score >= absScore)
+				absScore++;
+		}
+
 		if (absScore > 9900
 		&&  (absScore = 1000 - (absScore % 1000)) < 100)
 		{
