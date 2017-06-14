@@ -415,7 +415,7 @@ GraphicsPiece* BoardScene::createPiece(const Chess::Piece& piece)
 
 	return new GraphicsPiece(piece,
 				 s_squareSize,
-				 m_board->pieceSymbol(piece),
+				 m_board->representation(piece),
 				 m_renderer);
 }
 

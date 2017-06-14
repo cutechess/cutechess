@@ -148,6 +148,11 @@ class LIB_EXPORT WesternBoard : public Board
 		 */
 		void removeCastlingRights(int square);
 		/*!
+		 * Defines the file a king may castle to on \a castlingSide.
+		 * Defaults: 2 (c-file) and width() - 2 (normally g-file)
+		 */
+		virtual int castlingFile(CastlingSide castlingSide) const;
+		/*!
 		 * Returns true if \a side is under attack at \a square.
 		 * If \a square is 0, then the king square is used.
 		 */

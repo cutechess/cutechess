@@ -131,12 +131,16 @@ int Board::maxPieceSymbolLength() const
 void Board::setPieceType(int type,
 			 const QString& name,
 			 const QString& symbol,
-			 unsigned movement)
+			 unsigned movement,
+			 const QString& gsymbol)
 {
 	if (type >= m_pieceData.size())
 		m_pieceData.resize(type + 1);
 
-	PieceData data = { name, symbol.toUpper(), movement };
+	const QString& graphicalSymbol = gsymbol.isEmpty() ? symbol : gsymbol;
+
+	PieceData data =
+		{ name, symbol.toUpper(), movement, graphicalSymbol.toUpper() };
 	m_pieceData[type] = data;
 }
 
@@ -181,6 +185,17 @@ QString Board::pieceString(int pieceType) const
 	if (pieceType <= 0 || pieceType >= m_pieceData.size())
 		return QString();
 	return m_pieceData[pieceType].name;
+}
+
+QString Board::representation(Piece piece) const
+{
+	int type = piece.type();
+	if (type <= 0 || type >= m_pieceData.size())
+		return QString();
+
+	if (piece.side() == upperCaseSide())
+		return m_pieceData[type].representation;
+	return m_pieceData[type].representation.toLower();
 }
 
 int Board::reserveType(int pieceType) const

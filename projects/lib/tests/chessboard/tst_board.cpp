@@ -258,6 +258,21 @@ void tst_Board::moveStrings_data() const
 		<< "e4 e5 Nf3 d6 Bb5+ c6 Bxc6+"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 3+3 0 1"
 		<< "rnbqkbnr/pp3ppp/2Bp4/4p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 1+3 0 4";
+	QTest::newRow("janus castling san1")
+		<< "janus"
+		<< "Kb8 Be3 Ng6 Ki1"
+		<< "r3kqbnjr/pppp1ppppp/2jn1b4/4p5/4P5/3Q1PNJ2/PPPP2PPPP/RJNBK1B2R b KQkq - 0 1"
+		<< "1kr2qb1jr/pppp1ppppp/2jn1bn3/4p5/4P5/3QBPNJ2/PPPP2PPPP/RJNB3RK1 b - - 0 3";
+	QTest::newRow("janus castling san2")
+		<< "janus"
+		<< "O-O Be3 Ng6 O-O-O"
+		<< "r3kqbnjr/pppp1ppppp/2jn1b4/4p5/4P5/3Q1PNJ2/PPPP2PPPP/RJNBK1B2R b KQkq - 0 1"
+		<< "1kr2qb1jr/pppp1ppppp/2jn1bn3/4p5/4P5/3QBPNJ2/PPPP2PPPP/RJNB3RK1 b - - 0 3";
+	QTest::newRow("janus castling lan")
+		<< "janus"
+		<< "e8b8 g1e3 h8g6 e1i1"
+		<< "r3kqbnjr/pppp1ppppp/2jn1b4/4p5/4P5/3Q1PNJ2/PPPP2PPPP/RJNBK1B2R b KQkq - 0 1"
+		<< "1kr2qb1jr/pppp1ppppp/2jn1bn3/4p5/4P5/3QBPNJ2/PPPP2PPPP/RJNB3RK1 b - - 0 3";
 }
 
 void tst_Board::moveStrings()
@@ -595,6 +610,13 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 5
 		<< Q_UINT64_C(4897256);
+
+	variant = "janus";
+	QTest::newRow("janus startpos")
+		<< variant
+		<< "rjnbkqbnjr/pppppppppp/10/10/10/10/PPPPPPPPPP/RJNBKQBNJR w KQkq - 0 1"
+		<< 4 //4 plies: 772074, 5 plies: 26869186
+		<< Q_UINT64_C(772074);
 }
 
 void tst_Board::perft()

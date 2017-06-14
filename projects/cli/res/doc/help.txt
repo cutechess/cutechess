@@ -23,6 +23,7 @@ Options:
 			'fischerandom': Fischer Random Chess/Chess 960
 			'gothic': Gothic Chess
 			'horde': Horde Chess (v2)
+			'janus': Janus Chess
 			'kinglet': Kinglet Chess
 			'kingofthehill': King of the Hill Chess
 			'loop': Loop Chess (Drop Chess)

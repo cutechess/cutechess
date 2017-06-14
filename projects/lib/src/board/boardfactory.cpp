@@ -25,6 +25,7 @@
 #include "frcboard.h"
 #include "gothicboard.h"
 #include "hordeboard.h"
+#include "janusboard.h"
 #include "losersboard.h"
 #include "standardboard.h"
 #include "berolinaboard.h"
@@ -50,6 +51,7 @@ REGISTER_BOARD(KingletBoard, "kinglet")
 REGISTER_BOARD(FrcBoard, "fischerandom")
 REGISTER_BOARD(GothicBoard, "gothic")
 REGISTER_BOARD(HordeBoard, "horde")
+REGISTER_BOARD(JanusBoard, "janus")
 REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
 REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosersBoard, "losers")
