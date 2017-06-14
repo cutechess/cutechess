@@ -220,6 +220,8 @@ class LIB_EXPORT Board
 		Piece pieceFromSymbol(const QString& pieceSymbol) const;
 		/*! Returns the internationalized name of \a pieceType. */
 		QString pieceString(int pieceType) const;
+		/*! Returns symbol for graphical representation of \a piece. */
+		QString representation(Piece piece) const;
 
 		/*!
 		 * Makes a chess move on the board.
@@ -309,11 +311,14 @@ class LIB_EXPORT Board
 		 * \param symbol Short piece name or piece symbol
 		 * \param movement A bit mask for the kinds of moves the
 		 *        piece can make.
+		 * \param gsymbol Select the piece's graphical representation.
+		 *	  If not set the \a symbol will be used (default).
 		 */
 		void setPieceType(int type,
 				  const QString& name,
 				  const QString& symbol,
-				  unsigned movement = 0);
+				  unsigned movement = 0,
+				  const QString & gsymbol = QString());
 		/*! Returns true if \pieceType can move like \a movement. */
 		bool pieceHasMovement(int pieceType, unsigned movement) const;
 
@@ -506,6 +511,7 @@ class LIB_EXPORT Board
 			QString name;
 			QString symbol;
 			unsigned movement;
+			QString representation;
 		};
 		struct MoveData
 		{
