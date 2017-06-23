@@ -157,6 +157,8 @@ bool PgnGame::parseMove(PgnStream& in)
 	if (m_moves.isEmpty())
 	{
 		QString tmp(m_tags.value("Variant").toLower());
+		if (tmp == "chess" || tmp == "normal")
+			tmp = QString("standard");
 
 		if (!tmp.isEmpty() && !in.setVariant(tmp))
 		{
@@ -383,7 +385,11 @@ Chess::Result PgnGame::result() const
 QString PgnGame::variant() const
 {
 	if (m_tags.contains("Variant"))
-		return m_tags.value("Variant");
+	{
+		QString variant(m_tags.value("Variant"));
+		if ("chess" != variant && "normal" != variant)
+			return variant;
+	}
 	return "standard";
 }
 
