@@ -1,6 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
 	<file>default.svg</file>
+	<file>merida.svg</file>
 	<file>MaurizioMonge/celtic.svg</file>
 	<file>MaurizioMonge/eyes.svg</file>
 	<file>MaurizioMonge/fantasy.svg</file>
