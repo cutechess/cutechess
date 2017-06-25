@@ -29,10 +29,6 @@
 
 #include "tbprobe.h"
 
-#ifdef __GNUC__
-#include <x86intrin.h>
-#endif
-
 #define WHITE_KING              (TB_WPAWN + 5)
 #define WHITE_QUEEN             (TB_WPAWN + 4)
 #define WHITE_ROOK              (TB_WPAWN + 3)
