@@ -30,7 +30,9 @@
 #include "tbprobe.h"
 
 #ifdef __GNUC__
-#include <x86intrin.h>
+#  if defined(__i386) || defined(__x86_64__)
+#  include <x86intrin.h>
+#  endif
 #endif
 
 #define WHITE_KING              (TB_WPAWN + 5)
