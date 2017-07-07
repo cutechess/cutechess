@@ -15,6 +15,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/threekingsboard.cpp \
     $$PWD/kingofthehillboard.cpp \
     $$PWD/hordeboard.cpp \
+    $$PWD/embassyboard.cpp \
     $$PWD/janusboard.cpp \
     $$PWD/knightmateboard.cpp \
     $$PWD/twokingseachboard.cpp \
@@ -57,6 +58,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/threekingsboard.h \
     $$PWD/kingofthehillboard.h \
     $$PWD/hordeboard.h \
+    $$PWD/embassyboard.h \
     $$PWD/janusboard.h \
     $$PWD/knightmateboard.h \
     $$PWD/twokingseachboard.h \

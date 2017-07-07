@@ -259,6 +259,21 @@ void tst_Board::moveStrings_data() const
 		<< "e4 e5 Nf3 d6 Bb5+ c6 Bxc6+"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 3+3 0 1"
 		<< "rnbqkbnr/pp3ppp/2Bp4/4p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 1+3 0 4";
+	QTest::newRow("embassy castling san1")
+		<< "embassy"
+		<< "O-O-O O-O-O Ng4"
+		<< "r3kcab1r/pppq1p1ppp/2np2pn2/4pb4/4B5/2NPB1PN2/PPPQPP1PPP/R3KCA2R b KQkq - 3 1"
+		<< "1kr2cab1r/pppq1p1ppp/2np2p3/4pb4/4B1n3/2NPB1PN2/PPPQPP1PPP/1KR2CA2R w - - 1 2";
+	QTest::newRow("embassy castling san2")
+		<< "embassy"
+		<< "Cf1 O-O g3"
+		<< "r2qk4r/ppp4cpp/3p1ppba1/4nb1p2/2P1N1nB2/P1KP2CNP1/1P2P1PP1P/R5AB1R w kq - 0 1"
+		<< "r2q2rk2/ppp4cpp/3p1ppba1/4nb1p2/2P1N1nB2/P1KP2PNP1/1P2P2P1P/R4CAB1R b - - 0 2";
+	QTest::newRow("embassy castling lan")
+		<< "embassy"
+		<< "e8b8 e1b1 h6g4"
+		<< "r3kcab1r/pppq1p1ppp/2np2pn2/4pb4/4B5/2NPB1PN2/PPPQPP1PPP/R3KCA2R b KQkq - 3 1"
+		<< "1kr2cab1r/pppq1p1ppp/2np2p3/4pb4/4B1n3/2NPB1PN2/PPPQPP1PPP/1KR2CA2R w - - 1 2";
 	QTest::newRow("janus castling san1")
 		<< "janus"
 		<< "Kb8 Be3 Ng6 Ki1"
@@ -681,6 +696,13 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 5
 		<< Q_UINT64_C(4835050);
+
+	variant = "embassy";
+	QTest::newRow("embassy startpos")
+		<< variant
+		<< "rnbqkcabnr/pppppppppp/10/10/10/10/PPPPPPPPPP/RNBQKCABNR w KQkq - 0 1"
+		<< 4 //4 plies: 809539, 5 plies: 28937546, 6 plies: 1023746640
+		<< Q_UINT64_C(809539);
 
 	variant = "coregal";
 	QTest::newRow("coregal startpos")

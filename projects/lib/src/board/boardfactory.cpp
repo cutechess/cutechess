@@ -26,6 +26,7 @@
 #include "chessgiboard.h"
 #include "coregalboard.h"
 #include "crazyhouseboard.h"
+#include "embassyboard.h"
 #include "extinctionboard.h"
 #include "frcboard.h"
 #include "giveawayboard.h"
@@ -61,6 +62,7 @@ REGISTER_BOARD(ChessgiBoard, "chessgi")
 REGISTER_BOARD(CoRegalBoard, "coregal")
 REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
 REGISTER_BOARD(DisplacedGridBoard, "displacedgrid")
+REGISTER_BOARD(EmbassyBoard, "embassy")
 REGISTER_BOARD(ExtinctionBoard, "extinction")
 REGISTER_BOARD(KingletBoard, "kinglet")
 REGISTER_BOARD(FrcBoard, "fischerandom")
