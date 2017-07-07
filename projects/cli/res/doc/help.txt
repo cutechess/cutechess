@@ -24,6 +24,7 @@ Options:
 			'coregal': Co-regal Chess
 			'crazyhouse': Crazyhouse (Drop Chess)
 			'discplacedgrid': Displaced Grid Chess
+			'embassy': Embassy Chess
 			'extinction': Extinction Chess
 			'fischerandom': Fischer Random Chess/Chess 960
 			'giveaway': Giveaway Chess (Losing Chess)
