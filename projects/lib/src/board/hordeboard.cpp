@@ -78,7 +78,8 @@ Result HordeBoard::result()
 	Side side = sideToMove();
 	Side opp = side.opposite();
 	if (!hasMaterial(side))
-		return Result(Result::Win, opp, tr("%1 wins").arg(opp));
+		return Result(Result::Win, opp,
+			      tr("%1 wins").arg(opp.toString()));
 
 	return StandardBoard::result();
 }
