@@ -120,9 +120,15 @@ void XboardEngine::startGame()
 	if (board()->variant() != "standard")
 		write("variant " + variantToXboard(board()->variant()));
 	
+	setForceMode(true);
+
 	if (board()->isRandomVariant()
 	||  board()->fenString() != board()->defaultFenString())
 	{
+		if (board()->sideToMove() == Chess::Side::Black)
+		{
+			write("b2b3"); // now engine will play the black side
+		}
 		if (m_ftSetboard)
 			write("setboard " + board()->fenString());
 		else
@@ -171,7 +177,6 @@ void XboardEngine::startGame()
 		write("hard");
 	else
 		write("easy");
-	setForceMode(true);
 	
 	// Tell the opponent's type and name to the engine
 	if (m_ftName)
