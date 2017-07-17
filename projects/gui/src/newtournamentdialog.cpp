@@ -188,6 +188,9 @@ bool NewTournamentDialog::canStart() const
 	if (!ui->m_gameSettings->isValid())
 		return false;
 
+	if (m_addedEnginesManager->engineCount() < 2)
+		return false;
+
 	QString variant = ui->m_gameSettings->chessVariant();
 	return m_addedEnginesManager->supportsVariant(variant);
 }
