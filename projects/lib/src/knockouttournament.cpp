@@ -17,6 +17,7 @@
 
 #include "knockouttournament.h"
 #include <QStringList>
+#include <QtMath>
 #include "playerbuilder.h"
 #include "mersenne.h"
 
@@ -116,9 +117,7 @@ void KnockoutTournament::initializePairing()
 
 int KnockoutTournament::gamesPerCycle() const
 {
-	int x = 1;
-	while (x < playerCount())
-		x *= 2;
+	int x = qNextPowerOfTwo(playerCount() - 1);
 	int round = x / 2;
 	int total = round - (x - playerCount());
 	while (round >= 2)
