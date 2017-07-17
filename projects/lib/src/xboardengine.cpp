@@ -127,7 +127,8 @@ void XboardEngine::startGame()
 	{
 		if (board()->sideToMove() == Chess::Side::Black)
 		{
-			write("b2b3"); // now engine will play the black side
+			// Use a dummy move to force the engine to play black
+			write("b2b3");
 		}
 		if (m_ftSetboard)
 			write("setboard " + board()->fenString());
