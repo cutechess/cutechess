@@ -32,7 +32,7 @@ EvalHistory::EvalHistory(QWidget *parent)
 	auto ticker = new QCPAxisTickerFixed;
 
 	x->setLabel(tr("move"));
-	x->setRangeLower(1);
+	x->setRange(1, 5);
 	x->setTicker(QSharedPointer<QCPAxisTicker>(ticker));
 	x->setSubTicks(false);
 
@@ -107,7 +107,14 @@ void EvalHistory::addData(int ply, int score)
 
 void EvalHistory::replot(int maxPly)
 {
-	if (maxPly != -1)
+	if (maxPly == -1)
+	{
+		auto ticker = new QCPAxisTickerFixed;
+		m_plot->xAxis->setRange(1, 5);
+		m_plot->xAxis->setTicker(QSharedPointer<QCPAxisTicker>(ticker));
+		m_plot->yAxis->setRange(-1, 1);
+	}
+	else
 	{
 		const int step = qMax(1, maxPly / 20);
 		auto ticker = m_plot->xAxis->ticker().dynamicCast<QCPAxisTickerFixed>();
