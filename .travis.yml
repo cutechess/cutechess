@@ -10,11 +10,11 @@ dist: trusty
 
 env:
   matrix:
-    - QT_BASE=53
-    - QT_BASE=54
     - QT_BASE=55
     - QT_BASE=56
     - QT_BASE=57
+    - QT_BASE=58
+    - QT_BASE=59
   global:
     # Coverity Scan access token
     - secure: "a0D9/23/IV+404/STxfr9o0eVEp8Qx1J1KZPyKepSwdky9LpmeDTt6KWtfaL4mBiGNFpIHG239LHKbjIHLouFwP9SeLottIYUe/1xO12Y2eL5uUES0SbCGwyr248s5WvT15tvkF3xHy2FLMw0lDgsLDaOiOU7STteNYlFIHEkjUTQzx5UaG5utVDwsrjPdkkyij+Z2Ztl8tXCbEeyrct5ixzJX+lhAofwE7zpKlvhD1Snf/bHh0GopYQg8nL0Cdb15uhCjwTDQuaLTT2ICr8KsllLUie1ex5zWpCu4f9vsFFWZsBfFZ3+rReHfcNzWIoJ/0YNqdNBDio+akgewW31A/yUhnIxb5RuCirDnbny++yC/ZyMJUtY0LcRWZIfqa3BCRAp/jUY0VdIbteoGQWhZergXcEQEccpJKXoALlm4KEKHnVOGLf/Ceb/exG5vv0xiCUU6RwthFpuRLVFrqkMQH/mJ7kD1N44AoGlE1ElxxiguAze8v0oCWNMEDF5LGjvifWX2i4zhsvaqmwb7atMedyTtU5Hw8s3638C+PEQ1n1anb8cYYpGlZb6G1w3mi1j186ZrL+qCdHnu6Is3zGOBK7jVMcuGE4jPKmDCA6LPl0gig72JKL5yfIkDfkAuufJXSBmNVCUbiCEA2RWAzbCWFEsymMdV14m8TQ2JtEKes="
@@ -22,11 +22,11 @@ env:
 before_install:
   # run Coverity scans only once
   - if [ "${TRAVIS_BRANCH}" == "coverity_scan" ] && [ ${TRAVIS_JOB_NUMBER##*.} -gt 1 ]; then exit 0; fi
-  - if [ "$QT_BASE" = "53" ]; then sudo add-apt-repository ppa:beineri/opt-qt532-trusty -y; fi
-  - if [ "$QT_BASE" = "54" ]; then sudo add-apt-repository ppa:beineri/opt-qt542-trusty -y; fi
   - if [ "$QT_BASE" = "55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551-trusty -y; fi
   - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-trusty -y; fi
   - if [ "$QT_BASE" = "57" ]; then sudo add-apt-repository ppa:beineri/opt-qt571-trusty -y; fi
+  - if [ "$QT_BASE" = "58" ]; then sudo add-apt-repository ppa:beineri/opt-qt58-trusty -y; fi
+  - if [ "$QT_BASE" = "59" ]; then sudo add-apt-repository ppa:beineri/opt-qt591-trusty -y; fi
   - sudo apt-get update -qq
 
 install:
