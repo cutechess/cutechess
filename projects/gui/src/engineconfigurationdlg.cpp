@@ -336,14 +336,15 @@ void EngineConfigurationDialog::onEngineReady()
 
 void EngineConfigurationDialog::onEngineQuit()
 {
-	Q_ASSERT(m_engine != nullptr);
-	Q_ASSERT(m_engine->state() == ChessPlayer::Disconnected);
-
-	disconnect(m_optionDetectionTimer, nullptr, m_engine, nullptr);
+	m_optionDetectionTimer->disconnect();
 	m_optionDetectionTimer->stop();
 
-	m_engine->deleteLater();
-	m_engine = nullptr;
+	if (m_engine != nullptr)
+	{
+		Q_ASSERT(m_engine->state() == ChessPlayer::Disconnected);
+		m_engine->deleteLater();
+		m_engine = nullptr;
+	}
 
 	ui->m_detectBtn->setEnabled(true);
 	ui->m_restoreBtn->setDisabled(m_options.isEmpty());
