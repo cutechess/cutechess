@@ -31,7 +31,6 @@ class QCloseEvent;
 class QTabBar;
 class GameViewer;
 class MoveList;
-class ChessClock;
 class PlainTextLog;
 class PgnGame;
 class ChessGame;
@@ -123,7 +122,6 @@ class MainWindow : public QMainWindow
 
 		GameViewer* m_gameViewer;
 		MoveList* m_moveList;
-		ChessClock* m_chessClock[2];
 		PgnTagsModel* m_tagsModel;
 
 		QAction* m_quitGameAct;

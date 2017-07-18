@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <QVector>
 #include <QPointer>
+#include <board/side.h>
 #include <board/genericmove.h>
 class QToolButton;
 class QSlider;
@@ -28,6 +29,7 @@ class ChessGame;
 class PgnGame;
 class BoardScene;
 class BoardView;
+class ChessClock;
 namespace Chess
 {
 	class Board;
@@ -39,13 +41,15 @@ class GameViewer : public QWidget
 
 	public:
 		explicit GameViewer(Qt::Orientation orientation = Qt::Horizontal,
-				    QWidget* parent = nullptr);
+		                    QWidget* parent = nullptr,
+		                    bool addChessClock = false);
 
 		void setGame(ChessGame* game);
 		void setGame(const PgnGame* pgn);
 		void disconnectGame();
 		Chess::Board* board() const;
 		BoardScene* boardScene() const;
+		ChessClock* chessClock(Chess::Side side);
 
 	public slots:
 		void viewMove(int index);
@@ -73,6 +77,7 @@ class GameViewer : public QWidget
 		BoardScene* m_boardScene;
 		BoardView* m_boardView;
 		QSlider* m_moveNumberSlider;
+		ChessClock* m_chessClock[2];
 
 		QToolButton* m_viewFirstMoveBtn;
 		QToolButton* m_viewPreviousMoveBtn;

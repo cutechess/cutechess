@@ -77,18 +77,12 @@ MainWindow::MainWindow(ChessGame* game)
 	setAttribute(Qt::WA_DeleteOnClose, true);
 	setDockNestingEnabled(true);
 
-	QHBoxLayout* clockLayout = new QHBoxLayout();
+	m_gameViewer = new GameViewer(Qt::Horizontal, nullptr, true);
 	for (int i = 0; i < 2; i++)
 	{
-		m_chessClock[i] = new ChessClock();
-		clockLayout->addWidget(m_chessClock[i]);
-
 		Chess::Side side = Chess::Side::Type(i);
-		m_chessClock[i]->setPlayerName(side.toString());
+		m_gameViewer->chessClock(side)->setPlayerName(side.toString());
 	}
-	clockLayout->insertSpacing(1, 20);
-
-	m_gameViewer = new GameViewer;
 	m_gameViewer->setContentsMargins(6, 6, 6, 6);
 
 	m_moveList = new MoveList(this);
@@ -102,7 +96,6 @@ MainWindow::MainWindow(ChessGame* game)
 	m_evalWidgets[1] = new EvalWidget(this);
 
 	QVBoxLayout* mainLayout = new QVBoxLayout();
-	mainLayout->addLayout(clockLayout);
 	mainLayout->addWidget(m_gameViewer);
 
 	// The content margins look stupid when used with dock widgets
@@ -474,8 +467,10 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 		if (player != nullptr)
 		{
 			disconnect(player, nullptr, m_engineDebugLog, nullptr);
-			disconnect(player, nullptr, m_chessClock[0], nullptr);
-			disconnect(player, nullptr, m_chessClock[1], nullptr);
+			disconnect(player, nullptr,
+			           m_gameViewer->chessClock(Chess::Side::White), nullptr);
+			disconnect(player, nullptr,
+			           m_gameViewer->chessClock(Chess::Side::Black), nullptr);
 		}
 	}
 
@@ -517,10 +512,11 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 
 		for (int i = 0; i < 2; i++)
 		{
-			ChessClock* clock(m_chessClock[i]);
+			Chess::Side side = Chess::Side::Type(i);
+			auto clock = m_gameViewer->chessClock(side);
 			clock->stop();
 			clock->setInfiniteTime(true);
-			clock->setPlayerName(gameData.pgn->playerName(Chess::Side::Type(i)));
+			clock->setPlayerName(gameData.pgn->playerName(side));
 		}
 
 		updateWindowTitle();
@@ -537,13 +533,14 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 
 	for (int i = 0; i < 2; i++)
 	{
-		ChessPlayer* player(m_game->player(Chess::Side::Type(i)));
+		Chess::Side side = Chess::Side::Type(i);
+		ChessPlayer* player(m_game->player(side));
 		m_players[i] = player;
 
 		connect(player, SIGNAL(debugMessage(QString)),
 			m_engineDebugLog, SLOT(appendPlainText(QString)));
 
-		ChessClock* clock(m_chessClock[i]);
+		auto clock = m_gameViewer->chessClock(side);
 
 		clock->stop();
 		clock->setPlayerName(player->name());

@@ -26,8 +26,11 @@
 #include <chessplayer.h>
 #include "boardview/boardscene.h"
 #include "boardview/boardview.h"
+#include "chessclock.h"
 
-GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
+GameViewer::GameViewer(Qt::Orientation orientation,
+                       QWidget* parent,
+                       bool addChessClock)
 	: QWidget(parent),
 	  m_moveNumberSlider(new QSlider(Qt::Horizontal)),
 	  m_viewFirstMoveBtn(new QToolButton),
@@ -93,6 +96,24 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->setContentsMargins(0, 0, 0, 0);
+
+	if (addChessClock)
+	{
+		QHBoxLayout* clockLayout = new QHBoxLayout();
+		for (int i = 0; i < 2; i++)
+		{
+			m_chessClock[i] = new ChessClock();
+			clockLayout->addWidget(m_chessClock[i]);
+		}
+		clockLayout->insertSpacing(1, 20);
+		layout->addLayout(clockLayout);
+	}
+	else
+	{
+		m_chessClock[0] = nullptr;
+		m_chessClock[1] = nullptr;
+	}
+
 	layout->addWidget(m_boardView);
 
 	if (orientation == Qt::Horizontal)
@@ -110,6 +131,11 @@ GameViewer::GameViewer(Qt::Orientation orientation, QWidget* parent)
 
 	layout->addLayout(controls);
 	setLayout(layout);
+}
+
+ChessClock* GameViewer::chessClock(Chess::Side side)
+{
+	return m_chessClock[side];
 }
 
 void GameViewer::setGame(ChessGame* game)
