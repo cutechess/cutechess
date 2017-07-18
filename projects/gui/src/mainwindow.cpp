@@ -971,8 +971,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	if (m_readyToClose)
 	{
 		writeSettings();
-		event->accept();
-		return;
+		return QMainWindow::closeEvent(event);
 	}
 
 	if (askToSave())
