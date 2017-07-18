@@ -327,7 +327,10 @@ void TimeControl::update(bool applyIncrement)
 	 * This will overflow after roughly 49 days however it's unlikely
 	 * we'll ever hit that limit.
 	 */
-	m_lastMoveTime = (int)m_time.elapsed();
+	if (m_time.isValid())
+		m_lastMoveTime = (int)m_time.elapsed();
+	else
+		m_lastMoveTime = 0;
 
 	if (!m_infinite && m_lastMoveTime > m_timeLeft + m_expiryMargin)
 		m_expired = true;
@@ -367,7 +370,9 @@ bool TimeControl::expired() const
 
 int TimeControl::activeTimeLeft() const
 {
-	return m_timeLeft - m_time.elapsed();
+	if (m_time.isValid())
+		return m_timeLeft - m_time.elapsed();
+	return m_timeLeft;
 }
 
 void TimeControl::readSettings(QSettings* settings)
