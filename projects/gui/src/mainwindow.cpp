@@ -31,6 +31,7 @@
 #include <QClipboard>
 #include <QWindow>
 #include <QSettings>
+#include <QDesktopWidget>
 
 #include <board/boardfactory.h>
 #include <chessgame.h>
@@ -377,6 +378,9 @@ void MainWindow::readSettings()
 	s.beginGroup("mainwindow");
 
 	restoreGeometry(s.value("geometry").toByteArray());
+	// Workaround for https://bugreports.qt.io/browse/QTBUG-16252
+	if (isMaximized())
+		setGeometry(QApplication::desktop()->availableGeometry(this));
 	restoreState(s.value("window_state").toByteArray());
 
 	s.endGroup();
