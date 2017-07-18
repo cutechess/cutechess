@@ -194,7 +194,7 @@ QString EngineProcess::cmdLine(const QString& wdir,
 	cmd = QDir::toNativeSeparators(quote(cmd));
 	if (useArgs)
 	{
-		foreach (const QString& arg, args)
+		for (const QString& arg : args)
 			cmd += ' ' + quote(arg);
 	}
 

@@ -85,15 +85,16 @@ static quint64 perftRoot(const Chess::Board* board,
 
 static quint64 smpPerft(Chess::Board* board, int depth)
 {
-	QVector<Chess::Move> moves(board->legalMoves());
+	const auto moves = board->legalMoves();
 	if (depth <= 1)
 		return moves.size();
 	
 	QVector< QFuture<quint64> > futures;
-	foreach (const Chess::Move& move, moves)
+	for (const auto& move : moves)
 		futures << QtConcurrent::run(perftRoot, board, move, depth);
 
 	quint64 nodeCount = 0;
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (const QFuture<quint64>& future, futures)
 		nodeCount += future.result();
 
@@ -285,8 +286,8 @@ void tst_Board::moveStrings()
 	setVariant(variant);
 	QVERIFY(m_board->setFenString(startfen));
 
-	QStringList moveList = moves.split(' ', QString::SkipEmptyParts);
-	foreach (const QString& moveStr, moveList)
+	const auto moveList = moves.split(' ', QString::SkipEmptyParts);
+	for (const auto& moveStr : moveList)
 	{
 		Chess::Move move = m_board->moveFromString(moveStr);
 		QVERIFY(m_board->isLegalMove(move));

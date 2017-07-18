@@ -121,7 +121,7 @@ void EcoNode::initialize(PgnStream& in)
 	while (game.read(in))
 	{
 		current = s_root;
-		foreach (const PgnGame::MoveData& move, game.moves())
+		for (const PgnGame::MoveData& move : game.moves())
 		{
 			QString san = move.moveString;
 			EcoNode* node = current->child(san);
@@ -169,7 +169,7 @@ const EcoNode* EcoNode::find(const QVector<PgnGame::MoveData>& moves)
 	EcoNode* current = s_root;
 	EcoNode* valid = nullptr;
 
-	foreach (const PgnGame::MoveData& move, moves)
+	for (const PgnGame::MoveData& move : moves)
 	{
 		EcoNode* node = current->child(move.moveString);
 		if (node == nullptr)

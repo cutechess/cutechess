@@ -85,7 +85,7 @@ Chess::Result SyzygyTablebase::result(const Chess::Side& side,
 	uint64_t kings = 0, queens = 0, rooks = 0, bishops = 0, knights = 0,
 		pawns = 0;
 	typedef QPair<Chess::Square, Chess::Piece> PcSq;
-	foreach (const PcSq& item, pieces)
+	for (const PcSq& item : pieces)
 	{
 		if (tbSquare(item.first) < 0)
 			continue;

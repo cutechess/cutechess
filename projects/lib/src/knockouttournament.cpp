@@ -151,7 +151,8 @@ void KnockoutTournament::addScore(int player, int score)
 QList<int> KnockoutTournament::lastRoundWinners() const
 {
 	QList<int> winners;
-	foreach (const TournamentPair* pair, m_rounds.last())
+	const auto last = m_rounds.last();
+	for (const TournamentPair* pair : last)
 		winners << pair->leader();
 
 	return winners;
@@ -203,7 +204,8 @@ TournamentPair* KnockoutTournament::nextPair(int gameNumber)
 {
 	Q_UNUSED(gameNumber);
 
-	foreach (TournamentPair* pair, m_rounds.last())
+	const auto last = m_rounds.last();
+	for (TournamentPair* pair : last)
 	{
 		if (needMoreGames(pair))
 			return pair;
@@ -221,6 +223,7 @@ TournamentPair* KnockoutTournament::nextPair(int gameNumber)
 	m_rounds << nextRound;
 	setCurrentRound(currentRound() + 1);
 
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (TournamentPair* pair, nextRound)
 	{
 		if (pair->isValid())
@@ -235,7 +238,8 @@ QString KnockoutTournament::results() const
 {
 	QStringList lines;
 
-	foreach (const TournamentPair* pair, m_rounds.first())
+	const auto first = m_rounds.first();
+	for (const TournamentPair* pair : first)
 	{
 		int player1 = pair->firstPlayer();
 		int player2 = pair->secondPlayer();
@@ -254,7 +258,8 @@ QString KnockoutTournament::results() const
 	for (int round = 0; round < currentRound(); round++)
 	{
 		int x = 0;
-		foreach (const TournamentPair* pair, m_rounds.at(round))
+		const auto nthRound = m_rounds.at(round);
+		for (const TournamentPair* pair : nthRound)
 		{
 			QString winner;
 			if (needMoreGames(pair) || pair->gamesInProgress())

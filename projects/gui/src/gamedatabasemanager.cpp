@@ -65,6 +65,7 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 	out << (qint32)m_databases.count();
 
 	// Write the contents of the databases
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (const PgnDatabase* db, m_databases)
 	{
 		out << db->fileName();
@@ -72,7 +73,8 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 		out << db->displayName();
 		out << (qint32)db->entries().count();
 
-		foreach (const PgnGameEntry* entry, db->entries())
+		const auto entries = db->entries();
+		for (const PgnGameEntry* entry : db->entries())
 			entry->write(out);
 	}
 

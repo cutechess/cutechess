@@ -391,6 +391,7 @@ void GameManager::cleanup()
 	}
 
 	// Terminate running threads
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (GameThread* thread, m_threads)
 	{
 		connect(thread, SIGNAL(finished()), this, SLOT(onThreadQuit()),
@@ -514,6 +515,7 @@ GameThread* GameManager::getThread(const PlayerBuilder* white,
 	Q_ASSERT(white != nullptr);
 	Q_ASSERT(black != nullptr);
 
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (GameThread* thread, m_activeThreads)
 	{
 		if (!thread->isReady())

@@ -123,7 +123,7 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 
 	m_startingSide = pgn->startingSide();
 	m_moveCount = 0;
-	foreach (const PgnGame::MoveData& md, pgn->moves())
+	for (const PgnGame::MoveData& md : pgn->moves())
 	{
 		insertMove(m_moveCount++, md.moveString, md.comment, cursor);
 	}

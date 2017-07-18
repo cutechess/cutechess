@@ -88,7 +88,7 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 		const QVariantList optionsList = map["options"].toList();
 		EngineOption* option = nullptr;
 
-		foreach (const QVariant& optionVariant, optionsList)
+		for (const QVariant& optionVariant : optionsList)
 		{
 			if ((option = EngineOptionFactory::create(optionVariant.toMap())) != nullptr)
 				addOption(option);
@@ -110,7 +110,8 @@ EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
 	  m_validateClaims(other.m_validateClaims),
 	  m_restartMode(other.m_restartMode)
 {
-	foreach (const EngineOption* option, other.options())
+	const auto options = other.options();
+	for (const EngineOption* option : options)
 		addOption(option->copy());
 }
 
@@ -175,6 +176,7 @@ QVariant EngineConfiguration::toVariant() const
 	if (!m_options.isEmpty())
 	{
 		QVariantList optionsList;
+		// TODO: use qAsConst() from Qt 5.7
 		foreach (const EngineOption* option, m_options)
 			optionsList.append(option->toVariant());
 
@@ -299,6 +301,7 @@ void EngineConfiguration::addOption(EngineOption* option)
 
 void EngineConfiguration::setOption(const QString& name, const QVariant& value)
 {
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (EngineOption* option, m_options)
 	{
 		if (option->name() == name)
@@ -379,6 +382,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		qDeleteAll(m_options);
 		m_options.clear();
 
+		// TODO: use qAsConst() from Qt 5.7
 		foreach (const EngineOption* option, other.m_options)
 			m_options.append(option->copy());
 	}

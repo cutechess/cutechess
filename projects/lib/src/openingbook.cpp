@@ -229,13 +229,13 @@ Chess::GenericMove OpeningBook::move(quint64 key) const
 	
 	// There can be multiple entries/moves with the same key.
 	// We need to find them all to choose the best one
-	QList<Entry> entries = this->entries(key);
+	const auto entries = this->entries(key);
 	if (entries.isEmpty())
 		return move;
 	
 	// Calculate the total weight of all available moves
 	int totalWeight = 0;
-	foreach (const Entry& entry, entries)
+	for (const Entry& entry : entries)
 		totalWeight += entry.weight;
 	if (totalWeight <= 0)
 		return move;
@@ -244,7 +244,7 @@ Chess::GenericMove OpeningBook::move(quint64 key) const
 	// the highest probability of getting picked.
 	int pick = Mersenne::random() % totalWeight;
 	int currentWeight = 0;
-	foreach (const Entry& entry, entries)
+	for (const Entry& entry : entries)
 	{
 		currentWeight += entry.weight;
 		if (currentWeight > pick)

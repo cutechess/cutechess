@@ -582,6 +582,7 @@ void UciEngine::parseLine(const QString& line)
 			m_ignoreThinking = false;
 			if (!m_bmBuffer.isEmpty())
 			{
+				// TODO: use qAsConst() from Qt 5.7
 				foreach (const QString& line, m_bmBuffer)
 					write(line, Unbuffered);
 				m_bmBuffer.clear();

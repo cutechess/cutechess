@@ -69,6 +69,7 @@ Tournament::~Tournament()
 	qDeleteAll(m_pairs);
 
 	QSet<const OpeningBook*> books;
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (const TournamentPlayer& player, m_players)
 	{
 		books.insert(player.book());
@@ -631,7 +632,8 @@ void Tournament::stop()
 	}
 
 	m_stopping = true;
-	foreach (ChessGame* game, m_gameData.keys())
+	const auto games = m_gameData.keys();
+	for (ChessGame* game : games)
 		QMetaObject::invokeMethod(game, "stop", Qt::QueuedConnection);
 }
 

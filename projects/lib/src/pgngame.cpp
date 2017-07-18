@@ -73,10 +73,9 @@ QList< QPair<QString, QString> > PgnGame::tags() const
 	QList< QPair<QString, QString> > list;
 
 	// The seven tag roster
-	QStringList roster;
-	roster << "Event" << "Site" << "Date" << "Round"
-	       << "White" << "Black" << "Result";
-	foreach (const QString& tag, roster)
+	const QStringList roster = (QStringList() << "Event" << "Site" << "Date"
+		<< "Round" << "White" << "Black" << "Result");
+	for (const QString& tag : roster)
 	{
 		QString value = m_tags.value(tag);
 		if (value.isEmpty())

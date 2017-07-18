@@ -478,8 +478,8 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	else if (name == "variants")
 	{
 		clearVariants();
-		QStringList variants = val.split(',');
-		foreach (const QString& str, variants)
+		const auto variants = val.split(',');
+		for (const QString& str : variants)
 		{
 			QString variant = variantFromXboard(str.trimmed());
 			if (!variant.isEmpty())
@@ -500,8 +500,8 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	}
 	else if (name == "egt")
 	{
-		QStringList list = val.split(',');
-		foreach (const QString& str, list)
+		const auto list = val.split(',');
+		for (const QString& str : list)
 		{
 			QString egtType = QString("egtpath %1").arg(str.trimmed());
 			addOption(new EngineTextOption(egtType, QString(), QString()));

@@ -187,7 +187,7 @@ void GameViewer::setGame(const PgnGame* pgn)
 	m_moveIndex = 0;
 
 	m_moves.clear();
-	foreach (const PgnGame::MoveData& md, pgn->moves())
+	for (const PgnGame::MoveData& md : pgn->moves())
 		m_moves.append(md.move);
 
 	m_viewFirstMoveBtn->setEnabled(false);

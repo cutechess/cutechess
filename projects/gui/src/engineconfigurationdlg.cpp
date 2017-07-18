@@ -126,7 +126,8 @@ void EngineConfigurationDialog::applyEngineInformation(
 	if (engine.whiteEvalPov())
 		ui->m_whitePovCheck->setCheckState(Qt::Checked);
 
-	foreach (EngineOption* option, engine.options())
+	const auto options = engine.options();
+	for (const EngineOption* option : options)
 		m_options << option->copy();
 	m_engineOptionModel->setOptions(m_options);
 	ui->m_restoreBtn->setDisabled(m_options.isEmpty());
@@ -153,6 +154,7 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 	engine.setWhiteEvalPov(ui->m_whitePovCheck->checkState() == Qt::Checked);
 
 	QList<EngineOption*> optionCopies;
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (EngineOption* option, m_options)
 		optionCopies << option->copy();
 
@@ -325,7 +327,8 @@ void EngineConfigurationDialog::onEngineReady()
 	m_options.clear();
 
 	// Make copies of the engine options
-	foreach (const EngineOption* option, m_engine->options())
+	const auto options = m_engine->options();
+	for (const EngineOption* option : options)
 		m_options << option->copy();
 
 	m_engineOptionModel->setOptions(m_options);
@@ -388,6 +391,7 @@ void EngineConfigurationDialog::resizeColumns()
 
 void EngineConfigurationDialog::restoreDefaults()
 {
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (EngineOption* option, m_options)
 		option->setValue(option->defaultValue());
 

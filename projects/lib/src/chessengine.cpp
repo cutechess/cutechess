@@ -126,7 +126,8 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 	if (!configuration.name().isEmpty())
 		setName(configuration.name());
 
-	foreach (const QString& str, configuration.initStrings())
+	const auto initStrings = configuration.initStrings();
+	for (const QString& str : initStrings)
 		write(str);
 
 	const auto options = configuration.options();
@@ -150,6 +151,7 @@ void ChessEngine::addOption(EngineOption* option)
 
 EngineOption* ChessEngine::getOption(const QString& name) const
 {
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (EngineOption* option, m_options)
 	{
 		if (option->alias() == name || option->name() == name)
@@ -463,6 +465,7 @@ void ChessEngine::flushWriteBuffer()
 	if (m_pinging || state() == NotStarted)
 		return;
 
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (const QString& line, m_writeBuffer)
 		write(line);
 	m_writeBuffer.clear();

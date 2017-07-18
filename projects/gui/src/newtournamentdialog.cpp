@@ -127,8 +127,8 @@ void NewTournamentDialog::addEngine()
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
-	QModelIndexList list(dlg.selection().indexes());
-	foreach (const QModelIndex& index, list)
+	const QModelIndexList list(dlg.selection().indexes());
+	for (const QModelIndex& index : list)
 		m_addedEnginesManager->addEngine(m_srcEngineManager->engineAt(index.row()));
 
 	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
@@ -147,6 +147,7 @@ void NewTournamentDialog::removeEngine()
 		return b < a;
 	});
 
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (const QModelIndex& index, selected)
 		m_addedEnginesManager->removeEngineAt(index.row());
 
@@ -254,7 +255,8 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setOpeningRepetition(ts->openingRepetition());
 	t->setRecoveryMode(ts->engineRecovery());
 
-	foreach (EngineConfiguration config, m_addedEnginesManager->engines())
+	const auto engines = m_addedEnginesManager->engines();
+	for (EngineConfiguration config : engines)
 	{
 		ui->m_gameSettings->applyEngineConfiguration(&config);
 		t->addPlayer(new EngineBuilder(config),

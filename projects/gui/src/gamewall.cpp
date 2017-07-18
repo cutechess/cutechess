@@ -125,7 +125,7 @@ void GameWallWidget::setGame(ChessGame* game)
 	if (game->boardShouldBeFlipped())
 		m_scene->flip();
 
-	foreach (const Chess::Move& move, game->moves())
+	for (const Chess::Move& move : game->moves())
 		m_scene->makeMove(move);
 
 	game->unlockThread();
@@ -142,7 +142,8 @@ GameWall::GameWall(GameManager* manager, QWidget *parent)
 
 	setLayout(new TileLayout());
 
-	foreach (ChessGame* game, manager->activeGames())
+	const auto activeGames = manager->activeGames();
+	for (ChessGame* game : activeGames)
 	{
 		if (!game->isFinished())
 			addGame(game);

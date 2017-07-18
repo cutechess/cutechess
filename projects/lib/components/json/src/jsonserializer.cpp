@@ -31,7 +31,7 @@ namespace {
 QString jsonString(const QString& source)
 {
 	QString str;
-	foreach (const QChar& c, source)
+	for (const QChar& c : source)
 	{
 		switch (c.toLatin1())
 		{

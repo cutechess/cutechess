@@ -54,6 +54,7 @@ QLayoutItem* TileLayout::itemAt(int index) const
 QSize TileLayout::minimumSize() const
 {
 	QSize size;
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (const QLayoutItem* item, m_items)
 		size = size.expandedTo(item->minimumSize());
 
@@ -72,6 +73,7 @@ void TileLayout::setGeometry(const QRect& rect)
 QSize TileLayout::sizeHint() const
 {
 	QSize size;
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (const QLayoutItem* item, m_items)
 		size = size.expandedTo(item->sizeHint());
 
@@ -158,6 +160,7 @@ void TileLayout::doLayout(const QRect& rect) const
 	int itemHeight = (effectiveRect.height() - (rows - 1) * spaceY) / rows;
 
 	int col = 0;
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (QLayoutItem* item, m_items)
 	{
 		int nextX = x + itemWidth + spaceX;

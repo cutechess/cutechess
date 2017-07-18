@@ -443,7 +443,7 @@ bool ChessGame::setMoves(const PgnGame& pgn)
 	m_scores.clear();
 	m_moves.clear();
 
-	foreach (const PgnGame::MoveData& md, pgn.moves())
+	for (const PgnGame::MoveData& md : pgn.moves())
 	{
 		Chess::Move move(m_board->moveFromGenericMove(md.move));
 		if (!m_board->isLegalMove(move))
@@ -490,6 +490,7 @@ void ChessGame::generateOpening()
 		return;
 
 	// First play moves that are already in the opening
+	// TODO: use qAsConst() from Qt 5.7
 	foreach (const Chess::Move& move, m_moves)
 	{
 		Q_ASSERT(m_board->isLegalMove(move));
