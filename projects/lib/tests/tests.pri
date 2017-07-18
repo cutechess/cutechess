@@ -1,6 +1,5 @@
 TEMPLATE = app
 
-CONFIG += c++11
 win32:config += CONSOLE
 
 mac {
