@@ -87,6 +87,8 @@ UciEngine::UciEngine(QObject* parent)
 	  m_sendOpponentsName(false),
 	  m_canPonder(false),
 	  m_ponderState(NotPondering),
+	  m_movesPondered(0),
+	  m_ponderHits(0),
 	  m_ignoreThinking(false),
 	  m_rePing(false)
 {
@@ -128,6 +130,8 @@ void UciEngine::startGame()
 	m_rePing = false;
 	m_ponderState = NotPondering;
 	m_ponderMove = Chess::Move();
+	m_movesPondered = 0;
+	m_ponderHits = 0;
 	m_bmBuffer.clear();
 	m_moveStrings.clear();
 
@@ -166,8 +170,12 @@ void UciEngine::makeMove(const Chess::Move& move)
 {
 	if (!m_ponderMove.isNull())
 	{
+		m_movesPondered++;
 		if (move == m_ponderMove)
+		{
+			m_ponderHits++;
 			m_ponderState = PonderHit;
+		}
 
 		m_ponderMove = Chess::Move();
 		if (m_ponderState != PonderHit)
@@ -467,6 +475,9 @@ void UciEngine::parseInfo(const QStringRef& line)
 	}
 	if (eval.isEmpty())
 		return;
+
+	if (m_movesPondered)
+		eval.setPonderhitRate((m_ponderHits * 1000) / m_movesPondered);
 
 	// Only the primary PV can be considered the current eval
 	if (eval.pvNumber() <= 1)

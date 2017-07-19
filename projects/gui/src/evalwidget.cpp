@@ -114,6 +114,13 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 		item->setText(QString("%1%").arg(usage, 0, 'f', 1));
 		m_statsTable->setItem(0, HashHeader, item);
 	}
+	if (eval.ponderhitRate())
+	{
+		double rate = double(eval.ponderhitRate() / 10.0);
+		auto item = m_statsTable->itemPrototype()->clone();
+		item->setText(QString("%1%").arg(rate, 0, 'f', 1));
+		m_statsTable->setItem(0, PonderHitHeader, item);
+	}
 
 	QString depth;
 	if (eval.depth())

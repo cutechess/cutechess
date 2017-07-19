@@ -25,6 +25,7 @@ MoveEvaluation::MoveEvaluation()
 	  m_time(0),
 	  m_pvNumber(0),
 	  m_hashUsage(0),
+	  m_ponderhitRate(0),
 	  m_nodeCount(0),
 	  m_nps(0),
 	  m_tbHits(0)
@@ -40,6 +41,7 @@ bool MoveEvaluation::operator==(const MoveEvaluation& other) const
 	&&  m_time == other.m_time
 	&&  m_pvNumber == other.m_pvNumber
 	&&  m_hashUsage == other.m_hashUsage
+	&&  m_ponderhitRate == other.m_ponderhitRate
 	&&  m_nodeCount == other.m_nodeCount
 	&&  m_nps == other.m_nps
 	&&  m_tbHits == other.m_tbHits)
@@ -56,6 +58,7 @@ bool MoveEvaluation::operator!=(const MoveEvaluation& other) const
 	||  m_time != other.m_time
 	||  m_pvNumber != other.m_pvNumber
 	||  m_hashUsage != other.m_hashUsage
+	||  m_ponderhitRate != other.m_ponderhitRate
 	||  m_nodeCount != other.m_nodeCount
 	||  m_nps != other.m_nps
 	||  m_tbHits != other.m_tbHits)
@@ -71,6 +74,7 @@ bool MoveEvaluation::isEmpty() const
 	&&  m_time < 500
 	&&  m_pvNumber == 0
 	&&  m_hashUsage == 0
+	&&  m_ponderhitRate == 0
 	&&  m_nodeCount == 0
 	&&  m_nps == 0
 	&&  m_tbHits == 0)
@@ -125,6 +129,11 @@ int MoveEvaluation::hashUsage() const
 	return m_hashUsage;
 }
 
+int MoveEvaluation::ponderhitRate() const
+{
+	return m_ponderhitRate;
+}
+
 QString MoveEvaluation::pv() const
 {
 	return m_pv;
@@ -147,6 +156,7 @@ void MoveEvaluation::clear()
 	m_nps = 0;
 	m_tbHits = 0;
 	m_hashUsage = 0;
+	m_ponderhitRate = 0;
 	m_pv.clear();
 }
 
@@ -195,6 +205,11 @@ void MoveEvaluation::setHashUsage(int hashUsage)
 	m_hashUsage = hashUsage;
 }
 
+void MoveEvaluation::setPonderhitRate(int rate)
+{
+	m_ponderhitRate = rate;
+}
+
 void MoveEvaluation::setPv(const QString& pv)
 {
 	m_pv = pv;
@@ -220,6 +235,8 @@ void MoveEvaluation::merge(const MoveEvaluation& other)
 		m_tbHits = other.m_tbHits;
 	if (other.m_hashUsage)
 		m_hashUsage = other.m_hashUsage;
+	if (other.m_ponderhitRate)
+		m_ponderhitRate = other.m_ponderhitRate;
 	if (!other.m_pv.isEmpty())
 		m_pv = other.m_pv;
 	if (other.m_pvNumber)
