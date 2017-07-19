@@ -50,10 +50,10 @@ class EvalWidget : public QWidget
 		enum StatHeaders
 		{
 			NpsHeader,
-			TbHeader,
 			HashHeader,
 			PonderMoveHeader,
-			PonderHitHeader
+			PonderHitHeader,
+			TbHeader
 		};
 
 		QPointer<ChessPlayer> m_player;

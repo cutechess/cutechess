@@ -39,8 +39,8 @@ EvalWidget::EvalWidget(QWidget *parent)
 	m_statsTable->setMaximumHeight(maxHeight);
 
 	QStringList statsHeaders;
-	statsHeaders << tr("NPS") << tr("TB") << tr("Hash")
-		     << tr("Pondermove") << tr("Ponderhit");
+	statsHeaders << tr("NPS") << tr("Hash")
+		     << tr("Pondermove") << tr("Ponderhit") << tr("TB");
 	m_statsTable->setHorizontalHeaderLabels(statsHeaders);
 	hHeader->setSectionResizeMode(QHeaderView::Stretch);
 	auto protoItem = new QTableWidgetItem;
@@ -94,6 +94,13 @@ void EvalWidget::setPlayer(ChessPlayer* player)
 
 void EvalWidget::onEval(const MoveEvaluation& eval)
 {
+	if (eval.tbHits())
+	{
+		auto item = m_statsTable->itemPrototype()->clone();
+		item->setText(QString::number(eval.tbHits()));
+		m_statsTable->setItem(0, TbHeader, item);
+	}
+
 	QString depth;
 	if (eval.depth())
 	{

@@ -417,6 +417,9 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 			eval->setScore(score);
 		}
 		break;
+	case InfoTbHits:
+		eval->setTbHits(tokens[0].toString().toULongLong());
+		break;
 	default:
 		break;
 	}
