@@ -3,6 +3,10 @@ TARGET = cutechess
 QT = core
 DESTDIR = $$PWD
 
+!win32-msvc* {
+	QMAKE_CXXFLAGS += -Wextra -Wshadow
+}
+
 include(libexport.pri)
 include(src/src.pri)
 include(components/json/src/json.pri)

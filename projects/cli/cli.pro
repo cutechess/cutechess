@@ -19,6 +19,10 @@ win32 {
     CONFIG += console
 }
 
+!win32-msvc* {
+	QMAKE_CXXFLAGS += -Wextra -Wshadow
+}
+
 mac {
     CONFIG -= app_bundle
 }
