@@ -74,7 +74,7 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 		out << (qint32)db->entries().count();
 
 		const auto entries = db->entries();
-		for (const PgnGameEntry* entry : db->entries())
+		for (const PgnGameEntry* entry : entries)
 			entry->write(out);
 	}
 
