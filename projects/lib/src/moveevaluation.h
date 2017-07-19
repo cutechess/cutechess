@@ -102,6 +102,9 @@ class LIB_EXPORT MoveEvaluation
 		 */
 		int ponderhitRate() const;
 
+		/*! The current ponder move in SAN notation. */
+		QString ponderMove() const;
+
 		/*!
 		 * The principal variation.
 		 * This is a sequence of moves that an engine
@@ -150,6 +153,9 @@ class LIB_EXPORT MoveEvaluation
 		/*! Sets ponderhit rate to \a rate permille. */
 		void setPonderhitRate(int rate);
 
+		/*! Sets the current ponder move to \a san. */
+		void setPonderMove(const QString& san);
+
 		/*! Sets the principal variation to \a pv. */
 		void setPv(const QString& pv);
 
@@ -172,6 +178,7 @@ class LIB_EXPORT MoveEvaluation
 		quint64 m_nps;
 		quint64 m_tbHits;
 		QString m_pv;
+		QString m_ponderMove;
 };
 
 Q_DECLARE_METATYPE(MoveEvaluation)

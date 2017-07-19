@@ -44,7 +44,8 @@ bool MoveEvaluation::operator==(const MoveEvaluation& other) const
 	&&  m_ponderhitRate == other.m_ponderhitRate
 	&&  m_nodeCount == other.m_nodeCount
 	&&  m_nps == other.m_nps
-	&&  m_tbHits == other.m_tbHits)
+	&&  m_tbHits == other.m_tbHits
+	&&  m_ponderMove == other.m_ponderMove)
 		return true;
 	return false;
 }
@@ -61,7 +62,8 @@ bool MoveEvaluation::operator!=(const MoveEvaluation& other) const
 	||  m_ponderhitRate != other.m_ponderhitRate
 	||  m_nodeCount != other.m_nodeCount
 	||  m_nps != other.m_nps
-	||  m_tbHits != other.m_tbHits)
+	||  m_tbHits != other.m_tbHits
+	||  m_ponderMove != other.m_ponderMove)
 		return true;
 	return false;
 }
@@ -77,7 +79,8 @@ bool MoveEvaluation::isEmpty() const
 	&&  m_ponderhitRate == 0
 	&&  m_nodeCount == 0
 	&&  m_nps == 0
-	&&  m_tbHits == 0)
+	&&  m_tbHits == 0
+	&&  m_ponderMove.isEmpty())
 		return true;
 	return false;
 }
@@ -134,6 +137,11 @@ int MoveEvaluation::ponderhitRate() const
 	return m_ponderhitRate;
 }
 
+QString MoveEvaluation::ponderMove() const
+{
+	return m_ponderMove;
+}
+
 QString MoveEvaluation::pv() const
 {
 	return m_pv;
@@ -158,6 +166,7 @@ void MoveEvaluation::clear()
 	m_hashUsage = 0;
 	m_ponderhitRate = 0;
 	m_pv.clear();
+	m_ponderMove.clear();
 }
 
 void MoveEvaluation::setBookEval(bool isBookEval)
@@ -210,6 +219,11 @@ void MoveEvaluation::setPonderhitRate(int rate)
 	m_ponderhitRate = rate;
 }
 
+void MoveEvaluation::setPonderMove(const QString& san)
+{
+	m_ponderMove = san;
+}
+
 void MoveEvaluation::setPv(const QString& pv)
 {
 	m_pv = pv;
@@ -237,6 +251,8 @@ void MoveEvaluation::merge(const MoveEvaluation& other)
 		m_hashUsage = other.m_hashUsage;
 	if (other.m_ponderhitRate)
 		m_ponderhitRate = other.m_ponderhitRate;
+	if (!other.m_ponderMove.isEmpty())
+		m_ponderMove = other.m_ponderMove;
 	if (!other.m_pv.isEmpty())
 		m_pv = other.m_pv;
 	if (other.m_pvNumber)

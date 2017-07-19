@@ -114,6 +114,13 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 		item->setText(QString("%1%").arg(usage, 0, 'f', 1));
 		m_statsTable->setItem(0, HashHeader, item);
 	}
+	auto ponderMove = eval.ponderMove();
+	if (!ponderMove.isEmpty())
+	{
+		auto item = m_statsTable->itemPrototype()->clone();
+		item->setText(ponderMove);
+		m_statsTable->setItem(0, PonderMoveHeader, item);
+	}
 	if (eval.ponderhitRate())
 	{
 		double rate = double(eval.ponderhitRate() / 10.0);

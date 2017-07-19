@@ -90,6 +90,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		bool m_canPonder;
 		PonderState m_ponderState;
 		Chess::Move m_ponderMove;
+		QString m_ponderMoveSan;
 		int m_movesPondered;
 		int m_ponderHits;
 		bool m_ignoreThinking;
