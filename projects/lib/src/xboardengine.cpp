@@ -683,8 +683,6 @@ void XboardEngine::parseLine(const QString& line)
 		QRegExp rx("\\w+\\s*=\\s*(\"[^\"]*\"|\\d+)");
 		
 		int pos = 0;
-		QString feature;
-		QStringList list;
 		
 		while ((pos = rx.indexIn(args, pos)) != -1)
 		{
