@@ -64,9 +64,9 @@ class ClassRegistry
 			return m_items;
 		}
 		/*! Adds a new factory associated with \a key. */
-		void add(Factory factory, const QString& key)
+		void add(Factory f, const QString& key)
 		{
-			m_items[key] = factory;
+			m_items[key] = f;
 		}
 		/*!
 		 * Creates and returns an object whose type is associated with \a key.

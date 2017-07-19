@@ -865,7 +865,7 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 		// opportunity for the opponent.
 		else if ((source / m_arwidth - target / m_arwidth) * m_sign == 2)
 		{
-			int epSq = (source + target) / 2;
+			epSq = (source + target) / 2;
 			const Piece opPawn(side.opposite(), Pawn);
 			for (const PawnStep& pstep: m_pawnSteps)
 			{

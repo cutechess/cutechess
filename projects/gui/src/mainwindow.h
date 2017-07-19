@@ -84,14 +84,14 @@ class MainWindow : public QMainWindow
 	private:
 		struct TabData
 		{
-			explicit TabData(ChessGame* game,
-					 Tournament* tournament = nullptr);
+			explicit TabData(ChessGame* m_game,
+					 Tournament* m_tournament = nullptr);
 
-			ChessGame* id;
-			QPointer<ChessGame> game;
-			PgnGame* pgn;
-			Tournament* tournament;
-			bool finished;
+			ChessGame* m_id;
+			QPointer<ChessGame> m_game;
+			PgnGame* m_pgn;
+			Tournament* m_tournament;
+			bool m_finished;
 		};
 
 		void createActions();

@@ -473,7 +473,7 @@ QString Board::fenString(FenNotation notation) const
 	if (variantHasDrops())
 	{
 		QString str;
-		for (int i = Side::White; i <= Side::Black; i++)
+		for (i = Side::White; i <= Side::Black; i++)
 		{
 			Side side = Side::Type(i);
 			for (int j = m_reserve[i].size() - 1; j >= 1; j--)

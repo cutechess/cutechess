@@ -62,11 +62,11 @@
 #endif
 
 MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
-	: id(game),
-	  game(game),
-	  pgn(game->pgn()),
-	  tournament(tournament),
-	  finished(false)
+	: m_id(game),
+	  m_game(game),
+	  m_pgn(game->pgn()),
+	  m_tournament(tournament),
+	  m_finished(false)
 {
 }
 
@@ -410,7 +410,7 @@ void MainWindow::addGame(ChessGame* game)
 		int index = tabIndex(tournament, true);
 		if (index != -1)
 		{
-			delete m_tabs[index].pgn;
+			delete m_tabs[index].m_pgn;
 			m_tabs[index] = tab;
 
 			m_tabBar->setTabText(index, genericTitle(tab));
@@ -452,9 +452,9 @@ void MainWindow::destroyGame(ChessGame* game)
 
 	removeGame(index);
 
-	if (tab.tournament == nullptr)
+	if (tab.m_tournament == nullptr)
 		game->deleteLater();
-	delete tab.pgn;
+	delete tab.m_pgn;
 
 	if (m_tabs.isEmpty())
 		close();
@@ -462,7 +462,7 @@ void MainWindow::destroyGame(ChessGame* game)
 
 void MainWindow::setCurrentGame(const TabData& gameData)
 {
-	if (gameData.game == m_game && m_game != nullptr)
+	if (gameData.m_game == m_game && m_game != nullptr)
 		return;
 
 	for (int i = 0; i < 2; i++)
@@ -501,18 +501,18 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 			return;
 	}
 
-	m_game = gameData.game;
+	m_game = gameData.m_game;
 
 	lockCurrentGame();
 
 	m_engineDebugLog->clear();
 
-	m_moveList->setGame(m_game, gameData.pgn);
+	m_moveList->setGame(m_game, gameData.m_pgn);
 	m_evalHistory->setGame(m_game);
 
 	if (m_game == nullptr)
 	{
-		m_gameViewer->setGame(gameData.pgn);
+		m_gameViewer->setGame(gameData.m_pgn);
 
 		for (int i = 0; i < 2; i++)
 		{
@@ -520,7 +520,7 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 			auto clock = m_gameViewer->chessClock(side);
 			clock->stop();
 			clock->setInfiniteTime(true);
-			clock->setPlayerName(gameData.pgn->playerName(side));
+			clock->setPlayerName(gameData.m_pgn->playerName(side));
 		}
 
 		updateWindowTitle();
@@ -532,8 +532,8 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	else
 		m_gameViewer->setGame(m_game);
 
-	m_tagsModel->setTags(gameData.pgn->tags());
-	gameData.pgn->setTagReceiver(m_tagsModel);
+	m_tagsModel->setTags(gameData.m_pgn->tags());
+	gameData.m_pgn->setTagReceiver(m_tagsModel);
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -578,7 +578,7 @@ int MainWindow::tabIndex(ChessGame* game) const
 
 	for (int i = 0; i < m_tabs.size(); i++)
 	{
-		if (m_tabs.at(i).id == game)
+		if (m_tabs.at(i).m_id == game)
 			return i;
 	}
 
@@ -593,8 +593,8 @@ int MainWindow::tabIndex(Tournament* tournament, bool freeTab) const
 	{
 		const TabData& tab = m_tabs.at(i);
 
-		if (tab.tournament == tournament
-		&&  (!freeTab || (tab.game == nullptr || tab.finished)))
+		if (tab.m_tournament == tournament
+		&&  (!freeTab || (tab.m_game == nullptr || tab.m_finished)))
 			return i;
 	}
 
@@ -613,7 +613,7 @@ void MainWindow::onTabCloseRequested(int index)
 {
 	const TabData& tab = m_tabs.at(index);
 
-	if (tab.tournament && tab.game)
+	if (tab.m_tournament && tab.m_game)
 	{
 		auto btn = QMessageBox::question(this, tr("End tournament game"),
 			   tr("Do you really want to end the active tournament game?"));
@@ -628,9 +628,9 @@ void MainWindow::closeTab(int index)
 {
 	const TabData& tab = m_tabs.at(index);
 
-	if (tab.game == nullptr)
+	if (tab.m_game == nullptr)
 	{
-		delete tab.pgn;
+		delete tab.m_pgn;
 		removeGame(index);
 
 		if (m_tabs.isEmpty())
@@ -639,13 +639,13 @@ void MainWindow::closeTab(int index)
 		return;
 	}
 
-	if (tab.finished)
-		destroyGame(tab.game);
+	if (tab.m_finished)
+		destroyGame(tab.m_game);
 	else
 	{
-		connect(tab.game, SIGNAL(finished(ChessGame*)),
+		connect(tab.m_game, SIGNAL(finished(ChessGame*)),
 			this, SLOT(destroyGame(ChessGame*)));
-		QMetaObject::invokeMethod(tab.game, "stop", Qt::QueuedConnection);
+		QMetaObject::invokeMethod(tab.m_game, "stop", Qt::QueuedConnection);
 	}
 }
 
@@ -701,14 +701,14 @@ void MainWindow::onGameFinished(ChessGame* game)
 		return;
 
 	auto& tab = m_tabs[tIndex];
-	tab.finished = true;
+	tab.m_finished = true;
 	QString title = genericTitle(tab);
 	m_tabBar->setTabText(tIndex, title);
 	if (game == m_game)
 	{
 		// Finished tournament games are destroyed immediately
 		// so we can't touch the game object any more.
-		if (tab.tournament)
+		if (tab.m_tournament)
 			m_game = nullptr;
 		updateWindowTitle();
 	}
@@ -838,17 +838,17 @@ QString MainWindow::genericTitle(const TabData& gameData) const
 	QString white;
 	QString black;
 	Chess::Result result;
-	if (gameData.game)
+	if (gameData.m_game)
 	{
-		white = gameData.game->player(Chess::Side::White)->name();
-		black = gameData.game->player(Chess::Side::Black)->name();
-		result = gameData.game->result();
+		white = gameData.m_game->player(Chess::Side::White)->name();
+		black = gameData.m_game->player(Chess::Side::Black)->name();
+		result = gameData.m_game->result();
 	}
 	else
 	{
-		white = gameData.pgn->playerName(Chess::Side::White);
-		black = gameData.pgn->playerName(Chess::Side::Black);
-		result = gameData.pgn->result();
+		white = gameData.m_pgn->playerName(Chess::Side::White);
+		black = gameData.m_pgn->playerName(Chess::Side::Black);
+		result = gameData.m_pgn->result();
 	}
 
 	if (result.isNone())
@@ -866,7 +866,7 @@ void MainWindow::editMoveComment(int ply, const QString& comment)
 	if (ok && text != comment)
 	{
 		lockCurrentGame();
-		PgnGame* pgn(m_tabs.at(m_tabBar->currentIndex()).pgn);
+		PgnGame* pgn(m_tabs.at(m_tabBar->currentIndex()).m_pgn);
 		PgnGame::MoveData md(pgn->moves().at(ply));
 		md.comment = text;
 		pgn->setMove(ply, md);
@@ -939,7 +939,7 @@ bool MainWindow::saveAs()
 bool MainWindow::saveGame(const QString& fileName)
 {
 	lockCurrentGame();
-	bool ok = m_tabs.at(m_tabBar->currentIndex()).pgn->write(fileName);
+	bool ok = m_tabs.at(m_tabBar->currentIndex()).m_pgn->write(fileName);
 	unlockCurrentGame();
 
 	if (!ok)

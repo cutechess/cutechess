@@ -45,13 +45,13 @@
 
 namespace {
 
-EngineMatch* match = nullptr;
+EngineMatch* s_match = nullptr;
 
 void sigintHandler(int param)
 {
 	Q_UNUSED(param);
-	if (match != nullptr)
-		match->stop();
+	if (s_match != nullptr)
+		s_match->stop();
 	else
 		abort();
 }
@@ -642,8 +642,7 @@ int main(int argc, char* argv[])
 		}
 		else if (arg == "--engines" || arg == "-engines")
 		{
-			const auto app = CuteChessCoreApplication::instance();
-			const auto engines = app->engineManager()->engines();
+			const auto engines = app.engineManager()->engines();
 			for (const auto& engine : engines)
 				out << engine.name() << endl;
 
@@ -658,11 +657,11 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	match = parseMatch(arguments, &app);
-	if (match == nullptr)
+	s_match = parseMatch(arguments, &app);
+	if (s_match == nullptr)
 		return 1;
-	QObject::connect(match, SIGNAL(finished()), &app, SLOT(quit()));
+	QObject::connect(s_match, SIGNAL(finished()), &app, SLOT(quit()));
 
-	match->start();
+	s_match->start();
 	return app.exec();
 }
