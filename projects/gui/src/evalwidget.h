@@ -48,7 +48,8 @@ class EvalWidget : public QWidget
 
 	private:
 		QPointer<ChessPlayer> m_player;
-		QTableWidget* m_table;
+		QTableWidget* m_statsTable;
+		QTableWidget* m_pvTable;
 		int m_depth;
 		QString m_pv;
 };

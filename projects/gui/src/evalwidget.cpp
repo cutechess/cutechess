@@ -27,34 +27,50 @@
 EvalWidget::EvalWidget(QWidget *parent)
 	: QWidget(parent),
 	  m_player(nullptr),
-	  m_table(new QTableWidget(0, 5, this)),
+	  m_statsTable(new QTableWidget(1, 5, this)),
+	  m_pvTable(new QTableWidget(0, 5, this)),
 	  m_depth(-1)
 {
-	m_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	m_table->verticalHeader()->hide();
+	m_statsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	auto hHeader = m_statsTable->horizontalHeader();
+	auto vHeader = m_statsTable->verticalHeader();
+	vHeader->hide();
+	int maxHeight = hHeader->sizeHint().height() + vHeader->defaultSectionSize();
+	m_statsTable->setMaximumHeight(maxHeight);
 
-	QStringList headers;
-	headers << tr("Depth") << tr("Time") << tr("Nodes")
-		<< tr("Score") << tr("PV");
-	m_table->setHorizontalHeaderLabels(headers);
-	m_table->setColumnWidth(0, 60);
-	m_table->setColumnWidth(1, 60);
-	m_table->setColumnWidth(2, 100);
-	m_table->setColumnWidth(3, 60);
-	m_table->horizontalHeader()->setStretchLastSection(true);
+	QStringList statsHeaders;
+	statsHeaders << tr("NPS") << tr("TB") << tr("Hash")
+		     << tr("Pondermove") << tr("Ponderhit");
+	m_statsTable->setHorizontalHeaderLabels(statsHeaders);
+	hHeader->setSectionResizeMode(QHeaderView::Stretch);
+
+	m_pvTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	m_pvTable->verticalHeader()->hide();
+
+	QStringList pvHeaders;
+	pvHeaders << tr("Depth") << tr("Time") << tr("Nodes")
+		  << tr("Score") << tr("PV");
+	m_pvTable->setHorizontalHeaderLabels(pvHeaders);
+	m_pvTable->setColumnWidth(0, 60);
+	m_pvTable->setColumnWidth(1, 60);
+	m_pvTable->setColumnWidth(2, 100);
+	m_pvTable->setColumnWidth(3, 60);
+	m_pvTable->horizontalHeader()->setStretchLastSection(true);
 
 	QVBoxLayout* layout = new QVBoxLayout();
-	layout->addWidget(m_table);
+	layout->addWidget(m_statsTable);
+	layout->addWidget(m_pvTable);
 	layout->setContentsMargins(0, 0, 0, 0);
 	setLayout(layout);
 }
 
 void EvalWidget::clear()
 {
+	m_statsTable->clearContents();
 	m_depth = -1;
 	m_pv.clear();
-	m_table->clearContents();
-	m_table->setRowCount(0);
+	m_pvTable->clearContents();
+	m_pvTable->setRowCount(0);
 }
 
 void EvalWidget::setPlayer(ChessPlayer* player)
@@ -113,10 +129,10 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 		items[i]->setTextAlignment(Qt::AlignVCenter | Qt::AlignRight);
 
 	if (eval.depth() != m_depth || (eval.pv() != m_pv && !m_pv.isEmpty()))
-		m_table->insertRow(0);
+		m_pvTable->insertRow(0);
 	m_depth = eval.depth();
 	m_pv = eval.pv();
 
 	for (int i = 0; i < items.size(); i++)
-		m_table->setItem(0, i, items.at(i));
+		m_pvTable->setItem(0, i, items.at(i));
 }
