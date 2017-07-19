@@ -589,7 +589,7 @@ void XboardEngine::parseLine(const QString& line)
 		
 		// Search depth
 		QString depth(ref.toString());
-		if (!(depth.end() - 1)->isDigit())
+		if (!(depth.cend() - 1)->isDigit())
 			depth.chop(1);
 		m_eval.setDepth(depth.toInt());
 
