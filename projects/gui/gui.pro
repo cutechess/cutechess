@@ -29,7 +29,7 @@ win32 {
     RC_FILE = res/icons/cutechess_win.rc
 }
 
-!win32-msvc* {
+!win32-msvc* {
 	QMAKE_CXXFLAGS += -Wextra -Wshadow
 }
 
