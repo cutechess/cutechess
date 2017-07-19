@@ -43,6 +43,9 @@ EvalWidget::EvalWidget(QWidget *parent)
 		     << tr("Pondermove") << tr("Ponderhit");
 	m_statsTable->setHorizontalHeaderLabels(statsHeaders);
 	hHeader->setSectionResizeMode(QHeaderView::Stretch);
+	auto protoItem = new QTableWidgetItem;
+	protoItem->setTextAlignment(Qt::AlignVCenter | Qt::AlignRight);
+	m_statsTable->setItemPrototype(protoItem);
 
 	m_pvTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	m_pvTable->verticalHeader()->hide();
@@ -112,7 +115,17 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 
 	QString nodeCount;
 	if (eval.nodeCount())
+	{
+		if (ms)
+		{
+			QString nps = QString::number(long(eval.nodeCount() / (double(ms) / 1000.0)));
+			auto item = m_statsTable->itemPrototype()->clone();
+			item->setText(nps);
+			m_statsTable->setItem(0, NpsHeader, item);
+		}
+
 		nodeCount = QString::number(eval.nodeCount());
+	}
 
 	QString score;
 	if (eval.score() != MoveEvaluation::NULL_SCORE)
