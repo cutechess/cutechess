@@ -79,6 +79,12 @@ class LIB_EXPORT MoveEvaluation
 		quint64 nodeCount() const;
 
 		/*!
+		 * How many nodes per second is the engine searching?
+		 * \note For human players this is always 0.
+		 */
+		quint64 nps() const;
+
+		/*!
 		 * How many positions were found in endgame tablebases?
 		 * \note For human players this is always 0.
 		 */
@@ -120,6 +126,9 @@ class LIB_EXPORT MoveEvaluation
 		/*! Sets the node count to \a nodeCount. */
 		void setNodeCount(quint64 nodeCount);
 
+		/*! Sets the nodes per second count to \a nps. */
+		void setNps(quint64 nps);
+
 		/*! Sets the tablebase hits count to \a tbHits. */
 		void setTbHits(quint64 tbHits);
 
@@ -140,6 +149,7 @@ class LIB_EXPORT MoveEvaluation
 		int m_time;
 		int m_pvNumber;
 		quint64 m_nodeCount;
+		quint64 m_nps;
 		quint64 m_tbHits;
 		QString m_pv;
 };

@@ -25,6 +25,7 @@ MoveEvaluation::MoveEvaluation()
 	  m_time(0),
 	  m_pvNumber(0),
 	  m_nodeCount(0),
+	  m_nps(0),
 	  m_tbHits(0)
 {
 }
@@ -38,6 +39,7 @@ bool MoveEvaluation::operator==(const MoveEvaluation& other) const
 	&&  m_time == other.m_time
 	&&  m_pvNumber == other.m_pvNumber
 	&&  m_nodeCount == other.m_nodeCount
+	&&  m_nps == other.m_nps
 	&&  m_tbHits == other.m_tbHits)
 		return true;
 	return false;
@@ -52,6 +54,7 @@ bool MoveEvaluation::operator!=(const MoveEvaluation& other) const
 	||  m_time != other.m_time
 	||  m_pvNumber != other.m_pvNumber
 	||  m_nodeCount != other.m_nodeCount
+	||  m_nps != other.m_nps
 	||  m_tbHits != other.m_tbHits)
 		return true;
 	return false;
@@ -65,6 +68,7 @@ bool MoveEvaluation::isEmpty() const
 	&&  m_time < 500
 	&&  m_pvNumber == 0
 	&&  m_nodeCount == 0
+	&&  m_nps == 0
 	&&  m_tbHits == 0)
 		return true;
 	return false;
@@ -100,6 +104,13 @@ quint64 MoveEvaluation::nodeCount() const
 	return m_nodeCount;
 }
 
+quint64 MoveEvaluation::nps() const
+{
+	if (m_nps || !m_time)
+		return m_nps;
+	return quint64(m_nodeCount / (double(m_time) / 1000.0));
+}
+
 quint64 MoveEvaluation::tbHits() const
 {
 	return m_tbHits;
@@ -124,6 +135,7 @@ void MoveEvaluation::clear()
 	m_time = 0;
 	m_pvNumber = 0;
 	m_nodeCount = 0;
+	m_nps = 0;
 	m_tbHits = 0;
 	m_pv.clear();
 }
@@ -158,6 +170,11 @@ void MoveEvaluation::setNodeCount(quint64 nodeCount)
 	m_nodeCount = nodeCount;
 }
 
+void MoveEvaluation::setNps(quint64 nps)
+{
+	m_nps = nps;
+}
+
 void MoveEvaluation::setTbHits(quint64 tbHits)
 {
 	m_tbHits = tbHits;
@@ -182,6 +199,8 @@ void MoveEvaluation::merge(const MoveEvaluation& other)
 	m_isBookEval = other.m_isBookEval;
 	if (other.m_nodeCount)
 		m_nodeCount = other.m_nodeCount;
+	if (other.m_nps)
+		m_nps = other.m_nps;
 	if (other.m_tbHits)
 		m_tbHits = other.m_tbHits;
 	if (!other.m_pv.isEmpty())

@@ -94,6 +94,13 @@ void EvalWidget::setPlayer(ChessPlayer* player)
 
 void EvalWidget::onEval(const MoveEvaluation& eval)
 {
+	auto nps = eval.nps();
+	if (nps)
+	{
+		auto item = m_statsTable->itemPrototype()->clone();
+		item->setText(QString::number(nps));
+		m_statsTable->setItem(0, NpsHeader, item);
+	}
 	if (eval.tbHits())
 	{
 		auto item = m_statsTable->itemPrototype()->clone();
@@ -122,17 +129,7 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 
 	QString nodeCount;
 	if (eval.nodeCount())
-	{
-		if (ms)
-		{
-			QString nps = QString::number(long(eval.nodeCount() / (double(ms) / 1000.0)));
-			auto item = m_statsTable->itemPrototype()->clone();
-			item->setText(nps);
-			m_statsTable->setItem(0, NpsHeader, item);
-		}
-
 		nodeCount = QString::number(eval.nodeCount());
-	}
 
 	QString score;
 	if (eval.score() != MoveEvaluation::NULL_SCORE)
