@@ -420,6 +420,9 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 	case InfoTbHits:
 		eval->setTbHits(tokens[0].toString().toULongLong());
 		break;
+	case InfoHashFull:
+		eval->setHashUsage(tokens[0].toString().toInt());
+		break;
 	default:
 		break;
 	}

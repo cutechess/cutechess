@@ -91,6 +91,12 @@ class LIB_EXPORT MoveEvaluation
 		quint64 tbHits() const;
 
 		/*!
+		 * How many permille of the engine's hash table is used?
+		 * \note For human players this is always 0.
+		 */
+		int hashUsage() const;
+
+		/*!
 		 * The principal variation.
 		 * This is a sequence of moves that an engine
 		 * expects to be played next.
@@ -132,6 +138,9 @@ class LIB_EXPORT MoveEvaluation
 		/*! Sets the tablebase hits count to \a tbHits. */
 		void setTbHits(quint64 tbHits);
 
+		/*! Sets the hash table usage to \a hashUsage permille. */
+		void setHashUsage(int hashUsage);
+
 		/*! Sets the principal variation to \a pv. */
 		void setPv(const QString& pv);
 
@@ -148,6 +157,7 @@ class LIB_EXPORT MoveEvaluation
 		int m_score;
 		int m_time;
 		int m_pvNumber;
+		int m_hashUsage;
 		quint64 m_nodeCount;
 		quint64 m_nps;
 		quint64 m_tbHits;
