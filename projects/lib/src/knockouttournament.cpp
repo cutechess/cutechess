@@ -271,8 +271,7 @@ QString KnockoutTournament::results() const
 			int r = round + 1;
 			int lineNum = ((2 << (r - 1)) - 1) + (x * (2 << r));
 			QString text = QString("%1%2")
-				       .arg(QString(r * 2, '\t'))
-				       .arg(winner);
+				       .arg(QString(r * 2, '\t'), winner);
 			if (pair->scoreSum())
 			{
 				int score1 = pair->firstScore();

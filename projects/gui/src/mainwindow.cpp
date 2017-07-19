@@ -778,7 +778,7 @@ void MainWindow::onTournamentFinished()
 		QMessageBox::critical(this,
 				      tr("Tournament error"),
 				      tr("Tournament \"%1\" finished with an error.\n\n%2")
-				      .arg(name).arg(error));
+				      .arg(name, error));
 	}
 
 	CuteChessApplication::alert(this);
@@ -852,11 +852,10 @@ QString MainWindow::genericTitle(const TabData& gameData) const
 	}
 
 	if (result.isNone())
-		return tr("%1 vs %2").arg(white).arg(black);
+		return tr("%1 vs %2").arg(white, black);
 	else
 		return tr("%1 vs %2 (%3)")
-		       .arg(white).arg(black)
-		       .arg(result.toShortString());
+		       .arg(white, black, result.toShortString());
 }
 
 void MainWindow::editMoveComment(int ply, const QString& comment)

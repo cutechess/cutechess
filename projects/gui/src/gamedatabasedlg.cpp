@@ -486,7 +486,7 @@ void GameDatabaseDialog::exportPgn(const QString& fileName)
 	{
 		QMessageBox::critical(this, tr("File Error"),
 				      tr("Error while saving file %1\n%2")
-				      .arg(fileName).arg(file->errorString()));
+				      .arg(fileName, file->errorString()));
 		delete file;
 		return;
 	}
@@ -516,7 +516,7 @@ void GameDatabaseDialog::createOpeningBook()
 	{
 		QMessageBox::critical(this, tr("File Error"),
 				      tr("Error while saving file %1\n%2")
-				      .arg(fileName).arg(file->errorString()));
+				      .arg(fileName, file->errorString()));
 		delete file;
 		return;
 	}

@@ -151,8 +151,7 @@ void UciEngine::startGame()
 	{
 		QString opType = opponent()->isHuman() ? "human" : "computer";
 		QString value = QString("none none %1 %2")
-				.arg(opType)
-				.arg(opponent()->name());
+				.arg(opType, opponent()->name());
 		sendOption("UCI_Opponent", value);
 	}
 
@@ -830,7 +829,7 @@ QString UciEngine::sanPv(const QVarLengthArray<QStringRef>& tokens)
 void UciEngine::sendOption(const QString& name, const QVariant& value)
 {
 	if (!value.isNull())
-		write(QString("setoption name %1 value %2").arg(name).arg(value.toString()));
+		write(QString("setoption name %1 value %2").arg(name, value.toString()));
 	else
 		write(QString("setoption name %1").arg(name));
 }

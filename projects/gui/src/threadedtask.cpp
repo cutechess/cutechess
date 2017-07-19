@@ -72,8 +72,8 @@ void ThreadedTask::updateProgress(int value)
 		m_lastUpdate = elapsed;
 		int remainingSecs = (m_dlg->maximum() - value) / (value / elapsed);
 
-		m_dlg->setLabelText(QString("%1 - %2").arg(m_statusMessage).arg(
-		    humaniseTime(remainingSecs)));
+		m_dlg->setLabelText(QString("%1 - %2").arg(m_statusMessage,
+			humaniseTime(remainingSecs)));
 	}
 
 	m_dlg->setValue(value);

@@ -97,8 +97,7 @@ Result ExtinctionBoard::result()
 		Side winner = piece.side().opposite();
 		int type = piece.type();
 		str = tr("Missing %1: %2 wins")
-			.arg(pieceString(type))
-			.arg(winner.toString());
+			.arg(pieceString(type), winner.toString());
 		return Result(Result::Win, winner, str);
 	}
 
