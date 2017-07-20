@@ -50,4 +50,4 @@ are released under the MIT License.
 Credits
 -------
 
-Cute Chess was written by Ilari Pihlajisto and Arto Jonsson.
+Cute Chess was written by Ilari Pihlajisto, Arto Jonsson and [contributors](https://github.com/cutechess/cutechess/graphs/contributors)
