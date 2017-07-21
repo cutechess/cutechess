@@ -4,6 +4,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/square.cpp \
     $$PWD/standardboard.cpp \
     $$PWD/ncheckboard.cpp \
+    $$PWD/andernachboard.cpp \
     $$PWD/berolinaboard.cpp \
     $$PWD/racingkingsboard.cpp \
     $$PWD/capablancaboard.cpp \
@@ -35,6 +36,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/square.h \
     $$PWD/standardboard.h \
     $$PWD/ncheckboard.h \
+    $$PWD/andernachboard.h \
     $$PWD/berolinaboard.h \
     $$PWD/racingkingsboard.h \
     $$PWD/capablancaboard.h \

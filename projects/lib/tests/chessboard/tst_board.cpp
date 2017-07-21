@@ -485,7 +485,7 @@ void tst_Board::perft_data() const
 		<< "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -"
 		<< 6
 		<< Q_UINT64_C(11030083);
-	
+
 	variant = "capablanca";
 	QTest::newRow("gothic startpos")
 		<< variant
@@ -597,6 +597,18 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/6p1/2p1Pp1P/P1PPPP2/Pp4PP/1p2PPPP/1P2PPPP/PP1nPPPP b kq a3 0 18"
 		<< 5  //4 plies: 197287, 5 plies: 6429490
 		<< Q_UINT64_C(6429490);
+
+	variant = "andernach";
+	QTest::newRow("andernach startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5  //4 plies: 197410, 5 plies: 4870137
+		<< Q_UINT64_C(4870137);
+	QTest::newRow("andernach pos1")
+		<< variant
+		<< "rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3"
+		<< 4  //4 plies: 523348, 5 plies: 16330793
+		<< Q_UINT64_C(523348);
 
 	variant = "checkless";
 	QTest::newRow("checkless startpos")
