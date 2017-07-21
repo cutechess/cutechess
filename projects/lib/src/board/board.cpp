@@ -298,12 +298,12 @@ Square Board::chessSquare(const QString& str) const
 	if (coordinateSystem() == NormalCoordinates)
 	{
 		file = str.at(0).toLatin1() - 'a';
-		rank = str.mid(1).toInt(&ok) - 1;
+		rank = str.midRef(1).toInt(&ok) - 1;
 	}
 	else
 	{
 		int tmp = str.length() - 1;
-		file = m_width - str.left(tmp).toInt(&ok);
+		file = m_width - str.leftRef(tmp).toInt(&ok);
 		rank = m_height - (str.at(tmp).toLatin1() - 'a') - 1;
 	}
 
@@ -555,7 +555,7 @@ bool Board::setFenString(const QString& fen)
 			int nempty;
 			if (i < (token->length() - 1) && token->at(i + 1).isDigit())
 			{
-				nempty = token->mid(i, 2).toInt();
+				nempty = token->midRef(i, 2).toInt();
 				i++;
 			}
 			else

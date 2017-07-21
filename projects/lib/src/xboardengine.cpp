@@ -137,10 +137,12 @@ void XboardEngine::startGame()
 			qDebug("%s does not support the setboard command, using the edit command now", qPrintable(name()));
 			write("edit");
 			write("#"); // clear board on engine
-			for (const auto& s: board()->pieceList(Chess::Side::White))
+			const QStringList& whitePieces = board()->pieceList(Chess::Side::White);
+			for (const auto& s: whitePieces)
 				write(s); // set a piece
 			write("c");
-			for (const auto& s: board()->pieceList(Chess::Side::Black))
+			const QStringList& blackPieces = board()->pieceList(Chess::Side::Black);
+			for (const auto& s: blackPieces)
 				write(s); // set a piece
 			write("."); // finished
 		}
