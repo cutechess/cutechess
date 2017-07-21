@@ -12,6 +12,8 @@ Options:
   -variant VARIANT	Set the chess variant to VARIANT, which can be one of:
 			'3check': Three-check Chess
 			'5check': Five-check Chess
+			'andernach': Andernach Chess
+			'antiandernach': Anti-Andernach Chess
 			'atomic': Atomic Chess
 			'berolina': Berolina Chess
 			'capablanca': Capablanca Chess
@@ -29,6 +31,7 @@ Options:
 			'loop': Loop Chess (Drop Chess)
 			'losers': Loser's Chess
 			'racingkings': Racing Kings Chess
+			'superandernach': Super-Andernach Chess
 			'standard': Standard Chess (default).
   -concurrency N	Set the maximum number of concurrent games to N
   -draw movenumber=NUMBER movecount=COUNT score=SCORE
