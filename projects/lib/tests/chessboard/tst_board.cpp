@@ -274,6 +274,16 @@ void tst_Board::moveStrings_data() const
 		<< "e8b8 g1e3 h8g6 e1i1"
 		<< "r3kqbnjr/pppp1ppppp/2jn1b4/4p5/4P5/3Q1PNJ2/PPPP2PPPP/RJNBK1B2R b KQkq - 0 1"
 		<< "1kr2qb1jr/pppp1ppppp/2jn1bn3/4p5/4P5/3QBPNJ2/PPPP2PPPP/RJNB3RK1 b - - 0 3";
+	QTest::newRow("knightmate castling san1")
+		<< "knightmate"
+		<< "O-O Be6 Bxe6 Qxe6 Re1 O-O-O"
+		<< "r1b1kbmr/pmp2ppp/1p1p1q2/4p3/2B1P3/1P6/P1PPMPPP/RMBQK2R w KQkq - 0 1"
+		<< "2kr1bmr/pmp2ppp/1p1pq3/4p3/4P3/1P6/P1PPMPPP/RMBQR1K1 w - - 0 4";
+	QTest::newRow("knightmate castling san2")
+		<< "knightmate"
+		<< "Kg1 Be6 Bxe6 Qxe6 Re1 O-O-O"
+		<< "r1b1kbmr/pmp2ppp/1p1p1q2/4p3/2B1P3/1P6/P1PPMPPP/RMBQK2R w KQkq - 0 1"
+		<< "2kr1bmr/pmp2ppp/1p1pq3/4p3/4P3/1P6/P1PPMPPP/RMBQR1K1 w - - 0 4";
 }
 
 void tst_Board::moveStrings()
@@ -618,6 +628,13 @@ void tst_Board::perft_data() const
 		<< "rjnbkqbnjr/pppppppppp/10/10/10/10/PPPPPPPPPP/RJNBKQBNJR w KQkq - 0 1"
 		<< 4 //4 plies: 772074, 5 plies: 26869186
 		<< Q_UINT64_C(772074);
+
+	variant = "knightmate";
+	QTest::newRow("knightmate startpos")
+		<< variant
+		<< "rmbqkbmr/pppppppp/8/8/8/8/PPPPPPPP/RMBQKBMR w KQkq - 0 1"
+		<< 5 //4 plies: 139774, 5 plies: 3249033, 6 plies: 74568983
+		<< Q_UINT64_C(3249033);
 }
 
 void tst_Board::perft()
