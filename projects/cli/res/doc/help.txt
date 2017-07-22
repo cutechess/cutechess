@@ -28,6 +28,7 @@ Options:
 			'janus': Janus Chess
 			'kinglet': Kinglet Chess
 			'kingofthehill': King of the Hill Chess
+			'knightmate': Knightmate
 			'loop': Loop Chess (Drop Chess)
 			'losers': Loser's Chess
 			'racingkings': Racing Kings Chess
