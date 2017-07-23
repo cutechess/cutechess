@@ -21,9 +21,12 @@ Options:
 			'checkless': Checkless Chess
 			'chessgi': Chessgi (Drop Chess)
 			'crazyhouse': Crazyhouse (Drop Chess)
+			'discplacedgrid': Displaced Grid Chess
 			'extinction': Extinction Chess
 			'fischerandom': Fischer Random Chess/Chess 960
 			'gothic': Gothic Chess
+			'grid': Grid Chess
+			'gridolina': Berolina Grid Chess
 			'horde': Horde Chess (v2)
 			'janus': Janus Chess
 			'kinglet': Kinglet Chess
@@ -32,6 +35,7 @@ Options:
 			'loop': Loop Chess (Drop Chess)
 			'losers': Loser's Chess
 			'racingkings': Racing Kings Chess
+			'slippedgrid': Slipped Grid Chess
 			'superandernach': Super-Andernach Chess
 			'standard': Standard Chess (default).
   -concurrency N	Set the maximum number of concurrent games to N

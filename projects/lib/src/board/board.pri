@@ -7,6 +7,8 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/andernachboard.cpp \
     $$PWD/berolinaboard.cpp \
     $$PWD/racingkingsboard.cpp \
+    $$PWD/restrictedmoveboard.cpp \
+    $$PWD/gridboard.cpp \
     $$PWD/capablancaboard.cpp \
     $$PWD/extinctionboard.cpp \
     $$PWD/kingofthehillboard.cpp \
@@ -40,6 +42,8 @@ HEADERS += $$PWD/board.h \
     $$PWD/andernachboard.h \
     $$PWD/berolinaboard.h \
     $$PWD/racingkingsboard.h \
+    $$PWD/restrictedmoveboard.h \
+    $$PWD/gridboard.h \
     $$PWD/capablancaboard.h \
     $$PWD/extinctionboard.h \
     $$PWD/kingofthehillboard.h \
