@@ -78,11 +78,13 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		QString positionString();
 		void sendPosition();
 		void setPonderMove(const QString& moveString);
+		QString directPv(const QVarLengthArray<QStringRef>& tokens);
 		QString sanPv(const QVarLengthArray<QStringRef>& tokens);
 		
 		QString m_variantOption;
 		QString m_startFen;
 		QString m_moveStrings;
+		bool m_useDirectPv;
 		// Write buffer for messages that will be flushed to the engine
 		// after it sends a "bestmove"
 		QStringList m_bmBuffer;

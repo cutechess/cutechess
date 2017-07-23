@@ -14,6 +14,7 @@ Options:
 			'5check': Five-check Chess
 			'andernach': Andernach Chess
 			'antiandernach': Anti-Andernach Chess
+			'antichess': Antichess (Losing Chess)
 			'atomic': Atomic Chess
 			'berolina': Berolina Chess
 			'capablanca': Capablanca Chess
@@ -23,6 +24,7 @@ Options:
 			'crazyhouse': Crazyhouse (Drop Chess)
 			'extinction': Extinction Chess
 			'fischerandom': Fischer Random Chess/Chess 960
+			'giveaway': Giveaway Chess (Losing Chess)
 			'gothic': Gothic Chess
 			'horde': Horde Chess (v2)
 			'janus': Janus Chess
@@ -34,6 +36,7 @@ Options:
 			'racingkings': Racing Kings Chess
 			'superandernach': Super-Andernach Chess
 			'standard': Standard Chess (default).
+			'suicide': Suicide Chess (Losing Chess)
   -concurrency N	Set the maximum number of concurrent games to N
   -draw movenumber=NUMBER movecount=COUNT score=SCORE
 			Adjudicate the game as a draw if the score of both

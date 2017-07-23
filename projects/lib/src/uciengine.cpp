@@ -125,6 +125,7 @@ void UciEngine::sendPosition()
 void UciEngine::startGame()
 {
 	Q_ASSERT(supportsVariant(board()->variant()));
+	const QList<QString> directPvList = {"giveaway", "suicide", "antichess"};
 
 	m_ignoreThinking = false;
 	m_rePing = false;
@@ -135,6 +136,7 @@ void UciEngine::startGame()
 	m_ponderHits = 0;
 	m_bmBuffer.clear();
 	m_moveStrings.clear();
+	m_useDirectPv = directPvList.contains(board()->variant());
 
 	if (board()->isRandomVariant())
 		m_startFen = board()->fenString(Chess::Board::ShredderFen);
@@ -397,7 +399,7 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 		eval->setPvNumber(tokens[0].toString().toInt());
 		break;
 	case InfoPv:
-		eval->setPv(sanPv(tokens));
+		eval->setPv(m_useDirectPv ?  directPv(tokens) : sanPv(tokens));
 		break;
 	case InfoScore:
 		{
@@ -789,6 +791,17 @@ void UciEngine::setPonderMove(const QString& moveString)
 		if (!m_ponderMove.isNull())
 			m_ponderMoveSan = board->moveString(m_ponderMove, Chess::Board::StandardAlgebraic);
 	}
+}
+
+QString UciEngine::directPv(const QVarLengthArray<QStringRef>& tokens)
+{
+	QString pv;
+	for( auto token : tokens)
+	{
+		pv += " ";
+		pv += token.toString();
+	}
+	return pv;
 }
 
 QString UciEngine::sanPv(const QVarLengthArray<QStringRef>& tokens)

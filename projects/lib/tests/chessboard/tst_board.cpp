@@ -284,6 +284,16 @@ void tst_Board::moveStrings_data() const
 		<< "Kg1 Be6 Bxe6 Qxe6 Re1 O-O-O"
 		<< "r1b1kbmr/pmp2ppp/1p1p1q2/4p3/2B1P3/1P6/P1PPMPPP/RMBQK2R w KQkq - 0 1"
 		<< "2kr1bmr/pmp2ppp/1p1pq3/4p3/4P3/1P6/P1PPMPPP/RMBQR1K1 w - - 0 4";
+	QTest::newRow("giveaway san1")
+		<< "giveaway"
+		<< "e3"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
+	QTest::newRow("suicide san1")
+		<< "suicide"
+		<< "e3"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"
+		<< "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b - - 0 1";
 }
 
 void tst_Board::moveStrings()
@@ -647,6 +657,51 @@ void tst_Board::perft_data() const
 		<< "rmbqkbmr/pppppppp/8/8/8/8/PPPPPPPP/RMBQKBMR w KQkq - 0 1"
 		<< 5 //4 plies: 139774, 5 plies: 3249033, 6 plies: 74568983
 		<< Q_UINT64_C(3249033);
+
+	variant = "losers";
+	QTest::newRow("losers startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5  //4 plies: 152955, 5 plies: 2723795, 6 plies: 46038682, 7 plies: 757349642 
+		<< Q_UINT64_C(2723795);
+
+	variant = "antichess";
+	QTest::newRow("antichess startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"
+		<< 5  //4 plies: 153299, 5 plies: 2732672, 6 plies: 46264162, 7 plies: 762010688
+		<< Q_UINT64_C(2732672);
+
+	variant = "giveaway";
+
+	QTest::newRow("giveaway startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5  //4 plies: 153299, 5 plies: 2732672, 6 plies: 46264162, 7 plies: 762096669
+		<< Q_UINT64_C(2732672);
+
+	variant = "suicide";
+
+	QTest::newRow("suicide startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"
+		<< 5  //4 plies: 153299, 5 plies: 2732672
+		<< Q_UINT64_C(2732672);
+	QTest::newRow("suicide endgame1")
+		<< variant
+		<< "8/2b5/8/3B4/8/8/2P5/8 b - - 0 1"
+		<< 5  //5 plies: 116051, 6 plies: 1218696
+		<< Q_UINT64_C(116051);
+	QTest::newRow("suicide endgame2")
+		<< variant
+		<< "8/1kKP4/8/8/8/8/8/6n1 b - - 0 1"
+		<< 3  //3 plies: 5, 4 plies: 0
+		<< Q_UINT64_C(5);
+	QTest::newRow("suicide endgame3")
+		<< variant
+		<< "8/k1KP4/8/8/8/8/8/6n1 b - - 0 1"
+		<< 7  //7 plies: 2891980
+		<< Q_UINT64_C(2891980);
 }
 
 void tst_Board::perft()
