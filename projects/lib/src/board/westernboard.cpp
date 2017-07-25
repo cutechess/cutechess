@@ -206,10 +206,8 @@ QString WesternBoard::sanMoveString(const Move& move)
 				str += checkOrMate;
 			return str;
 		}
-		else
-			str += pieceSymbol(piece).toUpper();
 	}
-	else	// not king or pawn
+	if (piece.type() != Pawn)	// not pawn
 	{
 		str += pieceSymbol(piece).toUpper();
 		QVarLengthArray<Move> moves;
