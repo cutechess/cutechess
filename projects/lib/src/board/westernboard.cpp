@@ -1019,13 +1019,15 @@ bool WesternBoard::inCheck(Side side, int square) const
 		}
 	}
 
+	Piece opKing(opSide, King);
 	Piece piece;
 	
 	// Knight, archbishop, chancellor attacks
 	for (int i = 0; i < m_knightOffsets.size(); i++)
 	{
 		piece = pieceAt(square + m_knightOffsets[i]);
-		if (piece.side() == opSide && pieceHasMovement(piece.type(), KnightMovement))
+		if (piece.side() == opSide
+		&&  pieceHasMovement(piece.type(), KnightMovement))
 			return true;
 	}
 	
@@ -1034,7 +1036,8 @@ bool WesternBoard::inCheck(Side side, int square) const
 	{
 		int offset = m_bishopOffsets[i];
 		int targetSquare = square + offset;
-		if (m_kingCanCapture && targetSquare == m_kingSquare[opSide])
+		if (m_kingCanCapture
+		&&  pieceAt(targetSquare) == opKing)
 			return true;
 		while ((piece = pieceAt(targetSquare)).isEmpty()
 		||     piece.side() == opSide)
@@ -1054,7 +1057,8 @@ bool WesternBoard::inCheck(Side side, int square) const
 	{
 		int offset = m_rookOffsets[i];
 		int targetSquare = square + offset;
-		if (m_kingCanCapture && targetSquare == m_kingSquare[opSide])
+		if (m_kingCanCapture
+		&&  pieceAt(targetSquare) == opKing)
 			return true;
 		while ((piece = pieceAt(targetSquare)).isEmpty()
 		||     piece.side() == opSide)
