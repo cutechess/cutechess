@@ -17,13 +17,16 @@
 
 #include "boardfactory.h"
 #include "andernachboard.h"
+#include "antiboard.h"
 #include "atomicboard.h"
+#include "berolinaboard.h"
 #include "capablancaboard.h"
 #include "caparandomboard.h"
 #include "checklessboard.h"
 #include "crazyhouseboard.h"
 #include "extinctionboard.h"
 #include "frcboard.h"
+#include "giveawayboard.h"
 #include "gothicboard.h"
 #include "gridboard.h"
 #include "hordeboard.h"
@@ -36,7 +39,10 @@
 #include "knightmateboard.h"
 #include "loopboard.h"
 #include "ncheckboard.h"
+#include "losersboard.h"
 #include "racingkingsboard.h"
+#include "standardboard.h"
+#include "suicideboard.h"
 
 namespace Chess {
 
@@ -44,6 +50,7 @@ REGISTER_BOARD(ThreeCheckBoard, "3check")
 REGISTER_BOARD(FiveCheckBoard, "5check")
 REGISTER_BOARD(AndernachBoard, "andernach")
 REGISTER_BOARD(AntiAndernachBoard, "antiandernach")
+REGISTER_BOARD(AntiBoard, "antichess")
 REGISTER_BOARD(AtomicBoard, "atomic")
 REGISTER_BOARD(BerolinaBoard, "berolina")
 REGISTER_BOARD(CapablancaBoard, "capablanca")
@@ -55,6 +62,7 @@ REGISTER_BOARD(DisplacedGridBoard, "displacedgrid")
 REGISTER_BOARD(ExtinctionBoard, "extinction")
 REGISTER_BOARD(KingletBoard, "kinglet")
 REGISTER_BOARD(FrcBoard, "fischerandom")
+REGISTER_BOARD(GiveawayBoard, "giveaway")
 REGISTER_BOARD(GothicBoard, "gothic")
 REGISTER_BOARD(GridBoard, "grid")
 REGISTER_BOARD(BerolinaGridBoard, "gridolina")
@@ -67,6 +75,7 @@ REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
 REGISTER_BOARD(SlippedGridBoard, "slippedgrid")
 REGISTER_BOARD(StandardBoard, "standard")
+REGISTER_BOARD(SuicideBoard, "suicide")
 REGISTER_BOARD(SuperAndernachBoard, "superandernach")
 
 

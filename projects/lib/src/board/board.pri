@@ -25,6 +25,9 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/atomicboard.cpp \
     $$PWD/losersboard.cpp \
     $$PWD/checklessboard.cpp \
+    $$PWD/antiboard.cpp \
+    $$PWD/giveawayboard.cpp \
+    $$PWD/suicideboard.cpp \
     $$PWD/gothicboard.cpp \
     $$PWD/crazyhouseboard.cpp \
     $$PWD/loopboard.cpp \
@@ -60,6 +63,9 @@ HEADERS += $$PWD/board.h \
     $$PWD/atomicboard.h \
     $$PWD/losersboard.h \
     $$PWD/checklessboard.h \
+    $$PWD/antiboard.h \
+    $$PWD/giveawayboard.h \
+    $$PWD/suicideboard.h \
     $$PWD/gothicboard.h \
     $$PWD/crazyhouseboard.h \
     $$PWD/loopboard.h \
