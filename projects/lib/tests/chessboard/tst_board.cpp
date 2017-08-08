@@ -463,6 +463,29 @@ void tst_Board::results_data() const
 		<< variant
 		<< "K5kr/5Q2/8/8/8/8/8/8 b - - 0 1"
 		<< "1-0";
+
+	variant = "grid";
+
+	QTest::newRow("grid white win")
+		<< variant
+		<< "r6r/2kRN2p/pp6/2p5/5B2/3P1P2/PP3P1P/6K1 b - - 0 1"
+		<< "1-0";
+	QTest::newRow("grid black win")
+		<< variant
+		<< "8/8/1p3R2/pkp5/2b1P1r1/5N2/Pb3P1P/3R2K1 w - - 2 28"
+		<< "0-1";
+	QTest::newRow("grid black win2")
+		<< variant
+		<< "Q1bk1bnr/8/3p2p1/p3p3/8/4P3/PPPP2PP/RNB1K1qR w KQ - 0 1"
+		<< "0-1";
+	QTest::newRow("grid white win2")
+		<< variant
+		<< "r1bqkbnr/p1p1pppp/1pBp4/8/8/4P3/PPPP1PPP/RNBQK1NR b KQkq - 0 4"
+		<< "1-0";
+	QTest::newRow("grid draw stalemate")
+		<< variant
+		<< "8/8/8/8/pk6/KP6/2r5/8 w - - 0 1"
+		<< "1/2-1/2";
 }
 
 void tst_Board::results()
@@ -643,6 +666,54 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 5
 		<< Q_UINT64_C(4897256);
+
+	variant = "grid";
+	QTest::newRow("grid startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5  // 4 plies: 173165, 5 plies: 3814913, 6 plies: 83288561
+		<< Q_UINT64_C(3814913);
+	QTest::newRow("grid pos2")
+		<< variant
+		<< "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -"
+		<< 4
+		<< Q_UINT64_C(1853429);
+	QTest::newRow("grid pos3")
+		<< variant
+		<< "8/3K4/2p5/p2b2r1/5k2/8/8/1q6 b - -"
+		<< 2
+		<< Q_UINT64_C(142);
+	QTest::newRow("grid pos4")
+		<< variant
+		<< "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -"
+		<< 6
+		<< Q_UINT64_C(1477948);
+	QTest::newRow("grid pos5")
+		<< variant
+		<< "r1bqkbnr/pppppppp/n7/8/8/5N2/PPPPPPPP/RNBQKB1R w KQkq -"
+		<< 5 // 3 plies: 8768, 4 plies: 177309, 5 plies: 4069318
+		<< Q_UINT64_C(4069318);
+
+	variant = "displacedgrid";
+	QTest::newRow("displacedgrid startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5  // 4 plies: 31057, 5 plies: 537400, 6 plies: 9222549
+		<< Q_UINT64_C(537400);
+
+	variant = "slippedgrid";
+	QTest::newRow("slippedgrid startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5  // 4 plies: 176529, 5 plies: 3953321, 6 plies: 87774558
+		<< Q_UINT64_C(3953321);
+
+	variant = "gridolina";
+	QTest::newRow("gridolina startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 4  // 4 plies: 798011, 5 plies: 24033022
+		<< Q_UINT64_C(798011);
 
 	variant = "janus";
 	QTest::newRow("janus startpos")

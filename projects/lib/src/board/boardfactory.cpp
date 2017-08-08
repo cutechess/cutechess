@@ -28,6 +28,7 @@
 #include "frcboard.h"
 #include "giveawayboard.h"
 #include "gothicboard.h"
+#include "gridboard.h"
 #include "hordeboard.h"
 #include "janusboard.h"
 #include "losersboard.h"
@@ -57,11 +58,14 @@ REGISTER_BOARD(CaparandomBoard, "caparandom")
 REGISTER_BOARD(ChecklessBoard, "checkless")
 REGISTER_BOARD(ChessgiBoard, "chessgi")
 REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
+REGISTER_BOARD(DisplacedGridBoard, "displacedgrid")
 REGISTER_BOARD(ExtinctionBoard, "extinction")
 REGISTER_BOARD(KingletBoard, "kinglet")
 REGISTER_BOARD(FrcBoard, "fischerandom")
 REGISTER_BOARD(GiveawayBoard, "giveaway")
 REGISTER_BOARD(GothicBoard, "gothic")
+REGISTER_BOARD(GridBoard, "grid")
+REGISTER_BOARD(BerolinaGridBoard, "gridolina")
 REGISTER_BOARD(HordeBoard, "horde")
 REGISTER_BOARD(JanusBoard, "janus")
 REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
@@ -69,6 +73,7 @@ REGISTER_BOARD(KnightMateBoard, "knightmate")
 REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
+REGISTER_BOARD(SlippedGridBoard, "slippedgrid")
 REGISTER_BOARD(StandardBoard, "standard")
 REGISTER_BOARD(SuicideBoard, "suicide")
 REGISTER_BOARD(SuperAndernachBoard, "superandernach")
