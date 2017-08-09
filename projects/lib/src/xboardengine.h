@@ -66,6 +66,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void sendTimeLeft();
 		void finishGame();
 		QString moveString(const Chess::Move& move);
+		int adaptScore(int score) const;
 		
 		bool m_forceMode;
 		bool m_drawOnNextMove;

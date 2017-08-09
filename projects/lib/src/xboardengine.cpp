@@ -536,6 +536,31 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	write("accepted " + name, Unbuffered);
 }
 
+// shift assumed mate scores further out
+int XboardEngine::adaptScore(int score) const
+{
+	constexpr static int mateScore = 99000;
+	constexpr static int newCECPMateScore = 100000;
+	int absScore = qAbs<int>(score);
+
+	// convert new CECP mate scores to old ones
+	if (absScore > newCECPMateScore
+	&&  absScore < newCECPMateScore + 100)
+	{
+		absScore = 2 * newCECPMateScore - 2 * absScore + mateScore;
+		if (score >= absScore)
+			absScore++;
+	}
+
+	// map assumed mate scores onto equivalents w/ higher absolute values
+	int distance = 1000 - (absScore % 1000);
+	if (absScore > 9900 &&  distance < 100)
+		score = (score > 0) ? mateScore - distance
+				    : -mateScore + distance;
+
+	return score;
+}
+
 void XboardEngine::parseLine(const QString& line)
 {
 	const QStringRef command(firstToken(line));
@@ -603,7 +628,7 @@ void XboardEngine::parseLine(const QString& line)
 		{
 			if (whiteEvalPov() && side() == Chess::Side::Black)
 				val = -val;
-			m_eval.setScore(val);
+			m_eval.setScore(adaptScore(val));
 		}
 
 		// Search time
