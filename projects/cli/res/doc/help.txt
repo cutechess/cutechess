@@ -38,9 +38,11 @@ Options:
 			'losers': Loser's Chess
 			'racingkings': Racing Kings Chess
 			'slippedgrid': Slipped Grid Chess
-			'superandernach': Super-Andernach Chess
-			'standard': Standard Chess (default).
+			'sortland9': Symmetrical Two Kings Each Chess
 			'suicide': Suicide Chess (Losing Chess)
+			'superandernach': Super-Andernach Chess
+			'twokings': Two Kings Each Chess (Wild 9)
+			'standard': Standard Chess (default).
   -concurrency N	Set the maximum number of concurrent games to N
   -draw movenumber=NUMBER movecount=COUNT score=SCORE
 			Adjudicate the game as a draw if the score of both
