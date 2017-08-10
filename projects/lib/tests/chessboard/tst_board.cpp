@@ -486,6 +486,17 @@ void tst_Board::results_data() const
 		<< variant
 		<< "8/8/8/8/pk6/KP6/2r5/8 w - - 0 1"
 		<< "1/2-1/2";
+
+	variant = "twokings";
+
+	QTest::newRow("twokings black win1")
+		<< variant
+		<< "8/2k5/4b1Pp/2p3K1/8/2P1p3/2k2q1K/B7 w - - 0 59"
+		<< "0-1";
+	QTest::newRow("twokings black win2")
+		<< variant
+		<< "8/8/8/8/2k5/4kK2/5K2/2q5 w - - 0 1"
+		<< "0-1";
 }
 
 void tst_Board::results()
@@ -773,6 +784,30 @@ void tst_Board::perft_data() const
 		<< "8/k1KP4/8/8/8/8/8/6n1 b - - 0 1"
 		<< 7  //7 plies: 2891980
 		<< Q_UINT64_C(2891980);
+
+	variant = "twokings";
+	QTest::newRow("twokings startpos")
+		<< variant
+		<< "rnbqkknr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKKNR w KQkq - 0 1"
+		//asymmetrical variant 4 plies: 192312, 5 plies: 4629168, 6 plies: 110762251
+		// symmetrical variant 4 plies: 192332, 5 plies: 4629764, 6 plies: 110829475
+		<< 5
+		<< Q_UINT64_C(4629168);
+	QTest::newRow("twokings endgame1")
+		<< variant
+		<< "8/8/p1k5/1p1r1K1p/1P5P/P1K5/8/8 b - - 0 121"
+		// 3 plies:3076, 4 plies: 36828
+		<< 4
+		<< Q_UINT64_C(36828);
+
+	variant = "sortland9";
+	QTest::newRow("twokings symmetrical variant, startpos")
+		<< variant
+		<< "rnbqkknr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKKNR w KQkq - 0 1"
+		//asymmetrical variant 4 plies: 192312, 5 plies: 4629168, 6 plies: 110762251
+		// symmetrical variant 4 plies: 192332, 5 plies: 4629764, 6 plies: 110829475
+		<< 4
+		<< Q_UINT64_C(192332);
 }
 
 void tst_Board::perft()
