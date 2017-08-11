@@ -41,6 +41,7 @@ Options:
 			'sortland9': Symmetrical Two Kings Each Chess
 			'suicide': Suicide Chess (Losing Chess)
 			'superandernach': Super-Andernach Chess
+			'threekings': Three Kings Chess
 			'twokings': Two Kings Each Chess (Wild 9)
 			'standard': Standard Chess (default).
   -concurrency N	Set the maximum number of concurrent games to N

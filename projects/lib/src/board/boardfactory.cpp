@@ -40,6 +40,7 @@
 #include "racingkingsboard.h"
 #include "standardboard.h"
 #include "suicideboard.h"
+#include "threekingsboard.h"
 #include "twokingseachboard.h"
 
 namespace Chess {
@@ -76,6 +77,7 @@ REGISTER_BOARD(TwoKingsSymmetricalBoard, "sortland9")
 REGISTER_BOARD(StandardBoard, "standard")
 REGISTER_BOARD(SuicideBoard, "suicide")
 REGISTER_BOARD(SuperAndernachBoard, "superandernach")
+REGISTER_BOARD(ThreeKingsBoard, "threekings")
 REGISTER_BOARD(TwoKingsEachBoard, "twokings")
 
 
