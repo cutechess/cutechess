@@ -23,6 +23,7 @@
 #include "capablancaboard.h"
 #include "caparandomboard.h"
 #include "checklessboard.h"
+#include "chessgiboard.h"
 #include "crazyhouseboard.h"
 #include "extinctionboard.h"
 #include "frcboard.h"
@@ -31,18 +32,15 @@
 #include "gridboard.h"
 #include "hordeboard.h"
 #include "janusboard.h"
-#include "losersboard.h"
-#include "standardboard.h"
-#include "berolinaboard.h"
-#include "chessgiboard.h"
 #include "kingofthehillboard.h"
 #include "knightmateboard.h"
 #include "loopboard.h"
-#include "ncheckboard.h"
 #include "losersboard.h"
+#include "ncheckboard.h"
 #include "racingkingsboard.h"
 #include "standardboard.h"
 #include "suicideboard.h"
+#include "threekingsboard.h"
 #include "twokingseachboard.h"
 
 namespace Chess {
@@ -74,11 +72,12 @@ REGISTER_BOARD(KnightMateBoard, "knightmate")
 REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
-REGISTER_BOARD(TwoKingsSymmetricalBoard, "sortland9")
 REGISTER_BOARD(SlippedGridBoard, "slippedgrid")
+REGISTER_BOARD(TwoKingsSymmetricalBoard, "sortland9")
 REGISTER_BOARD(StandardBoard, "standard")
 REGISTER_BOARD(SuicideBoard, "suicide")
 REGISTER_BOARD(SuperAndernachBoard, "superandernach")
+REGISTER_BOARD(ThreeKingsBoard, "threekings")
 REGISTER_BOARD(TwoKingsEachBoard, "twokings")
 
 

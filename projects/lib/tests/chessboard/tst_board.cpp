@@ -785,6 +785,13 @@ void tst_Board::perft_data() const
 		<< 7  //7 plies: 2891980
 		<< Q_UINT64_C(2891980);
 
+	variant = "threekings";
+	QTest::newRow("threekings startpos")
+		<< variant
+		<< "knbqkbnk/pppppppp/8/8/8/8/PPPPPPPP/KNBQKBNK w - - 0 1"
+		<< 5 //4 plies: 199514, 5 plies: 4971357, 6 plies: 123493813
+		<< Q_UINT64_C(4971357);
+
 	variant = "twokings";
 	QTest::newRow("twokings startpos")
 		<< variant
