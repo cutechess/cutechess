@@ -23,8 +23,8 @@ namespace Chess {
 KnightMateBoard::KnightMateBoard()
 	: WesternBoard(new WesternZobrist())
 {
-	setPieceType(King, tr("king"), "K", 0, "N");
-	setPieceType(Mann, tr("mann"), "M", 0, "K");
+	setPieceType(King, tr("king"), "K", 0, "RN");
+	setPieceType(Mann, tr("mann"), "M", 0);
 }
 
 Board* KnightMateBoard::copy() const
@@ -110,19 +110,31 @@ bool KnightMateBoard::inCheck(Side side, int square) const
 
 Move KnightMateBoard::moveFromSanString(const QString& str)
 {
-	if (!str.startsWith(pieceSymbol(King).toUpper()))
+	QString kingSymbol(pieceSymbol(King).toUpper());
+	if (!str.startsWith(kingSymbol))
 		return WesternBoard::moveFromSanString(str);  //main path
 
 	// besides O-O/O-O-O also accepts Kc1/Kc8/Kg1/Kg8 format for castling
 	Side side = sideToMove();
-	int target = squareIndex(str.mid(1));
+
+	// Identify check/mate/strong move/blunder notation
+	int ksymlen = kingSymbol.length();
+	int len = str.length();
+	const QString notation("+#!?");
+
+	while (notation.contains(str.at(len - 1)))
+		len--;
+
+	// Skip king symbol and omit trailing notation parts
+	int target = squareIndex(str.mid(ksymlen, len - ksymlen));
+	int kingFile = chessSquare(kingSquare(side)).file();
 
 	if (hasCastlingRight(side, QueenSide)
-	&&  target == kingSquare(side) + castlingFile(QueenSide) - 4)
+	&&  target == kingSquare(side) + castlingFile(QueenSide) - kingFile)
 		return moveFromSanString("O-O-O");
 
 	if (hasCastlingRight(side, KingSide)
-	&&  target == kingSquare(side) + castlingFile(KingSide) - 4)
+	&&  target == kingSquare(side) + castlingFile(KingSide) - kingFile)
 		return moveFromSanString("O-O");
 
 	return WesternBoard::moveFromSanString(str); // other king moves

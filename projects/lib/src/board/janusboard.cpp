@@ -62,11 +62,16 @@ int JanusBoard::castlingFile(CastlingSide castlingSide) const
 
 QString JanusBoard::sanMoveString(const Move& move)
 {
-	// uses Kb1/Kb8/Ki1/Ki8 for castling
 	QString san = WesternBoard::sanMoveString(move);
-	if (san == "O-O" || san == "O-O-O")
-		return pieceSymbol(King).toUpper() + lanMoveString(move).mid(2);
-	return san;
+
+	if (!san.startsWith("O-O"))
+		return san;
+
+	// uses Kb1/Kb8/Ki1/Ki8 for castling
+	QString sym = san.right(1);
+	if (sym != "+" && sym != "#")
+		sym.clear();
+	return pieceSymbol(King).toUpper() + lanMoveString(move).mid(2) + sym;
 }
 
 
@@ -76,10 +81,10 @@ Move JanusBoard::moveFromSanString(const QString& str)
 	 * accepts O-O and Kb1/Kb8/Ki1/Ki8 formats for castling
 	 * Xboard uses O-O for B-file and Ki1/Ki8 for I-file castling
 	 */
-	if (str == "O-O")
-		return WesternBoard::moveFromSanString("O-O-O");
-	if (str == "O-O-O")
+	if (str.startsWith("O-O-O"))
 		return WesternBoard::moveFromSanString("O-O");
+	if (str.startsWith("O-O"))
+		return WesternBoard::moveFromSanString("O-O-O");
 
 	if (!str.startsWith(pieceSymbol(King).toUpper()))
 		return WesternBoard::moveFromSanString(str);  //main path
