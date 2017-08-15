@@ -73,7 +73,8 @@ MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
 MainWindow::MainWindow(ChessGame* game)
 	: m_game(nullptr),
 	  m_closing(false),
-	  m_readyToClose(false)
+	  m_readyToClose(false),
+	  m_firstTabAutoCloseEnabled(true)
 {
 	setAttribute(Qt::WA_DeleteOnClose, true);
 	setDockNestingEnabled(true);
@@ -426,6 +427,18 @@ void MainWindow::addGame(ChessGame* game)
 
 	m_tabs.append(tab);
 	m_tabBar->setCurrentIndex(m_tabBar->addTab(genericTitle(tab)));
+
+	// close initial tab if unused and if enabled by settings
+	if (m_tabs.size() >= 2
+	&&  m_firstTabAutoCloseEnabled)
+	{
+		if (QSettings().value("ui/close_unused_initial_tab", true).toBool()
+		&&  !m_tabs[0].m_game.isNull()
+		&&  m_tabs[0].m_game.data()->moves().isEmpty())
+			closeTab(0);
+
+		m_firstTabAutoCloseEnabled = false;
+	}
 
 	if (m_tabs.size() >= 2)
 		m_tabBar->parentWidget()->show();

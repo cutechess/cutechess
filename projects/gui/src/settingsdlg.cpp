@@ -37,6 +37,12 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 		QSettings().setValue("ui/highlight_legal_moves", checked);
 	});
 
+	connect(ui->m_closeUnusedInitialTabCheck, &QCheckBox::toggled,
+		this, [=](bool checked)
+	{
+		QSettings().setValue("ui/close_unused_initial_tab", checked);
+	});
+
 	connect(ui->m_concurrencySpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
 		this, [=](int value)
 	{
@@ -96,6 +102,8 @@ void SettingsDialog::readSettings()
 	s.beginGroup("ui");
 	ui->m_highlightLegalMovesCheck->setChecked(
 		s.value("highlight_legal_moves", true).toBool());
+	ui->m_closeUnusedInitialTabCheck->setChecked(
+		s.value("close_unused_initial_tab", true).toBool());
 	ui->m_tbPathEdit->setText(s.value("tb_path").toString());
 	s.endGroup();
 

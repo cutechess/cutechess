@@ -154,6 +154,8 @@ class MainWindow : public QMainWindow
 		QString m_currentFile;
 		bool m_closing;
 		bool m_readyToClose;
+
+		bool m_firstTabAutoCloseEnabled;
 };
 
 #endif // MAINWINDOW_H

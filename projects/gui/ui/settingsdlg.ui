@@ -44,6 +44,9 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="m_siteEdit"/>
+       </item>
        <item row="2" column="0">
         <widget class="QLabel" name="m_tbPathLabel">
          <property name="text">
@@ -68,8 +71,15 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="m_siteEdit"/>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="m_closeUnusedInitialTabCheck">
+         <property name="text">
+          <string>Close initial game tab if unused</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
