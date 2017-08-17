@@ -34,6 +34,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/crazyhouseboard.cpp \
     $$PWD/loopboard.cpp \
     $$PWD/chessgiboard.cpp \
+    $$PWD/pocketknightboard.cpp \
     $$PWD/boardfactory.cpp \
     $$PWD/boardtransition.cpp \
     $$PWD/syzygytablebase.cpp
@@ -74,6 +75,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/crazyhouseboard.h \
     $$PWD/loopboard.h \
     $$PWD/chessgiboard.h \
+    $$PWD/pocketknightboard.h \
     $$PWD/boardfactory.h \
     $$PWD/boardtransition.h \
     $$PWD/syzygytablebase.h

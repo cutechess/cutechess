@@ -740,6 +740,13 @@ void tst_Board::perft_data() const
 		<< 5 //4 plies: 139774, 5 plies: 3249033, 6 plies: 74568983
 		<< Q_UINT64_C(3249033);
 
+	variant = "pocketknight";
+	QTest::newRow("pocketknight startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[Nn] w KQkq - 0 1"
+		<< 4  // 3 plies: 88617, 4 plies: 3071267, 5 plies: 99614985
+		<< Q_UINT64_C(3071267);
+
 	variant = "losers";
 	QTest::newRow("losers startpos")
 		<< variant
