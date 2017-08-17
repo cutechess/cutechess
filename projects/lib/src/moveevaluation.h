@@ -65,9 +65,17 @@ class LIB_EXPORT MoveEvaluation
 
 		/*!
 		 * Score in centipawns from the player's point of view.
-		 * \note For human player this always 0.
+		 * \note For human players this always 0.
 		 */
 		int score() const;
+
+		/*!
+		 * String representation of the score from the player's
+		 * point of view. Mate distances are prefixed with -M or +M.
+		 *
+		 * \note For human players an empty string is returned.
+		 */
+		QString scoreText() const;
 
 		/*! Move time in milliseconds. */
 		int time() const;
