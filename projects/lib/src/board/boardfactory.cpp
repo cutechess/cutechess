@@ -37,6 +37,7 @@
 #include "loopboard.h"
 #include "losersboard.h"
 #include "ncheckboard.h"
+#include "pocketknightboard.h"
 #include "racingkingsboard.h"
 #include "standardboard.h"
 #include "suicideboard.h"
@@ -71,6 +72,7 @@ REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
 REGISTER_BOARD(KnightMateBoard, "knightmate")
 REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosersBoard, "losers")
+REGISTER_BOARD(PocketKnightBoard, "pocketknight")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
 REGISTER_BOARD(SlippedGridBoard, "slippedgrid")
 REGISTER_BOARD(TwoKingsSymmetricalBoard, "sortland9")
