@@ -154,7 +154,7 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 
 	QString score;
 	if (eval.score() != MoveEvaluation::NULL_SCORE)
-        if(abs(eval.score()) < 99000)
+        if(abs(eval.score()) < 90000)
             score = QString::number(double(eval.score()) / 100.0, 'f', 2);
         else
             if(eval.score() > 0)
