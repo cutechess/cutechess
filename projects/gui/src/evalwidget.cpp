@@ -152,15 +152,15 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 	if (eval.nodeCount())
 		nodeCount = QString::number(eval.nodeCount());
 
-	QString score;
-	if (eval.score() != MoveEvaluation::NULL_SCORE)
+    QString score = eval.scoreText();
+    /*if (eval.score() != MoveEvaluation::NULL_SCORE)
         if(abs(eval.score()) < 90000)
             score = QString::number(double(eval.score()) / 100.0, 'f', 2);
         else
             if(eval.score() > 0)
                 score = "#" + QString::number((99001 - eval.score()) / 2);
             else
-                score = "#" + QString::number((-99000 - eval.score()) / 2);
+                score = "#" + QString::number((-99000 - eval.score()) / 2);*/
 
 	QVector<QTableWidgetItem*> items;
 	items << new QTableWidgetItem(depth)

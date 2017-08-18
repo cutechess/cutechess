@@ -26,32 +26,16 @@ namespace {
 
 QString evalString(const MoveEvaluation& eval)
 {
-	if (eval.isBookEval())
+    if (eval.isBookEval())
 		return "book";
 	if (eval.isEmpty())
 		return QString();
 
-	QString str;
+    QString str = eval.scoreText();
 	if (eval.depth() > 0)
 	{
-		int score = eval.score();
-		int absScore = qAbs(score);
-		if (score > 0)
-			str += "+";
-
-		// Detect mate-in-n scores
-		if (absScore > 98800
-		&&  (absScore = 1000 - (absScore % 1000)) < 200)
-		{
-			if (score < 0)
-				str += "-";
-			str += "M" + QString::number(absScore);
-		}
-		else
-			str += QString::number(double(score) / 100.0, 'f', 2);
-
 		str += "/" + QString::number(eval.depth()) + " ";
-	}
+    }
 
 	int t = eval.time();
 	if (t == 0)
