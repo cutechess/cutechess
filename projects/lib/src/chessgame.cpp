@@ -26,12 +26,12 @@ namespace {
 
 QString evalString(const MoveEvaluation& eval)
 {
-    if (eval.isBookEval())
+	if (eval.isBookEval())
 		return "book";
 	if (eval.isEmpty())
 		return QString();
 
-    QString str = eval.scoreText();
+	QString str = eval.scoreText();
 	if (eval.depth() > 0)
 	{
 		str += "/" + QString::number(eval.depth()) + " ";
