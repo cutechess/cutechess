@@ -165,6 +165,8 @@ class LIB_EXPORT MoveEvaluation
 		/*! Merges non-empty parameters of \a other into this eval. */
 		void merge(const MoveEvaluation& other);
 
+        QString scoreText() const;
+
 	private:
 		bool m_isBookEval;
 		int m_depth;

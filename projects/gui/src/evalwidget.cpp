@@ -40,7 +40,7 @@ EvalWidget::EvalWidget(QWidget *parent)
 
 	QStringList statsHeaders;
 	statsHeaders << tr("NPS") << tr("Hash")
-		     << tr("Pondermove") << tr("Ponderhit") << tr("TB");
+	      << tr("Pondermove") << tr("Ponderhit") << tr("TB");
 	m_statsTable->setHorizontalHeaderLabels(statsHeaders);
 	hHeader->setSectionResizeMode(QHeaderView::Stretch);
 	auto protoItem = new QTableWidgetItem;
@@ -52,7 +52,7 @@ EvalWidget::EvalWidget(QWidget *parent)
 
 	QStringList pvHeaders;
 	pvHeaders << tr("Depth") << tr("Time") << tr("Nodes")
-		  << tr("Score") << tr("PV");
+	      << tr("Score") << tr("PV");
 	m_pvTable->setHorizontalHeaderLabels(pvHeaders);
 	m_pvTable->setColumnWidth(0, 60);
 	m_pvTable->setColumnWidth(1, 60);
@@ -152,13 +152,11 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 	if (eval.nodeCount())
 		nodeCount = QString::number(eval.nodeCount());
 
-	QString score;
-	if (eval.score() != MoveEvaluation::NULL_SCORE)
-		score = QString::number(double(eval.score()) / 100.0, 'f', 2);
+	QString score = eval.scoreText();
 
 	QVector<QTableWidgetItem*> items;
 	items << new QTableWidgetItem(depth)
-	      << new QTableWidgetItem(time)
+		  << new QTableWidgetItem(time)
 	      << new QTableWidgetItem(nodeCount)
 	      << new QTableWidgetItem(score)
 	      << new QTableWidgetItem(eval.pv());
