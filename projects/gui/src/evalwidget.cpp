@@ -1,18 +1,18 @@
 /*
-	This file is part of Cute Chess.
+    This file is part of Cute Chess.
 
-	Cute Chess is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    Cute Chess is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	Cute Chess is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+    Cute Chess is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General Public License
+    along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "evalwidget.h"
@@ -40,7 +40,7 @@ EvalWidget::EvalWidget(QWidget *parent)
 
 	QStringList statsHeaders;
 	statsHeaders << tr("NPS") << tr("Hash")
-			 << tr("Pondermove") << tr("Ponderhit") << tr("TB");
+	      << tr("Pondermove") << tr("Ponderhit") << tr("TB");
 	m_statsTable->setHorizontalHeaderLabels(statsHeaders);
 	hHeader->setSectionResizeMode(QHeaderView::Stretch);
 	auto protoItem = new QTableWidgetItem;
@@ -52,7 +52,7 @@ EvalWidget::EvalWidget(QWidget *parent)
 
 	QStringList pvHeaders;
 	pvHeaders << tr("Depth") << tr("Time") << tr("Nodes")
-		  << tr("Score") << tr("PV");
+	      << tr("Score") << tr("PV");
 	m_pvTable->setHorizontalHeaderLabels(pvHeaders);
 	m_pvTable->setColumnWidth(0, 60);
 	m_pvTable->setColumnWidth(1, 60);
@@ -157,9 +157,9 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 	QVector<QTableWidgetItem*> items;
 	items << new QTableWidgetItem(depth)
 		  << new QTableWidgetItem(time)
-		  << new QTableWidgetItem(nodeCount)
-		  << new QTableWidgetItem(score)
-		  << new QTableWidgetItem(eval.pv());
+	      << new QTableWidgetItem(nodeCount)
+	      << new QTableWidgetItem(score)
+	      << new QTableWidgetItem(eval.pv());
 
 	for (int i = 0; i < 4; i++)
 		items[i]->setTextAlignment(Qt::AlignVCenter | Qt::AlignRight);
