@@ -21,6 +21,7 @@ Options:
 			'caparandom': Capablanca Random Chess
 			'checkless': Checkless Chess
 			'chessgi': Chessgi (Drop Chess)
+			'coregal': Co-regal Chess
 			'crazyhouse': Crazyhouse (Drop Chess)
 			'discplacedgrid': Displaced Grid Chess
 			'extinction': Extinction Chess
