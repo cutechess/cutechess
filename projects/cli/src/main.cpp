@@ -256,6 +256,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-openings", QVariant::StringList);
 	parser.addOption("-bookmode", QVariant::String);
 	parser.addOption("-pgnout", QVariant::StringList, 1, 2);
+	parser.addOption("-epdout", QVariant::String, 1, 1);
 	parser.addOption("-repeat", QVariant::Bool, 0, 0);
 	parser.addOption("-recover", QVariant::Bool, 0, 0);
 	parser.addOption("-site", QVariant::String, 1, 1);
@@ -490,6 +491,12 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			}
 			if (ok)
 				tournament->setPgnOutput(list.at(0), mode);
+		}
+		// FEN/EPD output file to save positions
+		else if (name == "-epdout")
+		{
+			QString fileName = value.toString();
+			tournament->setEpdOutput(fileName);
 		}
 		// Play every opening twice, just switch the players' sides
 		else if (name == "-repeat")

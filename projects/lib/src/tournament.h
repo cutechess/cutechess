@@ -188,6 +188,14 @@ class LIB_EXPORT Tournament : public QObject
 		void setPgnCleanupEnabled(bool enabled);
 
 		/*!
+		 * Sets the EPD output file for the end positions to \a fileName.
+		 *
+		 * If no EPD output file is set (default) then the positions
+		 * will not be saved.
+		 */
+		void setEpdOutput(const QString& fileName);
+
+		/*!
 		 * Sets the opening repetition mode to \a repeat.
 		 *
 		 * If \a repeat is true, each opening is repeated for two
@@ -374,6 +382,7 @@ class LIB_EXPORT Tournament : public QObject
 	private slots:
 		void startNextGame();
 		bool writePgn(PgnGame* pgn, int gameNumber);
+		bool writeEpd(ChessGame* game);
 		void onGameStarted(ChessGame* game);
 		void onGameFinished(ChessGame* game);
 		void onGameDestroyed(ChessGame* game);
@@ -423,6 +432,8 @@ class LIB_EXPORT Tournament : public QObject
 		Sprt* m_sprt;
 		QFile m_pgnFile;
 		QTextStream m_pgnOut;
+		QFile m_epdFile;
+		QTextStream m_epdOut;
 		QString m_startFen;
 		PgnGame::PgnMode m_pgnOutMode;
 		TournamentPair* m_pair;

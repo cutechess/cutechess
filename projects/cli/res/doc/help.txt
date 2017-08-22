@@ -101,6 +101,7 @@ Options:
 			'disk': The book is accessed directly on disk.
   -pgnout FILE [min]	Save the games to FILE in PGN format. Use the 'min'
 			argument to save in a minimal/compact PGN format.
+  -epdout FILE		Save the end position of the games to FILE in FEN format.
   -recover		Restart crashed engines instead of stopping the match
   -repeat		Play each opening twice so that both players get
 			to play it on both sides

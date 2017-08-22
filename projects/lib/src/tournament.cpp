@@ -81,6 +81,12 @@ Tournament::~Tournament()
 
 	delete m_openingSuite;
 	delete m_sprt;
+
+	if (m_pgnFile.isOpen())
+		m_pgnFile.close();
+
+	if (m_epdFile.isOpen())
+		m_epdFile.close();
 }
 
 GameManager* Tournament::gameManager() const
@@ -248,6 +254,15 @@ void Tournament::setPgnOutput(const QString& fileName, PgnGame::PgnMode mode)
 void Tournament::setPgnCleanupEnabled(bool enabled)
 {
 	m_pgnCleanup = enabled;
+}
+
+void Tournament::setEpdOutput(const QString& fileName)
+{
+	if (fileName != m_epdFile.fileName())
+	{
+		m_epdFile.close();
+		m_epdFile.setFileName(fileName);
+	}
 }
 
 void Tournament::setOpeningRepetition(bool repeat)
@@ -470,6 +485,45 @@ bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
 	return ok;
 }
 
+bool Tournament::writeEpd(ChessGame *game)
+{
+	Q_ASSERT(game != nullptr);
+
+	if (m_epdFile.fileName().isEmpty())
+		return true;
+
+	bool isOpen = m_epdFile.isOpen();
+	if (!isOpen || !m_epdFile.exists())
+	{
+		if (isOpen)
+		{
+			qWarning("EPD file %s does not exist. Reopening...",
+				 qPrintable(m_epdFile.fileName()));
+			m_epdFile.close();
+		}
+
+		if (!m_epdFile.open(QIODevice::WriteOnly | QIODevice::Append))
+		{
+			qWarning("Could not open EPD file %s",
+				 qPrintable(m_epdFile.fileName()));
+			return false;
+		}
+		m_epdOut.setDevice(&m_epdFile);
+	}
+
+	const QString& epdPos = game->board()->fenString();
+	m_epdOut << epdPos << "\n";
+	m_epdOut.flush();
+	bool ok = true;
+	if (m_epdFile.error() != QFile::NoError)
+	{
+		ok = false;
+		qWarning("Could not write EPD position");
+	}
+
+	return ok;
+}
+
 void Tournament::addScore(int player, int score)
 {
 	m_players[player].addScore(score);
@@ -534,6 +588,7 @@ void Tournament::onGameFinished(ChessGame* game)
 		break;
 	}
 
+	writeEpd(game);
 	writePgn(pgn, gameNumber);
 	if (m_pgnCleanup)
 		delete pgn;
