@@ -105,6 +105,36 @@ int MoveEvaluation::score() const
 	return m_score;
 }
 
+QString MoveEvaluation::scoreText() const
+{
+	if (isBookEval())
+		return "book";
+	if (isEmpty())
+		return QString();
+
+	QString str;
+	if (depth() > 0)
+	{
+		int scoreVal = score();
+		int absScore = qAbs(scoreVal);
+		if (scoreVal > 0)
+			str += "+";
+
+		// Detect mate-in-n scores
+		if (absScore > 98800
+		&&  (absScore = 1000 - (absScore % 1000)) < 200)
+		{
+			if (scoreVal < 0)
+				str += "-";
+			str += "M" + QString::number(absScore);
+		}
+		else
+			str += QString::number(double(scoreVal) / 100.0, 'f', 2);
+	}
+
+	return str;
+}
+
 int MoveEvaluation::time() const
 {
 	return m_time;

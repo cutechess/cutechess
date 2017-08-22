@@ -152,9 +152,7 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 	if (eval.nodeCount())
 		nodeCount = QString::number(eval.nodeCount());
 
-	QString score;
-	if (eval.score() != MoveEvaluation::NULL_SCORE)
-		score = QString::number(double(eval.score()) / 100.0, 'f', 2);
+	QString score = eval.scoreText();
 
 	QVector<QTableWidgetItem*> items;
 	items << new QTableWidgetItem(depth)
