@@ -464,6 +464,17 @@ void tst_Board::results_data() const
 		<< "K5kr/5Q2/8/8/8/8/8/8 b - - 0 1"
 		<< "1-0";
 
+	variant = "coregal";
+
+	QTest::newRow("coregal white win #1")
+		<< variant
+		<< "4Rqk1/p2p2pp/1pp2p2/8/8/3P4/PP3PPP/4Q1K1 b - - 0 1"
+		<< "1-0";
+	QTest::newRow("coregal white win #2")
+		<< variant
+		<< "q3r1k1/R1Q2ppp/8/4n3/4PN2/3P3P/5PP1/6K1 b - - 0 27"
+		<< "1-0";
+
 	variant = "grid";
 
 	QTest::newRow("grid white win")
@@ -670,6 +681,13 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 5
 		<< Q_UINT64_C(4835050);
+
+	variant = "coregal";
+	QTest::newRow("coregal startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5
+		<< Q_UINT64_C(4756867);
 
 	variant = "extinction";
 	QTest::newRow("extinction startpos")

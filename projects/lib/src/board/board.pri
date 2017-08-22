@@ -10,6 +10,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/restrictedmoveboard.cpp \
     $$PWD/gridboard.cpp \
     $$PWD/capablancaboard.cpp \
+    $$PWD/coregalboard.cpp \
     $$PWD/extinctionboard.cpp \
     $$PWD/threekingsboard.cpp \
     $$PWD/kingofthehillboard.cpp \
@@ -50,6 +51,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/restrictedmoveboard.h \
     $$PWD/gridboard.h \
     $$PWD/capablancaboard.h \
+    $$PWD/coregalboard.h \
     $$PWD/extinctionboard.h \
     $$PWD/threekingsboard.h \
     $$PWD/kingofthehillboard.h \

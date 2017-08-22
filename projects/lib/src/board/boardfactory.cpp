@@ -24,6 +24,7 @@
 #include "caparandomboard.h"
 #include "checklessboard.h"
 #include "chessgiboard.h"
+#include "coregalboard.h"
 #include "crazyhouseboard.h"
 #include "extinctionboard.h"
 #include "frcboard.h"
@@ -56,6 +57,7 @@ REGISTER_BOARD(CapablancaBoard, "capablanca")
 REGISTER_BOARD(CaparandomBoard, "caparandom")
 REGISTER_BOARD(ChecklessBoard, "checkless")
 REGISTER_BOARD(ChessgiBoard, "chessgi")
+REGISTER_BOARD(CoRegalBoard, "coregal")
 REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
 REGISTER_BOARD(DisplacedGridBoard, "displacedgrid")
 REGISTER_BOARD(ExtinctionBoard, "extinction")
