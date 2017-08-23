@@ -43,6 +43,8 @@ class SettingsDialog : public QDialog
 
 	private slots:
 		void browseTbPath();
+		void browseDefaultPgnOutFile();
+		void browseTournamentDefaultPgnOutFile();
 
 	private:
 		void readSettings();

@@ -725,6 +725,20 @@ void MainWindow::onGameFinished(ChessGame* game)
 			m_game = nullptr;
 		updateWindowTitle();
 	}
+
+	// save game notation of non-tournament games to default PGN file
+	if (!tab.m_tournament
+	&&  !game->pgn()->isNull()
+	&&  	(  !game->pgn()->moves().isEmpty()   // ignore empty games
+		|| !game->pgn()->result().isNone())) // without adjudication
+	{
+		QString fileName = QSettings().value("games/default_pgn_output_file", QString())
+					      .toString();
+
+		if (!fileName.isEmpty())
+			game->pgn()->write(fileName);
+			//TODO: reaction on error
+	}
 }
 
 void MainWindow::newTournament()

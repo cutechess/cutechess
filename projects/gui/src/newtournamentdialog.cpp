@@ -271,4 +271,12 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 void NewTournamentDialog::readSettings()
 {
 	ui->m_siteEdit->setText(QSettings().value("pgn/site").toString());
+
+	QString pgnName = ui->m_pgnoutEdit->text();
+	if (pgnName.isEmpty())
+	{
+		pgnName = QSettings().value("tournament/default_pgn_output_file",
+					    QString()).toString();
+		ui->m_pgnoutEdit->setText(pgnName);
+	}
 }
