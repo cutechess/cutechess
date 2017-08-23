@@ -56,8 +56,24 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 		QSettings().setValue("pgn/site", site);
 	});
 
+	connect(ui->m_defaultPgnOutFileEdit, &QLineEdit::textChanged,
+		[=](const QString& defaultPgnFile)
+	{
+		QSettings().setValue("games/default_pgn_output_file", defaultPgnFile);
+	});
+
+	connect(ui->m_tournamentDefaultPgnOutFileEdit, &QLineEdit::textChanged,
+		[=](const QString& tourFile)
+	{
+		QSettings().setValue("tournament/default_pgn_output_file", tourFile);
+	});
+
 	connect(ui->m_browseTbPathBtn, &QPushButton::clicked,
 		this, &SettingsDialog::browseTbPath);
+	connect(ui->m_defaultPgnOutFileBtn, &QPushButton::clicked,
+		this, &SettingsDialog::browseDefaultPgnOutFile);
+	connect(ui->m_tournamentDefaultPgnOutFileBtn, &QPushButton::clicked,
+		this, &SettingsDialog::browseTournamentDefaultPgnOutFile);
 
 	ui->m_gameSettings->onHumanCountChanged(0);
 	ui->m_gameSettings->enableSettingsUpdates();
@@ -95,6 +111,36 @@ void SettingsDialog::browseTbPath()
 	dlg->open();
 }
 
+void SettingsDialog::browseDefaultPgnOutFile()
+{
+	auto dlg = new QFileDialog(
+		this, tr("Select PGN output file"),
+		QString(),
+		tr("Portable Game Notation (*.pgn)"));
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->setAcceptMode(QFileDialog::AcceptSave);
+	connect(dlg,
+		&QFileDialog::fileSelected,
+		ui->m_defaultPgnOutFileEdit,
+		&QLineEdit::setText);
+	dlg->open();
+}
+
+void SettingsDialog::browseTournamentDefaultPgnOutFile()
+{
+	auto dlg = new QFileDialog(
+		this, tr("Select PGN output file"),
+		QString(),
+		tr("Portable Game Notation (*.pgn)"));
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->setAcceptMode(QFileDialog::AcceptSave);
+	connect(dlg,
+		&QFileDialog::fileSelected,
+		ui->m_tournamentDefaultPgnOutFileEdit,
+		&QLineEdit::setText);
+	dlg->open();
+}
+
 void SettingsDialog::readSettings()
 {
 	QSettings s;
@@ -111,7 +157,14 @@ void SettingsDialog::readSettings()
 	ui->m_siteEdit->setText(s.value("site").toString());
 	s.endGroup();
 
+	s.beginGroup("games");
+	ui->m_defaultPgnOutFileEdit
+		->setText(s.value("default_pgn_output_file").toString());
+	s.endGroup();
+
 	s.beginGroup("tournament");
+	ui->m_tournamentDefaultPgnOutFileEdit
+		->setText(s.value("default_pgn_output_file").toString());
 	ui->m_concurrencySpin->setValue(s.value("concurrency", 1).toInt());
 	s.endGroup();
 }
