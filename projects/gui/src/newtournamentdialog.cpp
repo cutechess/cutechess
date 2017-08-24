@@ -169,6 +169,9 @@ void NewTournamentDialog::configureEngine(const QModelIndex& index)
 
 	if (dlg.exec() == QDialog::Accepted)
 		m_addedEnginesManager->updateEngineAt(row, dlg.engineConfiguration());
+
+	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
+	button->setEnabled(canStart());
 }
 
 void NewTournamentDialog::moveEngine(int offset)
@@ -191,6 +194,17 @@ bool NewTournamentDialog::canStart() const
 
 	if (m_addedEnginesManager->engineCount() < 2)
 		return false;
+
+	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
+
+	// check for duplicate configuration names
+	if (m_addedEnginesManager->engineNames().count()
+	!=  m_addedEnginesManager->engineCount())
+	{
+		button->setText(tr("Resolve Duplicates!"));
+		return false;
+	}
+	button->setText("&OK");
 
 	QString variant = ui->m_gameSettings->chessVariant();
 	return m_addedEnginesManager->supportsVariant(variant);
