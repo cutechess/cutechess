@@ -257,7 +257,8 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-bookmode", QVariant::String);
 	parser.addOption("-pgnout", QVariant::StringList, 1, 2);
 	parser.addOption("-epdout", QVariant::String, 1, 1);
-	parser.addOption("-repeat", QVariant::Bool, 0, 0);
+	parser.addOption("-repeat", QVariant::Int, 0, 1);
+	parser.addOption("-noswap", QVariant::Bool, 0, 0);
 	parser.addOption("-recover", QVariant::Bool, 0, 0);
 	parser.addOption("-site", QVariant::String, 1, 1);
 	parser.addOption("-wait", QVariant::Int, 1, 1);
@@ -498,9 +499,29 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			QString fileName = value.toString();
 			tournament->setEpdOutput(fileName);
 		}
-		// Play every opening twice, just switch the players' sides
+		// Play every opening twice (default), or multiple times
 		else if (name == "-repeat")
-			tournament->setOpeningRepetition(true);
+		{
+			int rep = value.toInt(&ok);
+
+			if (option.value.type() == QVariant::Bool)
+				rep = 2; // default
+			if (ok && rep >= 1)
+			{
+				tournament->setOpeningRepetitions(rep);
+
+				if (tournament->gamesPerEncounter() % rep)
+					qWarning("%d opening repetitions vs"
+						" %d games per encounter",
+						rep,
+						tournament->gamesPerEncounter());
+			}
+			else
+				ok = false;
+		}
+		// Do not swap sides between paired engines
+		else if (name == "-noswap")
+			tournament->setSwapSides(false);
 		// Recover crashed/stalled engines
 		else if (name == "-recover")
 			tournament->setRecoveryMode(true);
@@ -639,7 +660,7 @@ int main(int argc, char* argv[])
 		{
 			out << "cutechess-cli " << CUTECHESS_CLI_VERSION << endl;
 			out << "Using Qt version " << qVersion() << endl << endl;
-			out << "Copyright (C) 2008-2016 Ilari Pihlajisto and Arto Jonsson" << endl;
+			out << "Copyright (C) 2008-2017 Ilari Pihlajisto and Arto Jonsson" << endl;
 			out << "This is free software; see the source for copying ";
 			out << "conditions.  There is NO" << endl << "warranty; not even for ";
 			out << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
