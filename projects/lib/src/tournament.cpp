@@ -47,13 +47,15 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_openingDepth(1024),
 	  m_seedCount(0),
 	  m_stopping(false),
-	  m_repeatOpening(false),
+	  m_openingRepetitions(1),
 	  m_recover(false),
 	  m_pgnCleanup(true),
 	  m_finished(false),
 	  m_bookOwnership(false),
 	  m_openingSuite(nullptr),
 	  m_sprt(new Sprt),
+	  m_repetitionCounter(0),
+	  m_swapSides(true),
 	  m_pgnOutMode(PgnGame::Verbose),
 	  m_pair(nullptr)
 {
@@ -265,9 +267,14 @@ void Tournament::setEpdOutput(const QString& fileName)
 	}
 }
 
-void Tournament::setOpeningRepetition(bool repeat)
+void Tournament::setOpeningRepetitions(int count)
 {
-	m_repeatOpening = repeat;
+	m_openingRepetitions = count;
+}
+
+void Tournament::setSwapSides(bool enabled)
+{
+	m_swapSides = enabled;
 }
 
 void Tournament::setOpeningBookOwnership(bool enabled)
@@ -347,24 +354,24 @@ void Tournament::startGame(TournamentPair* pair)
 	game->setOpeningBook(white.book(), Chess::Side::White, white.bookDepth());
 	game->setOpeningBook(black.book(), Chess::Side::Black, black.bookDepth());
 
-	bool isRepeat = false;
 	if (!m_startFen.isEmpty() || !m_openingMoves.isEmpty())
 	{
 		game->setStartingFen(m_startFen);
 		game->setMoves(m_openingMoves);
 		m_startFen.clear();
 		m_openingMoves.clear();
-		isRepeat = true;
+		m_repetitionCounter++;
 	}
 	else if (m_openingSuite != nullptr)
 	{
+		m_repetitionCounter = 1;
 		if (!game->setMoves(m_openingSuite->nextGame(m_openingDepth)))
 			qWarning("The opening suite is incompatible with the "
 				 "current chess variant");
 	}
 
 	game->generateOpening();
-	if (m_repeatOpening && !isRepeat)
+	if (m_repetitionCounter < m_openingRepetitions)
 	{
 		m_startFen = game->startingFen();
 		if (m_startFen.isEmpty() && board->isRandomVariant())
@@ -395,7 +402,8 @@ void Tournament::startGame(TournamentPair* pair)
 
 	// Make sure the next game (if any) between the pair will
 	// start with reversed colors.
-	m_pair->swapPlayers();
+	if (m_swapSides)
+		m_pair->swapPlayers();
 
 	auto whiteBuilder = white.builder();
 	auto blackBuilder = black.builder();

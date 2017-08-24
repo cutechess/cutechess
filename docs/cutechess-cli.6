@@ -242,9 +242,15 @@ Save the games to
 in FEN format.
 .It Fl recover
 Restart crashed engines instead of stopping the game.
-.It Fl repeat
-Play each opening twice so that both players get to play it on both
-sides.
+.It Fl repeat Bq Cm Ar n
+Play each opening twice (or
+.Ar n
+times). Unless the -noswap option is used, the players swap
+sides after each game. So they get to play the
+opening on both sides. Please note that a new round will use
+a new opening.
+.It Fl noswap
+Do not swap sides of paired engines
 .It Fl seeds Ar n
 Set the first
 .Ar n
