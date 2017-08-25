@@ -85,6 +85,7 @@ class LIB_EXPORT ChessGame : public QObject
 		void kill();
 		void emitStartFailed();
 		void onMoveMade(const Chess::Move& move);
+		void onAdjudication(const Chess::Result& result);
 
 	signals:
 		void humanEnabled(bool);
