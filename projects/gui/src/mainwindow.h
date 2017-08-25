@@ -80,6 +80,9 @@ class MainWindow : public QMainWindow
 		void copyFen();
 		void showAboutDialog();
 		void closeAllGames();
+		void adjudicateDraw();
+		void adjudicateWhiteWin();
+		void adjudicateBlackWin();
 
 	private:
 		struct TabData
@@ -92,6 +95,14 @@ class MainWindow : public QMainWindow
 			PgnGame* m_pgn;
 			Tournament* m_tournament;
 			bool m_finished;
+		};
+
+		/*! Outcomes of adjudication by user */
+		enum UserAdjudication
+		{
+			WhiteWin,
+			BlackWin,
+			Draw
 		};
 
 		void createActions();
@@ -110,6 +121,7 @@ class MainWindow : public QMainWindow
 		int tabIndex(ChessGame* game) const;
 		int tabIndex(Tournament* tournament, bool freeTab = false) const;
 		void addDefaultWindowMenu();
+		void adjudicateGame(UserAdjudication value);
 
 		QMenu* m_gameMenu;
 		QMenu* m_tournamentMenu;
@@ -126,6 +138,9 @@ class MainWindow : public QMainWindow
 
 		QAction* m_quitGameAct;
 		QAction* m_newGameAct;
+		QAction* m_adjudicateBlackWinAct;
+		QAction* m_adjudicateWhiteWinAct;
+		QAction* m_adjudicateDrawAct;
 		QAction* m_closeGameAct;
 		QAction* m_saveGameAct;
 		QAction* m_saveGameAsAct;

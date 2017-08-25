@@ -310,6 +310,16 @@ void ChessGame::startTurn()
 	}
 }
 
+void ChessGame::onAdjudication(const Chess::Result& result)
+{
+	if (result.type() != Chess::Result::Adjudication || m_finished)
+		return;
+
+	m_result = result;
+
+	stop();
+}
+
 void ChessGame::onResultClaim(const Chess::Result& result)
 {
 	if (m_finished)

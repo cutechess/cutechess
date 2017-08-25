@@ -159,6 +159,10 @@ void MainWindow::createActions()
 
 	m_flipBoardAct = new QAction(tr("&Flip Board"), this);
 
+	m_adjudicateDrawAct = new QAction(tr("Ad&judicate Draw"), this);
+	m_adjudicateWhiteWinAct = new QAction(tr("Adjudicate Win for White"), this);
+	m_adjudicateBlackWinAct = new QAction(tr("Adjudicate Win for Black"), this);
+
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	m_quitGameAct->setMenuRole(QAction::QuitRole);
 	#ifdef Q_OS_WIN32
@@ -223,6 +227,11 @@ void MainWindow::createActions()
 
 	connect(m_saveGameAct, SIGNAL(triggered()), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+
+	connect(m_adjudicateDrawAct, SIGNAL(triggered()), this, SLOT(adjudicateDraw()));
+	connect(m_adjudicateWhiteWinAct, SIGNAL(triggered()), this, SLOT(adjudicateWhiteWin()));
+	connect(m_adjudicateBlackWinAct, SIGNAL(triggered()), this, SLOT(adjudicateBlackWin()));
+
 	connect(m_quitGameAct, &QAction::triggered,
 		app, &CuteChessApplication::onQuitAction);
 
@@ -261,6 +270,10 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_saveGameAct);
 	m_gameMenu->addAction(m_saveGameAsAct);
 	m_gameMenu->addAction(m_copyFenAct);
+	m_gameMenu->addSeparator();
+	m_gameMenu->addAction(m_adjudicateDrawAct);
+	m_gameMenu->addAction(m_adjudicateWhiteWinAct);
+	m_gameMenu->addAction(m_adjudicateBlackWinAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 
@@ -917,7 +930,7 @@ void MainWindow::showAboutDialog()
 	html += "<h3>" + QString("Cute Chess %1")
 		.arg(CuteChessApplication::applicationVersion()) + "</h3>";
 	html += "<p>" + tr("Using Qt version %1").arg(qVersion()) + "</p>";
-	html += "<p>" + tr("Copyright 2008-2016 "
+	html += "<p>" + tr("Copyright 2008-2017 "
 			   "Ilari Pihlajisto and Arto Jonsson") + "</p>";
 	html += "<p>" + tr("This is free software; see the source for copying "
 			   "conditions. There is NO warranty; not even for "
@@ -1032,6 +1045,43 @@ bool MainWindow::askToSave()
 			return false;
 	}
 	return true;
+}
+
+void MainWindow::adjudicateDraw()
+{
+	adjudicateGame(Draw);
+}
+
+void MainWindow::adjudicateWhiteWin()
+{
+	adjudicateGame(WhiteWin);
+}
+
+void MainWindow::adjudicateBlackWin()
+{
+	adjudicateGame(BlackWin);
+}
+
+void MainWindow::adjudicateGame(UserAdjudication value)
+{
+	using Chess::Result;
+	ChessGame *game = m_tabs.at(m_tabBar->currentIndex()).m_game;
+
+	if (game == nullptr)
+		return;
+
+	Chess::Side winner = Chess::Side::NoSide;
+
+	if (value == WhiteWin)
+		winner = Chess::Side::White;
+	else if (value == BlackWin)
+		winner = Chess::Side::Black;
+
+	Result result = Result(Result::Adjudication, winner, tr("user decision"));
+
+	lockCurrentGame();
+	game->onAdjudication(result);
+	unlockCurrentGame();
 }
 
 void MainWindow::addDefaultWindowMenu()
