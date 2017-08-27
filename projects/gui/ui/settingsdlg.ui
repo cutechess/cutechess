@@ -87,7 +87,7 @@
        <item row="6" column="0">
         <widget class="QLabel" name="m_defaultPgnOutFileLabel">
          <property name="text">
-          <string>Append game notation to file:</string>
+          <string>PGN output for single games:</string>
          </property>
         </widget>
        </item>
@@ -183,78 +183,89 @@
          <property name="title">
           <string>Games</string>
          </property>
-         <widget class="QWidget" name="layoutWidget">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>20</y>
-            <width>341</width>
-            <height>93</height>
-           </rect>
-          </property>
-          <layout class="QFormLayout" name="formLayout_2">
-           <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-           </property>
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QLabel" name="m_concurrencyLabel">
-             <property name="text">
-              <string>Maximum number of concurrent games:</string>
-             </property>
-             <property name="buddy">
-              <cstring>m_concurrencySpin</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QSpinBox" name="m_concurrencySpin">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimum">
-              <number>1</number>
-             </property>
-             <property name="maximum">
-              <number>128</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="m_tournamentDefaultPgnOutFileLabel">
-             <property name="text">
-              <string>Default file for  game notation:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0" colspan="2">
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QLineEdit" name="m_tournamentDefaultPgnOutFileEdit">
-               <property name="text">
-                <string>tournaments.pgn</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="m_tournamentDefaultPgnOutFileBtn">
-               <property name="text">
-                <string>Browse...</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="m_concurrencyLabel">
+              <property name="text">
+               <string>Maximum number of concurrent games:</string>
+              </property>
+              <property name="buddy">
+               <cstring>m_concurrencySpin</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="m_concurrencySpin">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>128</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="m_tournamentDefaultPgnOutFileLabel">
+              <property name="text">
+               <string>PGN output:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="m_tournamentDefaultPgnOutFileEdit">
+              <property name="text">
+               <string>tournaments.pgn</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_tournamentDefaultPgnOutFileBtn">
+              <property name="text">
+               <string>Browse...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
