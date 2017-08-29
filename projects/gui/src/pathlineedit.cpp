@@ -35,6 +35,10 @@ PathLineEdit::PathLineEdit(PathType pathType, QWidget* parent)
 	connect(m_browseBtn, SIGNAL(clicked()), this, SLOT(browse()));
 }
 
+PathLineEdit::~PathLineEdit()
+{
+}
+
 void PathLineEdit::setDefaultDirectory(const QString& dir)
 {
 	m_defaultDir.setPath(dir);
@@ -50,34 +54,42 @@ void PathLineEdit::resizeEvent(QResizeEvent* event)
 	m_browseBtn->move(width() - height, 0);
 }
 
+void PathLineEdit::setPath(const QString& path)
+{
+	QString finalPath(path);
+	if (!path.isEmpty() && m_defaultDir.exists())
+	{
+		QString tmp = m_defaultDir.relativeFilePath(path);
+		if (!tmp.startsWith(".."))
+			finalPath = tmp;
+	}
+
+	if (!finalPath.isEmpty())
+		setText(finalPath);
+}
+
 void PathLineEdit::browse()
 {
-	QFileDialog dlg(this);
+	auto dlg = new QFileDialog(this);
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->setAcceptMode(QFileDialog::AcceptOpen);
+
+	connect(dlg, &QFileDialog::fileSelected,
+		this, &PathLineEdit::setPath);
 
 	if (m_pathType == FilePath)
 	{
-		dlg.setFileMode(QFileDialog::AnyFile);
+		dlg->setFileMode(QFileDialog::AnyFile);
 	}
 	else
 	{
-		dlg.setFileMode(QFileDialog::Directory);
-		dlg.setOption(QFileDialog::ShowDirsOnly);
+		dlg->setFileMode(QFileDialog::Directory);
+		dlg->setOption(QFileDialog::ShowDirsOnly);
 	}
 
 	if (m_defaultDir.exists())
-		dlg.setDirectory(m_defaultDir);
+		dlg->setDirectory(m_defaultDir);
 
-	if (dlg.exec() == QDialog::Accepted)
-	{
-		QString val(dlg.selectedFiles().first());
-		if (!val.isEmpty() && m_defaultDir.exists())
-		{
-			QString tmp = m_defaultDir.relativeFilePath(val);
-			if (!tmp.startsWith(".."))
-				val = tmp;
-		}
-
-		if (!val.isEmpty())
-			setText(val);
-	}
+	dlg->setWindowModality(Qt::WindowModal);
+	dlg->open();
 }

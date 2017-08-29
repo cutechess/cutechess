@@ -20,6 +20,8 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QEvent>
+#include <QtDebug>
 #include "pathlineedit.h"
 
 EngineOptionDelegate::EngineOptionDelegate(QWidget* parent)
@@ -30,6 +32,20 @@ EngineOptionDelegate::EngineOptionDelegate(QWidget* parent)
 void EngineOptionDelegate::setEngineDirectory(const QString& dir)
 {
 	m_engineDir = dir;
+}
+
+bool EngineOptionDelegate::eventFilter(QObject* object, QEvent* event)
+{
+	// Make sure the PathLineEdit object stays alive when the
+	// file dialog opens and gets focus.
+	if (event->type() == QEvent::FocusOut)
+	{
+		auto editor = qobject_cast<PathLineEdit*>(object);
+		if (editor)
+			return false;
+	}
+
+	return QStyledItemDelegate::eventFilter(object, event);
 }
 
 QWidget* EngineOptionDelegate::createEditor(QWidget* parent,

@@ -34,6 +34,7 @@ class PathLineEdit : public QLineEdit
 		};
 
 		explicit PathLineEdit(PathType pathType, QWidget* parent = nullptr);
+		virtual ~PathLineEdit();
 
 		void setDefaultDirectory(const QString& dir);
 
@@ -42,6 +43,7 @@ class PathLineEdit : public QLineEdit
 
 	private slots:
 		void browse();
+		void setPath(const QString& path);
 
 	private:
 		PathType m_pathType;

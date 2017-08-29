@@ -37,6 +37,9 @@ class EngineOptionDelegate : public QStyledItemDelegate
 	public slots:
 		void setEngineDirectory(const QString& dir);
 
+	protected:
+		virtual bool eventFilter(QObject* object, QEvent* event);
+
 	private:
 		QString m_engineDir;
 };
