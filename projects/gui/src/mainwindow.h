@@ -20,6 +20,7 @@
 
 #include <QMainWindow>
 #include <QPointer>
+#include <board/side.h>
 
 namespace Chess {
 	class Board;
@@ -97,14 +98,6 @@ class MainWindow : public QMainWindow
 			bool m_finished;
 		};
 
-		/*! Outcomes of adjudication by user */
-		enum UserAdjudication
-		{
-			WhiteWin,
-			BlackWin,
-			Draw
-		};
-
 		void createActions();
 		void createMenus();
 		void createToolBars();
@@ -121,7 +114,7 @@ class MainWindow : public QMainWindow
 		int tabIndex(ChessGame* game) const;
 		int tabIndex(Tournament* tournament, bool freeTab = false) const;
 		void addDefaultWindowMenu();
-		void adjudicateGame(UserAdjudication value);
+		void adjudicateGame(Chess::Side winner);
 
 		QMenu* m_gameMenu;
 		QMenu* m_tournamentMenu;

@@ -1049,39 +1049,30 @@ bool MainWindow::askToSave()
 
 void MainWindow::adjudicateDraw()
 {
-	adjudicateGame(Draw);
+	adjudicateGame(Chess::Side::NoSide);
 }
 
 void MainWindow::adjudicateWhiteWin()
 {
-	adjudicateGame(WhiteWin);
+	adjudicateGame(Chess::Side::White);
 }
 
 void MainWindow::adjudicateBlackWin()
 {
-	adjudicateGame(BlackWin);
+	adjudicateGame(Chess::Side::Black);
 }
 
-void MainWindow::adjudicateGame(UserAdjudication value)
+void MainWindow::adjudicateGame(Chess::Side winner)
 {
-	using Chess::Result;
-	ChessGame *game = m_tabs.at(m_tabBar->currentIndex()).m_game;
-
-	if (game == nullptr)
+	if (!m_game)
 		return;
 
-	Chess::Side winner = Chess::Side::NoSide;
-
-	if (value == WhiteWin)
-		winner = Chess::Side::White;
-	else if (value == BlackWin)
-		winner = Chess::Side::Black;
-
-	Result result = Result(Result::Adjudication, winner, tr("user decision"));
-
-	lockCurrentGame();
-	game->onAdjudication(result);
-	unlockCurrentGame();
+	auto result = Chess::Result(Chess::Result::Adjudication,
+				    winner,
+				    tr("user decision"));
+	QMetaObject::invokeMethod(m_game, "onAdjudication",
+				  Qt::QueuedConnection,
+				  Q_ARG(Chess::Result, result));
 }
 
 void MainWindow::addDefaultWindowMenu()
