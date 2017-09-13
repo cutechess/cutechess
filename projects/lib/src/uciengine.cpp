@@ -173,28 +173,32 @@ void UciEngine::makeMove(const Chess::Move& move)
 	if (!m_ponderMove.isNull())
 	{
 		m_movesPondered++;
-		if (move == m_ponderMove)
-		{
+		bool gotPonderHit = (move == m_ponderMove);
+		if (gotPonderHit)
 			m_ponderHits++;
-			m_ponderState = PonderHit;
-		}
 
-		m_ponderMove = Chess::Move();
-		m_ponderMoveSan.clear();
-		if (m_ponderState != PonderHit)
+		if (pondering())
 		{
-			m_moveStrings.truncate(m_moveStrings.lastIndexOf(' '));
-			if (isReady())
+			if (gotPonderHit)
+				m_ponderState = PonderHit;
+
+			m_ponderMove = Chess::Move();
+			m_ponderMoveSan.clear();
+			if (m_ponderState != PonderHit)
 			{
-				m_ignoreThinking = true;
-				if (stopThinking())
-					ping(false);
-			}
-			else
-			{
-				// Cancel sending the "go ponder" message
-				clearWriteBuffer();
-				m_rePing = true;
+				m_moveStrings.truncate(m_moveStrings.lastIndexOf(' '));
+				if (isReady())
+				{
+					m_ignoreThinking = true;
+					if (stopThinking())
+						ping(false);
+				}
+				else
+				{
+					// Cancel sending the "go ponder" message
+					clearWriteBuffer();
+					m_rePing = true;
+				}
 			}
 		}
 	}
@@ -245,7 +249,7 @@ void UciEngine::startThinking()
 		qFatal("Player %s doesn't have a side", qPrintable(name()));
 	
 	QString command = "go";
-	if (!m_ponderMove.isNull())
+	if (pondering() && !m_ponderMove.isNull())
 	{
 		command += " ponder";
 		m_ponderState = Pondering;
@@ -280,7 +284,7 @@ void UciEngine::startThinking()
 
 void UciEngine::startPondering()
 {
-	if (m_ponderMove.isNull())
+	if (!pondering() || m_ponderMove.isNull())
 		return;
 
 	m_moveStrings += " " + board()->moveString(m_ponderMove, Chess::Board::LongAlgebraic);
@@ -645,8 +649,7 @@ void UciEngine::parseLine(const QString& line)
 			return;
 		}
 
-		if (m_canPonder && pondering()
-		&&  (token = nextToken(token)) == "ponder")
+		if (m_canPonder && (token = nextToken(token)) == "ponder")
 		{
 			board()->makeMove(move);
 			setPonderMove(nextToken(token).toString());
@@ -811,7 +814,7 @@ QString UciEngine::sanPv(const QVarLengthArray<QStringRef>& tokens)
 	QString pv;
 	int movesMade = 0;
 
-	if (!m_ponderMove.isNull())
+	if (pondering() && !m_ponderMove.isNull())
 	{
 		board->makeMove(m_ponderMove);
 		movesMade++;
