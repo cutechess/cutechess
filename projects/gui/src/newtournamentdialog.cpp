@@ -91,6 +91,15 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 		dlg->setAcceptMode(QFileDialog::AcceptSave);
 		dlg->open();
 	});
+	connect(ui->m_browseEpdoutBtn, &QPushButton::clicked, this, [=]()
+	{
+		auto dlg = new QFileDialog(this, tr("Select EPD output file"),
+			QString(), tr("Extended Position Description (*.epd)"));
+		connect(dlg, &QFileDialog::fileSelected, ui->m_epdoutEdit, &QLineEdit::setText);
+		dlg->setAttribute(Qt::WA_DeleteOnClose);
+		dlg->setAcceptMode(QFileDialog::AcceptSave);
+		dlg->open();
+	});
 
 	m_addedEnginesManager = new EngineManager(this);
 	m_addedEnginesModel = new EngineConfigurationModel(
@@ -250,6 +259,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setSite(ui->m_siteEdit->text());
 	t->setVariant(ui->m_gameSettings->chessVariant());
 	t->setPgnOutput(ui->m_pgnoutEdit->text());
+	t->setEpdOutput(ui->m_epdoutEdit->text());
 
 	t->setSeedCount(ts->seedCount());
 	t->setGamesPerEncounter(ts->gamesPerEncounter());
@@ -292,5 +302,13 @@ void NewTournamentDialog::readSettings()
 		pgnName = QSettings().value("tournament/default_pgn_output_file",
 					    QString()).toString();
 		ui->m_pgnoutEdit->setText(pgnName);
+	}
+
+	QString epdName = ui->m_epdoutEdit->text();
+	if (epdName.isEmpty())
+	{
+		epdName = QSettings().value("tournament/default_epd_output_file",
+					    QString()).toString();
+		ui->m_epdoutEdit->setText(epdName);
 	}
 }
