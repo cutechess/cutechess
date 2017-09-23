@@ -45,6 +45,7 @@ class SettingsDialog : public QDialog
 		void browseTbPath();
 		void browseDefaultPgnOutFile();
 		void browseTournamentDefaultPgnOutFile();
+		void browseTournamentDefaultEpdOutFile();
 
 	private:
 		void readSettings();
