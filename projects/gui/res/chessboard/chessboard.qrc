@@ -1,5 +1,13 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
 	<file>default.svg</file>
+	<file>MaurizioMonge/celtic.svg</file>
+	<file>MaurizioMonge/eyes.svg</file>
+	<file>MaurizioMonge/fantasy.svg</file>
+	<file>MaurizioMonge/fantasy_alt.svg</file>
+	<file>MaurizioMonge/freak.svg</file>
+	<file>MaurizioMonge/prmi.svg</file>
+	<file>MaurizioMonge/skulls.svg</file>
+	<file>MaurizioMonge/spatial.svg</file>
 </qresource>
 </RCC>
