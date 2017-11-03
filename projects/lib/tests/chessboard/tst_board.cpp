@@ -854,7 +854,7 @@ void tst_Board::perft_data() const
 		<< 4
 		<< Q_UINT64_C(36828);
 
-	variant = "sortland9";
+	variant = "twokingssymmetric";
 	QTest::newRow("twokings symmetrical variant, startpos")
 		<< variant
 		<< "rnbqkknr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKKNR w KQkq - 0 1"

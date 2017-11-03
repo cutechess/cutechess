@@ -79,12 +79,12 @@ REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(PocketKnightBoard, "pocketknight")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
 REGISTER_BOARD(SlippedGridBoard, "slippedgrid")
-REGISTER_BOARD(TwoKingsSymmetricalBoard, "sortland9")
 REGISTER_BOARD(StandardBoard, "standard")
 REGISTER_BOARD(SuicideBoard, "suicide")
 REGISTER_BOARD(SuperAndernachBoard, "superandernach")
 REGISTER_BOARD(ThreeKingsBoard, "threekings")
 REGISTER_BOARD(TwoKingsEachBoard, "twokings")
+REGISTER_BOARD(TwoKingsSymmetricalBoard, "twokingssymmetric")
 
 
 ClassRegistry<Board>* BoardFactory::registry()

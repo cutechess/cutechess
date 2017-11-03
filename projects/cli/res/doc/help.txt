@@ -41,11 +41,11 @@ Options:
 			'pocketknight': Pocket Knight Chess
 			'racingkings': Racing Kings Chess
 			'slippedgrid': Slipped Grid Chess
-			'sortland9': Symmetrical Two Kings Each Chess
 			'suicide': Suicide Chess (Losing Chess)
 			'superandernach': Super-Andernach Chess
 			'threekings': Three Kings Chess
 			'twokings': Two Kings Each Chess (Wild 9)
+			'twokingssymmetric': Symmetrical Two Kings Each Chess
 			'standard': Standard Chess (default).
   -concurrency N	Set the maximum number of concurrent games to N
   -draw movenumber=NUMBER movecount=COUNT score=SCORE

@@ -84,7 +84,7 @@ class LIB_EXPORT TwoKingsEachBoard : public WesternBoard
  * When a side's kings are on the same file the king closer to its own
  * base rank is royal.
  *
- * Symmetry suggested by Jon Åsvang, Norway 2017.
+ * Symmetry suggested by Abdul-Rahman Sibahi in 2007 and Jon Åsvang in 2017.
  *
  * \sa TwoKingsEachBoard
  */

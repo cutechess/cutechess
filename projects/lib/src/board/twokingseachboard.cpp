@@ -190,7 +190,7 @@ Board* TwoKingsSymmetricalBoard::copy() const
 
 QString TwoKingsSymmetricalBoard::variant() const
 {
-	return "sortland9";
+	return "twokingssymmetric";
 }
 
 bool TwoKingsSymmetricalBoard::isSymmetrical() const
