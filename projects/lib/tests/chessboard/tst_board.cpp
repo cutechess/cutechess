@@ -199,6 +199,11 @@ void tst_Board::moveStrings_data() const
 		<< "g7f6"
 		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
 		<< "3r1rk1/8/1p1pbq1p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
+	QTest::newRow("atomic1")
+		<< "atomic"
+		<< "Rxh3"
+		<< "8/8/8/7K/8/6kp/6N1/7R w - - 16 1"
+		<< "8/8/8/7K/8/8/8/8 b - - 0 1";
 	QTest::newRow("crazyhouse1")
 		<< "crazyhouse"
 		<< "Qd4"
@@ -604,6 +609,23 @@ void tst_Board::perft_data() const
 		<< "2Rnb1kr/5ppp/8/q3p3/p3P3/4P3/6PP/1Q3BKR b Hh - 0 15"
 		<< 3
 		<< Q_UINT64_C(24750);
+
+	variant = "atomic";
+	QTest::newRow("atomic startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5 // 3 plies: 8902, 4 plies: 197326, 5 plies: 4865037, 6 plies: 118951457
+		<< Q_UINT64_C(4865037);
+	QTest::newRow("atomic pos1")
+		<< variant
+		<< "8/8/8/8/8/8/3k4/rR4K1 w Q - 0 1"
+		<< 5 // 3 plies: 1797, 4 plies: 27928, 5 plies: 453449, 6 plies: 7667595
+		<< Q_UINT64_C(453449);
+	QTest::newRow("atomic pos2")
+		<< variant
+		<< "r4b1r/2kb1N2/p2Bpnp1/8/2Pp3p/1P1PPP2/P5PP/R3K2R b KQ -"
+		<< 2 // 1 ply: 4, 2 plies: 148
+		<< Q_UINT64_C(148);
 
 	variant = "crazyhouse";
 	QTest::newRow("crazyhouse startpos")
