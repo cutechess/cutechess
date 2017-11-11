@@ -780,6 +780,20 @@ void tst_Board::perft_data() const
 		<< 5 //4 plies: 139774, 5 plies: 3249033, 6 plies: 74568983
 		<< Q_UINT64_C(3249033);
 
+	variant = "chancellor";
+	QTest::newRow("chancellor startpos")
+		<< variant
+		<< "rnbqkcnbr/ppppppppp/9/9/9/9/9/PPPPPPPPP/RNBQKCNBR w KQkq - 0 1"
+		<< 4 //4 plies: 436656, 5 plies: 13466196, 6 plies: 412625522
+		<< Q_UINT64_C(436656);
+
+	variant = "modern";
+	QTest::newRow("modern startpos")
+		<< variant
+		<< "rnbqkmbnr/ppppppppp/9/9/9/9/9/PPPPPPPPP/RNBMKQBNR w KQkq - 0 1"
+		<< 4 //4 plies: 433729, 5 plies: 13403293, 6 plies: 411178941
+		<< Q_UINT64_C(433729);
+
 	variant = "pocketknight";
 	QTest::newRow("pocketknight startpos")
 		<< variant

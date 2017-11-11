@@ -19,6 +19,7 @@ Options:
 			'berolina': Berolina Chess
 			'capablanca': Capablanca Chess
 			'caparandom': Capablanca Random Chess
+			'chancellor': Chancellor Chess (9x9)
 			'checkless': Checkless Chess
 			'chessgi': Chessgi (Drop Chess)
 			'coregal': Co-regal Chess
@@ -38,6 +39,7 @@ Options:
 			'knightmate': Knightmate
 			'loop': Loop Chess (Drop Chess)
 			'losers': Loser's Chess
+			'modern': Modern Chess (9x9)
 			'pocketknight': Pocket Knight Chess
 			'racingkings': Racing Kings Chess
 			'slippedgrid': Slipped Grid Chess

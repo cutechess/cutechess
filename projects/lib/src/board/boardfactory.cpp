@@ -22,6 +22,7 @@
 #include "berolinaboard.h"
 #include "capablancaboard.h"
 #include "caparandomboard.h"
+#include "chancellorboard.h"
 #include "checklessboard.h"
 #include "chessgiboard.h"
 #include "coregalboard.h"
@@ -39,6 +40,7 @@
 #include "loopboard.h"
 #include "losersboard.h"
 #include "ncheckboard.h"
+#include "modernboard.h"
 #include "pocketknightboard.h"
 #include "racingkingsboard.h"
 #include "standardboard.h"
@@ -57,6 +59,7 @@ REGISTER_BOARD(AtomicBoard, "atomic")
 REGISTER_BOARD(BerolinaBoard, "berolina")
 REGISTER_BOARD(CapablancaBoard, "capablanca")
 REGISTER_BOARD(CaparandomBoard, "caparandom")
+REGISTER_BOARD(ChancellorBoard, "chancellor")
 REGISTER_BOARD(ChecklessBoard, "checkless")
 REGISTER_BOARD(ChessgiBoard, "chessgi")
 REGISTER_BOARD(CoRegalBoard, "coregal")
@@ -76,6 +79,7 @@ REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
 REGISTER_BOARD(KnightMateBoard, "knightmate")
 REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosersBoard, "losers")
+REGISTER_BOARD(ModernBoard, "modern")
 REGISTER_BOARD(PocketKnightBoard, "pocketknight")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
 REGISTER_BOARD(SlippedGridBoard, "slippedgrid")
