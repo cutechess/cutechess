@@ -362,12 +362,15 @@ void Tournament::startGame(TournamentPair* pair)
 		m_openingMoves.clear();
 		m_repetitionCounter++;
 	}
-	else if (m_openingSuite != nullptr)
+	else
 	{
 		m_repetitionCounter = 1;
-		if (!game->setMoves(m_openingSuite->nextGame(m_openingDepth)))
-			qWarning("The opening suite is incompatible with the "
-				 "current chess variant");
+		if (m_openingSuite != nullptr)
+		{
+			if (!game->setMoves(m_openingSuite->nextGame(m_openingDepth)))
+				qWarning("The opening suite is incompatible with the "
+				"current chess variant");
+		}
 	}
 
 	game->generateOpening();
