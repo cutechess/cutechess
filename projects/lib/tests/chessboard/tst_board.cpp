@@ -304,6 +304,11 @@ void tst_Board::moveStrings_data() const
 		<< "Kg1 Be6 Bxe6 Qxe6 Re1 O-O-O"
 		<< "r1b1kbmr/pmp2ppp/1p1p1q2/4p3/2B1P3/1P6/P1PPMPPP/RMBQK2R w KQkq - 0 1"
 		<< "2kr1bmr/pmp2ppp/1p1pq3/4p3/4P3/1P6/P1PPMPPP/RMBQR1K1 w - - 0 4";
+	QTest::newRow("circular gryphon san")
+		<< "circulargryphon"
+		<< "Qxa7 e3 a5 Kb4 Nc6 Nc4+ Ke7 Ba6 Ng4 h4 Be2"
+		<< "8/R4k2/5n2/8/5n2/2K5/q3P2P/8 b - - 0 1"
+		<< "8/4k3/R1b5/8/1K3n1N/8/4r3/8 w - - 1 6";
 	QTest::newRow("giveaway san1")
 		<< "giveaway"
 		<< "e3"
@@ -518,6 +523,13 @@ void tst_Board::results_data() const
 		<< "8/8/8/8/pk6/KP6/2r5/8 w - - 0 1"
 		<< "1/2-1/2";
 
+	variant = "gryphon";
+
+	QTest::newRow("gryphon black win")
+		<< variant
+		<< "r1b4r/ppp2pp1/3n1b2/1RB1nK1n/2k1K3/5B2/PPPP1PPP/RNB5 w - - 0 1"
+		<< "0-1";
+
 	variant = "twokings";
 
 	QTest::newRow("twokings black win1")
@@ -547,9 +559,9 @@ void tst_Board::perft_data() const
 	QTest::addColumn<QString>("fen");
 	QTest::addColumn<int>("depth");
 	QTest::addColumn<quint64>("nodecount");
-	
+
 	QString variant = "standard";
-	
+
 	QTest::newRow("startpos")
 		<< variant
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -822,6 +834,32 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[Nn] w KQkq - 0 1"
 		<< 4  // 3 plies: 88617, 4 plies: 3071267, 5 plies: 99614985
 		<< Q_UINT64_C(3071267);
+
+	variant = "gryphon";
+	QTest::newRow("gryphon startpos")
+		<< variant
+		<< "rnbq1bnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQ1BNR w - - 0 1"
+		<< 5 //4 plies: 280477, 5 plies: 6778804, 6 plies: 162243917
+		<< Q_UINT64_C(6778804);
+	QTest::newRow("gryphon middlegame")
+		<< variant
+		<< "r2q2nr/p5pp/1n2rn2/2nB4/5N2/R2R2q1/P2P3P/R2Q3R w - - 0 1"
+		<< 4 //2 plies: 982, 3 plies: 27370, 4 plies: 1014040
+		<< Q_UINT64_C(1014040);
+
+	variant = "circulargryphon";
+	QTest::newRow("circulargryphon startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"
+		<< 5 //4 plies: 243435, 5 plies: 5766940, 6 plies: 134596721
+		<< Q_UINT64_C(5766940);
+
+	variant = "simplifiedgryphon";
+	QTest::newRow("simplifiedgryphon startpos")
+		<< variant
+		<< "4k3/pppppppp/8/8/8/8/PPPPPPPP/4K3 w - - 0 1"
+		<< 5 //4 plies: 92350, 5 plies: 1993716, 6 plies: 42279298
+		<< Q_UINT64_C(1993716);
 
 	variant = "losers";
 	QTest::newRow("losers startpos")

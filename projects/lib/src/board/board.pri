@@ -12,6 +12,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/capablancaboard.cpp \
     $$PWD/coregalboard.cpp \
     $$PWD/extinctionboard.cpp \
+    $$PWD/gryphonboard.cpp \
     $$PWD/threekingsboard.cpp \
     $$PWD/kingofthehillboard.cpp \
     $$PWD/hordeboard.cpp \
@@ -57,6 +58,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/capablancaboard.h \
     $$PWD/coregalboard.h \
     $$PWD/extinctionboard.h \
+    $$PWD/gryphonboard.h \
     $$PWD/threekingsboard.h \
     $$PWD/kingofthehillboard.h \
     $$PWD/hordeboard.h \
