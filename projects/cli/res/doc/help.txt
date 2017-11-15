@@ -20,8 +20,10 @@ Options:
 			'capablanca': Capablanca Chess
 			'caparandom': Capablanca Random Chess
 			'chancellor': Chancellor Chess (9x9)
+			'changeover': Change-Over Chess
 			'checkless': Checkless Chess
 			'chessgi': Chessgi (Drop Chess)
+			'circulargryphon': Circular Gryphon Chess
 			'coregal': Co-regal Chess
 			'crazyhouse': Crazyhouse (Drop Chess)
 			'discplacedgrid': Displaced Grid Chess
@@ -32,6 +34,7 @@ Options:
 			'gothic': Gothic Chess
 			'grid': Grid Chess
 			'gridolina': Berolina Grid Chess
+			'gryphon': Gryphon Chess
 			'horde': Horde Chess (v2)
 			'janus': Janus Chess
 			'kinglet': Kinglet Chess
@@ -43,6 +46,7 @@ Options:
 			'pocketknight': Pocket Knight Chess
 			'racingkings': Racing Kings Chess
 			'slippedgrid': Slipped Grid Chess
+			'simplifiedgryphon': Simplified Gryphon Chess
 			'suicide': Suicide Chess (Losing Chess)
 			'superandernach': Super-Andernach Chess
 			'threekings': Three Kings Chess
