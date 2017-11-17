@@ -769,29 +769,16 @@ void WesternBoard::setCastlingSquare(Side side,
 void WesternBoard::removeCastlingRights(int square)
 {
 	Piece piece = pieceAt(square);
-	int type = piece.type();
-
-	if (type != Rook && type != King)
+	if (piece.type() != Rook)
 		return;
 
 	Side side(piece.side());
 	const int* cr = m_castlingRights.rookSquare[side];
 
-	if (type == Rook)
-	{
-		if (square == cr[QueenSide])
-			setCastlingSquare(side, QueenSide, 0);
-		else if (square == cr[KingSide])
-			setCastlingSquare(side, KingSide, 0);
-	}
-	// variants: remove castling rights if King is captured on base rank
-	else if (type == King)
-	{
-		if (square - cr[QueenSide] < width())
-			setCastlingSquare(side, QueenSide, 0);
-		if (cr[KingSide] - square < width())
-			setCastlingSquare(side, KingSide, 0);
-	}
+	if (square == cr[QueenSide])
+		setCastlingSquare(side, QueenSide, 0);
+	else if (square == cr[KingSide])
+		setCastlingSquare(side, KingSide, 0);
 }
 
 int WesternBoard::castlingFile(CastlingSide castlingSide) const
