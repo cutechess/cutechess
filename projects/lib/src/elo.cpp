@@ -36,7 +36,7 @@ qreal Elo::diff() const
 	return diff(m_mu);
 }
 
-qreal Elo::diff(qreal p) const
+qreal Elo::diff(qreal p)
 {
 	return -400.0 * std::log10(1.0 / p - 1.0);
 }
@@ -48,7 +48,7 @@ qreal Elo::errorMargin() const
 	return (diff(muMax) - diff(muMin)) / 2.0;
 }
 
-qreal Elo::erfInv(qreal x) const
+qreal Elo::erfInv(qreal x)
 {
 	const qreal pi = 3.1415926535897;
 
@@ -63,7 +63,7 @@ qreal Elo::erfInv(qreal x) const
 	return ret;
 }
 
-qreal Elo::phiInv(qreal p) const
+qreal Elo::phiInv(qreal p)
 {
 	return std::sqrt(2.0) * erfInv(2.0 * p - 1.0);
 }
