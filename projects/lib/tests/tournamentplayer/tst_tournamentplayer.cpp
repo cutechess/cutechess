@@ -85,6 +85,7 @@ void tst_TournamentPlayer::cleanupTestCase()
 {
 	delete m_player;
 	delete m_builder;
+	delete m_book;
 }
 
 void tst_TournamentPlayer::initialValues()
