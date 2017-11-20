@@ -41,6 +41,7 @@ script:
       (cd mersenne; ./tst_mersenne) &&
       (cd sprt; ./tst_sprt) &&
       (cd tournamentplayer; ./tst_tournamentplayer) &&
+      (cd tournamentpair; ./tst_tournamentpair) &&
       (cd polyglotbook; ./tst_polyglotbook)
     - cd ${TRAVIS_BUILD_DIR}/projects/lib/components/json/tests/ && qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make &&
       (cd parser; ./tst_jsonparser) &&
