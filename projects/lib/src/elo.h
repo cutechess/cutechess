@@ -52,12 +52,12 @@ class LIB_EXPORT Elo
 		qreal m_stdev;
 
 		// Elo difference
-		qreal diff(qreal p) const;
+		static qreal diff(qreal p);
 		// Inverted error function
-		qreal erfInv(qreal x) const;
+		static qreal erfInv(qreal x);
 		// Quantile function for the standard Gaussian law:
 		// probability -> quantile
-		qreal phiInv(qreal p) const;
+		static qreal phiInv(qreal p);
 };
 
 #endif // ELO_H
