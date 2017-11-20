@@ -10,6 +10,10 @@ tst_board
 tst_gtb
 tst_sprt
 tst_mersenne
+tst_polyglotbook
+tst_tournamentpair
+tst_tournamentplayer
+tst_tb
 tst_pipereader
 tst_jsonparser
 tst_jsonserializer
