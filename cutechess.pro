@@ -12,8 +12,8 @@ QMAKE_EXTRA_TARGETS += doc-api
 
 # Documentation in HTML format
 doc-html.commands = \
-    mandoc -Txhtml -Ostyle=man-style.css docs/cutechess-cli.6 > docs/cutechess-cli.6.html; \
-    mandoc -Txhtml -Ostyle=man-style.css docs/engines.json.5 > docs/engines.json.5.html
+    mandoc -Thtml -Ostyle=man-style.css docs/cutechess-cli.6 > docs/cutechess-cli.6.html; \
+    mandoc -Thtml -Ostyle=man-style.css docs/engines.json.5 > docs/engines.json.5.html
 QMAKE_EXTRA_TARGETS += doc-html
 QMAKE_DISTCLEAN += docs/cutechess-cli.6.html
 QMAKE_DISTCLEAN += docs/engines.json.5.html
