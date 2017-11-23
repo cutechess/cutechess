@@ -92,13 +92,13 @@ Move JanusBoard::moveFromSanString(const QString& str)
 	if (hasCastlingRight(sideToMove(), KingSide))
 	{
 		Move castlingMove = WesternBoard::moveFromSanString("O-O");
-		if (str == sanMoveString(castlingMove))
+		if (!castlingMove.isNull() && str == sanMoveString(castlingMove))
 			return castlingMove;
 	}
 	if (hasCastlingRight(sideToMove(), QueenSide))
 	{
 		Move castlingMove = WesternBoard::moveFromSanString("O-O-O");
-		if (str == sanMoveString(castlingMove))
+		if (!castlingMove.isNull() && str == sanMoveString(castlingMove))
 			return castlingMove;
 	}
 
