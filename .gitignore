@@ -18,6 +18,9 @@ tst_pipereader
 tst_jsonparser
 tst_jsonserializer
 
+# tool executables
+tagtrimmer
+
 # libraries
 *.so
 *.so.*
