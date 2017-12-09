@@ -47,6 +47,7 @@ class LIB_EXPORT TwoKingsEachBoard : public WesternBoard
 		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
+		virtual Result result();
 	protected:
 		virtual void vInitialize();
 		virtual bool kingsCountAssertion(int whiteKings,

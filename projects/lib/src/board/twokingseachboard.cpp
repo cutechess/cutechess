@@ -176,6 +176,79 @@ Move TwoKingsEachBoard::moveFromSanString(const QString& str)
 	return move;
 }
 
+Result TwoKingsEachBoard::result()
+{
+	QString str;
+
+	// Checkmate/Stalemate
+	if (!canMove())
+	{
+		if (inCheck(sideToMove()))
+		{
+			Side winner = sideToMove().opposite();
+			str = tr("%1 mates").arg(winner.toString());
+
+			return Result(Result::Win, winner, str);
+		}
+		else
+		{
+			str = tr("Draw by stalemate");
+			return Result(Result::Draw, Side::NoSide, str);
+		}
+	}
+
+	// Insufficient mating material
+	int material = -4; // two kings
+	bool bishops[] = { false, false };
+	for (int i = 0; i < arraySize(); i++)
+	{
+		const Piece& piece = pieceAt(i);
+		if (!piece.isValid())
+			continue;
+
+		switch (piece.type())
+		{
+		case Bishop:
+		{
+			auto color = chessSquare(i).color();
+			if (color != Square::NoColor && !bishops[color])
+			{
+				material++;
+				bishops[color] = true;
+			}
+			break;
+		}
+		case Knight:
+			material++;
+			break;
+		default:
+			material += 2;
+			break;
+		}
+	}
+	if (material <= 1)
+	{
+		str = tr("Draw by insufficient mating material");
+		return Result(Result::Draw, Side::NoSide, str);
+	}
+
+	// 50 move rule
+	if (reversibleMoveCount() >= 100)
+	{
+		str = tr("Draw by fifty moves rule");
+		return Result(Result::Draw, Side::NoSide, str);
+	}
+
+	// 3-fold repetition
+	if (repeatCount() >= 2)
+	{
+		str = tr("Draw by 3-fold repetition");
+		return Result(Result::Draw, Side::NoSide, str);
+	}
+
+	return Result();
+}
+
 
 
 TwoKingsSymmetricalBoard::TwoKingsSymmetricalBoard()
