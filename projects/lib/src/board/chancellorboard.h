@@ -18,7 +18,7 @@
 #ifndef CHANCELLORBOARD_H
 #define CHANCELLORBOARD_H
 
-#include "capablancaboard.h"
+#include "westernboard.h"
 
 namespace Chess {
 
@@ -41,19 +41,28 @@ namespace Chess {
  * \sa CapablancaBoard
  * \sa ModernBoard
  */
-class LIB_EXPORT ChancellorBoard : public CapablancaBoard
+class LIB_EXPORT ChancellorBoard : public WesternBoard
 {
 	public:
 		/*! Creates a new ChancellorBoard object. */
 		ChancellorBoard();
 
-		// Inherited from CapablancaBoard
+		// Inherited from WesternBoard
 		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
 		virtual int width() const;
 		virtual int height() const;
+	protected:
+		enum ChancellorPieceType
+		{
+			Chancellor = 8 //!< Chancellor (knight + rook)
+		};
+		// Inherited from WesternBoard
 		virtual int castlingFile(CastlingSide castlingSide) const;
+		virtual void addPromotions(int sourceSquare,
+					   int targetSquare,
+					   QVarLengthArray< Move >& moves) const;
 };
 
 } // namespace Chess

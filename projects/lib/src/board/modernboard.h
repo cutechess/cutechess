@@ -18,7 +18,7 @@
 #ifndef MODERNBOARD_H
 #define MODERNBOARD_H
 
-#include "capablancaboard.h"
+#include "westernboard.h"
 
 namespace Chess {
 
@@ -36,26 +36,36 @@ namespace Chess {
  * This variant was introduced in 1964 (Madrid) by Gabriel Maura, Puerto Rico.
  *
  * \note Rules: https://en.wikipedia.org/wiki/Modern_Chess_(chess_variant)
+ * This board implements the rules of 1964 and does not support Bishop
+ * adjustment moves.
  *
  * \sa CapablancaBoard
  * \sa ChancellorBoard
- * TODO: clarify FEN notation
  */
-class LIB_EXPORT ModernBoard : public CapablancaBoard
+class LIB_EXPORT ModernBoard : public WesternBoard
 {
 	public:
 		/*! Creates a new ModernBoard object. */
 		ModernBoard();
 
-		// Inherited from CapablancaBoard
+		// Inherited from WesternBoard
 		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
 		virtual int width() const;
 		virtual int height() const;
-		virtual int castlingFile(CastlingSide castlingSide) const;
 		virtual QString sanMoveString(const Move& move);
 		virtual Move moveFromSanString(const QString& str);
+	protected:
+		enum ModernChessPieceType
+		{
+			Minister = 7 //!< Minister = Archbishop (knight + bishop)
+		};
+		// Inherited from WesternBoard
+		virtual int castlingFile(CastlingSide castlingSide) const;
+		virtual void addPromotions(int sourceSquare,
+					   int targetSquare,
+					   QVarLengthArray< Move >& moves) const;
 };
 
 } // namespace Chess
