@@ -304,6 +304,31 @@ void tst_Board::moveStrings_data() const
 		<< "Kg1 Be6 Bxe6 Qxe6 Re1 O-O-O"
 		<< "r1b1kbmr/pmp2ppp/1p1p1q2/4p3/2B1P3/1P6/P1PPMPPP/RMBQK2R w KQkq - 0 1"
 		<< "2kr1bmr/pmp2ppp/1p1pq3/4p3/4P3/1P6/P1PPMPPP/RMBQR1K1 w - - 0 4";
+	QTest::newRow("chancellor castling san")
+		<< "chancellor"
+		<< "O-O O-O-O"
+		<< "r3k3r/ppp3ppp/9/9/9/9/9/PPP3PPP/R3K3R w KQkq - 0 1"
+		<< "2kr4r/ppp3ppp/9/9/9/9/9/PPP3PPP/R4RK2 w - - 0 2";
+	QTest::newRow("chancellor castling lan")
+		<< "chancellor"
+		<< "e1g1 e9c9"
+		<< "r3k3r/ppp3ppp/9/9/9/9/9/PPP3PPP/R3K3R w KQkq - 0 1"
+		<< "2kr4r/ppp3ppp/9/9/9/9/9/PPP3PPP/R4RK2 w - - 0 2";
+	QTest::newRow("modern castling san1")
+		<< "modern"
+		<< "O-Q-O O-M-O"
+		<< "r1bqk3r/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B1K3R w KQkq - 0 1"
+		<< "r1bq1rk2/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B2RK2 w - - 0 2";
+	QTest::newRow("modern castling san2")
+		<< "modern"
+		<< "O-O O-O"
+		<< "r1bqk3r/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B1K3R w KQkq - 0 1"
+		<< "r1bq1rk2/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B2RK2 w - - 0 2";
+	QTest::newRow("modern castling lan")
+		<< "modern"
+		<< "e1g1 e9g9"
+		<< "r1bqk3r/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B1K3R w KQkq - 0 1"
+		<< "r1bq1rk2/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B2RK2 w - - 0 2";
 	QTest::newRow("circular gryphon san")
 		<< "circulargryphon"
 		<< "Qxa7 e3 a5 Kb4 Nc6 Nc4+ Ke7 Ba6 Ng4 h4 Be2"
@@ -834,6 +859,11 @@ void tst_Board::perft_data() const
 		<< "rnbqkcnbr/ppppppppp/9/9/9/9/9/PPPPPPPPP/RNBQKCNBR w KQkq - 0 1"
 		<< 4 // 4 plies: 436656, 5 plies: 13466196, 6 plies: 412625522
 		<< Q_UINT64_C(436656);
+	QTest::newRow("chancellor promotion")
+		<< variant
+		<< "4k4/1P7/K8/9/9/9/9/9/9 w - - 0 1"
+		<< 2
+		<< Q_UINT64_C(37);
 
 	variant = "modern";
 	QTest::newRow("modern startpos")
@@ -841,6 +871,11 @@ void tst_Board::perft_data() const
 		<< "rnbqkmbnr/ppppppppp/9/9/9/9/9/PPPPPPPPP/RNBMKQBNR w KQkq - 0 1"
 		<< 4 // 4 plies: 433729, 5 plies: 13403293, 6 plies: 411178941
 		<< Q_UINT64_C(433729);
+	QTest::newRow("modern promotion")
+		<< variant
+		<< "4k4/1P7/K8/9/9/9/9/9/9 w - - 0 1"
+		<< 2
+		<< Q_UINT64_C(39);
 
 	variant = "pocketknight";
 	QTest::newRow("pocketknight startpos")

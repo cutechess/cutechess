@@ -16,15 +16,15 @@
 */
 
 #include "modernboard.h"
-
+#include "westernzobrist.h"
 
 namespace Chess {
 
 ModernBoard::ModernBoard()
-	: CapablancaBoard()
+	: WesternBoard(new WesternZobrist())
 {
-	// rename Archbishop to Minister to comply notation, but use "A" graphics 
-	setPieceType(Archbishop, tr("minister"), "M",
+	// Use Minister "M" symbol for notation and Archbishop graphics
+	setPieceType(Minister, tr("minister"), "M",
 		     KnightMovement | BishopMovement, "A");
 }
 
@@ -60,10 +60,17 @@ int ModernBoard::castlingFile(WesternBoard::CastlingSide castlingSide) const
 	return castlingSide == QueenSide ? 2 : 6; // c-file and g-file
 }
 
+void ModernBoard::addPromotions(int sourceSquare, int targetSquare, QVarLengthArray< Move >& moves) const
+{
+	WesternBoard::addPromotions(sourceSquare, targetSquare, moves);
+	moves.append(Move(sourceSquare, targetSquare, Minister));
+}
+
+
 // Variant's SAN notation for castling moves: O-M-O (left) and O-Q-O (right).
 QString ModernBoard::sanMoveString(const Move& move)
 {
-	QString str = CapablancaBoard::sanMoveString(move);
+	QString str = WesternBoard::sanMoveString(move);
 
 	if (!str.startsWith("O-O"))
 		return str;
@@ -82,11 +89,11 @@ Move ModernBoard::moveFromSanString(const QString& str)
 {
 	bool isWhite = (sideToMove() == Side::White);
 	if (str.startsWith("O-M-O"))
-		return CapablancaBoard::moveFromSanString(isWhite ? "O-O-O":"O-O");
+		return WesternBoard::moveFromSanString(isWhite ? "O-O-O":"O-O");
 	if (str.startsWith("O-Q-O"))
-		return CapablancaBoard::moveFromSanString(isWhite ? "O-O":"O-O-O");
+		return WesternBoard::moveFromSanString(isWhite ? "O-O":"O-O-O");
 
-	return CapablancaBoard::moveFromSanString(str);
+	return WesternBoard::moveFromSanString(str);
 }
 
 } // namespace Chess
