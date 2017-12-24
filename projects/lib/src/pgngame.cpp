@@ -279,6 +279,12 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 		writeTag(out, "SetUp", m_tags["SetUp"]);
 	}
 
+	if (mode == Minimal && m_tags.contains("Variant")
+	&&  variant() != "standard")
+	{
+		writeTag(out, "Variant", m_tags["Variant"]);
+	}
+
 	QString str;
 	int lineLength = 0;
 	int movenum = 0;
