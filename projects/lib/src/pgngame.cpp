@@ -391,7 +391,7 @@ QString PgnGame::variant() const
 {
 	if (m_tags.contains("Variant"))
 	{
-		QString variant(m_tags.value("Variant"));
+		QString variant(m_tags.value("Variant").toLower());
 		if ("chess" != variant && "normal" != variant)
 			return variant;
 	}
