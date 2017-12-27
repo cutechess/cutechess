@@ -40,6 +40,8 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/pocketknightboard.cpp \
     $$PWD/chancellorboard.cpp \
     $$PWD/modernboard.cpp \
+    $$PWD/shatranjboard.cpp \
+    $$PWD/courierboard.cpp \
     $$PWD/boardfactory.cpp \
     $$PWD/boardtransition.cpp \
     $$PWD/syzygytablebase.cpp
@@ -86,6 +88,8 @@ HEADERS += $$PWD/board.h \
     $$PWD/pocketknightboard.h \
     $$PWD/chancellorboard.h \
     $$PWD/modernboard.h \
+    $$PWD/shatranjboard.h \
+    $$PWD/courierboard.h \
     $$PWD/boardfactory.h \
     $$PWD/boardtransition.h \
     $$PWD/syzygytablebase.h

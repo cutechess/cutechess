@@ -26,6 +26,7 @@
 #include "checklessboard.h"
 #include "chessgiboard.h"
 #include "coregalboard.h"
+#include "courierboard.h"
 #include "crazyhouseboard.h"
 #include "embassyboard.h"
 #include "extinctionboard.h"
@@ -44,6 +45,7 @@
 #include "modernboard.h"
 #include "pocketknightboard.h"
 #include "racingkingsboard.h"
+#include "shatranjboard.h"
 #include "standardboard.h"
 #include "suicideboard.h"
 #include "threekingsboard.h"
@@ -66,6 +68,7 @@ REGISTER_BOARD(ChecklessBoard, "checkless")
 REGISTER_BOARD(ChessgiBoard, "chessgi")
 REGISTER_BOARD(CircularGryphonBoard, "circulargryphon")
 REGISTER_BOARD(CoRegalBoard, "coregal")
+REGISTER_BOARD(CourierBoard, "courier")
 REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
 REGISTER_BOARD(DisplacedGridBoard, "displacedgrid")
 REGISTER_BOARD(EmbassyBoard, "embassy")
@@ -86,6 +89,7 @@ REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(ModernBoard, "modern")
 REGISTER_BOARD(PocketKnightBoard, "pocketknight")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
+REGISTER_BOARD(ShatranjBoard, "shatranj")
 REGISTER_BOARD(SimplifiedGryphonBoard, "simplifiedgryphon")
 REGISTER_BOARD(SlippedGridBoard, "slippedgrid")
 REGISTER_BOARD(StandardBoard, "standard")

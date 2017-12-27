@@ -579,6 +579,68 @@ void tst_Board::results_data() const
 		<< variant
 		<< "8/8/8/8/2k5/4kK2/5K2/2q5 w - - 0 1"
 		<< "0-1";
+
+	variant = "shatranj";
+
+	QTest::newRow("shatranj ongoing bk bare")
+		<< variant
+		<< "8/4k3/5R2/8/4K3/8/8/8 b - - 0 1"
+		<< "*";
+	QTest::newRow("shatranj white win bk bare1")
+		<< variant
+		<< "8/4k3/5R2/8/4K3/8/8/8 w - - 0 1"
+		<< "1-0";
+	QTest::newRow("shatranj draw both kings bare")
+		<< variant
+		<< "8/8/5k2/8/4K3/8/8/8 w - - 0 1"
+		<< "1/2-1/2";
+	QTest::newRow("shatranj white win bk bare2")
+		<< variant
+		<< "8/3k4/5R2/8/4K3/8/8/8 b - - 0 1"
+		<< "1-0";
+	QTest::newRow("shatranj white win bk bare3")
+		<< variant
+		<< "8/4k3/5R2/8/4K3/2P5/8/8 b - - 0 1"
+		<< "1-0";
+	QTest::newRow("shatranj black win wk bare1")
+		<< variant
+		<< "8/8/7k/8/2K5/8/2q5/8 w - - 0 1"
+		<< "0-1";
+	QTest::newRow("shatranj black win wk bare2")
+		<< variant
+		<< "8/8/7k/8/2K5/2q5/8/4q3 w - - 0 1"
+		<< "0-1";
+	QTest::newRow("shatranj white mates")
+		<< variant
+		<< "r3k3/2PB1RN1/1n4P1/4PK2/1p3p2/1P6/Pp3P2/8 b - - 0 1"
+		<< "1-0";
+	QTest::newRow("shatranj black mates")
+		<< variant
+		<< "7r/8/4bkqK/8/8/8/7R/8 w - - 0 1"
+		<< "0-1";
+	QTest::newRow("shatranj white king stalemated")
+		<< variant
+		<< "8/8/5kqK/8/8/8/8/8 w - - 0 1"
+		<< "0-1";
+	QTest::newRow("shatranj black king stalemated")
+		<< variant
+		<< "8/8/8/8/8/8/5KQk/8 b - - 0 1"
+		<< "1-0";
+
+	variant = "courier";
+
+	QTest::newRow("courier ongoing bk bare")
+		<< variant
+		<< "12/4k7/5W6/12/4K7/12/12/12 b - - 0 1"
+		<< "*";
+	QTest::newRow("courier white win bk bare1")
+		<< variant
+		<< "12/4k7/5W6/12/4K7/12/12/12 w - - 0 1"
+		<< "1-0";
+	QTest::newRow("courier white win bk bare2")
+		<< variant
+		<< "12/4k7/5W6/12/4K7/11E/12/12 b - - 0 1"
+		<< "1-0";
 }
 
 void tst_Board::results()
@@ -961,6 +1023,25 @@ void tst_Board::perft_data() const
 		<< "knbqkbnk/pppppppp/8/8/8/8/PPPPPPPP/KNBQKBNK w - - 0 1"
 		<< 5 // 4 plies: 199514, 5 plies: 4971357, 6 plies: 123493813
 		<< Q_UINT64_C(4971357);
+
+	variant = "shatranj";
+	QTest::newRow("shatranj startpos")
+		<< variant
+		<< "rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w - - 0 1"
+		<< 5 // 4 plies: 68122, 5 plies: 1164248, 6 plies: 19864709
+		<< Q_UINT64_C(1164248);
+
+	variant = "courier";
+	QTest::newRow("courier startpos")
+		<< variant
+		<< "rnebmkfwbenr/pppppppppppp/12/12/12/12/PPPPPPPPPPPP/RNEBMKFWBENR w - - 0 1"
+		<< 5 // 4 plies: 180571, 5 plies: 4139349, 6 plies: 94789147
+		<< Q_UINT64_C(4139349);
+	QTest::newRow("courier traditional")
+		<< variant
+		<< "rnebmk1wbenr/1ppppp1pppp1/6f5/p5p4p/P5P4P/6F5/1PPPPP1PPPP1/RNEBMK1WBENR w - - 0 1"
+		<< 4 // 4 plies: 500337, 5 plies: 14144849, 6 plies: 400324148
+		<< Q_UINT64_C(500337);
 
 	variant = "twokings";
 	QTest::newRow("twokings startpos")

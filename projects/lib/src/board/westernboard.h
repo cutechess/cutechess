@@ -117,6 +117,24 @@ class LIB_EXPORT WesternBoard : public Board
 		 */
 		virtual bool kingCanCapture() const;
 		/*!
+		* Returns true if castling is allowed.
+		* The default value is true.
+		* \sa ShatranjBoard
+		*/
+		virtual bool hasCastling() const;
+		/*!
+		 * Returns true if pawns have an initial double step option.
+		 * The default value is true.
+		 * \sa ShatranjBoard
+		 */
+		virtual bool pawnHasDoubleStep() const;
+		/*!
+		 * Returns true if a pawn can be captured en passant after
+		 * an initial double step.
+		 * The default value is the value of pawnHasDoubleStep().
+		 */
+		virtual bool hasEnPassantCaptures() const;
+		/*!
 		 * Adds pawn promotions to a move list.
 		 *
 		 * This function is called when a pawn can promote by
@@ -229,6 +247,9 @@ class LIB_EXPORT WesternBoard : public Board
 		int m_enpassantTarget;
 		int m_reversibleMoveCount;
 		bool m_kingCanCapture;
+		bool m_hasCastling;
+		bool m_pawnHasDoubleStep;
+		bool m_hasEnPassantCaptures;
 		bool m_pawnAmbiguous;
 		QVector<MoveData> m_history;
 		CastlingRights m_castlingRights;
