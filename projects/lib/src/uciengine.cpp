@@ -411,12 +411,7 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 			for (int i = 1; i < tokens.size(); i++)
 			{
 				if (tokens[i - 1] == "cp")
-				{
 					score = tokens[i].toString().toInt();
-					if (whiteEvalPov()
-					&&  side() == Chess::Side::Black)
-						score = -score;
-				}
 				else if (tokens[i - 1] == "mate")
 				{
 					score = tokens[i].toString().toInt();
@@ -430,6 +425,8 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 					return;
 				i++;
 			}
+			if (whiteEvalPov() && side() == Chess::Side::Black)
+				score = -score;
 			eval->setScore(score);
 		}
 		break;
