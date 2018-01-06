@@ -344,7 +344,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 			ok = (countOk && scoreOk);
 			if (ok)
-				adjudicator.setResignThreshold(moveCount, -score);
+				adjudicator.setResignThreshold(moveCount, score);
 		}
 		// Syzygy tablebase adjudication
 		else if (name == "-tb")
