@@ -46,6 +46,7 @@ Options:
 			'modern': Modern Chess (9x9)
 			'pocketknight': Pocket Knight Chess
 			'racingkings': Racing Kings Chess
+			'seirawan': S-Chess (Seirawan Chess)
 			'shatranj': Shatranj
 			'slippedgrid': Slipped Grid Chess
 			'simplifiedgryphon': Simplified Gryphon Chess

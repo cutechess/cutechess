@@ -81,6 +81,11 @@ bool Board::variantHasDrops() const
 	return false;
 }
 
+bool Board::variantHasOptionalPromotions() const
+{
+	return false;
+}
+
 QList<Piece> Board::reservePieceTypes() const
 {
 	return QList<Piece>();

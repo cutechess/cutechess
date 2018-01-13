@@ -135,6 +135,14 @@ class LIB_EXPORT WesternBoard : public Board
 		 */
 		virtual bool hasEnPassantCaptures() const;
 		/*!
+		 * Returns true if a rule provides \a side to insert a reserve
+		 * piece at a vacated source \a square immediately after a move.
+		 * The default value is false.
+		 *
+		 * \sa SeirawanBoard
+		 */
+		virtual bool variantHasChanneling(Side side, int square) const;
+		/*!
 		 * Adds pawn promotions to a move list.
 		 *
 		 * This function is called when a pawn can promote by
@@ -149,6 +157,11 @@ class LIB_EXPORT WesternBoard : public Board
 		int kingSquare(Side side) const;
 		/*! Returns the current en-passant square. */
 		int enpassantSquare() const;
+		/*!
+		 * Parse castling rights given by character \a c of the FEN
+		 * token. Returns true if successful.
+		 */
+		virtual bool parseCastlingRights(QChar c);
 		/*!
 		 * Returns true if \a side has a right to castle on \a castlingSide;
 		 * otherwise returns false.
@@ -228,7 +241,6 @@ class LIB_EXPORT WesternBoard : public Board
 
 		bool canCastle(CastlingSide castlingSide) const;
 		QString castlingRightsString(FenNotation notation) const;
-		bool parseCastlingRights(QChar c);
 		CastlingSide castlingSide(const Move& move) const;
 		void setEnpassantSquare(int square,
 					int target=0);

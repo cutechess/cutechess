@@ -358,6 +358,82 @@ void tst_Board::moveStrings_data() const
 		   "Qxd4 Bc3 Qh4+ g3 Qa4 Nf3 Qa6 Qxa6 bxa6 Ba5 h5 O-O"
 		<< "rnbqkknr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKKNR w KQkq - 0 1"
 		<< "r3kk1r/p2nppp1/p7/B6p/8/5NP1/PPP4P/R4RK1 b kq - 0 20";
+	QTest::newRow("seirawan san1")
+		<< "seirawan"
+		<< "e4 e5 Nf3 Nf6/H Bc4 Hh6 O-O/Eh1 Bd6 Nc3/H O-O/Ee8"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[EHeh] w bcdfgBCDFGKQkq - 0 1"
+		<< "rnbqerk1/pppp1ppp/3b1n1h/4p3/2B1P3/2N2N2/PPPP1PPP/RHBQ1RKE[-] w - - 0 6";
+	QTest::newRow("seirawan castling san1")
+		<< "seirawan"
+		<< "O-O/Ee1 O-O/Hh8"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "r4rkh/pppppppp/8/8/8/8/PPPPPPPP/R3ERK1[He] w aA - 0 2";
+	QTest::newRow("seirawan castling san2")
+		<< "seirawan"
+		<< "O-O/Eh1 O-O-O/He8"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "2krh2r/pppppppp/8/8/8/8/PPPPPPPP/R4RKE[He] w hA - 0 2";
+	QTest::newRow("seirawan castling san3")
+		<< "seirawan"
+		<< "O-O-O/Ea1 O-O-O/Ea8"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "e1kr3r/pppppppp/8/8/8/8/PPPPPPPP/E1KR3R[Hh] w hH - 0 2";
+	QTest::newRow("seirawan castling san4")
+		<< "seirawan"
+		<< "O-O-O/He1 O-O/Ee8"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "r3erk1/pppppppp/8/8/8/8/PPPPPPPP/2KRH2R[Eh] w aH - 0 2";
+	QTest::newRow("seirawan castling san4b")
+		<< "seirawan"
+		<< "O-O-O/He O-O/Ee"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "r3erk1/pppppppp/8/8/8/8/PPPPPPPP/2KRH2R[Eh] w aH - 0 2";
+	QTest::newRow("seirawan castling san4c")
+		<< "seirawan"
+		<< "O-O-O/H O-O/E"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "r3erk1/pppppppp/8/8/8/8/PPPPPPPP/2KRH2R[Eh] w aH - 0 2";
+	QTest::newRow("seirawan castling san5")
+		<< "seirawan"
+		<< "O-O-O O-O"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "r4rk1/pppppppp/8/8/8/8/PPPPPPPP/2KR3R[EHeh] w aH - 0 2";
+	QTest::newRow("seirawan castling san6")
+		<< "seirawan"
+		<< "O-O-O O-O Rhg1/E Rac8/H"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "h1r2rk1/pppppppp/8/8/8/8/PPPPPPPP/2KR2RE[He] w - - 0 3";
+	QTest::newRow("seirawan lan1")
+		<< "seirawan"
+		<< "e2e4 e7e5 g1f3 g8f6h f1c4 g8h6 h1e1e f8d6 b1c3h e8g8e"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[EHeh] w bcdfgBCDFGKQkq - 0 1"
+		<< "rnbqerk1/pppp1ppp/3b1n1h/4p3/2B1P3/2N2N2/PPPP1PPP/RHBQ1RKE[-] w - - 0 6";
+	QTest::newRow("seirawan castling lan1")
+		<< "seirawan"
+		<< "e1g1e h8e8h"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "r4rkh/pppppppp/8/8/8/8/PPPPPPPP/R3ERK1[He] w aA - 0 2";
+	QTest::newRow("seirawan castling lan2")
+		<< "seirawan"
+		<< "h1e1e e8c8h"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "2krh2r/pppppppp/8/8/8/8/PPPPPPPP/R4RKE[He] w hA - 0 2";
+	QTest::newRow("seirawan castling lan3")
+		<< "seirawan"
+		<< "a1e1e a8e8e"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "e1kr3r/pppppppp/8/8/8/8/PPPPPPPP/E1KR3R[Hh] w hH - 0 2";
+	QTest::newRow("seirawan castling lan4")
+		<< "seirawan"
+		<< "e1c1h e8g8e"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "r3erk1/pppppppp/8/8/8/8/PPPPPPPP/2KRH2R[Eh] w aH - 0 2";
+	QTest::newRow("seirawan castling lan5")
+		<< "seirawan"
+		<< "e1c1 e8g8"
+		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
+		<< "r4rk1/pppppppp/8/8/8/8/PPPPPPPP/2KR3R[EHeh] w aH - 0 2";
+
 }
 
 void tst_Board::moveStrings()
@@ -1065,6 +1141,13 @@ void tst_Board::perft_data() const
 		// symmetrical variant 4 plies: 192332, 5 plies: 4629764, 6 plies: 110829475
 		<< 5
 		<< Q_UINT64_C(4629764);
+
+	variant = "seirawan";
+	QTest::newRow("seirawan startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[EHeh] w BCDFGbcdfgKQkq - 0 1"
+		<< 4 // 4 plies: 782599, 5 plies: 27639803, 6 plies: 967587141 (sjaakii: 967584909)
+		<< Q_UINT64_C(782599);
 }
 
 void tst_Board::perft()
