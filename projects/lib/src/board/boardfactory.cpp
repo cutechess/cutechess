@@ -45,6 +45,7 @@
 #include "modernboard.h"
 #include "pocketknightboard.h"
 #include "racingkingsboard.h"
+#include "seirawanboard.h"
 #include "shatranjboard.h"
 #include "standardboard.h"
 #include "suicideboard.h"
@@ -89,6 +90,7 @@ REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(ModernBoard, "modern")
 REGISTER_BOARD(PocketKnightBoard, "pocketknight")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
+REGISTER_BOARD(SeirawanBoard, "seirawan")
 REGISTER_BOARD(ShatranjBoard, "shatranj")
 REGISTER_BOARD(SimplifiedGryphonBoard, "simplifiedgryphon")
 REGISTER_BOARD(SlippedGridBoard, "slippedgrid")

@@ -84,6 +84,11 @@ bool WesternBoard::hasEnPassantCaptures() const
 	return pawnHasDoubleStep();
 }
 
+bool WesternBoard::variantHasChanneling(Side, int) const
+{
+	return false;
+}
+
 void WesternBoard::vInitialize()
 {
 	m_kingCanCapture = kingCanCapture();
@@ -936,6 +941,9 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 		isReversible = false;
 	}
 
+	if (promotionType != Piece::NoPiece)
+		isReversible = false;
+
 	if (transition != nullptr)
 	{
 		if (source != 0)
@@ -1001,7 +1009,12 @@ void WesternBoard::vUndoMove(const Move& move)
 	if (move.promotion() != Piece::NoPiece)
 	{
 		if (source != 0)
-			setSquare(source, Piece(side, Pawn));
+		{
+			if (variantHasChanneling(side, source))
+				setSquare(source, pieceAt(target));
+			else
+				setSquare(source, Piece(side, Pawn));
+		}
 	}
 	else
 		setSquare(source, pieceAt(target));

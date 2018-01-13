@@ -128,6 +128,15 @@ class LIB_EXPORT Board
 		 */
 		virtual bool variantHasDrops() const;
 		/*!
+		 * Returns true if the variant allows to skip a promotion (or a
+		 * move treated as promotion) and make a normal move instead.
+		 * The default value is false, i.e. mandatory promotions.
+		 *
+		 * \sa GrandBoard
+		 * \sa SeirawanBoard
+		 */
+		virtual bool variantHasOptionalPromotions() const;
+		/*!
 		 * Returns a list of piece types that can be in the reserve,
 		 * ie. captured pieces that can be dropped on the board.
 		 *

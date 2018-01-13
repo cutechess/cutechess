@@ -15,7 +15,8 @@ PieceChooser::PieceChooser(const QList<GraphicsPiece*>& pieces,
 	  m_anim(nullptr)
 {
 	for (auto piece : pieces)
-		m_pieces[piece->pieceType().side()] << piece;
+		if (piece != nullptr)
+			m_pieces[piece->pieceType().side()] << piece;
 
 	int columns = qMax(m_pieces[0].size(), m_pieces[1].size());
 	int rows = (!m_pieces[0].isEmpty() && !m_pieces[1].isEmpty()) ? 2 : 1;

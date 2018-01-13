@@ -19,6 +19,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/embassyboard.cpp \
     $$PWD/janusboard.cpp \
     $$PWD/knightmateboard.cpp \
+    $$PWD/seirawanboard.cpp \
     $$PWD/twokingseachboard.cpp \
     $$PWD/zobrist.cpp \
     $$PWD/westernzobrist.cpp \
@@ -67,6 +68,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/embassyboard.h \
     $$PWD/janusboard.h \
     $$PWD/knightmateboard.h \
+    $$PWD/seirawanboard.h \
     $$PWD/twokingseachboard.h \
     $$PWD/zobrist.h \
     $$PWD/westernzobrist.h \
