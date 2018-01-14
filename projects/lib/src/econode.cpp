@@ -118,7 +118,7 @@ void EcoNode::initialize(PgnStream& in)
 	QMap<QString, int> tmpOpenings;
 
 	PgnGame game;
-	while (game.read(in))
+	while (game.read(in, INT_MAX - 1, false))
 	{
 		current = s_root;
 		for (const PgnGame::MoveData& move : game.moves())
