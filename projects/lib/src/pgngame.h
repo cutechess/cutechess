@@ -192,6 +192,8 @@ class LIB_EXPORT PgnGame
 		 * slot is called when a PGN tag changes.
 		 */
 		void setTagReceiver(QObject* receiver);
+		void setGameStartTime(const QDateTime& dateTime);
+		void setGameEndTime(const QDateTime& dateTime);
 
 	private:
 		bool parseMove(PgnStream& in);
@@ -202,6 +204,7 @@ class LIB_EXPORT PgnGame
 		QVector<MoveData> m_moves;
 		QObject* m_tagReceiver;
 		QString m_initialComment;
+		QString timeStamp(const QDateTime& dateTime);
 };
 
 /*! Reads a PGN game from a PGN stream. */
