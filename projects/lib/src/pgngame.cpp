@@ -19,6 +19,7 @@
 #include <QStringList>
 #include <QFile>
 #include <QMetaObject>
+#include <QDateTime>
 #include "board/boardfactory.h"
 #include "econode.h"
 #include "pgnstream.h"
@@ -321,7 +322,9 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 
 		side = !side;
 	}
+
 	str = m_tags.value("Result");
+
 	if (lineLength + str.size() >= 80)
 		out << "\n" << str << "\n\n";
 	else
@@ -521,10 +524,26 @@ void PgnGame::setResultDescription(const QString& description)
 	QString& comment = m_moves.last().comment;
 	if (!comment.isEmpty())
 		comment += ", ";
+
 	comment += description;
 }
 
 void PgnGame::setTagReceiver(QObject* receiver)
 {
 	m_tagReceiver = receiver;
+}
+
+QString PgnGame::timeStamp(const QDateTime& dateTime)
+{
+	return dateTime.toString("yyyy-MM-ddThh:mm:ss.zzz t");
+}
+
+void PgnGame::setGameStartTime(const QDateTime& dateTime)
+{
+	setTag("GameStartTime", timeStamp(dateTime));
+}
+
+void PgnGame::setGameEndTime(const QDateTime& dateTime)
+{
+	setTag("GameEndTime", timeStamp(dateTime));
 }

@@ -171,12 +171,17 @@ void ChessGame::stop(bool emitMoveChanged)
 		return;
 	}
 	
+	QDateTime gameEndTime = QDateTime::currentDateTime();
+
 	initializePgn();
 	m_gameInProgress = false;
 	const QVector<PgnGame::MoveData>& moves(m_pgn->moves());
 	int plies = moves.size();
 
 	m_pgn->setTag("PlyCount", QString::number(plies));
+
+	m_pgn->setGameEndTime(gameEndTime);
+
 	m_pgn->setResult(m_result);
 	m_pgn->setResultDescription(m_result.description());
 
@@ -694,6 +699,8 @@ void ChessGame::startGame()
 	initializePgn();
 	emit started(this);
 	emit fenChanged(m_board->startingFenString());
+	QDateTime gameStartTime = QDateTime::currentDateTime();
+	m_pgn->setGameStartTime(gameStartTime);
 
 	for (int i = 0; i < 2; i++)
 	{
