@@ -16,11 +16,12 @@
 */
 
 #include "shatranjboard.h"
+#include "westernzobrist.h"
 
 namespace Chess {
 
 ShatranjBoard::ShatranjBoard()
-	: StandardBoard()
+	: WesternBoard(new WesternZobrist())
 {
 	setPieceType(Ferz, tr("ferz"), "Q", FerzMovement, "F");
 	setPieceType(Alfil, tr("alfil"), "B", AlfilMovement, "E");
@@ -53,7 +54,7 @@ bool ShatranjBoard::pawnHasDoubleStep() const
 
 void ShatranjBoard::vInitialize()
 {
-	StandardBoard::vInitialize();
+	WesternBoard::vInitialize();
 
 	m_arwidth = width() + 2;
 
@@ -81,7 +82,7 @@ void ShatranjBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 					  int pieceType,
 					  int square) const
 {
-	Chess::StandardBoard::generateMovesForPiece(moves, pieceType, square);
+	Chess::WesternBoard::generateMovesForPiece(moves, pieceType, square);
 	if (pieceHasMovement(pieceType, FerzMovement))
 		generateHoppingMoves(square, m_ferzOffsets, moves);
 	if (pieceHasMovement(pieceType, AlfilMovement))
@@ -114,7 +115,7 @@ bool ShatranjBoard::inCheck(Side side, int square) const
 		&&  pieceHasMovement(piece.type(), AlfilMovement))
 			return true;
 	}
-	return StandardBoard::inCheck(side, square);
+	return WesternBoard::inCheck(side, square);
 }
 
 Result ShatranjBoard::result()
