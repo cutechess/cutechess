@@ -18,7 +18,7 @@
 #ifndef SHATRANJBOARD_H
 #define SHATRANJBOARD_H
 
-#include "standardboard.h"
+#include "westernboard.h"
 
 namespace Chess {
 
@@ -51,13 +51,13 @@ namespace Chess {
  *
  * \note Rules: http://en.wikipedia.org/wiki/Shatranj
  */
-class LIB_EXPORT ShatranjBoard : public StandardBoard
+class LIB_EXPORT ShatranjBoard : public WesternBoard
 {
 	public:
 		/*! Creates a new ShatranjBoard object. */
 		ShatranjBoard();
 
-		// Inherited from StandardBoard
+		// Inherited from WesternBoard
 		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
@@ -78,7 +78,7 @@ class LIB_EXPORT ShatranjBoard : public StandardBoard
 		/*! Movement mask for Alfil moves. */
 		static const unsigned AlfilMovement = 32;
 
-		// Inherited from StandardBoard
+		// Inherited from WesternBoard
 		virtual bool hasCastling() const;
 		virtual bool pawnHasDoubleStep() const;
 		virtual void vInitialize();
