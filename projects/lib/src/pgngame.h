@@ -209,7 +209,7 @@ class LIB_EXPORT PgnGame
 		QVector<MoveData> m_moves;
 		QObject* m_tagReceiver;
 		QString m_initialComment;
-		QString timeStamp(const QDateTime& dateTime);
+		static QString timeStamp(const QDateTime& dateTime);
 };
 
 /*! Reads a PGN game from a PGN stream. */
