@@ -163,6 +163,8 @@ void MainWindow::createActions()
 	m_adjudicateWhiteWinAct = new QAction(tr("Adjudicate Win for White"), this);
 	m_adjudicateBlackWinAct = new QAction(tr("Adjudicate Win for Black"), this);
 
+	m_resignGameAct = new QAction(tr("Resign"), this);
+
 	m_quitGameAct = new QAction(tr("&Quit"), this);
 	m_quitGameAct->setMenuRole(QAction::QuitRole);
 	#ifdef Q_OS_WIN32
@@ -232,6 +234,8 @@ void MainWindow::createActions()
 	connect(m_adjudicateWhiteWinAct, SIGNAL(triggered()), this, SLOT(adjudicateWhiteWin()));
 	connect(m_adjudicateBlackWinAct, SIGNAL(triggered()), this, SLOT(adjudicateBlackWin()));
 
+	connect(m_resignGameAct, SIGNAL(triggered()), this, SLOT(resignGame()));
+
 	connect(m_quitGameAct, &QAction::triggered,
 		app, &CuteChessApplication::onQuitAction);
 
@@ -274,6 +278,8 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_adjudicateDrawAct);
 	m_gameMenu->addAction(m_adjudicateWhiteWinAct);
 	m_gameMenu->addAction(m_adjudicateBlackWinAct);
+	m_gameMenu->addSeparator();
+	m_gameMenu->addAction(m_resignGameAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_quitGameAct);
 
@@ -550,6 +556,8 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 		}
 
 		updateWindowTitle();
+		updateMenus();
+
 		for (auto evalWidget : m_evalWidgets)
 			evalWidget->setPlayer(nullptr);
 
@@ -594,6 +602,7 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	if (m_game->boardShouldBeFlipped())
 		m_gameViewer->boardScene()->flip();
 
+	updateMenus();
 	updateWindowTitle();
 	unlockCurrentGame();
 }
@@ -737,6 +746,7 @@ void MainWindow::onGameFinished(ChessGame* game)
 		if (tab.m_tournament)
 			m_game = nullptr;
 		updateWindowTitle();
+		updateMenus();
 	}
 
 	// save game notation of non-tournament games to default PGN file
@@ -896,6 +906,19 @@ QString MainWindow::genericTitle(const TabData& gameData) const
 	else
 		return tr("%1 vs %2 (%3)")
 		       .arg(white, black, result.toShortString());
+}
+
+void MainWindow::updateMenus()
+{
+	QPointer<ChessPlayer> white = m_players[Chess::Side::White];
+	QPointer<ChessPlayer> black = m_players[Chess::Side::Black];
+	bool isHumanGame =  (!white.isNull() && white->isHuman())
+			 || (!black.isNull() && black->isHuman());
+	bool gameOn = (!m_game.isNull() && !m_game->isFinished());
+	m_adjudicateBlackWinAct->setEnabled(gameOn);
+	m_adjudicateWhiteWinAct->setEnabled(gameOn);
+	m_adjudicateDrawAct->setEnabled(gameOn);
+	m_resignGameAct->setEnabled(gameOn && isHumanGame);
 }
 
 void MainWindow::editMoveComment(int ply, const QString& comment)
@@ -1071,6 +1094,26 @@ void MainWindow::adjudicateGame(Chess::Side winner)
 				    winner,
 				    tr("user decision"));
 	QMetaObject::invokeMethod(m_game, "onAdjudication",
+				  Qt::QueuedConnection,
+				  Q_ARG(Chess::Result, result));
+}
+
+void MainWindow::resignGame()
+{
+	if (m_game.isNull() || m_game->isFinished())
+		return;
+
+	ChessPlayer * player = m_game->playerToMove();
+	if (!player->isHuman())
+	{
+		player = m_game->playerToWait();
+		if (!player->isHuman())
+			return;
+	}
+	Chess::Side side = player->side();
+	auto result = Chess::Result(Chess::Result::Resignation,
+				    side.opposite());
+	QMetaObject::invokeMethod(m_game, "onResignation",
 				  Qt::QueuedConnection,
 				  Q_ARG(Chess::Result, result));
 }

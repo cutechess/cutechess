@@ -67,6 +67,7 @@ class MainWindow : public QMainWindow
 		void onWindowMenuAboutToShow();
 		void showGameWindow();
 		void updateWindowTitle();
+		void updateMenus();
 		bool save();
 		bool saveAs();
 		void onTabChanged(int index);
@@ -84,6 +85,7 @@ class MainWindow : public QMainWindow
 		void adjudicateDraw();
 		void adjudicateWhiteWin();
 		void adjudicateBlackWin();
+		void resignGame();
 
 	private:
 		struct TabData
@@ -134,6 +136,7 @@ class MainWindow : public QMainWindow
 		QAction* m_adjudicateBlackWinAct;
 		QAction* m_adjudicateWhiteWinAct;
 		QAction* m_adjudicateDrawAct;
+		QAction* m_resignGameAct;
 		QAction* m_closeGameAct;
 		QAction* m_saveGameAct;
 		QAction* m_saveGameAsAct;
