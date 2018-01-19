@@ -317,7 +317,17 @@ void ChessGame::startTurn()
 
 void ChessGame::onAdjudication(const Chess::Result& result)
 {
-	if (result.type() != Chess::Result::Adjudication || m_finished)
+	if (m_finished || result.type() != Chess::Result::Adjudication)
+		return;
+
+	m_result = result;
+
+	stop();
+}
+
+void ChessGame::onResignation(const Chess::Result& result)
+{
+	if (m_finished || result.type() != Chess::Result::Resignation)
 		return;
 
 	m_result = result;
