@@ -170,7 +170,7 @@
      <item row="2" column="1">
       <widget class="QDoubleSpinBox" name="m_incrementSpin">
        <property name="toolTip">
-        <string>Time increment per move in milliseconds</string>
+        <string>Time increment per move in seconds</string>
        </property>
        <property name="suffix">
         <string> sec</string>

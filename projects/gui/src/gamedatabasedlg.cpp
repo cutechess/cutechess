@@ -387,8 +387,8 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 				QMessageBox::ActionRole);
 			msgBox.addButton(QMessageBox::Cancel);
 
-			msgBox.setText("PGN database does not exist.");
-			msgBox.setInformativeText(QString("Remove %1 from the list of databases?").arg(selectedDatabase->displayName()));
+			msgBox.setText(tr("PGN database does not exist."));
+			msgBox.setInformativeText(tr("Remove %1 from the list of databases?").arg(selectedDatabase->displayName()));
 			msgBox.setDefaultButton(removeDbButton);
 			msgBox.setIcon(QMessageBox::Warning);
 
@@ -407,13 +407,13 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 
 			if (status == PgnDatabase::Modified)
 			{
-				msgBox.setText("PGN database has been modified since the last import.");
-				msgBox.setInformativeText("The database must be imported again to read it.");
+				msgBox.setText(tr("PGN database has been modified since the last import."));
+				msgBox.setInformativeText(tr("The database must be imported again to read it."));
 			}
 			else
 			{
-				msgBox.setText("Error occured while trying to read the PGN database.");
-				msgBox.setInformativeText("Importing the database again may fix this problem.");
+				msgBox.setText(tr("Error occured while trying to read the PGN database."));
+				msgBox.setInformativeText(tr("Importing the database again may fix this problem."));
 			}
 
 			msgBox.setDefaultButton(importDbButton);
