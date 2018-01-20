@@ -20,6 +20,7 @@
 #include <QTextStream>
 #include <QStringList>
 #include <QMetaType>
+#include <QTranslator>
 
 #include <board/genericmove.h>
 #include <board/move.h>
@@ -37,6 +38,10 @@ int main(int argc, char* argv[])
 	qRegisterMetaType<MoveEvaluation>("MoveEvaluation");
 
 	CuteChessApplication app(argc, argv);
+
+	QTranslator translator;
+	translator.load(QLocale(), "cutechess", "_", "translations", ".qm");
+	app.installTranslator(&translator);
 
 	QStringList arguments = app.arguments();
 	arguments.takeFirst(); // application name
