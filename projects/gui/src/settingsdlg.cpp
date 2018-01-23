@@ -43,6 +43,18 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 		QSettings().setValue("ui/close_unused_initial_tab", checked);
 	});
 
+	connect(ui->m_useFullUserNameCheck, &QCheckBox::toggled,
+		this, [=](bool checked)
+	{
+		QSettings().setValue("ui/use_full_user_name", checked);
+	});
+
+	connect(ui->m_playersSidesOnClocksCheck, &QCheckBox::toggled,
+		this, [=](bool checked)
+	{
+		QSettings().setValue("ui/display_players_sides_on_clocks", checked);
+	});
+
 	connect(ui->m_concurrencySpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
 		this, [=](int value)
 	{
@@ -173,6 +185,10 @@ void SettingsDialog::readSettings()
 		s.value("highlight_legal_moves", true).toBool());
 	ui->m_closeUnusedInitialTabCheck->setChecked(
 		s.value("close_unused_initial_tab", true).toBool());
+	ui->m_useFullUserNameCheck->setChecked(
+		s.value("use_full_user_name", true).toBool());
+	ui->m_playersSidesOnClocksCheck->setChecked(
+		s.value("display_players_sides_on_clocks", false).toBool());
 	ui->m_tbPathEdit->setText(s.value("tb_path").toString());
 	s.endGroup();
 

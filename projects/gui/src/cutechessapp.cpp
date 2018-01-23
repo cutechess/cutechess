@@ -39,6 +39,10 @@
 #include "importprogressdlg.h"
 #include "pgnimporter.h"
 #include "gamewall.h"
+#ifndef Q_OS_WIN32
+#	include <sys/types.h>
+#	include <pwd.h>
+#endif
 
 
 CuteChessApplication::CuteChessApplication(int& argc, char* argv[])
@@ -103,6 +107,12 @@ QString CuteChessApplication::userName()
 	#ifdef Q_OS_WIN32
 	return qgetenv("USERNAME");
 	#else
+	if (QSettings().value("ui/use_full_user_name", true).toBool())
+	{
+		auto pwd = getpwnam(qgetenv("USER"));
+		if (pwd != nullptr)
+			return QString(pwd->pw_gecos).split(',')[0];
+	}
 	return qgetenv("USER");
 	#endif
 }
