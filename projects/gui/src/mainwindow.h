@@ -107,6 +107,7 @@ class MainWindow : public QMainWindow
 		void readSettings();
 		void writeSettings();
 		QString genericTitle(const TabData& gameData) const;
+		QString nameOnClock(const QString& name, Chess::Side side) const;
 		void lockCurrentGame();
 		void unlockCurrentGame();
 		bool saveGame(const QString& fileName);

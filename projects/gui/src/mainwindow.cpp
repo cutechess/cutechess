@@ -552,7 +552,9 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 			auto clock = m_gameViewer->chessClock(side);
 			clock->stop();
 			clock->setInfiniteTime(true);
-			clock->setPlayerName(gameData.m_pgn->playerName(side));
+			QString name = nameOnClock(gameData.m_pgn->playerName(side),
+						   side);
+			clock->setPlayerName(name);
 		}
 
 		updateWindowTitle();
@@ -581,7 +583,8 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 		auto clock = m_gameViewer->chessClock(side);
 
 		clock->stop();
-		clock->setPlayerName(player->name());
+		QString name = nameOnClock(player->name(), side);
+		clock->setPlayerName(name);
 		connect(player, SIGNAL(nameChanged(QString)),
 			clock, SLOT(setPlayerName(QString)));
 
@@ -921,6 +924,16 @@ void MainWindow::updateMenus()
 	m_resignGameAct->setEnabled(gameOn && isHumanGame);
 }
 
+QString MainWindow::nameOnClock(const QString& name, Chess::Side side) const
+{
+	QString text = name;
+	bool displaySide = QSettings().value("ui/display_players_sides_on_clocks", false)
+				      .toBool();
+	if (displaySide)
+		text.append(QString(" (%1)").arg(side.toString()));
+	return text;
+}
+
 void MainWindow::editMoveComment(int ply, const QString& comment)
 {
 	bool ok;
@@ -953,7 +966,7 @@ void MainWindow::showAboutDialog()
 	html += "<h3>" + QString("Cute Chess %1")
 		.arg(CuteChessApplication::applicationVersion()) + "</h3>";
 	html += "<p>" + tr("Using Qt version %1").arg(qVersion()) + "</p>";
-	html += "<p>" + tr("Copyright 2008-2017 "
+	html += "<p>" + tr("Copyright 2008-2018 "
 			   "Ilari Pihlajisto and Arto Jonsson") + "</p>";
 	html += "<p>" + tr("This is free software; see the source for copying "
 			   "conditions. There is NO warranty; not even for "
