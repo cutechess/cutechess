@@ -879,7 +879,8 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 			Piece rook = Piece(side, Rook);
 			setSquare(rookSource, Piece::NoPiece);
 			setSquare(rookTarget, rook);
-			isReversible = false;
+			// FIDE rules 5.2, 9.3, PGN/FEN spec. 16.1.3.5:
+			// 50-moves counting goes on when castling.
 
 			if (transition != nullptr)
 				transition->addMove(chessSquare(rookSource),
