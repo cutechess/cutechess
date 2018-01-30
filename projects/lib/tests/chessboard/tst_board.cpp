@@ -233,17 +233,17 @@ void tst_Board::moveStrings_data() const
 		<< "berolina"
 		<< "e2c4 Nc6 c4d5 e7c5 d5xd6 Bxd6 Qe2+ Nge7 a2c4 O-O"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-		<< "r1bq1rk1/ppppnppp/2nb4/8/2P5/8/1PPPQPPP/RNB1KBNR w KQ - 0 6";
+		<< "r1bq1rk1/ppppnppp/2nb4/8/2P5/8/1PPPQPPP/RNB1KBNR w KQ - 1 6";
 	QTest::newRow("berolina san1b")
 		<< "berolina"
 		<< "ec4 Nc6 cd5 ec5 dxd6 Bxd6 Qe2+ Nge7 ac4 O-O"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-		<< "r1bq1rk1/ppppnppp/2nb4/8/2P5/8/1PPPQPPP/RNB1KBNR w KQ - 0 6";
+		<< "r1bq1rk1/ppppnppp/2nb4/8/2P5/8/1PPPQPPP/RNB1KBNR w KQ - 1 6";
 	QTest::newRow("berolina san1c")
 		<< "berolina"
 		<< "ec4 Nc6 d5 ec5 dxd6 Bxd6 Qe2 Nge7 c4 O-O"
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-		<< "r1bq1rk1/ppppnppp/2nb4/8/2P5/8/1PPPQPPP/RNB1KBNR w KQ - 0 6";
+		<< "r1bq1rk1/ppppnppp/2nb4/8/2P5/8/1PPPQPPP/RNB1KBNR w KQ - 1 6";
 	QTest::newRow("berolina coord1")
 		<< "berolina"
 		<< "e2c4 b8c6 c4d5 e7c5"
@@ -268,7 +268,7 @@ void tst_Board::moveStrings_data() const
 		<< "embassy"
 		<< "O-O-O O-O-O Ng4"
 		<< "r3kcab1r/pppq1p1ppp/2np2pn2/4pb4/4B5/2NPB1PN2/PPPQPP1PPP/R3KCA2R b KQkq - 3 1"
-		<< "1kr2cab1r/pppq1p1ppp/2np2p3/4pb4/4B1n3/2NPB1PN2/PPPQPP1PPP/1KR2CA2R w - - 1 2";
+		<< "1kr2cab1r/pppq1p1ppp/2np2p3/4pb4/4B1n3/2NPB1PN2/PPPQPP1PPP/1KR2CA2R w - - 6 2";
 	QTest::newRow("embassy castling san2")
 		<< "embassy"
 		<< "Cf1 O-O g3"
@@ -278,57 +278,57 @@ void tst_Board::moveStrings_data() const
 		<< "embassy"
 		<< "e8b8 e1b1 h6g4"
 		<< "r3kcab1r/pppq1p1ppp/2np2pn2/4pb4/4B5/2NPB1PN2/PPPQPP1PPP/R3KCA2R b KQkq - 3 1"
-		<< "1kr2cab1r/pppq1p1ppp/2np2p3/4pb4/4B1n3/2NPB1PN2/PPPQPP1PPP/1KR2CA2R w - - 1 2";
+		<< "1kr2cab1r/pppq1p1ppp/2np2p3/4pb4/4B1n3/2NPB1PN2/PPPQPP1PPP/1KR2CA2R w - - 6 2";
 	QTest::newRow("janus castling san1")
 		<< "janus"
 		<< "Kb8 Be3 Ng6 Ki1"
 		<< "r3kqbnjr/pppp1ppppp/2jn1b4/4p5/4P5/3Q1PNJ2/PPPP2PPPP/RJNBK1B2R b KQkq - 0 1"
-		<< "1kr2qb1jr/pppp1ppppp/2jn1bn3/4p5/4P5/3QBPNJ2/PPPP2PPPP/RJNB3RK1 b - - 0 3";
+		<< "1kr2qb1jr/pppp1ppppp/2jn1bn3/4p5/4P5/3QBPNJ2/PPPP2PPPP/RJNB3RK1 b - - 4 3";
 	QTest::newRow("janus castling san2")
 		<< "janus"
 		<< "O-O Be3 Ng6 O-O-O!"
 		<< "r3kqbnjr/pppp1ppppp/2jn1b4/4p5/4P5/3Q1PNJ2/PPPP2PPPP/RJNBK1B2R b KQkq - 0 1"
-		<< "1kr2qb1jr/pppp1ppppp/2jn1bn3/4p5/4P5/3QBPNJ2/PPPP2PPPP/RJNB3RK1 b - - 0 3";
+		<< "1kr2qb1jr/pppp1ppppp/2jn1bn3/4p5/4P5/3QBPNJ2/PPPP2PPPP/RJNB3RK1 b - - 4 3";
 	QTest::newRow("janus castling lan")
 		<< "janus"
 		<< "e8b8 g1e3 h8g6 e1i1"
 		<< "r3kqbnjr/pppp1ppppp/2jn1b4/4p5/4P5/3Q1PNJ2/PPPP2PPPP/RJNBK1B2R b KQkq - 0 1"
-		<< "1kr2qb1jr/pppp1ppppp/2jn1bn3/4p5/4P5/3QBPNJ2/PPPP2PPPP/RJNB3RK1 b - - 0 3";
+		<< "1kr2qb1jr/pppp1ppppp/2jn1bn3/4p5/4P5/3QBPNJ2/PPPP2PPPP/RJNB3RK1 b - - 4 3";
 	QTest::newRow("knightmate castling san1")
 		<< "knightmate"
 		<< "O-O Be6 Bxe6 Qxe6 Re1 O-O-O!"
 		<< "r1b1kbmr/pmp2ppp/1p1p1q2/4p3/2B1P3/1P6/P1PPMPPP/RMBQK2R w KQkq - 0 1"
-		<< "2kr1bmr/pmp2ppp/1p1pq3/4p3/4P3/1P6/P1PPMPPP/RMBQR1K1 w - - 0 4";
+		<< "2kr1bmr/pmp2ppp/1p1pq3/4p3/4P3/1P6/P1PPMPPP/RMBQR1K1 w - - 2 4";
 	QTest::newRow("knightmate castling san2")
 		<< "knightmate"
 		<< "Kg1 Be6 Bxe6 Qxe6 Re1 O-O-O"
 		<< "r1b1kbmr/pmp2ppp/1p1p1q2/4p3/2B1P3/1P6/P1PPMPPP/RMBQK2R w KQkq - 0 1"
-		<< "2kr1bmr/pmp2ppp/1p1pq3/4p3/4P3/1P6/P1PPMPPP/RMBQR1K1 w - - 0 4";
+		<< "2kr1bmr/pmp2ppp/1p1pq3/4p3/4P3/1P6/P1PPMPPP/RMBQR1K1 w - - 2 4";
 	QTest::newRow("chancellor castling san")
 		<< "chancellor"
 		<< "O-O O-O-O"
 		<< "r3k3r/ppp3ppp/9/9/9/9/9/PPP3PPP/R3K3R w KQkq - 0 1"
-		<< "2kr4r/ppp3ppp/9/9/9/9/9/PPP3PPP/R4RK2 w - - 0 2";
+		<< "2kr4r/ppp3ppp/9/9/9/9/9/PPP3PPP/R4RK2 w - - 2 2";
 	QTest::newRow("chancellor castling lan")
 		<< "chancellor"
 		<< "e1g1 e9c9"
 		<< "r3k3r/ppp3ppp/9/9/9/9/9/PPP3PPP/R3K3R w KQkq - 0 1"
-		<< "2kr4r/ppp3ppp/9/9/9/9/9/PPP3PPP/R4RK2 w - - 0 2";
+		<< "2kr4r/ppp3ppp/9/9/9/9/9/PPP3PPP/R4RK2 w - - 2 2";
 	QTest::newRow("modern castling san1")
 		<< "modern"
 		<< "O-Q-O O-M-O"
 		<< "r1bqk3r/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B1K3R w KQkq - 0 1"
-		<< "r1bq1rk2/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B2RK2 w - - 0 2";
+		<< "r1bq1rk2/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B2RK2 w - - 2 2";
 	QTest::newRow("modern castling san2")
 		<< "modern"
 		<< "O-O O-O"
 		<< "r1bqk3r/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B1K3R w KQkq - 0 1"
-		<< "r1bq1rk2/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B2RK2 w - - 0 2";
+		<< "r1bq1rk2/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B2RK2 w - - 2 2";
 	QTest::newRow("modern castling lan")
 		<< "modern"
 		<< "e1g1 e9g9"
 		<< "r1bqk3r/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B1K3R w KQkq - 0 1"
-		<< "r1bq1rk2/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B2RK2 w - - 0 2";
+		<< "r1bq1rk2/ppp3ppp/2n3n2/2mbpp3/3p5/3B1P3/P1NQPMN2/1PPP2PPP/R1B2RK2 w - - 2 2";
 	QTest::newRow("circular gryphon san")
 		<< "circulargryphon"
 		<< "Qxa7 e3 a5 Kb4 Nc6 Nc4+ Ke7 Ba6 Ng4 h4 Be2"
@@ -350,14 +350,14 @@ void tst_Board::moveStrings_data() const
 		   "fxe4 Qxe4 Qd3 Qd5 e4 Qc6 Ba5 Bc4 Qf3 Bxf1 Qxf1 Qxe4+ Qe2 "
 		   "Qxd4 Bc3 Qh4+ g3 Qa4 Nf3 Qa6 Qxa6 bxa6 Ba5 h5 O-O-O"
 		<< "rnbqkknr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKKNR w KQkq - 0 1"
-		<< "r3kk1r/p2nppp1/p7/B6p/8/5NP1/PPP4P/2KR3R b kq - 0 20";
+		<< "r3kk1r/p2nppp1/p7/B6p/8/5NP1/PPP4P/2KR3R b kq - 1 20";
 	QTest::newRow("twokings castling san2")
 		<< "twokings"
 		<< "d4 d5 Nc3 Nf6 Bg5 Ne4 Nxe4 dxe4 Bf4 Be6 f3 Qd5 Bxc7 Nd7 "
 		   "fxe4 Qxe4 Qd3 Qd5 e4 Qc6 Ba5 Bc4 Qf3 Bxf1 Qxf1 Qxe4+ Qe2 "
 		   "Qxd4 Bc3 Qh4+ g3 Qa4 Nf3 Qa6 Qxa6 bxa6 Ba5 h5 O-O"
 		<< "rnbqkknr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKKNR w KQkq - 0 1"
-		<< "r3kk1r/p2nppp1/p7/B6p/8/5NP1/PPP4P/R4RK1 b kq - 0 20";
+		<< "r3kk1r/p2nppp1/p7/B6p/8/5NP1/PPP4P/R4RK1 b kq - 1 20";
 	QTest::newRow("seirawan san1")
 		<< "seirawan"
 		<< "e4 e5 Nf3 Nf6/H Bc4 Hh6 O-O/Eh1 Bd6 Nc3/H O-O/Ee8"
@@ -397,7 +397,7 @@ void tst_Board::moveStrings_data() const
 		<< "seirawan"
 		<< "O-O-O O-O"
 		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
-		<< "r4rk1/pppppppp/8/8/8/8/PPPPPPPP/2KR3R[EHeh] w aH - 0 2";
+		<< "r4rk1/pppppppp/8/8/8/8/PPPPPPPP/2KR3R[EHeh] w aH - 2 2";
 	QTest::newRow("seirawan castling san6")
 		<< "seirawan"
 		<< "O-O-O O-O Rhg1/E Rac8/H"
@@ -432,7 +432,7 @@ void tst_Board::moveStrings_data() const
 		<< "seirawan"
 		<< "e1c1 e8g8"
 		<< "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R[EHeh] w KQkq - 0 1"
-		<< "r4rk1/pppppppp/8/8/8/8/PPPPPPPP/2KR3R[EHeh] w aH - 0 2";
+		<< "r4rk1/pppppppp/8/8/8/8/PPPPPPPP/2KR3R[EHeh] w aH - 2 2";
 
 }
 
