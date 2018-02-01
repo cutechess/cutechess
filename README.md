@@ -40,6 +40,36 @@ seconds:
 See `cutechess-cli -help` for descriptions of the supported options or manuals
 for full documentation.
 
+Translation
+-----------
+
+### Get involved
+
+To help with translations, add a line after the last line of `cutechess.pro`,
+in the following format:
+
+    TRANSLATIONS += translations/cutechess_[language_code].ts
+
+Then generate the translation file by running the command:
+
+    $ lupdate cutechess.pro
+
+There will be a new file pending for translation. Edit with Qt Linguist:
+
+    $ linguist translations/cutechess_[language_code].ts
+
+If new strings are added in source code, run `lupdate` to update corresponding
+`.ts` files.
+
+### Compiling translations
+
+After finishing translation, generate the binary file with the command:
+
+    $ lrelease translations/cutechess_[language_code].ts
+
+There will be the final `.qm` file for GUI application. Place the GUI
+executable under the same path of `translations` directory.
+
 License
 -------
 
