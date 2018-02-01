@@ -43,6 +43,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "{#CuteChessPath}\projects\gui\cutechess.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#CuteChessPath}\projects\cli\cutechess-cli.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#CuteChessPath}\translations\cutechess_zh_CN.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
 #ifdef MinGW
   Source: "{#MinGWLibPath}\mingwm10.dll"; DestDir: "{app}"; Flags: ignoreversion
   Source: "{#MinGWLibPath}\libgcc_s_dw2-1.dll"; DestDir: "{app}"; Flags: ignoreversion
