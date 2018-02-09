@@ -118,7 +118,7 @@ Options:
   -repeat [N]		Play each opening twice (or N times). Unless the -noswap
 			option is used, the players swap sides after each game.
 			So they get to play the opening on both sides. Please
-			note that a new round will use a new opening.
+			note that a new encounter will use a new opening.
   -noswap		Do not swap sides of paired engines
   -seeds N		Set the first N engines as seeds in the tournament
   -site SITE		Set the site/location to SITE

@@ -88,7 +88,7 @@ class LIB_EXPORT SeirawanBoard : public WesternBoard
 		void updateSquareMap(const Move& move, int increment);
 		enum direction { forward, backward };
 		/*
-		 * This method to converts reserve piece types into/from
+		 * This method converts reserve piece types into/from
 		 * corresponding "virtual" helper piece types. Used for
 		 * disambiguation of channeling after castling towards GUI.
 		 */
