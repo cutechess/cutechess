@@ -1771,8 +1771,8 @@
     </message>
     <message>
         <location filename="../projects/gui/src/mainwindow.cpp" line="956"/>
-        <source>Copyright 2008-2017 Ilari Pihlajisto and Arto Jonsson</source>
-        <translation>版权所有 2008-2017 Ilari Pihlajisto 与 Arto Jonsson</translation>
+        <source>Copyright 2008-2018 Ilari Pihlajisto and Arto Jonsson</source>
+        <translation>版权所有 2008-2018 Ilari Pihlajisto 与 Arto Jonsson</translation>
     </message>
     <message>
         <location filename="../projects/gui/src/mainwindow.cpp" line="964"/>
