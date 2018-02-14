@@ -18,17 +18,11 @@
 #include "humanplayer.h"
 #include "board/board.h"
 
-
 HumanPlayer::HumanPlayer(QObject* parent)
 	: ChessPlayer(parent)
 {
 	setState(Idle);
 	setName("Human");
-}
-
-bool HumanPlayer::canPlayAfterTimeout() const
-{
-	return true;
 }
 
 void HumanPlayer::startGame()

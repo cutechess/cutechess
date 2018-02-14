@@ -30,9 +30,11 @@ class LIB_EXPORT HumanBuilder : public PlayerBuilder
 		 * Creates a new HumanBuilder.
 		 *
 		 * Any created players will have the name \a playerName,
-		 * unless it's an empty string.
+		 * unless it's an empty string. They cannot forfeit on
+		 * time if \a playAfterTimeout is true.
 		 */
-		HumanBuilder(const QString& playerName = QString());
+		HumanBuilder(const QString& playerName = QString(),
+			     bool playAfterTimeout = true);
 
 		// Inherited from PlayerBuilder
 		virtual bool isHuman() const;
@@ -40,6 +42,8 @@ class LIB_EXPORT HumanBuilder : public PlayerBuilder
 					    const char* method,
 					    QObject* parent,
 					    QString* error) const;
+	private:
+		bool m_playAfterTimeout;
 };
 
 #endif // HUMANBUILDER_H

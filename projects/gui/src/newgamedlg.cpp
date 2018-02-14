@@ -154,7 +154,9 @@ PlayerBuilder* NewGameDialog::createPlayerBuilder(Chess::Side side) const
 
 		return new EngineBuilder(config);
 	}
-	return new HumanBuilder(CuteChessApplication::userName());
+	bool ignoreFlag = QSettings().value("games/human_can_play_after_timeout",
+					   true).toBool();
+	return new HumanBuilder(CuteChessApplication::userName(), ignoreFlag);
 }
 
 void NewGameDialog::setPlayerType(Chess::Side side, PlayerType type)

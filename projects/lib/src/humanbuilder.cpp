@@ -18,8 +18,9 @@
 #include "humanbuilder.h"
 #include "humanplayer.h"
 
-HumanBuilder::HumanBuilder(const QString& name)
-	: PlayerBuilder(name)
+HumanBuilder::HumanBuilder(const QString& name, bool playAfterTimeout)
+	: PlayerBuilder(name),
+	  m_playAfterTimeout(playAfterTimeout)
 {
 }
 
@@ -37,8 +38,10 @@ ChessPlayer* HumanBuilder::create(QObject *receiver,
 
 	ChessPlayer* player = new HumanPlayer(parent);
 	if (!name().isEmpty())
+	{
 		player->setName(name());
-
+		player->setCanPlayAfterTimeout(m_playAfterTimeout);
+	}
 	if (receiver != nullptr && method != nullptr)
 		QObject::connect(player, SIGNAL(debugMessage(QString)),
 				 receiver, method);

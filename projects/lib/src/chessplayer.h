@@ -144,6 +144,13 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Sets result claim validation mode to \a validate. */
 		void setClaimsValidated(bool validate);
 
+		/*!
+		 * If \a enable is true the player will be allowed to continue
+		 * the game after time is out, else the player will forfeit.
+		 */
+		void setCanPlayAfterTimeout(bool enable);
+
+
 	public slots:
 		/*!
 		 * Waits (without blocking) until the player is ready,
@@ -243,10 +250,8 @@ class LIB_EXPORT ChessPlayer : public QObject
 		virtual void startThinking() = 0;
 
 		/*!
-		 * Returns true if this player can keep player after running
+		 * Returns true if this player can keep playing after running
 		 * out of time; otherwise returns false.
-		 *
-		 * By default this method always returns false.
 		 */
 		virtual bool canPlayAfterTimeout() const;
 
@@ -290,6 +295,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		QTimer* m_timer;
 		bool m_claimedResult;
 		bool m_validateClaims;
+		bool m_canPlayAfterTimeout;
 		Chess::Side m_side;
 		Chess::Board* m_board;
 		ChessPlayer* m_opponent;
