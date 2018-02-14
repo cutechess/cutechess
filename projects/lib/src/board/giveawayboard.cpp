@@ -44,4 +44,12 @@ bool GiveawayBoard::hasCastling() const
 	return true;
 }
 
+void GiveawayBoard::vMakeMove(const Move& move, BoardTransition* transition)
+{
+	if (captureType(move) == King)
+		removeCastlingRights(sideToMove().opposite());
+
+	return WesternBoard::vMakeMove(move, transition);
+}
+
 } // namespace Chess
