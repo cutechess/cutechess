@@ -55,6 +55,15 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 		QSettings().setValue("ui/display_players_sides_on_clocks", checked);
 	});
 
+
+	connect(ui->m_humanCanPlayAfterTimeoutCheck, &QCheckBox::toggled,
+		[=](bool checked)
+	{
+		QSettings().setValue("games/human_can_play_after_timeout",
+				      checked);
+	});
+
+
 	connect(ui->m_concurrencySpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
 		this, [=](int value)
 	{
@@ -197,6 +206,8 @@ void SettingsDialog::readSettings()
 	s.endGroup();
 
 	s.beginGroup("games");
+	ui->m_humanCanPlayAfterTimeoutCheck
+		->setChecked(s.value("human_can_play_after_timeout", true).toBool());
 	ui->m_defaultPgnOutFileEdit
 		->setText(s.value("default_pgn_output_file").toString());
 	s.endGroup();
