@@ -199,6 +199,16 @@ void tst_Board::moveStrings_data() const
 		<< "g7f6"
 		<< "3r1rk1/6q1/1p1pb2p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K b - - 2 1"
 		<< "3r1rk1/8/1p1pbq1p/p1p2np1/P1P2p2/1PNP4/1Q2PPBP/1R2R2K w - - 3 1";
+	QTest::newRow("fifty moves draw")
+		<< "standard"
+		<< "h2a2"
+		<< "8/k7/2K5/8/8/8/7R/8 w - - 99 1"
+		<< "8/k7/2K5/8/8/8/R7/8 b - - 100 1";
+	QTest::newRow("fifty moves mate")
+		<< "standard"
+		<< "h2a2"
+		<< "8/8/k1K5/8/8/8/7R/8 w - - 99 1"
+		<< "8/8/k1K5/8/8/8/R7/8 b - - 100 1";
 	QTest::newRow("atomic1")
 		<< "atomic"
 		<< "Rxh3"
@@ -521,6 +531,19 @@ void tst_Board::results_data() const
 		<< variant
 		<< "2K5/4B3/2k2B2/8/8/4b3/8/8 b - - 0 1"
 		<< "1/2-1/2";
+	QTest::newRow("No fifty moves yet #1")
+		<< variant
+		<< "8/k7/2K5/8/8/8/R7/8 b - - 99 1"
+		<< "*";
+	QTest::newRow("Fifty moves draw")
+		<< variant
+		<< "8/k7/2K5/8/8/8/R7/8 b - - 100 1"
+		<< "1/2-1/2";
+	QTest::newRow("Fifty moves mate")
+		<< variant
+		<< "8/8/k1K5/8/8/8/R7/8 b - - 100 1"
+		<< "1-0";
+
 
 	variant = "kingofthehill";
 
