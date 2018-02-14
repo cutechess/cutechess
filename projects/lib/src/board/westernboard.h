@@ -179,6 +179,10 @@ class LIB_EXPORT WesternBoard : public Board
 		 */
 		void removeCastlingRights(int square);
 		/*!
+		 * Removes all castling rights of \a side.
+		 */
+		void removeCastlingRights(Side side);
+		/*!
 		 * Defines the file a king may castle to on \a castlingSide.
 		 * Defaults: 2 (c-file) and width() - 2 (normally g-file)
 		 */

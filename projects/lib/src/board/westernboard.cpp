@@ -825,6 +825,12 @@ void WesternBoard::removeCastlingRights(int square)
 		setCastlingSquare(side, KingSide, 0);
 }
 
+void WesternBoard::removeCastlingRights(Side side)
+{
+	setCastlingSquare(side, QueenSide, 0);
+	setCastlingSquare(side, KingSide, 0);
+}
+
 int WesternBoard::castlingFile(CastlingSide castlingSide) const
 {
 	Q_ASSERT(castlingSide != NoCastlingSide);

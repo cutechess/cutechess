@@ -53,6 +53,7 @@ class LIB_EXPORT GiveawayBoard : public AntiBoard
 		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
+		virtual void vMakeMove(const Move& move, BoardTransition* transition);
 
 	protected:
 		// Inherited from AntiBoard
