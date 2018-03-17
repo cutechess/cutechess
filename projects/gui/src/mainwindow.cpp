@@ -157,6 +157,8 @@ void MainWindow::createActions()
 	copyFenSequence->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 	m_gameViewer->addAction(copyFenSequence);
 
+	m_copyPgnAct = new QAction(tr("Copy PG&N"), this);
+
 	m_flipBoardAct = new QAction(tr("&Flip Board"), this);
 
 	m_adjudicateDrawAct = new QAction(tr("Ad&judicate Draw"), this);
@@ -207,6 +209,7 @@ void MainWindow::createActions()
 	connect(m_newGameAct, SIGNAL(triggered()), this, SLOT(newGame()));
 	connect(m_copyFenAct, SIGNAL(triggered()), this, SLOT(copyFen()));
 	connect(copyFenSequence, SIGNAL(triggered()), this, SLOT(copyFen()));
+	connect(m_copyPgnAct, SIGNAL(triggered()), this, SLOT(copyPgn()));
 	connect(m_flipBoardAct, SIGNAL(triggered()),
 		m_gameViewer->boardScene(), SLOT(flip()));
 	connect(m_closeGameAct, &QAction::triggered, this, [=]()
@@ -274,6 +277,7 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_saveGameAct);
 	m_gameMenu->addAction(m_saveGameAsAct);
 	m_gameMenu->addAction(m_copyFenAct);
+	m_gameMenu->addAction(m_copyPgnAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_adjudicateDrawAct);
 	m_gameMenu->addAction(m_adjudicateWhiteWinAct);
@@ -1025,6 +1029,19 @@ bool MainWindow::saveGame(const QString& fileName)
 	setWindowModified(false);
 
 	return true;
+}
+
+void MainWindow::copyPgn()
+{
+	QString str("");
+	QTextStream s(&str);
+	PgnGame* pgn = m_tabs.at(m_tabBar->currentIndex()).m_pgn;
+	if (pgn == nullptr)
+		return;
+	s << *pgn;
+
+	QClipboard* cb = CuteChessApplication::clipboard();
+	cb->setText(s.readAll());
 }
 
 void MainWindow::onGameManagerFinished()
