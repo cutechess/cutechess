@@ -26,6 +26,7 @@ GameAdjudicator::GameAdjudicator()
 	  m_drawScoreCount(0),
 	  m_resignMoveCount(0),
 	  m_resignScore(0),
+	  m_maxGameLength(0),
 	  m_tbEnabled(false)
 {
 	m_resignScoreCount[0] = 0;
@@ -51,6 +52,12 @@ void GameAdjudicator::setResignThreshold(int moveCount, int score)
 	m_resignScore = score;
 	m_resignScoreCount[0] = 0;
 	m_resignScoreCount[1] = 0;
+}
+
+void GameAdjudicator::setMaximumGameLength(int moveCount)
+{
+	Q_ASSERT(moveCount >= 0);
+	m_maxGameLength = moveCount;
 }
 
 void GameAdjudicator::setTablebaseAdjudication(bool enable)
@@ -85,6 +92,7 @@ void GameAdjudicator::addEval(const Chess::Board* board, const MoveEvaluation& e
 			m_drawScoreCount++;
 		else
 			m_drawScoreCount = 0;
+
 		if (board->plyCount() / 2 >= m_drawMoveNum
 		&&  m_drawScoreCount >= m_drawMoveCount * 2)
 		{
@@ -105,6 +113,14 @@ void GameAdjudicator::addEval(const Chess::Board* board, const MoveEvaluation& e
 		if (count >= m_resignMoveCount)
 			m_result = Chess::Result(Chess::Result::Adjudication,
 						 side.opposite());
+	}
+
+	// Limit game length
+	if (m_maxGameLength > 0
+	&&  board->plyCount() >= 2 * m_maxGameLength)
+	{
+		m_result = Chess::Result(Chess::Result::Adjudication, Chess::Side::NoSide);
+		return;
 	}
 }
 

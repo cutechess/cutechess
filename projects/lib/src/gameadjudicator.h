@@ -57,6 +57,14 @@ class LIB_EXPORT GameAdjudicator
 		 */
 		void setResignThreshold(int moveCount, int score);
 		/*!
+		 * Limits the number of moves playable in a game.
+		 *
+		 * A game will be adjudicated as a draw when the number of
+		 * moves played exceeds the limit given by \a moveCount.
+		 * The limit is not in action if set to zero.
+		 */
+		void setMaximumGameLength(int moveCount);
+		/*!
 		 * Sets tablebase adjudication to \a enable.
 		 *
 		 * If \a enable is true then games are adjudicated if the
@@ -92,6 +100,7 @@ class LIB_EXPORT GameAdjudicator
 		int m_resignMoveCount;
 		int m_resignScore;
 		int m_resignScoreCount[2];
+		int m_maxGameLength;
 		bool m_tbEnabled;
 		Chess::Result m_result;
 };

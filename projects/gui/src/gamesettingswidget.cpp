@@ -138,6 +138,7 @@ GameAdjudicator GameSettingsWidget::adjudicator() const
 			     ui->m_drawScoreSpin->value());
 	ret.setResignThreshold(ui->m_resignMoveCountSpin->value(),
 			       -ui->m_resignScoreSpin->value());
+	ret.setMaximumGameLength(ui->m_maxGameLengthSpin->value());
 	ret.setTablebaseAdjudication(ui->m_tbCheck->isChecked());
 
 	return ret;
@@ -252,6 +253,10 @@ void GameSettingsWidget::readSettings()
 	ui->m_resignScoreSpin->setValue(s.value("score").toInt());
 	s.endGroup();
 
+	s.beginGroup("game_length");
+	ui->m_maxGameLengthSpin->setValue(s.value("max_moves", 0).toInt());
+	s.endGroup();
+
 	ui->m_tbCheck->setChecked(tbOk && s.value("use_tb").toBool());
 	ui->m_ponderingCheck->setChecked(s.value("pondering").toBool());
 
@@ -340,6 +345,12 @@ void GameSettingsWidget::enableSettingsUpdates()
 		QSettings().setValue("games/resign_adjudication/score", score);
 	});
 
+	connect(ui->m_maxGameLengthSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		[=](int moveCount)
+	{
+		QSettings().setValue("games/game_length/max_moves", moveCount);
+	});
+
 	connect(ui->m_tbCheck, &QCheckBox::toggled, [=](bool checked)
 	{
 		QSettings().setValue("games/use_tb", checked);
@@ -355,6 +366,7 @@ void GameSettingsWidget::onHumanCountChanged(int count)
 {
 	ui->m_drawAdjudicationGroup->setEnabled(count == 0);
 	ui->m_resignAdjudicationGroup->setEnabled(count < 2);
+	ui->m_gameLengthGroup->setEnabled(count < 2);
 	ui->m_ponderingCheck->setEnabled(count < 2);
 	ui->m_openingBookGroup->setEnabled(count < 2);
 }

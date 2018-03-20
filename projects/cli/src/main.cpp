@@ -244,6 +244,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-concurrency", QVariant::Int, 1, 1);
 	parser.addOption("-draw", QVariant::StringList);
 	parser.addOption("-resign", QVariant::StringList);
+	parser.addOption("-maxmoves", QVariant::Int, 1, 1);
 	parser.addOption("-tb", QVariant::String, 1, 1);
 	parser.addOption("-tbpieces", QVariant::Int, 1, 1);
 	parser.addOption("-tbignore50", QVariant::Bool, 0, 0);
@@ -345,6 +346,13 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			ok = (countOk && scoreOk);
 			if (ok)
 				adjudicator.setResignThreshold(moveCount, -score);
+		}
+		// Maximum game length before draw adjudication
+		else if (name == "-maxmoves")
+		{
+			ok = value.toInt() >= 0;
+			if (ok)
+				adjudicator.setMaximumGameLength(value.toInt());
 		}
 		// Syzygy tablebase adjudication
 		else if (name == "-tb")
