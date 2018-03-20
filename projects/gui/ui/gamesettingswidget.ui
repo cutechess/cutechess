@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
-    <height>562</height>
+    <width>426</width>
+    <height>637</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -308,8 +308,11 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
+    <layout class="QFormLayout" name="formLayout_6">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="1" column="0">
       <widget class="QGroupBox" name="m_drawAdjudicationGroup">
        <property name="enabled">
         <bool>false</bool>
@@ -402,7 +405,7 @@
        </layout>
       </widget>
      </item>
-     <item>
+     <item row="1" column="1">
       <widget class="QGroupBox" name="m_resignAdjudicationGroup">
        <property name="enabled">
         <bool>false</bool>
@@ -463,6 +466,53 @@
           </property>
           <property name="maximum">
            <number>9999</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QGroupBox" name="m_gameLengthGroup">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="title">
+        <string>Game Length</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="m_maxGameLengthLabel">
+          <property name="text">
+           <string>Limit:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="m_maxGameLengthSpin">
+          <property name="toolTip">
+           <string>The game will be adjucated as drawn when move limit is reached</string>
+          </property>
+          <property name="toolTipDuration">
+           <number>-1</number>
+          </property>
+          <property name="wrapping">
+           <bool>true</bool>
+          </property>
+          <property name="specialValueText">
+           <string>Off</string>
+          </property>
+          <property name="suffix">
+           <string> moves</string>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>5000</number>
+          </property>
+          <property name="value">
+           <number>0</number>
           </property>
          </widget>
         </item>

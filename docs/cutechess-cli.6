@@ -145,6 +145,12 @@ Adjudicate the game as a loss if an engine's score is at least
 centipawns below zero for at least
 .Ar count
 consecutive moves.
+.It Fl maxmoves Ar n
+Adjudicate the game as a draw if at least
+.Ar n
+full moves have been played without result. Ignored if
+.Ar n
+equals zero (default).
 .It Fl tb Ar paths
 Adjudicate games using Syzygy tablebases.
 .Ar Paths

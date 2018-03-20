@@ -66,6 +66,9 @@ Options:
 			Adjudicate the game as a loss if an engine's score is
 			at least SCORE centipawns below zero for at least COUNT
 			consecutive moves.
+  -maxmoves N		Adjudicate the game as a draw if the game is still
+			ongoing after N or more full moves have been played.
+			This limit is not in action if set to zero.
   -tb PATHS		Adjudicate games using Syzygy tablebases. PATHS should
 			be semicolon-delimited list of paths to the compressed
 			tablebase files. Only the DTZ tablebase files are
