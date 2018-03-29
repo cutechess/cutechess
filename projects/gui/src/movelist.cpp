@@ -256,6 +256,7 @@ void MoveList::selectChosenMove()
 	m_moves[moveNum].move.mergeCharFormat(c, format);
 
 	c.endEditBlock();
+	m_moveList->setTextCursor(c);
 }
 
 bool MoveList::selectMove(int moveNum)
