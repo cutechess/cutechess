@@ -246,7 +246,7 @@ void UciEngine::startThinking()
 		blackTc = myTc;
 	}
 	else
-		qFatal("Player %s doesn't have a side", qPrintable(name()));
+		qFatal("Player %s doesn't have a side", qUtf8Printable(name()));
 	
 	QString command = "go";
 	if (pondering() && !m_ponderMove.isNull())
@@ -619,7 +619,7 @@ void UciEngine::parseLine(const QString& line)
 		else if (wasPondering)
 		{
 			qWarning("Premature bestmove while pondering from %s",
-				 qPrintable(name()));
+				 qUtf8Printable(name()));
 			m_ponderMove = Chess::Move();
 			m_ponderMoveSan.clear();
 			m_moveStrings.truncate(m_moveStrings.lastIndexOf(' '));
@@ -684,7 +684,8 @@ void UciEngine::parseLine(const QString& line)
 	{
 		if (nextToken(command) == "error")
 		{
-			qWarning("Failed to register UCI engine %s", qPrintable(name()));
+			qWarning("Failed to register UCI engine %s",
+				 qUtf8Printable(name()));
 			write("register later");
 		}
 	}
@@ -695,7 +696,7 @@ void UciEngine::parseLine(const QString& line)
 
 		if (option == nullptr || !option->isValid())
 			qWarning("Invalid UCI option from %s: %s",
-				 qPrintable(name()), qPrintable(line));
+				 qUtf8Printable(name()), qUtf8Printable(line));
 		else if (!(variant = variantFromUci(option->name())).isEmpty())
 			addVariant(variant);
 		else if (option->name() == "UCI_Variant")
@@ -726,8 +727,8 @@ void UciEngine::addVariantsFromOption(const EngineOption* option)
 	if (!combo)
 	{
 		qWarning("Option %s from %s is not a combo option",
-			 qPrintable(option->name()),
-			 qPrintable(name()));
+			 qUtf8Printable(option->name()),
+			 qUtf8Printable(name()));
 		return;
 	}
 
@@ -778,8 +779,8 @@ void UciEngine::setPonderMove(const QString& moveString)
 	{
 		m_ponderMoveSan.clear();
 		qWarning("Illegal ponder move from %s: %s",
-			 qPrintable(name()),
-			 qPrintable(moveString));
+			 qUtf8Printable(name()),
+			 qUtf8Printable(moveString));
 	}
 	else
 	{
@@ -823,8 +824,8 @@ QString UciEngine::sanPv(const QVarLengthArray<QStringRef>& tokens)
 		if (move.isNull())
 		{
 			qWarning("Illegal PV move %s from %s",
-				 qPrintable(token.toString()),
-				 qPrintable(name()));
+				 qUtf8Printable(token.toString()),
+				 qUtf8Printable(name()));
 			break;
 		}
 		if (!pv.isEmpty())

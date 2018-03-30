@@ -55,7 +55,7 @@ OpeningBook* EngineMatch::addOpeningBook(const QString& fileName)
 	if (!book->read(fileName))
 	{
 		delete book;
-		qWarning("Can't read opening book file %s", qPrintable(fileName));
+		qWarning("Can't read opening book file %s", qUtf8Printable(fileName));
 		return nullptr;
 	}
 
@@ -107,8 +107,8 @@ void EngineMatch::onGameStarted(ChessGame* game, int number)
 	qInfo("Started game %d of %d (%s vs %s)",
 	      number,
 	      m_tournament->finalGameCount(),
-	      qPrintable(game->player(Chess::Side::White)->name()),
-	      qPrintable(game->player(Chess::Side::Black)->name()));
+	      qUtf8Printable(game->player(Chess::Side::White)->name()),
+	      qUtf8Printable(game->player(Chess::Side::Black)->name()));
 }
 
 void EngineMatch::onGameFinished(ChessGame* game, int number)
@@ -118,9 +118,9 @@ void EngineMatch::onGameFinished(ChessGame* game, int number)
 	Chess::Result result(game->result());
 	qInfo("Finished game %d (%s vs %s): %s",
 	      number,
-	      qPrintable(game->player(Chess::Side::White)->name()),
-	      qPrintable(game->player(Chess::Side::Black)->name()),
-	      qPrintable(result.toVerboseString()));
+	      qUtf8Printable(game->player(Chess::Side::White)->name()),
+	      qUtf8Printable(game->player(Chess::Side::Black)->name()),
+	      qUtf8Printable(result.toVerboseString()));
 
 	if (m_tournament->playerCount() == 2)
 	{
@@ -128,8 +128,8 @@ void EngineMatch::onGameFinished(ChessGame* game, int number)
 		TournamentPlayer scp = m_tournament->playerAt(1);
 		int totalResults = fcp.gamesFinished();
 		qInfo("Score of %s vs %s: %d - %d - %d  [%.3f] %d",
-		      qPrintable(fcp.name()),
-		      qPrintable(scp.name()),
+		      qUtf8Printable(fcp.name()),
+		      qUtf8Printable(scp.name()),
 		      fcp.wins(), scp.wins(), fcp.draws(),
 		      double(fcp.score()) / (totalResults * 2),
 		      totalResults);
@@ -148,7 +148,7 @@ void EngineMatch::onTournamentFinished()
 
 	QString error = m_tournament->errorString();
 	if (!error.isEmpty())
-		qWarning("%s", qPrintable(error));
+		qWarning("%s", qUtf8Printable(error));
 
 	qInfo("Finished match");
 	connect(m_tournament->gameManager(), SIGNAL(finished()),
@@ -158,10 +158,10 @@ void EngineMatch::onTournamentFinished()
 
 void EngineMatch::print(const QString& msg)
 {
-	qInfo("%lld %s", m_startTime.elapsed(), qPrintable(msg));
+	qInfo("%lld %s", m_startTime.elapsed(), qUtf8Printable(msg));
 }
 
 void EngineMatch::printRanking()
 {
-	qInfo("%s", qPrintable(m_tournament->results()));
+	qInfo("%s", qUtf8Printable(m_tournament->results()));
 }

@@ -86,7 +86,7 @@ bool MatchParser::parse()
 	{
 		if (!m_validOptions.contains(*it))
 		{
-			qWarning("Unknown option: \"%s\"", qPrintable(*it));
+			qWarning("Unknown option: \"%s\"", qUtf8Printable(*it));
 			return false;
 		}
 		QString name = *it;
@@ -109,7 +109,7 @@ bool MatchParser::parse()
 		if (!option.duplicates && contains(name))
 		{
 			qWarning("Multiple instances of option \"%s\"",
-				 qPrintable(name));
+				 qUtf8Printable(name));
 			return false;
 		}
 
@@ -117,16 +117,16 @@ bool MatchParser::parse()
 		{
 			if (option.maxArgs == option.minArgs)
 				qWarning("Option \"%s\" needs %d argument(s)",
-					 qPrintable(name), option.minArgs);
+					 qUtf8Printable(name), option.minArgs);
 			else
 				qWarning("Option \"%s\" needs at least %d argument(s)",
-					 qPrintable(name), option.minArgs);
+					 qUtf8Printable(name), option.minArgs);
 			return false;
 		}
 		if (option.maxArgs != -1 && list.size() > option.maxArgs)
 		{
 			qWarning("Too many arguments for option \"%s\"",
-				 qPrintable(name));
+				 qUtf8Printable(name));
 			return false;
 		}
 		
@@ -146,8 +146,8 @@ bool MatchParser::parse()
 		if (!value.convert(option.type))
 		{
 			qWarning("Invalid value for option \"%s\": \"%s\"",
-				 qPrintable(name),
-				 qPrintable(list.join(" ")));
+				 qUtf8Printable(name),
+				 qUtf8Printable(list.join(" ")));
 			return false;
 		}
 		
@@ -185,8 +185,8 @@ QMap<QString, QString> MatchParser::Option::toMap(const QString& validArgs) cons
 		||  !defaults.contains(argName) || map.contains(argName))
 		{
 			qWarning("Invalid argument for option \"%s\": \"%s\"",
-				 qPrintable(name),
-				 qPrintable(arg));
+				 qUtf8Printable(name),
+				 qUtf8Printable(arg));
 			return QMap<QString, QString>();
 		}
 
@@ -211,8 +211,8 @@ QMap<QString, QString> MatchParser::Option::toMap(const QString& validArgs) cons
 		if (!missing.isEmpty())
 		{
 			qWarning("Option \"%s\" needs argument(s): %s",
-				 qPrintable(name),
-				 qPrintable(missing.join(", ")));
+				 qUtf8Printable(name),
+				 qUtf8Printable(missing.join(", ")));
 			return QMap<QString, QString>();
 		}
 	}

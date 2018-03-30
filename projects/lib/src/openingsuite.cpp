@@ -106,7 +106,7 @@ bool OpeningSuite::initialize()
 	if (!m_file->open(QIODevice::ReadOnly | QIODevice::Text))
 	{
 		qWarning("Can't open opening suite %s",
-			 qPrintable(m_fileName));
+			 qUtf8Printable(m_fileName));
 		delete m_file;
 		return false;
 	}

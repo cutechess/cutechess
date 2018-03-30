@@ -467,14 +467,14 @@ bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
 		if (isOpen)
 		{
 			qWarning("PGN file %s does not exist. Reopening...",
-				 qPrintable(m_pgnFile.fileName()));
+				 qUtf8Printable(m_pgnFile.fileName()));
 			m_pgnFile.close();
 		}
 
 		if (!m_pgnFile.open(QIODevice::WriteOnly | QIODevice::Append))
 		{
 			qWarning("Could not open PGN file %s",
-				 qPrintable(m_pgnFile.fileName()));
+				 qUtf8Printable(m_pgnFile.fileName()));
 			return false;
 		}
 		m_pgnOut.setDevice(&m_pgnFile);
@@ -509,14 +509,14 @@ bool Tournament::writeEpd(ChessGame *game)
 		if (isOpen)
 		{
 			qWarning("EPD file %s does not exist. Reopening...",
-				 qPrintable(m_epdFile.fileName()));
+				 qUtf8Printable(m_epdFile.fileName()));
 			m_epdFile.close();
 		}
 
 		if (!m_epdFile.open(QIODevice::WriteOnly | QIODevice::Append))
 		{
 			qWarning("Could not open EPD file %s",
-				 qPrintable(m_epdFile.fileName()));
+				 qUtf8Printable(m_epdFile.fileName()));
 			return false;
 		}
 		m_epdOut.setDevice(&m_epdFile);

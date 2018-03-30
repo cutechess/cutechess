@@ -190,7 +190,7 @@ void EcoNode::write(const QString& fileName)
 	QFile file(fileName);
 	if (!file.open(QIODevice::WriteOnly))
 	{
-		qWarning("Could not open file %s", qPrintable(fileName));
+		qWarning("Could not open file %s", qUtf8Printable(fileName));
 		return;
 	}
 

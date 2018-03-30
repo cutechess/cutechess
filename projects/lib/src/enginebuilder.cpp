@@ -107,5 +107,5 @@ void EngineBuilder::setError(QString* error, const QString& message) const
 	if (error != nullptr)
 		*error = str;
 	else
-		qWarning("%s", qPrintable(str));
+		qWarning("%s", qUtf8Printable(str));
 }

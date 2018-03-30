@@ -65,7 +65,7 @@ bool OpeningBook::read(const QString& filename)
 	if ((file.size() % entrySize()) != 0)
 	{
 		qWarning("Invalid size for opening book %s",
-			 qPrintable(filename));
+			 qUtf8Printable(filename));
 		return false;
 	}
 
@@ -166,7 +166,8 @@ QList<OpeningBook::Entry> OpeningBook::entriesFromDisk(quint64 key) const
 	QFile file(m_filename);
 	if (!file.open(QIODevice::ReadOnly))
 	{
-		qWarning("Could not open book file %s", qPrintable(m_filename));
+		qWarning("Could not open book file %s",
+			 qUtf8Printable(m_filename));
 		return entries;
 	}
 	QDataStream in(&file);

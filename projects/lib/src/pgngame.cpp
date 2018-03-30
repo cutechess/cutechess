@@ -165,7 +165,7 @@ bool PgnGame::parseMove(PgnStream& in, bool addEco)
 
 		if (!tmp.isEmpty() && !in.setVariant(tmp))
 		{
-			qWarning("Unknown variant: %s", qPrintable(tmp));
+			qWarning("Unknown variant: %s", qUtf8Printable(tmp));
 			return false;
 		}
 		board = in.board();
@@ -185,7 +185,7 @@ bool PgnGame::parseMove(PgnStream& in, bool addEco)
 
 		if (!board->setFenString(tmp))
 		{
-			qWarning("Invalid FEN string: %s", qPrintable(tmp));
+			qWarning("Invalid FEN string: %s", qUtf8Printable(tmp));
 			return false;
 		}
 		m_startingSide = board->startingSide();
@@ -195,7 +195,7 @@ bool PgnGame::parseMove(PgnStream& in, bool addEco)
 	Chess::Move move(board->moveFromString(str));
 	if (move.isNull())
 	{
-		qWarning("Illegal move: %s", qPrintable(str));
+		qWarning("Illegal move: %s", qUtf8Printable(str));
 		return false;
 	}
 
@@ -235,7 +235,7 @@ bool PgnGame::read(PgnStream& in, int maxMoves, bool addEco)
 				QString result = m_tags.value("Result");
 
 				if (!result.isEmpty() && str != result)
-					qWarning("%s",qPrintable(QString("Line %1: The termination "
+					qWarning("%s", qUtf8Printable(QString("Line %1: The termination "
 						 "marker is different from the result tag").arg(in.lineNumber())));
 				setTag("Result", str);
 			}

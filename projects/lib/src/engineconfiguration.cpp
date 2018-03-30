@@ -309,8 +309,8 @@ void EngineConfiguration::setOption(const QString& name, const QVariant& value)
 			if (!option->isValid(value))
 			{
 				qWarning("Invalid value for engine option %s: %s",
-					 qPrintable(name),
-					 qPrintable(value.toString()));
+					 qUtf8Printable(name),
+					 qUtf8Printable(value.toString()));
 			}
 			else
 				option->setValue(value);

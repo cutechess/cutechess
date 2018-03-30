@@ -172,14 +172,17 @@ void ChessEngine::setOption(const QString& name, const QVariant& value)
 	EngineOption* option = getOption(name);
 	if (option == nullptr)
 	{
-		qWarning("%s doesn't have option %s", qPrintable(this->name()), qPrintable(name));
+		qWarning("%s doesn't have option %s",
+			 qUtf8Printable(this->name()),
+			 qUtf8Printable(name));
 		return;
 	}
 
 	if (!option->isValid(value))
 	{
-		qWarning("Invalid value for option %s: %s", qPrintable(name),
-			qPrintable(value.toString()));
+		qWarning("Invalid value for option %s: %s",
+			 qUtf8Printable(name),
+			 qUtf8Printable(value.toString()));
 		return;
 	}
 
@@ -337,7 +340,7 @@ void ChessEngine::kill()
 		return;
 
 	qInfo("Terminating process of engine %s(%d)",
-	      qPrintable(name()), m_id);
+	      qUtf8Printable(name()), m_id);
 
 	m_pinging = false;
 	m_pingTimer->stop();
@@ -401,7 +404,7 @@ void ChessEngine::pong(bool emitReady)
 void ChessEngine::onPingTimeout()
 {
 	qWarning("Engine %s(%d) failed to respond to ping",
-		 qPrintable(name()), m_id);
+		 qUtf8Printable(name()), m_id);
 
 	m_pinging = false;
 	m_writeBuffer.clear();
@@ -429,7 +432,7 @@ void ChessEngine::write(const QString& data, WriteMode mode)
 
 	if (m_ioDevice->write(data.toLatin1() + "\n") == -1)
 		qWarning("Writing to engine %s(%d) failed",
-			 qPrintable(name()), m_id);
+			 qUtf8Printable(name()), m_id);
 }
 
 void ChessEngine::onReadyRead()
@@ -482,7 +485,7 @@ void ChessEngine::onProtocolStartTimeout()
 		return;
 
 	qWarning("Engine %s(%d) did not start the chess protocol in time",
-		 qPrintable(name()), m_id);
+		 qUtf8Printable(name()), m_id);
 	onCrashed();
 }
 
