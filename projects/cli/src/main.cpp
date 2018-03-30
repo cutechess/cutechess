@@ -468,7 +468,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 								       order,
 								       start - 1);
 				if (order == OpeningSuite::RandomOrder)
-					qDebug("Indexing opening suite...");
+					qInfo("Indexing opening suite...");
 				ok = suite->initialize();
 				if (ok)
 					tournament->setOpeningSuite(suite);

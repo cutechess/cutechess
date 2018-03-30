@@ -255,7 +255,7 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	Q_ASSERT(m_board->isLegalMove(move));
 	if (sender != playerToMove())
 	{
-		qDebug("%s tried to make a move on the opponent's turn", qPrintable(sender->name()));
+		qWarning("%s tried to make a move on the opponent's turn", qPrintable(sender->name()));
 		return;
 	}
 
@@ -697,8 +697,8 @@ void ChessGame::startGame()
 			return;
 		if (!player->supportsVariant(m_board->variant()))
 		{
-			qDebug("%s doesn't support variant %s",
-				qPrintable(player->name()), qPrintable(m_board->variant()));
+			qWarning("%s doesn't support variant %s",
+				 qPrintable(player->name()), qPrintable(m_board->variant()));
 			m_result = Chess::Result(Chess::Result::ResultError);
 			stop();
 			return;
@@ -737,7 +737,7 @@ void ChessGame::startGame()
 
 		if (!m_board->result().isNone())
 		{
-			qDebug("Every move was played from the book");
+			qWarning("Every move was played from the book");
 			m_result = m_board->result();
 			stop();
 			return;

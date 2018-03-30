@@ -632,7 +632,7 @@ void UciEngine::parseLine(const QString& line)
 			if (state() == FinishingGame)
 				pong();
 			else
-				qDebug() << "Unexpected move from" << name();
+				qWarning() << "Unexpected move from" << name();
 			return;
 		}
 
@@ -684,7 +684,7 @@ void UciEngine::parseLine(const QString& line)
 	{
 		if (nextToken(command) == "error")
 		{
-			qDebug("Failed to register UCI engine %s", qPrintable(name()));
+			qWarning("Failed to register UCI engine %s", qPrintable(name()));
 			write("register later");
 		}
 	}
@@ -694,8 +694,8 @@ void UciEngine::parseLine(const QString& line)
 		QString variant;
 
 		if (option == nullptr || !option->isValid())
-			qDebug("Invalid UCI option from %s: %s",
-				qPrintable(name()), qPrintable(line));
+			qWarning("Invalid UCI option from %s: %s",
+				 qPrintable(name()), qPrintable(line));
 		else if (!(variant = variantFromUci(option->name())).isEmpty())
 			addVariant(variant);
 		else if (option->name() == "UCI_Variant")
@@ -777,9 +777,9 @@ void UciEngine::setPonderMove(const QString& moveString)
 	if (m_ponderMove.isNull())
 	{
 		m_ponderMoveSan.clear();
-		qDebug("Illegal ponder move from %s: %s",
-		       qPrintable(name()),
-		       qPrintable(moveString));
+		qWarning("Illegal ponder move from %s: %s",
+			 qPrintable(name()),
+			 qPrintable(moveString));
 	}
 	else
 	{

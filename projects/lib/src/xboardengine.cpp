@@ -134,7 +134,7 @@ void XboardEngine::startGame()
 			write("setboard " + board()->fenString());
 		else
 		{
-			qDebug("%s does not support the setboard command, using the edit command now", qPrintable(name()));
+			qWarning("%s does not support the setboard command, using the edit command now", qPrintable(name()));
 			write("edit");
 			write("#"); // clear board on engine
 			const QStringList& whitePieces = board()->pieceList(Chess::Side::White);
@@ -170,7 +170,7 @@ void XboardEngine::startGame()
 		if (m_ftNps)
 			write(QString("st 1\nnps %1").arg(myTc->nodeLimit()));
 		else
-			qDebug("%s doesn't support the nps command", qPrintable(name()));
+			qWarning("%s doesn't support the nps command", qPrintable(name()));
 	}
 
 	// Show thinking
@@ -513,8 +513,8 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 	{
 		EngineOption* option = parseOption(val);
 		if (option == nullptr || !option->isValid())
-			qDebug() << "Invalid Xboard option from" << this->name()
-				 << ":" << val;
+			qWarning() << "Invalid Xboard option from" << this->name()
+				   << ":" << val;
 		else
 			addOption(option);
 	}
@@ -666,7 +666,7 @@ void XboardEngine::parseLine(const QString& line)
 			if (state() == FinishingGame)
 				finishGame();
 			else
-				qDebug("Unexpected move from %s", qPrintable(name()));
+				qWarning("Unexpected move from %s", qPrintable(name()));
 			return;
 		}
 
