@@ -588,12 +588,14 @@ bool Board::setFenString(const QString& fen)
 			{
 				setSquare(k++, piece);
 				i += l - 1;
+				pieceStr.clear();
+				square++;
 				break;
 			}
 		}
-
-		pieceStr.clear();
-		square++;
+		// left over: unknown symbols
+		if (!pieceStr.isEmpty())
+			return false;
 	}
 
 	// The board must have exactly 'boardSize' squares and each rank
