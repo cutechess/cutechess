@@ -543,10 +543,15 @@ QString PgnGame::timeStamp(const QDateTime& dateTime)
 
 void PgnGame::setGameStartTime(const QDateTime& dateTime)
 {
+	m_gameStartTime = dateTime;
 	setTag("GameStartTime", timeStamp(dateTime));
 }
 
 void PgnGame::setGameEndTime(const QDateTime& dateTime)
 {
 	setTag("GameEndTime", timeStamp(dateTime));
+
+	int d = m_gameStartTime.secsTo(dateTime);
+	QTime time = QTime(d / 3600, d % 3600 / 60, d % 60);
+	setTag("GameDuration", time.toString("hh:mm:ss"));
 }
