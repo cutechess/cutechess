@@ -18,6 +18,7 @@
 #include "boardfactory.h"
 #include "andernachboard.h"
 #include "antiboard.h"
+#include "aseanboard.h"
 #include "atomicboard.h"
 #include "berolinaboard.h"
 #include "capablancaboard.h"
@@ -42,7 +43,9 @@
 #include "loopboard.h"
 #include "losersboard.h"
 #include "ncheckboard.h"
+#include "makrukboard.h"
 #include "modernboard.h"
+#include "oukboard.h"
 #include "pocketknightboard.h"
 #include "racingkingsboard.h"
 #include "seirawanboard.h"
@@ -59,8 +62,10 @@ REGISTER_BOARD(FiveCheckBoard, "5check")
 REGISTER_BOARD(AndernachBoard, "andernach")
 REGISTER_BOARD(AntiAndernachBoard, "antiandernach")
 REGISTER_BOARD(AntiBoard, "antichess")
+REGISTER_BOARD(AseanBoard, "asean")
 REGISTER_BOARD(AtomicBoard, "atomic")
 REGISTER_BOARD(BerolinaBoard, "berolina")
+REGISTER_BOARD(OukBoard, "cambodian")
 REGISTER_BOARD(CapablancaBoard, "capablanca")
 REGISTER_BOARD(CaparandomBoard, "caparandom")
 REGISTER_BOARD(ChancellorBoard, "chancellor")
@@ -83,10 +88,12 @@ REGISTER_BOARD(BerolinaGridBoard, "gridolina")
 REGISTER_BOARD(GryphonBoard, "gryphon")
 REGISTER_BOARD(HordeBoard, "horde")
 REGISTER_BOARD(JanusBoard, "janus")
+REGISTER_BOARD(KarOukBoard,"karouk")
 REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
 REGISTER_BOARD(KnightMateBoard, "knightmate")
 REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosersBoard, "losers")
+REGISTER_BOARD(MakrukBoard, "makruk")
 REGISTER_BOARD(ModernBoard, "modern")
 REGISTER_BOARD(PocketKnightBoard, "pocketknight")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
