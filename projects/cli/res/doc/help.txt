@@ -35,6 +35,7 @@ Options:
 			'fischerandom': Fischer Random Chess/Chess 960
 			'giveaway': Giveaway Chess (Losing Chess)
 			'gothic': Gothic Chess
+			'grand': Grand Chess
 			'grid': Grid Chess
 			'gridolina': Berolina Grid Chess
 			'gryphon': Gryphon Chess

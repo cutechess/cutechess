@@ -368,6 +368,27 @@ void tst_Board::moveStrings_data() const
 		   "Qxd4 Bc3 Qh4+ g3 Qa4 Nf3 Qa6 Qxa6 bxa6 Ba5 h5 O-O"
 		<< "rnbqkknr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKKNR w KQkq - 0 1"
 		<< "r3kk1r/p2nppp1/p7/B6p/8/5NP1/PPP4P/R4RK1 b kq - 1 20";
+	QTest::newRow("grand lan1")
+		<< "grand"
+		<< "d10d9 f5f6 g8g6 f6g7"
+		<< "3r6/1nb1kcabn1/ppprpppppp/3q6/3p6/5P4/5C4/PPPPPRPPPP/1NBQKRABN1/10 b - - 0 1"
+		<< "10/1nbrkcabn1/ppprpp1ppp/3q2P3/3p6/10/5C4/PPPPPRPPPP/1NBQKRABN1/10 b - - 0 3";
+	QTest::newRow("grand san1")
+		<< "grand"
+		<< "R10d9 f6 g6 fxg7"
+		<< "3r6/1nb1kcabn1/ppprpppppp/3q6/3p6/5P4/5C4/PPPPPRPPPP/1NBQKRABN1/10 b - - 0 1"
+		<< "10/1nbrkcabn1/ppprpp1ppp/3q2P3/3p6/10/5C4/PPPPPRPPPP/1NBQKRABN1/10 b - - 0 3";
+	QTest::newRow("grand san2")
+		<< "grand"
+		<< "Rc6 c3=C+ Rxc3 Rxc3"
+		<< "10/10/p9/10/1p5R2/1P1k6/P1p7/n4r4/K9/10 w - - 0 1"
+		<< "10/10/p9/10/1p8/1P1k6/P9/n1r7/K9/10 w - - 0 3";
+	QTest::newRow("grand san3")
+		<< "grand"
+		<< "R10a9 R10b9 Ra10 Rg9 R1a7 Rbb9 R7a8+ Kc9 Ke4 Ra9 R10xa9+ "
+		   "Kd10 Ra10+ Kd9 Rj8 Re9+ Kd5 Kc9 Rjj10 Rd9+ Kc6 Kc8 Rjc10+"
+		<< "Rr8/10/1r1k6/10/10/10/10/5K4/10/R9 w - - 0 1"
+		<< "R1R7/3r6/2k7/10/2K7/10/10/10/10/10 b - - 12 12";
 	QTest::newRow("seirawan san1")
 		<< "seirawan"
 		<< "e4 e5 Nf3 Nf6/H Bc4 Hh6 O-O/Eh1 Bd6 Nc3/H O-O/Ee8"
@@ -1311,12 +1332,25 @@ void tst_Board::perft_data() const
 		<< 5
 		<< Q_UINT64_C(4629764);
 
+	variant = "grand";
+	QTest::newRow("grand startpos")
+		<< variant
+		<< "r8r/1nbqkcabn1/pppppppppp/10/10/10/10/PPPPPPPPPP/1NBQKCABN1/R8R w - - 0 1"
+		<< 3 // 3plies: 259514, 4 plies: 15921643, 5 plies: 959883584
+		<< Q_UINT64_C(259514);
+	QTest::newRow("grand endgame1")
+		<< variant
+		<< "10/4k5/6P3/10/10/10/10/10/1p2K5/10 w - - 0 1"
+		<< 3 // 1 ply: 15, 2 plies: 165, 3 plies: 2446
+		<< Q_UINT64_C(2446);
+
 	variant = "seirawan";
 	QTest::newRow("seirawan startpos")
 		<< variant
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[EHeh] w BCDFGbcdfgKQkq - 0 1"
 		<< 4 // 4 plies: 782599, 5 plies: 27639803, 6 plies: 967587141 (sjaakii: 967584909)
 		<< Q_UINT64_C(782599);
+
 }
 
 void tst_Board::perft()

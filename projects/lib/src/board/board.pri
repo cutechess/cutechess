@@ -35,6 +35,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/giveawayboard.cpp \
     $$PWD/suicideboard.cpp \
     $$PWD/gothicboard.cpp \
+    $$PWD/grandboard.cpp \
     $$PWD/crazyhouseboard.cpp \
     $$PWD/loopboard.cpp \
     $$PWD/chessgiboard.cpp \
@@ -87,6 +88,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/giveawayboard.h \
     $$PWD/suicideboard.h \
     $$PWD/gothicboard.h \
+    $$PWD/grandboard.h \
     $$PWD/crazyhouseboard.h \
     $$PWD/loopboard.h \
     $$PWD/chessgiboard.h \

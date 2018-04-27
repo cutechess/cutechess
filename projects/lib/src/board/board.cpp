@@ -353,7 +353,7 @@ QString Board::moveString(const Move& move, MoveNotation notation)
 Move Board::moveFromLanString(const QString& istr)
 {
 	QString str(istr);
-	str.remove(QRegExp("[x+#!?]"));
+	str.remove(QRegExp("[x=+#!?]"));
 	int len = str.length();
 	if (len < 4)
 		return Move();
@@ -373,22 +373,25 @@ Move Board::moveFromLanString(const QString& istr)
 		return Move(0, squareIndex(trg), promotion.type());
 	}
 
-	Square sourceSq(chessSquare(str.mid(0, 2)));
-	Square targetSq(chessSquare(str.mid(2, 2)));
-	if (!isValidSquare(sourceSq) || !isValidSquare(targetSq))
-		return Move();
-
 	if (len > 4)
+		promotion = pieceFromSymbol(str.mid(len - 1));
+
+	if (promotion.isValid())
+		len = len - 1;
+
+	for (int i = 2; i < len - 1; i++)
 	{
-		promotion = pieceFromSymbol(str.mid(len-1));
-		if (!promotion.isValid())
-			return Move();
+		Square sourceSq(chessSquare(str.mid(0, i)));
+		Square targetSq(chessSquare(str.mid(i, len - i)));
+		if (!isValidSquare(sourceSq) || !isValidSquare(targetSq))
+			continue;
+		int source = squareIndex(sourceSq);
+		int target = squareIndex(targetSq);
+
+		return Move(source, target, promotion.type());
 	}
+	return Move();
 
-	int source = squareIndex(sourceSq);
-	int target = squareIndex(targetSq);
-
-	return Move(source, target, promotion.type());
 }
 
 Move Board::moveFromString(const QString& str)

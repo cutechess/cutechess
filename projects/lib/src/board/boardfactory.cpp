@@ -34,6 +34,7 @@
 #include "frcboard.h"
 #include "giveawayboard.h"
 #include "gothicboard.h"
+#include "grandboard.h"
 #include "gridboard.h"
 #include "gryphonboard.h"
 #include "hordeboard.h"
@@ -83,6 +84,7 @@ REGISTER_BOARD(KingletBoard, "kinglet")
 REGISTER_BOARD(FrcBoard, "fischerandom")
 REGISTER_BOARD(GiveawayBoard, "giveaway")
 REGISTER_BOARD(GothicBoard, "gothic")
+REGISTER_BOARD(GrandBoard, "grand")
 REGISTER_BOARD(GridBoard, "grid")
 REGISTER_BOARD(BerolinaGridBoard, "gridolina")
 REGISTER_BOARD(GryphonBoard, "gryphon")
