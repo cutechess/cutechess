@@ -35,6 +35,7 @@ WesternBoard::WesternBoard(WesternZobrist* zobrist)
 	  m_pawnHasDoubleStep(true),
 	  m_hasEnPassantCaptures(true),
 	  m_pawnAmbiguous(false),
+	  m_multiDigitNotation(false),
 	  m_zobrist(zobrist)
 {
 	setPieceType(Pawn, tr("pawn"), "P");
@@ -134,6 +135,8 @@ void WesternBoard::vInitialize()
 	m_rookOffsets[3] = m_arwidth;
 
 	m_pawnAmbiguous = (pawnAmbiguity(FreeStep) > 1);
+	m_multiDigitNotation =  (height() > 9 && coordinateSystem() == NormalCoordinates)
+			     || (width() > 9 && coordinateSystem() == InvertedCoordinates);
 }
 
 inline int WesternBoard::pawnPushOffset(const PawnStep& ps, int sign) const
@@ -260,7 +263,7 @@ QString WesternBoard::sanMoveString(const Move& move)
 	if (needFile)
 		str += 'a' + square.file();
 	if (needRank)
-		str += '1' + square.rank();
+		str += QString::number(1 + square.rank());
 
 	if (capture.isValid())
 		str += 'x';
@@ -339,6 +342,26 @@ Move WesternBoard::moveFromSanString(const QString& str)
 			return Move();
 	}
 
+	// number of digits in notation of squares
+	int digits = 1;
+
+	// only for tall boards: find maximum number of sequential digits
+	if (m_multiDigitNotation)
+	{
+		int count = 0;
+		for (auto ch : mstr)
+		{
+			if (ch.isDigit())
+			{
+				count++;
+				if (count > digits)
+					digits = count;
+			}
+			else
+				count = 0;
+		}
+	}
+
 	Square sourceSq;
 	Square targetSq;
 	QString::const_iterator it = mstr.cbegin();
@@ -358,9 +381,9 @@ Move WesternBoard::moveFromSanString(const QString& str)
 	if (piece.isEmpty())
 	{
 		piece = Piece(side, Pawn);
-		targetSq = chessSquare(mstr.mid(0, 2));
+		targetSq = chessSquare(mstr.mid(0, 1 + digits));
 		if (isValidSquare(targetSq))
-			it += 2;
+			it += 1 + digits;
 	}
 	else
 	{
@@ -369,7 +392,7 @@ Move WesternBoard::moveFromSanString(const QString& str)
 		// Drop moves
 		if (*it == '@')
 		{
-			targetSq = chessSquare(mstr.right(2));
+			targetSq = chessSquare(mstr.right(1 + digits));
 			if (!isValidSquare(targetSq))
 				return Move();
 
@@ -394,10 +417,12 @@ Move WesternBoard::moveFromSanString(const QString& str)
 		// Source square's rank
 		if (it->isDigit())
 		{
-			sourceSq.setRank(it->toLatin1() - '1');
+			const QString tmp(mstr.mid(it - mstr.constBegin(),
+						   digits));
+			sourceSq.setRank(-1 + tmp.toInt());
 			if (sourceSq.rank() < 0 || sourceSq.rank() >= height())
 				return Move();
-			++it;
+			it += digits;
 		}
 		if (it == mstr.cend())
 		{
@@ -423,10 +448,11 @@ Move WesternBoard::moveFromSanString(const QString& str)
 		// Target square
 		if (!isValidSquare(targetSq))
 		{
-			if (it + 1 == mstr.cend())
+			if (it + 1 >= mstr.cend())
 				return Move();
-			targetSq = chessSquare(mstr.mid(it - mstr.cbegin(), 2));
-			it += 2;
+			QString tmp(mstr.mid(it - mstr.cbegin(), 1 + digits));
+			targetSq = chessSquare(tmp);
+			it += tmp.size();
 		}
 	}
 	if (!isValidSquare(targetSq))
