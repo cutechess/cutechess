@@ -1,0 +1,9 @@
+The file makruk.svg provides a set of chess pieces designed by Peter Thomson
+for the PyChess project (http://pychess.org). It is intended to be used for
+Makruk and related South-East Asian variants.
+
+Boat and Advisor glyphs have been adapted by alwey for cutechess autoscaling.
+
+The set is copyright (C) 2015 Peter Thomson and published under the
+GNU General Public License 3, https://gnu.org/copyleft/gpl.html.
+
