@@ -10,8 +10,6 @@ dist: trusty
 
 env:
   matrix:
-    - QT_BASE=55
-    - QT_BASE=56
     - QT_BASE=57
     - QT_BASE=58
     - QT_BASE=59
