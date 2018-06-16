@@ -1,9 +1,9 @@
 os: Visual Studio 2015
-version: 0.9.{build}
+version: 1.0.0.{build}
 
 install:
     # https://www.appveyor.com/docs/installed-software/#qt
-    - set QTDIR=C:\Qt\5.7\msvc2015_64
+    - set QTDIR=C:\Qt\5.9\msvc2015_64
     - set PATH=%QTDIR%\bin;%PATH%
     - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
     - qmake -v
