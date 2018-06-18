@@ -160,6 +160,8 @@ void MakrukBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	int capture = captureType(move);
 	Piece piece = pieceAt(move.sourceSquare());
 	int type = piece.type();
+	if (move.sourceSquare() == move.targetSquare())
+		capture = Piece::NoPiece;
 
 	ShatranjBoard::vMakeMove(move, transition);
 
@@ -183,7 +185,10 @@ void MakrukBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	int promotion = move.promotion();
 	if (promotion != Piece::NoPiece)
 	{
-		md.pieceCount[type][side]--;
+		if (move.sourceSquare() == 0)
+			md.pieceCount[Piece::NoPiece][side]++; //drop
+		else
+			md.pieceCount[type][side]--;
 		md.pieceCount[promotion][side]++;
 	}
 

@@ -513,6 +513,27 @@ void tst_Board::moveStrings_data() const
 		<< "Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3"
 		<< "8/8/8/4K3/8/1kq5/8/8 w - - 0 1"
 		<< "8/8/8/4K3/8/1kq5/8/8 w - - 16 9";
+	QTest::newRow("sittuyin lan1 promotion staying on square")
+		<< "sittuyin"
+		<< "g3g3f"
+		<< "8/8/6R1/s3r3/P5R1/1KP3p1/1F2kr2/8[-] b - 0 0 72"
+		<< "8/8/6R1/s3r3/P5R1/1KP3f1/1F2kr2/8[-] w - 0 0 73";
+	QTest::newRow("sittuyin san1 promotion staying on square")
+		<< "sittuyin"
+		<< "g3=F"
+		<< "8/8/6R1/s3r3/P5R1/1KP3p1/1F2kr2/8[-] b - 0 0 72"
+		<< "8/8/6R1/s3r3/P5R1/1KP3f1/1F2kr2/8[-] w - 0 0 73";
+	QTest::newRow("sittuyin san2 promotion by move")
+		<< "sittuyin"
+		<< "f2=F"
+		<< "5R2/8/8/8/5n2/5k2/3K4/4p3[-] b - 0 0 81"
+		<< "5R2/8/8/8/5n2/5k2/3K1f2/8[-] w - 0 0 82";
+	QTest::newRow("sittuyin san3 no threefold rep adjudicated")
+		<< "sittuyin"
+		<< "Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3"
+		<< "8/8/8/4K3/8/1kf5/8/8[-] w - - 0 1"
+		<< "8/8/8/4K3/8/1kf5/8/8[-] w - - 16 9";
+
 }
 
 void tst_Board::moveStrings()
@@ -1307,6 +1328,18 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/8/pppppppp/8/8/PPPPPPPP/8/RNBQKBNR w - - 0 1"
 		<< 5 // 4 plies: 273026, 5 plies: 6223994, 6 plies: 142078057
 		<< Q_UINT64_C(6223994);
+
+	variant = "sittuyin";
+	QTest::newRow("sittuyin startpos")
+		<< variant
+		<< "8/8/4pppp/pppp4/4PPPP/PPPP4/8/8[KFRRSSNNkfrrssnn] w - 0 0 1"
+		<< 3 // 1 ply: 88, 2 plies: 7744, 3 plies: 580096, 4 plies: 43454464
+		<< Q_UINT64_C(580096);
+	QTest::newRow("sittuyin midgame")
+		<< variant
+		<< "8/8/6R1/s3r3/P5R1/1KP3p1/1F2kr2/8[-] b - 0 0 72"
+		<< 4 // 1 ply: 35, 2 plies: 825, 3 plies: 26791, 4 plies: 657824
+		<< Q_UINT64_C(657824);
 
 	variant = "twokings";
 	QTest::newRow("twokings startpos")

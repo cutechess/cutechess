@@ -55,6 +55,7 @@ Options:
 			'shatranj': Shatranj
 			'slippedgrid': Slipped Grid Chess
 			'simplifiedgryphon': Simplified Gryphon Chess
+			'sittuyin': Sittuyin (Myanmar Chess)
 			'suicide': Suicide Chess (Losing Chess)
 			'superandernach': Super-Andernach Chess
 			'threekings': Three Kings Chess
