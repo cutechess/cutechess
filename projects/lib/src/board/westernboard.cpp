@@ -186,6 +186,9 @@ QString WesternBoard::sanMoveString(const Move& move)
 	Piece capture = pieceAt(target);
 	Square square = chessSquare(source);
 
+	if (source == target)
+		capture = Piece::NoPiece;
+
 	char checkOrMate = 0;
 	makeMove(move);
 	if (inCheck(sideToMove()))
@@ -892,6 +895,9 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 		isReversible = false;
 		epSq = 0;
 	}
+
+	if (source == target)
+		clearSource = 0;
 
 	setEnpassantSquare(0);
 

@@ -51,6 +51,7 @@
 #include "racingkingsboard.h"
 #include "seirawanboard.h"
 #include "shatranjboard.h"
+#include "sittuyinboard.h"
 #include "standardboard.h"
 #include "suicideboard.h"
 #include "threekingsboard.h"
@@ -102,6 +103,7 @@ REGISTER_BOARD(RacingKingsBoard, "racingkings")
 REGISTER_BOARD(SeirawanBoard, "seirawan")
 REGISTER_BOARD(ShatranjBoard, "shatranj")
 REGISTER_BOARD(SimplifiedGryphonBoard, "simplifiedgryphon")
+REGISTER_BOARD(SittuyinBoard, "sittuyin")
 REGISTER_BOARD(SlippedGridBoard, "slippedgrid")
 REGISTER_BOARD(StandardBoard, "standard")
 REGISTER_BOARD(SuicideBoard, "suicide")
