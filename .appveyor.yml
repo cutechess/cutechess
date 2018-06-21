@@ -28,3 +28,8 @@ test_script:
     - nmake /NOLOGO
     - cd parser & release\tst_jsonparser & cd..
     - cd serializer & release\tst_jsonserializer & cd..
+
+artifacts:
+
+  - path: build/Release/cutechess-cli.exe
+    name: cutechess-cli
