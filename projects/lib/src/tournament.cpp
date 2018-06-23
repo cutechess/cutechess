@@ -71,8 +71,7 @@ Tournament::~Tournament()
 	qDeleteAll(m_pairs);
 
 	QSet<const OpeningBook*> books;
-	// TODO: use qAsConst() from Qt 5.7
-	foreach (const TournamentPlayer& player, m_players)
+	for (const TournamentPlayer& player : qAsConst(m_players))
 	{
 		books.insert(player.book());
 		delete player.builder();

@@ -223,8 +223,7 @@ TournamentPair* KnockoutTournament::nextPair(int gameNumber)
 	m_rounds << nextRound;
 	setCurrentRound(currentRound() + 1);
 
-	// TODO: use qAsConst() from Qt 5.7
-	foreach (TournamentPair* pair, nextRound)
+	for (TournamentPair* pair : qAsConst(nextRound))
 	{
 		if (pair->isValid())
 			return pair;

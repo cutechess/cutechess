@@ -154,8 +154,7 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 	engine.setWhiteEvalPov(ui->m_whitePovCheck->checkState() == Qt::Checked);
 
 	QList<EngineOption*> optionCopies;
-	// TODO: use qAsConst() from Qt 5.7
-	foreach (EngineOption* option, m_options)
+	for (const EngineOption* option : qAsConst(m_options))
 		optionCopies << option->copy();
 
 	engine.setOptions(optionCopies);
@@ -391,8 +390,7 @@ void EngineConfigurationDialog::resizeColumns()
 
 void EngineConfigurationDialog::restoreDefaults()
 {
-	// TODO: use qAsConst() from Qt 5.7
-	foreach (EngineOption* option, m_options)
+	for (EngineOption* option : qAsConst(m_options))
 		option->setValue(option->defaultValue());
 
 	m_engineOptionModel->setOptions(m_options);

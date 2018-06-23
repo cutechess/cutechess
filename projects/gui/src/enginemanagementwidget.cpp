@@ -177,8 +177,7 @@ void EngineManagementWidget::removeEngine()
 
 	if (!selected.isEmpty())
 	{
-		// TODO: use qAsConst() from Qt 5.7
-		foreach (const QModelIndex& index, selected)
+		for (const QModelIndex& index : qAsConst(selected))
 			m_engineManager->removeEngineAt(index.row());
 		m_hasChanged = true;
 	}

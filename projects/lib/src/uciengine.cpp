@@ -606,7 +606,6 @@ void UciEngine::parseLine(const QString& line)
 			m_ignoreThinking = false;
 			if (!m_bmBuffer.isEmpty())
 			{
-				// TODO: use qAsConst() from Qt 5.7
 				const auto buf = m_bmBuffer;
 				for (const auto& l : buf)
 					write(l, Unbuffered);

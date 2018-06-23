@@ -79,8 +79,7 @@ bool EngineManager::supportsVariant(const QString& variant) const
 	if (m_engines.isEmpty())
 		return false;
 
-	// TODO: use qAsConst() from Qt 5.7
-	foreach (const auto& config, m_engines)
+	for (const auto& config : qAsConst(m_engines))
 	{
 		if (!config.supportsVariant(variant))
 			return false;
@@ -120,8 +119,7 @@ void EngineManager::loadEngines(const QString& fileName)
 void EngineManager::saveEngines(const QString& fileName)
 {
 	QVariantList engines;
-	// TODO: use qAsConst() from Qt 5.7
-	foreach (const EngineConfiguration& config, m_engines)
+	for (const EngineConfiguration& config : qAsConst(m_engines))
 		engines << config.toVariant();
 
 	QFile output(fileName);
@@ -140,8 +138,7 @@ void EngineManager::saveEngines(const QString& fileName)
 QSet<QString> EngineManager::engineNames() const
 {
 	QSet<QString> names;
-	// TODO: use qAsConst() from Qt 5.7
-	foreach (const EngineConfiguration& engine, m_engines)
+	for (const EngineConfiguration& engine : qAsConst(m_engines))
 		names.insert(engine.name());
 
 	return names;

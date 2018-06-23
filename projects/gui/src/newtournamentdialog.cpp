@@ -156,8 +156,7 @@ void NewTournamentDialog::removeEngine()
 		return b < a;
 	});
 
-	// TODO: use qAsConst() from Qt 5.7
-	foreach (const QModelIndex& index, selected)
+	for (const QModelIndex& index : qAsConst(selected))
 		m_addedEnginesManager->removeEngineAt(index.row());
 
 	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);

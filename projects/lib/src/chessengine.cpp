@@ -151,8 +151,7 @@ void ChessEngine::addOption(EngineOption* option)
 
 EngineOption* ChessEngine::getOption(const QString& name) const
 {
-	// TODO: use qAsConst() from Qt 5.7
-	foreach (EngineOption* option, m_options)
+	for (EngineOption* option : qAsConst(m_options))
 	{
 		if (option->alias() == name || option->name() == name)
 			return option;
@@ -468,8 +467,7 @@ void ChessEngine::flushWriteBuffer()
 	if (m_pinging || state() == NotStarted)
 		return;
 
-	// TODO: use qAsConst() from Qt 5.7
-	foreach (const QString& line, m_writeBuffer)
+	for (const QString& line : qAsConst(m_writeBuffer))
 		write(line);
 	m_writeBuffer.clear();
 }
