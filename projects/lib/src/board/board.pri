@@ -43,6 +43,9 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/modernboard.cpp \
     $$PWD/shatranjboard.cpp \
     $$PWD/courierboard.cpp \
+    $$PWD/makrukboard.cpp \
+    $$PWD/oukboard.cpp \
+    $$PWD/aseanboard.cpp \
     $$PWD/boardfactory.cpp \
     $$PWD/boardtransition.cpp \
     $$PWD/syzygytablebase.cpp
@@ -92,6 +95,9 @@ HEADERS += $$PWD/board.h \
     $$PWD/modernboard.h \
     $$PWD/shatranjboard.h \
     $$PWD/courierboard.h \
+    $$PWD/makrukboard.h \
+    $$PWD/oukboard.h \
+    $$PWD/aseanboard.h \
     $$PWD/boardfactory.h \
     $$PWD/boardtransition.h \
     $$PWD/syzygytablebase.h
