@@ -321,7 +321,7 @@ QVariant JsonParser::parseObject()
 	QVariant value;
 	QVariantMap map;
 
-	forever
+	for (;;)
 	{
 		t = parseToken();
 		if (t == JsonEndObject)
@@ -375,7 +375,7 @@ QVariant JsonParser::parseArray()
 	QVariant value;
 	QVariantList list;
 
-	forever
+	for (;;)
 	{
 		value = parseValue(&t);
 

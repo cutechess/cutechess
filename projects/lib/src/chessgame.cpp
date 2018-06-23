@@ -500,7 +500,7 @@ void ChessGame::generateOpening()
 	}
 
 	// Then play the opening book moves
-	forever
+	for (;;)
 	{
 		Chess::Move move = bookMove(m_board->sideToMove());
 		if (move.isNull())

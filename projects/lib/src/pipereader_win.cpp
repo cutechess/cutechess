@@ -80,7 +80,7 @@ void PipeReader::run()
 {
 	DWORD dwRead = 0;
 
-	forever
+	for (;;)
 	{
 		int maxSize = qMin(BufSize / 10, int(m_bufEnd - m_end));
 		m_freeBytes.acquire(maxSize);

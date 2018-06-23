@@ -117,7 +117,7 @@ bool OpeningSuite::initialize()
 	if (m_order == RandomOrder)
 	{
 		// Create a shuffled vector of file positions
-		forever
+		for (;;)
 		{
 			FilePosition pos;
 			if (m_format == EpdFormat)

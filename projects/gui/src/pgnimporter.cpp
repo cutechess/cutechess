@@ -57,7 +57,7 @@ void PgnImporter::work()
 	PgnStream pgnStream(&file);
 	QList<const PgnGameEntry*> games;
 
-	forever
+	for (;;)
 	{
 		PgnGameEntry* game = new PgnGameEntry;
 		if (cancelRequested() || !game->read(pgnStream))

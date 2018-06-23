@@ -1184,7 +1184,7 @@ bool WesternBoard::isLegalPosition()
 		{
 			offset = (cside == KingSide) ? 1 : -1;
 			int i = target - offset;
-			forever
+			for (;;)
 			{
 				i -= offset;
 				Piece piece(pieceAt(i));
