@@ -123,7 +123,7 @@ void MakrukBoard::generatePawnMoves(int square,
 
 	// Add moves, promote pawn (bia) to ferz (met) when reaching the
 	// promotion rank
-	for (const Move m: moves1)
+	for (const Move& m: moves1)
 	{
 		int rank = height() + 1 - m.targetSquare() / arwidth;
 		int rrank = (side == Side::White) ? rank : height() - 1 - rank;
