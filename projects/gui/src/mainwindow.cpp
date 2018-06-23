@@ -114,8 +114,8 @@ MainWindow::MainWindow(ChessGame* game)
 	createToolBars();
 	createDockWindows();
 
-	connect(m_moveList, SIGNAL(moveClicked(int)),
-		m_gameViewer, SLOT(viewMove(int)));
+	connect(m_moveList, SIGNAL(moveClicked(int,bool)),
+	        m_gameViewer, SLOT(viewMove(int,bool)));
 	connect(m_moveList, SIGNAL(commentClicked(int, QString)),
 		this, SLOT(editMoveComment(int, QString)));
 	connect(m_gameViewer, SIGNAL(moveSelected(int)),

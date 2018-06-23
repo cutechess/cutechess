@@ -52,7 +52,7 @@ class GameViewer : public QWidget
 		ChessClock* chessClock(Chess::Side side);
 
 	public slots:
-		void viewMove(int index);
+		void viewMove(int index, bool keyLeft = false);
 
 	signals:
 		void moveSelected(int moveNumber);

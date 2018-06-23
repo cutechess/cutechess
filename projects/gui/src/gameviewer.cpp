@@ -324,12 +324,14 @@ void GameViewer::viewPosition(int index)
 		viewNextMove();
 }
 
-void GameViewer::viewMove(int index)
+void GameViewer::viewMove(int index, bool keyLeft)
 {
 	Q_ASSERT(index >= 0);
 	Q_ASSERT(!m_moves.isEmpty());
 
-	if (index < m_moveIndex)
+	if (keyLeft && index == m_moveIndex - 2)
+		viewPreviousMove();
+	else if (index < m_moveIndex)
 	{
 		// We backtrack one move too far and then make one
 		// move forward to highlight the correct move
