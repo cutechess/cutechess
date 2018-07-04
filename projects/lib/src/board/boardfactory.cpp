@@ -42,6 +42,7 @@
 #include "kingofthehillboard.h"
 #include "knightmateboard.h"
 #include "loopboard.h"
+#include "losalamosboard.h"
 #include "losersboard.h"
 #include "ncheckboard.h"
 #include "makrukboard.h"
@@ -95,6 +96,7 @@ REGISTER_BOARD(KarOukBoard,"karouk")
 REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
 REGISTER_BOARD(KnightMateBoard, "knightmate")
 REGISTER_BOARD(LoopBoard, "loop")
+REGISTER_BOARD(LosAlamosBoard, "losalamos")
 REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(MakrukBoard, "makruk")
 REGISTER_BOARD(ModernBoard, "modern")

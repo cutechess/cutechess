@@ -46,6 +46,7 @@ Options:
 			'kingofthehill': King of the Hill Chess
 			'knightmate': Knightmate
 			'loop': Loop Chess (Drop Chess)
+			'losalamos': Los Alamos Chess
 			'losers': Loser's Chess
 			'makruk': Makruk (Thai Chess)
 			'modern': Modern Chess (9x9)
