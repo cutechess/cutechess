@@ -154,7 +154,7 @@ class LIB_EXPORT MakrukBoard : public ShatranjBoard
 		 * Returns true if material on board is known to be not
 		 * sufficient to enforce mate, else false.
 		 */
-		bool insufficientMaterial() const;
+		virtual bool insufficientMaterial() const;
 
 		// Inherited from ShatranjBoard
 		virtual void vInitialize();

@@ -901,6 +901,13 @@ void tst_Board::results_data() const
 		<< variant
 		<< "8/8/8/5K2/1q6/8/8/k7 w - - 0 71"
 		<< "1/2-1/2";
+
+	variant = "ai-wok";
+
+	QTest::newRow("ai-wok black win")
+		<< variant
+		<< "8/8/8/2sp2k1/8/3P4/4K1a1/7r w - - 0 1"
+		<< "0-1";
 }
 
 void tst_Board::results()
@@ -1340,6 +1347,18 @@ void tst_Board::perft_data() const
 		<< "8/8/6R1/s3r3/P5R1/1KP3p1/1F2kr2/8[-] b - 0 0 72"
 		<< 4 // 1 ply: 35, 2 plies: 825, 3 plies: 26791, 4 plies: 657824
 		<< Q_UINT64_C(657824);
+
+	variant = "ai-wok";
+	QTest::newRow("ai-wok startpos")
+		<< variant
+		<< "rnsaksnr/8/pppppppp/8/8/PPPPPPPP/8/RNSKASNR w 0 1"
+		<< 4 // 3 plies: 18102, 4 plies: 485045, 5 plies: 13275068
+		<< Q_UINT64_C(485045);
+	QTest::newRow("ai-wok endgame")
+		<< variant
+		<< "8/8/8/2sp2k1/7p/3P4/6K1/7r w - - 0 1"
+		<< 5 // 4 plies: 6855, 5 plies: 30055, 6 plies: 631293
+		<< Q_UINT64_C(30055);
 
 	variant = "twokings";
 	QTest::newRow("twokings startpos")
