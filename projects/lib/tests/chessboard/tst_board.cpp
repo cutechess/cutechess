@@ -533,6 +533,11 @@ void tst_Board::moveStrings_data() const
 		<< "Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3"
 		<< "8/8/8/4K3/8/1kf5/8/8[-] w - - 0 1"
 		<< "8/8/8/4K3/8/1kf5/8/8[-] w - - 16 9";
+	QTest::newRow("losalamos san1")
+		<< "losalamos"
+		<< "d3 d4"
+		<< "rnqknr/pppppp/6/6/PPPPPP/RNQKNR w - - 0 1"
+		<< "rnqknr/ppp1pp/3p2/3P2/PPP1PP/RNQKNR w - - 0 2";
 
 }
 
@@ -1401,6 +1406,18 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[EHeh] w BCDFGbcdfgKQkq - 0 1"
 		<< 4 // 4 plies: 782599, 5 plies: 27639803, 6 plies: 967587141 (sjaakii: 967584909)
 		<< Q_UINT64_C(782599);
+
+	variant = "losalamos";
+	QTest::newRow("losalamos startpos")
+		<< variant
+		<< "rnqknr/pppppp/6/6/PPPPPP/RNQKNR w - - 0 1"
+		<< 5 // 4 plies: 14332, 5 plies: 191846, 6 plies: 2549164
+		<< Q_UINT64_C(191846);
+	QTest::newRow("losalamos promotion")
+		<< variant
+		<< "6/2P3/6/1K1k2/6/6 w - - 0 1"
+		<< 5 // 4 plies: 3117, 5 plies: 39171, 6 plies: 187431
+		<< Q_UINT64_C(39171);
 
 }
 

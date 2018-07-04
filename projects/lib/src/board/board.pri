@@ -49,6 +49,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/aseanboard.cpp \
     $$PWD/aiwokboard.cpp \
     $$PWD/sittuyinboard.cpp \
+    $$PWD/losalamosboard.cpp \
     $$PWD/boardfactory.cpp \
     $$PWD/boardtransition.cpp \
     $$PWD/syzygytablebase.cpp
@@ -104,6 +105,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/aseanboard.h \
     $$PWD/aiwokboard.h \
     $$PWD/sittuyinboard.h \
+    $$PWD/losalamosboard.h \
     $$PWD/boardfactory.h \
     $$PWD/boardtransition.h \
     $$PWD/syzygytablebase.h
