@@ -17,6 +17,7 @@
 
 #include "cutechessapp.h"
 
+#include <QLoggingCategory>
 #include <QTextStream>
 #include <QStringList>
 #include <QMetaType>
@@ -36,6 +37,8 @@ int main(int argc, char* argv[])
 	qRegisterMetaType<Chess::Side>("Chess::Side");
 	qRegisterMetaType<Chess::Result>("Chess::Result");
 	qRegisterMetaType<MoveEvaluation>("MoveEvaluation");
+
+	QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
 
 	CuteChessApplication app(argc, argv);
 

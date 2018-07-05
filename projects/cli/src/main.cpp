@@ -20,6 +20,7 @@
 
 #include <QtGlobal>
 #include <QDebug>
+#include <QLoggingCategory>
 #include <QTextStream>
 #include <QStringList>
 #include <QFile>
@@ -423,7 +424,10 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			match->setRatingInterval(value.toInt());
 		// Debugging mode. Prints all engine input and output.
 		else if (name == "-debug")
+		{
+			QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
 			match->setDebugMode(true);
+		}
 		// Use an opening suite
 		else if (name == "-openings")
 		{

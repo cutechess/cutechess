@@ -62,11 +62,11 @@ void CuteChessCoreApplication::messageHandler(QtMsgType type,
 	QByteArray msg = message.toLocal8Bit();
 	switch (type)
 	{
-	case QtDebugMsg:
-#if QT_VERSION >= 0x050500
 	case QtInfoMsg:
-#endif
 		fprintf(stdout, "%s\n", msg.constData());
+		break;
+	case QtDebugMsg:
+		fprintf(stdout, "Debug: %s\n", msg.constData());
 		break;
 	case QtWarningMsg:
 		fprintf(stderr, "Warning: %s\n", msg.constData());
