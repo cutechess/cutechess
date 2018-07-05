@@ -261,6 +261,7 @@ class LIB_EXPORT WesternBoard : public Board
 		int m_kingSquare[2];
 		int m_enpassantSquare;
 		int m_enpassantTarget;
+		int m_plyOffset;
 		int m_reversibleMoveCount;
 		bool m_kingCanCapture;
 		bool m_hasCastling;

@@ -29,6 +29,7 @@ WesternBoard::WesternBoard(WesternZobrist* zobrist)
 	  m_sign(1),
 	  m_enpassantSquare(0),
 	  m_enpassantTarget(0),
+	  m_plyOffset(0),
 	  m_reversibleMoveCount(0),
 	  m_kingCanCapture(true),
 	  m_hasCastling(true),
@@ -613,7 +614,7 @@ QString WesternBoard::vFenString(FenNotation notation) const
 
 	// Full move number
 	fen += ' ';
-	fen += QString::number(m_history.size() / 2 + 1);
+	fen += QString::number((m_history.size() + m_plyOffset) / 2 + 1);
 
 	return fen;
 }
@@ -799,11 +800,25 @@ bool WesternBoard::vSetFenString(const QStringList& fen)
 		if (!ok || tmp < 0)
 			return false;
 		m_reversibleMoveCount = tmp;
+		++token;
 	}
 	else
 		m_reversibleMoveCount = 0;
 
-	// The full move number is ignored. It's rarely useful
+	// Read the full move number and calculate m_plyOffset
+	if (token != fen.end())
+	{
+		bool ok;
+		int tmp = token->toInt(&ok);
+		if (!ok || tmp < 1)
+			return false;
+		m_plyOffset = 2 * (tmp - 1);
+	}
+	else
+		m_plyOffset = 0;
+
+	if (m_sign != 1)
+		m_plyOffset++;
 
 	m_history.clear();
 	return true;
