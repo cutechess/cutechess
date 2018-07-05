@@ -105,14 +105,16 @@ void GameAdjudicator::addEval(const Chess::Board* board, const MoveEvaluation& e
 	if (m_resignMoveCount > 0)
 	{
 		int& count = m_resignScoreCount[side];
-		if (eval.score() <= m_resignScore)
+		if (qAbs(eval.score()) >= m_resignScore)
 			count++;
 		else
 			count = 0;
 
 		if (count >= m_resignMoveCount)
 			m_result = Chess::Result(Chess::Result::Adjudication,
-						 side.opposite());
+						 whiteEvalPov() ?
+						 	(eval.score() > 0 ? Chess::Side::White : Chess::Side::Black) :
+						 	side.opposite());
 	}
 
 	// Limit game length

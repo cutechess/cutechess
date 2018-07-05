@@ -346,7 +346,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 
 			ok = (countOk && scoreOk);
 			if (ok)
-				adjudicator.setResignThreshold(moveCount, -score);
+				adjudicator.setResignThreshold(moveCount, score);
 		}
 		// Maximum game length before draw adjudication
 		else if (name == "-maxmoves")
