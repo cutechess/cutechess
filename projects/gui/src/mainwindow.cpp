@@ -973,23 +973,33 @@ void MainWindow::copyFen()
 
 void MainWindow::pasteFen()
 {
-	QClipboard* cb = CuteChessApplication::clipboard();
+	auto cb = CuteChessApplication::clipboard();
 	if (cb->text().isEmpty())
 		return;
 
-	ChessGame* game = new ChessGame(Chess::BoardFactory::create("standard"),
-		new PgnGame());
+	auto board = Chess::BoardFactory::create("standard");
+	if (!board->setFenString(cb->text()))
+	{
+		QMessageBox msgBox(QMessageBox::Critical, tr("FEN error"),
+		    tr("Invalid FEN string for the \"standard\" variant:"),
+		    QMessageBox::Ok, this);
+		msgBox.setInformativeText(cb->text());
+		msgBox.exec();
 
+		delete board;
+		return;
+	}
+	auto game = new ChessGame(board, new PgnGame());
 	game->setTimeControl(TimeControl("inf"));
 	game->setStartingFen(cb->text());
 	game->pause();
 
-	connect(game, SIGNAL(started(ChessGame*)),
-		this, SLOT(addGame(ChessGame*)));
-	connect(game, SIGNAL(startFailed(ChessGame*)),
-		this, SLOT(onGameStartFailed(ChessGame*)));
+	connect(game, &ChessGame::started, this, &MainWindow::addGame);
+	connect(game, &ChessGame::startFailed, this, &MainWindow::onGameStartFailed);
+
 	CuteChessApplication::instance()->gameManager()->newGame(game,
-		new HumanBuilder(CuteChessApplication::userName()), new HumanBuilder(CuteChessApplication::userName()));
+		new HumanBuilder(CuteChessApplication::userName()),
+		new HumanBuilder(CuteChessApplication::userName()));
 }
 
 void MainWindow::showAboutDialog()
