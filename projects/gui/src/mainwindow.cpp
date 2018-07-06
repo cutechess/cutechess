@@ -977,12 +977,17 @@ void MainWindow::pasteFen()
 	if (cb->text().isEmpty())
 		return;
 
-	auto board = Chess::BoardFactory::create("standard");
+	QString variant = m_game.isNull() || m_game->board() == nullptr ?
+				"standard" : m_game->board()->variant();
+
+	auto board = Chess::BoardFactory::create(variant);
 	if (!board->setFenString(cb->text()))
 	{
-		QMessageBox msgBox(QMessageBox::Critical, tr("FEN error"),
-		    tr("Invalid FEN string for the \"standard\" variant:"),
-		    QMessageBox::Ok, this);
+		QMessageBox msgBox(QMessageBox::Critical,
+				   tr("FEN error"),
+				   tr("Invalid FEN string for the \"%1\" variant:")
+				   .arg(variant),
+				   QMessageBox::Ok, this);
 		msgBox.setInformativeText(cb->text());
 		msgBox.exec();
 
