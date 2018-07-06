@@ -80,6 +80,7 @@ class MainWindow : public QMainWindow
 		void onGameFinished(ChessGame* game);
 		void editMoveComment(int ply, const QString& comment);
 		void copyFen();
+		void pasteFen();
 		void copyPgn();
 		void showAboutDialog();
 		void closeAllGames();
@@ -143,6 +144,7 @@ class MainWindow : public QMainWindow
 		QAction* m_saveGameAct;
 		QAction* m_saveGameAsAct;
 		QAction* m_copyFenAct;
+		QAction* m_pasteFenAct;
 		QAction* m_copyPgnAct;
 		QAction* m_flipBoardAct;
 		QAction* m_newTournamentAct;

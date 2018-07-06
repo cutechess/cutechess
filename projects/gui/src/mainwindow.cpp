@@ -40,6 +40,7 @@
 #include <gamemanager.h>
 #include <playerbuilder.h>
 #include <chessplayer.h>
+#include <humanbuilder.h>
 #include <tournament.h>
 
 #include "cutechessapp.h"
@@ -157,6 +158,9 @@ void MainWindow::createActions()
 	copyFenSequence->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 	m_gameViewer->addAction(copyFenSequence);
 
+	m_pasteFenAct = new QAction(tr("&Paste FEN"), this);
+	m_pasteFenAct->setShortcut(QKeySequence(QKeySequence::Paste));
+
 	m_copyPgnAct = new QAction(tr("Copy PG&N"), this);
 
 	m_flipBoardAct = new QAction(tr("&Flip Board"), this);
@@ -208,6 +212,7 @@ void MainWindow::createActions()
 
 	connect(m_newGameAct, SIGNAL(triggered()), this, SLOT(newGame()));
 	connect(m_copyFenAct, SIGNAL(triggered()), this, SLOT(copyFen()));
+	connect(m_pasteFenAct, SIGNAL(triggered()), this, SLOT(pasteFen()));
 	connect(copyFenSequence, SIGNAL(triggered()), this, SLOT(copyFen()));
 	connect(m_copyPgnAct, SIGNAL(triggered()), this, SLOT(copyPgn()));
 	connect(m_flipBoardAct, SIGNAL(triggered()),
@@ -276,8 +281,10 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_closeGameAct);
 	m_gameMenu->addAction(m_saveGameAct);
 	m_gameMenu->addAction(m_saveGameAsAct);
+	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_copyFenAct);
 	m_gameMenu->addAction(m_copyPgnAct);
+	m_gameMenu->addAction(m_pasteFenAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_adjudicateDrawAct);
 	m_gameMenu->addAction(m_adjudicateWhiteWinAct);
@@ -962,6 +969,27 @@ void MainWindow::copyFen()
 	QString fen(m_gameViewer->board()->fenString());
 	if (!fen.isEmpty())
 		cb->setText(fen);
+}
+
+void MainWindow::pasteFen()
+{
+	QClipboard* cb = CuteChessApplication::clipboard();
+	if (cb->text().isEmpty())
+		return;
+
+	ChessGame* game = new ChessGame(Chess::BoardFactory::create("standard"),
+		new PgnGame());
+
+	game->setTimeControl(TimeControl("inf"));
+	game->setStartingFen(cb->text());
+	game->pause();
+
+	connect(game, SIGNAL(started(ChessGame*)),
+		this, SLOT(addGame(ChessGame*)));
+	connect(game, SIGNAL(startFailed(ChessGame*)),
+		this, SLOT(onGameStartFailed(ChessGame*)));
+	CuteChessApplication::instance()->gameManager()->newGame(game,
+		new HumanBuilder(CuteChessApplication::userName()), new HumanBuilder(CuteChessApplication::userName()));
 }
 
 void MainWindow::showAboutDialog()
