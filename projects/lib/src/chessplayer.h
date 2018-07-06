@@ -67,6 +67,11 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Returns the player's state. */
 		State state() const;
 
+		/*! Returns true if a parsing error occured. */
+		bool hasError() const;
+		/*! Returns a detailed description of the error. */
+		QString errorString() const;
+
 		/*!
 		 * Prepares the player for a new chess game, and then calls
 		 * startGame() to start the game.
@@ -276,6 +281,9 @@ class LIB_EXPORT ChessPlayer : public QObject
 
 		/*! Sets the player's state to \a state. */
 		void setState(State state);
+
+		/*! Sets the current error to \a error. */
+		void setError(const QString& error);
 		
 		/*!
 		 * Move evaluation for the current move.
@@ -290,6 +298,7 @@ class LIB_EXPORT ChessPlayer : public QObject
 		void startClock();
 
 		QString m_name;
+		QString m_error;
 		State m_state;
 		TimeControl m_timeControl;
 		QTimer* m_timer;

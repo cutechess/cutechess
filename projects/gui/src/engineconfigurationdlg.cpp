@@ -40,6 +40,7 @@
 EngineConfigurationDialog::EngineConfigurationDialog(
 	EngineConfigurationDialog::DialogMode mode, QWidget* parent)
 	: QDialog(parent),
+          m_hasError(false),
 	  m_engineOptionModel(new EngineOptionModel(this)),
 	  m_engine(nullptr),
 	  ui(new Ui::EngineConfigurationDialog)
@@ -68,10 +69,6 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 	ui->m_optionsView->setItemDelegate(delegate);
 	connect(ui->m_workingDirEdit, SIGNAL(textChanged(QString)),
 		delegate, SLOT(setEngineDirectory(QString)));
-
-	m_optionDetectionTimer = new QTimer(this);
-	m_optionDetectionTimer->setSingleShot(true);
-	m_optionDetectionTimer->setInterval(8000);
 
 	connect(ui->m_browseCmdBtn, SIGNAL(clicked(bool)),
 		this, SLOT(browseCommand()));
@@ -272,7 +269,8 @@ void EngineConfigurationDialog::detectEngineOptions()
 	if (m_engine != nullptr)
 		return;
 
-	if (QObject::sender() != ui->m_detectBtn
+	if (!m_hasError
+	&&  QObject::sender() != ui->m_detectBtn
 	&&  ui->m_commandEdit->text() == m_oldCommand
 	&&  ui->m_workingDirEdit->text() == m_oldPath
 	&&  ui->m_protocolCombo->currentText() == m_oldProtocol)
@@ -280,6 +278,7 @@ void EngineConfigurationDialog::detectEngineOptions()
 		emit detectionFinished();
 		return;
 	}
+	m_hasError = false;
 
 	m_oldCommand = ui->m_commandEdit->text();
 	m_oldPath = ui->m_workingDirEdit->text();
@@ -287,6 +286,8 @@ void EngineConfigurationDialog::detectEngineOptions()
 
 	ui->m_detectBtn->setEnabled(false);
 	ui->m_restoreBtn->setEnabled(false);
+	ui->m_buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+	ui->m_buttonBox->button(QDialogButtonBox::Cancel)->setEnabled(false);
 	ui->m_progressBar->show();
 
 	EngineBuilder builder(engineConfiguration());
@@ -301,13 +302,10 @@ void EngineConfigurationDialog::detectEngineOptions()
 			this, SLOT(onEngineQuit()));
 		connect(m_engine, SIGNAL(destroyed()),
 			this, SIGNAL(detectionFinished()));
-		connect(m_optionDetectionTimer, SIGNAL(timeout()),
-			m_engine, SLOT(kill()));
-
-		m_optionDetectionTimer->start();
 	}
 	else
 	{
+		m_hasError = true;
 		QMessageBox::critical(this, tr("Engine Error"), error);
 
 		ui->m_detectBtn->setEnabled(true);
@@ -338,12 +336,15 @@ void EngineConfigurationDialog::onEngineReady()
 
 void EngineConfigurationDialog::onEngineQuit()
 {
-	m_optionDetectionTimer->disconnect();
-	m_optionDetectionTimer->stop();
-
 	if (m_engine != nullptr)
 	{
 		Q_ASSERT(m_engine->state() == ChessPlayer::Disconnected);
+		if (m_engine->hasError())
+		{
+			m_hasError = true;
+			QMessageBox::critical(this, tr("Engine Error"),
+			                      m_engine->errorString());
+		}
 		m_engine->deleteLater();
 		m_engine = nullptr;
 	}
@@ -351,6 +352,8 @@ void EngineConfigurationDialog::onEngineQuit()
 	ui->m_detectBtn->setEnabled(true);
 	ui->m_restoreBtn->setDisabled(m_options.isEmpty());
 	ui->m_progressBar->hide();
+	ui->m_buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+	ui->m_buttonBox->button(QDialogButtonBox::Cancel)->setEnabled(true);
 }
 
 void EngineConfigurationDialog::onTabChanged(int index)
@@ -368,6 +371,12 @@ void EngineConfigurationDialog::onNameOrCommandChanged()
 	ui->m_buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ok);
 }
 
+void EngineConfigurationDialog::onDetectionFinished()
+{
+	if (!m_hasError)
+		accept();
+}
+
 void EngineConfigurationDialog::onAccepted()
 {
 	if (m_reservedNames.contains(ui->m_nameEdit->text()))
@@ -378,7 +387,7 @@ void EngineConfigurationDialog::onAccepted()
 	}
 
 	connect(this, SIGNAL(detectionFinished()),
-		this, SLOT(accept()));
+	        this, SLOT(onDetectionFinished()));
 	detectEngineOptions();
 }
 

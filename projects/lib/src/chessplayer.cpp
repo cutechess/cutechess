@@ -173,6 +173,16 @@ ChessPlayer::State ChessPlayer::state() const
 	return m_state;
 }
 
+bool ChessPlayer::hasError() const
+{
+	return !m_error.isEmpty();
+}
+
+QString ChessPlayer::errorString() const
+{
+	return m_error;
+}
+
 void ChessPlayer::setState(State state)
 {
 	if (state == m_state)
@@ -181,6 +191,11 @@ void ChessPlayer::setState(State state)
 		emit stoppedThinking();
 
 	m_state = state;
+}
+
+void ChessPlayer::setError(const QString& error)
+{
+	m_error = error;
 }
 
 QString ChessPlayer::name() const

@@ -402,8 +402,10 @@ void ChessEngine::pong(bool emitReady)
 
 void ChessEngine::onPingTimeout()
 {
-	qWarning("Engine %s(%d) failed to respond to ping",
-		 qUtf8Printable(name()), m_id);
+	setError(tr("no response to ping"));
+	qWarning("Engine %s(%d): %s",
+	         qUtf8Printable(name()), m_id,
+	         qUtf8Printable(errorString()));
 
 	m_pinging = false;
 	m_writeBuffer.clear();
@@ -482,8 +484,10 @@ void ChessEngine::onProtocolStartTimeout()
 	if (state() != Starting)
 		return;
 
-	qWarning("Engine %s(%d) did not start the chess protocol in time",
-		 qUtf8Printable(name()), m_id);
+	setError(tr("Chess protocol was not started in time"));
+	qWarning("Engine %s(%d): %s",
+	         qUtf8Printable(name()), m_id,
+	         qUtf8Printable(errorString()));
 	onCrashed();
 }
 
