@@ -695,7 +695,14 @@ void ChessGame::startGame()
 		Q_ASSERT(player->isReady());
 
 		if (player->state() == ChessPlayer::Disconnected)
+		{
+			setError(tr("Could not initialize player %1: %2")
+			         .arg(player->name()).arg(player->errorString()));
+			m_result = Chess::Result(Chess::Result::ResultError);
+			stop();
+			emitStartFailed();
 			return;
+		}
 		if (!player->supportsVariant(m_board->variant()))
 		{
 			qWarning("%s doesn't support variant %s",
