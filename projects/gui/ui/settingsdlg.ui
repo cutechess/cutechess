@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>485</width>
+    <width>527</width>
     <height>395</height>
    </rect>
   </property>
@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="m_generalTab">
       <attribute name="title">
@@ -33,7 +33,7 @@
        <property name="fieldGrowthPolicy">
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
-       <item row="0" column="0">
+       <item row="1" column="1">
         <widget class="QCheckBox" name="m_highlightLegalMovesCheck">
          <property name="text">
           <string>Highlight legal moves</string>
@@ -43,7 +43,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="1">
         <widget class="QCheckBox" name="m_closeUnusedInitialTabCheck">
          <property name="text">
           <string>Close initial game tab if unused</string>
@@ -53,7 +53,34 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="m_useFullUserNameCheck">
+         <property name="text">
+          <string>Use full name of human player</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QCheckBox" name="m_playersSidesOnClocksCheck">
+         <property name="text">
+          <string>Display players' sides on clocks </string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QCheckBox" name="m_humanCanPlayAfterTimeoutCheck">
+         <property name="text">
+          <string>Human player can play after timeout</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
         <widget class="QLabel" name="m_siteLabel">
          <property name="text">
           <string>PGN Site:</string>
@@ -63,41 +90,17 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="6" column="1">
         <widget class="QLineEdit" name="m_siteEdit"/>
        </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="m_tbPathLabel">
-         <property name="text">
-          <string>Syzygy tablebases path:</string>
-         </property>
-         <property name="buddy">
-          <cstring>m_tbPathEdit</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLineEdit" name="m_tbPathEdit"/>
-         </item>
-         <item>
-          <widget class="QPushButton" name="m_browseTbPathBtn">
-           <property name="text">
-            <string>Browse...</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="9" column="0">
+       <item row="10" column="0">
         <widget class="QLabel" name="m_defaultPgnOutFileLabel">
          <property name="text">
           <string>PGN output for single games:</string>
          </property>
         </widget>
        </item>
-       <item row="9" column="1">
+       <item row="10" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QLineEdit" name="m_defaultPgnOutFileEdit">
@@ -118,30 +121,27 @@
          </item>
         </layout>
        </item>
-       <item row="2" column="0">
-        <widget class="QCheckBox" name="m_useFullUserNameCheck">
-         <property name="text">
-          <string>Use full name of human player</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
+       <item row="8" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLineEdit" name="m_tbPathEdit"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_browseTbPathBtn">
+           <property name="text">
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item row="3" column="0">
-        <widget class="QCheckBox" name="m_playersSidesOnClocksCheck">
+       <item row="8" column="0">
+        <widget class="QLabel" name="m_tbPathLabel">
          <property name="text">
-          <string>Display players' sides on clocks </string>
+          <string>Syzygy tablebases path:</string>
          </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QCheckBox" name="m_humanCanPlayAfterTimeoutCheck">
-         <property name="text">
-          <string>Human player can play after timeout</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
+         <property name="buddy">
+          <cstring>m_tbPathEdit</cstring>
          </property>
         </widget>
        </item>
@@ -218,18 +218,21 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
+           <layout class="QFormLayout" name="formLayout_2">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
+            <item row="1" column="0">
              <widget class="QLabel" name="m_concurrencyLabel">
               <property name="text">
-               <string>Maximum number of concurrent games:</string>
+               <string>Concurrent games:</string>
               </property>
               <property name="buddy">
                <cstring>m_concurrencySpin</cstring>
               </property>
              </widget>
             </item>
-            <item>
+            <item row="1" column="1">
              <widget class="QSpinBox" name="m_concurrencySpin">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -245,68 +248,55 @@
               </property>
              </widget>
             </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
+            <item row="2" column="0">
              <widget class="QLabel" name="m_tournamentDefaultPgnOutFileLabel">
               <property name="text">
                <string>PGN output:</string>
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QLineEdit" name="m_tournamentDefaultPgnOutFileEdit">
-              <property name="text">
-               <string>tournaments.pgn</string>
-              </property>
-             </widget>
+            <item row="2" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QLineEdit" name="m_tournamentDefaultPgnOutFileEdit">
+                <property name="text">
+                 <string>tournaments.pgn</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="m_tournamentDefaultPgnOutFileBtn">
+                <property name="text">
+                 <string>Browse...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
-            <item>
-             <widget class="QPushButton" name="m_tournamentDefaultPgnOutFileBtn">
-              <property name="text">
-               <string>Browse...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
+            <item row="3" column="0">
              <widget class="QLabel" name="m_tournamentDefaultEpdOutFileLabel">
               <property name="text">
                <string>EPD output:</string>
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QLineEdit" name="m_tournamentDefaultEpdOutFileEdit">
-              <property name="text">
-               <string>tournaments.epd</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="m_tournamentDefaultEpdOutFileBtn">
-              <property name="text">
-               <string>Browse...</string>
-              </property>
-             </widget>
+            <item row="3" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QLineEdit" name="m_tournamentDefaultEpdOutFileEdit">
+                <property name="text">
+                 <string>tournaments.epd</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="m_tournamentDefaultEpdOutFileBtn">
+                <property name="text">
+                 <string>Browse...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
