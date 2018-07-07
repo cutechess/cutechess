@@ -128,8 +128,8 @@ Result ShatranjBoard::result()
 		Side winner = side.opposite();
 		bool check = inCheck(side);
 		QString str{ tr("%1 %2")
-			     .arg(winner.toString())
-			     .arg(check ? tr("mates") : tr("wins by stalemate")) };
+			     .arg(winner.toString(),
+			          check ? tr("mates") : tr("wins by stalemate")) };
 		return Result(Result::Win, winner, str);
 	}
 
