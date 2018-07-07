@@ -640,6 +640,14 @@ void ChessGame::start()
 	// Start the game in the correct thread
 	connect(this, SIGNAL(playersReady()), this, SLOT(startGame()));
 	QMetaObject::invokeMethod(this, "syncPlayers", Qt::QueuedConnection);
+
+
+	m_result = Chess::Result();
+	emit humanEnabled(false);
+	resetBoard();
+	initializePgn();
+	emit initialized(this);
+	emit fenChanged(m_board->startingFenString());
 }
 
 void ChessGame::pause()
@@ -680,9 +688,6 @@ void ChessGame::initializePgn()
 
 void ChessGame::startGame()
 {
-	m_result = Chess::Result();
-	emit humanEnabled(false);
-
 	disconnect(this, SIGNAL(playersReady()), this, SLOT(startGame()));
 	if (m_finished)
 		return;
@@ -714,10 +719,7 @@ void ChessGame::startGame()
 		}
 	}
 
-	resetBoard();
-	initializePgn();
 	emit started(this);
-	emit fenChanged(m_board->startingFenString());
 	QDateTime gameStartTime = QDateTime::currentDateTime();
 	m_pgn->setGameStartTime(gameStartTime);
 

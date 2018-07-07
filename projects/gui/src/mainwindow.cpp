@@ -728,7 +728,7 @@ void MainWindow::newGame()
 		game->pause();
 
 	// Start the game in a new tab
-	connect(game, SIGNAL(started(ChessGame*)),
+	connect(game, SIGNAL(initialized(ChessGame*)),
 		this, SLOT(addGame(ChessGame*)));
 	connect(game, SIGNAL(startFailed(ChessGame*)),
 		this, SLOT(onGameStartFailed(ChessGame*)));
@@ -739,8 +739,6 @@ void MainWindow::newGame()
 void MainWindow::onGameStartFailed(ChessGame* game)
 {
 	QMessageBox::critical(this, tr("Game Error"), game->errorString());
-	delete game->pgn();
-	game->deleteLater();
 }
 
 void MainWindow::onGameFinished(ChessGame* game)
@@ -994,7 +992,7 @@ void MainWindow::pasteFen()
 	game->setStartingFen(cb->text());
 	game->pause();
 
-	connect(game, &ChessGame::started, this, &MainWindow::addGame);
+	connect(game, &ChessGame::initialized, this, &MainWindow::addGame);
 	connect(game, &ChessGame::startFailed, this, &MainWindow::onGameStartFailed);
 
 	CuteChessApplication::instance()->gameManager()->newGame(game,
