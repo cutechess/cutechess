@@ -84,6 +84,7 @@ QStringRef joinTokens(const QVarLengthArray<QStringRef>& tokens)
 
 UciEngine::UciEngine(QObject* parent)
 	: ChessEngine(parent),
+	  m_useDirectPv(false),
 	  m_sendOpponentsName(false),
 	  m_canPonder(false),
 	  m_ponderState(NotPondering),
