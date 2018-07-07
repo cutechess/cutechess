@@ -178,7 +178,8 @@ void SittuyinBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 bool SittuyinBoard::inSetup() const
 {
 	// Set-up phase (sit-tee) ends when no pieces are left in reserve
-	for (Piece piece: reservePieceTypes())
+	const QList<Piece> reserveTypes = reservePieceTypes();
+	for (const Piece piece: reserveTypes)
 	{
 		if (reserveCount(piece) > 0)
 			return true;

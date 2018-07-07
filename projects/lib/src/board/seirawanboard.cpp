@@ -300,7 +300,7 @@ Move SeirawanBoard::moveFromSanString(const QString& str)
 
 	// castling with channeling onto rook square
 	if (move.sourceSquare() == kingSquare(sideToMove())
-	&&  str.mid(index + 2, 1) == squareString(target).left(1))
+	&&  str.mid(index + 2, 1) == squareString(target).at(0))
 		promotion = rookSquareChanneling(promotion);
 
 	// channeling moves
