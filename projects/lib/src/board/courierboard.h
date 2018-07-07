@@ -85,7 +85,6 @@ class LIB_EXPORT CourierBoard : public ShatranjBoard
 						   int pieceType,
 						   int square) const;
 	private:
-		int m_arwidth;
 		QVarLengthArray<int> m_wazirOffsets;
 };
 

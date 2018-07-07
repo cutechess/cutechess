@@ -68,13 +68,13 @@ void CourierBoard::vInitialize()
 {
 	ShatranjBoard::vInitialize();
 
-	m_arwidth = width() + 2;
+	int arrWidth = width() + 2;
 
 	m_wazirOffsets.resize(4);
-	m_wazirOffsets[0] = -m_arwidth;
+	m_wazirOffsets[0] = -arrWidth;
 	m_wazirOffsets[1] = -1;
 	m_wazirOffsets[2] = 1;
-	m_wazirOffsets[3] = m_arwidth;
+	m_wazirOffsets[3] = arrWidth;
 }
 
 void CourierBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,

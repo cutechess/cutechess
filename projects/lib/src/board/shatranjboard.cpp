@@ -56,19 +56,19 @@ void ShatranjBoard::vInitialize()
 {
 	WesternBoard::vInitialize();
 
-	m_arwidth = width() + 2;
+	int arrWidth = width() + 2;
 
 	m_ferzOffsets.resize(4);
-	m_ferzOffsets[0] = -m_arwidth - 1;
-	m_ferzOffsets[1] = -m_arwidth + 1;
-	m_ferzOffsets[2] = m_arwidth - 1;
-	m_ferzOffsets[3] = m_arwidth + 1;
+	m_ferzOffsets[0] = -arrWidth - 1;
+	m_ferzOffsets[1] = -arrWidth + 1;
+	m_ferzOffsets[2] = arrWidth - 1;
+	m_ferzOffsets[3] = arrWidth + 1;
 
 	m_alfilOffsets.resize(4);
-	m_alfilOffsets[0] = -2 * m_arwidth - 2;
-	m_alfilOffsets[1] = -2 * m_arwidth + 2;
-	m_alfilOffsets[2] = 2 * m_arwidth - 2;
-	m_alfilOffsets[3] = 2 * m_arwidth + 2;
+	m_alfilOffsets[0] = -2 * arrWidth - 2;
+	m_alfilOffsets[1] = -2 * arrWidth + 2;
+	m_alfilOffsets[2] = 2 * arrWidth - 2;
+	m_alfilOffsets[3] = 2 * arrWidth + 2;
 }
 
 void ShatranjBoard::addPromotions(int sourceSquare,
