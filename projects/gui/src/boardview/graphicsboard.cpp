@@ -16,6 +16,7 @@
 */
 
 #include "graphicsboard.h"
+#include <QMargins>
 #include <QPainter>
 #include <QPropertyAnimation>
 #include <board/square.h>
@@ -55,6 +56,7 @@ GraphicsBoard::GraphicsBoard(int files,
 	  m_files(files),
 	  m_ranks(ranks),
 	  m_squareSize(squareSize),
+	  m_coordSize(squareSize / 2.0),
 	  m_lightColor(QColor("#ffce9e")),
 	  m_darkColor(QColor("#d18b47")),
 	  m_squares(files * ranks),
@@ -82,7 +84,9 @@ int GraphicsBoard::type() const
 
 QRectF GraphicsBoard::boundingRect() const
 {
-	return m_rect;
+	const auto margins = QMarginsF(m_coordSize, m_coordSize,
+				       m_coordSize, m_coordSize);
+	return m_rect.marginsAdded(margins);
 }
 
 void GraphicsBoard::paint(QPainter* painter,
@@ -93,11 +97,12 @@ void GraphicsBoard::paint(QPainter* painter,
 	Q_UNUSED(widget);
 
 	QRectF rect(m_rect.topLeft(), QSizeF(m_squareSize, m_squareSize));
-	const qreal left = rect.left();
+	const qreal rLeft = rect.left();
 
+	// paint squares
 	for (int y = 0; y < m_ranks; y++)
 	{
-		rect.moveLeft(left);
+		rect.moveLeft(rLeft);
 		for (int x = 0; x < m_files; x++)
 		{
 			if ((x % 2) == (y % 2))
@@ -107,6 +112,40 @@ void GraphicsBoard::paint(QPainter* painter,
 			rect.moveLeft(rect.left() + m_squareSize);
 		}
 		rect.moveTop(rect.top() + m_squareSize);
+	}
+
+	auto font = painter->font();
+	font.setPointSizeF(font.pointSizeF() * 0.7);
+	painter->setFont(font);
+
+	// paint file coordinates
+	const QString alphabet = "abcdefghijklmnopqrstuvwxyz";
+	for (int i = 0; i < m_files; i++)
+	{
+		const qreal tops[] = {m_rect.top() - m_coordSize,
+		                      m_rect.bottom()};
+		for (const auto top : tops)
+		{
+			rect = QRectF(m_rect.left() + (m_squareSize * i), top,
+			              m_squareSize, m_coordSize);
+			int file = m_flipped ? m_files - i - 1 : i;
+			painter->drawText(rect, Qt::AlignCenter, alphabet[file]);
+		}
+	}
+
+	// paint rank coordinates
+	for (int i = 0; i < m_ranks; i++)
+	{
+		const qreal lefts[] = {m_rect.left() - m_coordSize,
+		                       m_rect.right()};
+		for (const auto left : lefts)
+		{
+			rect = QRectF(left, m_rect.top() + (m_squareSize * i),
+			              m_coordSize, m_squareSize);
+			int rank = m_flipped ? i + 1 : m_ranks - i;
+			const auto num = QString::number(rank);
+			painter->drawText(rect, Qt::AlignCenter, num);
+		}
 	}
 }
 
@@ -278,4 +317,5 @@ void GraphicsBoard::setFlipped(bool flipped)
 
 	clearHighlights();
 	m_flipped = flipped;
+	update();
 }

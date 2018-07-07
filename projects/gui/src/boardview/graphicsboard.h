@@ -139,6 +139,7 @@ class GraphicsBoard : public QGraphicsItem
 		int m_files;
 		int m_ranks;
 		qreal m_squareSize;
+		qreal m_coordSize;
 		QRectF m_rect;
 		QColor m_lightColor;
 		QColor m_darkColor;
