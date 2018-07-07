@@ -1007,7 +1007,7 @@ void MainWindow::showAboutDialog()
 		.arg(CuteChessApplication::applicationVersion()) + "</h3>";
 	html += "<p>" + tr("Using Qt version %1").arg(qVersion()) + "</p>";
 	html += "<p>" + tr("Copyright 2008-2018 "
-			   "Ilari Pihlajisto and Arto Jonsson") + "</p>";
+			   "Cute Chess authors") + "</p>";
 	html += "<p>" + tr("This is free software; see the source for copying "
 			   "conditions. There is NO warranty; not even for "
 			   "MERCHANTABILITY or FITNESS FOR A PARTICULAR "
