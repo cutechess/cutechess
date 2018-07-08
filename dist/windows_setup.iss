@@ -4,8 +4,8 @@
 ;#define MinGW
 #define MSVC
 #define MyAppName "Cute Chess"
-#define MyAppVersion "1.0.0"
-#define MyAppPublisher "Ilari Pihlajisto, Arto Jonsson"
+#define MyAppVersion "1.1.0"
+#define MyAppPublisher "Cute Chess authors"
 #define MyAppURL "https://github.com/cutechess/cutechess"
 #define MyAppExeName "cutechess.exe"
 #define MinGWLibPath "C:\QtSDK\mingw\bin"

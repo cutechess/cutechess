@@ -4,7 +4,7 @@ DESTDIR = $$PWD
 include(../lib/lib.pri)
 include(../lib/libexport.pri)
 
-CUTECHESS_CLI_VERSION = 1.0.0
+CUTECHESS_CLI_VERSION = 1.1.0
 
 macx-xcode {
     DEFINES += CUTECHESS_CLI_VERSION=\"$$CUTECHESS_CLI_VERSION\"

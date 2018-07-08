@@ -1,4 +1,4 @@
-FROM icsinc/qt5.5.1-x64:latest
+FROM icsinc/qt5.7.0-x64:latest
 
 # Install dependencies and build tools
 RUN \
@@ -63,12 +63,12 @@ RUN \
     --description "Commandline and graphical interface for playing chess" \
     -d "libc6 (>= 2.19)" \
     -d "libgcc1 (>= 1:4.9)" \
-    -d "libqt5svg5 (>= 5.5.1)" \
-    -d "libqt5core5a (>= 5.5.1)" \
-    -d "libqt5gui5 (>= 5.5.1)" \
-    -d "libqt5widgets5 (>= 5.5.1)" \
-    -d "libqt5printsupport5 (>= 5.5.1)" \
-    -d "libqt5concurrent5 (>= 5.5.1)" \
+    -d "libqt5svg5 (>= 5.7.0)" \
+    -d "libqt5core5a (>= 5.7.0)" \
+    -d "libqt5gui5 (>= 5.7.0)" \
+    -d "libqt5widgets5 (>= 5.7.0)" \
+    -d "libqt5printsupport5 (>= 5.7.0)" \
+    -d "libqt5concurrent5 (>= 5.7.0)" \
     -d "libstdc++6 (>= 4.8.4)" && \
   mv /cutechess_pkg/*.deb /finished_pkg/ && \
   fpm -s dir -t rpm -C /cutechess_pkg \
@@ -81,8 +81,8 @@ RUN \
     --category "Amusements/Games/Board/Chess" \
     -m "Ilari Pihlajisto <ilari.pihlajisto@mbnet.fi>" \
     --description "Commandline and graphical interface for playing chess" \
-    -d "qt5-qtbase >= 5.5.1" \
-    -d "qt5-qtsvg >= 5.5.1" && \
+    -d "qt5-qtbase >= 5.7.0" \
+    -d "qt5-qtsvg >= 5.7.0" && \
   mv /cutechess_pkg/*.rpm /finished_pkg/
 
 # Create .tar.gz package for cutechess-cli
