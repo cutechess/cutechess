@@ -48,6 +48,8 @@ QString TournamentSettingsWidget::tournamentType() const
 		return "gauntlet";
 	else if (ui->m_knockoutRadio->isChecked())
 		return "knockout";
+	else if (ui->m_pyramidRadio->isChecked())
+		return "pyramid";
 
 	Q_UNREACHABLE();
 	return QString();
@@ -95,6 +97,8 @@ void TournamentSettingsWidget::readSettings()
 		ui->m_gauntletRadio->setChecked(true);
 	else if (type == "knockout")
 		ui->m_knockoutRadio->setChecked(true);
+	else if (type == "pyramid")
+		ui->m_pyramidRadio->setChecked(true);
 
 	ui->m_seedsSpin->setValue(s.value("seeds", 0).toInt());
 	ui->m_gamesPerEncounterSpin->setValue(s.value("games_per_encounter", 1).toInt());
@@ -123,6 +127,11 @@ void TournamentSettingsWidget::enableSettingsUpdates()
 	{
 		if (checked)
 			QSettings().setValue("tournament/type", "knockout");
+	});
+	connect(ui->m_pyramidRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		if (checked)
+			QSettings().setValue("tournament/type", "pyramid");
 	});
 
 	connect(ui->m_seedsSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),

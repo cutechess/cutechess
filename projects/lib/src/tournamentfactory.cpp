@@ -20,6 +20,7 @@
 #include "roundrobintournament.h"
 #include "gauntlettournament.h"
 #include "knockouttournament.h"
+#include "pyramidtournament.h"
 
 Tournament* TournamentFactory::create(const QString& type,
 				      GameManager* manager,
@@ -31,6 +32,8 @@ Tournament* TournamentFactory::create(const QString& type,
 		return new GauntletTournament(manager, parent);
 	if (type == "knockout")
 		return new KnockoutTournament(manager, parent);
+	if (type == "pyramid")
+		return new PyramidTournament(manager, parent);
 
 	return nullptr;
 }
