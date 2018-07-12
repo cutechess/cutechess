@@ -88,6 +88,7 @@ Options:
 			'round-robin': Round-robin tournament (default)
 			'gauntlet': First engine plays against the rest
 			'knockout': Single-elimination tournament.
+			'pyramid': Every engine plays against all predecessors
   -event EVENT		Set the event/tournament name to EVENT
   -games N		Play N games per encounter. This value should be set to
 			an even number in tournaments with more than two players

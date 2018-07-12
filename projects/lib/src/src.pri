@@ -42,6 +42,7 @@ HEADERS += $$PWD/chessengine.h \
     $$PWD/gameadjudicator.h \
     $$PWD/elo.h \
     $$PWD/knockouttournament.h \
+    $$PWD/pyramidtournament.h \
     $$PWD/tournamentplayer.h \
     $$PWD/tournamentpair.h \
     $$PWD/worker.h
@@ -85,6 +86,7 @@ SOURCES += $$PWD/chessengine.cpp \
     $$PWD/gameadjudicator.cpp \
     $$PWD/elo.cpp \
     $$PWD/knockouttournament.cpp \
+    $$PWD/pyramidtournament.cpp \
     $$PWD/tournamentplayer.cpp \
     $$PWD/tournamentpair.cpp \
     $$PWD/worker.cpp
