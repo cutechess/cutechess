@@ -40,6 +40,7 @@ class TournamentSettingsWidget : public QWidget
 		int delayBetweenGames() const;
 		bool openingRepetition() const;
 		bool engineRecovery() const;
+		bool savingOfUnfinishedGames() const;
 
 		void enableSettingsUpdates();
 

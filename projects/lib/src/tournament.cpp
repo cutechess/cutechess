@@ -50,6 +50,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_openingRepetitions(1),
 	  m_recover(false),
 	  m_pgnCleanup(true),
+	  m_pgnWriteUnfinishedGames(true),
 	  m_finished(false),
 	  m_bookOwnership(false),
 	  m_openingSuite(nullptr),
@@ -252,6 +253,11 @@ void Tournament::setPgnOutput(const QString& fileName, PgnGame::PgnMode mode)
 	m_pgnOutMode = mode;
 }
 
+void Tournament::setPgnWriteUnfinishedGames(bool enabled)
+{
+	m_pgnWriteUnfinishedGames = enabled;
+}
+
 void Tournament::setPgnCleanupEnabled(bool enabled)
 {
 	m_pgnCleanup = enabled;
@@ -452,6 +458,14 @@ void Tournament::startNextGame()
 	startGame(pair);
 }
 
+inline bool faulty(const Chess::Result::Type& type)
+{
+	return type == Chess::Result::NoResult
+	    || type == Chess::Result::ResultError
+	    || type == Chess::Result::Disconnection
+	    || type == Chess::Result::StalledConnection;
+}
+
 bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
 {
 	Q_ASSERT(pgn != nullptr);
@@ -484,6 +498,13 @@ bool Tournament::writePgn(PgnGame* pgn, int gameNumber)
 	while (m_pgnGames.contains(m_savedGameCount + 1))
 	{
 		PgnGame tmp = m_pgnGames.take(++m_savedGameCount);
+		Chess::Result::Type type = tmp.result().type();
+		if (!m_pgnWriteUnfinishedGames
+		&&  (tmp.result().isNone() || (m_stopping && faulty(type))))
+		{
+			qWarning("Omitted incomplete game %d", m_savedGameCount);
+			continue;
+		}
 		if (!tmp.write(m_pgnOut, m_pgnOutMode)
 		||  m_pgnFile.error() != QFile::NoError)
 		{
@@ -558,7 +579,6 @@ void Tournament::onGameFinished(ChessGame* game)
 	Q_ASSERT(game != nullptr);
 
 	PgnGame* pgn(game->pgn());
-	Chess::Result result(game->result());
 
 	m_finishedGameCount++;
 

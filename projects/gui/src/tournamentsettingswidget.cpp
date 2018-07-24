@@ -83,6 +83,11 @@ bool TournamentSettingsWidget::engineRecovery() const
 	return ui->m_recoverCheck->isChecked();
 }
 
+bool TournamentSettingsWidget::savingOfUnfinishedGames() const
+{
+	return ui->m_saveUnfinishedGamesCheck->isChecked();
+}
+
 void TournamentSettingsWidget::readSettings()
 {
 	QSettings s;
@@ -103,6 +108,8 @@ void TournamentSettingsWidget::readSettings()
 
 	ui->m_repeatCheck->setChecked(s.value("repeat").toBool());
 	ui->m_recoverCheck->setChecked(s.value("recover").toBool());
+	ui->m_saveUnfinishedGamesCheck->setChecked(
+		s.value("save_unfinished_games", true).toBool());
 
 	s.endGroup();
 }
@@ -153,5 +160,9 @@ void TournamentSettingsWidget::enableSettingsUpdates()
 	connect(ui->m_recoverCheck, &QCheckBox::toggled, [=](bool checked)
 	{
 		QSettings().setValue("tournament/recover", checked);
+	});
+	connect(ui->m_saveUnfinishedGamesCheck, &QCheckBox::toggled, [=](bool checked)
+	{
+		QSettings().setValue("tournament/save_unfinished_games", checked);
 	});
 }
