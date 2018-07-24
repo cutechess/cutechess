@@ -123,8 +123,10 @@ Options:
   -bookmode MODE	Set Polyglot book mode to MODE, which can be one of:
 			'ram': The whole book is loaded into RAM (default)
 			'disk': The book is accessed directly on disk.
-  -pgnout FILE [min]	Save the games to FILE in PGN format. Use the 'min'
-			argument to save in a minimal/compact PGN format.
+  -pgnout FILE [min][fi]
+			Save the games to FILE in PGN format. Use the 'min'
+			argument to save in a minimal/compact PGN format. Only
+			finished games are saved for argument 'fi'.
   -epdout FILE		Save the end position of the games to FILE in FEN format.
   -recover		Restart crashed engines instead of stopping the match
   -repeat [N]		Play each opening twice (or N times). Unless the -noswap

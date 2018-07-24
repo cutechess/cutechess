@@ -277,6 +277,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 
 	t->setOpeningRepetitions(ts->openingRepetition()? 2: 1);
 	t->setRecoveryMode(ts->engineRecovery());
+	t->setPgnWriteUnfinishedGames(ts->savingOfUnfinishedGames());
 
 	const auto engines = m_addedEnginesManager->engines();
 	for (EngineConfiguration config : engines)

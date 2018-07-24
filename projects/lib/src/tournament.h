@@ -180,6 +180,14 @@ class LIB_EXPORT Tournament : public QObject
 				  PgnGame::PgnMode mode = PgnGame::Verbose);
 
 		/*!
+		 * Sets the PgnGame mode to write unfinished games to \a enabled.
+		 *
+		 * If \a enabled is true (the default) then the generated PGN games
+		 * are saved even if they have no result.
+		 */
+		void setPgnWriteUnfinishedGames(bool enabled);
+
+		/*!
 		 * Sets PgnGame cleanup mode to \a enabled.
 		 *
 		 * If \a enabled is true (the default) then the generated PgnGame
@@ -432,6 +440,7 @@ class LIB_EXPORT Tournament : public QObject
 		int m_openingRepetitions;
 		bool m_recover;
 		bool m_pgnCleanup;
+		bool m_pgnWriteUnfinishedGames;
 		bool m_finished;
 		bool m_bookOwnership;
 		GameAdjudicator m_adjudicator;

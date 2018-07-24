@@ -1,4 +1,4 @@
-.Dd February 8, 2018
+.Dd July 26, 2018
 .Dt CUTECHESS-CLI 6
 .Os
 .Sh NAME
@@ -278,12 +278,15 @@ is either
 (the book is accessed directly on disk).
 The default mode is
 .Cm ram .
-.It Fl pgnout Ar file Bq Cm min
+.It Fl pgnout Ar file Bq Cm min Cm Bq fi
 Save the games to
 .Ar file
 in PGN format. Use the
 .Cm min
 argument to save in a minimal PGN format.
+Only finished games will be saved if argument
+.Cm fi
+is given.
 .It Fl epdout Ar file
 Save the games to
 .Ar file

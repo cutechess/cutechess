@@ -257,7 +257,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-debug", QVariant::Bool, 0, 0);
 	parser.addOption("-openings", QVariant::StringList);
 	parser.addOption("-bookmode", QVariant::String);
-	parser.addOption("-pgnout", QVariant::StringList, 1, 2);
+	parser.addOption("-pgnout", QVariant::StringList, 1, 3);
 	parser.addOption("-epdout", QVariant::String, 1, 1);
 	parser.addOption("-repeat", QVariant::Int, 0, 1);
 	parser.addOption("-noswap", QVariant::Bool, 0, 0);
@@ -495,12 +495,17 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		{
 			PgnGame::PgnMode mode = PgnGame::Verbose;
 			QStringList list = value.toStringList();
-			if (list.size() == 2)
+			if (list.size() == 2 || list.size() == 3)
 			{
-				if (list.at(1) == "min")
-					mode = PgnGame::Minimal;
-				else
-					ok = false;
+				for (int i = 1; i < list.size(); i++)
+				{
+					if (list.at(i) == "min")
+						mode = PgnGame::Minimal;
+					else if (list.at(i) == "fi")
+						tournament->setPgnWriteUnfinishedGames(false);
+					else
+						ok = false;
+				}
 			}
 			if (ok)
 				tournament->setPgnOutput(list.at(0), mode);
