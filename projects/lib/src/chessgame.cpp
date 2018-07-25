@@ -719,6 +719,9 @@ void ChessGame::startGame()
 		}
 	}
 
+	m_pgn->setPlayerName(Chess::Side::White, m_player[Chess::Side::White]->name());
+	m_pgn->setPlayerName(Chess::Side::Black, m_player[Chess::Side::Black]->name());
+
 	emit started(this);
 	QDateTime gameStartTime = QDateTime::currentDateTime();
 	m_pgn->setGameStartTime(gameStartTime);
