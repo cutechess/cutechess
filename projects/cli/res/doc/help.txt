@@ -13,6 +13,7 @@ Options:
 			'3check': Three-check Chess
 			'5check': Five-check Chess
 			'aiwok': Ai-Wok (Makruk variant)
+			'almost': Almost Chess
 			'andernach': Andernach Chess
 			'antiandernach': Anti-Andernach Chess
 			'antichess': Antichess (Losing Chess)

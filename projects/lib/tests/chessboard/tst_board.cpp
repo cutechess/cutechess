@@ -538,6 +538,11 @@ void tst_Board::moveStrings_data() const
 		<< "d3 d4"
 		<< "rnqknr/pppppp/6/6/PPPPPP/RNQKNR w - - 0 1"
 		<< "rnqknr/ppp1pp/3p2/3P2/PPP1PP/RNQKNR w - - 0 2";
+	QTest::newRow("almost san1")
+		<< "almost"
+		<< "Cc3 g6 Cxc7#"
+		<< "rnbckbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBCKBNR w KQkq - 0 1"
+		<< "rnbckbnr/ppCppp1p/6p1/8/8/8/PPPPPPPP/RNB1KBNR b KQkq - 0 2";
 
 }
 
@@ -913,6 +918,14 @@ void tst_Board::results_data() const
 		<< variant
 		<< "8/8/8/2sp2k1/8/3P4/4K1a1/7r w - - 0 1"
 		<< "0-1";
+
+	variant = "almost";
+
+	QTest::newRow("almost fool's mate")
+		<< variant
+		<< "rnbckbnr/ppCppp1p/6p1/8/8/8/PPPPPPPP/RNB1KBNR b KQkq - 0 2"
+		<< "1-0";
+
 }
 
 void tst_Board::results()
@@ -1418,6 +1431,18 @@ void tst_Board::perft_data() const
 		<< "6/2P3/6/1K1k2/6/6 w - - 0 1"
 		<< 5 // 4 plies: 3117, 5 plies: 39171, 6 plies: 187431
 		<< Q_UINT64_C(39171);
+
+	variant = "almost";
+	QTest::newRow("almost startpos")
+		<< variant
+		<< "rnbckbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBCKBNR w KQkq - 0 1"
+		<< 4 // 4 plies: 290522, 5 plies: 7812388, 6 plies: 208096934
+		<< Q_UINT64_C(290522);
+	QTest::newRow("almost promotion")
+		<< variant
+		<< "8/KP2k3/8/8/8/8/8/8 w - - 0 1"
+		<< 5 // 4 plies: 3036, 5 plies: 41476
+		<< Q_UINT64_C(41476);
 
 }
 
