@@ -14,6 +14,7 @@ Options:
 			'5check': Five-check Chess
 			'aiwok': Ai-Wok (Makruk variant)
 			'almost': Almost Chess
+			'amazon': Amazon Chess
 			'andernach': Andernach Chess
 			'antiandernach': Anti-Andernach Chess
 			'antichess': Antichess (Losing Chess)

@@ -1444,6 +1444,18 @@ void tst_Board::perft_data() const
 		<< 5 // 4 plies: 3036, 5 plies: 41476
 		<< Q_UINT64_C(41476);
 
+	variant = "amazon";
+	QTest::newRow("amazon startpos")
+		<< variant
+		<< "rnbakbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBAKBNR w KQkq - 0 1"
+		<< 4 // 4 plies: 318185, 5 plies: 9319911, 6 plies: 268050499
+		<< Q_UINT64_C(318185);
+	QTest::newRow("amazon promotion")
+		<< variant
+		<< "8/KP2k3/8/8/8/8/8/8 w - - 0 1"
+		<< 5 // 4 plies: 2885, 5 plies: 41738
+		<< Q_UINT64_C(41738);
+
 }
 
 void tst_Board::perft()

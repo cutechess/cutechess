@@ -19,6 +19,7 @@
 #include "boardfactory.h"
 #include "aiwokboard.h"
 #include "almostboard.h"
+#include "amazonboard.h"
 #include "andernachboard.h"
 #include "antiboard.h"
 #include "aseanboard.h"
@@ -67,6 +68,7 @@ REGISTER_BOARD(ThreeCheckBoard, "3check")
 REGISTER_BOARD(FiveCheckBoard, "5check")
 REGISTER_BOARD(AiWokBoard, "ai-wok")
 REGISTER_BOARD(AlmostBoard, "almost")
+REGISTER_BOARD(AmazonBoard, "amazon")
 REGISTER_BOARD(AndernachBoard, "andernach")
 REGISTER_BOARD(AntiAndernachBoard, "antiandernach")
 REGISTER_BOARD(AntiBoard, "antichess")
