@@ -30,6 +30,7 @@
 #include "chancellorboard.h"
 #include "checklessboard.h"
 #include "chessgiboard.h"
+#include "chigorinboard.h"
 #include "coregalboard.h"
 #include "courierboard.h"
 #include "crazyhouseboard.h"
@@ -82,6 +83,7 @@ REGISTER_BOARD(ChancellorBoard, "chancellor")
 REGISTER_BOARD(ChangeOverBoard, "changeover")
 REGISTER_BOARD(ChecklessBoard, "checkless")
 REGISTER_BOARD(ChessgiBoard, "chessgi")
+REGISTER_BOARD(ChigorinBoard, "chigorin")
 REGISTER_BOARD(CircularGryphonBoard, "circulargryphon")
 REGISTER_BOARD(CoRegalBoard, "coregal")
 REGISTER_BOARD(CourierBoard, "courier")
