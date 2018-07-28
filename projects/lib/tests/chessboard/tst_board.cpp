@@ -1456,6 +1456,18 @@ void tst_Board::perft_data() const
 		<< 5 // 4 plies: 2885, 5 plies: 41738
 		<< Q_UINT64_C(41738);
 
+	variant = "chigorin";
+	QTest::newRow("chigorin startpos")
+		<< variant
+		<< "rbbqkbbr/pppppppp/8/8/8/8/PPPPPPPP/RNNCKNNR w KQkq - 0 1"
+		<< 4 // 4 plies: 229973, 5 plies: 6624527, 6 plies: 156383743
+		<< Q_UINT64_C(229973);
+	QTest::newRow("chigorin promotion")
+		<< variant
+		<< "8/KP6/8/4k3/8/8/6p1/8 w - - 0 1"
+		<< 5 // 4 plies: 8133, 5 plies: 104326
+		<< Q_UINT64_C(104326);
+
 }
 
 void tst_Board::perft()

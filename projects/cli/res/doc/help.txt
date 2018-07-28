@@ -29,6 +29,7 @@ Options:
 			'checkless': Checkless Chess
 			'courier': Courier Chess
 			'chessgi': Chessgi (Drop Chess)
+			'chigorin': Chigorin Chess
 			'circulargryphon': Circular Gryphon Chess
 			'coregal': Co-regal Chess
 			'crazyhouse': Crazyhouse (Drop Chess)
