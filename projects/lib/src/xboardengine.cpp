@@ -759,6 +759,13 @@ void XboardEngine::parseLine(const QString& line)
 			pos += rx.matchedLength();
 		}
 	}
+	else if (command.startsWith("Illegal"))
+	{
+		forfeit(Chess::Result::Adjudication,
+			tr("%1 claims illegal %2")
+			.arg(this->side().toString())
+			.arg(args));
+	}
 	else if (command == "Error")
 	{
 		// If the engine complains about an unknown result command,
