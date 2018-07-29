@@ -55,6 +55,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/almostboard.cpp \
     $$PWD/amazonboard.cpp \
     $$PWD/chigorinboard.cpp \
+    $$PWD/hoppelpoppelboard.cpp \
     $$PWD/placementboard.cpp \
     $$PWD/boardfactory.cpp \
     $$PWD/boardtransition.cpp \
@@ -117,6 +118,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/almostboard.h \
     $$PWD/amazonboard.h \
     $$PWD/chigorinboard.h \
+    $$PWD/hoppelpoppelboard.h \
     $$PWD/placementboard.h \
     $$PWD/boardfactory.h \
     $$PWD/boardtransition.h \

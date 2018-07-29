@@ -44,6 +44,7 @@ Options:
 			'grid': Grid Chess
 			'gridolina': Berolina Grid Chess
 			'gryphon': Gryphon Chess
+			'hoppelpoppel': Hoppel-Poppel (has N/B hybrids)
 			'horde': Horde Chess (v2)
 			'janus': Janus Chess
 			'karouk': Kar Ouk (One-check Ouk)
@@ -55,6 +56,7 @@ Options:
 			'losers': Loser's Chess
 			'makruk': Makruk (Thai Chess)
 			'modern': Modern Chess (9x9)
+			'newzealand': New Zealand Chess (has N/R hybrids)
 			'placement': Placement Chess
 			'pocketknight': Pocket Knight Chess
 			'racingkings': Racing Kings Chess

@@ -1498,6 +1498,20 @@ void tst_Board::perft_data() const
 		<< 5 // 4 plies: 8133, 5 plies: 104326
 		<< Q_UINT64_C(104326);
 
+	variant = "hoppelpoppel";
+	QTest::newRow("hoppelpoppel startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5 // 4 plies: 202459, 5 plies: 5056643, 6 plies: 125120759
+		<< Q_UINT64_C(5056643);
+
+	variant = "newzealand";
+	QTest::newRow("newzealand startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 4 // 4 plies: 200310, 5 plies: 4987426, 6 plies: 123099631
+		<< Q_UINT64_C(200310);
+
 	variant = "placement";
 	QTest::newRow("placement startpos")
 		<< variant
