@@ -270,6 +270,7 @@ void ChessPlayer::emitMove(const Chess::Move& move)
 
 	m_timeControl.update();
 	m_eval.setTime(m_timeControl.lastMoveTime());
+	m_eval.setIsTrusted(!areClaimsValidated());
 
 	m_timer->stop();
 	if (m_timeControl.expired() && !canPlayAfterTimeout())

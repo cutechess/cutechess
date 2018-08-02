@@ -20,6 +20,7 @@
 
 MoveEvaluation::MoveEvaluation()
 	: m_isBookEval(false),
+	  m_isTrusted(false),
 	  m_depth(0),
 	  m_selDepth(0),
 	  m_score(NULL_SCORE),
@@ -36,6 +37,7 @@ MoveEvaluation::MoveEvaluation()
 bool MoveEvaluation::operator==(const MoveEvaluation& other) const
 {
 	if (m_isBookEval == other.m_isBookEval
+	&&  m_isTrusted == other.m_isTrusted
 	&&  m_depth == other.m_depth
 	&&  m_selDepth == other.m_selDepth
 	&&  m_score == other.m_score
@@ -54,6 +56,7 @@ bool MoveEvaluation::operator==(const MoveEvaluation& other) const
 bool MoveEvaluation::operator!=(const MoveEvaluation& other) const
 {
 	if (m_isBookEval != other.m_isBookEval
+	||  m_isTrusted != other.m_isTrusted
 	||  m_depth != other.m_depth
 	||  m_selDepth != other.m_selDepth
 	||  m_score != other.m_score
@@ -91,6 +94,11 @@ bool MoveEvaluation::isBookEval() const
 	return m_isBookEval;
 }
 
+bool MoveEvaluation::isTrusted() const
+{
+	return m_isTrusted;
+}
+
 int MoveEvaluation::depth() const
 {
 	return m_depth;
@@ -121,7 +129,7 @@ QString MoveEvaluation::scoreText() const
 			str += "+";
 
 		// Detect mate-in-n scores
-		if (absScore > 98800
+		if (absScore > MATE_SCORE - 200
 		&&  (absScore = 1000 - (absScore % 1000)) < 200)
 		{
 			if (m_score < 0)
@@ -202,6 +210,11 @@ void MoveEvaluation::clear()
 void MoveEvaluation::setBookEval(bool isBookEval)
 {
 	m_isBookEval = isBookEval;
+}
+
+void MoveEvaluation::setIsTrusted(bool isTrusted)
+{
+	m_isTrusted = isTrusted;
 }
 
 void MoveEvaluation::setDepth(int depth)
