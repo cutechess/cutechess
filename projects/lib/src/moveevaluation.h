@@ -35,8 +35,11 @@
 class LIB_EXPORT MoveEvaluation
 {
 	public:
+		/*! Mate score reference */
+		constexpr static int MATE_SCORE = 1000000;
+
 		/*! A value for a null or empty score. */
-		static const int NULL_SCORE = 0xFFFFFFF;
+		constexpr static int NULL_SCORE = 0xFFFFFFF;
 
 		/*! Constructs an empty MoveEvaluation object. */
 		MoveEvaluation();
@@ -51,6 +54,9 @@ class LIB_EXPORT MoveEvaluation
 		
 		/*! Returns true if the evaluation points to a book move. */
 		bool isBookEval() const;
+
+		/*! Returns true if the eval is trusted for adjudication. */
+		bool isTrusted() const;
 
 		/*!
 		 * How many plies were searched?
@@ -135,6 +141,9 @@ class LIB_EXPORT MoveEvaluation
 		/*! Sets book evaluation. */
 		void setBookEval(bool isBookEval);
 
+		/*! Sets trusted property. */
+		void setIsTrusted(bool isTrusted);
+
 		/*! Sets the search depth to \a depth. */
 		void setDepth(int depth);
 
@@ -176,6 +185,7 @@ class LIB_EXPORT MoveEvaluation
 
 	private:
 		bool m_isBookEval;
+		bool m_isTrusted;
 		int m_depth;
 		int m_selDepth;
 		int m_score;
