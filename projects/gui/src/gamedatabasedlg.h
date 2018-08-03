@@ -61,6 +61,8 @@ class GameDatabaseDialog : public QDialog
 		void onAdvancedSearch();
 		void exportPgn(const QString& filename);
 		void createOpeningBook();
+		void copyGame();
+		void copyFen();
 		void updateUi();
 
 	private:
@@ -68,6 +70,7 @@ class GameDatabaseDialog : public QDialog
 		int databaseIndexFromGame(int game) const;
 
 		GameViewer* m_gameViewer;
+		PgnGame m_game;
 		QVector<PgnGame::MoveData> m_moves;
 
 		GameDatabaseManager* m_dbManager;
