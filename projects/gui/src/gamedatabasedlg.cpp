@@ -25,6 +25,7 @@
 #include <QModelIndex>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QClipboard>
 
 #include <pgnstream.h>
 #include <pgngame.h>
@@ -40,6 +41,8 @@
 #include "pgndatabase.h"
 #include "gamedatabasesearchdlg.h"
 #include "threadedtask.h"
+#include "cutechessapp.h"
+#include "board/board.h"
 
 #ifdef QT_DEBUG
 #include <modeltest.h>
@@ -250,6 +253,7 @@ void PgnExportTask::run()
 GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* parent)
 	: QDialog(parent, Qt::Window),
 	  m_gameViewer(nullptr),
+	  m_game(),
 	  m_dbManager(dbManager),
 	  m_pgnDatabaseModel(nullptr),
 	  m_pgnGameEntryModel(nullptr),
@@ -301,6 +305,18 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 	});
 	connect(ui->m_createOpeningBookBtn, SIGNAL(clicked(bool)), this,
 		SLOT(createOpeningBook()));
+
+	connect(ui->m_copyGameBtn, SIGNAL(pressed()), this, SLOT(copyGame()));
+	connect(ui->m_copyGameBtn, &QPushButton::released, this, [=]()
+	{
+		ui->m_copyGameBtn->setText(tr("Copy PGN"));
+	});
+
+	connect(ui->m_copyFenBtn, SIGNAL(pressed()), this, SLOT(copyFen()));
+	connect(ui->m_copyFenBtn, &QPushButton::released, this, [=]()
+	{
+		ui->m_copyFenBtn->setText(tr("Copy FEN"));
+	});
 
 	connect(ui->m_databasesListView->selectionModel(),
 		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
@@ -373,11 +389,10 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 
 	PgnDatabase* selectedDatabase = m_dbManager->databases().at(databaseIndex);
 
-	PgnGame game;
 	PgnDatabase::Status status;
 	const PgnGameEntry* entry = m_pgnGameEntryModel->entryAt(current.row());
 
-	if ((status = selectedDatabase->game(entry, &game)) != PgnDatabase::Ok)
+	if ((status = selectedDatabase->game(entry, &m_game)) != PgnDatabase::Ok)
 	{
 		if (status == PgnDatabase::DoesNotExist)
 		{
@@ -429,13 +444,13 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 		return;
 	}
 
-	ui->m_whiteLabel->setText(game.tagValue("White"));
-	ui->m_blackLabel->setText(game.tagValue("Black"));
-	ui->m_siteLabel->setText(game.tagValue("Site"));
-	ui->m_eventLabel->setText(game.tagValue("Event"));
-	ui->m_resultLabel->setText(game.tagValue("Result"));
+	ui->m_whiteLabel->setText(m_game.tagValue("White"));
+	ui->m_blackLabel->setText(m_game.tagValue("Black"));
+	ui->m_siteLabel->setText(m_game.tagValue("Site"));
+	ui->m_eventLabel->setText(m_game.tagValue("Event"));
+	ui->m_resultLabel->setText(m_game.tagValue("Result"));
 
-	m_gameViewer->setGame(&game);
+	m_gameViewer->setGame(&m_game);
 }
 
 void GameDatabaseDialog::updateSearch(const QString& terms)
@@ -527,11 +542,41 @@ void GameDatabaseDialog::createOpeningBook()
 	task->start();
 }
 
+void GameDatabaseDialog::copyGame()
+{
+	if (m_game.isNull())
+		return;
+
+	QString str;
+	QTextStream s(&str);
+	s << m_game;
+
+	QClipboard* cb = CuteChessApplication::clipboard();
+	cb->setText(s.readAll());
+	ui->m_copyGameBtn->setText(tr("Copied"));
+}
+
+void GameDatabaseDialog::copyFen()
+{
+	if (m_game.isNull() || m_gameViewer->board() == nullptr)
+		return;
+
+	QString str;
+	QTextStream s(&str);
+	s << m_gameViewer->board()->fenString();
+
+	QClipboard* cb = CuteChessApplication::clipboard();
+	cb->setText(s.readAll());
+	ui->m_copyFenBtn->setText(tr("Copied"));
+}
+
 void GameDatabaseDialog::updateUi()
 {
 	bool enable = m_pgnGameEntryModel->rowCount() > 0;
 	ui->m_createOpeningBookBtn->setEnabled(enable);
 	ui->m_exportBtn->setEnabled(enable);
+	ui->m_copyGameBtn->setEnabled(enable);
+	ui->m_copyFenBtn->setEnabled(enable);
 }
 
 #include "gamedatabasedlg.moc"
