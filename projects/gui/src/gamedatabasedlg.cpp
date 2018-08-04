@@ -449,6 +449,8 @@ void GameDatabaseDialog::gameSelectionChanged(const QModelIndex& current,
 	ui->m_siteLabel->setText(m_game.tagValue("Site"));
 	ui->m_eventLabel->setText(m_game.tagValue("Event"));
 	ui->m_resultLabel->setText(m_game.tagValue("Result"));
+	ui->m_variantLabel->setText(m_game.tagValue("Variant"));
+	ui->label_variant->setVisible(!ui->m_variantLabel->text().isEmpty());
 
 	m_gameViewer->setGame(&m_game);
 }
