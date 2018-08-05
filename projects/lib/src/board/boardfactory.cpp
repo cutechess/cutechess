@@ -55,6 +55,7 @@
 #include "oukboard.h"
 #include "pocketknightboard.h"
 #include "racingkingsboard.h"
+#include "rifleboard.h"
 #include "seirawanboard.h"
 #include "shatranjboard.h"
 #include "sittuyinboard.h"
@@ -111,8 +112,10 @@ REGISTER_BOARD(MakrukBoard, "makruk")
 REGISTER_BOARD(ModernBoard, "modern")
 REGISTER_BOARD(PocketKnightBoard, "pocketknight")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
+REGISTER_BOARD(RifleBoard, "rifle")
 REGISTER_BOARD(SeirawanBoard, "seirawan")
 REGISTER_BOARD(ShatranjBoard, "shatranj")
+REGISTER_BOARD(ShootBoard, "shoot")
 REGISTER_BOARD(SimplifiedGryphonBoard, "simplifiedgryphon")
 REGISTER_BOARD(SittuyinBoard, "sittuyin")
 REGISTER_BOARD(SlippedGridBoard, "slippedgrid")

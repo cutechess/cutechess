@@ -56,8 +56,10 @@ Options:
 			'modern': Modern Chess (9x9)
 			'pocketknight': Pocket Knight Chess
 			'racingkings': Racing Kings Chess
+			'rifle': Rifle Chess
 			'seirawan': S-Chess (Seirawan Chess)
 			'shatranj': Shatranj
+			'shoot': Shoot Chess
 			'slippedgrid': Slipped Grid Chess
 			'simplifiedgryphon': Simplified Gryphon Chess
 			'sittuyin': Sittuyin (Myanmar Chess)

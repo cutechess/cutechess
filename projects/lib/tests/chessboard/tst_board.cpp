@@ -543,6 +543,11 @@ void tst_Board::moveStrings_data() const
 		<< "Cc3 g6 Cxc7#"
 		<< "rnbckbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBCKBNR w KQkq - 0 1"
 		<< "rnbckbnr/ppCppp1p/6p1/8/8/8/PPPPPPPP/RNB1KBNR b KQkq - 0 2";
+	QTest::newRow("shoot san1")
+		<< "shoot"
+		<< "e4 e5 Bb5 c6 Bxc6 Nc6 Bxc6 Nf6 Bxd7+ Nd7 Bxd7+ Bd7 Bxd7+ Qd7 Bxd7+"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "r3kb1r/pp3ppp/8/1B2p3/4P3/8/PPPP1PPP/RNBQK1NR b KQkq - 0 8";
 
 }
 
@@ -1468,6 +1473,19 @@ void tst_Board::perft_data() const
 		<< 5 // 4 plies: 8133, 5 plies: 104326
 		<< Q_UINT64_C(104326);
 
+	variant = "rifle";
+	QTest::newRow("rifle startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 4 // 4 plies: 197326, 5 plies: 4866988, 6 plies: 119235709
+		<< Q_UINT64_C(197326);
+
+	variant = "shoot";
+	QTest::newRow("shoot startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 4 // 4 plies: 153023, 5 plies: 2735167, 6 plies: 46678307
+		<< Q_UINT64_C(153023);
 }
 
 void tst_Board::perft()
