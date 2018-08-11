@@ -45,3 +45,8 @@ QItemSelection EngineSelectionDialog::selection() const
 {
 	return m_model->mapSelectionToSource(ui->m_enginesList->selectionModel()->selection());
 }
+
+QListView* EngineSelectionDialog::enginesList() const
+{
+	return ui->m_enginesList;
+}
