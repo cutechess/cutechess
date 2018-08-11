@@ -130,10 +130,29 @@ NewTournamentDialog::~NewTournamentDialog()
 	delete ui;
 }
 
+void NewTournamentDialog::addEngineOnDblClick(const QModelIndex& index)
+{
+	const QListView* listView = ((QListView*)sender());
+	const QModelIndex& idx = m_proxyModel->mapToSource(index);
+
+	m_addedEnginesManager->addEngine(m_srcEngineManager->engineAt(idx.row()));
+	listView->selectionModel()->select(index, QItemSelectionModel::Deselect);
+
+	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
+	button->setEnabled(canStart());
+}
+
+
 void NewTournamentDialog::addEngine()
 {
 	EngineSelectionDialog dlg(m_proxyModel);
-	if (dlg.exec() != QDialog::Accepted)
+	connect(dlg.enginesList(), SIGNAL(doubleClicked(QModelIndex)), this,
+		SLOT(addEngineOnDblClick(QModelIndex)));
+	int value = dlg.exec();
+	disconnect(dlg.enginesList(), SIGNAL(doubleClicked(QModelIndex)), this,
+		   SLOT(addEngineOnDblClick(QModelIndex)));
+
+	if (value != QDialog::Accepted)
 		return;
 
 	const QModelIndexList list(dlg.selection().indexes());

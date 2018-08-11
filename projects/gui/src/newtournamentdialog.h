@@ -46,6 +46,7 @@ class NewTournamentDialog : public QDialog
 		Tournament* createTournament(GameManager* gameManager) const;
 
 	private slots:
+		void addEngineOnDblClick(const QModelIndex& index);
 		void addEngine();
 		void removeEngine();
 		void configureEngine(const QModelIndex& index);
