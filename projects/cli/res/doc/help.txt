@@ -54,6 +54,7 @@ Options:
 			'losers': Loser's Chess
 			'makruk': Makruk (Thai Chess)
 			'modern': Modern Chess (9x9)
+			'placement': Placement Chess
 			'pocketknight': Pocket Knight Chess
 			'racingkings': Racing Kings Chess
 			'seirawan': S-Chess (Seirawan Chess)

@@ -53,6 +53,7 @@
 #include "makrukboard.h"
 #include "modernboard.h"
 #include "oukboard.h"
+#include "placementboard.h"
 #include "pocketknightboard.h"
 #include "racingkingsboard.h"
 #include "seirawanboard.h"
@@ -109,6 +110,7 @@ REGISTER_BOARD(LosAlamosBoard, "losalamos")
 REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(MakrukBoard, "makruk")
 REGISTER_BOARD(ModernBoard, "modern")
+REGISTER_BOARD(PlacementBoard, "placement")
 REGISTER_BOARD(PocketKnightBoard, "pocketknight")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")
 REGISTER_BOARD(SeirawanBoard, "seirawan")
