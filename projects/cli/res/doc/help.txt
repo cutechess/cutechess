@@ -27,11 +27,12 @@ Options:
 			'chancellor': Chancellor Chess (9x9)
 			'changeover': Change-Over Chess
 			'checkless': Checkless Chess
-			'courier': Courier Chess
 			'chessgi': Chessgi (Drop Chess)
 			'chigorin': Chigorin Chess
 			'circulargryphon': Circular Gryphon Chess
+			'codrus': Game of Codrus (Losing Chess variant)
 			'coregal': Co-regal Chess
+			'courier': Courier Chess
 			'crazyhouse': Crazyhouse (Drop Chess)
 			'discplacedgrid': Displaced Grid Chess
 			'embassy': Embassy Chess
