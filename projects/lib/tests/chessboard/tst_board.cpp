@@ -926,6 +926,13 @@ void tst_Board::results_data() const
 		<< "rnbckbnr/ppCppp1p/6p1/8/8/8/PPPPPPPP/RNB1KBNR b KQkq - 0 2"
 		<< "1-0";
 
+	variant = "codrus";
+
+	QTest::newRow("codrus black win")
+		<< variant
+		<< "7r/4b1pp/P7/6R1/8/2N1K3/1P1PP1PP/2B2BNR b - - 0 18"
+		<< "0-1";
+
 }
 
 void tst_Board::results()
@@ -1301,6 +1308,19 @@ void tst_Board::perft_data() const
 		<< "8/k1KP4/8/8/8/8/8/6n1 b - - 0 1"
 		<< 7 // 7 plies: 2891980
 		<< Q_UINT64_C(2891980);
+
+	variant = "codrus";
+
+	QTest::newRow("codrus startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 4 // 4 plies: 153299, 5 plies: 2732672, 6 plies: 46263517, 7 plies: 762067389
+		<< Q_UINT64_C(153299);
+	QTest::newRow("codrus endgame1")
+		<< variant
+		<< "5bnr/2pp2pp/P4k2/R3Q1P1/8/2N1K3/1P1PP1PP/2B2BNR w - - 1 15"
+		<< 4 // 1 ply: 3, 2 plies: 1, 3 plies: 2, 4 plies: 19
+		<< Q_UINT64_C(19);
 
 	variant = "threekings";
 	QTest::newRow("threekings startpos")
