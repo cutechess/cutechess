@@ -791,8 +791,9 @@ QString Tournament::results() const
 	||  sprtStatus.lBound != 0.0
 	||  sprtStatus.uBound != 0.0)
 	{
-		QString sprtStr = QString("SPRT: llr %1, lbound %2, ubound %3")
+		QString sprtStr = QString("SPRT: llr %1 (%2\%), lbound %3, ubound %4")
 			.arg(sprtStatus.llr, 0, 'g', 3)
+			.arg(sprtStatus.llr / sprtStatus.uBound * 100, 0, 'f', 1)
 			.arg(sprtStatus.lBound, 0, 'g', 3)
 			.arg(sprtStatus.uBound, 0, 'g', 3);
 		if (sprtStatus.result == Sprt::AcceptH0)
