@@ -44,6 +44,8 @@ class LIB_EXPORT Elo
 		qreal pointRatio() const;
 		/*! Returns the ratio of drawn games. */
 		qreal drawRatio() const;
+		/*! Returns the likelihood of superiority. */
+		qreal LOS() const;
 
 	private:
 		int m_wins;
