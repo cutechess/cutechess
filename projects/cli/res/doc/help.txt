@@ -72,7 +72,8 @@ Options:
 			Adjudicate the game as a draw if the score of both
 			engines is within SCORE centipawns from zero for at
 			least COUNT consecutive moves, and at least NUMBER full
-			moves have been played.
+			moves have been played. Captures and pawn moves will
+			reset the counters.
   -resign movecount=COUNT score=SCORE
 			Adjudicate the game as a loss if an engine's score is
 			at least SCORE centipawns below zero for at least COUNT

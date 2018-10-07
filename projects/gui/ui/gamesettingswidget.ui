@@ -369,7 +369,7 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>The scores of both players need to be within the chosen threshold for this many consecutive moves.</string>
+           <string>The scores of both players need to be within the chosen threshold for this many consecutive moves. Captures and pawn moves will reset the counters.</string>
           </property>
           <property name="maximum">
            <number>999</number>
