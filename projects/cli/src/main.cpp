@@ -208,12 +208,12 @@ bool parseEngine(const QStringList& args, EngineData& data)
 		}
 		else if (name == "nodes")
 		{
-			if (val.toInt() <= 0)
+			if (val.toLongLong() <= 0)
 			{
 				qWarning() << "Invalid node limit:" << val;
 				return false;
 			}
-			data.tc.setNodeLimit(val.toInt());
+			data.tc.setNodeLimit(val.toLongLong());
 		}
 		else if (name == "ponder")
 		{

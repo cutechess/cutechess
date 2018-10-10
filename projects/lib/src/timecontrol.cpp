@@ -31,7 +31,7 @@ QString s_timeString(int ms)
 	return TimeControl::tr("%1 h").arg(ms / 3600000);
 }
 
-QString s_nodeString(int nodes)
+QString s_nodeString(qint64 nodes)
 {
 	if (nodes == 0 || nodes % 1000 != 0)
 		return QString::number(nodes);
@@ -249,7 +249,7 @@ int TimeControl::plyLimit() const
 	return m_plyLimit;
 }
 
-int TimeControl::nodeLimit() const
+qint64 TimeControl::nodeLimit() const
 {
 	return m_nodeLimit;
 }
@@ -305,7 +305,7 @@ void TimeControl::setPlyLimit(int plies)
 	m_plyLimit = plies;
 }
 
-void TimeControl::setNodeLimit(int nodes)
+void TimeControl::setNodeLimit(qint64 nodes)
 {
 	Q_ASSERT(nodes >= 0);
 	m_nodeLimit = nodes;
@@ -385,7 +385,7 @@ void TimeControl::readSettings(QSettings* settings)
 	m_timePerMove = settings->value("time_per_move", m_timePerMove).toInt();
 	m_increment = settings->value("increment", m_increment).toInt();
 	m_plyLimit = settings->value("ply_limit", m_plyLimit).toInt();
-	m_nodeLimit = settings->value("node_limit", m_nodeLimit).toInt();
+	m_nodeLimit = settings->value("node_limit", m_nodeLimit).toLongLong();
 	m_expiryMargin = settings->value("expiry_margin", m_expiryMargin).toInt();
 	m_infinite = settings->value("infinite", m_infinite).toBool();
 
