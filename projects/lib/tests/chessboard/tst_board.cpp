@@ -543,6 +543,11 @@ void tst_Board::moveStrings_data() const
 		<< "Cc3 g6 Cxc7#"
 		<< "rnbckbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBCKBNR w KQkq - 0 1"
 		<< "rnbckbnr/ppCppp1p/6p1/8/8/8/PPPPPPPP/RNB1KBNR b KQkq - 0 2";
+	QTest::newRow("placement san1")
+		<< "placement"
+		<< "N@e1 N@e8 N@f1 B@h8"
+		<< "8/pppppppp/8/8/8/8/PPPPPPPP/8[KQRRBBNNkqrrbbnn] w - - 0 1"
+		<< "4n2b/pppppppp/8/8/8/8/PPPPPPPP/4NN2[KQRRBBkqrrbn] w - - 0 3";
 	QTest::newRow("shoot san1")
 		<< "shoot"
 		<< "e4 e5 Bb5 c6 Bxc6 Nc6 Bxc6 Nf6 Bxd7+ Nd7 Bxd7+ Bd7 Bxd7+ Qd7 Bxd7+"
@@ -1492,6 +1497,18 @@ void tst_Board::perft_data() const
 		<< "8/KP6/8/4k3/8/8/6p1/8 w - - 0 1"
 		<< 5 // 4 plies: 8133, 5 plies: 104326
 		<< Q_UINT64_C(104326);
+
+	variant = "placement";
+	QTest::newRow("placement startpos")
+		<< variant
+		<< "8/pppppppp/8/8/8/8/PPPPPPPP/8[KQRRBBNNkqrrbbnn] w - - 0 1"
+		<< 4 // 3 plies: 50560, 4 plies: 1597696, 5 plies: 38587392
+		<< Q_UINT64_C(1597696);
+	QTest::newRow("placement2")
+		<< variant
+		<< "1n1r1q2/pppppppp/8/8/8/8/PPPPPPPP/1N1B1R1N[KQRBkrbbn] b - - 0 4"
+		<< 5 // 5 plies: 145152, 6 plies:580608, 7,8,9 plies: 1658880
+		<< Q_UINT64_C(145152);
 
 	variant = "rifle";
 	QTest::newRow("rifle startpos")
