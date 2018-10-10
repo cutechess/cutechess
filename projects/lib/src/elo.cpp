@@ -67,3 +67,8 @@ qreal Elo::phiInv(qreal p)
 {
 	return std::sqrt(2.0) * erfInv(2.0 * p - 1.0);
 }
+
+qreal Elo::LOS() const
+{
+	return 100 * (0.5 + 0.5 * std::erf((m_wins - m_losses) / std::sqrt(2.0 * (m_wins + m_losses))));
+}

@@ -548,6 +548,11 @@ void tst_Board::moveStrings_data() const
 		<< "N@e1 N@e8 N@f1 B@h8"
 		<< "8/pppppppp/8/8/8/8/PPPPPPPP/8[KQRRBBNNkqrrbbnn] w - - 0 1"
 		<< "4n2b/pppppppp/8/8/8/8/PPPPPPPP/4NN2[KQRRBBkqrrbn] w - - 0 3";
+	QTest::newRow("shoot san1")
+		<< "shoot"
+		<< "e4 e5 Bb5 c6 Bxc6 Nc6 Bxc6 Nf6 Bxd7+ Nd7 Bxd7+ Bd7 Bxd7+ Qd7 Bxd7+"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "r3kb1r/pp3ppp/8/1B2p3/4P3/8/PPPP1PPP/RNBQK1NR b KQkq - 0 8";
 
 }
 
@@ -931,6 +936,13 @@ void tst_Board::results_data() const
 		<< "rnbckbnr/ppCppp1p/6p1/8/8/8/PPPPPPPP/RNB1KBNR b KQkq - 0 2"
 		<< "1-0";
 
+	variant = "codrus";
+
+	QTest::newRow("codrus black win")
+		<< variant
+		<< "7r/4b1pp/P7/6R1/8/2N1K3/1P1PP1PP/2B2BNR b - - 0 18"
+		<< "0-1";
+
 }
 
 void tst_Board::results()
@@ -1307,6 +1319,19 @@ void tst_Board::perft_data() const
 		<< 7 // 7 plies: 2891980
 		<< Q_UINT64_C(2891980);
 
+	variant = "codrus";
+
+	QTest::newRow("codrus startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 4 // 4 plies: 153299, 5 plies: 2732672, 6 plies: 46263517, 7 plies: 762067389
+		<< Q_UINT64_C(153299);
+	QTest::newRow("codrus endgame1")
+		<< variant
+		<< "5bnr/2pp2pp/P4k2/R3Q1P1/8/2N1K3/1P1PP1PP/2B2BNR w - - 1 15"
+		<< 4 // 1 ply: 3, 2 plies: 1, 3 plies: 2, 4 plies: 19
+		<< Q_UINT64_C(19);
+
 	variant = "threekings";
 	QTest::newRow("threekings startpos")
 		<< variant
@@ -1485,6 +1510,19 @@ void tst_Board::perft_data() const
 		<< 5 // 5 plies: 145152, 6 plies:580608, 7,8,9 plies: 1658880
 		<< Q_UINT64_C(145152);
 
+	variant = "rifle";
+	QTest::newRow("rifle startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 4 // 4 plies: 197326, 5 plies: 4866988, 6 plies: 119235709
+		<< Q_UINT64_C(197326);
+
+	variant = "shoot";
+	QTest::newRow("shoot startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 4 // 4 plies: 153023, 5 plies: 2735167, 6 plies: 46678307
+		<< Q_UINT64_C(153023);
 }
 
 void tst_Board::perft()

@@ -21,6 +21,7 @@
 
 #include <QDialog>
 #include <QItemSelection>
+#include <QListView>
 
 class EngineConfigurationProxyModel;
 
@@ -38,6 +39,7 @@ class EngineSelectionDialog : public QDialog
 		virtual ~EngineSelectionDialog();
 
 		QItemSelection selection() const;
+		QListView * enginesList() const;
 
 	private:
 		EngineConfigurationProxyModel* m_model;

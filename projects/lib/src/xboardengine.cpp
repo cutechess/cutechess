@@ -569,7 +569,6 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 // shift assumed mate scores further out
 int XboardEngine::adaptScore(int score) const
 {
-	constexpr static int mateScore = 99000;
 	constexpr static int newCECPMateScore = 100000;
 	int absScore = qAbs<int>(score);
 
@@ -577,7 +576,7 @@ int XboardEngine::adaptScore(int score) const
 	if (absScore > newCECPMateScore
 	&&  absScore < newCECPMateScore + 100)
 	{
-		absScore = 2 * newCECPMateScore - 2 * absScore + mateScore;
+		absScore = 2 * newCECPMateScore - 2 * absScore + m_eval.MATE_SCORE;
 		if (score >= absScore)
 			absScore++;
 	}
@@ -585,8 +584,8 @@ int XboardEngine::adaptScore(int score) const
 	// map assumed mate scores onto equivalents w/ higher absolute values
 	int distance = 1000 - (absScore % 1000);
 	if (absScore > 9900 &&  distance < 100)
-		score = (score > 0) ? mateScore - distance
-				    : -mateScore + distance;
+		score = (score > 0) ? m_eval.MATE_SCORE - distance
+				    : -m_eval.MATE_SCORE + distance;
 
 	return score;
 }

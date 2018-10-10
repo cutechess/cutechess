@@ -417,9 +417,9 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 				{
 					score = tokens[i].toString().toInt();
 					if (score > 0)
-						score = 99000 + 1 - score * 2;
+						score = eval->MATE_SCORE + 1 - score * 2;
 					else if (score < 0)
-						score = -99000 - score * 2;
+						score = -eval->MATE_SCORE - score * 2;
 				}
 				else if (tokens[i - 1] == "lowerbound"
 				     ||  tokens[i - 1] == "upperbound")

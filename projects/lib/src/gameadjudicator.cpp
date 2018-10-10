@@ -112,8 +112,19 @@ void GameAdjudicator::addEval(const Chess::Board* board, const MoveEvaluation& e
 			count = 0;
 
 		if (count >= m_resignMoveCount)
+		{
 			m_result = Chess::Result(Chess::Result::Adjudication,
 						 side.opposite());
+			return;
+		}
+	}
+
+	// Trust-feature
+	if (eval.isTrusted()
+	&&  eval.score() >= eval.MATE_SCORE - 200)
+	{
+		m_result = Chess::Result(Chess::Result::Adjudication, side, "trusted mate score");
+		return;
 	}
 
 	// Limit game length
