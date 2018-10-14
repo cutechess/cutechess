@@ -76,7 +76,7 @@ class LIB_EXPORT ShootBoard : public RifleBoard
 		/*! Creates a new ShootBoard object. */
 		ShootBoard();
 
-		// Inherited from ShootBoard
+		// Inherited from RifleBoard
 		virtual Board* copy() const;
 		virtual QString variant() const;
 
