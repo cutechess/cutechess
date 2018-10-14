@@ -26,21 +26,21 @@ namespace Chess {
 /*!
  * \brief A board for Placement Chess, a Shuffle-Chess variant
  * (a.k.a. Pre-Chess, Meta-Chess, Bronstein Chess, Benko Chess)
- * 
+ *
  * This game was proposed by several authors like David Bronstein,
  * USSR ~1948, and Pal Benkö, USA 1978.
- * 
+ *
  * Placement Chess follows the rules of standard chess but each side begins
  * only with their Pawns on their second rank. Then the players take turns
  * to place their pieces freely on the base rank. There is one restriction:
  * any side must place their Bishops on squares with different colours.
- * 
+ *
  * After all pieces have been placed White makes the first move.
  * There are 2880*2880 opening positions.
- * 
+ *
  * Castling rights are established only for Kings on the e-file and for
  * Rooks on corner squares.
- * 
+ *
  * \note: Set-up phase with alternating white and black piece drops.
  *
  * \sa StandardBoard
@@ -63,7 +63,7 @@ class LIB_EXPORT PlacementBoard : public WesternBoard
 	protected:
 		virtual void setCastlingRights();
 
-		// Inherited from WstermBoard
+		// Inherited from WesternBoard
 		virtual QList< Piece > reservePieceTypes() const;
 		virtual bool kingsCountAssertion(int whiteKings, int blackKings) const;
 		virtual void generateMovesForPiece(QVarLengthArray<Move>& moves,

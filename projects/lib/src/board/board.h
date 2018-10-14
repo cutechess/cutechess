@@ -329,7 +329,7 @@ class LIB_EXPORT Board
 				  const QString& symbol,
 				  unsigned movement = 0,
 				  const QString & gsymbol = QString());
-		/*! Returns true if \pieceType can move like \a movement. */
+		/*! Returns true if \a pieceType can move like \a movement. */
 		bool pieceHasMovement(int pieceType, unsigned movement) const;
 
 		/*!
@@ -437,7 +437,7 @@ class LIB_EXPORT Board
 		 *
 		 * \param sourceSquare The source square of the hopping piece
 		 * \param offsets An array of offsets for the target square
-		 * \note The generated moves include captures
+		 * \note The generated \a moves include captures
 		 */
 		void generateHoppingMoves(int sourceSquare,
 					  const QVarLengthArray<int>& offsets,
@@ -447,7 +447,7 @@ class LIB_EXPORT Board
 		 *
 		 * \param sourceSquare The source square of the sliding piece
 		 * \param offsets An array of offsets for the target square
-		 * \note The generated moves include captures
+		 * \note The generated \a moves include captures
 		 */
 		void generateSlidingMoves(int sourceSquare,
 					  const QVarLengthArray<int>& offsets,

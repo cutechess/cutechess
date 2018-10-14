@@ -55,7 +55,7 @@ class LIB_EXPORT HoppelPoppelBoard : public WesternBoard
 };
 
 /*!
- * \brief A borad for New Zealand Chess
+ * \brief A board for New Zealand Chess
  *
  * New Zealand Chess follows the rules of standard chess, but
  * has Rooks that move like Knights when capturing. The Knights

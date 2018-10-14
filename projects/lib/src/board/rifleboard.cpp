@@ -95,7 +95,7 @@ bool RifleBoard::inCheck(Side side, int square) const
 void RifleBoard::addPromotions(int sourceSquare, int targetSquare,
 			       QVarLengthArray< Move >& moves) const
 {
-	// prevent capturing Pawn from promoting on seventh rank
+	// Prevent capturing Pawn from promoting on seventh rank
 	if (pieceAt(targetSquare).isEmpty())
 		return WesternBoard::addPromotions(sourceSquare,
 						   targetSquare,
@@ -129,7 +129,7 @@ bool ShootBoard::vIsLegalMove(const Move& move)
 	if (captureType(move) != Piece::NoPiece)
 		return true;
 
-	//try to use old results to gain higher efficiency
+	// Try to use old results to gain higher efficiency.
 	if (key() != m_testKey)
 	{
 		m_testKey = key();
@@ -137,7 +137,7 @@ bool ShootBoard::vIsLegalMove(const Move& move)
 		QVarLengthArray<Move> moves;
 		generateMoves(moves);
 
-		// search for any legal capture move
+		// Search for any legal capture move.
 		for (int i = 0; i < moves.size(); i++)
 		{
 			if (captureType(moves[i]) != Piece::NoPiece
@@ -148,7 +148,7 @@ bool ShootBoard::vIsLegalMove(const Move& move)
 			}
 		}
 	}
-	// move is illegal if a capture move exists else legal
+	// Move is illegal if a capture move exists else legal.
 	return !m_canCapture;
 }
 

@@ -159,7 +159,7 @@ void SittuyinBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 	const bool isBlack = (side == Side::Black);
 	const int start = 2 * (width() + 2) + 1;
 
-	// loop index i will have Black side perspective
+	// Loop index i will have Black side perspective
 	for (int i = start; i < len; i++)
 	{
 		int index = isBlack ? i : size - 1 - i;
