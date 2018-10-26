@@ -568,6 +568,8 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 			clock->setPlayerName(name);
 		}
 
+		m_tagsModel->setTags(gameData.m_pgn->tags());
+
 		updateWindowTitle();
 		updateMenus();
 
