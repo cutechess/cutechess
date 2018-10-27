@@ -47,6 +47,7 @@ Options:
 			'hoppelpoppel': Hoppel-Poppel (has N/B hybrids)
 			'horde': Horde Chess (v2)
 			'janus': Janus Chess
+			'jesonmor': Jeson Mör
 			'karouk': Kar Ouk (One-check Ouk)
 			'kinglet': Kinglet Chess
 			'kingofthehill': King of the Hill Chess
