@@ -46,6 +46,7 @@
 #include "hoppelpoppelboard.h"
 #include "hordeboard.h"
 #include "janusboard.h"
+#include "jesonmorboard.h"
 #include "kingofthehillboard.h"
 #include "knightmateboard.h"
 #include "loopboard.h"
@@ -107,6 +108,7 @@ REGISTER_BOARD(GryphonBoard, "gryphon")
 REGISTER_BOARD(HoppelPoppelBoard, "hoppelpoppel")
 REGISTER_BOARD(HordeBoard, "horde")
 REGISTER_BOARD(JanusBoard, "janus")
+REGISTER_BOARD(JesonMorBoard, "jesonmor")
 REGISTER_BOARD(KarOukBoard,"karouk")
 REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
 REGISTER_BOARD(KnightMateBoard, "knightmate")
