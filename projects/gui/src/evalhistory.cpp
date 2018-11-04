@@ -64,6 +64,19 @@ void EvalHistory::setGame(ChessGame* game)
 	connect(m_game, SIGNAL(scoreChanged(int,int)),
 		this, SLOT(onScore(int,int)));
 
+	setScores(game->scores());
+}
+
+void EvalHistory::setPgnGame(PgnGame* pgn)
+{
+	if (pgn == nullptr || pgn->isNull())
+		return;
+
+	setScores(pgn->extractScores());
+}
+
+void EvalHistory::setScores(const QMap< int, int >& scores)
+{
 	m_plot->addGraph();
 	m_plot->addGraph();
 
@@ -81,7 +94,6 @@ void EvalHistory::setGame(ChessGame* game)
 	cBlack.setAlpha(128);
 	m_plot->graph(1)->setBrush(QBrush(cBlack));
 
-	const auto& scores = game->scores();
 	int ply = -1;
 
 	for (auto it = scores.constBegin(); it != scores.constEnd(); ++it)

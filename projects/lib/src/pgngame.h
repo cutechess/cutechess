@@ -202,6 +202,9 @@ class LIB_EXPORT PgnGame
 		/*! Sets the end time and the duration of the game */
 		void setGameEndTime(const QDateTime& dateTime);
 
+		/*! Returns QMap of scores extracted from PGN comments */
+		QMap<int, int> extractScores() const;
+
 	private:
 		bool parseMove(PgnStream& in, bool addEco);
 		
