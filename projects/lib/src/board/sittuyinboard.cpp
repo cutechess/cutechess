@@ -253,6 +253,10 @@ bool SittuyinBoard::isLegalPosition()
 	||  pieceCount(side, General) > 1)
 		return false;
 
+	// Do not allow (discovered) checks by a promotion move
+	if (lastMove().promotion() != 0 && inCheck(side))
+		return false;
+
 	return true;
 }
 
@@ -292,8 +296,9 @@ Result SittuyinBoard::result()
 		}
 		else
 		{
-			str = tr("%1 forfeits by stalemating").arg(opp.toString());
-			return Result(Result::Adjudication, side, str);
+			// Federation rule 5.2a: stalemate is draw
+			str = tr("Draw by stalemate");
+			return Result(Result::Draw, Side::NoSide, str);
 		}
 	}
 

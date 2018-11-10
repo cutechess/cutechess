@@ -49,11 +49,11 @@ namespace Chess {
  * a square that is part of a main diagonal. Promotion counts as a move of
  * its own. When promoting the Pawn either remains on its current square or
  * makes a General's move. The promotion move must not give check or capture
- * an opponent piece. Pawn promotion is optional, not oligatory: The Pawn can
- * also make a normal move or capture.
+ * an opponent piece. Pawn promotion is optional, not oligatory: The Pawn
+ * can also make a normal move or capture.
  *
- * Checkmating the opponent King wins. Stalemating is not allowed. A draw can
- * be claimed if no pawns have been moved and no captures have been made for
+ * Checkmating the opponent King wins. Stalemate is a draw. A draw can be
+ * claimed if no pawns have been moved and no captures have been made for
  * fifty consecutive moves. A game will be drawn if it is impossible for
  * the remaining pieces to give mate. There is no 3-fold repetition rule.
  *
@@ -64,7 +64,6 @@ namespace Chess {
  * \note Rules: The Official Rules by the Myanmar Chess Federation
  * (as described by Maung Maung Lwin).
  * \note: Set-up phase with alternating red and black piece drops.
- * \note: Board will adjudicate against side giving stalemate.
  *
  * \sa MakrukBoard
  * \sa ShatranjBoard
