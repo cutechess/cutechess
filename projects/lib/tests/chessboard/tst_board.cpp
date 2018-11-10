@@ -1418,6 +1418,16 @@ void tst_Board::perft_data() const
 		<< "8/8/6R1/s3r3/P5R1/1KP3p1/1F2kr2/8[-] b - 0 0 72"
 		<< 4 // 1 ply: 35, 2 plies: 825, 3 plies: 26791, 4 plies: 657824
 		<< Q_UINT64_C(657824);
+	QTest::newRow("sittuyin promotion1")
+		<< variant
+		<< "8/8/S2P1k2/8/8/8/8/4K3[-] w - - 0 9"
+		<< 1 // 1 ply: 12, 2 plies: 86
+		<< Q_UINT64_C(12);
+	QTest::newRow("sittuyin promotion2")
+		<< variant
+		<< "8/8/R2P1k2/8/8/8/8/4K3[-] w - - 0 9"
+		<< 1 // 1 ply: 16, 2 plies: 105
+		<< Q_UINT64_C(16);
 
 	variant = "ai-wok";
 	QTest::newRow("ai-wok startpos")
