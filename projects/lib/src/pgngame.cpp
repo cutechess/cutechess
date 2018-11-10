@@ -558,6 +558,9 @@ void PgnGame::setGameEndTime(const QDateTime& dateTime)
 	setTag("GameDuration", time.toString("hh:mm:ss"));
 }
 
+// HACK
+// TODO: This code won't be needed once we have such GUI game management that
+// ChessGame objects are only deleted when they're no longer available in the GUI.
 QMap< int, int > PgnGame::extractScores() const
 {
 	QMap < int, int > scores;
