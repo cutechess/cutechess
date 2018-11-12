@@ -58,6 +58,7 @@ class LIB_EXPORT ModernBoard : public WesternBoard
 		virtual QString sanMoveString(const Move& move);
 		virtual Move moveFromSanString(const QString& str);
 	protected:
+		/*! Piece types for Modern Chess */
 		enum ModernChessPieceType
 		{
 			Minister = 7 //!< Minister = Archbishop (knight + bishop)

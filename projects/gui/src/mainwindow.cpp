@@ -556,6 +556,7 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	if (m_game == nullptr)
 	{
 		m_gameViewer->setGame(gameData.m_pgn);
+		m_evalHistory->setPgnGame(gameData.m_pgn);
 
 		for (int i = 0; i < 2; i++)
 		{
@@ -567,6 +568,8 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 						   side);
 			clock->setPlayerName(name);
 		}
+
+		m_tagsModel->setTags(gameData.m_pgn->tags());
 
 		updateWindowTitle();
 		updateMenus();

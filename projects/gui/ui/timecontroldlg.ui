@@ -203,7 +203,7 @@
         <string>Maximum number of nodes to search (engines only)</string>
        </property>
        <property name="maximum">
-        <number>99999999</number>
+        <number>2147483647</number>
        </property>
       </widget>
      </item>

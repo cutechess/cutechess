@@ -43,8 +43,10 @@
 #include "grandboard.h"
 #include "gridboard.h"
 #include "gryphonboard.h"
+#include "hoppelpoppelboard.h"
 #include "hordeboard.h"
 #include "janusboard.h"
+#include "jesonmorboard.h"
 #include "kingofthehillboard.h"
 #include "knightmateboard.h"
 #include "loopboard.h"
@@ -103,8 +105,10 @@ REGISTER_BOARD(GrandBoard, "grand")
 REGISTER_BOARD(GridBoard, "grid")
 REGISTER_BOARD(BerolinaGridBoard, "gridolina")
 REGISTER_BOARD(GryphonBoard, "gryphon")
+REGISTER_BOARD(HoppelPoppelBoard, "hoppelpoppel")
 REGISTER_BOARD(HordeBoard, "horde")
 REGISTER_BOARD(JanusBoard, "janus")
+REGISTER_BOARD(JesonMorBoard, "jesonmor")
 REGISTER_BOARD(KarOukBoard,"karouk")
 REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
 REGISTER_BOARD(KnightMateBoard, "knightmate")
@@ -113,6 +117,7 @@ REGISTER_BOARD(LosAlamosBoard, "losalamos")
 REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(MakrukBoard, "makruk")
 REGISTER_BOARD(ModernBoard, "modern")
+REGISTER_BOARD(NewZealandBoard, "newzealand")
 REGISTER_BOARD(PlacementBoard, "placement")
 REGISTER_BOARD(PocketKnightBoard, "pocketknight")
 REGISTER_BOARD(RacingKingsBoard, "racingkings")

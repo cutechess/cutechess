@@ -24,6 +24,7 @@
 #include "board/boardfactory.h"
 #include "econode.h"
 #include "pgnstream.h"
+#include "moveevaluation.h"
 
 namespace {
 
@@ -555,4 +556,29 @@ void PgnGame::setGameEndTime(const QDateTime& dateTime)
 	int d = m_gameStartTime.secsTo(dateTime);
 	QTime time = QTime(d / 3600, d % 3600 / 60, d % 60);
 	setTag("GameDuration", time.toString("hh:mm:ss"));
+}
+
+// HACK
+// TODO: This code won't be needed once we have such GUI game management that
+// ChessGame objects are only deleted when they're no longer available in the GUI.
+QMap< int, int > PgnGame::extractScores() const
+{
+	QMap < int, int > scores;
+
+	for (const auto md: moves())
+	{
+		// Default format: Xboard/concise like {0.35/16 5.1s})
+		// Ref.: ChessGame::evalString and MoveEvaluation::scoreText
+		int count = scores.count();
+		QString s = md.comment.split('/').at(0);
+		bool isMateScore = s.contains('M');
+		if (isMateScore)
+			s.remove('M');
+		int score = 100 * s.toDouble();
+		if (isMateScore)
+			score = score > 0 ? MoveEvaluation::MATE_SCORE - score / 100 
+					  : score / 100 - MoveEvaluation::MATE_SCORE;
+		scores[count] = score;
+	}
+	return scores;
 }

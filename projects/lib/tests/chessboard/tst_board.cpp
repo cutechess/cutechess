@@ -929,6 +929,29 @@ void tst_Board::results_data() const
 		<< "8/8/8/2sp2k1/8/3P4/4K1a1/7r w - - 0 1"
 		<< "0-1";
 
+	variant = "jesonmor";
+
+	QTest::newRow("jesonmor continue")
+		<< variant
+		<< "9/9/9/2n6/4N4/9/9/9/9 b - - 0 1"
+		<< "*";
+	QTest::newRow("jesonmor white win 1")
+		<< variant
+		<< "9/9/9/2n6/4N4/9/9/9/9 w - - 0 1"
+		<< "1-0";
+	QTest::newRow("jesonmor white win 2")
+		<< variant
+		<< "1nnn1n1nn/9/9/3n1n3/4N4/5N3/1N7/9/1N1N1NNN1 b - - 0 7"
+		<< "1-0";
+	QTest::newRow("jesonmor black win")
+		<< variant
+		<< "9/9/Nn7/9/4n4/9/9/9/9 w - - 0 25"
+		<< "0-1";
+	QTest::newRow("jesonmor no white pieces")
+		<< variant
+		<< "9/9/1n7/9/9/9/3n5/9/9 w - - 0 24"
+		<< "0-1";
+
 	variant = "almost";
 
 	QTest::newRow("almost fool's mate")
@@ -1395,6 +1418,16 @@ void tst_Board::perft_data() const
 		<< "8/8/6R1/s3r3/P5R1/1KP3p1/1F2kr2/8[-] b - 0 0 72"
 		<< 4 // 1 ply: 35, 2 plies: 825, 3 plies: 26791, 4 plies: 657824
 		<< Q_UINT64_C(657824);
+	QTest::newRow("sittuyin promotion1")
+		<< variant
+		<< "8/8/S2P1k2/8/8/8/8/4K3[-] w - - 0 9"
+		<< 1 // 1 ply: 12, 2 plies: 86
+		<< Q_UINT64_C(12);
+	QTest::newRow("sittuyin promotion2")
+		<< variant
+		<< "8/8/R2P1k2/8/8/8/8/4K3[-] w - - 0 9"
+		<< 1 // 1 ply: 16, 2 plies: 105
+		<< Q_UINT64_C(16);
 
 	variant = "ai-wok";
 	QTest::newRow("ai-wok startpos")
@@ -1407,6 +1440,13 @@ void tst_Board::perft_data() const
 		<< "8/8/8/2sp2k1/7p/3P4/6K1/7r w - - 0 1"
 		<< 5 // 4 plies: 6855, 5 plies: 30055, 6 plies: 631293
 		<< Q_UINT64_C(30055);
+
+	variant = "jesonmor";
+	QTest::newRow("jeson mor startpos")
+		<< variant
+		<< "nnnnnnnnn/9/9/9/9/9/9/9/NNNNNNNNN w - - 0 1"
+		<< 4 // 3 plies: 27960, 4 plies: 868624, 5 plies: 27756588/27882796
+		<< Q_UINT64_C(868624);
 
 	variant = "twokings";
 	QTest::newRow("twokings startpos")
@@ -1497,6 +1537,20 @@ void tst_Board::perft_data() const
 		<< "8/KP6/8/4k3/8/8/6p1/8 w - - 0 1"
 		<< 5 // 4 plies: 8133, 5 plies: 104326
 		<< Q_UINT64_C(104326);
+
+	variant = "hoppelpoppel";
+	QTest::newRow("hoppelpoppel startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 5 // 4 plies: 202459, 5 plies: 5056643, 6 plies: 125120759
+		<< Q_UINT64_C(5056643);
+
+	variant = "newzealand";
+	QTest::newRow("newzealand startpos")
+		<< variant
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< 4 // 4 plies: 200310, 5 plies: 4987426, 6 plies: 123099631
+		<< Q_UINT64_C(200310);
 
 	variant = "placement";
 	QTest::newRow("placement startpos")

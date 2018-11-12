@@ -55,6 +55,7 @@ class LIB_EXPORT ChancellorBoard : public WesternBoard
 		virtual int width() const;
 		virtual int height() const;
 	protected:
+		/*! Piece types for Chancellor Chess */
 		enum ChancellorPieceType
 		{
 			Chancellor = 8 //!< Chancellor (knight + rook)
