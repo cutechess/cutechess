@@ -81,10 +81,14 @@ Options:
 			least COUNT consecutive moves, and at least NUMBER full
 			moves have been played. Captures and pawn moves will
 			reset the counters.
-  -resign movecount=COUNT score=SCORE
+  -resign movecount=COUNT score=SCORE [twosided=VALUE]
 			Adjudicate the game as a loss if an engine's score is
 			at least SCORE centipawns below zero for at least COUNT
 			consecutive moves.
+			If VALUE is true (default: false) then activate
+			two-sided resign adjudication: The scores of the winning
+			side must be at least SCORE centipawns above zero for at
+			least COUNT consecutive moves.
   -maxmoves N		Adjudicate the game as a draw if the game is still
 			ongoing after N or more full moves have been played.
 			This limit is not in action if set to zero.

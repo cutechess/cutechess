@@ -54,9 +54,13 @@ class LIB_EXPORT GameAdjudicator
 		 * A game will be adjudicated as a loss for the player that
 		 * made the last move if it reports a score that's at least
 		 * \a score centipawns below zero for at least \a moveCount
-		 * consecutive moves.
+		 * consecutive moves. Beyond that the score of the winning
+		 * side must be at least \a score centipawns above zero if
+		 * \a twoSided is true (default: false).
 		 */
-		void setResignThreshold(int moveCount, int score);
+		void setResignThreshold(int moveCount,
+					int score,
+					bool twoSided = false);
 		/*!
 		 * Limits the number of moves playable in a game.
 		 *
@@ -101,6 +105,8 @@ class LIB_EXPORT GameAdjudicator
 		int m_resignMoveCount;
 		int m_resignScore;
 		int m_resignScoreCount[2];
+		int m_winScoreCount[2];
+		bool m_twoSided;
 		int m_maxGameLength;
 		bool m_tbEnabled;
 		Chess::Result m_result;
