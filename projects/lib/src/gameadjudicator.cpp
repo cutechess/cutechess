@@ -27,11 +27,14 @@ GameAdjudicator::GameAdjudicator()
 	  m_drawScoreCount(0),
 	  m_resignMoveCount(0),
 	  m_resignScore(0),
+	  m_twoSided(false),
 	  m_maxGameLength(0),
 	  m_tbEnabled(false)
 {
 	m_resignScoreCount[0] = 0;
 	m_resignScoreCount[1] = 0;
+	m_winScoreCount[0] = 0;
+	m_winScoreCount[1] = 0;
 }
 
 void GameAdjudicator::setDrawThreshold(int moveNumber, int moveCount, int score)
@@ -45,14 +48,17 @@ void GameAdjudicator::setDrawThreshold(int moveNumber, int moveCount, int score)
 	m_drawScoreCount = 0;
 }
 
-void GameAdjudicator::setResignThreshold(int moveCount, int score)
+void GameAdjudicator::setResignThreshold(int moveCount, int score, bool twoSided)
 {
 	Q_ASSERT(moveCount >= 0);
 
 	m_resignMoveCount = moveCount;
 	m_resignScore = score;
+	m_twoSided = twoSided;
 	m_resignScoreCount[0] = 0;
 	m_resignScoreCount[1] = 0;
+	m_winScoreCount[0] = 0;
+	m_winScoreCount[1] = 0;
 }
 
 void GameAdjudicator::setMaximumGameLength(int moveCount)
@@ -83,6 +89,8 @@ void GameAdjudicator::addEval(const Chess::Board* board, const MoveEvaluation& e
 	{
 		m_drawScoreCount = 0;
 		m_resignScoreCount[side] = 0;
+		m_winScoreCount[side] = 0;
+
 		return;
 	}
 
@@ -111,7 +119,14 @@ void GameAdjudicator::addEval(const Chess::Board* board, const MoveEvaluation& e
 		else
 			count = 0;
 
-		if (count >= m_resignMoveCount)
+		int& winCount = m_winScoreCount[side];
+		if (eval.score() >= -m_resignScore)
+			winCount++;
+		else
+			winCount = 0;
+
+		if (count >= m_resignMoveCount
+		&& (!m_twoSided || m_winScoreCount[side.opposite()] >= m_resignMoveCount))
 		{
 			m_result = Chess::Result(Chess::Result::Adjudication,
 						 side.opposite());

@@ -338,15 +338,16 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Threshold for resign adjudication
 		else if (name == "-resign")
 		{
-			QMap<QString, QString> params = option.toMap("movecount|score");
+			QMap<QString, QString> params = option.toMap("movecount|score|twosided=false");
 			bool countOk = false;
 			bool scoreOk = false;
 			int moveCount = params["movecount"].toInt(&countOk);
 			int score = params["score"].toInt(&scoreOk);
+			bool twoSided = params["twosided"] == "true";
 
 			ok = (countOk && scoreOk);
 			if (ok)
-				adjudicator.setResignThreshold(moveCount, -score);
+				adjudicator.setResignThreshold(moveCount, -score, twoSided);
 		}
 		// Maximum game length before draw adjudication
 		else if (name == "-maxmoves")

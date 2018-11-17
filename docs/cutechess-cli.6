@@ -1,4 +1,4 @@
-.Dd July 26, 2018
+.Dd October 25, 2018
 .Dt CUTECHESS-CLI 6
 .Os
 .Sh NAME
@@ -175,12 +175,20 @@ centipawns from zero for at least
 consecutive moves, and at least
 .Ar number
 full moves have been played. Captures and pawn moves will reset the counters.
-.It Fl resign Cm movecount Ns = Ns Ar count Cm score Ns = Ns Ar score
+.It Fl resign Cm movecount Ns = Ns Ar count Cm score Ns = Ns Ar score Bq Cm twosided Ns = Ns Ar value
 Adjudicate the game as a loss if an engine's score is at least
 .Ar score
 centipawns below zero for at least
 .Ar count
 consecutive moves.
+If
+.Ar value
+is true (default: false) then activate two-sided resign adjudication. The winning side's
+scores must be at least
+.Ar score
+centipawns above zero for at least
+.Ar count
+consecutive moves
 .It Fl maxmoves Ar n
 Adjudicate the game as a draw if at least
 .Ar n
