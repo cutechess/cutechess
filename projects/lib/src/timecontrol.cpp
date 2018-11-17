@@ -218,7 +218,7 @@ void TimeControl::initialize()
 
 	if (m_timePerTc != 0)
 	{
-		m_timeLeft = m_timePerTc;
+		m_timeLeft = m_timePerTc + m_increment;
 		m_movesLeft = m_movesPerTc;
 	}
 	else if (m_timePerMove != 0)
