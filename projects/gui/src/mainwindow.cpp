@@ -19,7 +19,6 @@
 
 #include <QAction>
 #include <QHBoxLayout>
-#include <QStatusBar>
 #include <QMenu>
 #include <QMenuBar>
 #include <QToolBar>
@@ -107,8 +106,6 @@ MainWindow::MainWindow(ChessGame* game)
 	QWidget* mainWidget = new QWidget(this);
 	mainWidget->setLayout(mainLayout);
 	setCentralWidget(mainWidget);
-
-	setStatusBar(new QStatusBar());
 
 	createActions();
 	createMenus();
