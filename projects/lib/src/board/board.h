@@ -138,6 +138,11 @@ class LIB_EXPORT Board
 		 */
 		virtual bool variantHasOptionalPromotions() const;
 		/*!
+		 * Returns true if the board accepts wall squares, else false.
+		 * The default value is false.
+		 */
+		virtual bool variantHasWallSquares() const;
+		/*!
 		 * Returns a list of piece types that can be in the reserve,
 		 * ie. captured pieces that can be dropped on the board.
 		 *

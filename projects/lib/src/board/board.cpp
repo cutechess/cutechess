@@ -87,6 +87,11 @@ bool Board::variantHasOptionalPromotions() const
 	return false;
 }
 
+bool Board::variantHasWallSquares() const
+{
+	return false;
+}
+
 QList<Piece> Board::reservePieceTypes() const
 {
 	return QList<Piece>();
@@ -473,6 +478,9 @@ QString Board::fenString(FenNotation notation) const
 
 			if (pc.isValid())
 				fen += pieceSymbol(pc);
+			else if (pc.isWall())
+				fen += "*";
+
 			i++;
 		}
 		i++;
@@ -553,6 +561,15 @@ bool Board::setFenString(const QString& fen)
 				return false;
 			handPieceIndex = i + 1;
 			break;
+		}
+		// Wall square
+		if (c == '*' && variantHasWallSquares())
+		{
+			if (!pieceStr.isEmpty())
+				return false;
+			square++;
+			k++;
+			continue;
 		}
 		// Add empty squares
 		if (c.isDigit())

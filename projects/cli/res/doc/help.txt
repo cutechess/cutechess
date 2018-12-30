@@ -44,6 +44,7 @@ Options:
 			'grid': Grid Chess
 			'gridolina': Berolina Grid Chess
 			'gryphon': Gryphon Chess
+			'gustav3': Gustav III's Chess
 			'hoppelpoppel': Hoppel-Poppel (has N/B hybrids)
 			'horde': Horde Chess (v2)
 			'janus': Janus Chess

@@ -58,6 +58,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/chigorinboard.cpp \
     $$PWD/hoppelpoppelboard.cpp \
     $$PWD/placementboard.cpp \
+    $$PWD/gustavboard.cpp \
     $$PWD/boardfactory.cpp \
     $$PWD/boardtransition.cpp \
     $$PWD/syzygytablebase.cpp
@@ -122,6 +123,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/chigorinboard.h \
     $$PWD/hoppelpoppelboard.h \
     $$PWD/placementboard.h \
+    $$PWD/gustavboard.h \
     $$PWD/boardfactory.h \
     $$PWD/boardtransition.h \
     $$PWD/syzygytablebase.h
