@@ -43,6 +43,7 @@
 #include "grandboard.h"
 #include "gridboard.h"
 #include "gryphonboard.h"
+#include "gustavboard.h"
 #include "hoppelpoppelboard.h"
 #include "hordeboard.h"
 #include "janusboard.h"
@@ -105,6 +106,7 @@ REGISTER_BOARD(GrandBoard, "grand")
 REGISTER_BOARD(GridBoard, "grid")
 REGISTER_BOARD(BerolinaGridBoard, "gridolina")
 REGISTER_BOARD(GryphonBoard, "gryphon")
+REGISTER_BOARD(GustavBoard, "gustav3")
 REGISTER_BOARD(HoppelPoppelBoard, "hoppelpoppel")
 REGISTER_BOARD(HordeBoard, "horde")
 REGISTER_BOARD(JanusBoard, "janus")
