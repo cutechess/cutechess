@@ -27,6 +27,9 @@ If you are using the Visual C++ compiler replace `make` with `nmake`.
 Documentation is available as Unix manual pages in the `docs/` directory. API
 documentation can be built by issuing `make doc-api` (requires [Doxygen](http://www.doxygen.org/)).
 
+For detailed build instruction on various operating systems please visit:
+* [Making a release](https://github.com/cutechess/cutechess/wiki/Making-a-release)
+
 Running
 -------
 
