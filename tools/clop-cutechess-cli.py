@@ -115,15 +115,22 @@ def main(argv = None):
     for line in output.decode("utf-8").splitlines():
         if line.startswith('Finished game'):
             if line.find(": 1-0") != -1:
-                result = clop_seed % 2
-            elif line.find(": 0-1") != -1:
                 result = (clop_seed % 2) ^ 1
+            elif line.find(": 0-1") != -1:
+                result = clop_seed % 2
             elif line.find(": 1/2-1/2") != -1:
                 result = 2
             else:
                 sys.stderr.write('the game did not terminate properly\n')
                 return 2
             break
+
+    if result == 0:
+        sys.stdout.write('L\n')
+    elif result == 1:
+        sys.stdout.write('W\n')
+    elif result == 2:
+        sys.stdout.write('D\n')
 
     if result == 0:
         sys.stdout.write('L\n')
