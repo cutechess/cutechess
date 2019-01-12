@@ -126,9 +126,9 @@ def main(argv = None):
             break
 
     if result == 0:
-        sys.stdout.write('W\n')
-    elif result == 1:
         sys.stdout.write('L\n')
+    elif result == 1:
+        sys.stdout.write('W\n')
     elif result == 2:
         sys.stdout.write('D\n')
 
