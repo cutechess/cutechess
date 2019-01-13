@@ -98,7 +98,8 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 	auto nps = eval.nps();
 	if (nps)
 	{
-		QString npsStr = QString("%1k").arg(nps / 1000);
+		QString npsStr = nps < 10000 ? QString("%1").arg(nps)
+					     : QString("%1k").arg(nps / 1000);
 		auto item = m_statsTable->itemPrototype()->clone();
 		item->setText(npsStr);
 		m_statsTable->setItem(0, NpsHeader, item);
