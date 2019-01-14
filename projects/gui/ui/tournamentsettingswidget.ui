@@ -36,6 +36,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QRadioButton" name="m_roundRobinRadio">
+          <property name="toolTip">
+           <string>Round-robin tournament</string>
+          </property>
           <property name="text">
            <string>Round Robin</string>
           </property>
@@ -46,6 +49,9 @@
         </item>
         <item>
          <widget class="QRadioButton" name="m_gauntletRadio">
+          <property name="toolTip">
+           <string>First engine plays against the rest</string>
+          </property>
           <property name="text">
            <string>Gauntlet</string>
           </property>
@@ -53,6 +59,9 @@
         </item>
         <item>
          <widget class="QRadioButton" name="m_knockoutRadio">
+          <property name="toolTip">
+           <string>Single-elimination tournament</string>
+          </property>
           <property name="text">
            <string>Knockout</string>
           </property>
@@ -60,6 +69,9 @@
         </item>
         <item>
          <widget class="QRadioButton" name="m_pyramidRadio">
+          <property name="toolTip">
+           <string>Every engine plays against all of its predecessors</string>
+          </property>
           <property name="text">
            <string>Pyramid</string>
           </property>
