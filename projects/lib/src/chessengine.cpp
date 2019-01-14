@@ -303,6 +303,11 @@ bool ChessEngine::supportsVariant(const QString& variant) const
 	return m_variants.contains(variant);
 }
 
+int ChessEngine::id() const
+{
+	return m_id;
+}
+
 bool ChessEngine::stopThinking()
 {
 	if (state() == Thinking || isPondering())
