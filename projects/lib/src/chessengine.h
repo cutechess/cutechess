@@ -226,6 +226,10 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * the engine does not support pondering.
 		 */
 		bool pondering() const;
+		/*!
+		 * Gives id number of the engine
+		 */
+		int id() const;
 
 	protected slots:
 		// Inherited from ChessPlayer
