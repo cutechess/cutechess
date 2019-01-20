@@ -95,7 +95,7 @@ Options:
 			This limit is not in action if set to zero.
   -tb PATHS		Adjudicate games using Syzygy tablebases. PATHS should
 			be semicolon-delimited list of paths to the compressed
-			tablebase files. Only the DTZ tablebase files are
+			tablebase files. Only the WDL tablebase files are
 			required.
   -tbpieces N		Only use tablebase adjudication for positions with
 			N pieces or less.
