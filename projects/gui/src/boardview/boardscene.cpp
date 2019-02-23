@@ -338,7 +338,7 @@ void BoardScene::onTransitionFinished()
 void BoardScene::onPromotionChosen(const Chess::Piece& promotion)
 {
 	m_chooser = nullptr;
-	if (!promotion.isValid() && !m_board->variantHasOptionalPromotions())
+	if (!promotion.isValid() && !m_moves.contains(m_promotionMove))
 	{
 		GraphicsPiece* piece = m_squares->pieceAt(m_promotionMove.sourceSquare());
 		m_anim = pieceAnimation(piece, m_sourcePos);
