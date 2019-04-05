@@ -130,6 +130,7 @@ void EngineManagementWidget::addEngine()
 	{
 		m_engineManager->addEngine(dlg->engineConfiguration());
 		m_hasChanged = true;
+		updateEngineCount();
 	});
 	dlg->open();
 }
@@ -181,6 +182,7 @@ void EngineManagementWidget::removeEngine()
 		for (const QModelIndex& index : qAsConst(selected))
 			m_engineManager->removeEngineAt(index.row());
 		m_hasChanged = true;
+		updateEngineCount();
 	}
 }
 
