@@ -280,6 +280,22 @@ int SittuyinBoard::countingLimit() const
 	return 1000; // intentional limit
 }
 
+
+/*! Returns true if the side to move can make any non-promotion moves. */
+bool SittuyinBoard::canMakeNormalMove()
+{
+	QVarLengthArray<Move> moves;
+	generateMoves(moves);
+
+	for (int i = 0; i < moves.size(); i++)
+	{
+		if (vIsLegalMove(moves[i]) && moves[i].promotion() == Piece::NoPiece)
+			return true;
+	}
+
+	return false;
+}
+
 Result SittuyinBoard::result()
 {
 	QString str;
@@ -300,6 +316,12 @@ Result SittuyinBoard::result()
 			str = tr("Draw by stalemate");
 			return Result(Result::Draw, Side::NoSide, str);
 		}
+	}
+	if (!m_inSetUp && pieceCount(side, Pawn) == 1 && !canMakeNormalMove())
+	{
+		// Federation rule 3.9c7: promotion cannot be forced
+		str = tr("Draw by promotion stalemate");
+		return Result(Result::Draw, Side::NoSide, str);
 	}
 
 	// 50 move rule
