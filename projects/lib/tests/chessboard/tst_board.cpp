@@ -518,6 +518,11 @@ void tst_Board::moveStrings_data() const
 		<< "g3g3f"
 		<< "8/8/6R1/s3r3/P5R1/1KP3p1/1F2kr2/8[-] b - 0 0 72"
 		<< "8/8/6R1/s3r3/P5R1/1KP3f1/1F2kr2/8[-] w - 0 0 73";
+	QTest::newRow("sittuyin lan2 promotion by general's move")
+		<< "sittuyin"
+		<< "g3f4f"
+		<< "3k4/6R1/3s4/4r3/S2KF3/P2P2p1/8/8[-] b - 0 0 52"
+		<< "3k4/6R1/3s4/4r3/S2KFf2/P2P4/8/8[-] w - 0 0 53";
 	QTest::newRow("sittuyin san1 promotion staying on square")
 		<< "sittuyin"
 		<< "g3=F"

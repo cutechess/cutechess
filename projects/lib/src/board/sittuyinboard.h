@@ -106,6 +106,7 @@ class LIB_EXPORT SittuyinBoard : public MakrukBoard
 					   int targetSquare,
 					   QVarLengthArray< Move >& moves) const;
 		virtual bool vSetFenString(const QStringList& fen);
+		virtual Move moveFromSanString(const QString & str);
 		virtual void vMakeMove(const Move& move,
 				       BoardTransition* transition);
 		virtual void vUndoMove(const Move& move);
