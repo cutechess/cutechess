@@ -932,6 +932,13 @@ void tst_Board::results_data() const
 		<< "8/8/8/5K2/1q6/8/8/k7 w - - 0 71"
 		<< "1/2-1/2";
 
+	variant = "sittuyin";
+
+	QTest::newRow("sittuyin draw by promotion stalemate, rule 3.9c7")
+		<< variant
+		<< "1k4PK/3r4/8/8/8/8/8/8[-] w - 0 0 1"
+		<< "1/2-1/2";
+
 	variant = "ai-wok";
 
 	QTest::newRow("ai-wok black win")

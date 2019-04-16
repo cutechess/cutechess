@@ -119,6 +119,7 @@ class LIB_EXPORT SittuyinBoard : public MakrukBoard
 	private:
 		bool m_inSetUp;
 		bool inSetup() const;
+		bool canMakeNormalMove();
 };
 
 } // namespace Chess
