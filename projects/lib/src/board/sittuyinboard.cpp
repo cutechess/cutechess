@@ -195,6 +195,17 @@ bool SittuyinBoard::vSetFenString(const QStringList& fen)
 	return ret;
 }
 
+Move SittuyinBoard::moveFromSanString(const QString& str)
+{
+	Move move = MakrukBoard::moveFromSanString(str);
+
+	// Avoid problems with promotion moves in LAN(!) format
+	if (move.sourceSquare() != 0
+	&&  move.promotion() != Piece::NoPiece && !str.contains("=") )
+		return Move();
+
+	return move;
+}
 
 void SittuyinBoard::vMakeMove(const Move& move, BoardTransition* transition)
 {
