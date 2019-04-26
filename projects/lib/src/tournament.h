@@ -393,6 +393,11 @@ class LIB_EXPORT Tournament : public QObject
 		 * The default implementation always returns false.
 		 */
 		virtual bool hasGauntletRatingsOrder() const;
+		/*!
+		 * Returns true (default) if the next encounter of players will
+		 * start with a different set-up; otherwise returns false.
+		 */
+		virtual bool newOpeningForNewEncounter() const;
 
 	private slots:
 		void startNextGame();
