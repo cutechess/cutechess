@@ -37,6 +37,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_lastGame(nullptr),
 	  m_variant("standard"),
 	  m_round(0),
+	  m_oldRound(-1),
 	  m_nextGameNumber(0),
 	  m_finishedGameCount(0),
 	  m_savedGameCount(0),
@@ -48,6 +49,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_seedCount(0),
 	  m_stopping(false),
 	  m_openingRepetitions(1),
+	  m_openingPolicy(DefaultPolicy),
 	  m_recover(false),
 	  m_pgnCleanup(true),
 	  m_pgnWriteUnfinishedGames(true),
@@ -277,6 +279,11 @@ void Tournament::setOpeningRepetitions(int count)
 	m_openingRepetitions = count;
 }
 
+void Tournament::setOpeningPolicy(Tournament::OpeningPolicy policy)
+{
+	m_openingPolicy = policy;
+}
+
 void Tournament::setSwapSides(bool enabled)
 {
 	m_swapSides = enabled;
@@ -449,10 +456,15 @@ void Tournament::startNextGame()
 	if (!pair || !pair->isValid())
 		return;
 
-	if (!pair->hasSamePlayers(m_pair) && m_players.size() > 2)
+	if ((!pair->hasSamePlayers(m_pair) && m_players.size() > 2
+	     && m_openingPolicy != OpeningPolicy::RoundPolicy)
+	|| (m_round > m_oldRound
+	     && m_openingPolicy == OpeningPolicy::RoundPolicy))
 	{
 		m_startFen.clear();
 		m_openingMoves.clear();
+		m_repetitionCounter = 1;
+		m_oldRound = m_round;
 	}
 
 	startGame(pair);
@@ -688,6 +700,9 @@ void Tournament::start()
 	m_savedGameCount = 0;
 	m_finalGameCount = 0;
 	m_stopping = false;
+
+	if (m_openingPolicy == EncounterPolicy || m_openingPolicy == RoundPolicy)
+		setOpeningRepetitions(INT_MAX);
 
 	m_gameData.clear();
 	m_pgnGames.clear();

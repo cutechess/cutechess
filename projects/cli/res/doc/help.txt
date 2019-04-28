@@ -127,7 +127,7 @@ Options:
 			games set by '-rounds' and/or '-games' is reached.
   -ratinginterval N	Set the interval for printing the ratings to N games
   -debug		Display all engine input and output
-  -openings file=FILE format=FORMAT order=ORDER plies=PLIES start=START
+  -openings file=FILE format=FORMAT order=ORDER plies=PLIES start=START policy=POLICY
 			Pick game openings from FILE. The file's format is
 			FORMAT, which can be either 'epd' or 'pgn' (default).
 			Openings will be picked in the order specified by ORDER,
@@ -136,6 +136,12 @@ Options:
 			not set the opening depth is unlimited. In sequential
 			mode START is the number of the first opening that will
 			be played. The minimum value for START is 1 (default).
+			The POLICY rules when to shift to a new opening.
+			It can be one of 'encounter'- which uses a new
+			opening for any new pair of players, 'round'- which
+			shifts only for a new round, or 'default'- which shifts
+			for any new pair of players and also when the number of
+			opening repetitions is reached.
   -bookmode MODE	Set Polyglot book mode to MODE, which can be one of:
 			'ram': The whole book is loaded into RAM (default)
 			'disk': The book is accessed directly on disk.
