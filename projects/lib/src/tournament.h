@@ -46,6 +46,14 @@ class LIB_EXPORT Tournament : public QObject
 	Q_OBJECT
 
 	public:
+		/*! The policy for using a fresh opening. */
+		enum OpeningPolicy
+		{
+			DefaultPolicy,     //!< Shift on repetition count and on new encounter
+			EncounterPolicy,   //!< Shift on new encounter
+			RoundPolicy        //!< Shift on new round
+		};
+
 		/*!
 		 * Creates a new tournament that uses \a gameManager
 		 * to manage the games.
@@ -211,6 +219,19 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		void setOpeningRepetitions(int count);
 		/*!
+		 * The value of \a policy rules when to switch to the next opening.
+		 *
+		 * Given the default value \ref DefaultPolicy a new opening is selected
+		 * when the number of opening repetitions played reaches the specified
+		 * number of repetitions (\ref setOpeningRepetitions) or a new encounter
+		 * is started.
+		 *
+		 * If \ref EncounterPolicy is used then a new opening will be selected
+		 * only for any new encounter. \ref RoundPolicy shifts to a new opening
+		 * only when a new round starts.
+		 */
+		void setOpeningPolicy(OpeningPolicy policy = DefaultPolicy);
+		/*!
 		 * Sets the side swap flag to \a enabled.
 		 *
 		 * If \a enabled is true then paired engines will
@@ -218,7 +239,7 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		void setSwapSides(bool enabled);
 		/*!
-		 * Sets opening book ownerhip to \a enabled.
+		 * Sets opening book ownership to \a enabled.
 		 *
 		 * By default the \a Tournament object doesn't take ownership of
 		 * its opening books.
@@ -427,6 +448,7 @@ class LIB_EXPORT Tournament : public QObject
 		QString m_site;
 		QString m_variant;
 		int m_round;
+		int m_oldRound;
 		int m_nextGameNumber;
 		int m_finishedGameCount;
 		int m_savedGameCount;
@@ -438,6 +460,7 @@ class LIB_EXPORT Tournament : public QObject
 		int m_seedCount;
 		bool m_stopping;
 		int m_openingRepetitions;
+		OpeningPolicy m_openingPolicy;
 		bool m_recover;
 		bool m_pgnCleanup;
 		bool m_pgnWriteUnfinishedGames;

@@ -433,7 +433,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		else if (name == "-openings")
 		{
 			QMap<QString, QString> params =
-				option.toMap("file|format=pgn|order=sequential|plies=1024|start=1");
+				option.toMap("file|format=pgn|order=sequential|plies=1024|start=1|policy=default");
 			ok = !params.isEmpty();
 
 			OpeningSuite::Format format = OpeningSuite::EpdFormat;
@@ -460,6 +460,21 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 				ok = false;
 			}
 
+			using OpeningPolicy = Tournament::OpeningPolicy;
+			OpeningPolicy policy = OpeningPolicy::DefaultPolicy;
+			if (params["policy"] == "default")
+				policy = OpeningPolicy::DefaultPolicy;
+			else if (params["policy"] == "encounter")
+				policy = OpeningPolicy::EncounterPolicy;
+			else if (params["policy"] == "round")
+				policy = OpeningPolicy::RoundPolicy;
+			else if (ok)
+			{
+				qWarning("Invalid opening shift policy: \"%s\"",
+					 qUtf8Printable(params["policy"]));
+				ok = false;
+			}
+
 			int plies = params["plies"].toInt();
 			int start = params["start"].toInt();
 
@@ -467,6 +482,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			if (ok)
 			{
 				tournament->setOpeningDepth(plies);
+				tournament->setOpeningPolicy(policy);
 
 				OpeningSuite* suite = new OpeningSuite(params["file"],
 								       format,
