@@ -1,4 +1,4 @@
-.Dd October 25, 2018
+.Dd April 29, 2019
 .Dt CUTECHESS-CLI 6
 .Os
 .Sh NAME
@@ -271,7 +271,7 @@ Set the interval for printing the ratings to
 games.
 .It Fl debug
 Display all engine input and output.
-.It Fl openings Cm file Ns = Ns Ar file Cm format Ns = Ns [ Cm epd | Cm pgn Ns ] Cm order Ns = Ns [ Cm random | Cm sequential Ns ] Cm plies Ns = Ns Ar plies Cm start Ns = Ns Ar start
+.It Fl openings Cm file Ns = Ns Ar file Cm format Ns = Ns [ Cm epd | Cm pgn Ns ] Cm order Ns = Ns [ Cm random | Cm sequential Ns ] Cm plies Ns = Ns Ar plies Cm start Ns = Ns Ar start Cm policy Ns = Ns [ Cm default | Cm encounter | Cm round ]
 Pick game openings from
 .Ar file .
 The file can be either in
@@ -298,6 +298,17 @@ is the number of the first opening that will be played.
 The minimum value for
 .Ar start
 is 1 (default).
+.Pp
+The value of
+.Ar policy
+rules when to shift to a new opening. If set to
+.Cm encounter
+a new opening is used for any new pair of players,
+.Cm round
+shifts when a new round begins. The
+.Cm default
+shifts for any new pair of players and also when the
+specified number of opening repetitions is reached.
 .It Fl bookmode Ar mode
 Set Polyglot book access mode, where
 .Ar mode
@@ -307,7 +318,7 @@ is either
 .Cm disk
 (the book is accessed directly on disk).
 The default mode is
-.Cm ram .
+.Cm ram.
 .It Fl pgnout Ar file Bq Cm min Cm Bq fi
 Save the games to
 .Ar file
