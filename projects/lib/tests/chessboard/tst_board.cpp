@@ -1499,6 +1499,13 @@ void tst_Board::perft_data() const
 		<< 5 // 4 plies: 719731, 5 plies: 19861490, 6 plies: 547581517
 		<< Q_UINT64_C(19861490);
 
+	variant = "minishogi";
+	QTest::newRow("minishogi startpos")
+		<< variant
+		<< "rbsgk/4p/5/P4/KGSBR[-] w - 1"
+		<< 5 // 4 plies: 35401, 5 plies: 533203, 6 plies: 8276188
+		<< Q_UINT64_C(533203);
+
 	variant = "twokings";
 	QTest::newRow("twokings startpos")
 		<< variant

@@ -55,6 +55,7 @@
 #include "losersboard.h"
 #include "ncheckboard.h"
 #include "makrukboard.h"
+#include "minishogiboard.h"
 #include "modernboard.h"
 #include "oukboard.h"
 #include "placementboard.h"
@@ -119,6 +120,7 @@ REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosAlamosBoard, "losalamos")
 REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(MakrukBoard, "makruk")
+REGISTER_BOARD(MiniShogiBoard, "minishogi")
 REGISTER_BOARD(ModernBoard, "modern")
 REGISTER_BOARD(NewZealandBoard, "newzealand")
 REGISTER_BOARD(PlacementBoard, "placement")
