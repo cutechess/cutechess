@@ -57,6 +57,7 @@ Options:
 			'losalamos': Los Alamos Chess
 			'losers': Loser's Chess
 			'makruk': Makruk (Thai Chess)
+			'minishogi': Minishogi (5x5)
 			'modern': Modern Chess (9x9)
 			'newzealand': New Zealand Chess (has N/R hybrids)
 			'placement': Placement Chess
