@@ -265,7 +265,7 @@ bool SittuyinBoard::isLegalPosition()
 		return false;
 
 	// Do not allow (discovered) checks by a promotion move
-	if (lastMove().promotion() != 0 && inCheck(side))
+	if (plyCount() > 0 && lastMove().promotion() != 0 && inCheck(side))
 		return false;
 
 	return true;
