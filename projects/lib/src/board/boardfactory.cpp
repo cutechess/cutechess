@@ -35,6 +35,7 @@
 #include "coregalboard.h"
 #include "courierboard.h"
 #include "crazyhouseboard.h"
+#include "dobutsushogiboard.h"
 #include "embassyboard.h"
 #include "extinctionboard.h"
 #include "frcboard.h"
@@ -98,6 +99,7 @@ REGISTER_BOARD(CoRegalBoard, "coregal")
 REGISTER_BOARD(CourierBoard, "courier")
 REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
 REGISTER_BOARD(DisplacedGridBoard, "displacedgrid")
+REGISTER_BOARD(DobutsuShogiBoard, "dobutsu")
 REGISTER_BOARD(EmbassyBoard, "embassy")
 REGISTER_BOARD(ExtinctionBoard, "extinction")
 REGISTER_BOARD(KingletBoard, "kinglet")
