@@ -35,6 +35,7 @@ Options:
 			'courier': Courier Chess
 			'crazyhouse': Crazyhouse (Drop Chess)
 			'discplacedgrid': Displaced Grid Chess
+			'dobutsu': Dobutsu Shogi (3x4)
 			'embassy': Embassy Chess
 			'extinction': Extinction Chess
 			'fischerandom': Fischer Random Chess/Chess 960
