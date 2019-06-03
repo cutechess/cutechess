@@ -32,5 +32,5 @@ test_script:
 artifacts:
   - path: projects\cli\cutechess-cli.exe
     name: cutechess-cli
-  - path: projects\cutechess.exe
+  - path: projects\gui\cutechess.exe
     name: cutechess
