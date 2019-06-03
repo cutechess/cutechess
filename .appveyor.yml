@@ -30,6 +30,7 @@ test_script:
     - cd serializer & release\tst_jsonserializer & cd..
 
 artifacts:
-
   - path: projects\cli\cutechess-cli.exe
     name: cutechess-cli
+  - path: projects\cutechess.exe
+    name: cutechess
