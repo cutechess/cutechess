@@ -80,8 +80,8 @@ void EvalHistory::setScores(const QMap< int, int >& scores)
 	m_plot->addGraph();
 	m_plot->addGraph();
 
-	auto cWhite = QColor("#ffce9e");
-	auto cBlack = QColor("#d18b47");
+	auto cWhite = QColor(0xff, 0xce, 0x9e);
+	auto cBlack = QColor(0xd1, 0x8b, 0x47);
 	auto pWhite = QPen(cWhite.darker(150));
 	pWhite.setWidth(2);
 	auto pBlack = QPen(cBlack.darker());
