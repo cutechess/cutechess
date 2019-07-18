@@ -184,7 +184,7 @@ void SimplifiedGryphonBoard::generateMovesForPiece(QVarLengthArray< Move >& move
 						   int square) const
 {
 	if (pieceType != King)
-		return GryphonBoard::generateMovesForPiece(moves, pieceType, square);
+		return GryphonBoard::generateMovesForPiece(moves, pieceType, square); // clazy:exclude=returning-void-expression
 
 	QVarLengthArray< Move > newmoves;
 	GryphonBoard::generateMovesForPiece(newmoves, King, square);

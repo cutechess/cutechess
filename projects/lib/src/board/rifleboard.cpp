@@ -97,7 +97,7 @@ void RifleBoard::addPromotions(int sourceSquare, int targetSquare,
 {
 	// Prevent capturing Pawn from promoting on seventh rank
 	if (pieceAt(targetSquare).isEmpty())
-		return WesternBoard::addPromotions(sourceSquare,
+		return WesternBoard::addPromotions(sourceSquare, // clazy:exclude=returning-void-expression
 						   targetSquare,
 						   moves);
 	moves.append(Move(sourceSquare, targetSquare));

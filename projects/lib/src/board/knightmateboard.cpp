@@ -74,9 +74,9 @@ void KnightMateBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
 		if (pieceType == Mann)
 			return;
 		// king's leaps
-		return WesternBoard::generateMovesForPiece(moves, Knight, square);
+		return WesternBoard::generateMovesForPiece(moves, Knight, square); // clazy:exclude=returning-void-expression
 	}
-	return WesternBoard::generateMovesForPiece(moves, pieceType, square);
+	WesternBoard::generateMovesForPiece(moves, pieceType, square);
 }
 
 bool KnightMateBoard::inCheck(Side side, int square) const

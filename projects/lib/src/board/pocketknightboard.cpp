@@ -80,7 +80,7 @@ void PocketKnightBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	&&  source == 0)
 		removeFromReserve(Piece(sideToMove(), prom));
 
-	return WesternBoard::vMakeMove(move, transition);
+	WesternBoard::vMakeMove(move, transition);
 }
 
 void PocketKnightBoard::vUndoMove(const Move& move)

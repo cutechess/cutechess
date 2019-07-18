@@ -144,9 +144,9 @@ void SittuyinBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 			return;
 		// Pawn moves, special promotions, see above
 		if (pieceType == Pawn)
-			return generatePawnMoves(square, moves);
+			return generatePawnMoves(square, moves); // clazy:exclude=returning-void-expression
 
-		return MakrukBoard::generateMovesForPiece(moves, pieceType, square);
+		return MakrukBoard::generateMovesForPiece(moves, pieceType, square); // clazy:exclude=returning-void-expression
 	}
 
 	// Set-up: generate drops onto own half

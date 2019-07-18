@@ -190,7 +190,7 @@ void CrazyhouseBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	else if (source == 0)
 		removeFromReserve(Piece(sideToMove(), prom));
 
-	return WesternBoard::vMakeMove(tmp, transition);
+	WesternBoard::vMakeMove(tmp, transition);
 }
 
 void CrazyhouseBoard::vUndoMove(const Move& move)
