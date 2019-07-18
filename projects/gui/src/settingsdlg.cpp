@@ -84,6 +84,12 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 		QSettings().setValue("games/default_pgn_output_file", defaultPgnFile);
 	});
 
+	connect(ui->m_tbPathEdit, &QLineEdit::textChanged,
+		[=](const QString& tbPath)
+	{
+		QSettings().setValue("ui/tb_path", tbPath);
+	});
+
 	connect(ui->m_tournamentDefaultPgnOutFileEdit, &QLineEdit::textChanged,
 		[=](const QString& tourFile)
 	{
