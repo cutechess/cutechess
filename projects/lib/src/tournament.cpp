@@ -440,11 +440,6 @@ int Tournament::playerIndex(ChessGame* game, Chess::Side side) const
 	return side == Chess::Side::White ? gd->whiteIndex : gd->blackIndex;
 }
 
-bool Tournament::newOpeningForNewEncounter() const
-{
-	return true;
-}
-
 void Tournament::startNextGame()
 {
 	if (m_stopping)
@@ -454,8 +449,7 @@ void Tournament::startNextGame()
 	if (!pair || !pair->isValid())
 		return;
 
-	if (!pair->hasSamePlayers(m_pair) && m_players.size() > 2
-	&&  newOpeningForNewEncounter())
+	if (!pair->hasSamePlayers(m_pair) && m_players.size() > 2)
 	{
 		m_startFen.clear();
 		m_openingMoves.clear();

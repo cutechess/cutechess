@@ -24,8 +24,7 @@
 GauntletTournament::GauntletTournament(GameManager* gameManager,
 				       QObject *parent)
 	: Tournament(gameManager, parent),
-	  m_opponent(-1),
-	  m_newRound(true)
+	  m_opponent(-1)
 {
 }
 
@@ -61,8 +60,7 @@ TournamentPair* GauntletTournament::nextPair(int gameNumber)
 	if (gameNumber % gamesPerEncounter() != 0)
 		return currentPair();
 
-	m_newRound = (m_opponent >= playerCount());
-	if (m_newRound)
+	if (m_opponent >= playerCount())
 	{
 		m_opponent = 1;
 		setCurrentRound(currentRound() + 1);
@@ -77,9 +75,4 @@ TournamentPair* GauntletTournament::nextPair(int gameNumber)
 bool GauntletTournament::hasGauntletRatingsOrder() const
 {
 	return true;
-}
-
-bool GauntletTournament::newOpeningForNewEncounter() const
-{
-	return m_newRound;
 }

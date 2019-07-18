@@ -47,11 +47,9 @@ class LIB_EXPORT GauntletTournament : public Tournament
 		virtual int gamesPerCycle() const;
 		virtual TournamentPair* nextPair(int gameNumber);
 		virtual bool hasGauntletRatingsOrder() const;
-		virtual bool newOpeningForNewEncounter() const;
 
 	private:
 		int m_opponent;
-		bool m_newRound;
 };
 
 #endif // GAUNTLETTOURNAMENT_H
