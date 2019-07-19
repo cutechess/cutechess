@@ -208,7 +208,7 @@ EcoNode::EcoNode()
 
 EcoNode::~EcoNode()
 {
-	qDeleteAll(m_children.values());
+	qDeleteAll(m_children);
 }
 
 bool EcoNode::isLeaf() const
