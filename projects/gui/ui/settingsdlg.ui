@@ -31,54 +31,61 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="QCheckBox" name="m_highlightLegalMovesCheck">
-         <property name="text">
-          <string>Highlight legal moves</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="m_closeUnusedInitialTabCheck">
-         <property name="text">
-          <string>Close initial game tab if unused</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="m_useFullUserNameCheck">
-         <property name="text">
-          <string>Use full name of human player</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="m_playersSidesOnClocksCheck">
-         <property name="text">
-          <string>Display players' sides on clocks </string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="m_humanCanPlayAfterTimeoutCheck">
-         <property name="text">
-          <string>Human player can play after timeout</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
+        <layout class="QFormLayout" name="formLayout_6">
+         <item row="6" column="0">
+          <widget class="QCheckBox" name="m_humanCanPlayAfterTimeoutCheck">
+           <property name="text">
+            <string>Human player can play after timeout</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QCheckBox" name="m_playersSidesOnClocksCheck">
+           <property name="text">
+            <string>Display players' sides on clocks </string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="m_closeUnusedInitialTabCheck">
+           <property name="text">
+            <string>Close initial game tab if unused</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="m_highlightLegalMovesCheck">
+           <property name="text">
+            <string>Highlight legal moves</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QCheckBox" name="m_useFullUserNameCheck">
+           <property name="text">
+            <string>Use full name of human player</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QFormLayout" name="formLayout_3">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::ExpandingFieldsGrow</enum>
+         </property>
          <property name="horizontalSpacing">
           <number>9</number>
          </property>
