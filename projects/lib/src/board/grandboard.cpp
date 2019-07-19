@@ -45,11 +45,6 @@ QString GrandBoard::defaultFenString() const
 	return "r8r/1nbqkcabn1/pppppppppp/10/10/10/10/PPPPPPPPPP/1NBQKCABN1/R8R w - - 0 1";
 }
 
-bool GrandBoard::variantHasOptionalPromotions() const
-{
-	return true;
-}
-
 bool GrandBoard::hasCastling() const
 {
 	return false;

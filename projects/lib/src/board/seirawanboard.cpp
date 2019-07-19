@@ -65,11 +65,6 @@ bool SeirawanBoard::variantHasChanneling(Side side, int square) const
 	return  rank == baserank && !side.isNull();
 }
 
-bool SeirawanBoard::variantHasOptionalPromotions() const
-{
-	return true;
-}
-
 QList<Piece> SeirawanBoard::reservePieceTypes() const
 {
 	QList<Piece> list;

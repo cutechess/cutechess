@@ -65,7 +65,6 @@ class LIB_EXPORT SeirawanBoard : public WesternBoard
 		// Inherited from WesternBoard
 		virtual bool variantHasDrops() const;
 		virtual bool variantHasChanneling(Side side, int square) const;
-		virtual bool variantHasOptionalPromotions() const;
 		virtual QList< Piece > reservePieceTypes() const;
 		virtual void addPromotions(int sourceSquare,
 					   int targetSquare,

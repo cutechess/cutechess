@@ -55,11 +55,6 @@ bool SittuyinBoard::variantHasDrops() const
 	return true;
 }
 
-bool SittuyinBoard::variantHasOptionalPromotions() const
-{
-	return true;
-}
-
 QList< Piece > SittuyinBoard::reservePieceTypes() const
 {
 	QList< Piece > types;

@@ -82,11 +82,6 @@ bool Board::variantHasDrops() const
 	return false;
 }
 
-bool Board::variantHasOptionalPromotions() const
-{
-	return false;
-}
-
 bool Board::variantHasWallSquares() const
 {
 	return false;

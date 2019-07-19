@@ -61,7 +61,6 @@ class LIB_EXPORT GrandBoard : public CapablancaBoard
 		virtual QString variant() const;
 		virtual int height() const;
 		virtual QString defaultFenString() const;
-		virtual bool variantHasOptionalPromotions() const;
 		virtual bool hasCastling() const;
 		virtual void generateMovesForPiece(QVarLengthArray< Move >& moves,
 						   int pieceType,

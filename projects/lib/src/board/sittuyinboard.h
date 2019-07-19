@@ -80,7 +80,6 @@ class LIB_EXPORT SittuyinBoard : public MakrukBoard
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
 		virtual bool variantHasDrops() const;
-		virtual bool variantHasOptionalPromotions() const;
 
 	protected:
 		/*! Piece types for sittuyin variants. */
