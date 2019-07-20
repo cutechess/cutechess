@@ -36,10 +36,20 @@ EvalHistory::EvalHistory(QWidget *parent)
 	x->setRange(1, 5);
 	x->setTicker(QSharedPointer<QCPAxisTicker>(ticker));
 	x->setSubTicks(false);
+	x->setLabelColor(QApplication::palette().text().color());
+	x->setTickLabelColor(QApplication::palette().text().color());
+	x->setTickPen(QApplication::palette().text().color());
+	x->setBasePen(QApplication::palette().text().color());
 
 	y->setLabel(tr("score"));
 	y->setRange(-1, 1);
 	y->setSubTicks(false);
+	y->setLabelColor(QApplication::palette().text().color());
+	y->setTickLabelColor(QApplication::palette().text().color());
+	y->setTickPen(QApplication::palette().text().color());
+	y->setBasePen(QApplication::palette().text().color());
+
+	m_plot->setBackground(QApplication::palette().window());
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addWidget(m_plot);
