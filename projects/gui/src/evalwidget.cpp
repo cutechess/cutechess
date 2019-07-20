@@ -47,6 +47,7 @@ EvalWidget::EvalWidget(QWidget *parent)
 	auto protoItem = new QTableWidgetItem;
 	protoItem->setTextAlignment(Qt::AlignVCenter | Qt::AlignRight);
 	m_statsTable->setItemPrototype(protoItem);
+	m_statsTable->setWordWrap(false);
 
 	m_pvTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	m_pvTable->verticalHeader()->hide();
@@ -60,6 +61,7 @@ EvalWidget::EvalWidget(QWidget *parent)
 	m_pvTable->setColumnWidth(2, 100);
 	m_pvTable->setColumnWidth(3, 60);
 	m_pvTable->horizontalHeader()->setStretchLastSection(true);
+	m_pvTable->setWordWrap(false);
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addWidget(m_statsTable);
