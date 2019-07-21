@@ -489,7 +489,6 @@ void ChessGame::generateOpening()
 		return;
 
 	// First play moves that are already in the opening
-	// TODO: use qAsConst() from Qt 5.7
 	for (const Chess::Move& move : qAsConst(m_moves))
 	{
 		Q_ASSERT(m_board->isLegalMove(move));
