@@ -20,7 +20,7 @@ win32 {
 }
 
 !win32-msvc* {
-	QMAKE_CXXFLAGS += -Wextra -Wshadow
+	QMAKE_CXXFLAGS += -Wextra
 }
 
 mac {

@@ -1,0 +1,26 @@
+image: freebsd/latest
+packages:
+    - qt5-widgets
+    - qt5-svg
+    - qt5-buildtools
+    - qt5-qmake
+    - qt5-concurrent
+    - qt5-printsupport
+    - qt5-testlib
+sources:
+    - https://github.com/cutechess/cutechess
+tasks:
+    - build: |
+        cd cutechess
+        qmake
+        make
+    - test_lib: |
+        cd cutechess/projects/lib/tests
+        qmake
+        make
+        make check
+    - test_json: |
+        cd cutechess/projects/lib/components/json/tests
+        qmake
+        make
+        make check

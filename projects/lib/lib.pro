@@ -4,7 +4,7 @@ QT = core
 DESTDIR = $$PWD
 
 !win32-msvc* {
-	QMAKE_CXXFLAGS += -Wextra -Wshadow
+	QMAKE_CXXFLAGS += -Wextra
 }
 
 include(libexport.pri)
