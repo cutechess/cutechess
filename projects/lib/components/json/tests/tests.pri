@@ -1,6 +1,6 @@
 win32:config += CONSOLE
 
-CONFIG += c++11
+CONFIG += c++11 testcase
 
 mac {
 	CONFIG -= app_bundle

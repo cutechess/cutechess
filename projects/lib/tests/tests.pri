@@ -7,6 +7,7 @@ mac {
 }
 
 QT = core testlib
+CONFIG += testcase
 
 include(../lib.pri)
 include(../libexport.pri)
