@@ -36,16 +36,8 @@ script:
     # do not build and test the project if we're running Coverity Scan
     - if [ "${TRAVIS_BRANCH}" == "coverity_scan" ]; then exit 0; fi
     - qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make
-    - cd ${TRAVIS_BUILD_DIR}/projects/lib/tests/ && qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make &&
-      (cd chessboard; ./tst_board) &&
-      (cd mersenne; ./tst_mersenne) &&
-      (cd sprt; ./tst_sprt) &&
-      (cd tournamentplayer; ./tst_tournamentplayer) &&
-      (cd tournamentpair; ./tst_tournamentpair) &&
-      (cd polyglotbook; ./tst_polyglotbook)
-    - cd ${TRAVIS_BUILD_DIR}/projects/lib/components/json/tests/ && qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make &&
-      (cd parser; ./tst_jsonparser) &&
-      (cd serializer; ./tst_jsonserializer)
+    - cd ${TRAVIS_BUILD_DIR}/projects/lib/tests/ && qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make && make check
+    - cd ${TRAVIS_BUILD_DIR}/projects/lib/components/json/tests/ && qmake "QMAKE_CXX=$CXX" "QMAKE_CC=$CC" && make && make check
 
 addons:
   coverity_scan:

@@ -15,19 +15,10 @@ build_script:
 test_script:
     - cd %APPVEYOR_BUILD_FOLDER%\projects\lib\tests\
     - qmake
-    - nmake /NOLOGO
-    - '%cd%\chessboard\release\tst_board'
-    - '%cd%\mersenne\release\tst_mersenne'
-    - cd polyglotbook & release\tst_polyglotbook & cd..
-    - '%cd%\sprt\release\tst_sprt'
-    - '%cd%\tournamentpair\release\tst_tournamentpair'
-    - '%cd%\tournamentplayer\release\tst_tournamentplayer'
-    - '%cd%\pipereader\release\tst_pipereader'
+    - nmake /NOLOGO check
     - cd %APPVEYOR_BUILD_FOLDER%\projects\lib\components\json\tests\
     - qmake
-    - nmake /NOLOGO
-    - cd parser & release\tst_jsonparser & cd..
-    - cd serializer & release\tst_jsonserializer & cd..
+    - nmake /NOLOGO check
 
 artifacts:
   - path: projects\cli\cutechess-cli.exe
