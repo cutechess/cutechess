@@ -1,4 +1,5 @@
 #include <QtTest/QtTest>
+#include <QDir>
 #include <board/standardboard.h>
 #include <board/syzygytablebase.h>
 
@@ -24,7 +25,12 @@ class tst_Tb: public QObject
 
 void tst_Tb::initTestCase()
 {
-	SyzygyTablebase::initialize("tb_path");
+	const auto path = QLatin1String("tb_path");
+	QDir dir(path);
+	if (!dir.exists())
+		QSKIP("Syzygy tablebases not available");
+
+	SyzygyTablebase::initialize(path);
 }
 
 void tst_Tb::cleanupTestCase()
