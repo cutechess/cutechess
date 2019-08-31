@@ -17,6 +17,7 @@ tst_tb
 tst_pipereader
 tst_jsonparser
 tst_jsonserializer
+target_wrapper.sh
 
 # tool executables
 tagtrimmer
