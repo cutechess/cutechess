@@ -70,6 +70,9 @@ EngineManagementWidget::EngineManagementWidget(QWidget* parent)
 	// Remove button
 	connect(ui->m_removeBtn, SIGNAL(clicked(bool)), this, SLOT(removeEngine()));
 
+	// Clone button
+	connect(ui->m_cloneBtn, SIGNAL(clicked(bool)), this, SLOT(cloneEngine()));
+
 	// Default location for new engines
 	QString dir = QSettings().value("ui/default_engine_location").toString();
 	ui->m_defaultLocationEdit->setText(dir);
@@ -103,6 +106,10 @@ void EngineManagementWidget::updateUi()
 
 	ui->m_removeBtn->setEnabled(
 		ui->m_enginesList->selectionModel()->hasSelection());
+
+	ui->m_cloneBtn->setEnabled(
+		ui->m_enginesList->selectionModel()->selection().size() == 1);
+
 }
 
 void EngineManagementWidget::updateSearch(const QString& terms)
@@ -184,6 +191,30 @@ void EngineManagementWidget::removeEngine()
 		m_hasChanged = true;
 		updateEngineCount();
 	}
+}
+
+void EngineManagementWidget::cloneEngine()
+{
+	// Map the index from the filtered model to the original model
+	QModelIndex index = ui->m_enginesList->currentIndex();
+	int row = m_filteredModel->mapToSource(index).row();
+	EngineConfiguration config(m_engineManager->engineAt(row));
+
+	config.setName("_From " + config.name());
+
+	auto dlg = new EngineConfigurationDialog(
+		EngineConfigurationDialog::AddEngine, this);
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->applyEngineInformation(config);
+	dlg->setReservedNames(m_engineManager->engineNames());
+
+	connect(dlg, &EngineConfigurationDialog::accepted, [=]()
+	{
+		m_engineManager->addEngine(dlg->engineConfiguration());
+		m_hasChanged = true;
+		updateEngineCount();
+	});
+	dlg->open();
 }
 
 void EngineManagementWidget::browseDefaultLocation()
