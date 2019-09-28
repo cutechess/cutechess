@@ -126,6 +126,23 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="m_cloneBtn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Clone &amp; modify selected engine configuration</string>
+       </property>
+       <property name="text">
+        <string>Clone</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/icons/icons.qrc">
+         <normaloff>:/icons/toolbutton/clone_16x16.png</normaloff>:/icons/toolbutton/clone_16x16.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
