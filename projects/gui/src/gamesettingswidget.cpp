@@ -161,7 +161,7 @@ OpeningSuite* GameSettingsWidget::openingSuite() const
 		return nullptr;
 
 	OpeningSuite::Format format = OpeningSuite::PgnFormat;
-	if (file.endsWith(".epd"), Qt::CaseInsensitive)
+	if (file.endsWith(".epd", Qt::CaseInsensitive))
 		format = OpeningSuite::EpdFormat;
 
 	OpeningSuite::Order order = OpeningSuite::SequentialOrder;
