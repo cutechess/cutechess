@@ -769,7 +769,7 @@ QString Tournament::results() const
 		// 2. Players with finished games, sorted by point ratio
 		// 3. Players without finished games
 		qreal key = -1.0;
-		if (i > 0 || !hasGauntletRatingsOrder())
+		if ((i > 0 && i >= seedCount()) || !hasGauntletRatingsOrder())
 		{
 			if (data.games)
 				key = 1.0 - data.score;

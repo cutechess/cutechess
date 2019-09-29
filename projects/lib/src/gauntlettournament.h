@@ -49,6 +49,7 @@ class LIB_EXPORT GauntletTournament : public Tournament
 		virtual bool hasGauntletRatingsOrder() const;
 
 	private:
+		int m_currentPlayer;
 		int m_opponent;
 };
 

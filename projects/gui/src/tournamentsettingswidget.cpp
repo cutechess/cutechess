@@ -31,6 +31,10 @@ TournamentSettingsWidget::TournamentSettingsWidget(QWidget *parent)
 		ui->m_roundsSpin->setEnabled(!checked);
 		ui->m_seedsSpin->setEnabled(checked);
 	});
+	connect(ui->m_gauntletRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		ui->m_seedsSpin->setEnabled(checked);
+	});
 
 	readSettings();
 }

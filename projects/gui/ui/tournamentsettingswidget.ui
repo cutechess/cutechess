@@ -50,7 +50,7 @@
         <item>
          <widget class="QRadioButton" name="m_gauntletRadio">
           <property name="toolTip">
-           <string>First engine plays against the rest</string>
+           <string>First engine (or group of seeded engines) plays against the rest</string>
           </property>
           <property name="text">
            <string>Gauntlet</string>
