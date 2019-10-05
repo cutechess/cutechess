@@ -155,7 +155,8 @@ Options:
 			option is used, the players swap sides after each game.
 			So they get to play the opening on both sides. Please
 			note that a new encounter will use a new opening.
-  -noswap		Do not swap sides of paired engines
+  -noswap		Do not swap sides of paired engines.
+  -reverse		Use schedule with reverse sides.
   -seeds N		Set the first N engines as seeds in the tournament
   -site SITE		Set the site/location to SITE
   -srand N		Set the seed for the random number generator to N

@@ -261,6 +261,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-epdout", QVariant::String, 1, 1);
 	parser.addOption("-repeat", QVariant::Int, 0, 1);
 	parser.addOption("-noswap", QVariant::Bool, 0, 0);
+	parser.addOption("-reverse", QVariant::Bool, 0, 0);
 	parser.addOption("-recover", QVariant::Bool, 0, 0);
 	parser.addOption("-site", QVariant::String, 1, 1);
 	parser.addOption("-wait", QVariant::Int, 1, 1);
@@ -556,6 +557,9 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Do not swap sides between paired engines
 		else if (name == "-noswap")
 			tournament->setSwapSides(false);
+		// Use tournament schedule but with reverse sides
+		else if (name == "-reverse")
+			tournament->setReverseSides(true);
 		// Recover crashed/stalled engines
 		else if (name == "-recover")
 			tournament->setRecoveryMode(true);

@@ -59,6 +59,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_sprt(new Sprt),
 	  m_repetitionCounter(0),
 	  m_swapSides(true),
+	  m_reverseSides(false),
 	  m_pgnOutMode(PgnGame::Verbose),
 	  m_pair(nullptr)
 {
@@ -289,6 +290,11 @@ void Tournament::setSwapSides(bool enabled)
 	m_swapSides = enabled;
 }
 
+void Tournament::setReverseSides(bool enabled)
+{
+	m_reverseSides = enabled;
+}
+
 void Tournament::setOpeningBookOwnership(bool enabled)
 {
 	m_bookOwnership = enabled;
@@ -456,7 +462,11 @@ void Tournament::startNextGame()
 	if (!pair || !pair->isValid())
 		return;
 
-	if ((!pair->hasSamePlayers(m_pair) && m_players.size() > 2
+	bool samePlayers = pair->hasSamePlayers(m_pair);
+	if (!samePlayers && m_reverseSides)
+		pair->swapPlayers();
+
+	if ((!samePlayers && m_players.size() > 2
 	     && m_openingPolicy != OpeningPolicy::RoundPolicy)
 	|| (m_round > m_oldRound
 	     && m_openingPolicy == OpeningPolicy::RoundPolicy))
