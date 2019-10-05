@@ -239,6 +239,13 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		void setSwapSides(bool enabled);
 		/*!
+		 * Sets the reverse colors flag to \a enabled.
+		 *
+		 * If \a enabled is true then the players will play reverse
+		 * sides /wrt to the normal schedule. The default is false.
+		 */
+		void setReverseSides(bool enabled);
+		/*!
 		 * Sets opening book ownership to \a enabled.
 		 *
 		 * By default the \a Tournament object doesn't take ownership of
@@ -476,6 +483,7 @@ class LIB_EXPORT Tournament : public QObject
 		QString m_startFen;
 		int m_repetitionCounter;
 		int m_swapSides;
+		bool m_reverseSides;
 		PgnGame::PgnMode m_pgnOutMode;
 		TournamentPair* m_pair;
 		QMap< QPair<int, int>, TournamentPair* > m_pairs;
