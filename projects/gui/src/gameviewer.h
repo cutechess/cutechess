@@ -74,6 +74,7 @@ class GameViewer : public QWidget
 		void viewNextMove();
 		void viewLastMove();
 		void viewPosition(int index);
+		void autoFlip();
 
 		BoardScene* m_boardScene;
 		BoardView* m_boardView;
@@ -88,6 +89,7 @@ class GameViewer : public QWidget
 		QPointer<ChessGame> m_game;
 		QVector<Chess::GenericMove> m_moves;
 		int m_moveIndex;
+		bool m_humanGame;
 };
 
 #endif // GAMEVIEWER_H

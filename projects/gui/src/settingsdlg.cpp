@@ -56,6 +56,11 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 		QSettings().setValue("ui/display_players_sides_on_clocks", checked);
 	});
 
+	connect(ui->m_autoFlipBoardForHumanGamesCheck, &QCheckBox::toggled,
+		[=](bool checked)
+	{
+		QSettings().setValue("ui/auto_flip_board_for_human_games", checked);
+	});
 
 	connect(ui->m_humanCanPlayAfterTimeoutCheck, &QCheckBox::toggled,
 		[=](bool checked)
@@ -205,6 +210,8 @@ void SettingsDialog::readSettings()
 		s.value("use_full_user_name", true).toBool());
 	ui->m_playersSidesOnClocksCheck->setChecked(
 		s.value("display_players_sides_on_clocks", false).toBool());
+	ui->m_autoFlipBoardForHumanGamesCheck->setChecked(
+		s.value("auto_flip_board_for_human_games", false).toBool());
 	ui->m_tbPathEdit->setText(s.value("tb_path").toString());
 	s.endGroup();
 
