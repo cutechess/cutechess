@@ -54,7 +54,7 @@ QString variantFromUci(QString str, bool uciPrefix = true)
 
 QString variantToUci(const QString& str, bool uciPrefix = true)
 {
-	if (str.isEmpty() || str == "standard")
+	if (str.isEmpty())
 		return QString();
 
 	if (str == "fischerandom")
