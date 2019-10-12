@@ -21,6 +21,7 @@
 
 #include "playerbuilder.h"
 #include "timecontrol.h"
+#include "board/side.h"
 
 class OpeningBook;
 
@@ -61,10 +62,40 @@ class LIB_EXPORT TournamentPlayer
 		 * tournament.
 		 */
 		int losses() const;
+		/*!
+		 * Returns the total number of wins of the player when
+		 * playing with White.
+		 */
+		int whiteWins() const;
+		/*!
+		 * Returns the total number of draws of the player when
+		 * playing with White.
+		 */
+		int whiteDraws() const;
+		/*!
+		 * Returns the total number of losses of the player when
+		 * playing with White.
+		 */
+		int whiteLosses() const;
+		/*!
+		 * Returns the total number of wins of the player when
+		 * playing with Black.
+		 */
+		int blackWins() const;
+		/*!
+		 * Returns the total number of draws of the player when
+		 * playing with Black.
+		 */
+		int blackDraws() const;
+		/*!
+		 * Returns the total number of losses of the player when
+		 * playing with Black.
+		 */
+		int blackLosses() const;
 		/*! Returns the player's total score in the tournament. */
 		int score() const;
 		/*! Adds \a score to the player's score in the tournament. */
-		void addScore(int score);
+		void addScore(Chess::Side side, int score);
 		/*!
 		 * Returns the total number of games the player has finished
 		 * in the tournament.
@@ -79,6 +110,9 @@ class LIB_EXPORT TournamentPlayer
 		int m_wins;
 		int m_draws;
 		int m_losses;
+		int m_whiteWins;
+		int m_whiteDraws;
+		int m_whiteLosses;
 };
 
 #endif // TOURNAMENTPLAYER_H

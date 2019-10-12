@@ -29,7 +29,10 @@ TournamentPlayer::TournamentPlayer(PlayerBuilder* builder,
 	  m_bookDepth(bookDepth),
 	  m_wins(0),
 	  m_draws(0),
-	  m_losses(0)
+	  m_losses(0),
+	  m_whiteWins(0),
+	  m_whiteDraws(0),
+	  m_whiteLosses(0)
 {
 	Q_ASSERT(builder != nullptr);
 }
@@ -80,23 +83,65 @@ int TournamentPlayer::losses() const
 	return m_losses;
 }
 
+int TournamentPlayer::whiteWins() const
+{
+	return m_whiteWins;
+}
+
+int TournamentPlayer::whiteDraws() const
+{
+	return m_whiteDraws;
+}
+
+int TournamentPlayer::whiteLosses() const
+{
+	return m_whiteLosses;
+}
+
+int TournamentPlayer::blackWins() const
+{
+	return m_wins - m_whiteWins;
+}
+
+int TournamentPlayer::blackDraws() const
+{
+	return m_draws - m_whiteDraws;
+}
+
+int TournamentPlayer::blackLosses() const
+{
+	return m_losses - m_whiteLosses;
+}
+
 int TournamentPlayer::score() const
 {
 	return m_wins * 2 + m_draws;
 }
 
-void TournamentPlayer::addScore(int score)
+void TournamentPlayer::addScore(Chess::Side side, int score)
 {
+	if (side == Chess::Side::NoSide)
+		Q_UNREACHABLE();
+
 	switch (score)
 	{
 	case 0:
 		m_losses++;
+
+		if (side == Chess::Side::White)
+			m_whiteLosses++;
 		break;
 	case 1:
 		m_draws++;
+
+		if (side == Chess::Side::White)
+			m_whiteDraws++;
 		break;
 	case 2:
 		m_wins++;
+
+		if (side == Chess::Side::White)
+			m_whiteWins++;
 		break;
 	default:
 		Q_UNREACHABLE();

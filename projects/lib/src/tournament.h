@@ -54,6 +54,9 @@ class LIB_EXPORT Tournament : public QObject
 			RoundPolicy        //!< Shift on new round
 		};
 
+		constexpr static auto c_defaultFormat 
+			= "Rank,Name,Elo,Error,Games,Score,DScore";
+
 		/*!
 		 * Creates a new tournament that uses \a gameManager
 		 * to manage the games.
@@ -232,13 +235,6 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		void setOpeningPolicy(OpeningPolicy policy = DefaultPolicy);
 		/*!
-		 * Sets the side swap flag to \a enabled.
-		 *
-		 * If \a enabled is true then paired engines will
-		 * swap sides for the following game.
-		 */
-		void setSwapSides(bool enabled);
-		/*!
 		 * Sets the reverse colors flag to \a enabled.
 		 *
 		 * If \a enabled is true then the players will play reverse
@@ -257,6 +253,32 @@ class LIB_EXPORT Tournament : public QObject
 		 * the tournament.
 		 */
 		void setSeedCount(int seedCount);
+		/*!
+		 * Sets the side swap flag to \a enabled.
+		 *
+		 * If \a enabled is true then paired engines will
+		 * swap sides for the following game.
+		 */
+		void setSwapSides(bool enabled);
+		/*!
+		 * The \a format specifies which information are listed in the
+		 * table of tournament results. Available tokens are given by
+		 * \p fieldMap.
+		 */
+		void setResultFormat(const QString &format);
+		/*!
+		 * Returns the format of the result table.
+		 * The format uses tokens given by \p fieldMap.
+		 */
+		QString resultFormat() const;
+		/*!
+		 * Lists the result formats associated with a name.
+		 */
+		const QMap<QString, QString>& namedResultFormats() const;
+		/*!
+		 * Lists the format tokens for results
+		 */
+		const QList<QString> resultFieldTokens() const;
 		/*!
 		 * Adds player \a builder to the tournament.
 		 *
@@ -407,7 +429,7 @@ class LIB_EXPORT Tournament : public QObject
 		 * 1-0, 0-1 or 1/2-1/2 result. Subclasses can reimplement this
 		 * to do their own score tracking.
 		 */
-		virtual void addScore(int player, int score);
+		virtual void addScore(int player, Chess::Side side, int score);
 		/*!
 		 * Returns true if all games in the tournament have finished;
 		 * otherwise returns false.
@@ -432,6 +454,86 @@ class LIB_EXPORT Tournament : public QObject
 		void onGameStartFailed(ChessGame* game);
 
 	private:
+		/*! Output field identifier */
+		enum OutputField
+		{
+			Rank,
+			Name,
+			Games,
+			Wins,
+			Losses,
+			Draws,
+			WhiteWins,
+			WhiteLosses,
+			WhiteDraws,
+			BlackWins,
+			BlackLosses,
+			BlackDraws,
+			Points,
+			Score,
+			DrawScore,
+			EloDiff,
+			ErrorMargin,
+			LOS,
+			WhiteScore,
+			WhiteDrawScore,
+			WhiteEloDiff,
+			WhiteErrorMargin,
+			WhiteLOS,
+			BlackScore,
+			BlackDrawScore,
+			BlackEloDiff,
+			BlackErrorMargin,
+			BlackLOS
+		};
+
+		const QMap<int, QString> m_tokenMap = {
+			{Rank,             "Rank"},
+			{Name,             "Name"},
+			{Games,            "Games"},
+			{Wins,             "W"},
+			{Losses,           "L"},
+			{Draws,            "D"},
+			{WhiteWins,        "wW"},
+			{WhiteLosses,      "wL"},
+			{WhiteDraws,       "wD"},
+			{BlackWins,        "bW"},
+			{BlackLosses,      "bL"},
+			{BlackDraws,       "bD"},
+			{Points,           "Points"},
+			{Score,            "Score"},
+			{DrawScore,        "DScore"},
+			{EloDiff,          "Elo"},
+			{ErrorMargin,      "Error"},
+			{LOS,              "LOS"},
+			{WhiteScore,       "wScore"},
+			{WhiteDrawScore,   "wDScore"},
+			{WhiteEloDiff,     "wElo"},
+			{WhiteErrorMargin, "wError"},
+			{WhiteLOS,         "wLOS"},
+			{BlackScore,       "bScore"},
+			{BlackDrawScore,   "bDScore"},
+			{BlackEloDiff,     "bElo"},
+			{BlackErrorMargin, "bError"},
+			{BlackLOS,         "bLOS"}
+		};
+
+		const QMap<QString, QString> m_namedFormats =
+		{
+			{"minimal",	"Rank,Name"},
+			{"small",	"Rank,Name,Games,Points"},
+			{"short",	"Rank,Name,Elo,Games"},
+			{"concise",	"Rank,Name,Elo,Error,Games"},
+			{"default",	QString(c_defaultFormat)},
+			{"with-points",	"Rank,Name,Elo,Error,Games,Points,Score,DScore"},
+			{"wide",	"Rank,Name,Elo,Error,Games,W,L,D,Points,Score,DScore"},
+			{"wide2",	"Rank,Name,Elo,Error,Games,W,L,D,Points,"
+					"Score,DScore,wScore,bScore"},
+			{"per-color",	"Rank,Name,Elo,Error,Games,W,L,D,Points,"
+					"wW,wL,wD,wPoints,bW,bL,bD,bPoints"},
+			{"ordo",	"Rank,Name,Elo,Points,Games,Score"}
+		};
+
 		struct GameData
 		{
 			int number;
@@ -442,11 +544,34 @@ class LIB_EXPORT Tournament : public QObject
 		{
 			QString name;
 			int games;
+			int wins;
+			int losses;
+			int draws;
+			int whiteWins;
+			int whiteLosses;
+			int whiteDraws;
+			int blackWins;
+			int blackLosses;
+			int blackDraws;
+			qreal points;
 			qreal score;
-			qreal draws;
-			qreal errorMargin;
+			qreal drawScore;
 			qreal eloDiff;
+			qreal errorMargin;
+			qreal LOS;
+			qreal whiteScore;
+			qreal whiteDrawScore;
+			qreal whiteEloDiff;
+			qreal whiteErrorMargin;
+			qreal whiteLOS;
+			qreal blackScore;
+			qreal blackDrawScore;
+			qreal blackEloDiff;
+			qreal blackErrorMargin;
+			qreal blackLOS;
 		};
+
+		QString resultsForSides(int index) const;
 
 		GameManager* m_gameManager;
 		ChessGame* m_lastGame;
@@ -484,6 +609,8 @@ class LIB_EXPORT Tournament : public QObject
 		int m_repetitionCounter;
 		int m_swapSides;
 		bool m_reverseSides;
+
+		QString m_resultFormat;
 		PgnGame::PgnMode m_pgnOutMode;
 		TournamentPair* m_pair;
 		QMap< QPair<int, int>, TournamentPair* > m_pairs;
@@ -491,6 +618,36 @@ class LIB_EXPORT Tournament : public QObject
 		QMap<int, PgnGame> m_pgnGames;
 		QMap<ChessGame*, GameData*> m_gameData;
 		QVector<Chess::Move> m_openingMoves;
+};
+
+/*!
+ * \brief Formatter for chess tournament results
+ */
+class LIB_EXPORT ResultFormatter : public QObject
+{
+	Q_OBJECT
+
+	public:
+		/*!
+		 * The ResultFormatter uses a reference to a map of available
+		 * tokens \a tokenMap to generate a tournament result list.
+		 */
+		ResultFormatter(const QMap<int, QString>& tokenMap,
+				const QString& format = QString(),
+				QObject* parent = nullptr);
+		/*!
+		 * Sets the output \a format of an entry in a tournament
+		 * result list.
+		 */
+		void setEntryFormat(const QString& format);
+		/*! Returns format for a line of tournament results */
+		QString entryFormat() const;
+		/*! Returns a line of tournament results */
+		QString entry(const QMap<int, QString>& data) const;
+	private:
+		QString m_entryFormat;
+		QMap<int, QString> m_tokenMap;
+		QStringList m_tokenList;
 };
 
 #endif // TOURNAMENT_H
