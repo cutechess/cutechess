@@ -254,6 +254,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-rounds", QVariant::Int, 1, 1);
 	parser.addOption("-sprt", QVariant::StringList);
 	parser.addOption("-ratinginterval", QVariant::Int, 1, 1);
+	parser.addOption("-resultformat", QVariant::String, 1, 1);
 	parser.addOption("-debug", QVariant::Bool, 0, 0);
 	parser.addOption("-openings", QVariant::StringList);
 	parser.addOption("-bookmode", QVariant::String);
@@ -423,6 +424,28 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Interval for rating list updates
 		else if (name == "-ratinginterval")
 			match->setRatingInterval(value.toInt());
+		// Interval for rating list updates
+		else if (name == "-resultformat")
+		{
+			if (value == "help")
+			{
+				qInfo() << "\nOption -resultformat accepts a comma separated list of fields or one of following format names:\n";
+				const auto& map = tournament->namedResultFormats();
+				for (const QString& key: map.keys() )
+					qInfo() << qUtf8Printable(key) << "\n  "
+						<< qUtf8Printable(map[key]);
+				qInfo() <<"\nField tokens:";
+				QString s;
+				for (const QString& token: tournament->resultFieldTokens())
+				{
+					 s.append(qUtf8Printable(token));
+					 s.append(" ");
+				}
+				qInfo() << "  " << qUtf8Printable(s);
+				return 0;
+			}
+			tournament->setResultFormat(value.toString().left(256).trimmed());
+		}
 		// Debugging mode. Prints all engine input and output.
 		else if (name == "-debug")
 		{

@@ -31,6 +31,7 @@
 #include "sprt.h"
 #include "elo.h"
 
+
 Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	: QObject(parent),
 	  m_gameManager(gameManager),
@@ -59,6 +60,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_sprt(new Sprt),
 	  m_repetitionCounter(0),
 	  m_swapSides(true),
+	  m_resultFormat(c_defaultFormat),
 	  m_pgnOutMode(PgnGame::Verbose),
 	  m_pair(nullptr)
 {
@@ -245,6 +247,31 @@ void Tournament::setSeedCount(int seedCount)
 	m_seedCount = seedCount;
 }
 
+void Tournament::setSwapSides(bool enabled)
+{
+	m_swapSides = enabled;
+}
+
+void Tournament::setResultFormat(const QString& format)
+{
+	m_resultFormat = format;
+}
+
+QString Tournament::resultFormat() const
+{
+	return m_resultFormat;
+}
+
+const QMap<QString, QString> & Tournament::namedResultFormats() const
+{
+	return m_namedFormats;
+}
+
+const QList< QString > Tournament::resultFieldTokens() const
+{
+	return m_tokenMap.values();
+}
+
 void Tournament::setPgnOutput(const QString& fileName, PgnGame::PgnMode mode)
 {
 	if (fileName != m_pgnFile.fileName())
@@ -284,15 +311,11 @@ void Tournament::setOpeningPolicy(Tournament::OpeningPolicy policy)
 	m_openingPolicy = policy;
 }
 
-void Tournament::setSwapSides(bool enabled)
-{
-	m_swapSides = enabled;
-}
-
 void Tournament::setOpeningBookOwnership(bool enabled)
 {
 	m_bookOwnership = enabled;
 }
+
 
 void Tournament::addPlayer(PlayerBuilder* builder,
 			   const TimeControl& timeControl,
@@ -567,9 +590,9 @@ bool Tournament::writeEpd(ChessGame *game)
 	return ok;
 }
 
-void Tournament::addScore(int player, int score)
+void Tournament::addScore(int player, Chess::Side side, int score)
 {
-	m_players[player].addScore(score);
+	m_players[player].addScore(side, score);
 }
 
 void Tournament::onGameStarted(ChessGame* game)
@@ -611,20 +634,20 @@ void Tournament::onGameFinished(ChessGame* game)
 	switch (game->result().winner())
 	{
 	case Chess::Side::White:
-		addScore(iWhite, 2);
-		addScore(iBlack, 0);
+		addScore(iWhite, Chess::Side::White, 2);
+		addScore(iBlack, Chess::Side::Black, 0);
 		sprtResult = (iWhite == 0) ? Sprt::Win : Sprt::Loss;
 		break;
 	case Chess::Side::Black:
-		addScore(iBlack, 2);
-		addScore(iWhite, 0);
+		addScore(iBlack, Chess::Side::Black, 2);
+		addScore(iWhite, Chess::Side::White, 0);
 		sprtResult = (iBlack == 0) ? Sprt::Win : Sprt::Loss;
 		break;
 	default:
 		if (game->result().isDraw())
 		{
-			addScore(iWhite, 1);
-			addScore(iBlack, 1);
+			addScore(iWhite,  Chess::Side::White, 1);
+			addScore(iBlack,  Chess::Side::Black, 1);
 			sprtResult = Sprt::Draw;
 		}
 		break;
@@ -738,6 +761,54 @@ void Tournament::stop()
 		QMetaObject::invokeMethod(game, "stop", Qt::QueuedConnection);
 }
 
+QString Tournament::resultsForSides(int index) const
+{
+	QString ret;
+	TournamentPlayer player = playerAt(index);
+	int gamesWithWhite  = player.whiteWins() + player.whiteDraws()
+			    + player.whiteLosses();
+	int whiteScore  = 2 * player.whiteWins() + player.whiteDraws();
+	int games = player.gamesFinished();
+
+	if (gamesWithWhite > 0)
+	{
+		ret += tr("...      %1 playing White: %2 - %3 - %4  [%5] %6\n")
+		.arg(qUtf8Printable(player.name()))
+		.arg(player.whiteWins())
+		.arg(player.whiteLosses())
+		.arg(player.whiteDraws())
+		.arg(double(whiteScore) / (gamesWithWhite * 2), 0, 'f', 3)
+		.arg(gamesWithWhite);
+	}
+
+	int gamesWithBlack  = player.blackWins() + player.blackDraws()
+			    + player.blackLosses();
+	int blackScore  = 2 * player.blackWins() + player.blackDraws();
+
+	if (gamesWithBlack > 0)
+	{
+		ret += tr("...      %1 playing Black: %2 - %3 - %4  [%5] %6\n")
+		.arg(qUtf8Printable(player.name()))
+		.arg(player.blackWins())
+		.arg(player.blackLosses())
+		.arg(player.blackDraws())
+		.arg(double(blackScore) / (gamesWithBlack * 2), 0, 'f', 3)
+		.arg(gamesWithBlack);
+	}
+
+	if (games > 0)
+	{
+		ret += tr("...      White vs Black: %1 - %2 - %3  [%4] %5\n")
+		.arg(player.whiteWins() + player.blackLosses())
+		.arg(player.whiteLosses() + player.blackWins())
+		.arg(player.draws())
+		.arg(double(whiteScore + 2 * gamesWithBlack - blackScore)
+			    / (games * 2), 0, 'f', 3)
+		.arg(games);
+	}
+	return ret;
+}
+
 QString Tournament::results() const
 {
 	QMultiMap<qreal, RankingData> ranking;
@@ -747,9 +818,16 @@ QString Tournament::results() const
 	{
 		const TournamentPlayer& player(playerAt(i));
 		Elo elo(player.wins(), player.losses(), player.draws());
+		Elo whiteElo(player.whiteWins(),
+			     player.whiteLosses(),
+			     player.whiteDraws());
+		Elo blackElo(player.blackWins(),
+			     player.blackLosses(),
+			     player.blackDraws());
 
 		if (playerCount() == 2)
 		{
+			ret += resultsForSides(0);
 			ret += QString("Elo difference: %1 +/- %2, LOS: %3 %, DrawRatio: %4 %")
 				.arg(elo.diff(), 0, 'f', 1)
 				.arg(elo.errorMargin(), 0, 'f', 1)
@@ -760,10 +838,32 @@ QString Tournament::results() const
 
 		RankingData data = { player.name(),
 				     player.gamesFinished(),
+				     player.wins(),
+				     player.losses(),
+				     player.draws(),
+				     player.whiteWins(),
+				     player.whiteLosses(),
+				     player.whiteDraws(),
+				     player.blackWins(),
+				     player.blackLosses(),
+				     player.blackDraws(),
+				     player.score() / 2.,
 				     elo.pointRatio(),
 				     elo.drawRatio(),
+				     elo.diff(),
 				     elo.errorMargin(),
-				     elo.diff() };
+				     elo.LOS(),
+				     whiteElo.pointRatio(),
+				     whiteElo.drawRatio(),
+				     whiteElo.diff(),
+				     whiteElo.errorMargin(),
+				     whiteElo.LOS(),
+				     blackElo.pointRatio(),
+				     blackElo.drawRatio(),
+				     blackElo.diff(),
+				     blackElo.errorMargin(),
+				     blackElo.LOS() };
+
 		// Order players like this:
 		// 1. Gauntlet player (if any)
 		// 2. Players with finished games, sorted by point ratio
@@ -779,28 +879,70 @@ QString Tournament::results() const
 		ranking.insert(key, data);
 	}
 
+	//First assign raw format string, then try to find named format
+	QString format = m_resultFormat;
+	if (m_namedFormats.contains(m_resultFormat))
+		format = m_namedFormats[m_resultFormat];
+
+	ResultFormatter formatter(m_tokenMap, format);
+	QMap<int,QString> headerMap;
+
 	if (!ranking.isEmpty())
-		ret += QString("%1 %2 %3 %4 %5 %6 %7")
-			.arg("Rank", 4)
-			.arg("Name", -25)
-			.arg("Elo", 7)
-			.arg("+/-", 7)
-			.arg("Games", 7)
-			.arg("Score", 7)
-			.arg("Draws", 7);
+	{
+		headerMap.insert(Rank,        QString("%1 ").arg("Rank", 4));
+		headerMap.insert(Name,        QString("%1 ").arg("Name", -25));
+		headerMap.insert(EloDiff,     QString("%1 ").arg("Elo", 7));
+		headerMap.insert(ErrorMargin, QString("%1 ").arg("+/-", 7));
+		headerMap.insert(Games,	      QString("%1 ").arg("Games", 7));
+		headerMap.insert(Wins,	      QString("%1 ").arg("Wins", 7));
+		headerMap.insert(Losses,      QString("%1 ").arg("Losses", 7));
+		headerMap.insert(Draws,       QString("%1 ").arg("Draws", 7));
+		headerMap.insert(Points,      QString("%1 ").arg("Points", 8));
+		headerMap.insert(Score,	      QString("%1 ").arg("Score", 7));
+		headerMap.insert(DrawScore,   QString("%1 ").arg("Draw", 7));
+		headerMap.insert(WhiteScore,  QString("%1 ").arg("White", 7));
+		headerMap.insert(BlackScore,  QString("%1 ").arg("Black", 7));
+		headerMap.insert(WhiteDrawScore,  QString("%1 ").arg("WDraw", 7));
+		headerMap.insert(BlackDrawScore,  QString("%1 ").arg("BDraw", 7));
+		headerMap.insert(WhiteWins,   QString("%1 ").arg("WWins", 7));
+		headerMap.insert(WhiteLosses, QString("%1 ").arg("WLoss.", 7));
+		headerMap.insert(WhiteDraws,  QString("%1 ").arg("WDraws", 7));
+		headerMap.insert(BlackWins,   QString("%1 ").arg("BWins", 7));
+		headerMap.insert(BlackLosses, QString("%1 ").arg("BLoss.", 7));
+		headerMap.insert(BlackDraws,  QString("%1 ").arg("BDraws", 7));
+
+		ret += formatter.entry(headerMap);
+	}
 
 	int rank = hasGauntletRatingsOrder() ? -1 : 0;
 	for (auto it = ranking.constBegin(); it != ranking.constEnd(); ++it)
 	{
 		const RankingData& data = it.value();
-		ret += QString("\n%1 %2 %3 %4 %5 %6% %7%")
-			.arg(++rank, 4)
-			.arg(data.name, -25)
-			.arg(data.eloDiff, 7, 'f', 0)
-			.arg(data.errorMargin, 7, 'f', 0)
-			.arg(data.games, 7)
-			.arg(data.score * 100.0, 6, 'f', 1)
-			.arg(data.draws * 100.0, 6, 'f', 1);
+		QMap<int, QString> dataMap;
+		dataMap.insert(Rank,       QString("%1 ").arg(++rank, 4));
+		dataMap.insert(Name,       QString("%1 ").arg(data.name, -25));
+		dataMap.insert(EloDiff,    QString("%1 ").arg(data.eloDiff, 7, 'f', 0));
+		dataMap.insert(ErrorMargin,QString("%1 ").arg(data.errorMargin, 7, 'f', 0));
+		dataMap.insert(Games,      QString("%1 ").arg(data.games, 7));
+		dataMap.insert(Wins,       QString("%1 ").arg(data.wins, 7));
+		dataMap.insert(Losses,     QString("%1 ").arg(data.losses, 7));
+		dataMap.insert(Draws,      QString("%1 ").arg(data.draws, 7));
+		dataMap.insert(Points,     QString("%1 ").arg(data.points, 8,'f',1));
+		dataMap.insert(Score,      QString("%1% ").arg(data.score * 100.0, 6, 'f', 1));
+		dataMap.insert(DrawScore,  QString("%1% ").arg(data.drawScore * 100.0, 6, 'f', 1));
+		dataMap.insert(WhiteScore, QString("%1% ").arg(data.whiteScore * 100.0, 6, 'f', 1));
+		dataMap.insert(BlackScore, QString("%1% ").arg(data.blackScore * 100.0, 6, 'f', 1));
+		dataMap.insert(WhiteDrawScore,
+			       QString("%1% ").arg(data.whiteDrawScore * 100.0, 6, 'f', 1));
+		dataMap.insert(BlackDrawScore,
+			       QString("%1% ").arg(data.blackDrawScore * 100.0, 6, 'f', 1));
+		dataMap.insert(WhiteWins,  QString("%1 ").arg(data.whiteWins, 7));
+		dataMap.insert(WhiteLosses,QString("%1 ").arg(data.whiteLosses, 7));
+		dataMap.insert(WhiteDraws, QString("%1 ").arg(data.whiteDraws, 7));
+		dataMap.insert(BlackWins,  QString("%1 ").arg(data.blackWins, 7));
+		dataMap.insert(BlackLosses,QString("%1 ").arg(data.blackLosses, 7));
+		dataMap.insert(BlackDraws, QString("%1 ").arg(data.blackDraws, 7));
+		ret += formatter.entry(dataMap);
 	}
 
 	Sprt::Status sprtStatus = sprt()->status();
@@ -823,3 +965,39 @@ QString Tournament::results() const
 
 	return ret;
 }
+
+
+ResultFormatter::ResultFormatter::ResultFormatter(const QMap<int, QString>& tokenMap,
+						  const QString& format,
+						  QObject* parent)
+	: QObject(parent)
+{
+	setEntryFormat(format);
+	m_tokenMap = tokenMap;
+}
+
+void ResultFormatter::setEntryFormat(const QString& format)
+{
+	m_entryFormat = format;
+	m_tokenList = m_entryFormat.split(',', QString::SkipEmptyParts);
+	m_tokenList.replaceInStrings(" ","");
+}
+
+QString ResultFormatter::entryFormat() const
+{
+	return m_entryFormat;
+}
+
+QString ResultFormatter::entry(const QMap<int, QString>& data) const
+{
+	QString ret;
+	for (const QString& token: qAsConst(m_tokenList))
+	{
+		int key = m_tokenMap.key(token, -1);
+		if (key >= 0)
+			ret.append(data.value(key));
+	}
+	ret.append("\n");
+	return ret;
+}
+

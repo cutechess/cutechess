@@ -160,6 +160,13 @@ Options:
   -site SITE		Set the site/location to SITE
   -srand N		Set the seed for the random number generator to N
   -wait N		Wait N milliseconds between games. The default is 0.
+  -resultformat FORMAT  Specify the format of result lists. FORMAT can either be
+			a comma separated list of fields or a format name.
+			Format 'help' shows available named formats. The
+			'default' format lists rank, name, elo, elo error,
+			number of games, score percentage, and draw percentage
+			of every player.
+
 
 Engine options:
 
