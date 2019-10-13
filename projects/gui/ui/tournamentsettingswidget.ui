@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>314</height>
+    <width>419</width>
+    <height>436</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,7 +40,7 @@
            <string>Round-robin tournament</string>
           </property>
           <property name="text">
-           <string>Round Robin</string>
+           <string>Ro&amp;und Robin</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -53,7 +53,7 @@
            <string>First engine plays against the rest</string>
           </property>
           <property name="text">
-           <string>Gauntlet</string>
+           <string>Gaunt&amp;let</string>
           </property>
          </widget>
         </item>
@@ -63,7 +63,7 @@
            <string>Single-elimination tournament</string>
           </property>
           <property name="text">
-           <string>Knockout</string>
+           <string>Kno&amp;ckout</string>
           </property>
          </widget>
         </item>
@@ -73,7 +73,7 @@
            <string>Every engine plays against all of its predecessors</string>
           </property>
           <property name="text">
-           <string>Pyramid</string>
+           <string>&amp;Pyramid</string>
           </property>
          </widget>
         </item>
@@ -134,7 +134,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Games per encounter:</string>
+         <string>&amp;Games per encounter:</string>
         </property>
         <property name="buddy">
          <cstring>m_gamesPerEncounterSpin</cstring>
@@ -216,6 +216,72 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Results</string>
+     </property>
+     <widget class="QWidget" name="horizontalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>29</y>
+        <width>401</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
+       <item>
+        <widget class="QLabel" name="m_resultFormatLabel">
+         <property name="text">
+          <string>Format</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="m_resultFormatCombo"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLineEdit" name="m_resultFormatEdit">
+      <property name="geometry">
+       <rect>
+        <x>12</x>
+        <y>70</y>
+        <width>400</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="maxLength">
+       <number>256</number>
+      </property>
+      <property name="placeholderText">
+       <string>Result Format</string>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>false</bool>
+      </property>
+     </widget>
     </widget>
    </item>
   </layout>

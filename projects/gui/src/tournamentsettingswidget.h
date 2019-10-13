@@ -41,6 +41,7 @@ class TournamentSettingsWidget : public QWidget
 		bool openingRepetition() const;
 		bool engineRecovery() const;
 		bool savingOfUnfinishedGames() const;
+		QString resultFormat() const;
 
 		void enableSettingsUpdates();
 
