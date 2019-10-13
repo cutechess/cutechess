@@ -42,6 +42,7 @@ class TournamentSettingsWidget : public QWidget
 		bool engineRecovery() const;
 		bool savingOfUnfinishedGames() const;
 		bool swappingSides() const;
+		QString resultFormat() const;
 
 		void enableSettingsUpdates();
 

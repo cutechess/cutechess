@@ -298,6 +298,7 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setRecoveryMode(ts->engineRecovery());
 	t->setPgnWriteUnfinishedGames(ts->savingOfUnfinishedGames());
 	t->setSwapSides(ts->swappingSides());
+	t->setResultFormat(ts->resultFormat());
 
 	const auto engines = m_addedEnginesManager->engines();
 	for (EngineConfiguration config : engines)

@@ -44,7 +44,7 @@ TournamentResultsDialog::TournamentResultsDialog(QWidget* parent)
 	layout->setContentsMargins(0, 0, 0, 0);
 
 	setLayout(layout);
-	resize(1080, 400);
+	resize(1100, 400);
 }
 
 TournamentResultsDialog::~TournamentResultsDialog()
