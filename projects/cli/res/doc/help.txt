@@ -37,6 +37,7 @@ Options:
 			'discplacedgrid': Displaced Grid Chess
 			'dobutsu': Dobutsu Shogi (3x4)
 			'embassy': Embassy Chess
+			'euroshogi': EuroShogi (8x8)
 			'extinction': Extinction Chess
 			'fischerandom': Fischer Random Chess/Chess 960
 			'giveaway': Giveaway Chess (Losing Chess)

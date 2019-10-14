@@ -1516,6 +1516,15 @@ void tst_Board::perft_data() const
 		<< 5 // 4 plies: 35401, 5 plies: 533203, 6 plies: 8276188
 		<< Q_UINT64_C(533203);
 
+	variant = "euroshogi";
+	QTest::newRow("euroshogi startpos")
+		<< variant
+		<< "1nbgkgn1/1r4b1/pppppppp/8/8/PPPPPPPP/1B4R1/1NGKGBN1[-] w - 1"
+		<< 4 // 3 plies: 15473, 4 plies: 382870, 5 plies: 9594120
+		// stockfish, sjaakii: 4 plies: 380499, 5 plies: 9451149, 6 plies: 234638669
+		// these programs force promotion on Knights in promotion zone
+		<< Q_UINT64_C(382870);
+
 	variant = "twokings";
 	QTest::newRow("twokings startpos")
 		<< variant
