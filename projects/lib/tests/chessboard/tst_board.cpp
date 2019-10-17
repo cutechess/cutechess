@@ -1661,6 +1661,20 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 4 // 4 plies: 153023, 5 plies: 2735167, 6 plies: 46678307
 		<< Q_UINT64_C(153023);
+
+	variant = "cfour";
+	QTest::newRow("cfour startpos")
+		<< variant
+		<< "7/7/7/7/7/7[PPPPPPPPPPPPPPPPPPPPPppppppppppppppppppppp] w - - 0 1"
+		<< 7 // 6 plies: 117649, 7 plies: 823536, 8 plies: 5673234
+		<< Q_UINT64_C(823536);
+
+	variant = "tictactoe";
+	QTest::newRow("tic-tac-toe startpos")
+		<< variant
+		<< "3/3/3[PPPPPpppp] w - - 0 1"
+		<< 9 // 7 plies: 148176, 8 plies: 200448, 9 plies: 127872
+		<< Q_UINT64_C(127872);
 }
 
 void tst_Board::perft()

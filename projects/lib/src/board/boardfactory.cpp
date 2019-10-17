@@ -32,6 +32,7 @@
 #include "chessgiboard.h"
 #include "chigorinboard.h"
 #include "codrusboard.h"
+#include "connectboard.h"
 #include "coregalboard.h"
 #include "courierboard.h"
 #include "crazyhouseboard.h"
@@ -90,6 +91,7 @@ REGISTER_BOARD(BerolinaBoard, "berolina")
 REGISTER_BOARD(OukBoard, "cambodian")
 REGISTER_BOARD(CapablancaBoard, "capablanca")
 REGISTER_BOARD(CaparandomBoard, "caparandom")
+REGISTER_BOARD(ConnectBoard, "cfour")
 REGISTER_BOARD(ChancellorBoard, "chancellor")
 REGISTER_BOARD(ChangeOverBoard, "changeover")
 REGISTER_BOARD(ChecklessBoard, "checkless")
@@ -144,6 +146,7 @@ REGISTER_BOARD(StandardBoard, "standard")
 REGISTER_BOARD(SuicideBoard, "suicide")
 REGISTER_BOARD(SuperAndernachBoard, "superandernach")
 REGISTER_BOARD(ThreeKingsBoard, "threekings")
+REGISTER_BOARD(TicTacToeBoard, "tictactoe")
 REGISTER_BOARD(TwoKingsEachBoard, "twokings")
 REGISTER_BOARD(TwoKingsSymmetricalBoard, "twokingssymmetric")
 

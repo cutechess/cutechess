@@ -24,6 +24,7 @@ Options:
 			'cambodian': Ouk Chatrang (Cambodian Chess)
 			'capablanca': Capablanca Chess
 			'caparandom': Capablanca Random Chess
+			'cfour' : Cfour (7x6, line up 4 to win)
 			'chancellor': Chancellor Chess (9x9)
 			'changeover': Change-Over Chess
 			'checkless': Checkless Chess
@@ -77,6 +78,7 @@ Options:
 			'suicide': Suicide Chess (Losing Chess)
 			'superandernach': Super-Andernach Chess
 			'threekings': Three Kings Chess
+			'tictactoe': Tic-tac-toe
 			'twokings': Two Kings Each Chess (Wild 9)
 			'twokingssymmetric': Symmetrical Two Kings Each Chess
 			'standard': Standard Chess (default).
