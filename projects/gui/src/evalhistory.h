@@ -57,6 +57,7 @@ class EvalHistory : public QWidget
 
 		QCustomPlot* m_plot;
 		QPointer<ChessGame> m_game;
+		bool m_invertSides;
 };
 
 #endif // EVALHISTORY_H
