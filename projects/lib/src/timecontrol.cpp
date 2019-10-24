@@ -54,7 +54,8 @@ TimeControl::TimeControl()
 	  m_lastMoveTime(0),
 	  m_expiryMargin(0),
 	  m_expired(false),
-	  m_infinite(false)
+	  m_infinite(false),
+	  m_hourglass(false)
 {
 }
 
@@ -70,7 +71,8 @@ TimeControl::TimeControl(const QString& str)
 	  m_lastMoveTime(0),
 	  m_expiryMargin(0),
 	  m_expired(false),
-	  m_infinite(false)
+	  m_infinite(false),
+	  m_hourglass(false)
 {
 	if (str == "inf")
 	{
@@ -102,6 +104,13 @@ TimeControl::TimeControl(const QString& str)
 	else
 		strTime = list.at(0);
 
+	// hourglass
+	if (strTime.startsWith("hg"))
+	{
+		m_hourglass = true;
+		strTime.remove("hg");
+	}
+
 	// time per tc
 	int ms = 0;
 	list = strTime.split(':');
@@ -122,7 +131,8 @@ bool TimeControl::operator==(const TimeControl& other) const
 	&&  m_increment == other.m_increment
 	&&  m_plyLimit == other.m_plyLimit
 	&&  m_nodeLimit == other.m_nodeLimit
-	&&  m_infinite == other.m_infinite)
+	&&  m_infinite == other.m_infinite
+	&&  m_hourglass == other.m_hourglass)
 		return true;
 	return false;
 }
@@ -136,7 +146,8 @@ bool TimeControl::isValid() const
 	||  m_plyLimit < 0
 	||  m_nodeLimit < 0
 	||  m_expiryMargin < 0
-	||  (m_timePerTc == m_timePerMove && !m_infinite))
+	||  (m_timePerTc == m_timePerMove && !m_infinite)
+	||  (m_hourglass && (m_increment > 0 || m_movesPerTc > 0)))
 		return false;
 	return true;
 }
@@ -153,6 +164,8 @@ QString TimeControl::toString() const
 		return QString("%1/move").arg((double)m_timePerMove / 1000);
 
 	QString str;
+	if (m_hourglass)
+		str += "hg";
 	if (m_movesPerTc > 0)
 		str += QString::number(m_movesPerTc) + "/";
 	str += QString::number((double)m_timePerTc / 1000);
@@ -171,6 +184,9 @@ QString TimeControl::toVerboseString() const
 
 	if (m_infinite)
 		str = tr("infinite time");
+	else if (m_hourglass)
+		str = tr("hourglass %1")
+		.arg(s_timeString(m_timePerTc));
 	else if (m_timePerMove != 0)
 		str = tr("%1 per move")
 			.arg(s_timeString(m_timePerMove));
@@ -212,6 +228,11 @@ void TimeControl::initialize()
 bool TimeControl::isInfinite() const
 {
 	return m_infinite;
+}
+
+bool TimeControl::isHourglass() const
+{
+	return m_hourglass;
 }
 
 int TimeControl::timePerTc() const
@@ -262,6 +283,11 @@ int TimeControl::expiryMargin() const
 void TimeControl::setInfinity(bool enabled)
 {
 	m_infinite = enabled;
+}
+
+void TimeControl::setHourglass(bool enabled)
+{
+	m_hourglass = enabled;
 }
 
 void TimeControl::setTimePerTc(int timePerTc)
@@ -388,6 +414,7 @@ void TimeControl::readSettings(QSettings* settings)
 	m_nodeLimit = settings->value("node_limit", m_nodeLimit).toLongLong();
 	m_expiryMargin = settings->value("expiry_margin", m_expiryMargin).toInt();
 	m_infinite = settings->value("infinite", m_infinite).toBool();
+	m_hourglass = settings->value("hourglass", m_hourglass).toBool();
 
 	settings->endGroup();
 }
@@ -404,4 +431,5 @@ void TimeControl::writeSettings(QSettings* settings)
 	settings->setValue("node_limit", m_nodeLimit);
 	settings->setValue("expiry_margin", m_expiryMargin);
 	settings->setValue("infinite", m_infinite);
+	settings->setValue("hourglass", m_hourglass);
 }
