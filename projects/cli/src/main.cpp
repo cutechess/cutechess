@@ -154,6 +154,7 @@ bool parseEngine(const QStringList& args, EngineData& data)
 			}
 
 			data.tc.setInfinity(tc.isInfinite());
+			data.tc.setHourglass(tc.isHourglass());
 			data.tc.setTimePerTc(tc.timePerTc());
 			data.tc.setMovesPerTc(tc.movesPerTc());
 			data.tc.setTimeIncrement(tc.timeIncrement());
