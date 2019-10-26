@@ -107,7 +107,10 @@ void MakrukBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 		generateHoppingMoves(square, m_silverGeneralOffsets[sideToMove()], moves);
 
 	if (pieceType != Bia)
-		return ShatranjBoard::generateMovesForPiece(moves, pieceType, square); // clazy:exclude=returning-void-expression
+	{
+		ShatranjBoard::generateMovesForPiece(moves, pieceType, square);
+		return;
+	}
 
 	generatePawnMoves(square, moves);
 }

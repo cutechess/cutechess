@@ -1082,7 +1082,10 @@ void WesternBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
 					 int square) const
 {
 	if (pieceType == Pawn)
-		return generatePawnMoves(square, moves); // clazy:exclude=returning-void-expression
+	{
+		generatePawnMoves(square, moves);
+		return;
+	}
 	if (pieceType == King)
 	{
 		generateHoppingMoves(square, m_bishopOffsets, moves);

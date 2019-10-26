@@ -49,7 +49,10 @@ void HoppelPoppelBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 					      int square) const
 {
 	if (pieceType != Knight && pieceType != Bishop)
-		return WesternBoard::generateMovesForPiece(moves, pieceType, square); // clazy:exclude=returning-void-expression
+	{
+		WesternBoard::generateMovesForPiece(moves, pieceType, square);
+		return;
+	}
 
 	// Knight and Bishop: sort moves obtained from cross-over definitions
 	QVarLengthArray< Move > testmoves;
@@ -99,7 +102,10 @@ QString NewZealandBoard::defaultFenString() const
 void NewZealandBoard::generateMovesForPiece(QVarLengthArray< Move >& moves, int pieceType, int square) const
 {
 	if (pieceType != Knight && pieceType != Rook)
-		return WesternBoard::generateMovesForPiece(moves, pieceType, square); // clazy:exclude=returning-void-expression
+	{
+		WesternBoard::generateMovesForPiece(moves, pieceType, square);
+		return;
+	}
 
 	// Knight and Rook: sort moves obtained from cross-over definitions
 	QVarLengthArray< Move > testmoves;

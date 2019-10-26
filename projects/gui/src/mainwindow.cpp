@@ -1108,7 +1108,8 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	if (m_readyToClose)
 	{
 		writeSettings();
-		return QMainWindow::closeEvent(event); // clazy:exclude=returning-void-expression
+		QMainWindow::closeEvent(event);
+		return;
 	}
 
 	if (askToSave())
