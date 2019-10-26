@@ -74,7 +74,8 @@ void KnightMateBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
 		if (pieceType == Mann)
 			return;
 		// king's leaps
-		return WesternBoard::generateMovesForPiece(moves, Knight, square); // clazy:exclude=returning-void-expression
+		WesternBoard::generateMovesForPiece(moves, Knight, square);
+		return;
 	}
 	WesternBoard::generateMovesForPiece(moves, pieceType, square);
 }

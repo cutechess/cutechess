@@ -514,8 +514,10 @@ void ChessEngine::onQuitTimeout()
 void ChessEngine::quit()
 {
 	if (!m_ioDevice || !m_ioDevice->isOpen() || state() == Disconnected)
-		return ChessPlayer::quit(); // clazy:exclude=returning-void-expression
-
+	{
+		ChessPlayer::quit();
+		return;
+	}
 	disconnect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onCrashed()));
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onQuitTimeout()));
 	sendQuit();

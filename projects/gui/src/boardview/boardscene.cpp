@@ -223,7 +223,10 @@ void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
 	GraphicsPiece* piece = pieceAt(event->scenePos());
 	if (piece == m_highlightPiece || m_anim != nullptr || m_chooser != nullptr)
-		return QGraphicsScene::mouseMoveEvent(event); // clazy:exclude=returning-void-expression
+	{
+		QGraphicsScene::mouseMoveEvent(event);
+		return;
+	}
 
 	if (m_targets.contains(piece)
 	&&  QSettings().value("ui/highlight_legal_moves", true).toBool())

@@ -92,9 +92,10 @@ bool TwoKingsEachBoard::inCheck(Side side, int square) const
 void TwoKingsEachBoard::generateMovesForPiece(QVarLengthArray< Move >& moves, int pieceType, int square) const
 {
 	if (pieceType != King)
-		return WesternBoard::generateMovesForPiece(moves, // clazy:exclude=returning-void-expression
-							   pieceType,
-							   square);
+	{
+		WesternBoard::generateMovesForPiece(moves, pieceType, square);
+		return;
+	}
 
 	QVarLengthArray< Move > testmoves;
 	WesternBoard::generateMovesForPiece(testmoves, King, square);

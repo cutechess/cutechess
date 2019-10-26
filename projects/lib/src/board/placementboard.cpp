@@ -77,7 +77,8 @@ void PlacementBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 		if (square == 0)
 			return;
 
-		return WesternBoard::generateMovesForPiece(moves, pieceType, square); // clazy:exclude=returning-void-expression
+		WesternBoard::generateMovesForPiece(moves, pieceType, square);
+		return;
 	}
 
 	// Set-up: generate drops onto own half
