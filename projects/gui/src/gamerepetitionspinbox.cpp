@@ -49,11 +49,11 @@ void GameRepetitionSpinBox::setTournamentType(const QString& tournamentType)
 // Returns the highest matching number of games
 int GameRepetitionSpinBox::limit() const
 {
-	int games = m_gamesPerEncounter;
+	int games = qMax(m_gamesPerEncounter, 1);
 	if (m_tournamentType != "gauntlet")
 		return games;
 
-	int factor = m_rounds;
+	int factor = qMin(m_rounds, 10000000 / games);
 	while (m_rounds % factor)
 	{
 		factor--;

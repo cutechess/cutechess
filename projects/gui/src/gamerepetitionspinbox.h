@@ -63,7 +63,6 @@ class GameRepetitionSpinBox : public QSpinBox
 		int limit() const;
 		QValidator::State examine(int value) const;
 
-		int m_maxGames;
 		int m_gamesPerEncounter;
 		int m_rounds;
 		QString m_tournamentType;
