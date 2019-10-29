@@ -31,6 +31,8 @@ Options:
 			'chessgi': Chessgi (Drop Chess)
 			'chigorin': Chigorin Chess
 			'circulargryphon': Circular Gryphon Chess
+			'clobber': Clobber (5x6)
+			'clobber10': Clobber (10x10)
 			'codrus': Game of Codrus (Losing Chess variant)
 			'coregal': Co-regal Chess
 			'courier': Courier Chess

@@ -31,6 +31,7 @@
 #include "checklessboard.h"
 #include "chessgiboard.h"
 #include "chigorinboard.h"
+#include "clobberboard.h"
 #include "codrusboard.h"
 #include "connectboard.h"
 #include "coregalboard.h"
@@ -99,6 +100,8 @@ REGISTER_BOARD(ChecklessBoard, "checkless")
 REGISTER_BOARD(ChessgiBoard, "chessgi")
 REGISTER_BOARD(ChigorinBoard, "chigorin")
 REGISTER_BOARD(CircularGryphonBoard, "circulargryphon")
+REGISTER_BOARD(ClobberBoard, "clobber")
+REGISTER_BOARD(Clobber10Board, "clobber10")
 REGISTER_BOARD(CodrusBoard, "codrus")
 REGISTER_BOARD(CoRegalBoard, "coregal")
 REGISTER_BOARD(CourierBoard, "courier")
