@@ -19,8 +19,9 @@
 #include "enginemanager.h"
 #include <QFile>
 #include <QTextStream>
-#include <jsonparser.h>
-#include <jsonserializer.h>
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonArray>
 
 
 EngineManager::EngineManager(QObject* parent)
@@ -95,23 +96,24 @@ void EngineManager::loadEngines(const QString& fileName)
 		return;
 
 	QFile input(fileName);
-	if (!input.open(QIODevice::ReadOnly | QIODevice::Text))
+	if (!input.open(QIODevice::ReadOnly))
 	{
-		qWarning("cannot open engine configuration file: %s",
+		qWarning("cannot open engine configuration file for reading: %s",
 			 qUtf8Printable(fileName));
 		return;
 	}
 
-	QTextStream stream(&input);
-	JsonParser parser(stream);
-	const QVariantList engines(parser.parse().toList());
+	auto inputContents = input.readAll();
 
-	if (parser.hasError())
-	{
-		qWarning("%s", qUtf8Printable(QString("bad engine configuration file line %1 in %2: %3")
-			.arg(parser.errorLineNumber()).arg(fileName).arg(parser.errorString()))); // clazy:exclude=qstring-arg
+	QJsonParseError error;
+	auto jsonDoc = QJsonDocument::fromJson(inputContents, &error);
+
+	if (jsonDoc.isNull()) {
+		qWarning("bad engine configuration: %s: %s at offset %d", qUtf8Printable(fileName), qUtf8Printable(error.errorString()), error.offset);
 		return;
 	}
+
+	const QVariantList engines(jsonDoc.array().toVariantList());
 
 	for (const QVariant& engine : engines)
 		addEngine(EngineConfiguration(engine));
@@ -124,16 +126,15 @@ void EngineManager::saveEngines(const QString& fileName)
 		engines << config.toVariant();
 
 	QFile output(fileName);
-	if (!output.open(QIODevice::WriteOnly | QIODevice::Text))
+	if (!output.open(QIODevice::WriteOnly))
 	{
-		qWarning("cannot open engine configuration file: %s",
+		qWarning("cannot open engine configuration file for writing: %s",
 			 qUtf8Printable(fileName));
 		return;
 	}
 
-	QTextStream out(&output);
-	JsonSerializer serializer(engines);
-	serializer.serialize(out);
+	QJsonDocument jsonDoc(QJsonArray::fromVariantList(engines));
+	output.write(jsonDoc.toJson());
 }
 
 QSet<QString> EngineManager::engineNames() const

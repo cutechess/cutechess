@@ -47,10 +47,11 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 
 	if (value.type() != QVariant::Bool &&
 		value.type() != QVariant::String &&
-		value.type() != QVariant::Int)
+		value.type() != QVariant::Int &&
+		value.type() != QVariant::Double)
 	{
-		qWarning("Invalid value type for option: %s",
-			 qUtf8Printable(name));
+		qWarning("Invalid value type for option: %s: %s",
+			 qUtf8Printable(name), qUtf8Printable(value.typeName()));
 		return nullptr;
 	}
 
@@ -58,10 +59,11 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 		defaultValue = value;
 	else if (defaultValue.type() != QVariant::Bool &&
 		defaultValue.type() != QVariant::String &&
-		defaultValue.type() != QVariant::Int)
+		defaultValue.type() != QVariant::Int &&
+		defaultValue.type() != QVariant::Double)
 	{
-		qWarning("Invalid default value type for option: %s",
-			 qUtf8Printable(name));
+		qWarning("Invalid default value type for option: %s: %s",
+			 qUtf8Printable(name), qUtf8Printable(value.typeName()));
 		return nullptr;
 	}
 
@@ -94,7 +96,10 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 	{
 		const QStringList choices(map["choices"].toStringList());
 		if (choices.isEmpty())
+		{
+			qWarning("Empty list of choices for option: %s", qUtf8Printable(name));
 			return nullptr;
+		}
 
 		return new EngineComboOption(name, value.toString(),
 			defaultValue.toString(), choices, alias);
@@ -106,19 +111,31 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 
 		intValue = value.toInt(&ok);
 		if (!ok)
+		{
+			qWarning("Invalid integer 'value' for for option: %s: %s", qUtf8Printable(name), qUtf8Printable(value.toString()));
 			return nullptr;
+		}
 
 		defaultIntValue = defaultValue.toInt(&ok);
 		if (!ok)
+		{
+			qWarning("Invalid integer 'default' value for for option: %s: %s", qUtf8Printable(name), qUtf8Printable(defaultValue.toString()));
 			return nullptr;
+		}
 
 		minValue = map["min"].toInt(&ok);
 		if (!ok)
+		{
+			qWarning("Invalid integer 'min' value for for option: %s: %s", qUtf8Printable(name), qUtf8Printable(map["min"].toString()));
 			return nullptr;
+		}
 
 		maxValue = map["max"].toInt(&ok);
 		if (!ok)
+		{
+			qWarning("Invalid integer 'max' value for for option: %s: %s", qUtf8Printable(name), qUtf8Printable(map["max"].toString()));
 			return nullptr;
+		}
 
 		return new EngineSpinOption(name, intValue, defaultIntValue,
 			minValue, maxValue, alias);
