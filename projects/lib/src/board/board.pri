@@ -55,6 +55,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/minishogiboard.cpp \
     $$PWD/dobutsushogiboard.cpp \
     $$PWD/euroshogiboard.cpp \
+    $$PWD/judkinsshogiboard.cpp \
     $$PWD/rifleboard.cpp \
     $$PWD/losalamosboard.cpp \
     $$PWD/almostboard.cpp \
@@ -124,6 +125,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/minishogiboard.h \
     $$PWD/dobutsushogiboard.h \
     $$PWD/euroshogiboard.h \
+    $$PWD/judkinsshogiboard.h \
     $$PWD/rifleboard.h \
     $$PWD/losalamosboard.h \
     $$PWD/almostboard.h \
