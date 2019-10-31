@@ -51,6 +51,7 @@ Options:
 			'horde': Horde Chess (v2)
 			'janus': Janus Chess
 			'jesonmor': Jeson Mör
+			'judkins': Judkins Shogi (6x6)
 			'karouk': Kar Ouk (One-check Ouk)
 			'kinglet': Kinglet Chess
 			'kingofthehill': King of the Hill Chess
