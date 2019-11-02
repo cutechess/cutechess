@@ -30,6 +30,11 @@
 #include <board/result.h>
 #include <moveevaluation.h>
 
+void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString& msg)
+{
+	CuteChessApplication::instance()->messageHandler(type, context, msg);
+}
+
 int main(int argc, char* argv[])
 {
 	// Register types for signal / slot connections
@@ -38,10 +43,19 @@ int main(int argc, char* argv[])
 	qRegisterMetaType<Chess::Side>("Chess::Side");
 	qRegisterMetaType<Chess::Result>("Chess::Result");
 	qRegisterMetaType<MoveEvaluation>("MoveEvaluation");
+	qRegisterMetaType<QtMsgType>("QtMsgType");
 
 	QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
 
+	qSetMessagePattern("%{time yyyy-MM-dd h:mm:ss.zzz} %{if-debug}D%{endif}%{if-info}I%{endif}%{if-warning}W%{endif}%{if-critical}C%{endif}%{if-fatal}F%{endif} %{message}");
+
 	CuteChessApplication app(argc, argv);
+
+	// Setup message handler for console output
+	QObject::connect(&app, &CuteChessApplication::applicationMessage,
+	    &app, &CuteChessApplication::printApplicationMessage);
+
+	qInstallMessageHandler(messageHandler);
 
 	QTranslator translator;
 	translator.load(QLocale(), "cutechess", "_", "translations", ".qm");
@@ -76,3 +90,4 @@ int main(int argc, char* argv[])
 	app.newDefaultGame();
 	return app.exec();
 }
+
