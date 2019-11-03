@@ -65,6 +65,7 @@ Options:
 			'rifle': Rifle Chess
 			'seirawan': S-Chess (Seirawan Chess)
 			'shatranj': Shatranj
+			'shogi' : Shogi
 			'shoot': Shoot Chess
 			'slippedgrid': Slipped Grid Chess
 			'simplifiedgryphon': Simplified Gryphon Chess

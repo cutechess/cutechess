@@ -51,6 +51,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/aseanboard.cpp \
     $$PWD/aiwokboard.cpp \
     $$PWD/sittuyinboard.cpp \
+    $$PWD/shogiboard.cpp \
     $$PWD/rifleboard.cpp \
     $$PWD/losalamosboard.cpp \
     $$PWD/almostboard.cpp \
@@ -116,6 +117,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/aseanboard.h \
     $$PWD/aiwokboard.h \
     $$PWD/sittuyinboard.h \
+    $$PWD/shogiboard.h \
     $$PWD/rifleboard.h \
     $$PWD/losalamosboard.h \
     $$PWD/almostboard.h \
