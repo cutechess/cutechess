@@ -63,6 +63,7 @@
 #include "rifleboard.h"
 #include "seirawanboard.h"
 #include "shatranjboard.h"
+#include "shogiboard.h"
 #include "sittuyinboard.h"
 #include "standardboard.h"
 #include "suicideboard.h"
@@ -126,6 +127,7 @@ REGISTER_BOARD(RacingKingsBoard, "racingkings")
 REGISTER_BOARD(RifleBoard, "rifle")
 REGISTER_BOARD(SeirawanBoard, "seirawan")
 REGISTER_BOARD(ShatranjBoard, "shatranj")
+REGISTER_BOARD(ShogiBoard, "shogi")
 REGISTER_BOARD(ShootBoard, "shoot")
 REGISTER_BOARD(SimplifiedGryphonBoard, "simplifiedgryphon")
 REGISTER_BOARD(SittuyinBoard, "sittuyin")

@@ -538,6 +538,16 @@ void tst_Board::moveStrings_data() const
 		<< "Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3 Kf5 Kb2 Ke5 Kb3"
 		<< "8/8/8/4K3/8/1kf5/8/8[-] w - - 0 1"
 		<< "8/8/8/4K3/8/1kf5/8/8[-] w - - 16 9";
+	QTest::newRow("shogi fen lan1 normal coordinates")
+		<< "shogi"
+		<< "P@e1 b5b4 a3b4 f1h1 g2g1 P@b5 b4a3 h1g1 h2g1 N@c5"
+		<< "lR4snl/4k1g2/pgnspp1p1/2p3p1p/1p2b4/P6P1/BSPP1PP1P/4G1GS1/LNK2r1NL[PPp] w - 32"
+		<< "lR4snl/4k1g2/pgnspp1p1/2p3p1p/1pn1b4/P6P1/BSPP1PP1P/4G4/LNK1P1S1L[RPPg] w - 37";
+	QTest::newRow("shogi fen san1 normal coordinates")
+		<< "shogi"
+		<< "P@e1 Pb4 Bxb4 Rxh1+ Gg1 P@b5 Ba3 +Rxg1 Sxg1 N@c5"
+		<< "lR4snl/4k1g2/pgnspp1p1/2p3p1p/1p2b4/P6P1/BSPP1PP1P/4G1GS1/LNK2r1NL[PPp] w - 32"
+		<< "lR4snl/4k1g2/pgnspp1p1/2p3p1p/1pn1b4/P6P1/BSPP1PP1P/4G4/LNK1P1S1L[RPPg] w - 37";
 	QTest::newRow("losalamos san1")
 		<< "losalamos"
 		<< "d3 d4"
@@ -972,6 +982,18 @@ void tst_Board::results_data() const
 	QTest::newRow("jesonmor no white pieces")
 		<< variant
 		<< "9/9/1n7/9/9/9/3n5/9/9 w - - 0 24"
+		<< "0-1";
+
+	variant = "shogi";
+
+	QTest::newRow("shogi Sente win")
+		<< variant
+		<< "+B3G+N+L1+B/2P1k4/ppSppp1pp/4r4/9/P8/3PPP2P/3KGg+r2/LN6L[NNLgsssppppp] b - 39"
+		<< "1-0";
+
+	QTest::newRow("shogi Gote win")
+		<< variant
+		<< "2G3BnR/2+N2+S1lp/p4ppsk/3P3ps/1pp6/P1g6/1P1K5/1SP2g3/L3+r4[GNNLPPPPPPblp] w - 98"
 		<< "0-1";
 
 	variant = "almost";
@@ -1469,6 +1491,13 @@ void tst_Board::perft_data() const
 		<< "nnnnnnnnn/9/9/9/9/9/9/9/NNNNNNNNN w - - 0 1"
 		<< 4 // 3 plies: 27960, 4 plies: 868624, 5 plies: 27756588/27882796
 		<< Q_UINT64_C(868624);
+
+	variant = "shogi";
+	QTest::newRow("shogi startpos")
+		<< variant
+		<< "lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL[-] w 0 1"
+		<< 5 // 4 plies: 719731, 5 plies: 19861490, 6 plies: 547581517
+		<< Q_UINT64_C(19861490);
 
 	variant = "twokings";
 	QTest::newRow("twokings startpos")
