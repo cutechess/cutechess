@@ -44,8 +44,7 @@ bool EpdRecord::parse(QTextStream& stream)
 			return false;
 
 		m_fen.append(tmp);
-		if (i < 3)
-			m_fen.append(" ");
+		m_fen.append(" ");
 	}
 
 	// Parse the operations
@@ -62,6 +61,7 @@ bool EpdRecord::parse(QTextStream& stream)
 		switch (c.toLatin1())
 		{
 		case '\n':
+			appendMoveCounters();
 			return true;
 		case ' ':
 		case '\t':
@@ -133,8 +133,25 @@ bool EpdRecord::parse(QTextStream& stream)
 			return false;
 		}
 	}
-
+	appendMoveCounters();
 	return true;
+}
+
+void EpdRecord::appendMoveCounters()
+{
+	if (hasOpcode("hmvc") && m_operations.value("hmvc").length() > 0)
+		m_fen.append(m_operations.value("hmvc")[0]);
+
+	else
+		m_fen.append("0");
+
+	m_fen.append(" ");
+
+	if (hasOpcode("fmvn") && m_operations.value("fmvn").length() > 0)
+		m_fen.append(m_operations.value("fmvn")[0]);
+
+	else
+		m_fen.append("1");
 }
 
 bool EpdRecord::hasOpcode(const QString& opcode) const
