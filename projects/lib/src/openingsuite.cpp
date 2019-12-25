@@ -115,6 +115,12 @@ bool OpeningSuite::initialize()
 	if (m_format == PgnFormat)
 		m_pgnStream = new PgnStream(m_file);
 
+	if (m_format == EpdFormat)
+	{
+		m_file->reset();
+		m_epdStream = new QTextStream(m_file);
+	}
+
 	if (m_order == RandomOrder)
 	{
 		// Create a shuffled vector of file positions
@@ -138,6 +144,11 @@ bool OpeningSuite::initialize()
 				m_filePositions[i] = pos;
 			}
 		}
+
+		if (m_startIndex > m_filePositions.size())
+			qWarning("Start index larger than book size, wrapping after %d.", m_filePositions.size());
+
+		m_gameIndex += m_startIndex % m_filePositions.size();
 	}
 	else if (m_order == SequentialOrder)
 	{
@@ -145,19 +156,25 @@ bool OpeningSuite::initialize()
 		{
 			FilePosition pos;
 			if (m_format == EpdFormat)
+			{
 				pos = getEpdPos();
+				if (m_epdStream->atEnd())
+				{
+					qWarning("Start index larger than book size, wrapping after %d.", i + 1);
+					m_epdStream->seek(0);
+					m_epdStream->resetStatus();
+                                }
+			}
 			else if (m_format == PgnFormat)
+			{
 				pos = getPgnPos();
-
-			if (pos.pos == -1)
-				break;
+				if (!m_pgnStream->nextGame())
+				{
+					qWarning("Start index larger than book size, wrapping after %d.", i + 1);
+					m_pgnStream->rewind();
+				}
+			}
 		}
-	}
-
-	if (m_format == EpdFormat)
-	{
-		m_file->reset();
-		m_epdStream = new QTextStream(m_file);
 	}
 
 	return true;
