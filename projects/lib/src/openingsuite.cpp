@@ -19,6 +19,7 @@
 #include "openingsuite.h"
 #include <QFile>
 #include <QTextStream>
+#include <algorithm>
 #include "pgnstream.h"
 #include "epdrecord.h"
 #include "mersenne.h"
@@ -123,7 +124,7 @@ bool OpeningSuite::initialize()
 
 	if (m_order == RandomOrder)
 	{
-		// Create a shuffled vector of file positions
+		// Create a vector of file positions
 		for (;;)
 		{
 			FilePosition pos;
@@ -135,14 +136,14 @@ bool OpeningSuite::initialize()
 			if (pos.pos == -1)
 				break;
 
-			int i = Mersenne::random() % (m_filePositions.size() + 1);
-			if (i == m_filePositions.size())
-				m_filePositions.append(pos);
-			else
-			{
-				m_filePositions.append(m_filePositions.at(i));
-				m_filePositions[i] = pos;
-			}
+			m_filePositions.append(pos);
+		}
+
+		// use a Knuth shuffle to generate a random permutation
+                for (int i = 0; i <= m_filePositions.size() - 2; i++)
+		{
+			int j = i + Mersenne::random() % (m_filePositions.size() - i);
+			std::swap(m_filePositions[i], m_filePositions[j]);
 		}
 
 		if (m_startIndex > m_filePositions.size())
