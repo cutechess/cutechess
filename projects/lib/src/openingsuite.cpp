@@ -146,7 +146,7 @@ bool OpeningSuite::initialize()
 			std::swap(m_filePositions[i], m_filePositions[j]);
 		}
 
-		if (m_startIndex > m_filePositions.size())
+		if (m_startIndex >= m_filePositions.size())
 			qWarning("Start index larger than book size, wrapping after %d.", m_filePositions.size());
 
 		m_gameIndex += m_startIndex % m_filePositions.size();
