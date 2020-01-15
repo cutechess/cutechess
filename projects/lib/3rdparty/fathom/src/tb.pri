@@ -6,7 +6,7 @@ CONFIG(release, debug|release):DEFINES += NDEBUG
 }
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
-SOURCES += $$PWD/tbprobe.c
+SOURCES += $$PWD/tbprobe.c \
+	$$PWD/tbchess.c
 HEADERS += $$PWD/tbprobe.h \
-	$$PWD/tbconfig.h \
-	$$PWD/tbcore.h
+	$$PWD/tbconfig.h
