@@ -1,0 +1,68 @@
+name: build cutechess
+on: [push, pull_request]
+
+jobs:
+    build:
+        name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
+        runs-on: ${{ matrix.os }}
+        strategy:
+          matrix:
+            qt_version: [5.11.3, 5.12.7, 5.13.2, 5.14.2]
+            os: [windows-latest, ubuntu-latest, macos-latest]
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: install qt
+              uses: jurplel/install-qt-action@v2
+              with:
+                version: ${{ matrix.qt_version }}
+
+            - name: build cute chess
+              if: matrix.os != 'windows-latest'
+              run: |
+                  qmake
+                  make
+
+            - name: run unit tests
+              if: matrix.os != 'windows-latest'
+              run: |
+                  cd ${GITHUB_WORKSPACE}/projects/lib/tests/
+                  qmake
+                  make
+                  make check
+
+            - name: run unit tests (json)
+              if: matrix.os != 'windows-latest'
+              run: |
+                  cd ${GITHUB_WORKSPACE}/projects/lib/components/json/tests/
+                  qmake
+                  make
+                  make check
+
+            - name: build cute chess
+              if: matrix.os == 'windows-latest'
+              shell: cmd
+              run: |
+                  call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+                  qmake
+                  nmake
+
+            - name: run unit tests
+              if: matrix.os == 'windows-latest'
+              shell: cmd
+              run: |
+                  call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+                  cd %GITHUB_WORKSPACE%\projects\lib\tests\
+                  qmake
+                  nmake
+                  nmake check
+
+            - name: run unit tests (json)
+              shell: cmd
+              if: matrix.os == 'windows-latest'
+              run: |
+                  call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+                  cd %GITHUB_WORKSPACE%\projects\lib\components\json\tests\
+                  qmake
+                  nmake
+                  nmake check
