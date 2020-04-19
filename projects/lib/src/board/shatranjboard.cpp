@@ -83,9 +83,9 @@ void ShatranjBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 					  int square) const
 {
 	Chess::WesternBoard::generateMovesForPiece(moves, pieceType, square);
-	if (pieceHasMovement(pieceType, FerzMovement))
+	if (pieceTypeHasMovement(pieceType, FerzMovement))
 		generateHoppingMoves(square, m_ferzOffsets, moves);
-	if (pieceHasMovement(pieceType, AlfilMovement))
+	if (pieceTypeHasMovement(pieceType, AlfilMovement))
 		generateHoppingMoves(square, m_alfilOffsets, moves);
 }
 
@@ -101,7 +101,7 @@ bool ShatranjBoard::inCheck(Side side, int square) const
 	{
 		piece = pieceAt(square + m_ferzOffsets[i]);
 		if (piece.side() == opSide
-		&&  pieceHasMovement(piece.type(), FerzMovement))
+		&&  pieceTypeHasMovement(piece.type(), FerzMovement))
 			return true;
 	}
 	// Alfil attacks
@@ -112,7 +112,7 @@ bool ShatranjBoard::inCheck(Side side, int square) const
 			continue;
 		piece = pieceAt(target);
 		if (piece.side() == opSide
-		&&  pieceHasMovement(piece.type(), AlfilMovement))
+		&&  pieceTypeHasMovement(piece.type(), AlfilMovement))
 			return true;
 	}
 	return WesternBoard::inCheck(side, square);

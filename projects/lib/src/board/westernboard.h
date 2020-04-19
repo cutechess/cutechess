@@ -188,6 +188,10 @@ class LIB_EXPORT WesternBoard : public Board
 		 */
 		virtual int castlingFile(CastlingSide castlingSide) const;
 		/*!
+		 * Returns true if \a side knight-defends \a square.
+		 */
+		virtual bool defendedByKnight(Side side, int square) const;
+		/*!
 		 * Returns true if \a side is under attack at \a square.
 		 * If \a square is 0, then the king square is used.
 		 */
