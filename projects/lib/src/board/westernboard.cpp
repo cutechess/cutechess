@@ -1095,12 +1095,25 @@ void WesternBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
 		return;
 	}
 
-	if (pieceHasMovement(pieceType, KnightMovement))
+	if (pieceHasMovement(pieceType, square, KnightMovement))
 		generateHoppingMoves(square, m_knightOffsets, moves);
-	if (pieceHasMovement(pieceType, BishopMovement))
+	if (pieceHasMovement(pieceType, square, BishopMovement))
 		generateSlidingMoves(square, m_bishopOffsets, moves);
-	if (pieceHasMovement(pieceType, RookMovement))
+	if (pieceHasMovement(pieceType, square, RookMovement))
 		generateSlidingMoves(square, m_rookOffsets, moves);
+}
+
+bool WesternBoard::defendedByKnight(Side side, int square) const
+{
+	for (int i = 0; i < m_knightOffsets.size(); i++)
+	{
+		int targetSquare = square + m_knightOffsets[i];
+		Piece piece = pieceAt(targetSquare);
+		if (piece.side() == side
+		&&  pieceHasCaptureMovement(piece, targetSquare, KnightMovement))
+			return true;
+	}
+    return false;
 }
 
 bool WesternBoard::inCheck(Side side, int square) const
@@ -1133,9 +1146,10 @@ bool WesternBoard::inCheck(Side side, int square) const
 	// Knight, archbishop, chancellor attacks
 	for (int i = 0; i < m_knightOffsets.size(); i++)
 	{
-		piece = pieceAt(square + m_knightOffsets[i]);
+		int targetSquare = square + m_knightOffsets[i];
+		piece = pieceAt(targetSquare);
 		if (piece.side() == opSide
-		&&  pieceHasMovement(piece.type(), KnightMovement))
+		&&  pieceHasCaptureMovement(piece, targetSquare, KnightMovement))
 			return true;
 	}
 	
@@ -1152,7 +1166,7 @@ bool WesternBoard::inCheck(Side side, int square) const
 		{
 			if (!piece.isEmpty())
 			{
-				if (pieceHasMovement(piece.type(), BishopMovement))
+				if (pieceHasCaptureMovement(piece, targetSquare, BishopMovement))
 					return true;
 				break;
 			}
@@ -1173,7 +1187,7 @@ bool WesternBoard::inCheck(Side side, int square) const
 		{
 			if (!piece.isEmpty())
 			{
-				if (pieceHasMovement(piece.type(), RookMovement))
+				if (pieceHasCaptureMovement(piece, targetSquare, RookMovement))
 					return true;
 				break;
 			}
@@ -1217,7 +1231,7 @@ bool WesternBoard::isLegalPosition()
 				if (piece.isWall() || piece.side() == side)
 					return true;
 				if (piece.side() == sideToMove()
-				&&  pieceHasMovement(piece.type(), RookMovement))
+				&&  pieceHasCaptureMovement(piece, i, RookMovement))
 					return false;
 			}
 		}

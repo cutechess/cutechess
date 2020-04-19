@@ -103,7 +103,7 @@ void MakrukBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 					  int pieceType,
 					  int square) const
 {
-	if (pieceHasMovement(pieceType, SilverGeneralMovement))
+	if (pieceTypeHasMovement(pieceType, SilverGeneralMovement))
 		generateHoppingMoves(square, m_silverGeneralOffsets[sideToMove()], moves);
 
 	if (pieceType != Bia)
@@ -153,7 +153,7 @@ bool MakrukBoard::inCheck(Side side, int square) const
 	{
 		piece = pieceAt(square + m_silverGeneralOffsets[side][i]);
 		if (piece.side() == opSide
-		&&  pieceHasMovement(piece.type(), SilverGeneralMovement))
+		&&  pieceTypeHasMovement(piece.type(), SilverGeneralMovement))
 			return true;
 	}
 	return ShatranjBoard::inCheck(side, square);

@@ -53,6 +53,7 @@
 #include "judkinsshogiboard.h"
 #include "kingofthehillboard.h"
 #include "knightmateboard.h"
+#include "knightrelayboard.h"
 #include "loopboard.h"
 #include "losalamosboard.h"
 #include "losersboard.h"
@@ -122,6 +123,7 @@ REGISTER_BOARD(JudkinsShogiBoard, "judkins")
 REGISTER_BOARD(KarOukBoard,"karouk")
 REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
 REGISTER_BOARD(KnightMateBoard, "knightmate")
+REGISTER_BOARD(KnightRelayBoard, "knightrelay")
 REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosAlamosBoard, "losalamos")
 REGISTER_BOARD(LosersBoard, "losers")
