@@ -1,6 +1,6 @@
 /*
     This file is part of Cute Chess.
-    Copyright (C) 2008-2018 Cute Chess authors
+    Copyright (C) 2008-2020 Cute Chess authors
 
     Cute Chess is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 		{
 			out << "Cute Chess " << CUTECHESS_VERSION << endl;
 			out << "Using Qt version " << qVersion() << endl << endl;
-			out << "Copyright (C) 2008-2018 Ilari Pihlajisto and Arto Jonsson" << endl;
+			out << "Copyright (C) 2008-2020 Ilari Pihlajisto and Arto Jonsson" << endl;
 			out << "This is free software; see the source for copying ";
 			out << "conditions.  There is NO" << endl << "warranty; not even for ";
 			out << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
