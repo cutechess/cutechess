@@ -73,7 +73,8 @@ GraphicsBoard::GraphicsBoard(int files,
 	Q_ASSERT(ranks > 0);
 
     if(m_variant == "xiangqi" ||
-       m_variant == "manchu")
+       m_variant == "manchu" ||
+       m_variant == "minixiangqi")
     {
         m_rect.setSize(QSizeF(squareSize * (files + 1),
                               squareSize * (ranks + 1)));
@@ -102,7 +103,8 @@ int GraphicsBoard::type() const
 QRectF GraphicsBoard::boundingRect() const
 {
     if(m_variant == "xiangqi" ||
-       m_variant == "manchu")
+       m_variant == "manchu" ||
+       m_variant == "minixiangqi")
     {
         const auto margins = QMarginsF(0, 0, 0, 0);
         return m_rect.marginsAdded(margins);
@@ -123,6 +125,10 @@ void GraphicsBoard::paint(QPainter* painter,
        m_variant == "manchu")
     {
         paintXiangqiBoard(painter, option, widget);
+    }
+    else if(m_variant == "minixiangqi")
+    {
+        paintMiniXiangqiBoard(painter, option, widget);
     }
     else
     {
@@ -251,7 +257,7 @@ void GraphicsBoard::paintXiangqiBoard(QPainter *painter, const QStyleOptionGraph
     painter->drawLine(offsetX+gridSize*m_files,offsetY+gridSize*5,
                       offsetX+gridSize*m_files,offsetY+gridSize*6);
 
-    // 4.draw the 10 herizontal line
+    // 4.draw the 10 horizontal line
     for(int i=1;i<=m_ranks; i++)
     {
         painter->drawLine(offsetX+gridSize,   offsetY+gridSize*i,
@@ -394,6 +400,108 @@ void GraphicsBoard::paintXiangqiBoard(QPainter *painter, const QStyleOptionGraph
     }
 }
 
+void GraphicsBoard::paintMiniXiangqiBoard(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
+    // set the background color
+    QRectF rect(m_rect.topLeft(),
+                QSizeF(m_squareSize*(m_files+1),
+                       m_squareSize*(m_ranks+1)));
+    const qreal rLeft = rect.left();
+    rect.moveLeft(rLeft);
+    painter->fillRect(rect, m_bgColor);
+
+    // set the pen linetype to solid
+    QPen pen(Qt::SolidLine);
+    pen.setWidth(10);
+    pen.setColor(Qt::green);
+    painter->setPen(pen);
+
+    // set the antialias feature
+    painter->setRenderHint(QPainter::Antialiasing);
+    qint16 gridSize = static_cast<qint16>(m_squareSize);
+    int offsetX = -m_rect.width()/2.0;
+    int offsetY = -m_rect.height()/2.0;
+    // initialize the four green dot
+    painter->drawPoint(offsetX+gridSize-5,        offsetY+gridSize-5);
+    painter->drawPoint(offsetX+gridSize*m_files+5,offsetY+gridSize-5);
+    painter->drawPoint(offsetX+gridSize-5,        offsetY+gridSize*m_ranks+5);
+    painter->drawPoint(offsetX+gridSize*m_files+5,offsetY+gridSize*m_ranks+5);
+    // set the pen color and linewidth
+    pen.setColor(Qt::black);
+    pen.setWidth(4);
+    painter->setPen(pen);
+    // 1.draw the outline(bold line)
+    painter->drawLine(offsetX+gridSize-5,        offsetY+gridSize-5,
+                      offsetX+gridSize*m_files+5,offsetY+gridSize-5);
+    painter->drawLine(offsetX+gridSize-5,        offsetY+gridSize-5,
+                      offsetX+gridSize-5,        offsetY+gridSize*m_ranks+5);
+    painter->drawLine(offsetX+gridSize-5,        offsetY+gridSize*m_ranks+5,
+                      offsetX+gridSize*m_files+5,offsetY+gridSize*m_ranks+5);
+    painter->drawLine(offsetX+gridSize*m_files+5,offsetY+gridSize-5,
+                      offsetX+gridSize*m_files+5,offsetY+gridSize*m_ranks+5);
+
+    // 2.draw the 7 horizontal line
+    pen.setWidth(2);
+    painter->setPen(pen);
+    for(int i=1;i<=m_ranks; i++)
+    {
+        painter->drawLine(offsetX+gridSize,        offsetY+gridSize*i,
+                          offsetX+gridSize*m_files,offsetY+gridSize*i);
+    }
+
+    // 3.draw the 7 vertical line
+    for(int i=1;i<=m_files; i++)
+    {
+        painter->drawLine(offsetX+gridSize*i,offsetY+gridSize,
+                          offsetX+gridSize*i,offsetY+gridSize*m_ranks);
+    }
+    // 4.draw the diagonal line for the advisor
+    painter->drawLine(offsetX+gridSize*3, offsetY+gridSize,
+                      offsetX+gridSize*5, offsetY+gridSize*3);
+    painter->drawLine(offsetX+gridSize*5, offsetY+gridSize,
+                      offsetX+gridSize*3, offsetY+gridSize*3);
+    painter->drawLine(offsetX+gridSize*3, offsetY+gridSize*5,
+                      offsetX+gridSize*5, offsetY+gridSize*m_ranks);
+    painter->drawLine(offsetX+gridSize*5, offsetY+gridSize*5,
+                      offsetX+gridSize*3, offsetY+gridSize*m_ranks);
+
+    // 5.draw the makr for the board
+    painter->setFont(QFont("Arial", gridSize/4));
+    QString str[7] = {"一","二","三","四","五","六","七"};
+    for (int i = 0; i < m_files; i++)
+    {
+        if(m_flipped)
+        {
+            rect = QRectF(m_rect.left() + m_coordSize + (m_squareSize * i),
+                          m_rect.top() + 5, m_squareSize, m_coordSize);
+            int fileTop = m_flipped ? i : m_files - i - 1;
+            painter->drawText(rect, Qt::AlignCenter, str[fileTop]);
+
+            rect = QRectF(m_rect.left() + m_coordSize + (m_squareSize * i),
+                          m_rect.bottom()-m_coordSize-5, m_squareSize, m_coordSize);
+            int fileBot = m_flipped ? m_files - i : i + 1;
+            const auto numBot = QString::number(fileBot);
+            painter->drawText(rect, Qt::AlignCenter, numBot);
+        }
+        else
+        {
+            rect = QRectF(m_rect.left() + m_coordSize + (m_squareSize * i),
+                          m_rect.top() + 5, m_squareSize, m_coordSize);
+            int fileTop = m_flipped ? m_files - i : i + 1;
+            const auto numTop = QString::number(fileTop);
+            painter->drawText(rect, Qt::AlignCenter, numTop);
+
+            rect = QRectF(m_rect.left() + m_coordSize + (m_squareSize * i),
+                          m_rect.bottom()-m_coordSize-5, m_squareSize, m_coordSize);
+            int fileBot = m_flipped ? i : m_files - i - 1;
+            painter->drawText(rect, Qt::AlignCenter, str[fileBot]);
+        }
+    }
+}
+
 Chess::Square GraphicsBoard::squareAt(const QPointF& point) const
 {
 	if (!m_rect.contains(point))
@@ -404,7 +512,8 @@ Chess::Square GraphicsBoard::squareAt(const QPointF& point) const
     int col = 0, row = 0;
 
     if(m_variant == "xiangqi" ||
-       m_variant == "manchu")
+       m_variant == "manchu" ||
+       m_variant == "minixiangqi")
     {
         col = (point.x() + offsetX - m_squareSize / 2) / m_squareSize;
         row = (point.y() + offsetY - m_squareSize / 2) / m_squareSize;
@@ -428,7 +537,8 @@ QPointF GraphicsBoard::squarePos(const Chess::Square& square) const
     qreal x=0, y=0;
 
     if(m_variant == "xiangqi" ||
-       m_variant == "manchu")
+       m_variant == "manchu" ||
+       m_variant == "minixiangqi")
     {
         x = m_rect.left() + m_squareSize;
         y = m_rect.top() + m_squareSize;

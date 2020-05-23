@@ -69,6 +69,9 @@ class GraphicsBoard : public QGraphicsItem
         virtual void paintXiangqiBoard(QPainter* painter,
                    const QStyleOptionGraphicsItem* option,
                    QWidget* widget = nullptr);
+        virtual void paintMiniXiangqiBoard(QPainter* painter,
+                   const QStyleOptionGraphicsItem* option,
+                   QWidget* widget = nullptr);
 		/*!
 		 * Returns the chess square at \a point.
 		 *
