@@ -96,6 +96,7 @@ void BoardScene::populate()
 
 	m_squares = new GraphicsBoard(m_board->width(),
 				      m_board->height(),
+                      m_board->variant(),
 				      s_squareSize);
 	addItem(m_squares);
 
