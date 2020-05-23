@@ -58,6 +58,7 @@ Options:
 			'losers': Loser's Chess
 			'makruk': Makruk (Thai Chess)
             'manchu': Manchu (A variant of Xiangqi)
+            'minixiangqi': Minixiangqi (A variant derived from Xiangqi)
 			'modern': Modern Chess (9x9)
 			'newzealand': New Zealand Chess (has N/R hybrids)
 			'placement': Placement Chess
