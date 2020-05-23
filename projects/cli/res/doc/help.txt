@@ -75,6 +75,7 @@ Options:
 			'twokings': Two Kings Each Chess (Wild 9)
 			'twokingssymmetric': Symmetrical Two Kings Each Chess
 			'standard': Standard Chess (default).
+			'xiangqi': Chinese Chess
   -concurrency N	Set the maximum number of concurrent games to N
   -draw movenumber=NUMBER movecount=COUNT score=SCORE
 			Adjudicate the game as a draw if the score of both
