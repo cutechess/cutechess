@@ -72,7 +72,8 @@ GraphicsBoard::GraphicsBoard(int files,
 	Q_ASSERT(files > 0);
 	Q_ASSERT(ranks > 0);
 
-    if(m_variant == "xiangqi")
+    if(m_variant == "xiangqi" ||
+       m_variant == "manchu")
     {
         m_rect.setSize(QSizeF(squareSize * (files + 1),
                               squareSize * (ranks + 1)));
@@ -100,7 +101,8 @@ int GraphicsBoard::type() const
 
 QRectF GraphicsBoard::boundingRect() const
 {
-    if(m_variant == "xiangqi")
+    if(m_variant == "xiangqi" ||
+       m_variant == "manchu")
     {
         const auto margins = QMarginsF(0, 0, 0, 0);
         return m_rect.marginsAdded(margins);
@@ -117,7 +119,8 @@ void GraphicsBoard::paint(QPainter* painter,
 			  const QStyleOptionGraphicsItem* option,
 			  QWidget* widget)
 {
-    if(m_variant == "xiangqi")
+    if(m_variant == "xiangqi" ||
+       m_variant == "manchu")
     {
         paintXiangqiBoard(painter, option, widget);
     }
@@ -400,7 +403,8 @@ Chess::Square GraphicsBoard::squareAt(const QPointF& point) const
     int offsetY = m_rect.height()/2.0;
     int col = 0, row = 0;
 
-    if(m_variant == "xiangqi")
+    if(m_variant == "xiangqi" ||
+       m_variant == "manchu")
     {
         col = (point.x() + offsetX - m_squareSize / 2) / m_squareSize;
         row = (point.y() + offsetY - m_squareSize / 2) / m_squareSize;
@@ -423,7 +427,8 @@ QPointF GraphicsBoard::squarePos(const Chess::Square& square) const
 
     qreal x=0, y=0;
 
-    if(m_variant == "xiangqi")
+    if(m_variant == "xiangqi" ||
+       m_variant == "manchu")
     {
         x = m_rect.left() + m_squareSize;
         y = m_rect.top() + m_squareSize;
