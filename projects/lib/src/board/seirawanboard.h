@@ -38,7 +38,8 @@ namespace Chess {
  * after this square has been vacated for the first time. Squares that have
  * been vacant before can not be used for entry, nor squares where captures
  * removed the original pieces. Only one piece may enter per move. There is
- * no obligation to use the reserve pieces.
+ * no obligation to use the reserve pieces. The insertion of reserve pieces
+ * must not be used to block check.
  *
  * \note Rules: http://en.wikipedia.org/wiki/Seirawan_chess
  *
@@ -66,6 +67,7 @@ class LIB_EXPORT SeirawanBoard : public WesternBoard
 		virtual bool variantHasDrops() const;
 		virtual bool variantHasChanneling(Side side, int square) const;
 		virtual QList< Piece > reservePieceTypes() const;
+		virtual bool vIsLegalMove(const Chess::Move & move);
 		virtual void addPromotions(int sourceSquare,
 					   int targetSquare,
 					   QVarLengthArray<Move>& moves) const;

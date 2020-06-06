@@ -78,6 +78,22 @@ QList<Piece> SeirawanBoard::reservePieceTypes() const
 	return list;
 }
 
+bool SeirawanBoard::vIsLegalMove(const Move& move)
+{
+	Q_ASSERT(!move.isNull());
+	int src = move.sourceSquare();
+
+	// Normal moves and promotions
+	if (move.promotion() == 0
+	||  !m_squareMap.contains(src)
+	||  m_squareMap[src] > 0)
+		return WesternBoard::vIsLegalMove(move);
+
+	// Channeling: the initial part of the move must be legal in chess
+	Move m(move.sourceSquare(), move.targetSquare());
+	return WesternBoard::vIsLegalMove(m);
+}
+
 void SeirawanBoard::addPromotions(int sourceSquare,
 				  int targetSquare,
 				  QVarLengthArray<Move>& moves) const
