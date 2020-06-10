@@ -67,7 +67,9 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/xiangqiboard.cpp \
     $$PWD/xiangqizobrist.cpp \
     $$PWD/manchuboard.cpp \
-    $$PWD/minixiangqiboard.cpp
+    $$PWD/minixiangqiboard.cpp \
+    $$PWD/janggiboard.cpp \
+    $$PWD/koreanboard.cpp
 HEADERS += $$PWD/board.h \
     $$PWD/move.h \
     $$PWD/piece.h \
@@ -138,4 +140,6 @@ HEADERS += $$PWD/board.h \
     $$PWD/xiangqiboard.h \
     $$PWD/xiangqizobrist.h \
     $$PWD/manchuboard.h \
-    $$PWD/minixiangqiboard.h
+    $$PWD/minixiangqiboard.h \
+    $$PWD/janggiboard.h \
+    $$PWD/koreanboard.h

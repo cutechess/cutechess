@@ -72,6 +72,9 @@ class GraphicsBoard : public QGraphicsItem
         virtual void paintMiniXiangqiBoard(QPainter* painter,
                    const QStyleOptionGraphicsItem* option,
                    QWidget* widget = nullptr);
+        virtual void paintJanggiBoard(QPainter* painter,
+                   const QStyleOptionGraphicsItem* option,
+                   QWidget* widget = nullptr);
 		/*!
 		 * Returns the chess square at \a point.
 		 *
@@ -159,6 +162,7 @@ class GraphicsBoard : public QGraphicsItem
 		QVector<GraphicsPiece*> m_squares;
 		QPropertyAnimation* m_highlightAnim;
         QString m_variant;
+        bool m_janggiVariant;
 		bool m_flipped;
 };
 
