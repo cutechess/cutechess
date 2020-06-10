@@ -233,8 +233,6 @@ void KoreanBoard::initCurrentScore()
     }
 
     m_currentScore[Side::Black] += bonus;
-    qDebug() << __FILE__<< __LINE__ << m_currentScore[0]
-             << m_currentScore[1];
 }
 
 bool KoreanBoard::kingMeet(Side side, int square) const
