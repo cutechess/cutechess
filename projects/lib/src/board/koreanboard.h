@@ -234,8 +234,6 @@ class LIB_EXPORT KoreanBoard : public Board
         void generateRookMoves(int sourceSquare,
                        QVarLengthArray<Move>& moves) const;
         void generateCastlingMoves(QVarLengthArray<Move>& moves) const;
-        void generateBikjangMoves(int sourceSquare,
-                       QVarLengthArray<Move>& moves) const;
         void generatePassMoves(int sourceSquare,
                        QVarLengthArray<Move>& moves) const;
         bool canCastle(CastlingSide castlingSide) const;
@@ -250,11 +248,10 @@ class LIB_EXPORT KoreanBoard : public Board
                       int sign) const;
 
         bool inFort(int square) const;
-        float currentScore(Side side);
         void initCurrentScore();
         bool kingMeet(Side side, int square) const;
         Result resultFromCounting() const;
-        Result resultFromBikjang() const;
+        Result resultFromBikjangState();
 
         int m_arwidth;
         int m_sign;
@@ -268,6 +265,7 @@ class LIB_EXPORT KoreanBoard : public Board
         bool m_bikjang;
         bool m_bikjangState; //indicate if the board is in bikjang State;
         bool m_pieceCount;
+        bool m_enableBikjang;
         int m_passingCounter;
         float m_currentScore[2];
         QVector<MoveData> m_history;

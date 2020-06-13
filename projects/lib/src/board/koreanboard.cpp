@@ -33,6 +33,7 @@ KoreanBoard::KoreanBoard(EasternZobrist* zobrist)
       m_pawnAmbiguous(false),
       m_multiDigitNotation(false),
       m_bikjangState(false),
+      m_enableBikjang(false),
       m_passingCounter(0),
       m_zobrist(zobrist)
 {
@@ -194,30 +195,9 @@ bool KoreanBoard::inFort(int square) const
     return retVal;
 }
 
-float KoreanBoard::currentScore(Side side)
-{
-    MoveData& md = m_history.last();
-
-    int pieceScore[Pawn+1] = {0, 0, 3, 3, 5, 13, 7, 2};
-    float bonus = 1.5;
-
-    for (int i = 0;  i < arraySize(); ++i)
-    {
-        Piece piece = pieceAt(i);
-        if (!piece.isValid())
-            continue;
-
-        if(side == piece.side())
-            md.currentScore[side] += pieceScore[piece.type()];
-    }
-
-    md.currentScore[Side::Black] += bonus;
-}
-
 void KoreanBoard::initCurrentScore()
 {
-    //MoveData& md = m_history.last();
-    int pieceScore[Pawn+1] = {0, 0, 3, 3, 5, 13, 7, 2};
+    int pieceScore[8] = {0, 0, 3, 3, 5, 13, 7, 2};
     float bonus = 1.5;
     m_currentScore[0]=0;
     m_currentScore[1]=0;
@@ -938,6 +918,7 @@ void KoreanBoard::vMakeMove(const Move& move, BoardTransition* transition)
     int* rookSq = m_castlingRights.rookSquare[side];
     bool clearSource = true;
     bool isReversible = true;
+    bool isBikjangState = false;
 
     Q_ASSERT(target != 0);
 
@@ -1001,6 +982,30 @@ void KoreanBoard::vMakeMove(const Move& move, BoardTransition* transition)
         }
     }
 
+    if (kingMeet(side, target))
+        isBikjangState = true;
+    else
+        isBikjangState = false;
+
+    if (pieceType == King)
+    {
+        if (source == target)
+            m_passingCounter++;
+        else
+            m_passingCounter = 0;
+    }
+    else
+    {
+        m_passingCounter = 0;
+        isBikjangState = false;
+    }
+
+    if (capture != Piece::NoPiece)
+    {
+        int pieceScore[8] = {0, 0, 3, 3, 5, 13, 7, 2};
+        m_currentScore[capture.side()] -= pieceScore[capture.type()];
+    }
+
     if (captureType(move) != Piece::NoPiece)
     {
         removeCastlingRights(target);
@@ -1028,6 +1033,11 @@ void KoreanBoard::vMakeMove(const Move& move, BoardTransition* transition)
         m_reversibleMoveCount++;
     else
         m_reversibleMoveCount = 0;
+
+    if (isBikjangState)
+        m_bikjangState = true;
+    else
+        m_bikjangState = false;
 
     m_history.append(md);
     m_sign *= -1;
@@ -1207,6 +1217,14 @@ bool KoreanBoard::inCheck(Side side, int square) const
                 checkSquare = square + offset * (j + 1);
                 if (inFort(checkSquare))
                 {
+                    Square checkSq = chessSquare(checkSquare);
+                    if(((checkSq.file() == 3 || checkSq.file() == 5) &&
+                        (checkSq.rank() == 1 || checkSq.rank() == 8)) ||
+                        (checkSq.file() == 4 && (checkSq.rank() == 0 ||
+                         checkSq.rank() == 2 || checkSq.rank() == 7 ||
+                         checkSq.rank() == 9)))
+                        break;
+
                     piece = pieceAt(checkSquare);
                     if (!piece.isEmpty())
                     {
@@ -1358,6 +1376,9 @@ bool KoreanBoard::inCheck(Side side, int square) const
             }
         }
     }
+
+    if(m_bikjangState && m_enableBikjang && kingMeet(side, square))
+        return true;
 
     return false;
 }
@@ -1640,6 +1661,7 @@ void KoreanBoard::generateAdvisorMoves(int sourceSquare, QVarLengthArray<Move> &
                  checkSq.rank() == 2 || checkSq.rank() == 7 ||
                  checkSq.rank() == 9)))
                 break;
+
             advisorRelOffsets.append(m_diagonalOffsets[i]);
         }
     }
@@ -1678,6 +1700,7 @@ void KoreanBoard::generateKingMoves(int sourceSquare, QVarLengthArray<Move> &mov
                  checkSq.rank() == 2 || checkSq.rank() == 7 ||
                  checkSq.rank() == 9)))
                 break;
+
             kingRelOffsets.append(m_diagonalOffsets[i]);
         }
     }
@@ -1715,6 +1738,7 @@ void KoreanBoard::generateRookMoves(int sourceSquare, QVarLengthArray<Move> &mov
                          checkSq.rank() == 2 || checkSq.rank() == 7 ||
                          checkSq.rank() == 9)))
                         break;
+
                     piece = pieceAt(targetSquare);
                     if(!piece.isEmpty())
                     {
@@ -1731,12 +1755,6 @@ void KoreanBoard::generateRookMoves(int sourceSquare, QVarLengthArray<Move> &mov
     }
 
     generateSlidingMoves(sourceSquare, m_orthogonalOffsets, moves);
-}
-
-void KoreanBoard::generateBikjangMoves(int sourceSquare, QVarLengthArray<Move> &moves) const
-{
-    Q_UNUSED(sourceSquare);
-    Q_UNUSED(moves);
 }
 
 void KoreanBoard::generatePassMoves(int sourceSquare, QVarLengthArray<Move> &moves) const
@@ -1833,46 +1851,35 @@ Result KoreanBoard::resultFromCounting() const
 {
     QString str;
 
-    if(m_bikjang)
+    if (m_currentScore[Side::White] > m_currentScore[Side::Black])
     {
-        if(m_bikjangState)
-        {
-            if(m_currentScore[Side::White] > m_currentScore[Side::Black])
-            {
-                str = tr("White win by material counting at bikjang");
-                return Result(Result::Win, Side::White, str);
-            }
-            else
-            {
-                str = tr("Black win by material counting at bikjang");
-                return Result(Result::Win, Side::Black, str);
-            }
-        }
+        str = tr("White win by material counting");
+        return Result(Result::Win, Side::White, str);
     }
-
-    return Result();
+    else
+    {
+        str = tr("Black win by material counting");
+        return Result(Result::Win, Side::Black, str);
+    }
 }
 
-Result KoreanBoard::resultFromBikjang() const
+Result KoreanBoard::resultFromBikjangState()
 {
     QString str;
 
-    if(m_pieceCount)
+    if (m_bikjang && m_pieceCount)
+        return resultFromCounting();
+    else if (m_bikjang && !m_pieceCount)
     {
-        if(m_bikjangState)
-        {
-            if(m_currentScore[Side::White] > m_currentScore[Side::Black])
-            {
-                str = tr("White win by material counting at bikjang");
-                return Result(Result::Win, Side::White, str);
-            }
-            else
-            {
-                str = tr("Black win by material counting at bikjang");
-                return Result(Result::Win, Side::Black, str);
-            }
-        }
+        str = tr("piece Counting is off, end with Draw at bikjang");
+        return Result(Result::Draw, Side::NoSide, str);
     }
+    else if (!m_bikjang && m_pieceCount)
+    {
+        return resultFromCounting();
+    }
+    else
+        m_enableBikjang = true;
 
     return Result();
 }
@@ -1942,25 +1949,21 @@ Result KoreanBoard::result()
         str = tr("Draw by fifty moves rule");
         return Result(Result::Draw, Side::NoSide, str);
     }
-/*
+
+    if(m_bikjangState && m_passingCounter == 1)
+    {
+        return resultFromBikjangState();
+    }
+
     if(m_passingCounter >= 2)
     {
-        if(m_currentScore[Side::White] > m_currentScore[Side::Black])
-        {
-            str = tr("White win by material counting");
-            return Result(Result::Win, Side::White, str);
-        }
-        else
-        {
-            str = tr("Black win by material counting");
-            return Result(Result::Win, Side::Black, str);
-        }
+        return resultFromCounting();
     }
-*/
-    // 3-fold repetition
-    if (repeatCount() >= 3)
+
+    // 5-fold repetition
+    if (repeatCount() >= 5)
     {
-        str = tr("Draw by 3-fold repetition");
+        str = tr("Draw by 5-fold repetition");
         return Result(Result::Draw, Side::NoSide, str);
     }
 
