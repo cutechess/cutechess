@@ -228,18 +228,15 @@ void SittuyinBoard::vUndoMove(const Move& move)
 bool SittuyinBoard::vIsLegalMove(const Move& move)
 {
 	int promotion = move.promotion();
-	Side side = sideToMove();
-	Side opp = side.opposite();
-	int oppKingSquare = kingSquare(opp);
 
-	// Pawn promotion: must not give check
+	// Pawn promotion: must neither give check nor attack the opponent directly
 	if (!m_inSetUp && promotion == General)
 	{
 		QVarLengthArray<Move> moves;
 		generateMovesForPiece(moves, General, move.targetSquare());
 		for (const Move& m: moves)
 		{
-			if (m.targetSquare() == oppKingSquare)
+			if (captureType(m) != Piece::NoPiece)
 				return false;
 		}
 	}
