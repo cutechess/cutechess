@@ -595,8 +595,8 @@ void GraphicsBoard::paintJanggiBoard(QPainter *painter, const QStyleOptionGraphi
     const QString alphabet = "abcdefghijklmnopqrstuvwxyz";
     for (int i = 0; i < m_files; i++)
     {
-        const qreal tops[] = {m_rect.top(),
-                              m_rect.bottom()-m_coordSize};
+        const qreal tops[] = {m_rect.top()+5,
+                              m_rect.bottom()-m_coordSize-5};
         for (const auto top : tops)
         {
             rect = QRectF(m_rect.left() + m_coordSize + (m_squareSize * i), top,
@@ -609,8 +609,8 @@ void GraphicsBoard::paintJanggiBoard(QPainter *painter, const QStyleOptionGraphi
     // paint rank coordinates
     for (int i = 0; i < m_ranks; i++)
     {
-        const qreal lefts[] = {m_rect.left(),
-                               m_rect.right()-m_coordSize};
+        const qreal lefts[] = {m_rect.left()+5,
+                               m_rect.right()-m_coordSize-5};
         for (const auto left : lefts)
         {
             rect = QRectF(left, m_rect.top()+m_coordSize + (m_squareSize * i),
