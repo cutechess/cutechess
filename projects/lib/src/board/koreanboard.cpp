@@ -281,17 +281,7 @@ QString KoreanBoard::sanMoveString(const Move &move)
     bool needRank = false;
     bool needFile = false;
 
-    if (piece.type() == Pawn)
-    {
-        if (m_pawnAmbiguous)
-        {
-            needFile = true;
-            needRank = true; // for Xboard-compatibility
-        }
-        if (capture.isValid())
-            needFile = true;
-    }
-    else if (piece.type() == King)
+    if (piece.type() == King)
     {
         CastlingSide cside = castlingSide(move);
         if (cside != NoCastlingSide)
@@ -305,29 +295,27 @@ QString KoreanBoard::sanMoveString(const Move &move)
             return str;
         }
     }
-    if (piece.type() != Pawn)	// not pawn
+
+    str += pieceSymbol(piece).toUpper();
+    QVarLengthArray<Move> moves;
+    generateMoves(moves, piece.type());
+
+    for (int i = 0; i < moves.size(); i++)
     {
-        str += pieceSymbol(piece).toUpper();
-        QVarLengthArray<Move> moves;
-        generateMoves(moves, piece.type());
+        const Move& move2 = moves[i];
+        if (move2.sourceSquare() == 0
+        ||  move2.sourceSquare() == source
+        ||  move2.targetSquare() != target)
+            continue;
 
-        for (int i = 0; i < moves.size(); i++)
-        {
-            const Move& move2 = moves[i];
-            if (move2.sourceSquare() == 0
-            ||  move2.sourceSquare() == source
-            ||  move2.targetSquare() != target)
-                continue;
+        if (!vIsLegalMove(move2))
+            continue;
 
-            if (!vIsLegalMove(move2))
-                continue;
-
-            Square square2(chessSquare(move2.sourceSquare()));
-            if (square2.file() != square.file())
-                needFile = true;
-            else if (square2.rank() != square.rank())
-                needRank = true;
-        }
+        Square square2(chessSquare(move2.sourceSquare()));
+        if (square2.file() != square.file())
+            needFile = true;
+        else if (square2.rank() != square.rank())
+            needRank = true;
     }
     if (needFile)
         str += 'a' + square.file();
@@ -1316,6 +1304,7 @@ bool KoreanBoard::inCheck(Side side, int square) const
                          checkSq.rank() == 2 || checkSq.rank() == 7 ||
                          checkSq.rank() == 9)))
                         break;
+
                     piece = pieceAt(checkSquare);
                     if (!piece.isEmpty())
                     {
@@ -1485,6 +1474,7 @@ void KoreanBoard::generatePawnMoves(int sourceSquare,
                      checkSq.rank() == 2 || checkSq.rank() == 7 ||
                      checkSq.rank() == 9)))
                     break;
+
                 pawnFortRelOffsets.append(targetSquare - sourceSquare);
             }
         }
@@ -1714,13 +1704,13 @@ void KoreanBoard::generateKingMoves(int sourceSquare, QVarLengthArray<Move> &mov
 void KoreanBoard::generateRookMoves(int sourceSquare, QVarLengthArray<Move> &moves) const
 {
     //generate the moves that in the fortress(castle, palace).
-    if(inFort(sourceSquare))
+    if (inFort(sourceSquare))
     {
         // store the real offset for Rook in the fortress
         QVarLengthArray<int> rookFortRelOffsets;
         rookFortRelOffsets.clear();
 
-        for(int i = 0; i < m_diagonalOffsets.size(); i++)
+        for (int i = 0; i < m_diagonalOffsets.size(); i++)
         {
             int offset = m_diagonalOffsets[i];
             int targetSquare = 0;
@@ -1729,10 +1719,10 @@ void KoreanBoard::generateRookMoves(int sourceSquare, QVarLengthArray<Move> &mov
             for(int j = 0; j < 2; j++)
             {
                 targetSquare = sourceSquare + offset * (j + 1);
-                if(inFort(targetSquare))
+                if (inFort(targetSquare))
                 {
                     Square checkSq = chessSquare(targetSquare);
-                    if(((checkSq.file() == 3 || checkSq.file() == 5) &&
+                    if (((checkSq.file() == 3 || checkSq.file() == 5) &&
                         (checkSq.rank() == 1 || checkSq.rank() == 8)) ||
                         (checkSq.file() == 4 && (checkSq.rank() == 0 ||
                          checkSq.rank() == 2 || checkSq.rank() == 7 ||
