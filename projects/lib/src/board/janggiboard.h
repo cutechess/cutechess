@@ -7,12 +7,14 @@ namespace Chess {
 /*!
  * \brief A board for Janggi(Korean chess)
  *
- * There are four supported rule sets, reflecting all combinations of bikjang enabled/disabled 
- * and material counting enabled/disabled:
+ * There are four supported rule sets, reflecting all combinations of
+ * bikjang enabled/disabled and material counting enabled/disabled:
  *
  * 1.janggi: Tournament rules with bikjang and material enabled.
- * 2.janggitraditional: Traditional rules with bikjang ruled as a draw and without material counting.
- * 3.janggimodern: Modern rules equivalent to Kakao Janggi, with bikjang disabled and material counting enabled.
+ * 2.janggitraditional: Traditional rules with bikjang ruled as a draw
+ *   and without material counting.
+ * 3.janggimodern: Modern rules equivalent to Kakao Janggi, with
+ *   bikjang disabled and material counting enabled.
  * 4.janggicasual: No bikjang or material counting.
  *
  * This is the Korean chess variant, and one that is
