@@ -7,7 +7,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
           matrix:
-            qt_version: [5.11.3, 5.12.7, 5.13.2, 5.14.2]
+            qt_version: [5.11.3, 5.12.9, 5.13.2, 5.14.2, 5.15.0]
             os: [windows-latest, ubuntu-latest, macos-latest]
         steps:
             - uses: actions/checkout@v2
