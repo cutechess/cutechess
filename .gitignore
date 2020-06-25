@@ -48,6 +48,7 @@ docs/*.txt
 *~
 *.a
 ui_*.h
+.qmake.stash
 
 # files created by MinGW
 *.Debug
