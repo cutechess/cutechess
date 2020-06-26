@@ -29,23 +29,24 @@ TournamentSettingsWidget::TournamentSettingsWidget(QWidget *parent)
 	connect(ui->m_tournamentTypeGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled),
 		[=](QAbstractButton *button, bool checked)
 	{
+		if (!checked)
+			return;
+
+		bool roundsEnabled = true;
+		bool seedsEnabled = false;
 		if (button == ui->m_knockoutRadio)
 		{
-			ui->m_roundsSpin->setEnabled(!checked);
-			ui->m_seedsSpin->setEnabled(checked);
+			roundsEnabled = false;
+			seedsEnabled = true;
 		}
+		else if (button == ui->m_gauntletRadio)
+		{
+			seedsEnabled = true;
+		}
+		ui->m_seedsSpin->setEnabled(seedsEnabled);
+		ui->m_roundsSpin->setEnabled(roundsEnabled);
 
 		emit tournamentTypeChanged(tournamentType());
-	});
-
-	connect(ui->m_knockoutRadio, &QRadioButton::toggled, [=](bool checked)
-	{
-		ui->m_roundsSpin->setEnabled(!checked);
-		ui->m_seedsSpin->setEnabled(checked);
-	});
-	connect(ui->m_gauntletRadio, &QRadioButton::toggled, [=](bool checked)
-	{
-		ui->m_seedsSpin->setEnabled(checked);
 	});
 
 	// Update repeats after rounds
