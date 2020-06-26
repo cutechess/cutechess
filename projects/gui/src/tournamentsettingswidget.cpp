@@ -119,6 +119,11 @@ bool TournamentSettingsWidget::savingOfUnfinishedGames() const
 	return ui->m_saveUnfinishedGamesCheck->isChecked();
 }
 
+bool TournamentSettingsWidget::swappingSides() const
+{
+	return ui->m_swapCheck->isChecked();
+}
+
 void TournamentSettingsWidget::readSettings()
 {
 	QSettings s;
@@ -143,6 +148,7 @@ void TournamentSettingsWidget::readSettings()
 	ui->m_recoverCheck->setChecked(s.value("recover").toBool());
 	ui->m_saveUnfinishedGamesCheck->setChecked(
 		s.value("save_unfinished_games", true).toBool());
+	ui->m_swapCheck->setChecked(s.value("swap_sides", true).toBool());
 
 	s.endGroup();
 }
@@ -203,5 +209,9 @@ void TournamentSettingsWidget::enableSettingsUpdates()
 	connect(ui->m_saveUnfinishedGamesCheck, &QCheckBox::toggled, [=](bool checked)
 	{
 		QSettings().setValue("tournament/save_unfinished_games", checked);
+	});
+	connect(ui->m_swapCheck, &QCheckBox::toggled, [=](bool checked)
+	{
+		QSettings().setValue("tournament/swap_sides", checked);
 	});
 }
