@@ -1414,7 +1414,7 @@ void tst_Board::perft_data() const
 	QTest::newRow("cambodian startpos")
 		<< variant
 		<< "rnsmksnr/8/pppppppp/8/8/PPPPPPPP/8/RNSKMSNR w DEde 0 0 1"
-		<< 4 // 4 plies: 361793, 5 plies: 8601434, 6 plies: 204755574
+		<< 4 // 4 plies: 361793, 5 plies: 8601434, 6 plies: 204757579
 		<< Q_UINT64_C(361793);
 	QTest::newRow("cambodian check1")
 		<< variant

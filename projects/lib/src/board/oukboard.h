@@ -34,9 +34,9 @@ namespace Chess {
  *
  * Ouk has additional moves, which have been abandoned in Makruk:
  *
- * The King has the option to make an initial leap sideways like a Horse
- * (Knight), but only if not in check. The Advisor (Maiden, Neang) may leap
- * straight forward two squares on its initial move. These moves cannot capture.
+ * The King has the option to make an initial leap sideways to an empty square
+ * like a Horse (Knight), but only if not in check. The Advisor (Maiden, Neang)
+ * may leap straight forward two squares on its initial move.
  *
  * \note Rules: http://history.chess.free.fr/cambodian/Cambodian%20Chess%20Games.htm
  *              http://www.khmerinstitute.com/culture/ok.html
