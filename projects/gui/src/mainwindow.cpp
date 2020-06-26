@@ -161,6 +161,7 @@ void MainWindow::createActions()
 	m_copyPgnAct = new QAction(tr("Copy PG&N"), this);
 
 	m_flipBoardAct = new QAction(tr("&Flip Board"), this);
+	m_flipBoardAct->setShortcut(Qt::CTRL + Qt::Key_F);
 
 	m_adjudicateDrawAct = new QAction(tr("Ad&judicate Draw"), this);
 	m_adjudicateWhiteWinAct = new QAction(tr("Adjudicate Win for White"), this);

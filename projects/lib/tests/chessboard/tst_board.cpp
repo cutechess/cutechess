@@ -1414,7 +1414,7 @@ void tst_Board::perft_data() const
 	QTest::newRow("cambodian startpos")
 		<< variant
 		<< "rnsmksnr/8/pppppppp/8/8/PPPPPPPP/8/RNSKMSNR w DEde 0 0 1"
-		<< 4 // 4 plies: 361793, 5 plies: 8601434, 6 plies: 204755574
+		<< 4 // 4 plies: 361793, 5 plies: 8601434, 6 plies: 204757579
 		<< Q_UINT64_C(361793);
 	QTest::newRow("cambodian check1")
 		<< variant
@@ -1435,11 +1435,21 @@ void tst_Board::perft_data() const
 		<< "8/8/4pppp/pppp4/4PPPP/PPPP4/8/8[KFRRSSNNkfrrssnn] w - 0 0 1"
 		<< 3 // 1 ply: 88, 2 plies: 7744, 3 plies: 580096, 4 plies: 43454464
 		<< Q_UINT64_C(580096);
-	QTest::newRow("sittuyin midgame")
+	QTest::newRow("sittuyin midgame 1")
 		<< variant
 		<< "8/8/6R1/s3r3/P5R1/1KP3p1/1F2kr2/8[-] b - 0 0 72"
-		<< 4 // 1 ply: 35, 2 plies: 825, 3 plies: 26791, 4 plies: 657824
-		<< Q_UINT64_C(657824);
+		<< 4 // 1 ply: 35, 2 plies: 825, 3 plies: 26596, 4 plies: 652686
+		<< Q_UINT64_C(652686);
+	QTest::newRow("sittuyin midgame 2")
+		<< variant
+		<< "2r5/6k1/6p1/3s2P1/3npR2/8/p2N2F1/3K4[] w - - 1 50"
+		<< 4 // 1 ply: 21, 2 plies: 656, 3 plies: 12939, 4 plies: 373984
+		<< Q_UINT64_C(373984);
+	QTest::newRow("sittuyin midgame 3")
+		<< variant
+		<< "8/6s1/5P2/3n4/pR2K2S/1P6/1k4p1/8[] w - - 1 50"
+		<< 4 // 1 ply: 22, 2 plies: 557, 3 plies: 11912, 4 plies: 268869
+		<< Q_UINT64_C(268869);
 	QTest::newRow("sittuyin promotion1")
 		<< variant
 		<< "8/8/S2P1k2/8/8/8/8/4K3[-] w - - 0 9"

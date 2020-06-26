@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>337</height>
+    <width>496</width>
+    <height>388</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,21 +40,27 @@
            <string>Round-robin tournament</string>
           </property>
           <property name="text">
-           <string>Round Robin</string>
+           <string>Ro&amp;und Robin</string>
           </property>
           <property name="checked">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">m_tournamentTypeGroup</string>
+          </attribute>
          </widget>
         </item>
         <item>
          <widget class="QRadioButton" name="m_gauntletRadio">
           <property name="toolTip">
-           <string>First engine plays against the rest</string>
+           <string>First engine (or group of seeded engines) plays against the rest</string>
           </property>
           <property name="text">
-           <string>Gauntlet</string>
+           <string>&amp;Gauntlet</string>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">m_tournamentTypeGroup</string>
+          </attribute>
          </widget>
         </item>
         <item>
@@ -63,8 +69,11 @@
            <string>Single-elimination tournament</string>
           </property>
           <property name="text">
-           <string>Knockout</string>
+           <string>Kno&amp;ckout</string>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">m_tournamentTypeGroup</string>
+          </attribute>
          </widget>
         </item>
         <item>
@@ -73,8 +82,11 @@
            <string>Every engine plays against all of its predecessors</string>
           </property>
           <property name="text">
-           <string>Pyramid</string>
+           <string>&amp;Pyramid</string>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">m_tournamentTypeGroup</string>
+          </attribute>
          </widget>
         </item>
         <item>
@@ -132,26 +144,6 @@
        <enum>QFormLayout::ExpandingFieldsGrow</enum>
       </property>
       <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Games per encounter:</string>
-        </property>
-        <property name="buddy">
-         <cstring>m_gamesPerEncounterSpin</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="m_gamesPerEncounterSpin">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>999999</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Rounds:</string>
@@ -161,7 +153,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="0" column="1">
        <widget class="QSpinBox" name="m_roundsSpin">
         <property name="minimum">
          <number>1</number>
@@ -171,7 +163,56 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Games per encounter:</string>
+        </property>
+        <property name="buddy">
+         <cstring>m_gamesPerEncounterSpin</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="m_gamesPerEncounterSpin">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>999999</number>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Play each opening:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="GameRepetitionSpinBox" name="m_repeatSpin">
+        <property name="toolTip">
+         <string>Depends on &quot;games per encounter&quot;</string>
+        </property>
+        <property name="toolTipDuration">
+         <number>-1</number>
+        </property>
+        <property name="specialValueText">
+         <string>once</string>
+        </property>
+        <property name="suffix">
+         <string> times</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Wait between games:</string>
@@ -181,17 +222,10 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QDoubleSpinBox" name="m_waitSpin">
         <property name="suffix">
          <string> s</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="m_repeatCheck">
-        <property name="text">
-         <string>Play each opening twice</string>
         </property>
        </widget>
       </item>
@@ -233,6 +267,16 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GameRepetitionSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>src/gamerepetitionspinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="m_tournamentTypeGroup"/>
+ </buttongroups>
 </ui>

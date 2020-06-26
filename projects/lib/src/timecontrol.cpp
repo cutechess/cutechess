@@ -404,4 +404,6 @@ void TimeControl::writeSettings(QSettings* settings)
 	settings->setValue("node_limit", m_nodeLimit);
 	settings->setValue("expiry_margin", m_expiryMargin);
 	settings->setValue("infinite", m_infinite);
+
+	settings->endGroup();
 }

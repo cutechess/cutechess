@@ -1,0 +1,21 @@
+image: ubuntu/lts
+packages:
+    - qt5-default
+    - libqt5svg5-dev
+sources:
+    - https://github.com/cutechess/cutechess
+tasks:
+    - build: |
+        cd cutechess
+        qmake
+        make
+    - test_lib: |
+        cd cutechess/projects/lib/tests
+        qmake
+        make
+        make check
+    - test_json: |
+        cd cutechess/projects/lib/components/json/tests
+        qmake
+        make
+        make check
