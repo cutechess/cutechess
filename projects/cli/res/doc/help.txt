@@ -102,7 +102,7 @@ Options:
   -tbignore50		Disable the fifty move rule for tablebase adjudication.
   -tournament TYPE	Set the tournament type to TYPE, which can be one of:
 			'round-robin': Round-robin tournament (default)
-			'gauntlet': First engine plays against the rest
+			'gauntlet': First engine(s) against the rest
 			'knockout': Single-elimination tournament.
 			'pyramid': Every engine plays against all predecessors
   -event EVENT		Set the event/tournament name to EVENT
