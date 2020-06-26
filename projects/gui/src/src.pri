@@ -41,7 +41,8 @@ HEADERS += $$PWD/chessclock.h \
     $$PWD/enginemanagementwidget.h \
     $$PWD/tournamentresultsdlg.h \
     $$PWD/gamesettingswidget.h \
-    $$PWD/tournamentsettingswidget.h
+    $$PWD/tournamentsettingswidget.h \
+    $$PWD/gamerepetitionspinbox.h
 SOURCES += $$PWD/main.cpp \
     $$PWD/chessclock.cpp \
     $$PWD/engineconfigurationmodel.cpp \
@@ -84,4 +85,5 @@ SOURCES += $$PWD/main.cpp \
     $$PWD/enginemanagementwidget.cpp \
     $$PWD/tournamentresultsdlg.cpp \
     $$PWD/gamesettingswidget.cpp \
-    $$PWD/tournamentsettingswidget.cpp
+    $$PWD/tournamentsettingswidget.cpp \
+    $$PWD/gamerepetitionspinbox.cpp
