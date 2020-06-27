@@ -47,6 +47,10 @@ Options:
 			'gustav3': Gustav III's Chess
 			'hoppelpoppel': Hoppel-Poppel (has N/B hybrids)
 			'horde': Horde Chess (v2)
+            'janggi': Korean Chess
+            'janggicasual': Korean Chess Variant
+            'janggimodern': Korean Chess Variant
+            'janggitraditional': Korean Chess Variant
 			'janus': Janus Chess
 			'jesonmor': Jeson Mör
 			'karouk': Kar Ouk (One-check Ouk)
