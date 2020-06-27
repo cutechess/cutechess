@@ -45,12 +45,16 @@ void GauntletTournament::onGameAboutToStart(ChessGame* game,
 
 void GauntletTournament::initializePairing()
 {
-	m_opponent = 1;
+	int gauntletPlayers = qBound(1, seedCount(), playerCount() - 1);
+	setSeedCount(gauntletPlayers);
+
+	m_opponent = seedCount();
+	m_currentPlayer = 0;
 }
 
 int GauntletTournament::gamesPerCycle() const
 {
-	return playerCount() - 1;
+	return (playerCount() - seedCount()) * seedCount();
 }
 
 TournamentPair* GauntletTournament::nextPair(int gameNumber)
@@ -62,11 +66,15 @@ TournamentPair* GauntletTournament::nextPair(int gameNumber)
 
 	if (m_opponent >= playerCount())
 	{
-		m_opponent = 1;
-		setCurrentRound(currentRound() + 1);
+		m_opponent = seedCount();
+		if (++m_currentPlayer >= seedCount())
+		{
+			m_currentPlayer = 0;
+			setCurrentRound(currentRound() + 1);
+		}
 	}
 
-	int white = 0;
+	int white = m_currentPlayer;
 	int black = m_opponent++;
 
 	return pair(white, black);

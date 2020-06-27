@@ -17,6 +17,7 @@
 */
 
 #include "evalhistory.h"
+#include "board/board.h"
 #include <QVBoxLayout>
 #include <QtGlobal>
 #include <qcustomplot.h>
@@ -26,7 +27,8 @@
 EvalHistory::EvalHistory(QWidget *parent)
 	: QWidget(parent),
 	  m_plot(new QCustomPlot(this)),
-	  m_game(nullptr)
+	  m_game(nullptr),
+	  m_invertSides(false)
 {
 	auto x = m_plot->xAxis;
 	auto y = m_plot->yAxis;
@@ -74,6 +76,7 @@ void EvalHistory::setGame(ChessGame* game)
 	connect(m_game, SIGNAL(scoreChanged(int,int)),
 		this, SLOT(onScore(int,int)));
 
+	m_invertSides = (m_game->board()->startingSide() == Chess::Side::Black);
 	setScores(game->scores());
 }
 
@@ -82,6 +85,7 @@ void EvalHistory::setPgnGame(PgnGame* pgn)
 	if (pgn == nullptr || pgn->isNull())
 		return;
 
+	m_invertSides = (pgn->startingSide() == Chess::Side::Black);
 	setScores(pgn->extractScores());
 }
 
@@ -119,7 +123,8 @@ void EvalHistory::addData(int ply, int score)
 	if (score == MoveEvaluation::NULL_SCORE)
 		return;
 
-	int side = (ply % 2 == 0) ? 0 : 1;
+	int base = m_invertSides ? 1 : 0;
+	int side = (ply % 2 == base) ? 0 : 1;
 	double x = double(ply + 2) / 2;
 	double y = qBound(-15.0, double(score) / 100.0, 15.0);
 	if (side == 1)

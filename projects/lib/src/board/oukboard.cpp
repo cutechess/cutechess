@@ -163,9 +163,10 @@ void OukBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 			continue;
 
 		int target = square - i.offset * sign;
-		const Piece& piece = pieceAt(target);
+		const Piece& tgtPiece = pieceAt(target);
 
-		if  (piece.isEmpty())
+		if  (tgtPiece.isEmpty()
+		||   (pieceType == Maiden && tgtPiece.side() == side.opposite()))
 			moves.append(Move(square, target));
 	}
 }
@@ -188,8 +189,8 @@ bool OukBoard::inCheck(Side side, int square) const
 
 	if (!m_moveCount[opSide][King] && attacked)
 	{
-		if (square == kingSquare(side)
-		|| !inCheck(opSide))
+		if (pieceAt(square).isEmpty()
+		&&  !inCheck(opSide))
 			return true;
 	}
 	return MakrukBoard::inCheck(side, square);

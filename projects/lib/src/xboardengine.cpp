@@ -577,7 +577,7 @@ int XboardEngine::adaptScore(int score) const
 	&&  absScore < newCECPMateScore + 100)
 	{
 		absScore = 2 * newCECPMateScore - 2 * absScore + m_eval.MATE_SCORE;
-		if (score >= absScore)
+		if (score >= 0)
 			absScore++;
 	}
 

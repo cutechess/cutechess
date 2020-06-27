@@ -30,7 +30,7 @@ class TournamentSettingsWidget : public QWidget
 	Q_OBJECT
 
 	public:
-		explicit TournamentSettingsWidget(QWidget *parent = nullptr);
+		explicit TournamentSettingsWidget(QWidget* parent = nullptr);
 		virtual ~TournamentSettingsWidget();
 
 		QString tournamentType() const;
@@ -38,11 +38,15 @@ class TournamentSettingsWidget : public QWidget
 		int rounds() const;
 		int seedCount() const;
 		int delayBetweenGames() const;
-		bool openingRepetition() const;
+		int openingRepetitions() const;
 		bool engineRecovery() const;
 		bool savingOfUnfinishedGames() const;
+		bool swappingSides() const;
 
 		void enableSettingsUpdates();
+
+	signals:
+		void tournamentTypeChanged(const QString& tournamentType);
 
 	private:
 		void readSettings();

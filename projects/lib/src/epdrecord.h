@@ -69,6 +69,7 @@ class LIB_EXPORT EpdRecord
 	private:
 		QString m_fen;
 		QMap<QString, QStringList> m_operations;
+		void appendMoveCounters();
 };
 
 #endif // EPDRECORD_H
