@@ -140,7 +140,7 @@ bool OpeningSuite::initialize()
 		}
 
 		// use a Knuth shuffle to generate a random permutation
-                for (int i = 0; i <= m_filePositions.size() - 2; i++)
+		for (int i = 0; i <= m_filePositions.size() - 2; i++)
 		{
 			int j = i + Mersenne::random() % (m_filePositions.size() - i);
 			std::swap(m_filePositions[i], m_filePositions[j]);
