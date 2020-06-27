@@ -139,16 +139,16 @@ bool EpdRecord::parse(QTextStream& stream)
 
 void EpdRecord::appendMoveCounters()
 {
-	if (hasOpcode("hmvc") && m_operations.value("hmvc").length() > 0)
-		m_fen.append(m_operations.value("hmvc")[0]);
+	if (hasOpcode("hmvc") && !m_operations.value("hmvc").isEmpty())
+		m_fen.append(m_operations.value("hmvc").first());
 
 	else
 		m_fen.append("0");
 
 	m_fen.append(" ");
 
-	if (hasOpcode("fmvn") && m_operations.value("fmvn").length() > 0)
-		m_fen.append(m_operations.value("fmvn")[0]);
+	if (hasOpcode("fmvn") && !m_operations.value("fmvn").isEmpty())
+		m_fen.append(m_operations.value("fmvn").first());
 
 	else
 		m_fen.append("1");
