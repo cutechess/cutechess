@@ -1,4 +1,4 @@
-.Dd April 29, 2019
+.Dd June 28, 2020
 .Dt CUTECHESS-CLI 6
 .Os
 .Sh NAME
@@ -176,7 +176,8 @@ centipawns from zero for at least
 .Ar count
 consecutive moves, and at least
 .Ar number
-full moves have been played. Captures and pawn moves will reset the counters.
+full moves have been played.
+Captures and pawn moves will reset the counters.
 .It Fl resign Cm movecount Ns = Ns Ar count Cm score Ns = Ns Ar score Bq Cm twosided Ns = Ns Ar value
 Adjudicate the game as a loss if an engine's score is at least
 .Ar score
@@ -185,8 +186,8 @@ centipawns below zero for at least
 consecutive moves.
 If
 .Ar value
-is true (default: false) then activate two-sided resign adjudication. The winning side's
-scores must be at least
+is true (default: false) then activate two-sided resign adjudication.
+The winning side's scores must be at least
 .Ar score
 centipawns above zero for at least
 .Ar count
@@ -194,7 +195,8 @@ consecutive moves
 .It Fl maxmoves Ar n
 Adjudicate the game as a draw if at least
 .Ar n
-full moves have been played without result. Ignored if
+full moves have been played without result.
+Ignored if
 .Ar n
 equals zero (default).
 .It Fl tb Ar paths
@@ -271,7 +273,7 @@ Set the interval for printing the ratings to
 games.
 .It Fl debug
 Display all engine input and output.
-.It Fl openings Cm file Ns = Ns Ar file Cm format Ns = Ns [ Cm epd | Cm pgn Ns ] Cm order Ns = Ns [ Cm random | Cm sequential Ns ] Cm plies Ns = Ns Ar plies Cm start Ns = Ns Ar start Cm policy Ns = Ns [ Cm default | Cm encounter | Cm round ]
+.It Fl openings Cm file Ns = Ns Ar file Cm format Ns = Ns Bo Cm epd | Cm pgn Ns Bc Cm order Ns = Ns Bo Cm random | Cm sequential Bc Cm plies Ns = Ns Ar plies Cm start Ns = Ns Ar start Cm policy Ns = Ns Bo Cm default | Cm encounter | Cm round Bc
 Pick game openings from
 .Ar file .
 The file can be either in
@@ -301,11 +303,13 @@ is 1 (default).
 .Pp
 The value of
 .Ar policy
-rules when to shift to a new opening. If set to
+rules when to shift to a new opening.
+If set to
 .Cm encounter
 a new opening is used for any new pair of players,
 .Cm round
-shifts when a new round begins. The
+shifts when a new round begins.
+The
 .Cm default
 shifts for any new pair of players and also when the
 specified number of opening repetitions is reached.
@@ -318,11 +322,12 @@ is either
 .Cm disk
 (the book is accessed directly on disk).
 The default mode is
-.Cm ram.
-.It Fl pgnout Ar file Bq Cm min Cm Bq fi
+.Cm ram .
+.It Fl pgnout Ar file Bo Cm min Bc Bo Cm fi Bc
 Save the games to
 .Ar file
-in PGN format. Use the
+in PGN format.
+Use the
 .Cm min
 argument to save in a minimal PGN format.
 Only finished games will be saved if argument
@@ -334,19 +339,22 @@ Save the games to
 in FEN format.
 .It Fl recover
 Restart crashed engines instead of stopping the game.
-.It Fl repeat Bq Cm Ar n
+.It Fl repeat Bq Ar n
 Play each opening twice (or
 .Ar n
-times). Unless the -noswap option is used, the players swap
-sides after each game. So they get to play the
-opening on both sides. Please note that a new encounter will use
-a new opening.
+times).
+Unless the
+.Fl noswap
+option is used, the players swap sides after each game.
+So they get to play the opening on both sides.
+Please note that a new encounter will use a new opening.
 .It Fl noswap
 Do not swap sides of paired engines
 .It Fl seeds Ar n
 Set the first
 .Ar n
-engines as seeds in the tournament. The default is 0.
+engines as seeds in the tournament.
+The default is 0.
 .It Fl site Ar arg
 Set the site / location to
 .Ar arg .
@@ -355,7 +363,8 @@ Set the random seed for the book move selector.
 .It Fl wait Ar n
 Wait
 .Ar n
-milliseconds between games. The default is 0.
+milliseconds between games.
+The default is 0.
 .It Fl version
 Display the version information.
 .It Fl help
@@ -381,9 +390,9 @@ Set the working directory to
 .It Ic stderr Ns = Ns Ar arg
 Redirect standard error output to file
 .Ar arg .
-.It Ic proto Ns = Ns [ Cm uci | Cm xboard  Ns ]
+.It Ic proto Ns = Ns Bq Cm uci | Cm xboard
 Set the chess protocol.
-.It Ic tc Ns = Ns [ Ns Ar tcformat | Cm inf Ns ]
+.It Ic tc Ns = Ns Bq Ar tcformat | Cm inf
 Set the time control.
 The format is moves/time+increment,
 where
@@ -407,7 +416,7 @@ to the engine as a command line argument.
 Send
 .Ar arg
 to the engine's standard input at startup.
-.It Ic restart Ns = Ns [ Cm auto | Cm on | Cm off Ns ]
+.It Ic restart Ns = Ns Bq Cm auto | Cm on | Cm off
 Set the engine restart mode.
 .Cm auto
 means the engine decides whether to restart (default),
@@ -498,16 +507,12 @@ The
 .Nm
 utility was written by
 .An Ilari Pihlajisto ,
-.Mt ilari.pihlajisto@mbnet.fi ;
-and
-.An Arto Jonsson ,
-.Mt ajonsson@kapsi.fi .
+.An Arto Jonsson
+and contributors.
+See the project page for more details.
 .Sh RESOURCES
 .Bl -bullet
 .It
 Project page:
 .Lk http://github.com/cutechess/cutechess
-.It
-Mailing list:
-.Lk https://list.kapsi.fi/listinfo/cutechess
 .El
