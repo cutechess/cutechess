@@ -1,10 +1,10 @@
-FROM ubuntu:trusty
+FROM ubuntu:bionic
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-RUN apt-get update && apt-get install -y software-properties-common python-software-properties && add-apt-repository ppa:beineri/opt-qt571-trusty
-RUN apt-get update && apt-get install -y git qt57base qt57svg build-essential mesa-common-dev libglu1-mesa-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y software-properties-common && add-apt-repository ppa:beineri/opt-qt-5.11.3-bionic
+RUN apt-get update && apt-get install -y git qt511base qt511svg build-essential mesa-common-dev libglu1-mesa-dev && rm -rf /var/lib/apt/lists/*
 
-ENV QT_BASE_DIR=/opt/qt57
+ENV QT_BASE_DIR=/opt/qt511
 ENV QTDIR=$QT_BASE_DIR
 ENV PATH=$QT_BASE_DIR/bin:$PATH
 ENV LD_LIBRARY_PATH=$QT_BASE_DIR/lib/x86_64-linux-gnu:$QT_BASE_DIR/lib:$LD_LIBRARY_PATH
@@ -69,17 +69,17 @@ RUN \
     -v "$TODAY+$CUTECHESS_CLI_VERSION+$CUTECHESS_GUI_VERSION" \
     --iteration 1 \
     --category "games" \
-    -m "Ilari Pihlajisto <ilari.pihlajisto@mbnet.fi>" \
+    -m "Ilari Pihlajisto <ilaripih@gmail.com>" \
     --description "Commandline and graphical interface for playing chess" \
-    -d "libc6 (>= 2.19)" \
-    -d "libgcc1 (>= 1:4.9)" \
-    -d "libqt5svg5 (>= 5.7.0)" \
-    -d "libqt5core5a (>= 5.7.0)" \
-    -d "libqt5gui5 (>= 5.7.0)" \
-    -d "libqt5widgets5 (>= 5.7.0)" \
-    -d "libqt5printsupport5 (>= 5.7.0)" \
-    -d "libqt5concurrent5 (>= 5.7.0)" \
-    -d "libstdc++6 (>= 4.8.4)" && \
+    -d "libc6 (>= 2.27)" \
+    -d "libgcc1 (>= 1:8.3.0)" \
+    -d "libqt5svg5 (>= 5.11.0)" \
+    -d "libqt5core5a (>= 5.11.0)" \
+    -d "libqt5gui5 (>= 5.11.0)" \
+    -d "libqt5widgets5 (>= 5.11.0)" \
+    -d "libqt5printsupport5 (>= 5.11.0)" \
+    -d "libqt5concurrent5 (>= 5.11.0)" \
+    -d "libstdc++6 (>= 8.3.0)" && \
   mv /cutechess_pkg/*.deb /finished_pkg/ && \
   fpm -s dir -t rpm -C /cutechess_pkg \
     -a "x86_64" \
@@ -89,10 +89,10 @@ RUN \
     -v "$TODAY+$CUTECHESS_CLI_VERSION+$CUTECHESS_GUI_VERSION" \
     --iteration 1 \
     --category "Amusements/Games/Board/Chess" \
-    -m "Ilari Pihlajisto <ilari.pihlajisto@mbnet.fi>" \
+    -m "Ilari Pihlajisto <ilaripih@gmail.com>" \
     --description "Commandline and graphical interface for playing chess" \
-    -d "qt5-qtbase >= 5.7.0" \
-    -d "qt5-qtsvg >= 5.7.0" && \
+    -d "qt5-qtbase >= 5.11.0" \
+    -d "qt5-qtsvg >= 5.11.0" && \
   mv /cutechess_pkg/*.rpm /finished_pkg/
 
 # Create .tar.gz package for cutechess-cli
