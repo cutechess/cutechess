@@ -270,7 +270,7 @@ const QMap<QString, QString> & Tournament::namedResultFormats() const
 
 const QList< QString > Tournament::resultFieldTokens() const
 {
-	return m_tokenMap.values();
+	return m_tokenMap.keys();
 }
 
 void Tournament::setPgnOutput(const QString& fileName, PgnGame::PgnMode mode)
@@ -976,7 +976,7 @@ QString Tournament::results() const
 }
 
 
-ResultFormatter::ResultFormatter::ResultFormatter(const QMap<int, QString>& tokenMap,
+ResultFormatter::ResultFormatter::ResultFormatter(const QMap<QString, int>& tokenMap,
 						  const QString& format,
 						  QObject* parent)
 	: QObject(parent),
@@ -1002,7 +1002,7 @@ QString ResultFormatter::entry(const QMap<int, QString>& data) const
 	QString ret;
 	for (const QString& token: qAsConst(m_tokenList))
 	{
-		int key = m_tokenMap.key(token, -1);
+		int key = m_tokenMap.value(token, -1);
 		if (key >= 0)
 			ret.append(data.value(key));
 	}

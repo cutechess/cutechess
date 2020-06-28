@@ -487,35 +487,35 @@ class LIB_EXPORT Tournament : public QObject
 			BlackLOS
 		};
 
-		const QMap<int, QString> m_tokenMap = {
-			{Rank,             "Rank"},
-			{Name,             "Name"},
-			{Games,            "Games"},
-			{Wins,             "W"},
-			{Losses,           "L"},
-			{Draws,            "D"},
-			{WhiteWins,        "wW"},
-			{WhiteLosses,      "wL"},
-			{WhiteDraws,       "wD"},
-			{BlackWins,        "bW"},
-			{BlackLosses,      "bL"},
-			{BlackDraws,       "bD"},
-			{Points,           "Points"},
-			{Score,            "Score"},
-			{DrawScore,        "DScore"},
-			{EloDiff,          "Elo"},
-			{ErrorMargin,      "Error"},
-			{LOS,              "LOS"},
-			{WhiteScore,       "wScore"},
-			{WhiteDrawScore,   "wDScore"},
-			{WhiteEloDiff,     "wElo"},
-			{WhiteErrorMargin, "wError"},
-			{WhiteLOS,         "wLOS"},
-			{BlackScore,       "bScore"},
-			{BlackDrawScore,   "bDScore"},
-			{BlackEloDiff,     "bElo"},
-			{BlackErrorMargin, "bError"},
-			{BlackLOS,         "bLOS"}
+		const QMap<QString, int> m_tokenMap = {
+			{"Rank",    Rank},
+			{"Name",    Name},
+			{"Games",   Games},
+			{"W",       Wins},
+			{"L",       Losses},
+			{"D",       Draws},
+			{"wW",      WhiteWins},
+			{"wL",      WhiteLosses},
+			{"wD",      WhiteDraws},
+			{"bW",      BlackWins},
+			{"bL",      BlackLosses},
+			{"bD",      BlackDraws},
+			{"Points",  Points},
+			{"Score",   Score},
+			{"DScore",  DrawScore},
+			{"Elo",     EloDiff},
+			{"Error",   ErrorMargin},
+			{"LOS",     LOS},
+			{"wScore",  WhiteScore},
+			{"wDScore", WhiteDrawScore},
+			{"wElo",    WhiteEloDiff},
+			{"wError",  WhiteErrorMargin},
+			{"wLOS",    WhiteLOS},
+			{"bScore",  BlackScore},
+			{"bDScore", BlackDrawScore},
+			{"bElo",    BlackEloDiff},
+			{"bError",  BlackErrorMargin},
+			{"bLOS",    BlackLOS}
 		};
 
 		const QMap<QString, QString> m_namedFormats =
@@ -632,7 +632,7 @@ class LIB_EXPORT ResultFormatter : public QObject
 		 * The ResultFormatter uses a reference to a map of available
 		 * tokens \a tokenMap to generate a tournament result list.
 		 */
-		ResultFormatter(const QMap<int, QString>& tokenMap,
+		ResultFormatter(const QMap<QString, int>& tokenMap,
 				const QString& format = QString(),
 				QObject* parent = nullptr);
 		/*!
@@ -646,7 +646,7 @@ class LIB_EXPORT ResultFormatter : public QObject
 		QString entry(const QMap<int, QString>& data) const;
 	private:
 		QString m_entryFormat;
-		QMap<int, QString> m_tokenMap;
+		QMap<QString, int> m_tokenMap;
 		QStringList m_tokenList;
 };
 
