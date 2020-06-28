@@ -330,7 +330,7 @@ class LIB_EXPORT Board
 		/*! Returns true if \a piece on \a square can move like \a movement. */
 		bool pieceHasMovement(Piece piece, int square, unsigned movement) const;
 		/*! Returns true if \a pieceType can move like \a movement. */
-		bool pieceTypeHasMovement(int pieceType, unsigned movement) const;
+		virtual bool pieceTypeHasMovement(int pieceType, unsigned movement) const;
 
 		/*!
 		 * Makes \a move on the board.
