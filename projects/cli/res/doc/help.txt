@@ -57,6 +57,8 @@ Options:
 			'losalamos': Los Alamos Chess
 			'losers': Loser's Chess
 			'makruk': Makruk (Thai Chess)
+            'manchu': Manchu (A variant of Xiangqi)
+            'minixiangqi': Minixiangqi (A variant derived from Xiangqi)
 			'modern': Modern Chess (9x9)
 			'newzealand': New Zealand Chess (has N/R hybrids)
 			'placement': Placement Chess
@@ -75,6 +77,7 @@ Options:
 			'twokings': Two Kings Each Chess (Wild 9)
 			'twokingssymmetric': Symmetrical Two Kings Each Chess
 			'standard': Standard Chess (default).
+			'xiangqi': Chinese Chess
   -concurrency N	Set the maximum number of concurrent games to N
   -draw movenumber=NUMBER movecount=COUNT score=SCORE
 			Adjudicate the game as a draw if the score of both

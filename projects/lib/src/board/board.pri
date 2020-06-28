@@ -61,7 +61,13 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/gustavboard.cpp \
     $$PWD/boardfactory.cpp \
     $$PWD/boardtransition.cpp \
-    $$PWD/syzygytablebase.cpp
+    $$PWD/syzygytablebase.cpp \
+    $$PWD/easternboard.cpp \
+    $$PWD/easternzobrist.cpp \
+    $$PWD/xiangqiboard.cpp \
+    $$PWD/xiangqizobrist.cpp \
+    $$PWD/manchuboard.cpp \
+    $$PWD/minixiangqiboard.cpp
 HEADERS += $$PWD/board.h \
     $$PWD/move.h \
     $$PWD/piece.h \
@@ -126,4 +132,10 @@ HEADERS += $$PWD/board.h \
     $$PWD/gustavboard.h \
     $$PWD/boardfactory.h \
     $$PWD/boardtransition.h \
-    $$PWD/syzygytablebase.h
+    $$PWD/syzygytablebase.h \
+    $$PWD/easternboard.h \
+    $$PWD/easternzobrist.h \
+    $$PWD/xiangqiboard.h \
+    $$PWD/xiangqizobrist.h \
+    $$PWD/manchuboard.h \
+    $$PWD/minixiangqiboard.h
