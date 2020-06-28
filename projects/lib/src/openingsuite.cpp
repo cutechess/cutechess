@@ -19,6 +19,7 @@
 #include "openingsuite.h"
 #include <QFile>
 #include <QTextStream>
+#include <algorithm>
 #include "pgnstream.h"
 #include "epdrecord.h"
 #include "mersenne.h"
@@ -115,9 +116,15 @@ bool OpeningSuite::initialize()
 	if (m_format == PgnFormat)
 		m_pgnStream = new PgnStream(m_file);
 
+	if (m_format == EpdFormat)
+	{
+		m_file->reset();
+		m_epdStream = new QTextStream(m_file);
+	}
+
 	if (m_order == RandomOrder)
 	{
-		// Create a shuffled vector of file positions
+		// Create a vector of file positions
 		for (;;)
 		{
 			FilePosition pos;
@@ -129,15 +136,20 @@ bool OpeningSuite::initialize()
 			if (pos.pos == -1)
 				break;
 
-			int i = Mersenne::random() % (m_filePositions.size() + 1);
-			if (i == m_filePositions.size())
-				m_filePositions.append(pos);
-			else
-			{
-				m_filePositions.append(m_filePositions.at(i));
-				m_filePositions[i] = pos;
-			}
+			m_filePositions.append(pos);
 		}
+
+		// use a Knuth shuffle to generate a random permutation
+		for (int i = 0; i <= m_filePositions.size() - 2; i++)
+		{
+			int j = i + Mersenne::random() % (m_filePositions.size() - i);
+			std::swap(m_filePositions[i], m_filePositions[j]);
+		}
+
+		if (m_startIndex >= m_filePositions.size())
+			qWarning("Start index larger than book size, wrapping after %d.", m_filePositions.size());
+
+		m_gameIndex += m_startIndex % m_filePositions.size();
 	}
 	else if (m_order == SequentialOrder)
 	{
@@ -145,19 +157,25 @@ bool OpeningSuite::initialize()
 		{
 			FilePosition pos;
 			if (m_format == EpdFormat)
+			{
 				pos = getEpdPos();
+				if (m_epdStream->atEnd())
+				{
+					qWarning("Start index larger than book size, wrapping after %d.", i + 1);
+					m_epdStream->seek(0);
+					m_epdStream->resetStatus();
+                                }
+			}
 			else if (m_format == PgnFormat)
+			{
 				pos = getPgnPos();
-
-			if (pos.pos == -1)
-				break;
+				if (!m_pgnStream->nextGame())
+				{
+					qWarning("Start index larger than book size, wrapping after %d.", i + 1);
+					m_pgnStream->rewind();
+				}
+			}
 		}
-	}
-
-	if (m_format == EpdFormat)
-	{
-		m_file->reset();
-		m_epdStream = new QTextStream(m_file);
 	}
 
 	return true;

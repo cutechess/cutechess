@@ -75,9 +75,9 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 	else if (type == "text" || type == "file" || type == "folder")
 	{
 		EngineTextOption::EditorType editorType;
-		if (type == "file")
+		if (type == "file" || name.endsWith("File"))
 			editorType = EngineTextOption::FileDialog;
-		else if (type == "folder")
+		else if (type == "folder" || name.endsWith("Path"))
 			editorType = EngineTextOption::FolderDialog;
 		else
 			editorType = EngineTextOption::LineEdit;

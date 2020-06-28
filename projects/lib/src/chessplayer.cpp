@@ -154,6 +154,12 @@ void ChessPlayer::setTimeControl(const TimeControl& timeControl)
 	m_timeControl = timeControl;
 }
 
+void ChessPlayer::addTime(int bonus)
+{
+	int timeLeft = m_timeControl.timeLeft();
+	m_timeControl.setTimeLeft(timeLeft + bonus);
+}
+
 Chess::Side ChessPlayer::side() const
 {
 	return m_side;

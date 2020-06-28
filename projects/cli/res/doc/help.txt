@@ -35,7 +35,9 @@ Options:
 			'courier': Courier Chess
 			'crazyhouse': Crazyhouse (Drop Chess)
 			'discplacedgrid': Displaced Grid Chess
+			'dobutsu': Dobutsu Shogi (3x4)
 			'embassy': Embassy Chess
+			'euroshogi': EuroShogi (8x8)
 			'extinction': Extinction Chess
 			'fischerandom': Fischer Random Chess/Chess 960
 			'giveaway': Giveaway Chess (Losing Chess)
@@ -49,6 +51,7 @@ Options:
 			'horde': Horde Chess (v2)
 			'janus': Janus Chess
 			'jesonmor': Jeson Mör
+			'judkins': Judkins Shogi (6x6)
 			'karouk': Kar Ouk (One-check Ouk)
 			'kinglet': Kinglet Chess
 			'kingofthehill': King of the Hill Chess
@@ -57,6 +60,7 @@ Options:
 			'losalamos': Los Alamos Chess
 			'losers': Loser's Chess
 			'makruk': Makruk (Thai Chess)
+			'minishogi': Minishogi (5x5)
 			'modern': Modern Chess (9x9)
 			'newzealand': New Zealand Chess (has N/R hybrids)
 			'placement': Placement Chess
@@ -65,6 +69,7 @@ Options:
 			'rifle': Rifle Chess
 			'seirawan': S-Chess (Seirawan Chess)
 			'shatranj': Shatranj
+			'shogi' : Shogi
 			'shoot': Shoot Chess
 			'slippedgrid': Slipped Grid Chess
 			'simplifiedgryphon': Simplified Gryphon Chess
@@ -155,11 +160,19 @@ Options:
 			option is used, the players swap sides after each game.
 			So they get to play the opening on both sides. Please
 			note that a new encounter will use a new opening.
-  -noswap		Do not swap sides of paired engines
+  -noswap		Do not swap sides of paired engines.
+  -reverse		Use schedule with reverse sides.
   -seeds N		Set the first N engines as seeds in the tournament
   -site SITE		Set the site/location to SITE
   -srand N		Set the seed for the random number generator to N
   -wait N		Wait N milliseconds between games. The default is 0.
+  -resultformat FORMAT  Specify the format of result lists. FORMAT can either be
+			a comma separated list of fields or a format name.
+			Format 'help' shows available named formats. The
+			'default' format lists rank, name, elo, elo error,
+			number of games, score percentage, and draw percentage
+			of every player.
+
 
 Engine options:
 

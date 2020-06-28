@@ -21,6 +21,7 @@
 #include "board/board.h"
 #include "chessplayer.h"
 #include "openingbook.h"
+#include "timecontrol.h"
 
 namespace {
 
@@ -278,6 +279,10 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 	m_board->undoMove();
 
 	ChessPlayer* player = playerToWait();
+	if (player->timeControl()->isHourglass()
+	&&  sender->timeControl()->isHourglass())
+		player->addTime(sender->timeControl()->lastMoveTime());
+
 	player->makeMove(move);
 	m_board->makeMove(move);
 

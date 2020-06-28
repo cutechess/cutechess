@@ -35,7 +35,9 @@
 #include "coregalboard.h"
 #include "courierboard.h"
 #include "crazyhouseboard.h"
+#include "dobutsushogiboard.h"
 #include "embassyboard.h"
+#include "euroshogiboard.h"
 #include "extinctionboard.h"
 #include "frcboard.h"
 #include "giveawayboard.h"
@@ -48,6 +50,7 @@
 #include "hordeboard.h"
 #include "janusboard.h"
 #include "jesonmorboard.h"
+#include "judkinsshogiboard.h"
 #include "kingofthehillboard.h"
 #include "knightmateboard.h"
 #include "loopboard.h"
@@ -55,6 +58,7 @@
 #include "losersboard.h"
 #include "ncheckboard.h"
 #include "makrukboard.h"
+#include "minishogiboard.h"
 #include "modernboard.h"
 #include "oukboard.h"
 #include "placementboard.h"
@@ -63,6 +67,7 @@
 #include "rifleboard.h"
 #include "seirawanboard.h"
 #include "shatranjboard.h"
+#include "shogiboard.h"
 #include "sittuyinboard.h"
 #include "standardboard.h"
 #include "suicideboard.h"
@@ -96,7 +101,9 @@ REGISTER_BOARD(CoRegalBoard, "coregal")
 REGISTER_BOARD(CourierBoard, "courier")
 REGISTER_BOARD(CrazyhouseBoard, "crazyhouse")
 REGISTER_BOARD(DisplacedGridBoard, "displacedgrid")
+REGISTER_BOARD(DobutsuShogiBoard, "dobutsu")
 REGISTER_BOARD(EmbassyBoard, "embassy")
+REGISTER_BOARD(EuroShogiBoard, "euroshogi")
 REGISTER_BOARD(ExtinctionBoard, "extinction")
 REGISTER_BOARD(KingletBoard, "kinglet")
 REGISTER_BOARD(FrcBoard, "fischerandom")
@@ -111,6 +118,7 @@ REGISTER_BOARD(HoppelPoppelBoard, "hoppelpoppel")
 REGISTER_BOARD(HordeBoard, "horde")
 REGISTER_BOARD(JanusBoard, "janus")
 REGISTER_BOARD(JesonMorBoard, "jesonmor")
+REGISTER_BOARD(JudkinsShogiBoard, "judkins")
 REGISTER_BOARD(KarOukBoard,"karouk")
 REGISTER_BOARD(KingOfTheHillBoard, "kingofthehill")
 REGISTER_BOARD(KnightMateBoard, "knightmate")
@@ -118,6 +126,7 @@ REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosAlamosBoard, "losalamos")
 REGISTER_BOARD(LosersBoard, "losers")
 REGISTER_BOARD(MakrukBoard, "makruk")
+REGISTER_BOARD(MiniShogiBoard, "minishogi")
 REGISTER_BOARD(ModernBoard, "modern")
 REGISTER_BOARD(NewZealandBoard, "newzealand")
 REGISTER_BOARD(PlacementBoard, "placement")
@@ -126,6 +135,7 @@ REGISTER_BOARD(RacingKingsBoard, "racingkings")
 REGISTER_BOARD(RifleBoard, "rifle")
 REGISTER_BOARD(SeirawanBoard, "seirawan")
 REGISTER_BOARD(ShatranjBoard, "shatranj")
+REGISTER_BOARD(ShogiBoard, "shogi")
 REGISTER_BOARD(ShootBoard, "shoot")
 REGISTER_BOARD(SimplifiedGryphonBoard, "simplifiedgryphon")
 REGISTER_BOARD(SittuyinBoard, "sittuyin")

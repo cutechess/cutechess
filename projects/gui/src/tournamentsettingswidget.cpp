@@ -19,6 +19,8 @@
 #include "tournamentsettingswidget.h"
 #include "ui_tournamentsettingswidget.h"
 #include <QSettings>
+#include "gamemanager.h"
+#include "roundrobintournament.h"
 
 TournamentSettingsWidget::TournamentSettingsWidget(QWidget *parent)
 	: QWidget(parent),
@@ -58,6 +60,21 @@ TournamentSettingsWidget::TournamentSettingsWidget(QWidget *parent)
 	// Update repeats after tournament type changed
 	connect(this, &TournamentSettingsWidget::tournamentTypeChanged,
 		ui->m_repeatSpin, &GameRepetitionSpinBox::setTournamentType);
+
+	GameManager gameManager;
+	RoundRobinTournament tournament(&gameManager);
+	const auto map = tournament.namedResultFormats();
+	for (auto it = map.constBegin(); it != map.constEnd(); ++it)
+		ui->m_resultFormatCombo->addItem(it.key(), it.value());
+	ui->m_resultFormatCombo->setCurrentIndex(-1);
+
+	connect(ui->m_resultFormatCombo,
+		static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
+		this, [=](const QString&)
+	{
+		const QVariant value = ui->m_resultFormatCombo->currentData();
+		ui->m_resultFormatEdit->setText(value.toString());
+	});
 
 	readSettings();
 }
@@ -124,6 +141,11 @@ bool TournamentSettingsWidget::swappingSides() const
 	return ui->m_swapCheck->isChecked();
 }
 
+QString TournamentSettingsWidget::resultFormat() const
+{
+	return ui->m_resultFormatEdit->text();
+}
+
 void TournamentSettingsWidget::readSettings()
 {
 	QSettings s;
@@ -149,6 +171,19 @@ void TournamentSettingsWidget::readSettings()
 	ui->m_saveUnfinishedGamesCheck->setChecked(
 		s.value("save_unfinished_games", true).toBool());
 	ui->m_swapCheck->setChecked(s.value("swap_sides", true).toBool());
+
+	QString format = s.value("result_format").toString();
+	if (format.isEmpty())
+	{
+		int defaultIdx = ui->m_resultFormatCombo->findText("default");
+		ui->m_resultFormatCombo->setCurrentIndex(defaultIdx);
+	}
+	else
+	{
+		ui->m_resultFormatCombo->addItem("setting", QVariant(format));
+		int index = ui->m_resultFormatCombo->findData(format);
+		ui->m_resultFormatCombo->setCurrentIndex(index);
+	}
 
 	s.endGroup();
 }
@@ -213,5 +248,9 @@ void TournamentSettingsWidget::enableSettingsUpdates()
 	connect(ui->m_swapCheck, &QCheckBox::toggled, [=](bool checked)
 	{
 		QSettings().setValue("tournament/swap_sides", checked);
+	});
+	connect(ui->m_resultFormatEdit, &QLineEdit::textChanged, [=](const QString &text)
+	{
+		QSettings().setValue("tournament/result_format", text);
 	});
 }

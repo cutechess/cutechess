@@ -154,6 +154,7 @@ bool parseEngine(const QStringList& args, EngineData& data)
 			}
 
 			data.tc.setInfinity(tc.isInfinite());
+			data.tc.setHourglass(tc.isHourglass());
 			data.tc.setTimePerTc(tc.timePerTc());
 			data.tc.setMovesPerTc(tc.movesPerTc());
 			data.tc.setTimeIncrement(tc.timeIncrement());
@@ -254,6 +255,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-rounds", QVariant::Int, 1, 1);
 	parser.addOption("-sprt", QVariant::StringList);
 	parser.addOption("-ratinginterval", QVariant::Int, 1, 1);
+	parser.addOption("-resultformat", QVariant::String, 1, 1);
 	parser.addOption("-debug", QVariant::Bool, 0, 0);
 	parser.addOption("-openings", QVariant::StringList);
 	parser.addOption("-bookmode", QVariant::String);
@@ -261,6 +263,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-epdout", QVariant::String, 1, 1);
 	parser.addOption("-repeat", QVariant::Int, 0, 1);
 	parser.addOption("-noswap", QVariant::Bool, 0, 0);
+	parser.addOption("-reverse", QVariant::Bool, 0, 0);
 	parser.addOption("-recover", QVariant::Bool, 0, 0);
 	parser.addOption("-site", QVariant::String, 1, 1);
 	parser.addOption("-wait", QVariant::Int, 1, 1);
@@ -423,6 +426,28 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Interval for rating list updates
 		else if (name == "-ratinginterval")
 			match->setRatingInterval(value.toInt());
+		// Interval for rating list updates
+		else if (name == "-resultformat")
+		{
+			if (value == "help")
+			{
+				qInfo() << "\nOption -resultformat accepts a comma separated list of fields or one of following format names:\n";
+				const auto& map = tournament->namedResultFormats();
+				for (auto it = map.constBegin(); it != map.constEnd(); ++it)
+					qInfo() << qUtf8Printable(it.key()) << "\n  "
+						<< qUtf8Printable(it.value());
+				qInfo() <<"\nField tokens:";
+				QString s;
+				for (const QString& token: tournament->resultFieldTokens())
+				{
+					 s.append(qUtf8Printable(token));
+					 s.append(" ");
+				}
+				qInfo() << "  " << qUtf8Printable(s);
+				return 0;
+			}
+			tournament->setResultFormat(value.toString().left(256).trimmed());
+		}
 		// Debugging mode. Prints all engine input and output.
 		else if (name == "-debug")
 		{
@@ -556,6 +581,9 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Do not swap sides between paired engines
 		else if (name == "-noswap")
 			tournament->setSwapSides(false);
+		// Use tournament schedule but with reverse sides
+		else if (name == "-reverse")
+			tournament->setReverseSides(true);
 		// Recover crashed/stalled engines
 		else if (name == "-recover")
 			tournament->setRecoveryMode(true);
@@ -694,7 +722,8 @@ int main(int argc, char* argv[])
 		{
 			out << "cutechess-cli " << CUTECHESS_CLI_VERSION << endl;
 			out << "Using Qt version " << qVersion() << endl << endl;
-			out << "Copyright (C) 2008-2018 Ilari Pihlajisto and Arto Jonsson" << endl;
+			out << "Copyright (C) 2008-2020 Ilari Pihlajisto, Arto Jonsson ";
+			out << "and contributors" << endl;
 			out << "This is free software; see the source for copying ";
 			out << "conditions.  There is NO" << endl << "warranty; not even for ";
 			out << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";

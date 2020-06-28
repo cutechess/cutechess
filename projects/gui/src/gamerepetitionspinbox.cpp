@@ -20,7 +20,6 @@
 
 GameRepetitionSpinBox::GameRepetitionSpinBox(QWidget *parent)
 	: QSpinBox(parent),
-	  m_maxGames(1),
 	  m_gamesPerEncounter(1),
 	  m_rounds(1)
 {
@@ -29,24 +28,21 @@ GameRepetitionSpinBox::GameRepetitionSpinBox(QWidget *parent)
 void GameRepetitionSpinBox::setGamesPerEncounter(int gamesPerEncounter)
 {
 	m_gamesPerEncounter = gamesPerEncounter;
-
-	// Adapt limits for repeatSpin
-	setRange(1, m_gamesPerEncounter);
-
-	// Remember the current maximum number of games
-	m_maxGames = maximum();
+	setMaximum(limit());
 	interpretText();
 }
 
 void GameRepetitionSpinBox::setRounds(int rounds)
 {
 	m_rounds = rounds;
+	setMaximum(limit());
 	interpretText();
 }
 
 void GameRepetitionSpinBox::setTournamentType(const QString& tournamentType)
 {
 	m_tournamentType = tournamentType;
+	setMaximum(limit());
 	interpretText();
 }
 
@@ -58,8 +54,13 @@ int GameRepetitionSpinBox::limit() const
 		return games;
 
 	int factor = m_rounds;
-	while ((long)games * (long)factor > m_maxGames || m_rounds % factor)
+	while (m_rounds % factor)
+	{
 		factor--;
+		// Avoid division by zero
+		if (factor < 1)
+			return games;
+	}
 
 	return games * factor;
 }
@@ -84,7 +85,7 @@ QValidator::State GameRepetitionSpinBox::examine(int value) const
 QValidator::State GameRepetitionSpinBox::validate(QString& input, int&) const
 {
 	int value = valueFromText(input);
-	if (value < 1 || value > m_maxGames)
+	if (value < 1)
 		return QValidator::State::Invalid;
 
 	if (m_gamesPerEncounter <= 0
@@ -128,6 +129,4 @@ void GameRepetitionSpinBox::stepBy(int steps)
 		val += step;
 	}
 	setValue(qBound(1, val, upperLimit));
-	setRange(1, upperLimit);
 }
-

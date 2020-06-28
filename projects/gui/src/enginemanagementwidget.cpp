@@ -200,7 +200,7 @@ void EngineManagementWidget::cloneEngine()
 	int row = m_filteredModel->mapToSource(index).row();
 	EngineConfiguration config(m_engineManager->engineAt(row));
 
-	config.setName("_From " + config.name());
+	config.setName(config.name() + " (Copy)");
 
 	auto dlg = new EngineConfigurationDialog(
 		EngineConfigurationDialog::AddEngine, this);

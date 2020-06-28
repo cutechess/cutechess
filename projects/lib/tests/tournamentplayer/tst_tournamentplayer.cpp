@@ -99,6 +99,12 @@ void tst_TournamentPlayer::initialValues()
 	QCOMPARE(m_player->draws(), 0);
 	QCOMPARE(m_player->losses(), 0);
 	QCOMPARE(m_player->gamesFinished(), 0);
+	QCOMPARE(m_player->whiteWins(), 0);
+	QCOMPARE(m_player->whiteDraws(), 0);
+	QCOMPARE(m_player->whiteLosses(), 0);
+	QCOMPARE(m_player->blackWins(), 0);
+	QCOMPARE(m_player->blackDraws(), 0);
+	QCOMPARE(m_player->blackLosses(), 0);
 }
 
 void tst_TournamentPlayer::setName()
@@ -111,26 +117,84 @@ void tst_TournamentPlayer::addScore()
 {
 	QCOMPARE(m_player->gamesFinished(), 0);
 
-	m_player->addScore(0);
+	m_player->addScore(Chess::Side::White, 0);
 	QCOMPARE(m_player->gamesFinished(), 1);
 	QCOMPARE(m_player->score(), 0);
 	QCOMPARE(m_player->draws(), 0);
 	QCOMPARE(m_player->wins(), 0);
 	QCOMPARE(m_player->losses(), 1);
+	QCOMPARE(m_player->draws(), 0);
+	QCOMPARE(m_player->whiteWins(), 0);
+	QCOMPARE(m_player->whiteLosses(), 1);
+	QCOMPARE(m_player->whiteDraws(), 0);
+	QCOMPARE(m_player->blackWins(), 0);
+	QCOMPARE(m_player->blackLosses(), 0);
+	QCOMPARE(m_player->blackDraws(), 0);
 
-	m_player->addScore(1);
+	m_player->addScore(Chess::Side::White, 1);
 	QCOMPARE(m_player->gamesFinished(), 2);
 	QCOMPARE(m_player->score(), 1);
 	QCOMPARE(m_player->draws(), 1);
 	QCOMPARE(m_player->wins(), 0);
 	QCOMPARE(m_player->losses(), 1);
+	QCOMPARE(m_player->whiteWins(), 0);
+	QCOMPARE(m_player->whiteLosses(), 1);
+	QCOMPARE(m_player->whiteDraws(), 1);
+	QCOMPARE(m_player->blackWins(), 0);
+	QCOMPARE(m_player->blackLosses(), 0);
+	QCOMPARE(m_player->blackDraws(), 0);
 
-	m_player->addScore(2);
+	m_player->addScore(Chess::Side::White, 2);
 	QCOMPARE(m_player->gamesFinished(), 3);
 	QCOMPARE(m_player->score(), 3);
 	QCOMPARE(m_player->draws(), 1);
 	QCOMPARE(m_player->wins(), 1);
 	QCOMPARE(m_player->losses(), 1);
+	QCOMPARE(m_player->whiteWins(), 1);
+	QCOMPARE(m_player->whiteLosses(), 1);
+	QCOMPARE(m_player->whiteDraws(), 1);
+	QCOMPARE(m_player->blackWins(), 0);
+	QCOMPARE(m_player->blackLosses(), 0);
+	QCOMPARE(m_player->blackDraws(), 0);
+
+	m_player->addScore(Chess::Side::Black, 0);
+	QCOMPARE(m_player->gamesFinished(), 4);
+	QCOMPARE(m_player->score(), 3);
+	QCOMPARE(m_player->draws(), 1);
+	QCOMPARE(m_player->wins(), 1);
+	QCOMPARE(m_player->losses(), 2);
+	QCOMPARE(m_player->whiteWins(), 1);
+	QCOMPARE(m_player->whiteLosses(), 1);
+	QCOMPARE(m_player->whiteDraws(), 1);
+	QCOMPARE(m_player->blackWins(), 0);
+	QCOMPARE(m_player->blackLosses(), 1);
+	QCOMPARE(m_player->blackDraws(), 0);
+
+	m_player->addScore(Chess::Side::Black, 1);
+	QCOMPARE(m_player->gamesFinished(), 5);
+	QCOMPARE(m_player->score(), 4);
+	QCOMPARE(m_player->draws(), 2);
+	QCOMPARE(m_player->wins(), 1);
+	QCOMPARE(m_player->losses(), 2);
+	QCOMPARE(m_player->whiteWins(), 1);
+	QCOMPARE(m_player->whiteLosses(), 1);
+	QCOMPARE(m_player->whiteDraws(), 1);
+	QCOMPARE(m_player->blackWins(), 0);
+	QCOMPARE(m_player->blackLosses(), 1);
+	QCOMPARE(m_player->blackDraws(), 1);
+
+	m_player->addScore(Chess::Side::Black, 2);
+	QCOMPARE(m_player->gamesFinished(), 6);
+	QCOMPARE(m_player->score(), 6);
+	QCOMPARE(m_player->draws(), 2);
+	QCOMPARE(m_player->wins(), 2);
+	QCOMPARE(m_player->losses(), 2);
+	QCOMPARE(m_player->whiteWins(), 1);
+	QCOMPARE(m_player->whiteLosses(), 1);
+	QCOMPARE(m_player->whiteDraws(), 1);
+	QCOMPARE(m_player->blackWins(), 1);
+	QCOMPARE(m_player->blackLosses(), 1);
+	QCOMPARE(m_player->blackDraws(), 1);
 }
 
 QTEST_MAIN(tst_TournamentPlayer)
