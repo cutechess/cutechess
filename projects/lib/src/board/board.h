@@ -611,6 +611,8 @@ inline bool Board::pieceHasCaptureMovement(Piece piece, int square, unsigned mov
 
 inline bool Board::pieceHasMovement(Piece piece, int square, unsigned movement) const
 {
+    Q_UNUSED(square);
+
     return Board::pieceTypeHasMovement(piece.type(), movement);
 }
 
