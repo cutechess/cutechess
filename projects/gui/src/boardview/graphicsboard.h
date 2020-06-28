@@ -50,6 +50,7 @@ class GraphicsBoard : public QGraphicsItem
 		 */
 		explicit GraphicsBoard(int files,
 				       int ranks,
+                       QString variant,
 				       qreal squareSize,
 				       QGraphicsItem* parent = nullptr);
 		/*! Destroys the GraphicsBoard object. */
@@ -62,6 +63,18 @@ class GraphicsBoard : public QGraphicsItem
 				   const QStyleOptionGraphicsItem* option,
 				   QWidget* widget = nullptr);
 
+        virtual void paintChessBoard(QPainter* painter,
+                   const QStyleOptionGraphicsItem* option,
+                   QWidget* widget = nullptr);
+        virtual void paintXiangqiBoard(QPainter* painter,
+                   const QStyleOptionGraphicsItem* option,
+                   QWidget* widget = nullptr);
+        virtual void paintMiniXiangqiBoard(QPainter* painter,
+                   const QStyleOptionGraphicsItem* option,
+                   QWidget* widget = nullptr);
+        virtual void paintJanggiBoard(QPainter* painter,
+                   const QStyleOptionGraphicsItem* option,
+                   QWidget* widget = nullptr);
 		/*!
 		 * Returns the chess square at \a point.
 		 *
@@ -145,8 +158,11 @@ class GraphicsBoard : public QGraphicsItem
 		QColor m_lightColor;
 		QColor m_darkColor;
 		QColor m_textColor;
+        QColor m_bgColor;
 		QVector<GraphicsPiece*> m_squares;
 		QPropertyAnimation* m_highlightAnim;
+        QString m_variant;
+        bool m_janggiVariant;
 		bool m_flipped;
 };
 

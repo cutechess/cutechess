@@ -68,6 +68,10 @@
 #include "suicideboard.h"
 #include "threekingsboard.h"
 #include "twokingseachboard.h"
+#include "xiangqiboard.h"
+#include "manchuboard.h"
+#include "minixiangqiboard.h"
+#include "janggiboard.h"
 
 namespace Chess {
 
@@ -136,7 +140,13 @@ REGISTER_BOARD(SuperAndernachBoard, "superandernach")
 REGISTER_BOARD(ThreeKingsBoard, "threekings")
 REGISTER_BOARD(TwoKingsEachBoard, "twokings")
 REGISTER_BOARD(TwoKingsSymmetricalBoard, "twokingssymmetric")
-
+REGISTER_BOARD(XiangqiBoard, "xiangqi")
+REGISTER_BOARD(ManchuBoard, "manchu")
+REGISTER_BOARD(MiniXiangqiBoard, "minixiangqi")
+REGISTER_BOARD(JanggiBoard, "janggi")
+REGISTER_BOARD(JanggiCasualBoard, "janggicasual")
+REGISTER_BOARD(JanggiModernBoard, "janggimodern")
+REGISTER_BOARD(JanggiTraditionalBoard, "janggitraditional")
 
 ClassRegistry<Board>* BoardFactory::registry()
 {
