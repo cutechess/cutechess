@@ -51,6 +51,7 @@ class TimeControlDialog : public QDialog
 		void onTournamentSelected();
 		void onTimePerMoveSelected();
 		void onInfiniteSelected();
+		void onHourglassSelected();
 
 	private:
 		enum TimeUnit
