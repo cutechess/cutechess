@@ -63,9 +63,9 @@ TournamentSettingsWidget::TournamentSettingsWidget(QWidget *parent)
 
 	GameManager gameManager;
 	RoundRobinTournament tournament(&gameManager);
-	const QMap<QString, QString> map = tournament.namedResultFormats();
-	for (const QString& value: map)
-		ui->m_resultFormatCombo->addItem(map.key(value), value);
+	const auto map = tournament.namedResultFormats();
+	for (auto it = map.constBegin(); it != map.constEnd(); ++it)
+		ui->m_resultFormatCombo->addItem(it.key(), it.value());
 	ui->m_resultFormatCombo->setCurrentIndex(-1);
 
 	connect(ui->m_resultFormatCombo,

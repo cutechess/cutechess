@@ -433,9 +433,9 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			{
 				qInfo() << "\nOption -resultformat accepts a comma separated list of fields or one of following format names:\n";
 				const auto& map = tournament->namedResultFormats();
-				for (const QString& key: map.keys() )
-					qInfo() << qUtf8Printable(key) << "\n  "
-						<< qUtf8Printable(map[key]);
+				for (auto it = map.constBegin(); it != map.constEnd(); ++it)
+					qInfo() << qUtf8Printable(it.key()) << "\n  "
+						<< qUtf8Printable(it.value());
 				qInfo() <<"\nField tokens:";
 				QString s;
 				for (const QString& token: tournament->resultFieldTokens())

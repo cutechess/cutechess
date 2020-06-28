@@ -979,10 +979,10 @@ QString Tournament::results() const
 ResultFormatter::ResultFormatter::ResultFormatter(const QMap<int, QString>& tokenMap,
 						  const QString& format,
 						  QObject* parent)
-	: QObject(parent)
+	: QObject(parent),
+	  m_tokenMap(tokenMap)
 {
 	setEntryFormat(format);
-	m_tokenMap = tokenMap;
 }
 
 void ResultFormatter::setEntryFormat(const QString& format)
