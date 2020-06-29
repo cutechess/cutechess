@@ -10,6 +10,7 @@ install:
 
 build_script:
     - qmake
+    - set CL=%CL% /TP
     - nmake /NOLOGO
 
 test_script:
