@@ -87,6 +87,11 @@ GraphicsBoard::GraphicsBoard(int files,
         m_rect.setSize(QSizeF(squareSize * (files + 1),
                               squareSize * (ranks + 1)));
     }
+    else if (m_variant == "sittuyin" || m_variant == "makruk")
+    {
+        m_rect.setSize(QSizeF(squareSize * (files + 1),
+                              squareSize * (ranks + 1)));
+    }
     else
     {
         m_rect.setSize(QSizeF(squareSize * files, squareSize * ranks));
@@ -122,6 +127,11 @@ QRectF GraphicsBoard::boundingRect() const
         const auto margins = QMarginsF(0, 0, 0, 0);
         return m_rect.marginsAdded(margins);
     }
+    else if (m_variant == "sittuyin" || m_variant == "makruk")
+    {
+        const auto margins = QMarginsF(0, 0, 0, 0);
+        return m_rect.marginsAdded(margins);
+    }
     else
     {
         const auto margins = QMarginsF(m_coordSize, m_coordSize,
@@ -146,6 +156,14 @@ void GraphicsBoard::paint(QPainter* painter,
     else if(m_janggiVariant)
     {
         paintJanggiBoard(painter, option, widget);
+    }
+    else if (m_variant == "sittuyin")
+    {
+        paintSittuyinBoard(painter, option, widget);
+    }
+    else if (m_variant == "makruk")
+    {
+        paintMakrukBoard(painter, option, widget);
     }
     else
     {
@@ -624,6 +642,168 @@ void GraphicsBoard::paintJanggiBoard(QPainter *painter, const QStyleOptionGraphi
     }
 }
 
+void GraphicsBoard::paintSittuyinBoard(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
+    // set the background color
+    QRectF rect(m_rect.topLeft(),
+                QSizeF(m_squareSize*(m_files+1),
+                       m_squareSize*(m_ranks+1)));
+    const qreal rLeft = rect.left();
+    rect.moveLeft(rLeft);
+    QColor bgColor = QColor("#EFD783");
+    painter->fillRect(rect, bgColor);
+
+    // set the pen linetype to solid
+    QPen pen(Qt::SolidLine);
+
+    // set the antialias feature
+    painter->setRenderHint(QPainter::Antialiasing);
+    qint16 gridSize = static_cast<qint16>(m_squareSize);
+    int offsetX = -m_rect.width()/2.0;
+    int offsetY = -m_rect.height()/2.0;
+
+    // 1.draw horizontal line
+    pen.setColor(Qt::black);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    for(int i=1;i<=m_ranks+1; i++)
+    {
+        painter->drawLine(offsetX-m_coordSize+gridSize,
+                          offsetY-m_coordSize+gridSize*i,
+                          offsetX+m_coordSize+gridSize*m_files,
+                          offsetY-m_coordSize+gridSize*i);
+    }
+
+    // 2.draw vertical line
+    for(int i=1;i<=m_files+1; i++)
+    {
+        painter->drawLine(offsetX-m_coordSize+gridSize*i,
+                          offsetY-m_coordSize+gridSize,
+                          offsetX-m_coordSize+gridSize*i,
+                          offsetY+m_coordSize+gridSize*m_ranks);
+    }
+    // 3.draw the diagonal line
+    painter->drawLine(offsetX-m_coordSize+gridSize,
+                      offsetY-m_coordSize+gridSize,
+                      offsetX+m_coordSize+gridSize*m_files,
+                      offsetY+m_coordSize+gridSize*m_ranks);
+    painter->drawLine(offsetX-m_coordSize+gridSize,
+                      offsetY+m_coordSize+gridSize*m_ranks,
+                      offsetX+m_coordSize+gridSize*m_files,
+                      offsetY-m_coordSize+gridSize);
+    // 4.draw the marker
+    painter->setFont(QFont("Arial", gridSize/4));
+    // paint file coordinates
+    const QString alphabet = "abcdefghijklmnopqrstuvwxyz";
+    for (int i = 0; i < m_files; i++)
+    {
+        const qreal tops[] = {m_rect.top(),
+                              m_rect.bottom()-m_coordSize};
+        for (const auto top : tops)
+        {
+            rect = QRectF(m_rect.left() + m_coordSize + (m_squareSize * i), top,
+                          m_squareSize, m_coordSize);
+            int file = m_flipped ? m_files - i - 1 : i;
+            painter->drawText(rect, Qt::AlignCenter, alphabet[file]);
+        }
+    }
+
+    // paint rank coordinates
+    for (int i = 0; i < m_ranks; i++)
+    {
+        const qreal lefts[] = {m_rect.left(),
+                               m_rect.right()-m_coordSize};
+        for (const auto left : lefts)
+        {
+            rect = QRectF(left, m_rect.top()+m_coordSize + (m_squareSize * i),
+                          m_coordSize, m_squareSize);
+            int rank = m_flipped ? i + 1 : m_ranks - i;
+            const auto num = QString::number(rank);
+            painter->drawText(rect, Qt::AlignCenter, num);
+        }
+    }
+}
+
+void GraphicsBoard::paintMakrukBoard(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
+    // set the background color
+    QRectF rect(m_rect.topLeft(),
+                QSizeF(m_squareSize*(m_files+1),
+                       m_squareSize*(m_ranks+1)));
+    const qreal rLeft = rect.left();
+    rect.moveLeft(rLeft);
+    QColor bgColor = QColor("#FFAD4A");
+    painter->fillRect(rect, bgColor);
+
+    // set the pen linetype to solid
+    QPen pen(Qt::SolidLine);
+
+    // set the antialias feature
+    painter->setRenderHint(QPainter::Antialiasing);
+    qint16 gridSize = static_cast<qint16>(m_squareSize);
+    int offsetX = -m_rect.width()/2.0;
+    int offsetY = -m_rect.height()/2.0;
+
+    // 1.draw horizontal line
+    pen.setColor(Qt::black);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    for(int i=1;i<=m_ranks+1; i++)
+    {
+        painter->drawLine(offsetX-m_coordSize+gridSize,
+                          offsetY-m_coordSize+gridSize*i,
+                          offsetX+m_coordSize+gridSize*m_files,
+                          offsetY-m_coordSize+gridSize*i);
+    }
+
+    // 2.draw vertical line
+    for(int i=1;i<=m_files+1; i++)
+    {
+        painter->drawLine(offsetX-m_coordSize+gridSize*i,
+                          offsetY-m_coordSize+gridSize,
+                          offsetX-m_coordSize+gridSize*i,
+                          offsetY+m_coordSize+gridSize*m_ranks);
+    }
+
+    // 3.draw the marker
+    painter->setFont(QFont("Arial", gridSize/4));
+    // paint file coordinates
+    const QString alphabet = "abcdefghijklmnopqrstuvwxyz";
+    for (int i = 0; i < m_files; i++)
+    {
+        const qreal tops[] = {m_rect.top(),
+                              m_rect.bottom()-m_coordSize};
+        for (const auto top : tops)
+        {
+            rect = QRectF(m_rect.left() + m_coordSize + (m_squareSize * i), top,
+                          m_squareSize, m_coordSize);
+            int file = m_flipped ? m_files - i - 1 : i;
+            painter->drawText(rect, Qt::AlignCenter, alphabet[file]);
+        }
+    }
+
+    // paint rank coordinates
+    for (int i = 0; i < m_ranks; i++)
+    {
+        const qreal lefts[] = {m_rect.left(),
+                               m_rect.right()-m_coordSize};
+        for (const auto left : lefts)
+        {
+            rect = QRectF(left, m_rect.top()+m_coordSize + (m_squareSize * i),
+                          m_coordSize, m_squareSize);
+            int rank = m_flipped ? i + 1 : m_ranks - i;
+            const auto num = QString::number(rank);
+            painter->drawText(rect, Qt::AlignCenter, num);
+        }
+    }
+}
+
 Chess::Square GraphicsBoard::squareAt(const QPointF& point) const
 {
 	if (!m_rect.contains(point))
@@ -641,6 +821,11 @@ Chess::Square GraphicsBoard::squareAt(const QPointF& point) const
         row = (point.y() + offsetY - m_squareSize / 2) / m_squareSize;
     }
     else if(m_janggiVariant)
+    {
+        col = (point.x() + offsetX - m_squareSize / 2) / m_squareSize;
+        row = (point.y() + offsetY - m_squareSize / 2) / m_squareSize;
+    }
+    else if (m_variant == "sittuyin" || m_variant == "makruk")
     {
         col = (point.x() + offsetX - m_squareSize / 2) / m_squareSize;
         row = (point.y() + offsetY - m_squareSize / 2) / m_squareSize;
@@ -671,6 +856,11 @@ QPointF GraphicsBoard::squarePos(const Chess::Square& square) const
         y = m_rect.top() + m_squareSize;
     }
     else if(m_janggiVariant)
+    {
+        x = m_rect.left() + m_squareSize;
+        y = m_rect.top() + m_squareSize;
+    }
+    else if (m_variant == "sittuyin" || m_variant == "makruk")
     {
         x = m_rect.left() + m_squareSize;
         y = m_rect.top() + m_squareSize;

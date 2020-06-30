@@ -75,6 +75,12 @@ class GraphicsBoard : public QGraphicsItem
         virtual void paintJanggiBoard(QPainter* painter,
                    const QStyleOptionGraphicsItem* option,
                    QWidget* widget = nullptr);
+        virtual void paintSittuyinBoard(QPainter* painter,
+                   const QStyleOptionGraphicsItem* option,
+                   QWidget* widget = nullptr);
+        virtual void paintMakrukBoard(QPainter* painter,
+                   const QStyleOptionGraphicsItem* option,
+                   QWidget* widget = nullptr);
 		/*!
 		 * Returns the chess square at \a point.
 		 *

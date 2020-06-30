@@ -25,12 +25,12 @@ SittuyinBoard::SittuyinBoard()
 	  m_inSetUp(true)
 {
 	// Movements as in makruk, the Elephant has Silver General Movement
-	setPieceType(Pawn, tr("pawn"), "P");                      //!< Ne: Feudal Lord P
-	setPieceType(Knight, tr("knight"), "N", KnightMovement);  //!< Myin: Horse N
-	setPieceType(Elephant, tr("elephant"), "S", SilverGeneralMovement, "E"); //! Sin: Elephant E
-	setPieceType(Rook, tr("rook"), "R", RookMovement);        //! Yahhta: Chariot R
-	setPieceType(General, tr("general"), "F", FerzMovement);  //! Sit-ke: General G
-	setPieceType(King, tr("king"), "K");                      //! Min-gyi: King K
+    setPieceType(Pawn, tr("pawn"), "P", 0, "STYP");                      //!< Ne: Feudal Lord P
+    setPieceType(Knight, tr("knight"), "N", KnightMovement, "STYN");  //!< Myin: Horse N
+    setPieceType(Elephant, tr("elephant"), "S", SilverGeneralMovement, "STYB"); //! Sin: Elephant E
+    setPieceType(Rook, tr("rook"), "R", RookMovement, "STYR");        //! Yahhta: Chariot R
+    setPieceType(General, tr("general"), "F", FerzMovement, "STYQ");  //! Sit-ke: General G
+    setPieceType(King, tr("king"), "K", 0, "STYK");                      //! Min-gyi: King K
 }
 
 Board* SittuyinBoard::copy() const

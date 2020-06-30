@@ -28,13 +28,13 @@ MakrukBoard::MakrukBoard()
 	  m_history()
 {
 	// King, Ferz, Rook, Knight and Pawn as in chaturanga and shatranj
-	setPieceType(Bia, tr("bia"), "P");                    //! Cowry Shell, Chip
-	setPieceType(Ma, tr("ma"), "N", KnightMovement);      //! Horse
-	//! Khon (Base) replaces Alfil (Bishop): moves as Shogi's Silver General
-	setPieceType(Khon, tr("khon"), "S", SilverGeneralMovement, "E");
-	setPieceType(Rua, tr("rua"), "R", RookMovement);      //! Boat
-	setPieceType(Met, tr("met"), "M", FerzMovement, "F"); //! Grain: Advisor
-	setPieceType(Khun, tr("khun"), "K");                  //! Leader, Lord
+    setPieceType(Bia, tr("bia"), "P", 0, "MKKP");            //! Cowry Shell, Chip
+    setPieceType(Ma, tr("ma"), "N", KnightMovement, "MKKN"); //! Horse
+    //! Khon (Base) replaces Alfil (Bishop): moves as Shogi's Silver General
+    setPieceType(Khon, tr("khon"), "S", SilverGeneralMovement, "MKKB");
+    setPieceType(Rua, tr("rua"), "R", RookMovement, "MKKR"); //! Boat
+    setPieceType(Met, tr("met"), "M", FerzMovement, "MKKQ"); //! Grain: Advisor
+    setPieceType(Khun, tr("khun"), "K", 0, "MKKK");          //! Leader, Lord
 }
 
 Board* MakrukBoard::copy() const
