@@ -983,7 +983,8 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 			if (source == rookSq[i])
 			{
 				setCastlingSquare(side, CastlingSide(i), 0);
-				isReversible = false;
+				// FIDE rules 5.2, 9.3, PGN/FEN spec. 16.1.3.5:
+				// 50-moves counting goes on when castling.
 				break;
 			}
 		}
