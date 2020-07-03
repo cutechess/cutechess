@@ -743,21 +743,21 @@ void ShogiBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
 	QVarLengthArray<Move>  moves1;
 	if (pieceType == Pawn)
 		generateHoppingMoves(square, m_lanceOffsets[side], moves1);
-	if (pieceHasMovement(pieceType, BishopMovement))
+	if (pieceHasMovement(pieceType, square, BishopMovement))
 		generateSlidingMoves(square, m_bishopOffsets, moves1);
-	if (pieceHasMovement(pieceType, RookMovement))
+	if (pieceHasMovement(pieceType, square, RookMovement))
 		generateSlidingMoves(square, m_rookOffsets, moves1);
-	if (pieceHasMovement(pieceType, FerzMovement))
+	if (pieceHasMovement(pieceType, square, FerzMovement))
 		generateHoppingMoves(square, m_bishopOffsets, moves1);
-	if (pieceHasMovement(pieceType, WazirMovement))
+	if (pieceHasMovement(pieceType, square, WazirMovement))
 		generateHoppingMoves(square, m_rookOffsets, moves1);
-	if (pieceHasMovement(pieceType, LanceMovement))
+	if (pieceHasMovement(pieceType, square, LanceMovement))
 		generateSlidingMoves(square, m_lanceOffsets[side], moves1);
-	if (pieceHasMovement(pieceType, KnightMovement))
+	if (pieceHasMovement(pieceType, square, KnightMovement))
 		generateHoppingMoves(square, m_knightOffsets[side], moves1);
-	if (pieceHasMovement(pieceType, SilverMovement))
+	if (pieceHasMovement(pieceType, square, SilverMovement))
 		generateHoppingMoves(square, m_silverGeneralOffsets[side], moves1);
-	if (pieceHasMovement(pieceType, GoldMovement))
+	if (pieceHasMovement(pieceType, square, GoldMovement))
 		generateHoppingMoves(square, m_goldGeneralOffsets[side], moves1);
 
 	// Generate promotions and append valid moves to the list
