@@ -326,9 +326,9 @@ class LIB_EXPORT Board
 				  unsigned movement = 0,
 				  const QString & gsymbol = QString());
 		/*! Returns true if \a piece on \a square can capture like \a movement. */
-		bool pieceHasCaptureMovement(Piece piece, int square, unsigned movement) const;
+		virtual bool pieceHasCaptureMovement(Piece piece, int square, unsigned movement) const;
 		/*! Returns true if \a piece on \a square can move like \a movement. */
-		bool pieceHasMovement(Piece piece, int square, unsigned movement) const;
+		virtual bool pieceHasMovement(Piece piece, int square, unsigned movement) const;
 		/*! Returns true if \a pieceType can move like \a movement. */
 		virtual bool pieceTypeHasMovement(int pieceType, unsigned movement) const;
 
