@@ -120,6 +120,10 @@ class LIB_EXPORT MakrukBoard : public ShatranjBoard
 		int pieceCount(Side side = Side::NoSide,
 			       int pieceType = Piece::NoPiece) const;
 		/*!
+		 * Returns ply count if counting is started in current position
+		 */
+		virtual int initialPlyCount() const;
+		/*!
 		 * Returns maximum count of plies allowed to finish the game:
 		 * Limit for Board's Honour or Pieces' Honour counting.
 		 */

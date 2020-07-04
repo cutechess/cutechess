@@ -77,6 +77,11 @@ MakrukBoard::CountingRules AseanBoard::countingRules() const
 	return BareKing;
 }
 
+int AseanBoard::initialPlyCount() const
+{
+	return 0;
+}
+
 int AseanBoard::countingLimit() const
 {
 	// ASEAN-Chess Article 5.2e

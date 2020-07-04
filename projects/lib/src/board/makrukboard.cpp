@@ -159,6 +159,11 @@ bool MakrukBoard::inCheck(Side side, int square) const
 	return ShatranjBoard::inCheck(side, square);
 }
 
+int MakrukBoard::initialPlyCount() const
+{
+	return 2 * pieceCount();
+}
+
 void MakrukBoard::vMakeMove(const Move& move, BoardTransition* transition)
 {
 	int capture = captureType(move);
@@ -205,7 +210,7 @@ void MakrukBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	&&  (m_rules == BareKing || noPawns))
 	{
 		md.piecesHonour = true;
-		md.plyCount = 2 * pieceCount();
+		md.plyCount = initialPlyCount();
 		md.countingLimit = noPawns ? 2 * countingLimit() : 2 * 64;
 	}
 
