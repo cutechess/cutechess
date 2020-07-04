@@ -266,6 +266,11 @@ bool SittuyinBoard::isLegalPosition()
 	return true;
 }
 
+int SittuyinBoard::initialPlyCount() const
+{
+	return 0;
+}
+
 int SittuyinBoard::countingLimit() const
 {
 	// analoguous to ASEAN-Chess Article 5.2e

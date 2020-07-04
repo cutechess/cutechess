@@ -112,6 +112,7 @@ class LIB_EXPORT SittuyinBoard : public MakrukBoard
 		virtual int promotionRank(int file = 0) const;
 		virtual bool vIsLegalMove(const Move& move);
 		virtual bool isLegalPosition();
+		virtual int initialPlyCount() const;
 		virtual int countingLimit() const;
 		virtual CountingRules countingRules() const;
 		virtual Result result();

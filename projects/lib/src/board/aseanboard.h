@@ -76,6 +76,7 @@ class LIB_EXPORT AseanBoard : public MakrukBoard
 		virtual void addPromotions(int sourceSquare,
 					   int targetSquare,
 					   QVarLengthArray< Move >& moves) const;
+		virtual int initialPlyCount() const;
 		virtual int countingLimit() const;
 		virtual CountingRules countingRules() const;
 		virtual Result result();
