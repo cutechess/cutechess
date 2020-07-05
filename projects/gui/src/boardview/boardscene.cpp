@@ -89,7 +89,7 @@ void BoardScene::setPiece(Chess::Board* board)
                           + "/image/" + board->variant() + ".svg";
     QFileInfo fileInfo(pieceFileName);
 
-    if(!fileInfo.exists())
+    if(!fileInfo.exists() || !fileInfo.isFile())
         m_renderer = new QSvgRenderer((QCoreApplication::applicationDirPath() + "/image/default.svg"), this);
     else
         m_renderer = new QSvgRenderer(pieceFileName, this);
