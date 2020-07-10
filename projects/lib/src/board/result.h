@@ -22,6 +22,7 @@
 #include "side.h"
 #include <QMetaType>
 #include <QCoreApplication>
+#include <cmath>
 
 namespace Chess {
 
@@ -43,6 +44,14 @@ public:
 	void setResult(float r) { m_result = r; }
 	Side winning() const { return m_winning; }
 	void setWinning(Side side) { m_winning = side; }
+	float score(Side side) const
+	{
+		float winningScore = 0.5f + powf(0.5f, 1.0f + ceilf(m_result));
+		if (side == m_winning)
+			return winningScore;
+		else
+			return 1.0f - winningScore;
+	}
 	QString toString() const
 	{
 		if (!isValid())

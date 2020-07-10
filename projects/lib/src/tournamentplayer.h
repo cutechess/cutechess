@@ -94,8 +94,10 @@ class LIB_EXPORT TournamentPlayer
 		int blackLosses() const;
 		/*! Returns the player's total score in the tournament. */
 		int score() const;
+		/*! Returns the player's r-mobility score in the tournament. */
+		float rMobilityScore() const;
 		/*! Adds \a score to the player's score in the tournament. */
-		void addScore(Chess::Side side, int score);
+		void addScore(Chess::Side side, int score, float rMobilityScore);
 		/*!
 		 * Returns the total number of games the player has finished
 		 * in the tournament.
@@ -113,6 +115,7 @@ class LIB_EXPORT TournamentPlayer
 		int m_whiteWins;
 		int m_whiteDraws;
 		int m_whiteLosses;
+		float m_rMobilityScore;
 };
 
 #endif // TOURNAMENTPLAYER_H

@@ -133,6 +133,14 @@ void EngineMatch::onGameFinished(ChessGame* game, int number)
 		      fcp.wins(), scp.wins(), fcp.draws(),
 		      double(fcp.score()) / (totalResults * 2),
 		      totalResults);
+		if (game->result().rMobility().isValid()) {
+			QString rMobilityScore = QString("R-mobility: %0 - %1 [%2] %3")
+			.arg(fcp.rMobilityScore())
+			.arg(scp.rMobilityScore())
+			.arg(double(fcp.rMobilityScore()) / (fcp.rMobilityScore() + scp.rMobilityScore()), 0, 'f', 3)
+			.arg(totalResults);
+			qInfo("...      %s", qUtf8Printable(rMobilityScore));
+		}
 	}
 
 	if (m_ratingInterval != 0
