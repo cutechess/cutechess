@@ -242,6 +242,11 @@ class LIB_EXPORT Board
 		void undoMove();
 
 		/*!
+		 * Informs the board object that it should now calculate r-mobility if it supports it.
+		 */
+		virtual void vCalculateRMobility() { /*does nothing by default*/ }
+
+		/*!
 		 * Converts a Move into a string.
 		 *
 		 * \note The board must be in a position where \a move can be made.
@@ -286,6 +291,13 @@ class LIB_EXPORT Board
 		 * the game is in progress.
 		 */
 		virtual Result result() = 0;
+		/*!
+		 * Returns the result of the game, or Result::NoResult if
+		 * the game is in progress and honors the r-mobility setting by
+		 * disabling insufficient material adjudication for instance if
+		 * the board supports r-mobility scoring.
+		 */
+		virtual Result result(bool rMobilityEnabled) { Q_UNUSED(rMobilityEnabled); return result(); }
 		/*!
 		 * Returns the expected game result according to endgame tablebases.
 		 *

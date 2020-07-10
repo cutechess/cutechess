@@ -56,14 +56,16 @@ bool Result::operator==(const Result& other) const
 {
 	return (m_type == other.m_type &&
 		m_winner == other.m_winner &&
-		m_description == other.m_description);
+		m_description == other.m_description &&
+		m_rMobility == other.m_rMobility);
 }
 
 bool Result::operator!=(const Result& other) const
 {
 	return (m_type != other.m_type ||
 		m_winner != other.m_winner ||
-		m_description != other.m_description);
+		m_description != other.m_description ||
+		m_rMobility != other.m_rMobility);
 }
 
 bool Result::isNone() const
@@ -175,9 +177,29 @@ QString Result::toShortString() const
 	return "1/2-1/2";
 }
 
+QString Result::toShortStringWithRMobility() const
+{
+	if (m_type == NoResult || m_type == ResultError)
+		return "*";
+	if (m_winner == Side::White)
+		return "1-0";
+	if (m_winner == Side::Black)
+		return "0-1";
+	if (m_rMobility.isValid())
+		return m_rMobility.toString();
+	return "1/2-1/2";
+}
+
+QString Result::toRMobilityString() const
+{
+	if (!m_rMobility.isValid() || m_type == NoResult || m_type == ResultError)
+		return "*";
+	return m_rMobility.toString();
+}
+
 QString Result::toVerboseString() const
 {
-	return toShortString() + QString(" {") + description() + "}";
+	return toShortStringWithRMobility() + QString(" {") + description() + "}";
 }
 
 } // namespace Chess

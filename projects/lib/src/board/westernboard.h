@@ -58,6 +58,7 @@ class LIB_EXPORT WesternBoard : public Board
 		virtual int width() const;
 		virtual int height() const;
 		virtual Result result();
+		virtual Result result(bool rMobilityEnabled);
 		virtual int reversibleMoveCount() const;
 
 	protected:
@@ -213,6 +214,7 @@ class LIB_EXPORT WesternBoard : public Board
 		virtual void vMakeMove(const Move& move,
 				       BoardTransition* transition);
 		virtual void vUndoMove(const Move& move);
+		virtual void vCalculateRMobility();
 		virtual void generateMovesForPiece(QVarLengthArray<Move>& moves,
 						   int pieceType,
 						   int square) const;
@@ -237,6 +239,7 @@ class LIB_EXPORT WesternBoard : public Board
 			CastlingRights castlingRights;
 			CastlingSide castlingSide;
 			int reversibleMoveCount;
+			RMobility rMobility;
 		};
 
 		void generateCastlingMoves(QVarLengthArray<Move>& moves) const;
@@ -255,6 +258,8 @@ class LIB_EXPORT WesternBoard : public Board
 		 *  given \a step with orientation \a sign. */
 		inline int pawnPushOffset(const PawnStep& ps,
 					  int sign) const;
+		void setReversibleMoveCount(int moveCount);
+		void undoReversibleMoveCount(int moveCount, RMobility rMobility);
 
 		int m_arwidth;
 		int m_sign;
@@ -263,6 +268,7 @@ class LIB_EXPORT WesternBoard : public Board
 		int m_enpassantTarget;
 		int m_plyOffset;
 		int m_reversibleMoveCount;
+		RMobility m_rMobility;
 		bool m_kingCanCapture;
 		bool m_hasCastling;
 		bool m_pawnHasDoubleStep;

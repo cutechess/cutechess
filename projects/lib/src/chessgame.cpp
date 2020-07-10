@@ -267,7 +267,10 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 
 	// Get the result before sending the move to the opponent
 	m_board->makeMove(move);
-	m_result = m_board->result();
+	const bool useRMobility = m_adjudicator.rMobilityEnabled();
+	if (useRMobility)
+		m_board->vCalculateRMobility();
+	m_result = m_board->result(useRMobility);
 	if (m_result.isNone())
 	{
 		if (m_board->reversibleMoveCount() == 0)
@@ -285,6 +288,8 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 
 	player->makeMove(move);
 	m_board->makeMove(move);
+	if (useRMobility)
+		m_board->vCalculateRMobility();
 
 	if (m_result.isNone())
 	{
