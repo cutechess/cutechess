@@ -46,7 +46,7 @@ public:
 	void setWinning(Side side) { m_winning = side; }
 	float score(Side side) const
 	{
-		float winningScore = 0.5f + powf(0.5f, 1.0f + ceilf(m_result));
+		float winningScore = 0.5f + powf(0.5f, 1.0f + 2 * m_result);
 		if (side == m_winning)
 			return winningScore;
 		else
