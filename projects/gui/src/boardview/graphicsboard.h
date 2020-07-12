@@ -144,6 +144,7 @@ class GraphicsBoard : public QGraphicsItem
 		QRectF m_rect;
 		QColor m_lightColor;
 		QColor m_darkColor;
+		QColor m_wallColor;
 		QColor m_textColor;
 		QVector<GraphicsPiece*> m_squares;
 		QPropertyAnimation* m_highlightAnim;

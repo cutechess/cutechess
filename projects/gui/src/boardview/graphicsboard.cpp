@@ -61,6 +61,7 @@ GraphicsBoard::GraphicsBoard(int files,
 	  m_coordSize(squareSize / 2.0),
 	  m_lightColor(QColor(0xff, 0xce, 0x9e)),
 	  m_darkColor(QColor(0xd1, 0x8b, 0x47)),
+	  m_wallColor(QColor(0xee,0xee,0xee)),
 	  m_squares(files * ranks),
 	  m_highlightAnim(nullptr),
 	  m_flipped(false)
@@ -108,7 +109,14 @@ void GraphicsBoard::paint(QPainter* painter,
 		rect.moveLeft(rLeft);
 		for (int x = 0; x < m_files; x++)
 		{
-			if ((x % 2) == (y % 2))
+			// referenced board coordinates
+			int file = m_flipped ? m_files - 1 - x : x;
+			int rank = m_flipped ? y : m_ranks - 1 - y;
+			Chess::Square sq(file, rank);
+
+			if (pieceTypeAt(sq).isWall())
+				painter->fillRect(rect, m_wallColor);
+			else if ((x % 2) == (y % 2))
 				painter->fillRect(rect, m_lightColor);
 			else
 				painter->fillRect(rect, m_darkColor);
