@@ -367,4 +367,49 @@ int TicTacToeBoard::connectToWin() const
 	return 3;
 }
 
+
+GomokuFreestyleBoard::GomokuFreestyleBoard()
+	: ConnectBoard()
+{
+}
+
+Board * GomokuFreestyleBoard::copy() const
+{
+	return new GomokuFreestyleBoard(*this);
+}
+
+QString GomokuFreestyleBoard::variant() const
+{
+	return "gomokufreestyle";
+}
+
+QString GomokuFreestyleBoard::defaultFenString() const
+{
+	return "15/15/15/15/15/15/15/15/15/15/15/15/15/15/15[PPPPPPPPPPPPPPPPPP"
+	"PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
+	"PPPPPPPPPPPPPPPPPPPPPPPPPppppppppppppppppppppppppppppppppppppppppppppp"
+	"ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp] w"
+	" - - 0 1";
+}
+
+int GomokuFreestyleBoard::width() const
+{
+	return 15;
+}
+
+int GomokuFreestyleBoard::height() const
+{
+	return 15;
+}
+
+bool GomokuFreestyleBoard::hasGravity() const
+{
+	return false;
+}
+
+int GomokuFreestyleBoard::connectToWin() const
+{
+	return 5;
+}
+
 } // namespace Chess

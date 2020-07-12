@@ -42,6 +42,7 @@ Options:
 			'extinction': Extinction Chess
 			'fischerandom': Fischer Random Chess/Chess 960
 			'giveaway': Giveaway Chess (Losing Chess)
+			'gomokufreestyle' : Gomoku Free-Syle (5 in a row to win)
 			'gothic': Gothic Chess
 			'grand': Grand Chess
 			'grid': Grid Chess

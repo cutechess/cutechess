@@ -1680,6 +1680,17 @@ void tst_Board::perft_data() const
 		<< "3/3/3[PPPPPpppp] w - - 0 1"
 		<< 9 // 7 plies: 148176, 8 plies: 200448, 9 plies: 127872
 		<< Q_UINT64_C(127872);
+
+	variant = "gomokufreestyle";
+	QTest::newRow("gomoku free-style startpos")
+		<< variant
+		<< "15/15/15/15/15/15/15/15/15/15/15/15/15/15/15[PPPPPPPPPPPPPP"
+		   "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
+		   "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPppppppppppppppppppp"
+		   "ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+		   "pppppppppppppppppppppppppppppppppp] w - - 0 1"
+		<< 2 // 3 plies: 11239200, 2 plies: 50400
+		<< Q_UINT64_C(50400);
 }
 
 void tst_Board::perft()
