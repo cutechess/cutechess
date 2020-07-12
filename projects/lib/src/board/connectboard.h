@@ -118,5 +118,38 @@ class LIB_EXPORT TicTacToeBoard : public ConnectBoard
 		virtual bool hasGravity() const;
 };
 
+/*!
+ * \brief A board for Gomoku Free-Style
+ *
+ * Gomoku is an abstract strategy game from 19th century Japan.
+ * It is also known as Omok, Five in a Row, and Go Bang.
+ *
+ * Two players take turns to drop pieces onto the 15x15 board.
+ * The side that connects five pieces horizontally, vertically
+ * or diagonally wins. While the Gomoku tournament variant
+ * requires exactly five pieces lined up to win, the free-style
+ * variant also accepts overlines of six or more pieces.
+ *
+ * \note Rules: https://en.wikipedia.org/wiki/Gomoku
+ * \sa GomokuBoard
+ * \sa ConnectBoard
+ * */
+class LIB_EXPORT GomokuFreestyleBoard : public ConnectBoard
+{
+	public:
+		/*! Creates a new GomokuFreestyleBoard object. */
+		GomokuFreestyleBoard();
+
+		// Inherited from ConnectBoard
+		virtual Board* copy() const;
+		virtual QString variant() const;
+		virtual QString defaultFenString() const;
+		virtual int width() const;
+		virtual int height() const;
+		virtual int connectToWin() const;
+
+	protected:
+		virtual bool hasGravity() const;
+};
 }// namespace Chess
 #endif // CONNECTBOARD_H
