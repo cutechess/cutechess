@@ -418,7 +418,7 @@ GraphicsPiece* BoardScene::createPiece(const Chess::Piece& piece)
 	Q_ASSERT(m_renderer != nullptr);
 	Q_ASSERT(m_squares != nullptr);
 
-	if (!piece.isValid())
+	if (!piece.isValid() && !piece.isWall())
 		return nullptr;
 
 	return new GraphicsPiece(piece,
