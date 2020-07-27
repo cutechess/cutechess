@@ -33,7 +33,7 @@ If you are using the Visual C++ compiler replace `make` with `nmake`.
 Documentation is available as Unix manual pages in the `docs/` directory.
 
 For detailed build instruction for various operating systems, see the
-[Making a release](https://github.com/cutechess/cutechess/wiki/Making-a-release)
+[Building from source](https://github.com/cutechess/cutechess/wiki/Building-from-source)
 wiki page.
 
 ## Running
