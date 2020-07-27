@@ -66,6 +66,12 @@ class LIB_EXPORT ConnectBoard : public WesternBoard
 		 * No determination is made if -1 is returned.
 		 */
 		virtual int requiredNumberOfPieces() const;
+		/*!
+		 * Returns true if the game is won in case the number of
+		 * connected pieces of side \a side exceeds the required
+		 * number, else false. Default: true.
+		 */
+		virtual bool overlinesWin(Side side) const;
 
 		// Inherited from WesternBoard
 		virtual void vInitialize();
@@ -126,14 +132,15 @@ class LIB_EXPORT TicTacToeBoard : public ConnectBoard
  *
  * Two players take turns to drop pieces onto the 15x15 board.
  * The side that connects five pieces horizontally, vertically
- * or diagonally wins. While the Gomoku tournament variant
- * requires exactly five pieces lined up to win, the free-style
- * variant also accepts overlines of six or more pieces.
+ * or diagonally wins. The Gomoku tournament variant requires
+ * exactly five pieces lined up to win, overlines of six or more
+ * pieces are ignored.
  *
  * \note Rules: https://en.wikipedia.org/wiki/Gomoku
  * \sa GomokuBoard
  * \sa ConnectBoard
  * */
+//TODO: Black begins, One ply per move, starting phase
 class LIB_EXPORT GomokuFreestyleBoard : public ConnectBoard
 {
 	public:
@@ -150,6 +157,36 @@ class LIB_EXPORT GomokuFreestyleBoard : public ConnectBoard
 
 	protected:
 		virtual bool hasGravity() const;
+};
+
+/*!
+ * \brief A board for Gomoku
+ *
+ * Gomoku is an abstract strategy game from 19th century Japan.
+ * It is also known as Omok, Five in a Row, and Go Bang.
+ *
+ * Two players take turns to drop pieces onto the 15x15 board.
+ * The side that connects five pieces horizontally, vertically
+ * or diagonally wins. While the Gomoku tournament variant
+ * requires exactly five pieces lined up to win, the free-style
+ * variant also accepts overlines of six or more pieces.
+ *
+ * \note Rules: https://en.wikipedia.org/wiki/Gomoku
+ * \sa GomokuFreestyleBoard
+ * \sa ConnectBoard
+ * */
+class LIB_EXPORT GomokuBoard : public GomokuFreestyleBoard
+{
+	public:
+		/*! Creates a new GomokuBoard object. */
+		GomokuBoard();
+
+		// Inherited from GomokuBoard
+		virtual Board* copy() const;
+		virtual QString variant() const;
+
+	protected:
+		virtual bool overlinesWin(Side side) const;
 };
 }// namespace Chess
 #endif // CONNECTBOARD_H
