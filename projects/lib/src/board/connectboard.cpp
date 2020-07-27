@@ -86,6 +86,11 @@ int ConnectBoard::requiredNumberOfPieces() const
 	return width() * height();
 }
 
+bool ConnectBoard::overlinesWin(Side) const
+{
+	return true;
+}
+
 void ConnectBoard::vInitialize()
 {
 	WesternBoard::vInitialize();
@@ -231,6 +236,7 @@ bool ConnectBoard::pieceCountOk() const
 
 bool ConnectBoard::connected(int n, Side side) const
 {
+	bool overlineWins = overlinesWin(side);
 	// Examine files
 	for (int file = 0; file < width(); file++)
 	{
@@ -239,11 +245,15 @@ bool ConnectBoard::connected(int n, Side side) const
 		{
 			if (pieceAt(Square(file, rank)).side() == side)
 				count++;
+			else if (count == n)
+				return true;
 			else
 				count = 0;
-			if (count >= n)
+			if (count >= n && overlineWins)
 				return true;
 		}
+		if (count == n)
+			return true;
 	}
 	// Examine ranks
 	for (int rank = 0; rank < height(); rank++)
@@ -253,11 +263,15 @@ bool ConnectBoard::connected(int n, Side side) const
 		{
 			if (pieceAt(Square(file, rank)).side() == side)
 				count++;
+			else if (count == n)
+				return true;
 			else
 				count = 0;
-			if (count >= n)
+			if (count >= n && overlineWins)
 				return true;
 		}
+		if (count == n)
+			return true;
 	}
 	// Examine rising to rhs diagonals
 	for (int d = -width() + n; d <= height() - n; d++)
@@ -270,11 +284,15 @@ bool ConnectBoard::connected(int n, Side side) const
 				continue;
 			if (pieceAt(Square(file, rank)).side() == side)
 				count++;
+			else if (count == n)
+				return true;
 			else
 				count = 0;
-			if (count >= n)
+			if (count >= n && overlineWins)
 				return true;
 		}
+		if (count == n)
+			return true;
 	}
 	// Examine falling to rhs diagonals
 	for (int d = n - 1; d <= width() + height() - (n + 1); d++)
@@ -287,11 +305,15 @@ bool ConnectBoard::connected(int n, Side side) const
 				continue;
 			if (pieceAt(Square(file, rank)).side() == side)
 				count++;
+			else if (count == n)
+				return true;
 			else
 				count = 0;
-			if (count >= n)
+			if (count >= n && overlineWins)
 				return true;
 		}
+		if (count == n)
+			return true;
 	}
 	return false;
 }
@@ -410,6 +432,27 @@ bool GomokuFreestyleBoard::hasGravity() const
 int GomokuFreestyleBoard::connectToWin() const
 {
 	return 5;
+}
+
+
+GomokuBoard::GomokuBoard()
+	: GomokuFreestyleBoard()
+{
+}
+
+Board * GomokuBoard::copy() const
+{
+	return new GomokuBoard(*this);
+}
+
+QString GomokuBoard::variant() const
+{
+	return "gomoku";
+}
+
+bool GomokuBoard::overlinesWin(Side) const
+{
+	return false;
 }
 
 } // namespace Chess
