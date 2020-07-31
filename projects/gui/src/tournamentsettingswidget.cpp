@@ -141,6 +141,11 @@ bool TournamentSettingsWidget::swappingSides() const
 	return ui->m_swapCheck->isChecked();
 }
 
+bool TournamentSettingsWidget::reversingSchedule() const
+{
+	return ui->m_reverseCheck->isChecked();
+}
+
 QString TournamentSettingsWidget::resultFormat() const
 {
 	return ui->m_resultFormatEdit->text();
@@ -171,6 +176,7 @@ void TournamentSettingsWidget::readSettings()
 	ui->m_saveUnfinishedGamesCheck->setChecked(
 		s.value("save_unfinished_games", true).toBool());
 	ui->m_swapCheck->setChecked(s.value("swap_sides", true).toBool());
+	ui->m_reverseCheck->setChecked(s.value("reverse_schedule", false).toBool());
 
 	QString format = s.value("result_format").toString();
 	if (format.isEmpty())
@@ -248,6 +254,10 @@ void TournamentSettingsWidget::enableSettingsUpdates()
 	connect(ui->m_swapCheck, &QCheckBox::toggled, [=](bool checked)
 	{
 		QSettings().setValue("tournament/swap_sides", checked);
+	});
+	connect(ui->m_reverseCheck, &QCheckBox::toggled, [=](bool checked)
+	{
+		QSettings().setValue("tournament/reverse_schedule", checked);
 	});
 	connect(ui->m_resultFormatEdit, &QLineEdit::textChanged, [=](const QString &text)
 	{
