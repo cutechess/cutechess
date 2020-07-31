@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>419</width>
-    <height>436</height>
+    <height>497</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -259,6 +259,16 @@
         </property>
         <property name="checked">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QCheckBox" name="m_reverseCheck">
+        <property name="toolTip">
+         <string>Reverse sides in schedule: A vs B, C vs D ... to  B vs A, D vs C ... (default: false)</string>
+        </property>
+        <property name="text">
+         <string>Reverse schedule</string>
         </property>
        </widget>
       </item>
