@@ -30,6 +30,7 @@ EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
 	: QObject(parent),
 	  m_tournament(tournament),
 	  m_debug(false),
+	  m_matchState(FreeState),
 	  m_ratingInterval(0),
 	  m_outcomeInterval(0),
 	  m_bookMode(OpeningBook::Ram)
@@ -72,6 +73,8 @@ void EngineMatch::start()
 		this, SLOT(onGameStarted(ChessGame*, int)));
 	connect(m_tournament, SIGNAL(gameFinished(ChessGame*, int, int, int)),
 		this, SLOT(onGameFinished(ChessGame*, int)));
+	connect(m_tournament, SIGNAL(suspended(int)),
+		this, SLOT(onTournamentSuspended(int)));
 
 	if (m_debug)
 		connect(m_tournament->gameManager(), SIGNAL(debugMessage(QString)),
@@ -84,6 +87,28 @@ void EngineMatch::stop()
 {
 	QMetaObject::invokeMethod(m_tournament, "stop", Qt::QueuedConnection);
 }
+
+void EngineMatch::suspend()
+{
+	if (m_matchState != FreeState)
+		return;
+
+	m_matchState = SuspendingState;
+	print("Suspending match: no new games will be started, active games continue.");
+	QMetaObject::invokeMethod(m_tournament, "suspend", Qt::QueuedConnection);
+}
+
+void EngineMatch::resume()
+{
+	if (m_matchState != SuspendedState)
+		return;
+
+	m_matchState = ResumingState;
+	print("Resuming match.");
+	QMetaObject::invokeMethod(m_tournament, "resume", Qt::QueuedConnection);
+	m_matchState = FreeState;
+}
+
 
 void EngineMatch::setDebugMode(bool debug)
 {
@@ -167,6 +192,13 @@ void EngineMatch::onTournamentFinished()
 	connect(m_tournament->gameManager(), SIGNAL(finished()),
 		this, SIGNAL(finished()));
 	m_tournament->gameManager()->finish();
+}
+
+void EngineMatch::onTournamentSuspended(int count)
+{
+	printRanking();
+	print(QString("Suspended match after %0 games").arg(count));
+	m_matchState = SuspendedState;
 }
 
 void EngineMatch::print(const QString& msg)
