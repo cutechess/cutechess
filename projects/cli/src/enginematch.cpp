@@ -31,6 +31,7 @@ EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
 	  m_tournament(tournament),
 	  m_debug(false),
 	  m_ratingInterval(0),
+	  m_outcomeInterval(0),
 	  m_bookMode(OpeningBook::Ram)
 {
 	Q_ASSERT(tournament != nullptr);
@@ -95,6 +96,12 @@ void EngineMatch::setRatingInterval(int interval)
 	m_ratingInterval = interval;
 }
 
+void EngineMatch::setOutcomeInterval(int interval)
+{
+	Q_ASSERT(interval >= 0);
+	m_outcomeInterval = interval;
+}
+
 void EngineMatch::setBookMode(OpeningBook::AccessMode mode)
 {
 	m_bookMode = mode;
@@ -138,6 +145,9 @@ void EngineMatch::onGameFinished(ChessGame* game, int number)
 	if (m_ratingInterval != 0
 	&&  (m_tournament->finishedGameCount() % m_ratingInterval) == 0)
 		printRanking();
+	if (m_outcomeInterval != 0
+	&&  (m_tournament->finishedGameCount() % m_outcomeInterval) == 0)
+		printOutcomes();
 }
 
 void EngineMatch::onTournamentFinished()
@@ -145,6 +155,9 @@ void EngineMatch::onTournamentFinished()
 	if (m_ratingInterval == 0
 	||  m_tournament->finishedGameCount() % m_ratingInterval != 0)
 		printRanking();
+	if (m_outcomeInterval == 0
+	||  m_tournament->finishedGameCount() % m_outcomeInterval != 0)
+		printOutcomes();
 
 	QString error = m_tournament->errorString();
 	if (!error.isEmpty())
@@ -164,4 +177,9 @@ void EngineMatch::print(const QString& msg)
 void EngineMatch::printRanking()
 {
 	qInfo("%s", qUtf8Printable(m_tournament->results()));
+}
+
+void EngineMatch::printOutcomes()
+{
+	qInfo("%s", qUtf8Printable(m_tournament->outcomes()));
 }

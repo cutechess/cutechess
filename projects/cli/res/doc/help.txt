@@ -130,7 +130,8 @@ Options:
 			[ELO0, ELO1] are ALPHA and BETA. The match is stopped if
 			either H0 or H1 is accepted or if the maximum number of
 			games set by '-rounds' and/or '-games' is reached.
-  -ratinginterval N	Set the interval for printing the ratings to N games
+  -ratinginterval N	Set the interval for printing the ratings to N games.
+  -outcomeinterval N	Set the interval for printing outcomes to N games.
   -debug		Display all engine input and output
   -openings file=FILE format=FORMAT order=ORDER plies=PLIES start=START policy=POLICY
 			Pick game openings from FILE. The file's format is
