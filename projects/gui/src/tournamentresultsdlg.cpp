@@ -85,5 +85,8 @@ void TournamentResultsDialog::update()
 	text += tr("\n%1 of %2 games finished.")
 		.arg(tournament->finishedGameCount())
 		.arg(tournament->finalGameCount());
+	if (tournament->finishedGameCount() >= tournament->finalGameCount()
+	|| tournament->isStopping())
+		text.append("\n").append(tournament->outcomes());
 	m_resultsEdit->setPlainText(text);
 }

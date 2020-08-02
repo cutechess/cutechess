@@ -54,7 +54,27 @@ class LIB_EXPORT Tournament : public QObject
 			RoundPolicy        //!< Shift on new round
 		};
 
-		constexpr static auto c_defaultFormat
+		/*! Additional result types used for statistics. */
+		enum AuxResultType
+		{
+			//! Regular loss (resignation, adjudication, opponent win)
+			RegularLoss = Chess::Result::ResultError + 1,
+			//! Regular win (mate, opponent resignation, adjudication)
+			RegularWin,
+			//! Win caused by timeout, illegal move, disconnect, or
+			//! stalled connection of opponent.
+			OtherWin,
+			//! Draw Types
+			Stalemate,
+			InsufficientMaterial,
+			MoveRepetiton,
+			MovesRule,
+			CountingRules,
+			OtherDraw,
+			//! Loss by invalid result claim
+			InvalidResultClaim
+		};
+		constexpr static auto c_defaultFormat 
 			= "Rank,Name,Elo,Error,Games,Score,DScore";
 
 		/*!
@@ -276,9 +296,14 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		const QMap<QString, QString>& namedResultFormats() const;
 		/*!
-		 * Lists the format tokens for results
+		 * Lists the format tokens for results.
 		 */
 		const QList<QString> resultFieldTokens() const;
+		/*!
+		 * Result field groups: Each key is a shortcut for a
+		 * corresponding list of result format tokens.
+		 */
+		const QMap<QString, QString>& resultFieldGroups() const;
 		/*!
 		 * Adds player \a builder to the tournament.
 		 *
@@ -297,6 +322,14 @@ class LIB_EXPORT Tournament : public QObject
 		 * The default implementation works for most tournament types.
 		 */
 		virtual QString results() const;
+		/*!
+		 * Returns outcome statistics per player as a string.
+		 */
+		virtual QString outcomes() const;
+		/*!
+		 * Returns true if the tournament is stopping, else false.
+		 */
+		bool isStopping() const;
 
 	public slots:
 		/*! Starts the tournament. */
@@ -340,6 +373,14 @@ class LIB_EXPORT Tournament : public QObject
 				  int number,
 				  int whiteIndex,
 				  int blackIndex);
+		/*!
+		 * This signal is emitted when a game has ended irregularly.
+		 * \a index is the index to the losing player's data.
+		 * The type of termination is given by \a result.
+		 * \note This signal is not used in case of no or unclear outcome.
+		 */
+		void gameTerminated(int index,
+				    Chess::Result result);
 		/*!
 		 * This signal is emitted when all of the tournament's games
 		 * have been played or after the tournament was stopped.
@@ -432,6 +473,13 @@ class LIB_EXPORT Tournament : public QObject
 		 */
 		virtual void addScore(int player, Chess::Side side, int score);
 		/*!
+		 * Add \a result for a game of player at index \a iWhite vs
+		 * player at index \a iBlack to the outcome statistics.
+		 */
+		virtual void addOutcome(int iWhite,
+					int iBlack,
+					Chess::Result result);
+		/*!
 		 * Returns true if all games in the tournament have finished;
 		 * otherwise returns false.
 		 */
@@ -485,7 +533,24 @@ class LIB_EXPORT Tournament : public QObject
 			BlackDrawScore,
 			BlackEloDiff,
 			BlackErrorMargin,
-			BlackLOS
+			BlackLOS,
+			TimeForfeits,
+			IllegalMoves,
+			Disconnections,
+			StalledConnections,
+			InvalidResultClaims,
+			RegularLosses,
+			RegularWins,
+			OtherWins,
+			DrawsByStalemate,
+			DrawsByMaterial,
+			DrawsByRepetiton,
+			DrawsByMovesRule,
+			DrawsByCountingRules,
+			DrawsByAdjudication,
+			DrawsByAgreement,
+			OtherDraws,
+			TimeControlString
 		};
 
 		const QMap<QString, int> m_tokenMap = {
@@ -516,7 +581,31 @@ class LIB_EXPORT Tournament : public QObject
 			{"bDScore", BlackDrawScore},
 			{"bElo",    BlackEloDiff},
 			{"bError",  BlackErrorMargin},
-			{"bLOS",    BlackLOS}
+			{"Time",    TimeForfeits},
+			{"Illegal", IllegalMoves},
+			{"Discon",  Disconnections},
+			{"Stall",   StalledConnections},
+			{"WrClaim", InvalidResultClaims},
+			{"RegulL",  RegularLosses},
+			{"RegulW",  RegularWins},
+			{"OtherW",  OtherWins},
+			{"DStale",  DrawsByStalemate},
+			{"DMater",  DrawsByMaterial},
+			{"DRepet",  DrawsByRepetiton},
+			{"DMoves",  DrawsByMovesRule},
+			{"DCount",  DrawsByCountingRules},
+			{"DAdj",    DrawsByAdjudication},
+			{"DAgree",  DrawsByAgreement},
+			{"OtherD",  OtherDraws},
+			{"TC",      TimeControlString}
+		};
+
+		const QMap<QString, QString> m_namedGroups =
+		{
+			{"WLDStats",	"W,L,D,Points,Score,wW,wL,wD,wPoints,wScore,"
+					"bW,bL,bD,bPoints,bScore"},
+			{"DrawStats",	"DScore,DStale,DMater,DRepet,DMoves,DAdj,DAgree,OtherD"},
+			{"Terminations","Time,Illegal,Discon,Stall,WrClaim"}
 		};
 
 		const QMap<QString, QString> m_namedFormats =
@@ -532,7 +621,13 @@ class LIB_EXPORT Tournament : public QObject
 					"Score,DScore,wScore,bScore"},
 			{"per-color",	"Rank,Name,Elo,Error,Games,W,L,D,Points,"
 					"wW,wL,wD,wPoints,bW,bL,bD,bPoints"},
-			{"ordo",	"Rank,Name,Elo,Points,Games,Score"}
+			{"ordo",	"Rank,Name,Elo,Points,Games,Score"},
+			{"term",	"Rank,Name,Elo,Error,Games,Score,"
+					"Time,Illegal,Discon,Stall,WrClaim"},
+			{"draws",	"Rank,Name,Elo,Error,Games,W,L,D,Points,Score,DScore,"
+					"DStale,DMater,DRepet,DMoves,DAdj,DAgree,OtherD"},
+			{"wide3",	"Rank,Name,TC,Elo,Error,Games,WLDStats,"
+					"DrawStats,Terminations"}
 		};
 
 		struct GameData
@@ -570,6 +665,23 @@ class LIB_EXPORT Tournament : public QObject
 			qreal blackEloDiff;
 			qreal blackErrorMargin;
 			qreal blackLOS;
+			int timeForfeits;
+			int illegalMoves;
+			int disconnections;
+			int stalledConnections;
+			int invalidResultClaims;
+			int regularLosses;
+			int regularWins;
+			int otherWins;
+			int drawsByStalemate;
+			int drawsByMaterial;
+			int drawsByRepetiton;
+			int drawsByMovesRule;
+			int drawsByCountingRules;
+			int drawsByAdjudication;
+			int drawsByAgreement;
+			int otherDraws;
+			QString timeControl;
 		};
 
 		QString resultsForSides(int index) const;
@@ -619,6 +731,7 @@ class LIB_EXPORT Tournament : public QObject
 		QMap<int, PgnGame> m_pgnGames;
 		QMap<ChessGame*, GameData*> m_gameData;
 		QVector<Chess::Move> m_openingMoves;
+		QMap<int, QString> m_headerMap;
 };
 
 /*!

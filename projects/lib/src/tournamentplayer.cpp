@@ -32,7 +32,9 @@ TournamentPlayer::TournamentPlayer(PlayerBuilder* builder,
 	  m_losses(0),
 	  m_whiteWins(0),
 	  m_whiteDraws(0),
-	  m_whiteLosses(0)
+	  m_whiteLosses(0),
+	  m_terminations(24),
+	  m_outcome()
 {
 	Q_ASSERT(builder != nullptr);
 }
@@ -152,4 +154,20 @@ void TournamentPlayer::addScore(Chess::Side side, int score)
 int TournamentPlayer::gamesFinished() const
 {
 	return m_wins + m_draws + m_losses;
+}
+
+void TournamentPlayer::addOutcome(int type, QString str)
+{
+	m_outcome[str]++;
+	m_terminations[type]++;
+}
+
+int TournamentPlayer::outcomes(int type) const
+{
+	return m_terminations.at(type);
+}
+
+const QMap<QString, int> & TournamentPlayer::outcomeMap() const
+{
+	return m_outcome;
 }

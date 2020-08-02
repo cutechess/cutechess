@@ -256,6 +256,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-rounds", QVariant::Int, 1, 1);
 	parser.addOption("-sprt", QVariant::StringList);
 	parser.addOption("-ratinginterval", QVariant::Int, 1, 1);
+	parser.addOption("-outcomeinterval", QVariant::Int, 1, 1);
 	parser.addOption("-resultformat", QVariant::String, 1, 1);
 	parser.addOption("-debug", QVariant::Bool, 0, 0);
 	parser.addOption("-openings", QVariant::StringList);
@@ -427,6 +428,9 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Interval for rating list updates
 		else if (name == "-ratinginterval")
 			match->setRatingInterval(value.toInt());
+		// Interval for outcome updates
+		else if (name == "-outcomeinterval")
+			match->setOutcomeInterval(value.toInt());
 		// Format of the result list
 		else if (name == "-resultformat")
 		{
@@ -445,6 +449,11 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 					 s.append(" ");
 				}
 				qInfo() << "  " << qUtf8Printable(s);
+				qInfo() <<"\nNamed shortcuts:";
+				const auto& map2(tournament->resultFieldGroups());
+				for (auto it = map2.constBegin(); it != map2.constEnd(); ++it)
+					qInfo() << qUtf8Printable(it.key()) << "\n  "
+						<< qUtf8Printable(it.value());
 				return 0;
 			}
 			tournament->setResultFormat(value.toString().left(256).trimmed());

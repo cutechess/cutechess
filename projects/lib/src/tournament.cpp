@@ -66,6 +66,46 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_pair(nullptr)
 {
 	Q_ASSERT(gameManager != nullptr);
+
+	// Assign header map
+	m_headerMap.insert(Rank,            QString("%1 ").arg("Rank", 4));
+	m_headerMap.insert(Name,            QString("%1 ").arg("Name", -25));
+	m_headerMap.insert(EloDiff,         QString("%1 ").arg("Elo", 7));
+	m_headerMap.insert(ErrorMargin,     QString("%1 ").arg("+/-", 7));
+	m_headerMap.insert(Games,           QString("%1 ").arg("Games", 7));
+	m_headerMap.insert(Wins,            QString("%1 ").arg("Wins", 7));
+	m_headerMap.insert(Losses,          QString("%1 ").arg("Losses", 7));
+	m_headerMap.insert(Draws,           QString("%1 ").arg("Draws", 7));
+	m_headerMap.insert(Points,          QString("%1 ").arg("Points", 8));
+	m_headerMap.insert(Score,           QString("%1 ").arg("Score", 7));
+	m_headerMap.insert(DrawScore,       QString("%1 ").arg("Draw", 7));
+	m_headerMap.insert(WhiteScore,      QString("%1 ").arg("White", 7));
+	m_headerMap.insert(BlackScore,      QString("%1 ").arg("Black", 7));
+	m_headerMap.insert(WhiteDrawScore,  QString("%1 ").arg("WDraw", 7));
+	m_headerMap.insert(BlackDrawScore,  QString("%1 ").arg("BDraw", 7));
+	m_headerMap.insert(WhiteWins,       QString("%1 ").arg("WWins", 7));
+	m_headerMap.insert(WhiteLosses,     QString("%1 ").arg("WLoss.", 7));
+	m_headerMap.insert(WhiteDraws,      QString("%1 ").arg("WDraws", 7));
+	m_headerMap.insert(BlackWins,       QString("%1 ").arg("BWins", 7));
+	m_headerMap.insert(BlackLosses,     QString("%1 ").arg("BLoss.", 7));
+	m_headerMap.insert(BlackDraws,      QString("%1 ").arg("BDraws", 7));
+	m_headerMap.insert(TimeForfeits,    QString("%1 ").arg("Time", 7));
+	m_headerMap.insert(IllegalMoves,    QString("%1 ").arg("Illegal", 7));
+	m_headerMap.insert(Disconnections,  QString("%1 ").arg("Discon", 7));
+	m_headerMap.insert(StalledConnections,  QString("%1 ").arg("Stall", 7));
+	m_headerMap.insert(InvalidResultClaims, QString("%1 ").arg("WrClaim", 7));
+	m_headerMap.insert(RegularLosses,       QString("%1 ").arg("RegulL", 7));
+	m_headerMap.insert(RegularWins,         QString("%1 ").arg("RegulW", 7));
+	m_headerMap.insert(OtherWins,           QString("%1 ").arg("OtherW", 7));
+	m_headerMap.insert(DrawsByStalemate,    QString("%1 ").arg("DStale", 7));
+	m_headerMap.insert(DrawsByMaterial,     QString("%1 ").arg("DMater", 7));
+	m_headerMap.insert(DrawsByRepetiton,    QString("%1 ").arg("DRepet", 7));
+	m_headerMap.insert(DrawsByMovesRule,    QString("%1 ").arg("DMoves", 7));
+	m_headerMap.insert(DrawsByCountingRules,QString("%1 ").arg("DCount", 7));
+	m_headerMap.insert(DrawsByAdjudication, QString("%1 ").arg("DAdj", 7));
+	m_headerMap.insert(DrawsByAgreement,    QString("%1 ").arg("DAgree", 7));
+	m_headerMap.insert(OtherDraws,          QString("%1 ").arg("OtherD", 7));
+	m_headerMap.insert(TimeControlString,   QString("%1 ").arg("TC", 14));
 }
 
 Tournament::~Tournament()
@@ -271,6 +311,11 @@ const QMap<QString, QString> & Tournament::namedResultFormats() const
 const QList< QString > Tournament::resultFieldTokens() const
 {
 	return m_tokenMap.keys();
+}
+
+const QMap<QString,QString>& Tournament::resultFieldGroups() const
+{
+	return m_namedGroups;
 }
 
 void Tournament::setPgnOutput(const QString& fileName, PgnGame::PgnMode mode)
@@ -604,6 +649,69 @@ void Tournament::addScore(int player, Chess::Side side, int score)
 	m_players[player].addScore(side, score);
 }
 
+void Tournament::addOutcome(int iWhite, int iBlack, Chess::Result result)
+{
+	Chess::Side winner {result.winner()};
+	int type {result.type()};
+	QString str {result.description()};
+	int iWinner {winner == Chess::Side::White ? iWhite : iBlack};
+	int iLoser {winner == Chess::Side::White ? iBlack : iWhite};
+	using Type = Chess::Result::Type;
+
+	// Draw, NoResult, ResultError, Agreement (to draw), Adjudication (draw)
+	if (winner.isNull())
+	{
+		// Examine draw types
+		if (type == Type::Draw)
+		{
+			if (str.contains(QObject::tr("stalemate")))
+				type = AuxResultType::Stalemate;
+			else if (str.contains(QObject::tr("material")))
+				type = AuxResultType::InsufficientMaterial;
+			else if (str.contains(QObject::tr("repetition")))
+				type = AuxResultType::MoveRepetiton;
+			else if (str.contains(QObject::tr("moves rule")))
+				type = AuxResultType::MovesRule;
+			else if (str.contains(QObject::tr("counting rules")))
+				type = AuxResultType::CountingRules;
+			else
+				type = AuxResultType::OtherDraw;
+		}
+
+		m_players[iWhite].addOutcome(type, str);
+		m_players[iBlack].addOutcome(type, str);
+	}
+	else if (type == Type::Adjudication
+		&& str.contains(QObject::tr("result claim")))
+	{
+		// Invalid result claim is "other win" for winner
+		m_players[iWinner].addOutcome(AuxResultType::OtherWin,
+					      QString(tr("Win: ")) + str);
+		m_players[iLoser].addOutcome(AuxResultType::InvalidResultClaim,
+					     QString(tr("Loss: ")) + str);
+	}
+	else if (type == Type::Win
+	     ||  type == Type::Agreement
+	     ||  type == Type::Resignation
+	     ||  type == Type::Adjudication)
+	{
+		// Regular win for winner and regular loss for loser
+		// Count agreement, resignation, and adjudication as regular win/loss
+		m_players[iWinner].addOutcome(AuxResultType::RegularWin,
+					      QString(tr("Win: ")) + str);
+		m_players[iLoser].addOutcome(AuxResultType::RegularLoss,
+					     QString(tr("Loss: ")) + str);
+	}
+	else
+	{
+		// Game was terminated by other means
+		m_players[iWinner].addOutcome(AuxResultType::OtherWin,
+					      QString(tr("Win: ")) + str);
+		m_players[iLoser].addOutcome(type, QString(tr("Loss: ")) + str);
+		emit gameTerminated(iLoser, result);
+	}
+}
+
 void Tournament::onGameStarted(ChessGame* game)
 {
 	Q_ASSERT(game != nullptr);
@@ -665,7 +773,9 @@ void Tournament::onGameFinished(ChessGame* game)
 	writeEpd(game);
 	writePgn(pgn, gameNumber);
 
+	addOutcome(iWhite, iBlack, game->result());
 	Chess::Result::Type resultType(game->result().type());
+
 	bool crashed = (resultType == Chess::Result::Disconnection ||
 			resultType == Chess::Result::StalledConnection);
 	if (!m_recover && crashed)
@@ -770,6 +880,12 @@ void Tournament::stop()
 		QMetaObject::invokeMethod(game, "stop", Qt::QueuedConnection);
 }
 
+bool Tournament::isStopping() const
+{
+	return m_stopping;
+}
+
+
 QString Tournament::resultsForSides(int index) const
 {
 	QString ret;
@@ -871,7 +987,24 @@ QString Tournament::results() const
 				     blackElo.drawRatio(),
 				     blackElo.diff(),
 				     blackElo.errorMargin(),
-				     blackElo.LOS() };
+				     blackElo.LOS(),
+				     player.outcomes(Chess::Result::Timeout),
+				     player.outcomes(Chess::Result::IllegalMove),
+				     player.outcomes(Chess::Result::Disconnection),
+				     player.outcomes(Chess::Result::StalledConnection),
+				     player.outcomes(AuxResultType::InvalidResultClaim),
+				     player.outcomes(AuxResultType::RegularLoss),
+				     player.outcomes(AuxResultType::RegularWin),
+				     player.outcomes(AuxResultType::OtherWin),
+				     player.outcomes(AuxResultType::Stalemate),
+				     player.outcomes(AuxResultType::InsufficientMaterial),
+				     player.outcomes(AuxResultType::MoveRepetiton),
+				     player.outcomes(AuxResultType::MovesRule),
+				     player.outcomes(AuxResultType::CountingRules),
+				     player.outcomes(Chess::Result::Adjudication),
+				     player.outcomes(Chess::Result::Agreement),
+				     player.outcomes(AuxResultType::OtherDraw),
+				     player.timeControl().toString() };
 
 		// Order players like this:
 		// 1. Gauntlet player (if any)
@@ -893,35 +1026,13 @@ QString Tournament::results() const
 	if (m_namedFormats.contains(m_resultFormat))
 		format = m_namedFormats[m_resultFormat];
 
+	for (auto it = m_namedGroups.cbegin(); it != m_namedGroups.cend(); it++)
+		format.replace(it.key(), it.value());
+
 	ResultFormatter formatter(m_tokenMap, format);
-	QMap<int,QString> headerMap;
 
 	if (!ranking.isEmpty())
-	{
-		headerMap.insert(Rank,        QString("%1 ").arg("Rank", 4));
-		headerMap.insert(Name,        QString("%1 ").arg("Name", -25));
-		headerMap.insert(EloDiff,     QString("%1 ").arg("Elo", 7));
-		headerMap.insert(ErrorMargin, QString("%1 ").arg("+/-", 7));
-		headerMap.insert(Games,	      QString("%1 ").arg("Games", 7));
-		headerMap.insert(Wins,	      QString("%1 ").arg("Wins", 7));
-		headerMap.insert(Losses,      QString("%1 ").arg("Losses", 7));
-		headerMap.insert(Draws,       QString("%1 ").arg("Draws", 7));
-		headerMap.insert(Points,      QString("%1 ").arg("Points", 8));
-		headerMap.insert(Score,	      QString("%1 ").arg("Score", 7));
-		headerMap.insert(DrawScore,   QString("%1 ").arg("Draw", 7));
-		headerMap.insert(WhiteScore,  QString("%1 ").arg("White", 7));
-		headerMap.insert(BlackScore,  QString("%1 ").arg("Black", 7));
-		headerMap.insert(WhiteDrawScore,  QString("%1 ").arg("WDraw", 7));
-		headerMap.insert(BlackDrawScore,  QString("%1 ").arg("BDraw", 7));
-		headerMap.insert(WhiteWins,   QString("%1 ").arg("WWins", 7));
-		headerMap.insert(WhiteLosses, QString("%1 ").arg("WLoss.", 7));
-		headerMap.insert(WhiteDraws,  QString("%1 ").arg("WDraws", 7));
-		headerMap.insert(BlackWins,   QString("%1 ").arg("BWins", 7));
-		headerMap.insert(BlackLosses, QString("%1 ").arg("BLoss.", 7));
-		headerMap.insert(BlackDraws,  QString("%1 ").arg("BDraws", 7));
-
-		ret += formatter.entry(headerMap);
-	}
+		ret += formatter.entry(m_headerMap);
 
 	int rank = hasGauntletRatingsOrder() ? -1 : 0;
 	for (auto it = ranking.constBegin(); it != ranking.constEnd(); ++it)
@@ -951,6 +1062,28 @@ QString Tournament::results() const
 		dataMap.insert(BlackWins,  QString("%1 ").arg(data.blackWins, 7));
 		dataMap.insert(BlackLosses,QString("%1 ").arg(data.blackLosses, 7));
 		dataMap.insert(BlackDraws, QString("%1 ").arg(data.blackDraws, 7));
+		dataMap.insert(TimeForfeits, QString("%1 ").arg(data.timeForfeits, 7));
+		dataMap.insert(IllegalMoves, QString("%1 ").arg(data.illegalMoves, 7));
+		dataMap.insert(Disconnections, QString("%1 ").arg(data.disconnections, 7));
+		dataMap.insert(StalledConnections, QString("%1 ").arg(data.stalledConnections, 7));
+		dataMap.insert(InvalidResultClaims, QString("%1 ").arg(data.invalidResultClaims, 7));
+		dataMap.insert(RegularLosses, QString("%1 ").arg(data.regularLosses, 7));
+		dataMap.insert(RegularWins, QString("%1 ").arg(data.regularWins, 7));
+		dataMap.insert(OtherWins,  QString("%1 ").arg(data.otherWins, 7));
+		dataMap.insert(DrawsByStalemate, QString("%1 ").arg(data.drawsByStalemate, 7));
+		dataMap.insert(DrawsByMaterial, QString("%1 ").arg(data.drawsByMaterial, 7));
+		dataMap.insert(DrawsByRepetiton, QString("%1 ").arg(data.drawsByRepetiton, 7));
+		dataMap.insert(DrawsByMovesRule, QString("%1 ").arg(data.drawsByMovesRule, 7));
+		dataMap.insert(DrawsByCountingRules,
+			       QString("%1 ").arg(data.drawsByCountingRules, 7));
+		dataMap.insert(DrawsByAdjudication,
+			       QString("%1 ").arg(data.drawsByAdjudication, 7));
+		dataMap.insert(DrawsByAgreement,
+			       QString("%1 ").arg(data.drawsByAgreement, 7));
+		dataMap.insert(OtherDraws, QString("%1 ").arg(data.otherDraws, 7));
+		dataMap.insert(TimeControlString, QString("%1 ").arg(data.timeControl, 14));
+
+
 		ret += formatter.entry(dataMap);
 	}
 
@@ -975,6 +1108,21 @@ QString Tournament::results() const
 	return ret;
 }
 
+QString Tournament::outcomes() const
+{
+	QString ret;
+	for (auto player: m_players)
+	{
+		ret += QString("\nPlayer: %0").arg(player.name());
+		const auto& map(player.outcomeMap());
+		// sorted listing
+		for (const QString& str: map.keys())
+			ret += QString("\n   \"%0\": %1")
+				.arg(str)
+				.arg(map[str]);
+	}
+	return ret;
+}
 
 ResultFormatter::ResultFormatter::ResultFormatter(const QMap<QString, int>& tokenMap,
 						  const QString& format,
