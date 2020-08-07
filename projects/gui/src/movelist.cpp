@@ -22,16 +22,20 @@
 #include <QScrollBar>
 #include <QTimer>
 #include <QKeyEvent>
+#include <QAction>
 #include <chessgame.h>
+#include <QMenu>
 
 
 MoveList::MoveList(QWidget* parent)
 	: QWidget(parent),
 	  m_game(nullptr),
+	  m_pgn(nullptr),
 	  m_moveCount(0),
 	  m_startingSide(0),
 	  m_selectedMove(-1),
 	  m_moveToBeSelected(-1),
+	  m_showComments(true),
 	  m_selectionTimer(new QTimer(this))
 {
 	m_moveList = new QTextBrowser(this);
@@ -68,6 +72,29 @@ MoveList::MoveList(QWidget* parent)
 	m_defaultTextFormat.setForeground(format.foreground());
 	m_defaultTextFormat.setBackground(format.background());
 
+	QAction* toggleCommentAct = new QAction("Toggle Comments", m_moveList);
+	toggleCommentAct->setShortcut(Qt::Key_C);
+	m_moveList->addAction(toggleCommentAct);
+	connect(toggleCommentAct, &QAction::triggered, this, [=]()
+	{
+		if (m_game.isNull() && m_pgn == nullptr)
+			return;
+
+		toggleCommentAct->setEnabled(false);
+		m_showComments = !m_showComments;
+		int moveNumber = m_selectedMove;
+		setGame(m_game, m_pgn);
+		selectMove(moveNumber);
+		QTimer::singleShot(100, this, [=]()
+		{
+			toggleCommentAct->setEnabled(true);
+		});
+	});
+	m_moveList->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+
+	connect(m_moveList, SIGNAL(customContextMenuRequested(const QPoint&)),
+		this, SLOT(onContextMenuRequest()));
+
 	m_moveList->installEventFilter(this);
 }
 
@@ -92,7 +119,11 @@ void MoveList::insertMove(int ply,
 
 	move.number.insert(cursor);
 	move.move.insert(cursor);
-	move.comment.insert(cursor);
+
+	if (m_showComments)
+		move.comment.insert(cursor);
+	else
+		cursor.insertText("\t");
 
 	m_moves.append(move);
 
@@ -112,6 +143,7 @@ void MoveList::setGame(ChessGame* game, PgnGame* pgn)
 		pgn = m_game->pgn();
 	}
 
+	m_pgn = pgn;
 	m_moveList->clear();
 	m_moves.clear();
 	m_selectedMove = -1;
@@ -212,6 +244,7 @@ void MoveList::setMove(int ply,
 
 	MoveCommentToken& commentToken(m_moves[ply].comment);
 	int oldLength = commentToken.length();
+
 	commentToken.setValue(comment);
 	commentToken.select(c);
 	commentToken.insert(c);
@@ -306,4 +339,13 @@ void MoveList::onLinkClicked(const QUrl& url)
 			 qUtf8Printable(url.scheme()));
 
 	selectMove(ply);
+}
+
+void MoveList::onContextMenuRequest()
+{
+	QMenu* menu = m_moveList->createStandardContextMenu();
+	menu->addSeparator();
+	menu->addActions(m_moveList->actions());
+	menu->exec(QCursor::pos());
+	delete menu;
 }

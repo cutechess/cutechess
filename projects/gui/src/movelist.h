@@ -89,6 +89,7 @@ class MoveList : public QWidget
 				const QString& comment);
 		void onLinkClicked(const QUrl& url);
 		void selectChosenMove();
+		void onContextMenuRequest();
 
 	private:
 		struct Move
@@ -105,11 +106,13 @@ class MoveList : public QWidget
 
 		QTextBrowser* m_moveList;
 		QPointer<ChessGame> m_game;
+		PgnGame* m_pgn;
 		QList<Move> m_moves;
 		int m_moveCount;
 		int m_startingSide;
 		int m_selectedMove;
 		int m_moveToBeSelected;
+		bool m_showComments;
 		QTextCharFormat m_defaultTextFormat;
 		QTimer* m_selectionTimer;
 };
