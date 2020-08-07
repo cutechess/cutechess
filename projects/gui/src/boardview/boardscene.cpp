@@ -229,7 +229,7 @@ void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 	}
 
 	if (m_targets.contains(piece)
-	&&  QSettings().value("ui/highlight_legal_moves", true).toBool())
+	&&  m_settings.value("ui/highlight_legal_moves", true).toBool())
 	{
 		m_highlightPiece = piece;
 		m_squares->setHighlights(m_targets.values(piece));
@@ -439,7 +439,8 @@ QPropertyAnimation* BoardScene::pieceAnimation(GraphicsPiece* piece,
 	anim->setStartValue(startPoint);
 	anim->setEndValue(endPoint);
 	anim->setEasingCurve(QEasingCurve::InOutQuad);
-	anim->setDuration(300);
+	int duration = qMin(m_settings.value("ui/move_animation_duration", 300).toInt(), 400);
+	anim->setDuration(duration);
 
 	piece->setParentItem(nullptr);
 	piece->setPos(startPoint);
@@ -525,6 +526,8 @@ void BoardScene::addMoveArrow(const QPointF& sourcePos,
 			      const QPointF& targetPos)
 {
 	Q_ASSERT(m_moveArrows != nullptr);
+	if (!m_settings.value("ui/show_move_arrows", true).toBool())
+		return;
 
 	QLineF l1(sourcePos, targetPos);
 	QLineF l2(l1.normalVector());

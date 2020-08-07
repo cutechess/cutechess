@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>552</width>
-    <height>467</height>
+    <height>501</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="m_generalTab">
       <attribute name="title">
@@ -32,33 +32,6 @@
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
         <layout class="QFormLayout" name="formLayout_6">
-         <item row="7" column="0">
-          <widget class="QCheckBox" name="m_humanCanPlayAfterTimeoutCheck">
-           <property name="text">
-            <string>Human player can play after timeout</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QCheckBox" name="m_playersSidesOnClocksCheck">
-           <property name="text">
-            <string>Display players' sides on clocks </string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QCheckBox" name="m_closeUnusedInitialTabCheck">
-           <property name="text">
-            <string>Close initial game tab if unused</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="0">
           <widget class="QCheckBox" name="m_highlightLegalMovesCheck">
            <property name="text">
@@ -69,7 +42,27 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="m_showMoveArrowsCheck">
+           <property name="text">
+            <string>Show move arrows</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QCheckBox" name="m_closeUnusedInitialTabCheck">
+           <property name="text">
+            <string>Close initial game tab if unused</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
           <widget class="QCheckBox" name="m_useFullUserNameCheck">
            <property name="text">
             <string>Use full name of human player</string>
@@ -79,10 +72,59 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
+         <item row="5" column="0">
+          <widget class="QCheckBox" name="m_playersSidesOnClocksCheck">
+           <property name="text">
+            <string>Display players' sides on clocks </string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
           <widget class="QCheckBox" name="m_autoFlipBoardForHumanGamesCheck">
            <property name="text">
             <string>Auto flip board for human vs human</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QCheckBox" name="m_humanCanPlayAfterTimeoutCheck">
+           <property name="text">
+            <string>Human player can play after timeout</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="0">
+          <widget class="QLabel" name="m_moveAnimationLabel">
+           <property name="text">
+            <string>Duration of mo&amp;ve animation:</string>
+           </property>
+           <property name="buddy">
+            <cstring>m_moveAnimationSpin</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="1">
+          <widget class="QSpinBox" name="m_moveAnimationSpin">
+           <property name="toolTip">
+            <string>duration of a move animation (default: 300 ms)</string>
+           </property>
+           <property name="specialValueText">
+            <string>Off</string>
+           </property>
+           <property name="suffix">
+            <string> ms</string>
+           </property>
+           <property name="maximum">
+            <number>400</number>
+           </property>
+           <property name="singleStep">
+            <number>50</number>
+           </property>
+           <property name="value">
+            <number>300</number>
            </property>
           </widget>
          </item>
@@ -105,18 +147,18 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="m_siteEdit"/>
-         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="m_siteLabel">
            <property name="text">
-            <string>PGN Site:</string>
+            <string>&amp;PGN Site:</string>
            </property>
            <property name="buddy">
             <cstring>m_siteEdit</cstring>
            </property>
           </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="m_siteEdit"/>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="m_defaultPgnOutFileLabel">
@@ -149,7 +191,7 @@
          <item row="3" column="0">
           <widget class="QLabel" name="m_tbPathLabel">
            <property name="text">
-            <string>Syzygy tablebases path:</string>
+            <string>Sy&amp;zygy tablebases path:</string>
            </property>
            <property name="buddy">
             <cstring>m_tbPathEdit</cstring>
@@ -265,7 +307,7 @@
             <item row="1" column="0">
              <widget class="QLabel" name="m_concurrencyLabel">
               <property name="text">
-               <string>Concurrent games:</string>
+               <string>&amp;Concurrent games:</string>
               </property>
               <property name="buddy">
                <cstring>m_concurrencySpin</cstring>
@@ -385,6 +427,27 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>m_highlightLegalMovesCheck</tabstop>
+  <tabstop>m_showMoveArrowsCheck</tabstop>
+  <tabstop>m_closeUnusedInitialTabCheck</tabstop>
+  <tabstop>m_useFullUserNameCheck</tabstop>
+  <tabstop>m_playersSidesOnClocksCheck</tabstop>
+  <tabstop>m_autoFlipBoardForHumanGamesCheck</tabstop>
+  <tabstop>m_humanCanPlayAfterTimeoutCheck</tabstop>
+  <tabstop>m_moveAnimationSpin</tabstop>
+  <tabstop>m_siteEdit</tabstop>
+  <tabstop>m_defaultPgnOutFileEdit</tabstop>
+  <tabstop>m_defaultPgnOutFileBtn</tabstop>
+  <tabstop>m_tbPathEdit</tabstop>
+  <tabstop>m_browseTbPathBtn</tabstop>
+  <tabstop>m_concurrencySpin</tabstop>
+  <tabstop>m_tournamentDefaultPgnOutFileEdit</tabstop>
+  <tabstop>m_tournamentDefaultPgnOutFileBtn</tabstop>
+  <tabstop>m_tournamentDefaultEpdOutFileEdit</tabstop>
+  <tabstop>m_tournamentDefaultEpdOutFileBtn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
