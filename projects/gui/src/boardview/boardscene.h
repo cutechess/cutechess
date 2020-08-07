@@ -22,6 +22,7 @@
 #include <QGraphicsScene>
 #include <QMultiMap>
 #include <QPointer>
+#include <QSettings>
 #include <board/square.h>
 #include <board/genericmove.h>
 #include <board/boardtransition.h>
@@ -159,6 +160,7 @@ class BoardScene : public QGraphicsScene
 		Chess::GenericMove m_promotionMove;
 		GraphicsPiece* m_highlightPiece;
 		QGraphicsItemGroup* m_moveArrows;
+		QSettings m_settings;
 };
 
 #endif // BOARDSCENE_H
