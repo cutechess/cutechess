@@ -18,6 +18,7 @@ HEADERS += $$PWD/chessclock.h \
     $$PWD/engineoptiondelegate.h \
     $$PWD/engineoptionmodel.h \
     $$PWD/gamedatabasesearchdlg.h \
+    $$PWD/timecontrolwidget.h \
     $$PWD/timecontroldlg.h \
     $$PWD/engineconfigproxymodel.h \
     $$PWD/gamewall.h \
@@ -62,6 +63,7 @@ SOURCES += $$PWD/main.cpp \
     $$PWD/engineoptiondelegate.cpp \
     $$PWD/engineoptionmodel.cpp \
     $$PWD/gamedatabasesearchdlg.cpp \
+    $$PWD/timecontrolwidget.cpp \
     $$PWD/timecontroldlg.cpp \
     $$PWD/engineconfigproxymodel.cpp \
     $$PWD/gamewall.cpp \
