@@ -31,6 +31,7 @@
 GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 	: QWidget(parent),
 	  ui(new Ui::GameSettingsWidget),
+	  m_splitTimeControls(false),
 	  m_board(nullptr),
 	  m_isValid(true)
 {
@@ -46,6 +47,9 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 		this, SLOT(showTimeControlDialog()));
 	m_timeControl.setMovesPerTc(40);
 	m_timeControl.setTimePerTc(300000);
+	m_timeControl2.setMovesPerTc(40);
+	m_timeControl2.setTimePerTc(300000);
+
 	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
 
 	connect(ui->m_browseOpeningSuiteBtn, &QPushButton::clicked, this, [=]()
@@ -127,6 +131,11 @@ QString GameSettingsWidget::chessVariant() const
 TimeControl GameSettingsWidget::timeControl() const
 {
 	return m_timeControl;
+}
+
+TimeControl GameSettingsWidget::timeControl2() const
+{
+	return m_timeControl2;
 }
 
 bool GameSettingsWidget::pondering() const
@@ -231,7 +240,12 @@ void GameSettingsWidget::readSettings()
 
 	ui->m_variantCombo->setCurrentText(s.value("variant").toString());
 	m_timeControl.readSettings(&s);
-	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
+
+	s.beginGroup("second_time_control");
+	m_timeControl2.readSettings(&s);
+	s.endGroup(); // "second_time_control"
+
+	updateButtonText();
 
 	s.beginGroup("opening_suite");
 	ui->m_fenEdit->setText(s.value("fen").toString());
@@ -239,7 +253,7 @@ void GameSettingsWidget::readSettings()
 	ui->m_openingSuiteDepthSpin->setValue(s.value("depth", 1).toInt());
 	if (s.value("random_order").toBool())
 		ui->m_randomOrderRadio->setChecked(true);
-	s.endGroup();
+	s.endGroup(); // "games"
 
 	s.beginGroup("opening_book");
 	ui->m_polyglotFileEdit->setText(s.value("file").toString());
@@ -283,7 +297,12 @@ void GameSettingsWidget::enableSettingsUpdates()
 		QSettings s;
 		s.beginGroup("games");
 		m_timeControl.writeSettings(&s);
-		s.endGroup();
+
+		s.beginGroup("second_time_control");
+		m_timeControl2.writeSettings(&s);
+		s.endGroup(); // "second_time_control"
+
+		s.endGroup(); // "games"
 	});
 
 	connect(ui->m_tbCheck, &QCheckBox::toggled, [=](bool checked)
@@ -417,13 +436,38 @@ void GameSettingsWidget::validateFen(const QString& fen)
 	}
 }
 
+void GameSettingsWidget::updateButtonText()
+{
+	QString str(m_timeControl.toVerboseString());
+
+	if (!(m_timeControl == m_timeControl2) && m_splitTimeControls)
+		str += " vs " + m_timeControl2.toVerboseString();
+
+	ui->m_timeControlBtn->setText(str);
+}
+
+void GameSettingsWidget::enableSplitTimeControls(bool enable)
+{
+	m_splitTimeControls = enable;
+	updateButtonText();
+}
+
 void GameSettingsWidget::showTimeControlDialog()
 {
-	TimeControlDialog dlg(m_timeControl);
+	TimeControlDialog dlg(m_timeControl,
+			      m_splitTimeControls ? m_timeControl2 : TimeControl());
+
 	if (dlg.exec() == QDialog::Accepted)
 	{
-		m_timeControl = dlg.timeControl();
-		ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
+		m_timeControl = dlg.timeControlWhite();
+		m_timeControl2 = dlg.timeControlBlack();
+		QString str(m_timeControl.toVerboseString());
+
+		if (!(m_timeControl == m_timeControl2))
+			str += " vs " + m_timeControl2.toVerboseString();
+
+		ui->m_timeControlBtn->setText(str);
+
 		emit timeControlChanged();
 	}
 }
