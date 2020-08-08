@@ -20,6 +20,7 @@
 
 #include <QFileDialog>
 #include <QSettings>
+#include <QMenu>
 #include <functional>
 #include <algorithm>
 
@@ -112,6 +113,10 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	connect(ui->m_playersList, SIGNAL(doubleClicked(QModelIndex)),
 		this, SLOT(configureEngine(QModelIndex)));
 
+	ui->m_playersList->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+	connect(ui->m_playersList, SIGNAL(customContextMenuRequested(const QPoint&)),
+		this, SLOT(onContextMenuRequest()));
+
 	ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 	connect(ui->m_gameSettings, &GameSettingsWidget::statusChanged, [=](bool ok)
 	{
@@ -136,6 +141,7 @@ void NewTournamentDialog::addEngineOnDblClick(const QModelIndex& index)
 	const QModelIndex& idx = m_proxyModel->mapToSource(index);
 
 	m_addedEnginesManager->addEngine(m_srcEngineManager->engineAt(idx.row()));
+	m_timeControls << TimeControl();
 	listView->selectionModel()->select(index, QItemSelectionModel::Deselect);
 
 	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
@@ -157,7 +163,10 @@ void NewTournamentDialog::addEngine()
 
 	const QModelIndexList list(dlg.selection().indexes());
 	for (const QModelIndex& index : list)
+	{
 		m_addedEnginesManager->addEngine(m_srcEngineManager->engineAt(index.row()));
+		m_timeControls << TimeControl();
+	}
 
 	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
 	button->setEnabled(canStart());
@@ -176,7 +185,10 @@ void NewTournamentDialog::removeEngine()
 	});
 
 	for (const QModelIndex& index : qAsConst(selected))
+	{
 		m_addedEnginesManager->removeEngineAt(index.row());
+		m_timeControls.remove(index.row());
+	}
 
 	QPushButton* button = ui->buttonBox->button(QDialogButtonBox::Ok);
 	button->setEnabled(canStart());
@@ -207,9 +219,13 @@ void NewTournamentDialog::moveEngine(int offset)
 	int row1 = index.row();
 	int row2 = row1 + offset;
 	EngineConfiguration tmp(m_addedEnginesManager->engineAt(row1));
+	TimeControl tc = m_timeControls.at(row1);
 
 	m_addedEnginesManager->updateEngineAt(row1, m_addedEnginesManager->engineAt(row2));
 	m_addedEnginesManager->updateEngineAt(row2, tmp);
+
+	m_timeControls[row1] = m_timeControls.at(row2);
+	m_timeControls[row2]= tc;
 
 	ui->m_playersList->setCurrentIndex(index.sibling(row2, 0));
 }
@@ -264,6 +280,37 @@ void NewTournamentDialog::onPlayerSelectionChanged(const QItemSelection& selecte
 	ui->m_moveEngineDownBtn->setEnabled(enable && i < m_addedEnginesManager->engineCount() - 1);
 }
 
+void NewTournamentDialog::onContextMenuRequest()
+{
+	QList<QModelIndex> selected = ui->m_playersList->selectionModel()->selectedRows();
+	if (selected.isEmpty())
+		return;
+
+	QMenu menu(ui->m_playersList);
+
+	auto editTimeControlAct = menu.addAction(tr("Edit Time Control"));
+	connect(editTimeControlAct, &QAction::triggered, this, [=]()
+	{
+		int i = selected.first().row();
+		TimeControl tc {m_timeControls.at(i)};
+		if (!tc.isValid())
+			tc = ui->m_gameSettings->timeControl();
+
+		auto dlg = new TimeControlDialog(tc);
+		QString name {m_addedEnginesManager->engines().at(i).name()};
+		if (selected.count() > 1)
+			name.append(tr(" - %0 engines").arg(selected.count()));
+		dlg->setWindowTitle(tr("Time Control - %0").arg(name));
+
+		if (dlg->exec() == QDialog::Accepted)
+			for (QModelIndex index: selected)
+				m_timeControls[index.row()] = dlg->timeControlWhite();
+		delete dlg;
+	});
+
+	menu.exec(QCursor::pos());
+}
+
 Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) const
 {
 	Q_ASSERT(gameManager != nullptr);
@@ -301,12 +348,19 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 	t->setReverseSides(ts->reversingSchedule());
 	t->setResultFormat(ts->resultFormat());
 
+	bool isHourglass = ui->m_gameSettings->timeControl().isHourglass();
+
 	const auto engines = m_addedEnginesManager->engines();
-	for (EngineConfiguration config : engines)
+	for (int i = 0; i < engines.count(); i++)
 	{
+		EngineConfiguration config = engines.at(i);
 		ui->m_gameSettings->applyEngineConfiguration(&config);
+		TimeControl tc = m_timeControls.at(i);
+		// Hourglass mode must be the same for all players
+		tc.setHourglass(isHourglass);
+
 		t->addPlayer(new EngineBuilder(config),
-			     ui->m_gameSettings->timeControl(),
+			     tc.isValid() ? tc : ui->m_gameSettings->timeControl(),
 			     book,
 			     bookDepth);
 	}
