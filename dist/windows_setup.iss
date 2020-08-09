@@ -4,7 +4,7 @@
 ;#define MinGW
 #define MSVC
 #define MyAppName "Cute Chess"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "Cute Chess authors"
 #define MyAppURL "https://github.com/cutechess/cutechess"
 #define MyAppExeName "cutechess.exe"
