@@ -26,13 +26,15 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\cutechess
-DefaultGroupName={#MyAppName}
+DefaultDirName={autopf}\{#MyAppName}
+DisableProgramGroupPage=yes
+PrivilegesRequiredOverridesAllowed=dialog
 AllowNoIcons=yes
 OutputDir=.
 OutputBaseFilename=cutechess_setup
 Compression=lzma
 SolidCompression=yes
+WizardStyle=modern
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -64,9 +66,8 @@ Source: "{#DocPath}\cutechess-cli.6.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\cutechess.exe"
-Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\cutechess.exe"; Tasks: desktopicon
+Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\vcredist_x64.exe"; Parameters: "/install /quiet /norestart"; StatusMsg: Installing Visual Studio 2015 RunTime...
