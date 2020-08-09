@@ -22,6 +22,7 @@
 #include <QMainWindow>
 #include <QPointer>
 #include <board/side.h>
+#include "boardview/boardsettings.h"
 
 namespace Chess {
 	class Board;
@@ -42,6 +43,7 @@ class Tournament;
 class GameTabBar;
 class EvalHistory;
 class EvalWidget;
+class BoardSettingsDialog;
 
 /**
  * MainWindow
@@ -89,6 +91,8 @@ class MainWindow : public QMainWindow
 		void adjudicateWhiteWin();
 		void adjudicateBlackWin();
 		void resignGame();
+		void showBoardSettingsDialog();
+		void onBoardSettingsChanged();
 
 	private:
 		struct TabData
@@ -101,6 +105,7 @@ class MainWindow : public QMainWindow
 			PgnGame* m_pgn;
 			Tournament* m_tournament;
 			bool m_finished;
+			BoardSettings m_boardSettings;
 		};
 
 		void createActions();
@@ -116,11 +121,13 @@ class MainWindow : public QMainWindow
 		bool saveGame(const QString& fileName);
 		bool askToSave();
 		void setCurrentGame(const TabData& gameData);
+		void doSetCurrentGame(const TabData& gameData);
 		void removeGame(int index);
 		int tabIndex(ChessGame* game) const;
 		int tabIndex(Tournament* tournament, bool freeTab = false) const;
 		void addDefaultWindowMenu();
 		void adjudicateGame(Chess::Side winner);
+		void showDialog(QWidget* dlg);
 
 		QMenu* m_gameMenu;
 		QMenu* m_tournamentMenu;
@@ -135,6 +142,8 @@ class MainWindow : public QMainWindow
 		MoveList* m_moveList;
 		PgnTagsModel* m_tagsModel;
 
+		BoardSettingsDialog* m_boardSettingsDialog;
+
 		QAction* m_quitGameAct;
 		QAction* m_newGameAct;
 		QAction* m_adjudicateBlackWinAct;
@@ -148,6 +157,7 @@ class MainWindow : public QMainWindow
 		QAction* m_pasteFenAct;
 		QAction* m_copyPgnAct;
 		QAction* m_flipBoardAct;
+		QAction* m_showBoardSettingsAct;
 		QAction* m_newTournamentAct;
 		QAction* m_stopTournamentAct;
 		QAction* m_showTournamentResultsAct;

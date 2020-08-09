@@ -43,7 +43,8 @@ class GameViewer : public QWidget
 	public:
 		explicit GameViewer(Qt::Orientation orientation = Qt::Horizontal,
 		                    QWidget* parent = nullptr,
-		                    bool addChessClock = false);
+		                    bool addChessClock = false,
+				    bool hideMoveControls = false);
 
 		void setGame(ChessGame* game);
 		void setGame(const PgnGame* pgn);

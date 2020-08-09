@@ -403,6 +403,11 @@
        </item>
       </layout>
      </widget>
+     <widget class="BoardSettingsWidget" name="m_boardSettings">
+      <attribute name="title">
+       <string>Board</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -424,6 +429,12 @@
    <class>EngineManagementWidget</class>
    <extends>QWidget</extends>
    <header>src/enginemanagementwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BoardSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>src/boardsettingswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -26,7 +26,7 @@
 #include <board/piece.h>
 class GraphicsPiece;
 class QPropertyAnimation;
-
+class BoardSettings;
 
 /*!
  * \brief A graphical chessboard.
@@ -51,6 +51,7 @@ class GraphicsBoard : public QGraphicsItem
 		explicit GraphicsBoard(int files,
 				       int ranks,
 				       qreal squareSize,
+				       const BoardSettings* boardSettings,
 				       QGraphicsItem* parent = nullptr);
 		/*! Destroys the GraphicsBoard object. */
 		virtual ~GraphicsBoard();
@@ -136,16 +137,21 @@ class GraphicsBoard : public QGraphicsItem
 
 	private:
 		int squareIndex(const Chess::Square& square) const;
+		void setColor(QColor& tgtColor, const QString& s);
+		void paintCoordinatesOnMargin(QPainter* painter);
 
 		int m_files;
 		int m_ranks;
 		qreal m_squareSize;
 		qreal m_coordSize;
+		const BoardSettings* m_boardSettings;
 		QRectF m_rect;
 		QColor m_lightColor;
 		QColor m_darkColor;
 		QColor m_wallColor;
-		QColor m_textColor;
+		QColor m_borderColor;
+		QColor m_coordTextColor;
+		bool m_hasBorder;
 		QVector<GraphicsPiece*> m_squares;
 		QPropertyAnimation* m_highlightAnim;
 		bool m_flipped;

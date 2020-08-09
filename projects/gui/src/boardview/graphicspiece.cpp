@@ -18,12 +18,13 @@
 
 #include "graphicspiece.h"
 #include <QSvgRenderer>
-
+#include <QSettings>
 
 GraphicsPiece::GraphicsPiece(const Chess::Piece& piece,
 			     qreal squareSize,
 			     const QString& elementId,
 			     QSvgRenderer* renderer,
+			     double sizeFactor,
 			     QGraphicsItem* parent)
 	: QGraphicsObject(parent),
 	  m_piece(piece),
@@ -31,6 +32,7 @@ GraphicsPiece::GraphicsPiece(const Chess::Piece& piece,
 		  squareSize, squareSize),
 	  m_elementId(elementId),
 	  m_renderer(renderer),
+	  m_sizeFactor(sizeFactor),
 	  m_container(nullptr)
 {
 	setAcceptedMouseButtons(Qt::LeftButton);
@@ -56,17 +58,17 @@ void GraphicsPiece::paint(QPainter* painter,
 
 	QRectF bounds(m_renderer->boundsOnElement(m_elementId));
 	qreal ar = bounds.width() / bounds.height();
-	qreal width = m_rect.width() * 0.8;
+	qreal size = m_rect.width() * m_sizeFactor;
 
 	if (ar > 1.0)
 	{
-		bounds.setWidth(width);
-		bounds.setHeight(width / ar);
+		bounds.setWidth(size);
+		bounds.setHeight(size / ar);
 	}
 	else
 	{
-		bounds.setHeight(width);
-		bounds.setWidth(width * ar);
+		bounds.setHeight(size);
+		bounds.setWidth(size * ar);
 	}
 	bounds.moveCenter(m_rect.center());
 

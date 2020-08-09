@@ -23,6 +23,8 @@
 #include <QPropertyAnimation>
 #include <board/square.h>
 #include "graphicspiece.h"
+#include "boardsettings.h"
+#include <QSettings>
 
 namespace {
 
@@ -53,15 +55,20 @@ class TargetHighlights : public QGraphicsObject
 GraphicsBoard::GraphicsBoard(int files,
 			     int ranks,
 			     qreal squareSize,
+			     const BoardSettings* boardSettings,
 			     QGraphicsItem* parent)
 	: QGraphicsItem(parent),
 	  m_files(files),
 	  m_ranks(ranks),
 	  m_squareSize(squareSize),
 	  m_coordSize(squareSize / 2.0),
+	  m_boardSettings(boardSettings),
 	  m_lightColor(QColor(0xff, 0xce, 0x9e)),
 	  m_darkColor(QColor(0xd1, 0x8b, 0x47)),
 	  m_wallColor(QColor(0xee,0xee,0xee)),
+	  m_borderColor(QColor(0xf4, 0xf4, 0xf4, 0x00)),
+	  m_coordTextColor(QColor(0x00, 0x00, 0x00)),
+	  m_hasBorder(true),
 	  m_squares(files * ranks),
 	  m_highlightAnim(nullptr),
 	  m_flipped(false)
@@ -71,9 +78,14 @@ GraphicsBoard::GraphicsBoard(int files,
 
 	m_rect.setSize(QSizeF(squareSize * files, squareSize * ranks));
 	m_rect.moveCenter(QPointF(0, 0));
-	m_textColor = QApplication::palette().text().color();
+	m_coordTextColor = QApplication::palette().text().color();
 
 	setCacheMode(DeviceCoordinateCache);
+
+	setColor(m_lightColor, "light_square_color");
+	setColor(m_darkColor, "dark_square_color");
+	setColor(m_borderColor, "border_color");
+	setColor(m_coordTextColor, "coord_text_color");
 }
 
 GraphicsBoard::~GraphicsBoard()
@@ -86,11 +98,29 @@ int GraphicsBoard::type() const
 	return Type;
 }
 
+void GraphicsBoard::setColor(QColor& tgtColor, const QString& s)
+{
+	// Try to use specific BoardSettings
+	if (m_boardSettings && m_boardSettings->initialized())
+	{
+		QColor color = QColor(m_boardSettings->value("b/" + s).toString());
+		if (color.isValid())
+		{
+			tgtColor = color;
+			return;
+		}
+	}
+	// Fall back on general settings from QSettings section ui/board
+	QColor color = QColor(QSettings().value("ui/board/" + s).toString());
+	if (color.isValid())
+		tgtColor = color;
+}
+
 QRectF GraphicsBoard::boundingRect() const
 {
 	const auto margins = QMarginsF(m_coordSize, m_coordSize,
 				       m_coordSize, m_coordSize);
-	return m_rect.marginsAdded(margins);
+	return m_hasBorder ? m_rect.marginsAdded(margins) : m_rect;
 }
 
 void GraphicsBoard::paint(QPainter* painter,
@@ -102,6 +132,9 @@ void GraphicsBoard::paint(QPainter* painter,
 
 	QRectF rect(m_rect.topLeft(), QSizeF(m_squareSize, m_squareSize));
 	const qreal rLeft = rect.left();
+
+	if (m_hasBorder)
+		painter->fillRect(boundingRect(),m_borderColor);
 
 	// paint squares
 	for (int y = 0; y < m_ranks; y++)
@@ -124,11 +157,16 @@ void GraphicsBoard::paint(QPainter* painter,
 		}
 		rect.moveTop(rect.top() + m_squareSize);
 	}
+	if (m_hasBorder)
+		paintCoordinatesOnMargin(painter);
+}
 
+void GraphicsBoard::paintCoordinatesOnMargin(QPainter *painter)
+{
 	auto font = painter->font();
 	font.setPointSizeF(font.pointSizeF() * 0.7);
 	painter->setFont(font);
-	painter->setPen(m_textColor);
+	painter->setPen(m_coordTextColor);
 
 	// paint file coordinates
 	const QString alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -138,8 +176,8 @@ void GraphicsBoard::paint(QPainter* painter,
 		                      m_rect.bottom()};
 		for (const auto top : tops)
 		{
-			rect = QRectF(m_rect.left() + (m_squareSize * i), top,
-			              m_squareSize, m_coordSize);
+			QRectF rect(m_rect.left() + (m_squareSize * i), top,
+				    m_squareSize, m_coordSize);
 			int file = m_flipped ? m_files - i - 1 : i;
 			painter->drawText(rect, Qt::AlignCenter, alphabet[file]);
 		}
@@ -152,8 +190,8 @@ void GraphicsBoard::paint(QPainter* painter,
 		                       m_rect.right()};
 		for (const auto left : lefts)
 		{
-			rect = QRectF(left, m_rect.top() + (m_squareSize * i),
-			              m_coordSize, m_squareSize);
+			QRectF rect(left, m_rect.top() + (m_squareSize * i),
+				    m_coordSize, m_squareSize);
 			int rank = m_flipped ? i + 1 : m_ranks - i;
 			const auto num = QString::number(rank);
 			painter->drawText(rect, Qt::AlignCenter, num);

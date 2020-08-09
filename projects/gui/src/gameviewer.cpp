@@ -31,8 +31,9 @@
 #include "chessclock.h"
 
 GameViewer::GameViewer(Qt::Orientation orientation,
-                       QWidget* parent,
-                       bool addChessClock)
+		       QWidget* parent,
+		       bool addChessClock,
+		       bool hideMoveControls)
 	: QWidget(parent),
 	  m_moveNumberSlider(new QSlider(Qt::Horizontal)),
 	  m_viewFirstMoveBtn(new QToolButton),
@@ -96,6 +97,15 @@ GameViewer::GameViewer(Qt::Orientation orientation,
 	controls->addWidget(m_viewPreviousMoveBtn);
 	controls->addWidget(m_viewNextMoveBtn);
 	controls->addWidget(m_viewLastMoveBtn);
+
+	if (hideMoveControls)
+	{
+		m_viewFirstMoveBtn->setHidden(true);
+		m_viewPreviousMoveBtn->setHidden(true);
+		m_viewNextMoveBtn->setHidden(true);
+		m_viewLastMoveBtn->setHidden(true);
+		m_moveNumberSlider->setHidden(true);
+	}
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->setContentsMargins(0, 0, 0, 0);
