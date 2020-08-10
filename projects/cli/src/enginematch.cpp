@@ -30,6 +30,7 @@ EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
 	: QObject(parent),
 	  m_tournament(tournament),
 	  m_debug(false),
+	  m_matchState(FreeState),
 	  m_ratingInterval(0),
 	  m_bookMode(OpeningBook::Ram)
 {
@@ -71,18 +72,48 @@ void EngineMatch::start()
 		this, SLOT(onGameStarted(ChessGame*, int)));
 	connect(m_tournament, SIGNAL(gameFinished(ChessGame*, int, int, int)),
 		this, SLOT(onGameFinished(ChessGame*, int)));
+	connect(m_tournament, SIGNAL(suspended(int)),
+		this, SLOT(onTournamentSuspended(int)));
 
 	if (m_debug)
 		connect(m_tournament->gameManager(), SIGNAL(debugMessage(QString)),
 			this, SLOT(print(QString)));
 
 	QMetaObject::invokeMethod(m_tournament, "start", Qt::QueuedConnection);
+
+	connect(&m_timer, SIGNAL(timeout()), SLOT(onTimer()));
+	m_timer.start(500);
 }
 
 void EngineMatch::stop()
 {
+	m_timer.stop();
+	disconnect(&m_timer);
+
 	QMetaObject::invokeMethod(m_tournament, "stop", Qt::QueuedConnection);
 }
+
+void EngineMatch::suspend()
+{
+	if (m_matchState != FreeState)
+		return;
+
+	m_matchState = SuspendingState;
+	print("Suspending match: no new games will be started, active games continue.");
+	QMetaObject::invokeMethod(m_tournament, "suspend", Qt::QueuedConnection);
+}
+
+void EngineMatch::resume()
+{
+	if (m_matchState != SuspendedState)
+		return;
+
+	m_matchState = ResumingState;
+	print("Resuming match.");
+	QMetaObject::invokeMethod(m_tournament, "resume", Qt::QueuedConnection);
+	m_matchState = FreeState;
+}
+
 
 void EngineMatch::setDebugMode(bool debug)
 {
@@ -156,6 +187,13 @@ void EngineMatch::onTournamentFinished()
 	m_tournament->gameManager()->finish();
 }
 
+void EngineMatch::onTournamentSuspended(int count)
+{
+	printRanking();
+	print(QString("Suspended match after %0 games").arg(count));
+	m_matchState = SuspendedState;
+}
+
 void EngineMatch::print(const QString& msg)
 {
 	qInfo("%lld %s", m_startTime.elapsed(), qUtf8Printable(msg));
@@ -164,4 +202,20 @@ void EngineMatch::print(const QString& msg)
 void EngineMatch::printRanking()
 {
 	qInfo("%s", qUtf8Printable(m_tournament->results()));
+}
+
+void EngineMatch::onTimer()
+{
+	if (m_matchState == FreeState
+	&& QFile("_cc-suspend").exists())
+	{
+		suspend();
+		QFile("_cc-suspend").remove();
+	}
+	else if (m_matchState == SuspendedState
+	&& QFile("_cc-resume").exists())
+	{
+		resume();
+		QFile("_cc-resume").remove();
+	}
 }

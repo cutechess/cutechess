@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QMap>
 #include <QString>
+#include <QTimer>
 #include <QElapsedTimer>
 #include <openingbook.h>
 
@@ -35,6 +36,14 @@ class EngineMatch : public QObject
 	Q_OBJECT
 
 	public:
+		enum MatchSuspensionState
+		{
+			FreeState,
+			SuspendingState,
+			SuspendedState,
+			ResumingState
+		};
+
 		EngineMatch(Tournament* tournament, QObject* parent = nullptr);
 		virtual ~EngineMatch();
 
@@ -45,6 +54,8 @@ class EngineMatch : public QObject
 
 		void start();
 		void stop();
+		void suspend();
+		void resume();
 
 	signals:
 		void finished();
@@ -53,17 +64,21 @@ class EngineMatch : public QObject
 		void onGameStarted(ChessGame* game, int number);
 		void onGameFinished(ChessGame* game, int number);
 		void onTournamentFinished();
+		void onTournamentSuspended(int count);
 		void print(const QString& msg);
+		void onTimer();
 
 	private:
 		void printRanking();
 
 		Tournament* m_tournament;
 		bool m_debug;
+		MatchSuspensionState m_matchState;
 		int m_ratingInterval;
 		OpeningBook::AccessMode m_bookMode;
 		QMap<QString, OpeningBook*> m_books;
 		QElapsedTimer m_startTime;
+		QTimer m_timer;
 };
 
 #endif // ENGINEMATCH_H
