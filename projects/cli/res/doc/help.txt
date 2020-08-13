@@ -68,6 +68,7 @@ Options:
 			'racingkings': Racing Kings Chess
 			'rifle': Rifle Chess
 			'seirawan': S-Chess (Seirawan Chess)
+			'shako': Shako
 			'shatranj': Shatranj
 			'shogi' : Shogi
 			'shoot': Shoot Chess

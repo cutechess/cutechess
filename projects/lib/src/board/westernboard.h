@@ -201,7 +201,13 @@ class LIB_EXPORT WesternBoard : public Board
 		 * FEN string which succeed the en passant field.
 		 */
 		virtual QString vFenIncludeString(FenNotation notation) const;
-
+		/*!
+		 * Set the castling target for \a side towards castling side \a cside
+		 * to square index \a square.
+		 */
+		virtual void setCastlingTarget(Side side,
+								CastlingSide cSide,
+								int square);
 		// Inherited from Board
 		virtual void vInitialize();
 		virtual QString vFenString(FenNotation notation) const;

@@ -854,6 +854,11 @@ void WesternBoard::setCastlingSquare(Side side,
 	rs = square;
 }
 
+void WesternBoard::setCastlingTarget(Side side, WesternBoard::CastlingSide cSide, int square)
+{
+    m_castleTarget[side][cSide] = square;
+}
+
 void WesternBoard::removeCastlingRights(int square)
 {
 	Piece piece = pieceAt(square);
