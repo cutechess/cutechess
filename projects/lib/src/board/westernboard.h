@@ -187,6 +187,11 @@ class LIB_EXPORT WesternBoard : public Board
 		 * Defaults: 2 (c-file) and width() - 2 (normally g-file)
 		 */
 		virtual int castlingFile(CastlingSide castlingSide) const;
+        /*!
+         * Defines the rank a king may castle to on \a castlingSide.
+         * Defaults: 2 (8-rank) and height() + 1(normally 1-rank)
+         */
+        virtual int castlingRank(Side castlingSide) const;
 		/*!
 		 * Returns true if \a side is under attack at \a square.
 		 * If \a square is 0, then the king square is used.
@@ -201,13 +206,7 @@ class LIB_EXPORT WesternBoard : public Board
 		 * FEN string which succeed the en passant field.
 		 */
 		virtual QString vFenIncludeString(FenNotation notation) const;
-		/*!
-		 * Set the castling target for \a side towards castling side \a cside
-		 * to square index \a square.
-		 */
-		virtual void setCastlingTarget(Side side,
-								CastlingSide cSide,
-								int square);
+
 		// Inherited from Board
 		virtual void vInitialize();
 		virtual QString vFenString(FenNotation notation) const;

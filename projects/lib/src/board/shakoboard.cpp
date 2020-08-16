@@ -77,16 +77,6 @@ void ShakoBoard::vInitialize()
     WesternBoard::vInitialize();
     int arrWidth = width() + 2;
 
-    int castlingTargetSq = 0;
-    castlingTargetSq = height() * arrWidth + 1 + castlingFile(QueenSide);
-    WesternBoard::setCastlingTarget(Side::White, QueenSide, castlingTargetSq);
-    castlingTargetSq = height() * arrWidth + 1 + castlingFile(KingSide);
-    WesternBoard::setCastlingTarget(Side::White, KingSide, castlingTargetSq);
-    castlingTargetSq = 3 * arrWidth + 1 + castlingFile(QueenSide);
-    WesternBoard::setCastlingTarget(Side::Black, QueenSide, castlingTargetSq);
-    castlingTargetSq = 3 * arrWidth + 1 + castlingFile(KingSide);
-    WesternBoard::setCastlingTarget(Side::Black, KingSide, castlingTargetSq);
-
     m_rookOffsets.resize(4);
     m_rookOffsets[0] = -arrWidth;
     m_rookOffsets[1] = -1;
@@ -190,6 +180,12 @@ int ShakoBoard::castlingFile(WesternBoard::CastlingSide castlingSide) const
 {
     Q_ASSERT(castlingSide != NoCastlingSide);
     return castlingSide == QueenSide ? 3 : width() - 3; // usually D and H
+}
+
+int ShakoBoard::castlingRank(Chess::Side castlingSide) const
+{
+    Q_ASSERT(castlingSide != Side::NoSide);
+    return castlingSide == Side::Black ? 3 : height(); // usually 2 and 9
 }
 
 void ShakoBoard::generateCannonMoves(int sourceSquare, QVarLengthArray<Move> &moves) const

@@ -92,6 +92,7 @@ class LIB_EXPORT ShakoBoard : public WesternBoard
 		virtual void generatePawnMoves(int sourceSquare,
 						QVarLengthArray<Move>& moves) const;
 		virtual int castlingFile(CastlingSide castlingSide) const;
+        virtual int castlingRank(Side castlingSide) const;
 	private:
 		void generateCannonMoves(int sourceSquare,
 						QVarLengthArray<Move>& moves) const;

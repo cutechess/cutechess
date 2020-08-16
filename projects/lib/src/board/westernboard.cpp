@@ -108,10 +108,14 @@ void WesternBoard::vInitialize()
 	m_kingSquare[Side::White] = 0;
 	m_kingSquare[Side::Black] = 0;
 
-	m_castleTarget[Side::White][QueenSide] = (height() + 1) * m_arwidth + 1 + castlingFile(QueenSide);
-	m_castleTarget[Side::White][KingSide] = (height() + 1) * m_arwidth + 1 + castlingFile(KingSide);
-	m_castleTarget[Side::Black][QueenSide] = 2 * m_arwidth + 1 + castlingFile(QueenSide);
-	m_castleTarget[Side::Black][KingSide] = 2 * m_arwidth + 1 + castlingFile(KingSide);
+    m_castleTarget[Side::White][QueenSide] =
+        castlingRank(Side::White) * m_arwidth + 1 + castlingFile(QueenSide);
+    m_castleTarget[Side::White][KingSide]  =
+        castlingRank(Side::White) * m_arwidth + 1 + castlingFile(KingSide);
+    m_castleTarget[Side::Black][QueenSide] =
+        castlingRank(Side::Black) * m_arwidth + 1 + castlingFile(QueenSide);
+    m_castleTarget[Side::Black][KingSide]  =
+        castlingRank(Side::Black) * m_arwidth + 1 + castlingFile(KingSide);
 
 	m_knightOffsets.resize(8);
 	m_knightOffsets[0] = -2 * m_arwidth - 1;
@@ -854,11 +858,6 @@ void WesternBoard::setCastlingSquare(Side side,
 	rs = square;
 }
 
-void WesternBoard::setCastlingTarget(Side side, WesternBoard::CastlingSide cSide, int square)
-{
-    m_castleTarget[side][cSide] = square;
-}
-
 void WesternBoard::removeCastlingRights(int square)
 {
 	Piece piece = pieceAt(square);
@@ -884,6 +883,12 @@ int WesternBoard::castlingFile(CastlingSide castlingSide) const
 {
 	Q_ASSERT(castlingSide != NoCastlingSide);
 	return castlingSide == QueenSide ? 2 : width() - 2; // usually C and G
+}
+
+int WesternBoard::castlingRank(Side castlingSide) const
+{
+    Q_ASSERT(castlingSide != Side::NoSide);
+    return castlingSide == Side::Black ? 2 : height() + 1; // usually 8 and 1
 }
 
 void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
