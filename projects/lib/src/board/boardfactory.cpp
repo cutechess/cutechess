@@ -40,6 +40,7 @@
 #include "euroshogiboard.h"
 #include "extinctionboard.h"
 #include "frcboard.h"
+#include "geminiboard.h"
 #include "giveawayboard.h"
 #include "gothicboard.h"
 #include "grandboard.h"
@@ -107,6 +108,7 @@ REGISTER_BOARD(EuroShogiBoard, "euroshogi")
 REGISTER_BOARD(ExtinctionBoard, "extinction")
 REGISTER_BOARD(KingletBoard, "kinglet")
 REGISTER_BOARD(FrcBoard, "fischerandom")
+REGISTER_BOARD(GeminiBoard, "gemini")
 REGISTER_BOARD(GiveawayBoard, "giveaway")
 REGISTER_BOARD(GothicBoard, "gothic")
 REGISTER_BOARD(GrandBoard, "grand")
