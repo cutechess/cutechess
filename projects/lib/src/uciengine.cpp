@@ -126,7 +126,10 @@ void UciEngine::sendPosition()
 void UciEngine::startGame()
 {
 	Q_ASSERT(supportsVariant(board()->variant()));
-	const QList<QString> directPvList = {"giveaway", "suicide", "antichess"};
+	const QList<QString> directPvList =
+	{
+		"giveaway", "suicide", "antichess", "kinglet", "extinction"
+	};
 
 	m_ignoreThinking = false;
 	m_rePing = false;
