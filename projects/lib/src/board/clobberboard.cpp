@@ -87,6 +87,11 @@ void ClobberBoard::vInitialize()
 	m_offsets[3] =  arwidth;
 }
 
+const QVarLengthArray<int>& ClobberBoard::targetOffsets() const
+{
+	return m_offsets;
+}
+
 void ClobberBoard::addPromotions(int, int, QVarLengthArray< Chess::Move >&) const
 {
 }
@@ -144,6 +149,62 @@ QString Clobber10Board::variant() const
 }
 
 QString Clobber10Board::defaultFenString() const
+{
+	return "PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP/"
+	       "PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP w - - 0 1";
+}
+
+
+CannibalClobberBoard::CannibalClobberBoard(int width, int height)
+	: ClobberBoard(width, height)
+{
+}
+
+Board* CannibalClobberBoard::copy() const
+{
+	return new CannibalClobberBoard(*this);
+}
+
+QString CannibalClobberBoard::variant() const
+{
+	return "cannibalclobber";
+}
+
+void CannibalClobberBoard::generateMovesForPiece(QVarLengthArray<Chess::Move>& moves,
+						 int pieceType,
+						 int square) const
+{
+	if (pieceType != Stone)
+		return;
+
+	const QVarLengthArray<int>& offsets = targetOffsets();
+	for (int i = 0; i < offsets.size(); i++)
+	{
+		int targetSquare = square + offsets.at(i);
+		if (!isValidSquare(chessSquare(targetSquare)))
+			continue;
+		Piece capture = pieceAt(targetSquare);
+		if (!capture.isEmpty())
+			moves.append(Move(square, targetSquare));
+	}
+}
+
+
+CannibalClobber10Board::CannibalClobber10Board() : CannibalClobberBoard(10, 10)
+{
+}
+
+Board* CannibalClobber10Board::copy() const
+{
+	return new CannibalClobber10Board(*this);
+}
+
+QString CannibalClobber10Board::variant() const
+{
+	return "cannibalclobber10";
+}
+
+QString CannibalClobber10Board::defaultFenString() const
 {
 	return "PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP/"
 	       "PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP w - - 0 1";

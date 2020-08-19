@@ -584,6 +584,12 @@ void tst_Board::moveStrings_data() const
 		   "b1a1 c5c4 c2d2 d1d2 e4e5"
 		<< "PpPpP/pPpPp/PpPpP/pPpPp/PpPpP/pPpPp w - - 0 1"
 		<< "P1ppP/4P/P1p2/p1PP1/3p1/P3p b - - 0 9";
+	QTest::newRow("cannibalclobber san/lan")
+		<< "cannibalclobber"
+		<< "a2b2 b4b3 d5c5 b6c6 b2b3 c1d1 b3c3 a5b5 e2e3 d4d3 e3d3 b5c5 "
+		   "b1a1 c5c4 c2d2 d1d2 e4e5 c6d6"
+		<< "PpPpP/pPpPp/PpPpP/pPpPp/PpPpP/pPpPp w - - 0 1"
+		<< "P2pP/4P/P1p2/p1PP1/3p1/P3p w - - 0 10";
 
 }
 
@@ -1036,6 +1042,12 @@ void tst_Board::results_data() const
 		<< "P4/2p1P/P2p1/5/1P2P/p2p1 b - - 0 11"
 		<< "1-0";
 
+	variant = "cannibalclobber";
+
+	QTest::newRow("cannibalclobber white win")
+		<< variant
+		<< "2p2/1P2p/5/1p3/5/p1PP1 b - - 0 12"
+		<< "1-0";
 }
 
 void tst_Board::results()
@@ -1688,6 +1700,21 @@ void tst_Board::perft_data() const
 		   "pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP w - - 0 1"
 		<< 3 // 2 plies: 31252, 3 plies: 5231000, 4 plies: 843437916
 		<< Q_UINT64_C(5231000);
+
+	variant = "cannibalclobber";
+	QTest::newRow("cannibal clobber startpos")
+		<< variant
+		<< "PpPpP/pPpPp/PpPpP/pPpPp/PpPpP/pPpPp w - - 0 1"
+		<< 4 // 3 plies: 89611, 4 plies: 3356056
+		<< Q_UINT64_C(3356056);
+
+	variant = "cannibalclobber10";
+	QTest::newRow("clobber10 startpos")
+		<< variant
+		<< "PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/"
+		   "pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP/PpPpPpPpPp/pPpPpPpPpP w - - 0 1"
+		<< 3 // 2 plies: 31252, 3 plies: 5396264, 4 plies: 898905088
+		<< Q_UINT64_C(5396264);
 
 	variant = "rifle";
 	QTest::newRow("rifle startpos")

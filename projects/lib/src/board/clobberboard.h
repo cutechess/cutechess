@@ -58,6 +58,9 @@ class LIB_EXPORT ClobberBoard : public WesternBoard
 			Stone = Pawn //!< Stone
 		};
 
+		/*! Returns target square offsets */
+		const QVarLengthArray<int>& targetOffsets() const;
+
 		// Inherited from WesternBoard
 		virtual bool hasCastling() const;
 		virtual bool hasEnPassantCaptures() const;
@@ -76,16 +79,60 @@ class LIB_EXPORT ClobberBoard : public WesternBoard
 		QVarLengthArray<int> m_offsets;
 };
 
+
 /*!
  * \brief A board for the 10 x 10 squares version of Clobber
  *
  * Clobber10 uses a bigger board with 10 files and 10 rows.
  * It is played at Computer Olympiads.
+ *
+ * \sa ClobberBoard
  */
 class LIB_EXPORT Clobber10Board : public ClobberBoard
 {
 	public:
 		Clobber10Board();
+		virtual Board* copy() const;
+		virtual QString variant() const;
+		virtual QString defaultFenString() const;
+};
+
+
+/*!
+ * \brief A board for the cannibalistic version of Clobber
+ *
+ * Also own pieces can be clobbered.
+ * Introduced by Ingo Althöfer, Germany 2003.
+ *
+ * \sa ClobberBoard
+ */
+class LIB_EXPORT CannibalClobberBoard : public ClobberBoard
+{
+	public:
+		CannibalClobberBoard(int width = 5, int height = 6);
+		virtual Board* copy() const;
+		virtual QString variant() const;
+
+	protected:
+		// Inherited from ClobberBoard
+		virtual void generateMovesForPiece(QVarLengthArray<Move> & moves,
+						   int pieceType,
+						   int square) const;
+};
+
+
+/*!
+ * \brief A board for the cannibalistic version of Clobber10
+ *
+ * Also own pieces can be clobbered.
+ * Introduced by Ingo Althöfer, Germany 2003.
+ *
+ * \sa ClobberBoard
+ */
+class LIB_EXPORT CannibalClobber10Board : public CannibalClobberBoard
+{
+	public:
+		CannibalClobber10Board();
 		virtual Board* copy() const;
 		virtual QString variant() const;
 		virtual QString defaultFenString() const;
