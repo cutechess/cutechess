@@ -16,40 +16,34 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TOURNAMENTRESULTSDLG_H
-#define TOURNAMENTRESULTSDLG_H
+#ifndef RESULTFORMATWIDGET_H
+#define RESULTFORMATWIDGET_H
 
-#include <QDialog>
-#include <QPointer>
+#include <QWidget>
 
-class QPlainTextEdit;
-class Tournament;
+namespace Ui {
+	class ResultFormatWidget;
+}
 
-class TournamentResultsDialog : public QDialog
+class ResultFormatWidget : public QWidget
 {
 	Q_OBJECT
 
 	public:
-	    /* Creates a new TournamentResultsDialog. */
-	    TournamentResultsDialog(QWidget* parent = nullptr);
-	    virtual ~TournamentResultsDialog();
-
-	    /*! Sets \a tournament as the current tournament. */
-	    void setTournament(Tournament* tournament);
-	signals:
-		void customContextMenuRequested(const QPoint&);
-
-	public slots:
-		void update();
-
-	private slots:
-		void onContextMenuRequest();
+		/* Creates a new ResultFormatWidget. */
+		explicit ResultFormatWidget(QWidget* parent = nullptr);
+		virtual ~ResultFormatWidget();
+		/*!
+		 * Sets available result formats according to map \a formats.
+		 * The current format is given by \a currentFormat.
+		 */
+		void setFormats(const QMap<QString, QString>& formats,
+				const QString& currentFormat = "default");
+		/*! Returns the selected result format. */
+		QString resultFormat();
 
 	private:
-		void setText();
-
-		QPlainTextEdit* m_resultsEdit;
-		QPointer<Tournament> m_tournament;
+		Ui::ResultFormatWidget *ui;
 };
 
-#endif // TOURNAMENTRESULTSDLG_H
+#endif // RESULTFORMATWIDGET_H

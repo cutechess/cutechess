@@ -23,16 +23,20 @@
 #include <QPlainTextEdit>
 #include <QBoxLayout>
 #include <QFont>
+#include <QMenu>
+#include "resultformatdlg.h"
 
 #include <tournament.h>
 
 TournamentResultsDialog::TournamentResultsDialog(QWidget* parent)
-	: QDialog(parent)
+	: QDialog(parent),
+	  m_tournament(0)
 {
 	setWindowTitle(tr("Tournament Results"));
 
 	m_resultsEdit = new QPlainTextEdit(this);
 	m_resultsEdit->setReadOnly(true);
+	m_resultsEdit->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	QFont font("Courier New");
 	font.setStyleHint(QFont::Monospace);
@@ -45,6 +49,10 @@ TournamentResultsDialog::TournamentResultsDialog(QWidget* parent)
 
 	setLayout(layout);
 	resize(1100, 400);
+
+	connect(m_resultsEdit, SIGNAL(customContextMenuRequested(const QPoint&)),
+		this, SLOT(onContextMenuRequest()));
+
 }
 
 TournamentResultsDialog::~TournamentResultsDialog()
@@ -54,6 +62,7 @@ TournamentResultsDialog::~TournamentResultsDialog()
 void TournamentResultsDialog::setTournament(Tournament* tournament)
 {
 	setWindowTitle(tournament->name());
+	m_tournament = tournament;
 	m_resultsEdit->setPlainText(tournament->results());
 }
 
@@ -61,13 +70,23 @@ void TournamentResultsDialog::update()
 {
 	auto tournament = qobject_cast<Tournament*>(QObject::sender());
 	Q_ASSERT(tournament != nullptr);
+
+	m_tournament = tournament;
+	setText();
+}
+
+void TournamentResultsDialog::setText()
+{
+	if (m_tournament.isNull())
+		return;
+
 	QString text;
 
 	// A quick fix, copied from the CLI side.
-	if (tournament->playerCount() == 2 && tournament->type() != "knockout")
+	if (m_tournament->playerCount() == 2 && m_tournament->type() != "knockout")
 	{
-		TournamentPlayer fcp = tournament->playerAt(0);
-		TournamentPlayer scp = tournament->playerAt(1);
+		TournamentPlayer fcp = m_tournament->playerAt(0);
+		TournamentPlayer scp = m_tournament->playerAt(1);
 		int totalResults = fcp.gamesFinished();
 		double scoreRatio = std::numeric_limits<double>::quiet_NaN();
 		if (totalResults > 0)
@@ -81,12 +100,36 @@ void TournamentResultsDialog::update()
 		       .arg(scoreRatio, 0, 'f', 3);
 	}
 
-	text += tournament->results();
+	text += m_tournament->results();
 	text += tr("\n%1 of %2 games finished.")
-		.arg(tournament->finishedGameCount())
-		.arg(tournament->finalGameCount());
-	if (tournament->finishedGameCount() >= tournament->finalGameCount()
-	|| tournament->isStopping())
-		text.append("\n").append(tournament->outcomes());
+		.arg(m_tournament->finishedGameCount())
+		.arg(m_tournament->finalGameCount());
+	if (m_tournament->finishedGameCount() >= m_tournament->finalGameCount()
+	|| m_tournament->isStopping())
+		text.append("\n").append(m_tournament->outcomes());
 	m_resultsEdit->setPlainText(text);
+}
+
+void TournamentResultsDialog::onContextMenuRequest()
+{
+	QMenu* menu = m_resultsEdit->createStandardContextMenu();
+	if (!m_tournament.isNull())
+	{
+		auto editResultFormatlAct = menu->addAction(tr("Edit Result Format"));
+		connect(editResultFormatlAct, &QAction::triggered, this, [=]()
+		{
+			ResultFormatDlg dlg;
+			dlg.setFormats(m_tournament->namedResultFormats(),
+				       m_tournament->resultFormat());
+			if (dlg.exec() == QDialog::Accepted
+			&& !m_tournament.isNull())
+			{
+				QString resultFormat(dlg.resultFormat());
+				m_tournament->setResultFormat(resultFormat);
+				setText();
+			}
+		});
+	}
+	menu->exec(QCursor::pos());
+	delete menu;
 }
