@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <QMetaType>
 #include <QTranslator>
+#include <QSysInfo>
 
 #include <board/genericmove.h>
 #include <board/move.h>
@@ -58,7 +59,9 @@ int main(int argc, char* argv[])
 			arguments.first() == QLatin1String("--version"))
 		{
 			out << "Cute Chess " << CUTECHESS_VERSION << endl;
-			out << "Using Qt version " << qVersion() << endl << endl;
+			out << "Using Qt version " << qVersion() << endl;
+			out << "Running on " << QSysInfo::prettyProductName();
+			out << "/" << QSysInfo::currentCpuArchitecture() << endl << endl;
 			out << "Copyright (C) 2008-2020 Ilari Pihlajisto, Arto Jonsson ";
 			out << "and contributors" << endl;
 			out << "This is free software; see the source for copying ";
