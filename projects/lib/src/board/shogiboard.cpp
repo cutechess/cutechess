@@ -32,6 +32,7 @@ ShogiBoard::ShogiBoard()
 	m_plyOffset(0),
 	m_multiDigitNotation(false),
 	m_hasImpassePointRule(false),
+	m_checks{0,0},
 	m_history()
 {
 	setPieceType(Pawn, tr("pawn"), "P");
@@ -285,14 +286,18 @@ bool ShogiBoard::vSetFenString(const QStringList& fen)
 	if (startingSide() == Side::Black)
 		m_plyOffset++;
 
+	int kingCount[2] = {0, 0};
 	for (int sq = m_minIndex; sq < m_maxIndex; ++sq)
 	{
 		const Piece piece = pieceAt(sq);
 		if (piece.type() == King)
+		{
 			m_kingSquare[piece.side()] = sq;
+			kingCount[piece.side()]++;
+		}
 	}
-	if (m_kingSquare[Side::White] == 0
-	||  m_kingSquare[Side::Black] == 0)
+	if (kingCount[Side::White] != 1
+	||  kingCount[Side::Black] != 1)
 		return false;
 
 	return true;
@@ -350,7 +355,7 @@ QString ShogiBoard::sanMoveString(const Move& move)
 
 	for (int i = 0; i < moves.size(); i++)
 	{
-		const Move& move2 = moves[i];
+		const Move& move2 = moves.at(i);
 		if (move2.sourceSquare() == 0
 		||  move2.sourceSquare() == source
 		||  move2.targetSquare() != target)
@@ -630,6 +635,8 @@ void ShogiBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	// Keep track of the King
 	if (source == m_kingSquare[side])
 		m_kingSquare[side] = target;
+
+	m_checks[side] = m_checks[side] << 1 | inCheck(side.opposite());
 }
 
 void ShogiBoard::vUndoMove(const Move& move)
@@ -665,6 +672,7 @@ void ShogiBoard::vUndoMove(const Move& move)
 	if (target == m_kingSquare[side])
 		m_kingSquare[side] = source;
 
+	m_checks[side] >>= 1;
 	m_history.pop_back();
 }
 
@@ -839,7 +847,9 @@ bool ShogiBoard::vIsLegalMove(const Move& move)
 	bool isIncheck = inCheck(sideToMove());
 
 	// Illegal perpetual
-	if (isIncheck && repeatCount() > 2)
+	Side opp = sideToMove().opposite();
+	if (isIncheck && repeatCount() > 2
+	&&  (m_checks[opp] & 0b1111111) == 0b1111111)
 		isLegal = false;
 
 	// Illegal mate by Pawn drop?  (打ち歩詰め, uchi-fu-zume)
@@ -893,7 +903,7 @@ Result ShogiBoard::impassePointRule(int points, int pieces) const
 
 	if (points > 27 && pieces >= 10)
 	{
-		QString winStr = side == Side::White ? "Sente" : "Gote";
+		QString winStr = side == Side::White ? tr("Sente") : tr("Gote");
 		QString str = tr("Impasse: %1 wins by 27-point rule").arg(winStr);
 		return Result(Result::Win, side, str);
 	}
@@ -943,28 +953,29 @@ Result ShogiBoard::resultFromImpassePointRule() const
 Result ShogiBoard::result()
 {
 	Side side = sideToMove();
+	Side opp = side.opposite();
 	QString str;
 
 	// Checkmate/Stalemate
 	if (!canMove())
 	{
-		Side winner = side.opposite();
-		QString winStr = winner == Side::White ? "Sente" : "Gote";
+		QString winStr = opp == Side::White ? tr("Sente") : tr("Gote");
 		if (inCheck(side))
 			str = tr("%1 mates").arg(winStr);
 		else
 			str = tr("%1 wins by stalemate").arg(winStr);
 
-		return Result(Result::Win, winner, str);
+		return Result(Result::Win, opp, str);
 	}
 
 	// 4-fold repetition
 	if (repeatCount() >= 3)
 	{
-		if (inCheck(side))
+		if (inCheck(side)
+		&& (m_checks[opp] & 0b1111111) == 0b1111111)
 		{
-			  str = tr("Illegal perpetual");
-			  return Result(Result::Win, side, str);
+			str = tr("Illegal perpetual");
+			return Result(Result::Win, side, str);
 		}
 		// Sennichite 千日手
 		str = tr("Draw by fourfold repetition");
