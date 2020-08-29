@@ -31,7 +31,7 @@ DobutsuShogiBoard::DobutsuShogiBoard()
 	setPieceType(Rook, tr("giraffe"), "G", WazirMovement, "R");
 	setPieceType(King, tr("lion"), "L", 0, "K");
 
-	setPieceType(PromotedPawn, tr("tokin"), "+P", GoldMovement, "W");
+	setPieceType(PromotedPawn, tr("hen"), "+C", GoldMovement, "W");
 
 }
 
@@ -76,6 +76,24 @@ bool DobutsuShogiBoard::isLegalPosition()
 	return true;
 }
 
+void DobutsuShogiBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
+					      int pieceType,
+					      int square) const
+{
+	if (square == 0)
+	{
+		int minIndex = 2 * (width() + 2) + 1;
+		int maxIndex = arraySize() - 1 - minIndex;
+		for (int i = minIndex; i <= maxIndex; i++)
+		{
+			if (!pieceAt(i).isEmpty())
+				continue;
+			moves.append(Move(0, i, pieceType));
+		}
+		return;
+	}
+	ShogiBoard::generateMovesForPiece(moves, pieceType, square);
+}
 
 Result DobutsuShogiBoard::result()
 {
@@ -84,13 +102,14 @@ Result DobutsuShogiBoard::result()
 	QString str;
 
 	bool foundKing = false;
-	int kingSquare = 0;
+	int kingSquare[2] {0, 0};
 
 	// find Lion (King)
 	for (int i = 0; i < arraySize(); i++)
 	{
 		if (pieceAt(i) == Piece(side, King))
 		{
+			kingSquare[side] = i;
 			foundKing = true;
 			break;
 		}
@@ -99,7 +118,8 @@ Result DobutsuShogiBoard::result()
 	// Lion (King) got captured
 	if (!foundKing)
 	{
-		str = tr("Lion captured - %1 wins").arg(opp);
+		str = tr("Lion captured - %1 player wins")
+			.arg(opp == Side::White ? tr("first") : tr("second"));
 		return Result(Result::Win, opp, str);
 	}
 
@@ -108,21 +128,24 @@ Result DobutsuShogiBoard::result()
 	{
 		if (pieceAt(i) == Piece(opp, King))
 		{
-			kingSquare = i;
+			kingSquare[opp] = i;
 			break;
 		}
 	}
 
-	// test whether opponent's Lion reached farthest rank
-	int arwidth = width() + 2;
-	int rank = kingSquare / arwidth - 2;
-	int flag = (opp == Side::White) ? 0 : height() - 1;
-	if (rank == flag && !inCheck(opp))
+	// test whether a Lion reached farthest rank
+	for (Side s: {opp, side})
 	{
-		str = tr("Lion reached farthest rank");
-		return Result(Result::Win, opp, str);
+		int arwidth = width() + 2;
+		int rank = kingSquare[s] / arwidth - 2;
+		int flag = (s == Side::White) ? 0 : height() - 1;
+		if (rank == flag && ((s == side) || !inCheck(s)))
+		{
+			str = tr("Lion reached farthest rank - %1 player wins")
+				.arg(s == Side::White ? tr("first") : tr("second"));
+			return Result(Result::Win, s, str);
+		}
 	}
-
 	// 3-fold repetition
 	if (repeatCount() >= 2)
 	{

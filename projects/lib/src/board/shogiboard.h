@@ -27,7 +27,7 @@ namespace Chess {
  * \brief A board for Shogi
  *
  * Shōgi is a Japanese form of chess where captured
- * pieces can be brought back ("dropped") into the game,
+ * pieces can be brought back ("dropped") into the game.
  *
  * It is played on a 9x9 board. The piece set traditionally consists of
  * flat five-sided pieces with their names written on them. Such sets
@@ -70,7 +70,18 @@ namespace Chess {
  * (sennichite, 千日手). If the situation has arisen from a perpetual check
  * then the side giving check loses.
  *
+ * When both Kings have entered their opponent's third of the board it may
+ * be difficult to checkmate. To break an Impassé (持将棋 jishōgi), the
+ * 27-points rule is used: A player not in check having at least ten pieces
+ * in their promotion zone besides their King is awarded one point for each
+ * of those pieces, but no points for the King and five points for every
+ * Bishop or Rook (also when in their promoted states). Points are awarded
+ * in the same way for the pieces in hand. A player wins if they have
+ * *more* than 27 points. The Second Player (Gote) also wins having just
+ * 27 points.
+ *
  * \note Rules: http://en.wikipedia.org/wiki/Shogi
+ *              http://www.shogi.net/fesa/pdf/FESA%20rules.pdf
  */
 class LIB_EXPORT ShogiBoard : public Board
 {
@@ -200,6 +211,7 @@ class LIB_EXPORT ShogiBoard : public Board
 		int m_plyOffset;
 		bool m_multiDigitNotation;
 		bool m_hasImpassePointRule;
+		int m_checks[2];
 
 		QVarLengthArray<int> m_bishopOffsets;
 		QVarLengthArray<int> m_rookOffsets;
