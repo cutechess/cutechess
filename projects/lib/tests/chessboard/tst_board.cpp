@@ -679,6 +679,12 @@ void tst_Board::results_data() const
 		<< "8/8/k1K5/8/8/8/R7/8 b - - 100 1"
 		<< "1-0";
 
+	variant = "fischerandom";
+
+	QTest::newRow("FRC black win #1")
+		<< variant
+		<< "1k1r4/1pp2b1p/p7/P1B2R2/N7/3P2b1/1PP4Q/RK2r3 w Q - 1 29"
+		<< "0-1";
 
 	variant = "kingofthehill";
 
@@ -1053,6 +1059,13 @@ void tst_Board::perft_data() const
 		<< 6
 		<< Q_UINT64_C(11030083);
 
+	variant = "fischerandom";
+	QTest::newRow("FRC castling #1")
+		<< variant
+		<< "Q3B1kr/p5p1/1p3p1p/2p2P2/2br1N1P/8/P5P1/7K b k - 1 34"
+		<< 2
+		<< Q_UINT64_C(824);
+
 	variant = "capablanca";
 	QTest::newRow("gothic startpos")
 		<< variant
@@ -1221,7 +1234,6 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 5 // 4 plies: 197742, 5 plies: 4897256, 6 plies: 120921506
 		<< Q_UINT64_C(4897256);
-
 	variant = "grid";
 	QTest::newRow("grid startpos")
 		<< variant
@@ -1232,7 +1244,12 @@ void tst_Board::perft_data() const
 		<< variant
 		<< "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -"
 		<< 4
-		<< Q_UINT64_C(1853429);
+		<< Q_UINT64_C(1853380);
+	QTest::newRow("grid pos2a")
+		<< variant
+		<< "r3k2r/p1pPqpb1/bn3np1/4N3/1p2P3/2N2Q2/PPPBBPpP/R3K2R b KQkq -"
+		<< 1
+		<< Q_UINT64_C(4);
 	QTest::newRow("grid pos3")
 		<< variant
 		<< "8/3K4/2p5/p2b2r1/5k2/8/8/1q6 b - -"
