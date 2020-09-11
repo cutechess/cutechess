@@ -221,5 +221,7 @@ Engine options:
   nodes=N		Set the node count limit to N nodes
   ponder		Enable pondering if the engine supports it. By default
 			pondering is disabled.
+  tscale=FACTOR		Scale engine timeouts by FACTOR. Only use this option
+			if necessary.
   option.OPTION=VALUE	Set custom option OPTION to value VALUE
 

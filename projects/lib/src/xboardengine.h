@@ -44,6 +44,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 
 	protected:
 		// Inherited from ChessEngine
+		virtual void applyConfiguration(const EngineConfiguration& configuration);
 		virtual bool sendPing();
 		virtual void sendStop();
 		virtual void sendQuit();
