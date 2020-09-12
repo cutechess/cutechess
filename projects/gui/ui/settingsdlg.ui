@@ -280,6 +280,9 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="toolTip">
+               <string>Dynamic setting: Maximum number of tournament games running concurrently</string>
+              </property>
               <property name="minimum">
                <number>1</number>
               </property>

@@ -426,7 +426,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		// Interval for rating list updates
 		else if (name == "-ratinginterval")
 			match->setRatingInterval(value.toInt());
-		// Interval for rating list updates
+		// Format of the result list
 		else if (name == "-resultformat")
 		{
 			if (value == "help")
