@@ -47,6 +47,7 @@ SOURCES += $$PWD/board.cpp \
     $$PWD/shatranjboard.cpp \
     $$PWD/courierboard.cpp \
     $$PWD/makrukboard.cpp \
+    $$PWD/makpongboard.cpp \
     $$PWD/oukboard.cpp \
     $$PWD/aseanboard.cpp \
     $$PWD/aiwokboard.cpp \
@@ -117,6 +118,7 @@ HEADERS += $$PWD/board.h \
     $$PWD/shatranjboard.h \
     $$PWD/courierboard.h \
     $$PWD/makrukboard.h \
+    $$PWD/makpongboard.h \
     $$PWD/oukboard.h \
     $$PWD/aseanboard.h \
     $$PWD/aiwokboard.h \

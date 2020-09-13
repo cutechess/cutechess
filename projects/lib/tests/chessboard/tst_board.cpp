@@ -933,6 +933,20 @@ void tst_Board::results_data() const
 		<< "8/8/8/2K1k3/8/3R1R2/8/8 w - 16 13 128"
 		<< "*";
 
+	variant = "makpong";
+	QTest::newRow("makpong black win KSvsKS")
+		<< variant
+		<< "8/SK6/2s5/2k5/8/8/8/8 w - 128 110 124"
+		<< "0-1";
+	QTest::newRow("makpong double check")
+		<< variant
+		<< "4k3/4r3/8/3s4/4K3/8/8/8 w - - 0 12"
+		<< "0-1";
+	QTest::newRow("makpong KMvK sufficient material")
+		<< variant
+		<< "8/8/3k4/8/4M3/4K3/8/8 w - 128 2 1"
+		<< "*";
+
 	variant = "karouk";
 
 	QTest::newRow("karouk KRRvKM black wins by check")
