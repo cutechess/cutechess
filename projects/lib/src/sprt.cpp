@@ -41,7 +41,7 @@ class BayesElo
 class SprtProbability
 {
 	public:
-		SprtProbability(int wins, int losses, int draws);
+		SprtProbability(double wins, double losses, double draws);
 		SprtProbability(const BayesElo& b);
 
 		bool isValid() const;
@@ -89,14 +89,14 @@ double BayesElo::scale() const
 }
 
 
-SprtProbability::SprtProbability(int wins, int losses, int draws)
+SprtProbability::SprtProbability(double wins, double losses, double draws)
 {
 	Q_ASSERT(wins > 0 && losses > 0 && draws > 0);
 
-	const int count = wins + losses + draws;
+	const double count = wins + losses + draws;
 
-	m_pWin = double(wins) / count;
-	m_pLoss = double(losses) / count;
+	m_pWin = wins / count;
+	m_pLoss = losses / count;
 	m_pDraw = 1.0 - m_pWin - m_pLoss;
 }
 
@@ -164,11 +164,18 @@ Sprt::Status Sprt::status() const
 		0.0
 	};
 
-	if (m_wins <= 0 || m_losses <= 0 || m_draws <= 0)
+	if (m_wins < 0 || m_losses < 0 || m_draws < 0)
 		return status;
 
+	// We add half a point to each class to regularize the model parameters.
+	// This corresponds to a Dirichlet(0.5, 0.5, 0.5) prior distribution,
+	// which is a Jeffreys' prior for the trinomial distribution:
+	const double wins = m_wins + 0.5;
+	const double losses = m_losses + 0.5;
+	const double draws = m_draws + 0.5;
+
 	// Estimate draw_elo out of sample
-	const SprtProbability p(m_wins, m_losses, m_draws);
+	const SprtProbability p(wins, losses, draws);
 	const BayesElo b(p);
 
 	// Probability laws under H0 and H1
@@ -178,9 +185,9 @@ Sprt::Status Sprt::status() const
 	const SprtProbability p0(b0), p1(b1);
 
 	// Log-Likelyhood Ratio
-	status.llr = m_wins * std::log(p1.pWin() / p0.pWin()) +
-		     m_losses * std::log(p1.pLoss() / p0.pLoss()) +
-		     m_draws * std::log(p1.pDraw() / p0.pDraw());
+	status.llr = wins * std::log(p1.pWin() / p0.pWin()) +
+		     losses * std::log(p1.pLoss() / p0.pLoss()) +
+		     draws * std::log(p1.pDraw() / p0.pDraw());
 
 	// Bounds based on error levels of the test
 	status.lBound = std::log(m_beta / (1.0 - m_alpha));
