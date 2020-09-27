@@ -39,7 +39,9 @@ void GauntletTournament::onGameAboutToStart(ChessGame* game,
 {
 	Q_UNUSED(black);
 	const int blackIndex = playerIndex(game, Chess::Side::Black);
-	if (!white->isHuman() && blackIndex == 0)
+
+	if (!white->isHuman()
+	&&  (blackIndex == 0 || blackIndex < seedCount()))
 		game->setBoardShouldBeFlipped(true);
 }
 
