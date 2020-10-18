@@ -60,6 +60,7 @@ Options:
 			'kingofthehill': King of the Hill Chess
 			'knightmate': Knightmate
 			'knightrelay': Knight-Relay Chess
+			'linesofaction': Lines of Action
 			'loop': Loop Chess (Drop Chess)
 			'losalamos': Los Alamos Chess
 			'losers': Loser's Chess
