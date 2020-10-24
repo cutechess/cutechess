@@ -39,6 +39,14 @@ jobs:
                   make
                   make check
 
+            - name: check manual pages
+              if: matrix.os == 'ubuntu-latest'
+              run: |
+                  sudo apt install mandoc
+                  cd ${GITHUB_WORKSPACE}/docs/
+                  mandoc -T lint cutechess-cli.6
+                  mandoc -T lint engines.json.5
+
             - name: build cute chess
               if: matrix.os == 'windows-latest'
               shell: cmd
