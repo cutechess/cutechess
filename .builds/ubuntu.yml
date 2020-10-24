@@ -2,6 +2,7 @@ image: ubuntu/lts
 packages:
     - qt5-default
     - libqt5svg5-dev
+    - mandoc
 sources:
     - https://github.com/cutechess/cutechess
 tasks:
@@ -19,3 +20,7 @@ tasks:
         qmake
         make
         make check
+    - test_manuals: |
+        cd cutechess/docs
+        mandoc -T lint cutechess-cli.6
+        mandoc -T lint engines.json.5
