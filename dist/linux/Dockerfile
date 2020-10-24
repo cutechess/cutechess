@@ -17,12 +17,9 @@ RUN \
     rpm \
     wget \
     bsdmainutils \
-    zlib1g-dev && \
-  gem install fpm && \
-  wget http://mdocml.bsd.lv/snapshots/mandoc.tar.gz && \
-  tar fzx mandoc.tar.gz && \
-  cd mandoc-* && \
-  ./configure && make && make install
+    zlib1g-dev \
+    mandoc && \
+  gem install fpm
 
 # Download and build cutechess
 RUN \
