@@ -14,9 +14,7 @@ RUN \
   apt-get update && apt-get install -y \
     ruby-dev \
     rpm \
-    wget \
     bsdmainutils \
-    zlib1g-dev \
     mandoc && \
   gem install fpm
 
