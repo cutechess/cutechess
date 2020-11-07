@@ -1,6 +1,5 @@
 FROM ubuntu:bionic
 
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN apt-get update && apt-get install -y software-properties-common && add-apt-repository ppa:beineri/opt-qt-5.11.3-bionic
 RUN apt-get update && apt-get install -y git qt511base qt511svg build-essential mesa-common-dev libglu1-mesa-dev && rm -rf /var/lib/apt/lists/*
 
