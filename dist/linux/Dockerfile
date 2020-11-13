@@ -19,11 +19,9 @@ RUN \
   gem install fpm
 
 # Download and build cutechess
-RUN \
-  cd / && \
-  git clone https://github.com/cutechess/cutechess.git && \
-  cd /cutechess && \
-  qmake && \
+RUN git clone https://github.com/cutechess/cutechess.git /cutechess
+WORKDIR /cutechess
+RUN qmake && \
   make -j4 && \
   make doc-txt && \
   make doc-html
