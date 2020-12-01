@@ -105,6 +105,9 @@ Options:
   -tbpieces N		Only use tablebase adjudication for positions with
 			N pieces or less.
   -tbignore50		Disable the fifty move rule for tablebase adjudication.
+  -rmobility		Score match using r-mobility and disable insufficient
+			material adjudication. Warning: if any adjudication is enabled,
+			this will make r-mobility scoring inconsistent.
   -tournament TYPE	Set the tournament type to TYPE, which can be one of:
 			'round-robin': Round-robin tournament (default)
 			'gauntlet': First engine(s) against the rest

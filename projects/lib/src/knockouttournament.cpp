@@ -130,7 +130,7 @@ int KnockoutTournament::gamesPerCycle() const
 	return total;
 }
 
-void KnockoutTournament::addScore(int player, Chess::Side side, int score)
+void KnockoutTournament::addScore(int player, Chess::Side side, int score, float rMobilityScore)
 {
 	for (TournamentPair* pair : m_rounds.last())
 	{
@@ -146,7 +146,7 @@ void KnockoutTournament::addScore(int player, Chess::Side side, int score)
 		}
 	}
 
-	Tournament::addScore(player, side, score);
+	Tournament::addScore(player, side, score, rMobilityScore);
 }
 
 QList<int> KnockoutTournament::lastRoundWinners() const

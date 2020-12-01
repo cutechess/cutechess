@@ -599,9 +599,9 @@ bool Tournament::writeEpd(ChessGame *game)
 	return ok;
 }
 
-void Tournament::addScore(int player, Chess::Side side, int score)
+void Tournament::addScore(int player, Chess::Side side, int score, float rMobilityScore)
 {
-	m_players[player].addScore(side, score);
+	m_players[player].addScore(side, score, rMobilityScore);
 }
 
 void Tournament::onGameStarted(ChessGame* game)
@@ -640,23 +640,26 @@ void Tournament::onGameFinished(ChessGame* game)
 	if (!blackName.isEmpty())
 		m_players[iBlack].setName(blackName);
 
+	float whiteRMobility = game->result().rMobility().score(Chess::Side::White);
+	float blackRMobility = game->result().rMobility().score(Chess::Side::Black);
+
 	switch (game->result().winner())
 	{
 	case Chess::Side::White:
-		addScore(iWhite, Chess::Side::White, 2);
-		addScore(iBlack, Chess::Side::Black, 0);
+		addScore(iWhite, Chess::Side::White, 2, whiteRMobility);
+		addScore(iBlack, Chess::Side::Black, 0, blackRMobility);
 		sprtResult = (iWhite == 0) ? Sprt::Win : Sprt::Loss;
 		break;
 	case Chess::Side::Black:
-		addScore(iBlack, Chess::Side::Black, 2);
-		addScore(iWhite, Chess::Side::White, 0);
+		addScore(iBlack, Chess::Side::Black, 2, blackRMobility);
+		addScore(iWhite, Chess::Side::White, 0, whiteRMobility);
 		sprtResult = (iBlack == 0) ? Sprt::Win : Sprt::Loss;
 		break;
 	default:
 		if (game->result().isDraw())
 		{
-			addScore(iWhite,  Chess::Side::White, 1);
-			addScore(iBlack,  Chess::Side::Black, 1);
+			addScore(iWhite,  Chess::Side::White, 1, whiteRMobility);
+			addScore(iBlack,  Chess::Side::Black, 1, blackRMobility);
 			sprtResult = Sprt::Draw;
 		}
 		break;

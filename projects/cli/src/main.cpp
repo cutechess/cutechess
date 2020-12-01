@@ -251,6 +251,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-tb", QVariant::String, 1, 1);
 	parser.addOption("-tbpieces", QVariant::Int, 1, 1);
 	parser.addOption("-tbignore50", QVariant::Bool, 0, 0);
+	parser.addOption("-rmobility", QVariant::Bool, 0, 0);
 	parser.addOption("-event", QVariant::String, 1, 1);
 	parser.addOption("-games", QVariant::Int, 1, 1);
 	parser.addOption("-rounds", QVariant::Int, 1, 1);
@@ -323,6 +324,9 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 			if (ok)
 				manager->setConcurrency(value.toInt());
 		}
+		// Whether to enable r-mobility scoring
+		else if (name == "-rmobility")
+			adjudicator.setRMobilityEnabled(true);
 		// Threshold for draw adjudication
 		else if (name == "-draw")
 		{

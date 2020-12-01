@@ -117,7 +117,7 @@ void tst_TournamentPlayer::addScore()
 {
 	QCOMPARE(m_player->gamesFinished(), 0);
 
-	m_player->addScore(Chess::Side::White, 0);
+	m_player->addScore(Chess::Side::White, 0, 0.0f /*rMobilityScore*/);
 	QCOMPARE(m_player->gamesFinished(), 1);
 	QCOMPARE(m_player->score(), 0);
 	QCOMPARE(m_player->draws(), 0);
@@ -131,7 +131,7 @@ void tst_TournamentPlayer::addScore()
 	QCOMPARE(m_player->blackLosses(), 0);
 	QCOMPARE(m_player->blackDraws(), 0);
 
-	m_player->addScore(Chess::Side::White, 1);
+	m_player->addScore(Chess::Side::White, 1, 0.0f /*rMobilityScore*/);
 	QCOMPARE(m_player->gamesFinished(), 2);
 	QCOMPARE(m_player->score(), 1);
 	QCOMPARE(m_player->draws(), 1);
@@ -144,7 +144,7 @@ void tst_TournamentPlayer::addScore()
 	QCOMPARE(m_player->blackLosses(), 0);
 	QCOMPARE(m_player->blackDraws(), 0);
 
-	m_player->addScore(Chess::Side::White, 2);
+	m_player->addScore(Chess::Side::White, 2, 0.0f /*rMobilityScore*/);
 	QCOMPARE(m_player->gamesFinished(), 3);
 	QCOMPARE(m_player->score(), 3);
 	QCOMPARE(m_player->draws(), 1);
@@ -157,7 +157,7 @@ void tst_TournamentPlayer::addScore()
 	QCOMPARE(m_player->blackLosses(), 0);
 	QCOMPARE(m_player->blackDraws(), 0);
 
-	m_player->addScore(Chess::Side::Black, 0);
+	m_player->addScore(Chess::Side::Black, 0, 0.0f /*rMobilityScore*/);
 	QCOMPARE(m_player->gamesFinished(), 4);
 	QCOMPARE(m_player->score(), 3);
 	QCOMPARE(m_player->draws(), 1);
@@ -170,7 +170,7 @@ void tst_TournamentPlayer::addScore()
 	QCOMPARE(m_player->blackLosses(), 1);
 	QCOMPARE(m_player->blackDraws(), 0);
 
-	m_player->addScore(Chess::Side::Black, 1);
+	m_player->addScore(Chess::Side::Black, 1, 0.0f /*rMobilityScore*/);
 	QCOMPARE(m_player->gamesFinished(), 5);
 	QCOMPARE(m_player->score(), 4);
 	QCOMPARE(m_player->draws(), 2);
@@ -183,7 +183,7 @@ void tst_TournamentPlayer::addScore()
 	QCOMPARE(m_player->blackLosses(), 1);
 	QCOMPARE(m_player->blackDraws(), 1);
 
-	m_player->addScore(Chess::Side::Black, 2);
+	m_player->addScore(Chess::Side::Black, 2, 0.0f /*rMobilityScore*/);
 	QCOMPARE(m_player->gamesFinished(), 6);
 	QCOMPARE(m_player->score(), 6);
 	QCOMPARE(m_player->draws(), 2);

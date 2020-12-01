@@ -799,11 +799,11 @@ bool WesternBoard::vSetFenString(const QStringList& fen)
 		int tmp = token->toInt(&ok);
 		if (!ok || tmp < 0)
 			return false;
-		m_reversibleMoveCount = tmp;
+		setReversibleMoveCount(tmp);
 		++token;
 	}
 	else
-		m_reversibleMoveCount = 0;
+		setReversibleMoveCount(0);
 
 	// Read the full move number and calculate m_plyOffset
 	if (token != fen.end())
@@ -898,7 +898,7 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	Q_ASSERT(target != 0);
 
 	MoveData md = { capture, epSq, epTgt, m_castlingRights,
-			NoCastlingSide, m_reversibleMoveCount };
+			NoCastlingSide, m_reversibleMoveCount, m_rMobility };
 
 	if (source == 0)
 	{
@@ -1014,9 +1014,9 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 		setSquare(source, Piece::NoPiece);
 
 	if (isReversible)
-		m_reversibleMoveCount++;
+		setReversibleMoveCount(m_reversibleMoveCount + 1);
 	else
-		m_reversibleMoveCount = 0;
+		setReversibleMoveCount(0);
 
 	m_history.append(md);
 	m_sign *= -1;
@@ -1032,7 +1032,7 @@ void WesternBoard::vUndoMove(const Move& move)
 	Side side = sideToMove();
 
 	setEnpassantSquare(md.enpassantSquare, md.enpassantTarget);
-	m_reversibleMoveCount = md.reversibleMoveCount;
+	undoReversibleMoveCount(md.reversibleMoveCount, md.rMobility);
 	m_castlingRights = md.castlingRights;
 
 	CastlingSide cside = md.castlingSide;
@@ -1076,6 +1076,16 @@ void WesternBoard::vUndoMove(const Move& move)
 
 	setSquare(target, md.capture);
 	m_history.pop_back();
+}
+
+void WesternBoard::vCalculateRMobility()
+{
+	float count = legalMoves().count();
+	Side side = sideToMove();
+	if (!inCheck(side))
+		count += 0.5f;
+	if (!m_rMobility.isValid() || m_rMobility.result() > count)
+		m_rMobility = RMobility(count, side == Side::White ? Side::Black : Side::White);
 }
 
 void WesternBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
@@ -1385,7 +1395,27 @@ int WesternBoard::reversibleMoveCount() const
 	return m_reversibleMoveCount;
 }
 
+void WesternBoard::setReversibleMoveCount(int moveCount)
+{
+	m_reversibleMoveCount = moveCount;
+
+	// Reset mobility when a non-reversible move has been played
+	if (!m_reversibleMoveCount)
+		m_rMobility.reset();
+}
+
+void WesternBoard::undoReversibleMoveCount(int moveCount, RMobility rMobility)
+{
+	m_reversibleMoveCount = moveCount;
+	m_rMobility = rMobility;
+}
+
 Result WesternBoard::result()
+{
+	return result(false /*rMobilityEnabled*/);
+}
+
+Result WesternBoard::result(bool rMobilityEnabled)
 {
 	QString str;
 
@@ -1396,13 +1426,20 @@ Result WesternBoard::result()
 		{
 			Side winner = sideToMove().opposite();
 			str = tr("%1 mates").arg(winner.toString());
-
-			return Result(Result::Win, winner, str);
+			Result r(Result::Win, winner, str);
+			if (rMobilityEnabled) {
+				Q_ASSERT(!m_rMobility.isValid() || m_rMobility.winning() == winner);
+				r.setRMobility(m_rMobility);
+			}
+			return r;
 		}
 		else
 		{
 			str = tr("Draw by stalemate");
-			return Result(Result::Draw, Side::NoSide, str);
+			Result r(Result::Draw, Side::NoSide, str);
+			if (rMobilityEnabled)
+				r.setRMobility(m_rMobility);
+			return r;
 		}
 	}
 
@@ -1437,7 +1474,7 @@ Result WesternBoard::result()
 			break;
 		}
 	}
-	if (material <= 1)
+	if (!rMobilityEnabled && material <= 1)
 	{
 		str = tr("Draw by insufficient mating material");
 		return Result(Result::Draw, Side::NoSide, str);
@@ -1447,14 +1484,20 @@ Result WesternBoard::result()
 	if (m_reversibleMoveCount >= 100)
 	{
 		str = tr("Draw by fifty moves rule");
-		return Result(Result::Draw, Side::NoSide, str);
+		Result r(Result::Draw, Side::NoSide, str);
+		if (rMobilityEnabled)
+			r.setRMobility(m_rMobility);
+		return r;
 	}
 
 	// 3-fold repetition
 	if (repeatCount() >= 2)
 	{
 		str = tr("Draw by 3-fold repetition");
-		return Result(Result::Draw, Side::NoSide, str);
+		Result r(Result::Draw, Side::NoSide, str);
+		if (rMobilityEnabled)
+			r.setRMobility(m_rMobility);
+		return r;
 	}
 
 	return Result();

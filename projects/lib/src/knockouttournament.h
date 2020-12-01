@@ -47,7 +47,7 @@ class LIB_EXPORT KnockoutTournament : public Tournament
 		virtual void initializePairing();
 		virtual int gamesPerCycle() const;
 		virtual TournamentPair* nextPair(int gameNumber);
-		virtual void addScore(int player, Chess::Side side, int score);
+		virtual void addScore(int player, Chess::Side side, int score, float rMobilityScore);
 		virtual bool areAllGamesFinished() const;
 
 	private:

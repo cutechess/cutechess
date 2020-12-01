@@ -29,7 +29,8 @@ GameAdjudicator::GameAdjudicator()
 	  m_resignScore(0),
 	  m_twoSided(false),
 	  m_maxGameLength(0),
-	  m_tbEnabled(false)
+	  m_tbEnabled(false),
+	  m_rMobilityEnabled(false)
 {
 	m_resignScoreCount[0] = 0;
 	m_resignScoreCount[1] = 0;
@@ -159,4 +160,14 @@ void GameAdjudicator::resetDrawMoveCount()
 Chess::Result GameAdjudicator::result() const
 {
 	return m_result;
+}
+
+bool GameAdjudicator::rMobilityEnabled() const
+{
+	return m_rMobilityEnabled;
+}
+
+void GameAdjudicator::setRMobilityEnabled(bool b)
+{
+	m_rMobilityEnabled = b;
 }

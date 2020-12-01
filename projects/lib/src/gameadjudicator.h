@@ -97,6 +97,16 @@ class LIB_EXPORT GameAdjudicator
 		 */
 		Chess::Result result() const;
 
+		/*!
+		 * Returns whether r-mobility is enabled.
+		 */
+		bool rMobilityEnabled() const;
+
+		/*!
+		 * Sets r-mobility enabled flag.
+		 */
+		void setRMobilityEnabled(bool);
+
 	private:
 		int m_drawMoveNum;
 		int m_drawMoveCount;
@@ -110,6 +120,7 @@ class LIB_EXPORT GameAdjudicator
 		int m_maxGameLength;
 		bool m_tbEnabled;
 		Chess::Result m_result;
+		bool m_rMobilityEnabled;
 };
 
 #endif // GAMEADJUDICATOR_H

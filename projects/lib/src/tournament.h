@@ -429,7 +429,7 @@ class LIB_EXPORT Tournament : public QObject
 		 * 1-0, 0-1 or 1/2-1/2 result. Subclasses can reimplement this
 		 * to do their own score tracking.
 		 */
-		virtual void addScore(int player, Chess::Side side, int score);
+		virtual void addScore(int player, Chess::Side side, int score, float rMobilityScore);
 		/*!
 		 * Returns true if all games in the tournament have finished;
 		 * otherwise returns false.

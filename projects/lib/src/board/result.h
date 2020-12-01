@@ -22,8 +22,58 @@
 #include "side.h"
 #include <QMetaType>
 #include <QCoreApplication>
+#include <cmath>
 
 namespace Chess {
+
+/*!
+ * \brief The r-mobility (https://wiki.chessdom.org/R-Mobility) result of a chess game
+ *
+ * The RMobilityResult class is used to store the rmobility result of a chess game,
+ * and to compare it to other results.
+ */
+class LIB_EXPORT RMobility
+{
+	Q_DECLARE_TR_FUNCTIONS(RMobility)
+public:
+	explicit RMobility() : m_isValid(false), m_result(0.0f), m_winning(Side::White) {}
+	explicit RMobility(float r, Side w) : m_isValid(true), m_result(r), m_winning(w) {}
+	bool isValid() const { return m_isValid; }
+	void reset() { m_isValid = false; m_result = 0.0; m_winning = Side::White; }
+	float result() const { return m_result; }
+	void setResult(float r) { m_result = r; }
+	Side winning() const { return m_winning; }
+	void setWinning(Side side) { m_winning = side; }
+	float score(Side side) const
+	{
+		float winningScore = 0.5f + powf(0.5f, 1.0f + 2 * m_result);
+		if (side == m_winning)
+			return winningScore;
+		else
+			return 1.0f - winningScore;
+	}
+	QString toString() const
+	{
+		if (!isValid())
+			return QString();
+		return QString("%0G%1").arg(m_winning == Side::White ? "" : "-").arg(m_result, 0, 'f', 1);
+	}
+	inline bool operator==(const RMobility& other) const
+	{
+		return m_isValid == other.m_isValid && m_result == other.m_result &&
+			m_winning == other.m_winning;
+	}
+	bool operator!=(const RMobility& other) const
+	{
+		return m_isValid != other.m_isValid || m_result != other.m_result ||
+			m_winning != other.m_winning;
+	}
+
+private:
+	bool m_isValid;
+	float m_result;
+	Side m_winning;
+};
 
 /*!
  * \brief The result of a chess game
@@ -102,6 +152,17 @@ class LIB_EXPORT Result
 		 */
 		QString toShortString() const;
 		/*!
+		 * Returns the short string representation of the result.
+		 * Can be "1-0", "0-1", "G0.5, G1.5, etc", or "*".
+		*/
+		QString toShortStringWithRMobility() const;
+
+		/*!
+		* Returns the r-mobility string representation of the result.
+		* Can be "G0.0", "-G0.0", "G0.5, G1.5, etc", or "*".
+		*/
+		QString toRMobilityString() const;
+		/*!
 		 * Returns the verbose string representation of the result.
 		 *
 		 * Uses the format "result {description}".
@@ -109,10 +170,14 @@ class LIB_EXPORT Result
 		 */
 		QString toVerboseString() const;
 
+		RMobility rMobility() const { return m_rMobility; }
+		void setRMobility(const RMobility &r) { m_rMobility = r; }
+
 	private:
 		Type m_type;
 		Side m_winner;
 		QString m_description;
+		RMobility m_rMobility;
 };
 
 } // namespace Chess

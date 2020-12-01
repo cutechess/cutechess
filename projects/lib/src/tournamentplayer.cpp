@@ -32,7 +32,8 @@ TournamentPlayer::TournamentPlayer(PlayerBuilder* builder,
 	  m_losses(0),
 	  m_whiteWins(0),
 	  m_whiteDraws(0),
-	  m_whiteLosses(0)
+	  m_whiteLosses(0),
+	  m_rMobilityScore(0.0f)
 {
 	Q_ASSERT(builder != nullptr);
 }
@@ -118,7 +119,12 @@ int TournamentPlayer::score() const
 	return m_wins * 2 + m_draws;
 }
 
-void TournamentPlayer::addScore(Chess::Side side, int score)
+float TournamentPlayer::rMobilityScore() const
+{
+	return m_rMobilityScore;
+}
+
+void TournamentPlayer::addScore(Chess::Side side, int score, float rMobilityScore)
 {
 	if (side == Chess::Side::NoSide)
 		Q_UNREACHABLE();
@@ -147,6 +153,8 @@ void TournamentPlayer::addScore(Chess::Side side, int score)
 		Q_UNREACHABLE();
 		break;
 	}
+	if (rMobilityScore > 0)
+		m_rMobilityScore += rMobilityScore;
 }
 
 int TournamentPlayer::gamesFinished() const

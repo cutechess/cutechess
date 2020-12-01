@@ -461,6 +461,8 @@ void PgnGame::setPlayerName(Chess::Side side, const QString& name)
 void PgnGame::setResult(const Chess::Result& result)
 {
 	setTag("Result", result.toShortString());
+	if (result.rMobility().isValid())
+		setTag("RMobilityResult", result.toRMobilityString());
 
 	switch (result.type())
 	{
