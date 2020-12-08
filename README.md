@@ -1,6 +1,6 @@
 # Cute Chess
 
-[![Build Status](https://travis-ci.org/cutechess/cutechess.svg?branch=master)](https://travis-ci.org/cutechess/cutechess) [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/github/cutechess/cutechess)](https://ci.appveyor.com/project/artoj/cutechess) [![Coverity Scan Build Status](https://scan.coverity.com/projects/8561/badge.svg)](https://scan.coverity.com/projects/cutechess-cutechess)
+![GitHub CI](https://github.com/cutechess/cutechess/workflows/build%20cutechess/badge.svg)
 
 Cute Chess is a graphical user interface, command-line interface and a library
 for playing chess. Cute Chess is written in C++ using the [Qt
