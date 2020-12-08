@@ -53,7 +53,7 @@ jobs:
               run: |
                   call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
                   qmake
-                  nmake
+                  nmake /NOLOGO
 
             - name: run unit tests
               if: matrix.os == 'windows-latest'
@@ -62,8 +62,8 @@ jobs:
                   call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
                   cd %GITHUB_WORKSPACE%\projects\lib\tests\
                   qmake
-                  nmake
-                  nmake check
+                  nmake /NOLOGO
+                  nmake /NOLOGO check
 
             - name: run unit tests (json)
               shell: cmd
@@ -72,5 +72,5 @@ jobs:
                   call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
                   cd %GITHUB_WORKSPACE%\projects\lib\components\json\tests\
                   qmake
-                  nmake
-                  nmake check
+                  nmake /NOLOGO
+                  nmake /NOLOGO check
