@@ -54,7 +54,7 @@ class LIB_EXPORT Tournament : public QObject
 			RoundPolicy        //!< Shift on new round
 		};
 
-		constexpr static auto c_defaultFormat 
+		constexpr static auto c_defaultFormat
 			= "Rank,Name,Elo,Error,Games,Score,DScore";
 
 		/*!
