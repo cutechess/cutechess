@@ -94,7 +94,10 @@ class LIB_EXPORT TournamentPlayer
 		int blackLosses() const;
 		/*! Returns the player's total score in the tournament. */
 		int score() const;
-		/*! Adds \a score to the player's score in the tournament. */
+		/*!
+		 * Adds \a score to the player's score in the tournament for
+		 * playing side \a side.
+		 */
 		void addScore(Chess::Side side, int score);
 		/*!
 		 * Returns the total number of games the player has finished
