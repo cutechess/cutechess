@@ -1,0 +1,33 @@
+---
+Language: Cpp
+BasedOnStyle: WebKit
+TabWidth: 4
+UseTab: ForIndentation
+Standard: Cpp11
+ColumnLimit: 100
+AlignAfterOpenBracket: Align
+AllowShortFunctionsOnASingleLine: None
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerIndentWidth: 4
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+CommentPragmas: "^!|^:"
+AlignTrailingComments: true
+BreakBeforeBraces: Custom
+BreakBeforeBinaryOperators: None
+BraceWrapping:
+    AfterClass: true
+    AfterControlStatement: false
+    AfterEnum: false
+    AfterFunction: true
+    AfterNamespace: false
+    AfterStruct: true
+    AfterUnion: false
+    BeforeCatch: false
+    BeforeElse: false
+    IndentBraces: false
+ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH, forever, Q_FOREVER, QBENCHMARK, QBENCHMARK_ONCE ]
+NamespaceIndentation: None
+SortIncludes: false
+SpaceAfterTemplateKeyword: false
+BreakBeforeBinaryOperators: NonAssignment
+...
