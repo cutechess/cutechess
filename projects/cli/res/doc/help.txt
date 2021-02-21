@@ -12,7 +12,7 @@ Options:
   -variant VARIANT	Set the chess variant to VARIANT, which can be one of:
 			'3check': Three-check Chess
 			'5check': Five-check Chess
-			'aiwok': Ai-Wok (Makruk variant)
+			'ai-wok': Ai-Wok (Makruk variant)
 			'almost': Almost Chess
 			'amazon': Amazon Chess
 			'andernach': Andernach Chess
