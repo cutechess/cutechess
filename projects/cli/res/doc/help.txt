@@ -40,6 +40,7 @@ Options:
 			'euroshogi': EuroShogi (8x8)
 			'extinction': Extinction Chess
 			'fischerandom': Fischer Random Chess/Chess 960
+			'gemini': gemini (10x8)
 			'giveaway': Giveaway Chess (Losing Chess)
 			'gothic': Gothic Chess
 			'grand': Grand Chess
