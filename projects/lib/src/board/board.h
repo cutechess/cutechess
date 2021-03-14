@@ -31,7 +31,6 @@
 #include "genericmove.h"
 #include "zobrist.h"
 #include "result.h"
-class QStringList;
 
 
 namespace Chess {
