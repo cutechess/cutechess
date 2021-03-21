@@ -17,6 +17,7 @@
 */
 
 #include "chessclock.h"
+#include <QTime>
 #include <QTimerEvent>
 #include <QLabel>
 #include <QVBoxLayout>
