@@ -20,7 +20,7 @@
 #define CHESSCLOCK_H
 
 #include <QWidget>
-#include <QTime>
+#include <QElapsedTimer>
 
 class QTimerEvent;
 class QLabel;
@@ -48,7 +48,7 @@ class ChessClock: public QWidget
 		int m_totalTime;
 		int m_timerId;
 		bool m_infiniteTime;
-		QTime m_time;
+		QElapsedTimer m_time;
 		QLabel* m_nameLabel;
 		QLabel* m_timeLabel;
 		QPalette m_defaultPalette;
