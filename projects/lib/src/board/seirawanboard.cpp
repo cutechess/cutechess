@@ -185,7 +185,12 @@ QString SeirawanBoard::vFenString(Board::FenNotation notation) const
 			s.append(squareString(i).mid(0,1).toLower());
 	}
 
+	// XXX: we still support 5.11
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+	QStringList vfen = vfs.split(' ', Qt::SkipEmptyParts);
+#else
 	QStringList vfen = vfs.split(' ', QString::SkipEmptyParts);
+#endif
 
 	if ((!vfen.isEmpty() && vfen.at(0)!= "-") || s.isEmpty())
 		s.append(vfen.at(0));
