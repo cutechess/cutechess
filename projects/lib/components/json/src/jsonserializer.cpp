@@ -119,8 +119,9 @@ bool JsonSerializer::serializeNode(QTextStream& stream,
 				stream << indent << "\t\"" << jsonString(it.key()) << "\" : ";
 				if (!serializeNode(stream, it.value(), indentLevel + 1))
 					return false;
-				if (it != map.constEnd() - 1)
+				if (++it != map.constEnd())
 					stream << ',';
+				--it;
 				stream << '\n';
 			}
 
