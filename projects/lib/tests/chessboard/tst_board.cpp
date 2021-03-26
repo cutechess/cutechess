@@ -591,7 +591,12 @@ void tst_Board::moveStrings()
 	setVariant(variant);
 	QVERIFY(m_board->setFenString(startfen));
 
+	// XXX: we still support 5.11
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+	const auto moveList = moves.split(' ', Qt::SkipEmptyParts);
+#else
 	const auto moveList = moves.split(' ', QString::SkipEmptyParts);
+#endif
 	for (const auto& moveStr : moveList)
 	{
 		Chess::Move move = m_board->moveFromString(moveStr);

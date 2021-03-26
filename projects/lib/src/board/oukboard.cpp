@@ -75,7 +75,12 @@ QString OukBoard::vFenString(Board::FenNotation notation) const
 	if (m_moveCount[Side::Black][King] == 0)
 		  castlingStr.append('e');
 
+	// XXX: we still support 5.11
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+	QStringList vfen = vfs.split(' ', Qt::SkipEmptyParts);
+#else
 	QStringList vfen = vfs.split(' ', QString::SkipEmptyParts);
+#endif
 
 	// Append the rest of the FEN string
 	QString s = (!castlingStr.isEmpty() ? castlingStr : "-");
