@@ -721,16 +721,16 @@ int main(int argc, char* argv[])
 	{
 		if (arg == "-v" || arg == "--version" || arg == "-version")
 		{
-			out << "cutechess-cli " << CUTECHESS_CLI_VERSION << endl;
-			out << "Using Qt version " << qVersion() << endl;
+			out << "cutechess-cli " << CUTECHESS_CLI_VERSION << '\n';
+			out << "Using Qt version " << qVersion() << '\n';
 			out << "Running on " << QSysInfo::prettyProductName();
-			out << "/" << QSysInfo::currentCpuArchitecture() << endl << endl;
+			out << "/" << QSysInfo::currentCpuArchitecture() << '\n' << '\n';
 			out << "Copyright (C) 2008-2020 Ilari Pihlajisto, Arto Jonsson ";
-			out << "and contributors" << endl;
+			out << "and contributors" << '\n';
 			out << "This is free software; see the source for copying ";
-			out << "conditions.  There is NO" << endl << "warranty; not even for ";
+			out << "conditions.  There is NO" << '\n' << "warranty; not even for ";
 			out << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
-			out << endl << endl;
+			out << '\n' << '\n';
 
 			return 0;
 		}
@@ -738,7 +738,7 @@ int main(int argc, char* argv[])
 		{
 			const auto engines = app.engineManager()->engines();
 			for (const auto& engine : engines)
-				out << engine.name() << endl;
+				out << engine.name() << '\n';
 
 			return 0;
 		}

@@ -58,22 +58,22 @@ int main(int argc, char* argv[])
 		if (arguments.first() == QLatin1String("-v") ||
 			arguments.first() == QLatin1String("--version"))
 		{
-			out << "Cute Chess " << CUTECHESS_VERSION << endl;
-			out << "Using Qt version " << qVersion() << endl;
+			out << "Cute Chess " << CUTECHESS_VERSION << '\n';
+			out << "Using Qt version " << qVersion() << '\n';
 			out << "Running on " << QSysInfo::prettyProductName();
-			out << "/" << QSysInfo::currentCpuArchitecture() << endl << endl;
+			out << "/" << QSysInfo::currentCpuArchitecture() << '\n' << '\n';
 			out << "Copyright (C) 2008-2020 Ilari Pihlajisto, Arto Jonsson ";
-			out << "and contributors" << endl;
+			out << "and contributors" << '\n';
 			out << "This is free software; see the source for copying ";
-			out << "conditions.  There is NO" << endl << "warranty; not even for ";
+			out << "conditions.  There is NO" << '\n' << "warranty; not even for ";
 			out << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
-			out << endl << endl;
+			out << '\n' << '\n';
 
 			return 0;
 		}
 		else
 		{
-			out << "Unknown argument: " << arguments.first() << endl;
+			out << "Unknown argument: " << arguments.first() << '\n';
 		}
 		arguments.takeFirst();
 	}
