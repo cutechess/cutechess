@@ -22,6 +22,7 @@
 #include "chessplayer.h"
 #include <QVariant>
 #include <QStringList>
+#include <QStringRef>
 #include "engineconfiguration.h"
 
 class QIODevice;
