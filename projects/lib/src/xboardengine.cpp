@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <QTimer>
 #include <QRandomGenerator>
+#include <QRegularExpression>
 
 #include <climits>
 
@@ -749,24 +750,17 @@ void XboardEngine::parseLine(const QString& line)
 	}
 	else if (command == "feature")
 	{
-		QRegExp rx("\\w+\\s*=\\s*(\"[^\"]*\"|\\d+)");
-		
-		int pos = 0;
-		
-		while ((pos = rx.indexIn(args, pos)) != -1)
+		QRegularExpression re("(\\w+)\\s*=\\s*(\"[^\"]+\"|\\w+)");
+		auto i = re.globalMatch(args);
+
+		while (i.hasNext())
 		{
-			QString cap = rx.cap();
-			int index = cap.indexOf('=');
-			if (index != -1)
-			{
-				QString feature = cap.left(index).trimmed();
-				QString val = cap.mid(index + 1).trimmed();
-				val.remove('\"');
+			auto match = i.next();
+			auto feature = match.captured(1);
+			auto val = match.captured(2);
+			val.remove('\"');
 
-				setFeature(feature, val);
-			}
-
-			pos += rx.matchedLength();
+			setFeature(feature, val);
 		}
 	}
 	else if (command.startsWith("Illegal"))

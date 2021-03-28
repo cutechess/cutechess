@@ -17,6 +17,7 @@
 */
 
 #include "shogiboard.h"
+#include <QRegularExpression>
 #include "zobrist.h"
 #include "boardtransition.h"
 
@@ -385,7 +386,7 @@ Move ShogiBoard::moveFromLanString(const QString& istr)
 {
 	QString str(istr);
 	// Use uniform drop move indicator "@"
-	str.replace(QRegExp("[*']"),"@");
+	str.replace(QRegularExpression("[*']"),"@");
 
 	Move move = Chess::Board::moveFromLanString(str);
 	bool isPromotion = (str.endsWith("+"));
