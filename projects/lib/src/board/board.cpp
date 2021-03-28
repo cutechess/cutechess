@@ -18,6 +18,7 @@
 
 #include "board.h"
 #include <QStringList>
+#include <QRegularExpression>
 #include "zobrist.h"
 
 
@@ -354,7 +355,7 @@ QString Board::moveString(const Move& move, MoveNotation notation)
 Move Board::moveFromLanString(const QString& istr)
 {
 	QString str(istr);
-	str.remove(QRegExp("[x=+#!?]"));
+	str.remove(QRegularExpression("[x=+#!?]"));
 	int len = str.length();
 	if (len < 4)
 		return Move();

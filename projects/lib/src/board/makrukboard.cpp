@@ -17,6 +17,7 @@
 */
 
 #include "makrukboard.h"
+#include <QRegularExpression>
 
 namespace Chess {
 
@@ -278,7 +279,7 @@ bool MakrukBoard::vSetFenString(const QStringList& inputFen)
 		return false;
 
 	// Remove empty parts from QStringList
-	const QStringList fen = inputFen.filter(QRegExp("^\\S+"));
+	const QStringList fen = inputFen.filter(QRegularExpression("^\\S+"));
 	int fensize = fen.size();
 
 	// Does not match any expected format
