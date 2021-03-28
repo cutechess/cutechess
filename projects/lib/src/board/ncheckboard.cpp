@@ -151,8 +151,13 @@ bool NCheckBoard::vSetFenString(const QStringList& fen)
 		if (field.contains('+'))
 		{
 			int marker = field.lastIndexOf('+');
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+			int counterW = QStringView{field}.left(marker).toInt();
+			int counterB = QStringView{field}.mid(marker+1).toInt();
+#else
 			int counterW = field.leftRef(marker).toInt();
 			int counterB = field.midRef(marker+1).toInt();
+#endif
 
 			if (counterW < 0 || counterW > maxNCheck
 			||  counterB < 0 || counterB > maxNCheck)
