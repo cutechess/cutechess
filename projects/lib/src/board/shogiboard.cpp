@@ -367,7 +367,7 @@ QString ShogiBoard::sanMoveString(const Move& move)
 	}
 
 	if (needFile)
-		str += 'a' + square.file();
+		str += QChar('a' + square.file());
 	if (needRank)
 		str += QString::number(1 + square.rank());
 
