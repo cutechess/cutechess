@@ -1087,7 +1087,7 @@ Result StandardBoard::tablebaseResult(unsigned int* dtz) const
 		}
 	}
 
-	SyzygyTablebase::Castling castling = 0;
+	SyzygyTablebase::Castling castling = SyzygyTablebase::NoCastling;
 	if (hasCastlingRight(Chess::Side::White, KingSide))
 		castling |= SyzygyTablebase::WhiteKingSide;
 	if (hasCastlingRight(Chess::Side::White, QueenSide))
