@@ -1,6 +1,9 @@
 TEMPLATE = lib
 TARGET = cutechess
 QT = core
+greaterThan(QT_MAJOR_VERSION, 5) {
+    QT += core5compat
+}
 DESTDIR = $$PWD
 
 !win32-msvc* {

@@ -28,6 +28,9 @@ mac {
 }
 
 QT = core
+greaterThan(QT_MAJOR_VERSION, 5) {
+    QT += core5compat
+}
 
 # Code
 include(src/src.pri)
