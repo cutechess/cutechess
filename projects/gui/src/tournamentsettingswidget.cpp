@@ -68,9 +68,8 @@ TournamentSettingsWidget::TournamentSettingsWidget(QWidget *parent)
 		ui->m_resultFormatCombo->addItem(it.key(), it.value());
 	ui->m_resultFormatCombo->setCurrentIndex(-1);
 
-	connect(ui->m_resultFormatCombo,
-		static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
-		this, [=](const QString&)
+	connect(ui->m_resultFormatCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+		this, [=]()
 	{
 		const QVariant value = ui->m_resultFormatCombo->currentData();
 		ui->m_resultFormatEdit->setText(value.toString());
