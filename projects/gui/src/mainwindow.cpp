@@ -192,11 +192,12 @@ void MainWindow::createActions()
 	m_minimizeAct = new QAction(tr("&Minimize"), this);
 	m_minimizeAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
 
+	// Using three key codes on Qt 6 results in compilation error
 	m_showPreviousTabAct = new QAction(tr("Show &Previous Tab"), this);
 	#ifdef Q_OS_MAC
-	m_showPreviousTabAct->setShortcut(QKeySequence(Qt::MetaModifier + Qt::ShiftModifier + Qt::Key_Tab));
+	m_showPreviousTabAct->setShortcut(QKeySequence(tr("Meta+Shift+Tab")));
 	#else
-	m_showPreviousTabAct->setShortcut(QKeySequence(Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_Tab));
+	m_showPreviousTabAct->setShortcut(QKeySequence(tr("Ctrl+Shift+Tab")));
 	#endif
 
 	m_showNextTabAct = new QAction(tr("Show &Next Tab"), this);
