@@ -30,7 +30,9 @@
 #include <QClipboard>
 #include <QWindow>
 #include <QSettings>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QDesktopWidget>
+#endif
 #include <QSysInfo>
 
 #include <board/boardfactory.h>
@@ -409,9 +411,11 @@ void MainWindow::readSettings()
 	s.beginGroup("mainwindow");
 
 	restoreGeometry(s.value("geometry").toByteArray());
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 	// Workaround for https://bugreports.qt.io/browse/QTBUG-16252
 	if (isMaximized())
 		setGeometry(QApplication::desktop()->availableGeometry(this));
+#endif
 	restoreState(s.value("window_state").toByteArray());
 
 	s.endGroup();
