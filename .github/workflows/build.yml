@@ -7,7 +7,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
           matrix:
-            qt_version: [5.11.3, 5.12.9, 5.13.2, 5.14.2, 5.15.0]
+            qt_version: [5.11.3, 5.12.10, 5.15.2, 6.0.3]
             os: [windows-latest, ubuntu-latest, macos-latest]
         steps:
             - uses: actions/checkout@v2
@@ -16,6 +16,8 @@ jobs:
               uses: jurplel/install-qt-action@v2
               with:
                 version: ${{ matrix.qt_version }}
+                if: ${{ startsWith('6.', matrix.qt_version) }}
+                modules: 'qt5compat'
 
             - name: build cute chess
               if: matrix.os != 'windows-latest'
