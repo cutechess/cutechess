@@ -144,6 +144,19 @@ bool parseEngine(const QStringList& args, EngineData& data)
 		{
 			data.config.setClaimsValidated(false);
 		}
+		// Scaling timeouts
+		else if (name == "tscale")
+		{
+			bool ok = false;
+			double value = val.toDouble(&ok);
+			if (!ok || value < EngineConfiguration::timeoutScaleMin
+				|| value > EngineConfiguration::timeoutScaleMax)
+			{
+				qWarning() << "Invalid timeout scale factor:" << val;
+				return false;
+			}
+			data.config.setTimeoutScale(value);
+		}
 		// Time control (moves/time+increment)
 		else if (name == "tc")
 		{
