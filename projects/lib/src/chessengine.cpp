@@ -118,7 +118,7 @@ void ChessEngine::setDevice(QIODevice* device)
 	m_ioDevice = device;
 	m_ioDevice->setParent(this);
 
-	connect(m_ioDevice, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+	connect(m_ioDevice, SIGNAL(channelReadyRead(int)), this, SLOT(onReadyRead(int)));
 	connect(m_ioDevice, SIGNAL(readChannelFinished()), this, SLOT(onCrashed()));
 }
 
@@ -442,8 +442,10 @@ void ChessEngine::write(const QString& data, WriteMode mode)
 			 qUtf8Printable(name()), m_id);
 }
 
-void ChessEngine::onReadyRead()
+void ChessEngine::onReadyRead(int channel)
 {
+	auto oldReadChannel = m_ioDevice->currentReadChannel();
+	m_ioDevice->setCurrentReadChannel(channel);
 	while (m_ioDevice->isReadable() && m_ioDevice->canReadLine())
 	{
 		QString line = QString(m_ioDevice->readLine());
@@ -468,6 +470,7 @@ void ChessEngine::onReadyRead()
 				m_idleTimer->stop();
 		}
 	}
+	m_ioDevice->setCurrentReadChannel(oldReadChannel);
 }
 
 void ChessEngine::flushWriteBuffer()
