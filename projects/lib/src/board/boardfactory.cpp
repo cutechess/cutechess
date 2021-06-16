@@ -31,6 +31,7 @@
 #include "checklessboard.h"
 #include "chessgiboard.h"
 #include "chigorinboard.h"
+#include "clobberboard.h"
 #include "codrusboard.h"
 #include "coregalboard.h"
 #include "courierboard.h"
@@ -88,6 +89,8 @@ REGISTER_BOARD(AseanBoard, "asean")
 REGISTER_BOARD(AtomicBoard, "atomic")
 REGISTER_BOARD(BerolinaBoard, "berolina")
 REGISTER_BOARD(OukBoard, "cambodian")
+REGISTER_BOARD(CannibalClobberBoard, "cannibalclobber")
+REGISTER_BOARD(CannibalClobber10Board, "cannibalclobber10")
 REGISTER_BOARD(CapablancaBoard, "capablanca")
 REGISTER_BOARD(CaparandomBoard, "caparandom")
 REGISTER_BOARD(ChancellorBoard, "chancellor")
@@ -96,6 +99,8 @@ REGISTER_BOARD(ChecklessBoard, "checkless")
 REGISTER_BOARD(ChessgiBoard, "chessgi")
 REGISTER_BOARD(ChigorinBoard, "chigorin")
 REGISTER_BOARD(CircularGryphonBoard, "circulargryphon")
+REGISTER_BOARD(ClobberBoard, "clobber")
+REGISTER_BOARD(Clobber10Board, "clobber10")
 REGISTER_BOARD(CodrusBoard, "codrus")
 REGISTER_BOARD(CoRegalBoard, "coregal")
 REGISTER_BOARD(CourierBoard, "courier")
