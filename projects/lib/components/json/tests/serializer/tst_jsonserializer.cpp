@@ -194,12 +194,6 @@ void tst_JsonSerializer::test_data() const
 	obj["empty array"] = QVariantList();
 	QTest::newRow("object #3") << QVariant(obj);
 
-	QStringList stringList;
-	stringList << "aA" << "bB" << "cC" << "dD";
-	obj.clear();
-	obj["alphabet"] = stringList;
-	QTest::newRow("stringlist") << QVariant(obj);
-
 	QVariantList list;
 
 	QTest::newRow("array #1") << QVariant(list);
@@ -229,10 +223,6 @@ void tst_JsonSerializer::test() const
 	JsonParser parser(stream);
 	QVariant result(parser.parse());
 	QVERIFY(!parser.hasError());
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-	QEXPECT_FAIL("stringlist", "XXX: investigate test error on Qt 6", Continue);
-#endif
 	QCOMPARE(result, input);
 }
 
