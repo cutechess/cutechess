@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <board/board.h>
 #include "graphicsboard.h"
+#include "xiangqigraphicsboard.h"
 #include "graphicspiecereserve.h"
 #include "graphicspiece.h"
 #include "piecechooser.h"
@@ -94,10 +95,15 @@ void BoardScene::populate()
 	m_highlightPiece = nullptr;
 	m_moveArrows = nullptr;
 
-	m_squares = new GraphicsBoard(m_board->width(),
-				      m_board->height(),
-                      m_board->variant(),
-				      s_squareSize);
+	QStringList xiangqiVariants = {"xiangqi", "manchu", "minixiangqi"};
+	if (xiangqiVariants.contains(m_board->variant()))
+		m_squares = new XiangqiGraphicsBoard(m_board->width(),
+						     m_board->height(),
+						     s_squareSize);
+	else
+		m_squares = new GraphicsBoard(m_board->width(),
+					      m_board->height(),
+					      s_squareSize);
 	addItem(m_squares);
 
 	if (m_board->variantHasDrops())

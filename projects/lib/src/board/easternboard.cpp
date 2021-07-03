@@ -561,8 +561,9 @@ QString EasternBoard::castlingRightsString(FenNotation notation) const
 
 int EasternBoard::pawnAmbiguity(StepType t) const
 {
+    Q_UNUSED(t);
     int count = 0;
-    //ToDo: add the multiple pawn on the same file check
+    //TODO: add the multiple pawn on the same file check
     return count;
 }
 

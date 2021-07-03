@@ -51,6 +51,8 @@ bool MiniXiangqiBoard::pawnHasDoubleStep() const
 
 bool MiniXiangqiBoard::inCheck(Side side, int square) const
 {
+    if (square == 0)
+	    return false;
     Side opSide = side.opposite();
     Piece oppKing(opSide, General);
     Piece ownKing(side, General);

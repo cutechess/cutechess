@@ -50,7 +50,6 @@ class GraphicsBoard : public QGraphicsItem
 		 */
 		explicit GraphicsBoard(int files,
 				       int ranks,
-                       QString variant,
 				       qreal squareSize,
 				       QGraphicsItem* parent = nullptr);
 		/*! Destroys the GraphicsBoard object. */
@@ -63,15 +62,6 @@ class GraphicsBoard : public QGraphicsItem
 				   const QStyleOptionGraphicsItem* option,
 				   QWidget* widget = nullptr);
 
-        virtual void paintChessBoard(QPainter* painter,
-                   const QStyleOptionGraphicsItem* option,
-                   QWidget* widget = nullptr);
-        virtual void paintXiangqiBoard(QPainter* painter,
-                   const QStyleOptionGraphicsItem* option,
-                   QWidget* widget = nullptr);
-        virtual void paintMiniXiangqiBoard(QPainter* painter,
-                   const QStyleOptionGraphicsItem* option,
-                   QWidget* widget = nullptr);
 		/*!
 		 * Returns the chess square at \a point.
 		 *
@@ -144,22 +134,26 @@ class GraphicsBoard : public QGraphicsItem
 		/*! Sets board flipping to \a flipped. */
 		void setFlipped(bool flipped);
 
-	private:
-		int squareIndex(const Chess::Square& square) const;
+	protected:
+		virtual int squareCol(qreal x) const;
+		virtual int squareRow(qreal x) const;
+		virtual QPointF topLeft() const;
 
 		int m_files;
 		int m_ranks;
 		qreal m_squareSize;
-		qreal m_coordSize;
 		QRectF m_rect;
+		bool m_flipped;
+		qreal m_coordSize;
+
+	private:
+		int squareIndex(const Chess::Square& square) const;
+
 		QColor m_lightColor;
 		QColor m_darkColor;
 		QColor m_textColor;
-        QColor m_bgColor;
 		QVector<GraphicsPiece*> m_squares;
 		QPropertyAnimation* m_highlightAnim;
-        QString m_variant;
-		bool m_flipped;
 };
 
 #endif // GRAPHICSBOARD_H
