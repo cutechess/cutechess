@@ -50,15 +50,16 @@ RUN \
   cp /cutechess/COPYING usr/share/doc/cutechess/copyright && \
   cp /cutechess/README.md usr/share/doc/cutechess/README && \
   mkdir /finished_pkg && \
-  export CUTECHESS_CLI_VERSION=$(grep "^CUTECHESS_CLI_VERSION" /cutechess/projects/cli/cli.pro | awk '{print $NF}') && \
-  export CUTECHESS_GUI_VERSION=$(grep "^CUTECHESS_VERSION" /cutechess/projects/gui/gui.pro | awk '{print $NF}') && \
+  export CUTECHESS_MAJOR_VERSION=$(awk -F= '/^CUTECHESS_MAJOR_VERSION/ { print $NF }' /cutechess/version.pri) && \
+  export CUTECHESS_MINOR_VERSION=$(awk -F= '/^CUTECHESS_MINOR_VERSION/ { print $NF }' /cutechess/version.pri) && \
+  export CUTECHESS_PATCH_VERSION=$(awk -F= '/^CUTECHESS_PATCH_VERSION/ { print $NF }' /cutechess/version.pri) && \
   export TODAY=$(date +%Y%m%d) && \
   fpm -s dir -t deb -C /cutechess_pkg \
     -a "amd64" \
     --license "GPLv3" \
     --url "https://github.com/cutechess/cutechess" \
     -n "cutechess" \
-    -v "$TODAY+$CUTECHESS_CLI_VERSION+$CUTECHESS_GUI_VERSION" \
+    -v "$TODAY+$CUTECHESS_MAJOR_VERSION.$CUTECHESS_MINOR_VERSION.$CUTECHESS_PATCH_VERSION" \
     --iteration 1 \
     --category "games" \
     -m "Ilari Pihlajisto <ilaripih@gmail.com>" \
@@ -78,7 +79,7 @@ RUN \
     --license "GPLv3" \
     --url "https://github.com/cutechess/cutechess" \
     -n "cutechess" \
-    -v "$TODAY+$CUTECHESS_CLI_VERSION+$CUTECHESS_GUI_VERSION" \
+    -v "$TODAY+$CUTECHESS_MAJOR_VERSION.$CUTECHESS_MINOR_VERSION.$CUTECHESS_PATCH_VERSION" \
     --iteration 1 \
     --category "Amusements/Games/Board/Chess" \
     -m "Ilari Pihlajisto <ilaripih@gmail.com>" \
@@ -104,8 +105,10 @@ RUN \
   cp /cutechess/docs/engines.json.5.html cutechess-cli/ && \
   cp /cutechess/docs/engines.json.5.txt cutechess-cli/ && \
   tar -zcvf cutechess-cli-linux64.tar.gz cutechess-cli && \
-  export CUTECHESS_CLI_VERSION=$(grep "^CUTECHESS_CLI_VERSION" /cutechess/projects/cli/cli.pro | awk '{print $NF}') && \
-  mv cutechess-cli-linux64.tar.gz /finished_pkg/cutechess-cli-$CUTECHESS_CLI_VERSION-linux64.tar.gz
+  export CUTECHESS_MAJOR_VERSION=$(awk -F= '/^CUTECHESS_MAJOR_VERSION/ { print $NF }' /cutechess/version.pri) && \
+  export CUTECHESS_MINOR_VERSION=$(awk -F= '/^CUTECHESS_MINOR_VERSION/ { print $NF }' /cutechess/version.pri) && \
+  export CUTECHESS_PATCH_VERSION=$(awk -F= '/^CUTECHESS_PATCH_VERSION/ { print $NF }' /cutechess/version.pri) && \
+  mv cutechess-cli-linux64.tar.gz /finished_pkg/cutechess-cli-$CUTECHESS_MAJOR_VERSION.$CUTECHESS_MINOR_VERSION.$CUTECHESS_PATCH_VERSION-linux64.tar.gz
 
 # Copy the .deb package to the host
 CMD cp /finished_pkg/cutechess*.* /package

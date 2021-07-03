@@ -6,19 +6,14 @@ macx {
 
 DESTDIR = $$PWD
 
+include(../../version.pri)
+
 include(../lib/lib.pri)
 include(../lib/libexport.pri)
 
-CUTECHESS_VERSION = 1.2.0
-
-macx-xcode {
-    DEFINES += CUTECHESS_VERSION=\"$$CUTECHESS_VERSION\"
-}else {
-    OBJECTS_DIR = .obj/
-    MOC_DIR = .moc/
-    RCC_DIR = .rcc/
-    DEFINES += CUTECHESS_VERSION=\\\"$$CUTECHESS_VERSION\\\"
-}
+OBJECTS_DIR = .obj/
+MOC_DIR = .moc/
+RCC_DIR = .rcc/
 
 QT += svg widgets concurrent printsupport
 greaterThan(QT_MAJOR_VERSION, 5) {

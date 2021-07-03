@@ -1,19 +1,14 @@
 TARGET = cutechess-cli
 DESTDIR = $$PWD
 
+include(../../version.pri)
+
 include(../lib/lib.pri)
 include(../lib/libexport.pri)
 
-CUTECHESS_CLI_VERSION = 1.2.0
-
-macx-xcode {
-    DEFINES += CUTECHESS_CLI_VERSION=\"$$CUTECHESS_CLI_VERSION\"
-} else {
-    OBJECTS_DIR = .obj/
-    MOC_DIR = .moc/
-    RCC_DIR = .rcc/
-    DEFINES += CUTECHESS_CLI_VERSION=\\\"$$CUTECHESS_CLI_VERSION\\\"
-}
+OBJECTS_DIR = .obj/
+MOC_DIR = .moc/
+RCC_DIR = .rcc/
 
 win32 {
     CONFIG += console
