@@ -16,6 +16,7 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 #include "settingsdlg.h"
 #include "ui_settingsdlg.h"
 #include <QShowEvent>
@@ -61,7 +62,6 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 	{
 		QSettings().setValue("ui/auto_flip_board_for_human_games", checked);
 	});
-
 	connect(ui->m_humanCanPlayAfterTimeoutCheck, &QCheckBox::toggled,
 		[=](bool checked)
 	{
@@ -119,6 +119,7 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 	ui->m_gameSettings->onHumanCountChanged(0);
 	ui->m_gameSettings->enableSettingsUpdates();
 	ui->m_tournamentSettings->enableSettingsUpdates();
+	ui->m_boardSettings->enableSettingsUpdates();
 }
 
 SettingsDialog::~SettingsDialog()

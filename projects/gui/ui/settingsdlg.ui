@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="m_generalTab">
       <attribute name="title">
@@ -361,6 +361,11 @@
        </item>
       </layout>
      </widget>
+     <widget class="BoardSettingsWidget" name="m_boardSettings">
+      <attribute name="title">
+       <string>Board</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -382,6 +387,12 @@
    <class>EngineManagementWidget</class>
    <extends>QWidget</extends>
    <header>src/enginemanagementwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BoardSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>src/boardsettingswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

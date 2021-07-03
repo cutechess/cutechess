@@ -21,6 +21,7 @@
 
 #include <QGraphicsObject>
 #include <board/piece.h>
+#include "boardsettings.h"
 class QSvgRenderer;
 
 /*!
@@ -45,8 +46,8 @@ class GraphicsPiece : public QGraphicsObject
 		/*!
 		 * Creates a new GraphicsPiece object of type \a piece.
 		 *
-		 * The painted image is scaled to fit inside a square that is
-		 * \a squareSize wide and high.
+		 * The painted image is scaled with respect to \a sizeFactor
+		 * to fit inside a square that is \a squareSize wide and high.
 		 * \a elementId is the XML ID of the piece picture which is
 		 * rendered by \a renderer.
 		 */
@@ -54,6 +55,7 @@ class GraphicsPiece : public QGraphicsObject
 			      qreal squareSize,
 			      const QString& elementId,
 			      QSvgRenderer* renderer,
+			      double sizeFactor,
 			      QGraphicsItem* parent = nullptr);
 
 		// Inherited from QGraphicsObject
@@ -92,6 +94,7 @@ class GraphicsPiece : public QGraphicsObject
 		QRectF m_rect;
 		QString m_elementId;
 		QSvgRenderer* m_renderer;
+		double m_sizeFactor;
 		QGraphicsItem* m_container;
 };
 

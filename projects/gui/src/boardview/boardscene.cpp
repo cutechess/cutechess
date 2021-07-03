@@ -31,10 +31,12 @@
 #include "graphicspiecereserve.h"
 #include "graphicspiece.h"
 #include "piecechooser.h"
+#include "boardsettings.h"
 
 namespace {
 
 const qreal s_squareSize = 50;
+const QString s_defaultPieceSet(":/pieces/svg/default.svg");
 
 } // anonymous namespace
 
@@ -46,9 +48,11 @@ BoardScene::BoardScene(QObject* parent)
 	  m_reserve(nullptr),
 	  m_chooser(nullptr),
 	  m_anim(nullptr),
-	  m_renderer(new QSvgRenderer(QString(":/default.svg"), this)),
+	  m_boardSettings(nullptr),
+	  m_renderer(new QSvgRenderer(s_defaultPieceSet, (QObject *)this)),
 	  m_highlightPiece(nullptr),
-	  m_moveArrows(nullptr)
+	  m_moveArrows(nullptr),
+	  m_pieceSizeFactor(0.8)
 {
 }
 
@@ -61,6 +65,61 @@ BoardScene::~BoardScene()
 Chess::Board* BoardScene::board() const
 {
 	return m_board;
+}
+
+void BoardScene::setBoardSettings(const BoardSettings* settings)
+{
+	m_boardSettings = settings;
+}
+
+void BoardScene::applyBoardSettings()
+{
+	setPieceSet();
+}
+
+void BoardScene::setPieceSet()
+{
+	QString pieceSet;
+	if (m_boardSettings != nullptr && m_boardSettings->initialized())
+		pieceSet = m_boardSettings->value("b/piece_set").toString().trimmed();
+
+	if (pieceSet.isEmpty())
+		pieceSet = QSettings().value("ui/board/piece_set", s_defaultPieceSet)
+				.toString().trimmed();
+	if (pieceSet.isEmpty())
+		pieceSet = s_defaultPieceSet;
+
+	setPieceSet(pieceSet);
+}
+
+void BoardScene::setPieceSet(const QString& name)
+{
+	QSvgRenderer* renderer = new QSvgRenderer(name, (QObject *)this);
+
+	if (renderer->isValid())
+	{
+		delete m_renderer;
+		m_renderer = renderer;
+		setPieceSizeFactor();
+		populate();
+	}
+	else if (renderer != 0)
+		delete renderer;
+}
+
+void BoardScene::setPieceSizeFactor()
+{
+	bool ok = false;
+	int value = 0;
+
+	if (m_boardSettings != nullptr && m_boardSettings->initialized())
+		value = m_boardSettings->value("b/piece_size_factor").toInt(&ok);
+	if (!ok)
+		value = QSettings().value("ui/board/piece_size_factor", 80).toInt(&ok);
+	if (!ok)
+		value = 80;
+
+	m_pieceSizeFactor = qBound(0.65, 0.01 * value, 0.99);
 }
 
 void BoardScene::setBoard(Chess::Board* board)
@@ -78,6 +137,8 @@ void BoardScene::setBoard(Chess::Board* board)
 	m_highlightPiece = nullptr;
 	m_moveArrows = nullptr;
 	m_board = board;
+
+	applyBoardSettings();
 }
 
 void BoardScene::populate()
@@ -96,7 +157,8 @@ void BoardScene::populate()
 
 	m_squares = new GraphicsBoard(m_board->width(),
 				      m_board->height(),
-				      s_squareSize);
+				      s_squareSize,
+				      m_boardSettings);
 	addItem(m_squares);
 
 	if (m_board->variantHasDrops())
@@ -424,7 +486,8 @@ GraphicsPiece* BoardScene::createPiece(const Chess::Piece& piece)
 	return new GraphicsPiece(piece,
 				 s_squareSize,
 				 m_board->representation(piece),
-				 m_renderer);
+				 m_renderer,
+				 m_pieceSizeFactor);
 }
 
 QPropertyAnimation* BoardScene::pieceAnimation(GraphicsPiece* piece,
