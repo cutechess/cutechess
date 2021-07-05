@@ -314,6 +314,16 @@ void UciEngine::sendStop()
 	write("stop");
 }
 
+void UciEngine::stopPondering()
+{
+	if (isPondering())
+	{
+		sendStop();
+		clearPonderState();
+		ping();
+	}
+}
+
 QString UciEngine::protocol() const
 {
 	return "uci";

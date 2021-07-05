@@ -41,6 +41,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		virtual void makeBookMove(const Chess::Move& move);
 		virtual QString protocol() const;
 		virtual void startPondering();
+		virtual void stopPondering();
 		virtual void clearPonderState();
 
 	protected:

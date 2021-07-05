@@ -104,6 +104,11 @@ bool ChessGame::isFinished() const
 	return m_finished;
 }
 
+bool ChessGame::isPaused() const
+{
+	return m_paused;
+}
+
 bool ChessGame::boardShouldBeFlipped() const
 {
 	return m_boardShouldBeFlipped;
@@ -301,7 +306,12 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 void ChessGame::startTurn()
 {
 	if (m_paused)
+	{
+		playerToMove()->stopPondering();
+		playerToWait()->stopPondering();
+
 		return;
+	}
 
 	Chess::Side side(m_board->sideToMove());
 	Q_ASSERT(!side.isNull());

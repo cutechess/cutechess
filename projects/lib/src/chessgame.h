@@ -48,6 +48,7 @@ class LIB_EXPORT ChessGame : public QObject
 		ChessPlayer* playerToMove() const;
 		ChessPlayer* playerToWait() const;
 		bool isFinished() const;
+		bool isPaused() const;
 		bool boardShouldBeFlipped() const;
 		void setBoardShouldBeFlipped(bool flip);
 
