@@ -59,6 +59,7 @@
 #include "losalamosboard.h"
 #include "losersboard.h"
 #include "ncheckboard.h"
+#include "makpongboard.h"
 #include "makrukboard.h"
 #include "minishogiboard.h"
 #include "modernboard.h"
@@ -131,6 +132,7 @@ REGISTER_BOARD(KnightRelayBoard, "knightrelay")
 REGISTER_BOARD(LoopBoard, "loop")
 REGISTER_BOARD(LosAlamosBoard, "losalamos")
 REGISTER_BOARD(LosersBoard, "losers")
+REGISTER_BOARD(MakpongBoard, "makpong")
 REGISTER_BOARD(MakrukBoard, "makruk")
 REGISTER_BOARD(MiniShogiBoard, "minishogi")
 REGISTER_BOARD(ModernBoard, "modern")

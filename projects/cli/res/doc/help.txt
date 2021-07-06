@@ -63,6 +63,7 @@ Options:
 			'loop': Loop Chess (Drop Chess)
 			'losalamos': Los Alamos Chess
 			'losers': Loser's Chess
+			'makpong': Makpong (Makruk variant)
 			'makruk': Makruk (Thai Chess)
 			'minishogi': Minishogi (5x5)
 			'modern': Modern Chess (9x9)
