@@ -43,6 +43,7 @@ class GameSettingsWidget : public QWidget
 
 		QString chessVariant() const;
 		TimeControl timeControl() const;
+		TimeControl timeControl2() const;
 		bool pondering() const;
 		GameAdjudicator adjudicator() const;
 		OpeningSuite* openingSuite() const;
@@ -53,6 +54,7 @@ class GameSettingsWidget : public QWidget
 
 		void applyEngineConfiguration(EngineConfiguration* config);
 		void enableSettingsUpdates();
+		void enableSplitTimeControls(bool enable);
 
 	public slots:
 		void onHumanCountChanged(int count);
@@ -68,9 +70,12 @@ class GameSettingsWidget : public QWidget
 
 	private:
 		void readSettings();
+		void updateButtonText();
 
 		Ui::GameSettingsWidget *ui;
+		bool m_splitTimeControls;
 		TimeControl m_timeControl;
+		TimeControl m_timeControl2;
 		Chess::Board* m_board;
 		QPalette m_defaultPalette;
 		bool m_isValid;

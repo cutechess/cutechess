@@ -5,6 +5,7 @@ FORMS += $$PWD/engineconfigdlg.ui \
 	 $$PWD/gamedatabasedlg.ui \
 	 $$PWD/importprogressdlg.ui \
 	 $$PWD/gamedatabasesearchdlg.ui \
+	 $$PWD/timecontrolwidget.ui \
 	 $$PWD/timecontroldlg.ui \
 	 $$PWD/newtournamentdlg.ui \
 	 $$PWD/engineselectiondlg.ui \

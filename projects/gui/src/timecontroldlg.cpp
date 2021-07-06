@@ -19,55 +19,49 @@
 #include "timecontroldlg.h"
 #include "ui_timecontroldlg.h"
 
-
-TimeControlDialog::TimeControlDialog(const TimeControl& tc,
+TimeControlDialog::TimeControlDialog(const TimeControl& tc1,
+				     const TimeControl& tc2,
 				     QWidget *parent)
 	: QDialog(parent),
 	  ui(new Ui::TimeControlDialog)
 {
 	ui->setupUi(this);
 
-	connect(ui->m_tournamentRadio, SIGNAL(clicked()),
-		this, SLOT(onTournamentSelected()));
-	connect(ui->m_timePerMoveRadio, SIGNAL(clicked()),
-		this, SLOT(onTimePerMoveSelected()));
-	connect(ui->m_infiniteRadio, SIGNAL(clicked()),
-		this, SLOT(onInfiniteSelected()));
-	connect(ui->m_hourglassRadio, SIGNAL(clicked()),
-		this, SLOT(onHourglassSelected()));
+	// If tc2 has default value then use a simplified dialog
+	if (tc2 == TimeControl())
+	{
+		ui->m_timeControlGroupBoxBlack->setEnabled(false);
+		ui->m_timeControlGroupBoxWhite->setCheckable(false);
+	}
 
-	if (!tc.isValid())
+	ui->m_timeControlGroupBoxBlack->setVisible(false);
+	adjustSize();
+
+	connect(ui->m_timeControlGroupBoxWhite, &QGroupBox::toggled, [=](bool checked)
+	{
+		ui->m_timeControlWidgetWhite->setEnabled(true);
+		ui->m_timeControlGroupBoxBlack->setEnabled(!checked);
+		ui->m_timeControlGroupBoxBlack->setVisible(!checked);
+		ui->m_timeControlWidgetBlack->setEnabled(!checked);
+
+		ui->m_timeControlGroupBoxWhite->setTitle(checked ? tr("Both Sides")
+								 : tr("White"));
+		adjustSize();
+	});
+
+	if (!tc1.isValid())
 		return;
 
-	if (tc.isInfinite())
-	{
-		ui->m_infiniteRadio->setChecked(true);
-		onInfiniteSelected();
-	}
-	else if (tc.isHourglass())
-	{
-		ui->m_hourglassRadio->setChecked(true);
-		setTime(tc.timePerTc());
-		onHourglassSelected();
-	}
-	else if (tc.timePerMove() != 0)
-	{
-		ui->m_timePerMoveRadio->setChecked(true);
-		setTime(tc.timePerMove());
-		onTimePerMoveSelected();
-	}
-	else
-	{
-		ui->m_tournamentRadio->setChecked(true);
-		ui->m_movesSpin->setValue(tc.movesPerTc());
-		ui->m_incrementSpin->setValue(double(tc.timeIncrement()) / 1000.0);
-		setTime(tc.timePerTc());
-		onTournamentSelected();
-	}
+	ui->m_timeControlWidgetWhite->init(tc1);
+	ui->m_timeControlWidgetBlack->init(tc2.isValid() ? tc2 : tc1);
 
-	ui->m_nodesSpin->setValue(tc.nodeLimit());
-	ui->m_pliesSpin->setValue(tc.plyLimit());
-	ui->m_marginSpin->setValue(tc.expiryMargin());
+	ui->m_timeControlGroupBoxWhite->setChecked(tc1 == tc2 || !tc2.isValid());
+	ui->m_timeControlWidgetBlack->disableHourglassRadio();
+
+	connect (ui->m_timeControlWidgetWhite, SIGNAL(hourglassToggled(bool)),
+		 ui->m_timeControlWidgetBlack, SLOT(setHourglassMode(bool)));
+
+	ui->m_timeControlWidgetBlack->setHourglassMode(tc1.isHourglass());
 }
 
 TimeControlDialog::~TimeControlDialog()
@@ -75,101 +69,16 @@ TimeControlDialog::~TimeControlDialog()
 	delete ui;
 }
 
-void TimeControlDialog::onTournamentSelected()
+TimeControl TimeControlDialog::timeControlWhite() const
 {
-	ui->m_movesSpin->setEnabled(true);
-	ui->m_timeSpin->setEnabled(true);
-	ui->m_timeUnitCombo->setEnabled(true);
-	ui->m_incrementSpin->setEnabled(true);
-	ui->m_marginSpin->setEnabled(true);
+	return ui->m_timeControlWidgetWhite->timeControl();
 }
 
-void TimeControlDialog::onTimePerMoveSelected()
+TimeControl TimeControlDialog::timeControlBlack() const
 {
-	ui->m_movesSpin->setEnabled(false);
-	ui->m_timeSpin->setEnabled(true);
-	ui->m_timeUnitCombo->setEnabled(true);
-	ui->m_incrementSpin->setEnabled(false);
-	ui->m_marginSpin->setEnabled(true);
-}
-
-void TimeControlDialog::onInfiniteSelected()
-{
-	ui->m_movesSpin->setEnabled(false);
-	ui->m_timeSpin->setEnabled(false);
-	ui->m_timeUnitCombo->setEnabled(false);
-	ui->m_incrementSpin->setEnabled(false);
-	ui->m_marginSpin->setEnabled(false);
-}
-
-void TimeControlDialog::onHourglassSelected()
-{
-	ui->m_movesSpin->setEnabled(false);
-	ui->m_timeSpin->setEnabled(true);
-	ui->m_timeUnitCombo->setEnabled(true);
-	ui->m_incrementSpin->setEnabled(false);
-	ui->m_marginSpin->setEnabled(true);
-}
-
-int TimeControlDialog::timeToMs() const
-{
-	switch (ui->m_timeUnitCombo->currentIndex())
-	{
-	case Seconds:
-		return ui->m_timeSpin->value() * 1000.0;
-	case Minutes:
-		return ui->m_timeSpin->value() * 60000.0;
-	case Hours:
-		return ui->m_timeSpin->value() * 3600000.0;
-	default:
-		return 0;
-	}
-}
-
-void TimeControlDialog::setTime(int ms)
-{
-	Q_ASSERT(ms >= 0);
-
-	if (ms == 0 || ms % 60000 != 0)
-	{
-		ui->m_timeUnitCombo->setCurrentIndex(Seconds);
-		ui->m_timeSpin->setValue(double(ms) / 1000.0);
-	}
-	else if (ms % 3600000 != 0)
-	{
-		ui->m_timeUnitCombo->setCurrentIndex(Minutes);
-		ui->m_timeSpin->setValue(double(ms) / 60000.0);
-	}
+	if (ui->m_timeControlWidgetBlack->isEnabled())
+		return ui->m_timeControlWidgetBlack->timeControl();
 	else
-	{
-		ui->m_timeUnitCombo->setCurrentIndex(Hours);
-		ui->m_timeSpin->setValue(double(ms) / 3600000.0);
-	}
+		return ui->m_timeControlWidgetWhite->timeControl();
 }
 
-TimeControl TimeControlDialog::timeControl() const
-{
-	TimeControl tc;
-	if (ui->m_infiniteRadio->isChecked())
-		tc.setInfinity(true);
-	else if (ui->m_timePerMoveRadio->isChecked())
-		tc.setTimePerMove(timeToMs());
-	else if (ui->m_tournamentRadio->isChecked())
-	{
-		tc.setMovesPerTc(ui->m_movesSpin->value());
-		tc.setTimePerTc(timeToMs());
-		tc.setTimeIncrement(ui->m_incrementSpin->value() * 1000.0);
-	}
-	else if (ui->m_hourglassRadio->isChecked())
-	{
-		tc.setHourglass(true);
-		tc.setTimePerTc(timeToMs());
-		tc.setTimeIncrement(0);
-	}
-
-	tc.setNodeLimit(ui->m_nodesSpin->value());
-	tc.setPlyLimit(ui->m_pliesSpin->value());
-	tc.setExpiryMargin(ui->m_marginSpin->value());
-
-	return tc;
-}

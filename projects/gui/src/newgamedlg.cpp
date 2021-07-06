@@ -47,6 +47,7 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 {
 	Q_ASSERT(engineManager != nullptr);
 	ui->setupUi(this);
+	ui->m_gameSettings->enableSplitTimeControls(true);
 
 	m_engines = new EngineConfigurationModel(m_engineManager, this);
 	#ifdef QT_DEBUG
@@ -112,7 +113,9 @@ ChessGame* NewGameDialog::createGame() const
 	pgn->setSite(QSettings().value("pgn/site").toString());
 	auto game = new ChessGame(board, pgn);
 
-	game->setTimeControl(ui->m_gameSettings->timeControl());
+	game->setTimeControl(ui->m_gameSettings->timeControl(), Chess::Side::White);
+	game->setTimeControl(ui->m_gameSettings->timeControl2(), Chess::Side::Black);
+
 	game->setAdjudicator(ui->m_gameSettings->adjudicator());
 
 	auto suite = ui->m_gameSettings->openingSuite();
