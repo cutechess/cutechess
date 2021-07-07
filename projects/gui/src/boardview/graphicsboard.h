@@ -134,21 +134,27 @@ class GraphicsBoard : public QGraphicsItem
 		/*! Sets board flipping to \a flipped. */
 		void setFlipped(bool flipped);
 
-	private:
-		int squareIndex(const Chess::Square& square) const;
+	protected:
+		virtual int squareCol(qreal x) const;
+		virtual int squareRow(qreal x) const;
+		virtual QPointF topLeft() const;
 
 		int m_files;
 		int m_ranks;
 		qreal m_squareSize;
-		qreal m_coordSize;
 		QRectF m_rect;
+		bool m_flipped;
+		qreal m_coordSize;
+
+	private:
+		int squareIndex(const Chess::Square& square) const;
+
 		QColor m_lightColor;
 		QColor m_darkColor;
 		QColor m_wallColor;
 		QColor m_textColor;
 		QVector<GraphicsPiece*> m_squares;
 		QPropertyAnimation* m_highlightAnim;
-		bool m_flipped;
 };
 
 #endif // GRAPHICSBOARD_H
