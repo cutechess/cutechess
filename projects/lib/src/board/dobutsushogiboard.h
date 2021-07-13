@@ -65,6 +65,9 @@ class LIB_EXPORT DobutsuShogiBoard : public ShogiBoard
 		virtual int height() const;
 		virtual int width() const;
 		virtual QString defaultFenString() const;
+		virtual void generateMovesForPiece(QVarLengthArray<Move> & moves,
+						   int pieceType,
+						   int square) const;
 		virtual Result result();
 
 	protected:

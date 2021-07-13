@@ -65,7 +65,7 @@ Result JudkinsShogiBoard::impassePointRule(int points, int) const
 	else
 		return Result(Result::Draw, Side::NoSide, tr("Impasse: draw"));
 
-	QString winStr = winner == Side::White ? "Sente" : "Gote";
+	QString winStr = winner == Side::White ? tr("Sente") : tr("Gote");
 	QString str = tr("Impasse: %1 wins by 12-point rule").arg(winStr);
 	return Result(Result::Win, winner, str);
 }
