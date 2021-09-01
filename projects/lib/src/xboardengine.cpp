@@ -588,7 +588,7 @@ int XboardEngine::adaptScore(int score) const
 	if (absScore > newCECPMateScore
 	&&  absScore < newCECPMateScore + 100)
 	{
-		absScore = 2 * newCECPMateScore - 2 * absScore + m_eval.MATE_SCORE;
+		absScore = 2 * newCECPMateScore - 2 * absScore + MoveEvaluation::MATE_SCORE;
 		if (score >= 0)
 			absScore++;
 	}
@@ -596,8 +596,8 @@ int XboardEngine::adaptScore(int score) const
 	// map assumed mate scores onto equivalents w/ higher absolute values
 	int distance = 1000 - (absScore % 1000);
 	if (absScore > 9900 &&  distance < 100)
-		score = (score > 0) ? m_eval.MATE_SCORE - distance
-				    : -m_eval.MATE_SCORE + distance;
+		score = (score > 0) ? MoveEvaluation::MATE_SCORE - distance
+				    : -MoveEvaluation::MATE_SCORE + distance;
 
 	return score;
 }
