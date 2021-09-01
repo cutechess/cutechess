@@ -271,8 +271,14 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		/*! Clear the write buffer without flushing it. */
 		void clearWriteBuffer();
 
-	private slots:
+		/*! Called when the engine has not responded to the quit
+		 * command in time.
+		 */
 		void onQuitTimeout();
+
+		/*! Called when the engine has not initiated the chess
+		 * protocol in time.
+		 */
 		void onProtocolStartTimeout();
 
 	private:
