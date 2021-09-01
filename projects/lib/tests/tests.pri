@@ -7,6 +7,9 @@ mac {
 }
 
 QT = core testlib
+greaterThan(QT_MAJOR_VERSION, 5) {
+    QT += core5compat
+}
 CONFIG += testcase
 
 include(../lib.pri)
