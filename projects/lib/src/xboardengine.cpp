@@ -651,47 +651,11 @@ void XboardEngine::parseLine(const QString& line)
 	else if (command.at(0).isDigit()
 	     && !command.contains("."))	// principal variation
 	{
-		bool ok = false;
-		int val = 0;
-		QStringRef ref(command);
-		
-		// Search depth
-		QString depth(ref.toString());
-		if (!(depth.cend() - 1)->isDigit())
-			depth.chop(1);
-		m_eval.setDepth(depth.toInt());
-
-		// Evaluation
-		if ((ref = nextToken(ref)).isNull())
-			return;
-		val = ref.toString().toInt(&ok);
-		if (ok)
+		auto eval = parsePv(command);
+		if (!eval.isEmpty())
 		{
-			if (whiteEvalPov() && side() == Chess::Side::Black)
-				val = -val;
-			m_eval.setScore(adaptScore(val));
+			emit thinking(eval);
 		}
-
-		// Search time
-		if ((ref = nextToken(ref)).isNull())
-			return;
-		val = ref.toString().toInt(&ok);
-		if (ok)
-			m_eval.setTime(val * 10);
-
-		// Node count
-		if ((ref = nextToken(ref)).isNull())
-			return;
-		val = ref.toString().toULongLong(&ok);
-		if (ok)
-			m_eval.setNodeCount(val);
-
-		// Principal variation
-		if ((ref = nextToken(ref, true)).isNull())
-			return;
-		m_eval.setPv(ref.toString());
-
-		emit thinking(m_eval);
 
 		return;
 	}
@@ -750,17 +714,8 @@ void XboardEngine::parseLine(const QString& line)
 	}
 	else if (command == "feature")
 	{
-		QRegularExpression re("(\\w+)\\s*=\\s*(\"[^\"]+\"|\\w+)");
-		auto i = re.globalMatch(args);
-
-		while (i.hasNext())
-		{
-			auto match = i.next();
-			auto feature = match.captured(1);
-			auto val = match.captured(2);
-			val.remove('\"');
-
-			setFeature(feature, val);
+		for (const XboardFeature& feature : parseFeatures(args)) {
+			setFeature(feature.first, feature.second);
 		}
 	}
 	else if (command.startsWith("Illegal"))
@@ -798,4 +753,69 @@ void XboardEngine::sendOption(const QString& name, const QVariant& value)
 			write("option " + name + "=" + tmp);
 		}
 	}
+}
+
+QList<XboardFeature> XboardEngine::parseFeatures(const QString& featureArgs)
+{
+	QList<XboardFeature> features;
+	QRegularExpression re("(\\w+)\\s*=\\s*(\"[^\"]+\"|\\w+)");
+	auto i = re.globalMatch(featureArgs);
+
+	while (i.hasNext())
+	{
+		auto match = i.next();
+		auto feature = match.captured(1);
+		auto val = match.captured(2);
+		val.remove('\"');
+
+		features.append(std::make_pair(feature, val));
+	}
+
+	return features;
+}
+
+MoveEvaluation XboardEngine::parsePv(const QStringRef& pvString)
+{
+	bool ok = false;
+	int val = 0;
+	QStringRef ref(pvString);
+	MoveEvaluation eval;
+
+	// Search depth
+	QString depth(ref.toString());
+	if (!(depth.cend() - 1)->isDigit())
+		depth.chop(1);
+	eval.setDepth(depth.toInt());
+
+	// Evaluation
+	if ((ref = nextToken(ref)).isNull())
+		return MoveEvaluation();
+	val = ref.toString().toInt(&ok);
+	if (ok)
+	{
+		if (whiteEvalPov() && side() == Chess::Side::Black)
+			val = -val;
+		eval.setScore(adaptScore(val));
+	}
+
+	// Search time
+	if ((ref = nextToken(ref)).isNull())
+		return MoveEvaluation();
+	val = ref.toString().toInt(&ok);
+	if (ok)
+		eval.setTime(val * 10);
+
+	// Node count
+	if ((ref = nextToken(ref)).isNull())
+		return MoveEvaluation();
+	val = ref.toString().toULongLong(&ok);
+	if (ok)
+		eval.setNodeCount(val);
+
+	// Principal variation
+	if ((ref = nextToken(ref, true)).isNull())
+		return MoveEvaluation();
+	eval.setPv(ref.toString());
+
+	return eval;
 }
