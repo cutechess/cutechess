@@ -1,5 +1,10 @@
 #include <QtTest/QtTest>
 #include <xboardengine.h>
+#include <enginebuttonoption.h>
+#include <enginecheckoption.h>
+#include <enginespinoption.h>
+#include <enginetextoption.h>
+#include <enginecombooption.h>
 
 class tst_XboardEngine: public XboardEngine
 {
@@ -13,7 +18,19 @@ class tst_XboardEngine: public XboardEngine
 		void testParseFeatures();
 		void testParsePv_data() const;
 		void testParsePv();
+		void testParseOptionButton_data();
+		void testParseOptionButton();
+		void testParseOptionCheck_data();
+		void testParseOptionCheck();
+		void testParseOptionSpin_data();
+		void testParseOptionSpin();
+		void testParseOptionText_data();
+		void testParseOptionText();
+		void testParseOptionCombo_data();
+		void testParseOptionCombo();
 };
+
+Q_DECLARE_METATYPE(EngineTextOption::EditorType)
 
 tst_XboardEngine::tst_XboardEngine()
     : XboardEngine()
@@ -91,6 +108,184 @@ void tst_XboardEngine::testParsePv()
 	QStringRef pvStringRef(firstToken(pvString));
 
 	QCOMPARE(parsePv(pvStringRef), pv);
+}
+
+void tst_XboardEngine::testParseOptionButton_data()
+{
+	QTest::addColumn<QString>("optionString");
+	QTest::addColumn<QString>("name");
+
+	QTest::newRow("button 1")
+	    << "Info -button"
+	    << "Info";
+	QTest::newRow("button 2")
+	    << "Clear Hash -button"
+	    << "Clear Hash";
+	QTest::newRow("save 1")  // -save is represented as -button
+	    << "Another Type -save"
+	    << "Another Type";
+}
+
+void tst_XboardEngine::testParseOptionButton()
+{
+	QFETCH(QString, optionString);
+	QFETCH(QString, name);
+
+	auto opt = dynamic_cast<EngineButtonOption*>(parseOption(optionString));
+	QVERIFY(opt != nullptr);
+	QCOMPARE(opt->name(), name);
+	delete opt;
+}
+
+void tst_XboardEngine::testParseOptionCheck_data()
+{
+	QTest::addColumn<QString>("optionString");
+	QTest::addColumn<QString>("name");
+	QTest::addColumn<bool>("value");
+
+	QTest::newRow("check 1")
+	    << "Resign -check 0"
+	    << "Resign"
+	    << false;
+	QTest::newRow("check 2")
+	    << "Resign Always -check 1"
+	    << "Resign Always"
+	    << true;
+}
+
+void tst_XboardEngine::testParseOptionCheck()
+{
+	QFETCH(QString, optionString);
+	QFETCH(QString, name);
+	QFETCH(bool, value);
+
+	auto opt = dynamic_cast<EngineCheckOption*>(parseOption(optionString));
+	QVERIFY(opt != nullptr);
+	QCOMPARE(opt->name(), name);
+	QCOMPARE(opt->value(), QVariant(value));
+	QCOMPARE(opt->defaultValue(), QVariant(value));
+	delete opt;
+}
+
+void tst_XboardEngine::testParseOptionSpin_data()
+{
+	QTest::addColumn<QString>("optionString");
+	QTest::addColumn<QString>("name");
+	QTest::addColumn<int>("value");
+	QTest::addColumn<int>("min");
+	QTest::addColumn<int>("max");
+
+	QTest::newRow("spin 1")
+	    << "Multi-PV Margin -spin 0 0 1000"
+	    << "Multi-PV Margin"
+	    << 0
+	    << 0
+	    << 1000;
+	QTest::newRow("spin 2")
+	    << "Resign Threshold -spin 800 200 1200"
+	    << "Resign Threshold"
+	    << 800
+	    << 200
+	    << 1200;
+	QTest::newRow("slider 1")  // -slider is represented as -spin
+	    << "Dummy Slider Example -slider 20 0 100"
+	    << "Dummy Slider Example"
+	    << 20
+	    << 0
+	    << 100;
+}
+
+void tst_XboardEngine::testParseOptionSpin()
+{
+	QFETCH(QString, optionString);
+	QFETCH(QString, name);
+	QFETCH(int, value);
+	QFETCH(int, min);
+	QFETCH(int, max);
+
+	auto opt = dynamic_cast<EngineSpinOption*>(parseOption(optionString));
+	QVERIFY(opt != nullptr);
+	QCOMPARE(opt->name(), name);
+	QCOMPARE(opt->value(), QVariant(value));
+	QCOMPARE(opt->defaultValue(), QVariant(value));
+	QCOMPARE(opt->min(), QVariant(min));
+	QCOMPARE(opt->max(), QVariant(max));
+	delete opt;
+}
+
+void tst_XboardEngine::testParseOptionText_data()
+{
+	QTest::addColumn<QString>("optionString");
+	QTest::addColumn<QString>("name");
+	QTest::addColumn<QString>("value");
+	QTest::addColumn<EngineTextOption::EditorType>("editorType");
+
+	QTest::newRow("string 1")
+	    << "Dummy String Example -string happy birthday!"
+	    << "Dummy String Example"
+	    << "happy birthday!"
+	    << EngineTextOption::LineEdit;
+	QTest::newRow("file 1")
+	    << "Ini File -file /usr/share/games/engine/engine.ini"
+	    << "Ini File"
+	    << "/usr/share/games/engine/engine.ini"
+	    << EngineTextOption::FileDialog;
+	QTest::newRow("path 1")
+	    << "Dummy Path Example -path ."
+	    << "Dummy Path Example"
+	    << "."
+	    << EngineTextOption::FolderDialog;
+}
+
+void tst_XboardEngine::testParseOptionText()
+{
+	QFETCH(QString, optionString);
+	QFETCH(QString, name);
+	QFETCH(QString, value);
+	QFETCH(EngineTextOption::EditorType, editorType);
+
+	auto opt = dynamic_cast<EngineTextOption*>(parseOption(optionString));
+	QVERIFY(opt != nullptr);
+	QCOMPARE(opt->name(), name);
+	QCOMPARE(opt->value(), QVariant(value));
+	QCOMPARE(opt->defaultValue(), QVariant(value));
+	QCOMPARE(opt->editorType(), editorType);
+	delete opt;
+}
+
+void tst_XboardEngine::testParseOptionCombo_data()
+{
+	QTest::addColumn<QString>("optionString");
+	QTest::addColumn<QString>("name");
+	QTest::addColumn<QString>("value");
+	QTest::addColumn<QStringList>("choices");
+
+	QTest::newRow("combo 1")
+	    << "Variant -combo FIDE-Clobberers /// Clobberers-FIDE /// FIDE-Nutters /// Nutters-FIDE"
+	    << "Variant"
+	    << "FIDE-Clobberers"
+	    << QStringList{ "FIDE-Clobberers", "Clobberers-FIDE", "FIDE-Nutters", "Nutters-FIDE" };
+	QTest::newRow("combo 2")
+	    << "Variant -combo FIDE-Clobberers /// Clobberers-FIDE /// *FIDE-Nutters /// Nutters-FIDE"
+	    << "Variant"
+	    << "FIDE-Nutters"
+	    << QStringList{ "FIDE-Clobberers", "Clobberers-FIDE", "FIDE-Nutters", "Nutters-FIDE" };
+}
+
+void tst_XboardEngine::testParseOptionCombo()
+{
+	QFETCH(QString, optionString);
+	QFETCH(QString, name);
+	QFETCH(QString, value);
+	QFETCH(QStringList, choices);
+
+	auto opt = dynamic_cast<EngineComboOption*>(parseOption(optionString));
+	QVERIFY(opt != nullptr);
+	QCOMPARE(opt->name(), name);
+	QCOMPARE(opt->value(), QVariant(value));
+	QCOMPARE(opt->defaultValue(), QVariant(value));
+	QCOMPARE(opt->choices(), choices);
+	delete opt;
 }
 
 QTEST_MAIN(tst_XboardEngine)
