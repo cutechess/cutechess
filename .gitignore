@@ -17,6 +17,7 @@ tst_tb
 tst_pipereader
 tst_jsonparser
 tst_jsonserializer
+tst_xboardengine
 target_wrapper.sh
 
 # tool executables
