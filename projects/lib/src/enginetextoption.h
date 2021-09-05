@@ -42,6 +42,9 @@ class LIB_EXPORT EngineTextOption : public EngineOption
 		virtual bool isValid(const QVariant& value) const;
 		virtual QVariant toVariant() const;
 
+		/*! Returns the type of editor associated with this option. */
+		EditorType editorType() const;
+
 	private:
 		EditorType m_editorType;
 };

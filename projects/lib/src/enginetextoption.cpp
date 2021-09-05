@@ -62,3 +62,8 @@ QVariant EngineTextOption::toVariant() const
 
 	return map;
 }
+
+EngineTextOption::EditorType EngineTextOption::editorType() const
+{
+	return m_editorType;
+}
