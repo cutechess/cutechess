@@ -64,7 +64,6 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		// Inherited from ChessEngine
 		virtual void onTimeout();
 
-	private slots:
 		/*! Initializes the engine, and emits the 'ready' signal. */
 		void initialize();
 
