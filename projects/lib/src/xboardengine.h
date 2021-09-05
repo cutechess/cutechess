@@ -60,6 +60,9 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		/*! Parses a principal valuation string from the engine. */
 		MoveEvaluation parsePv(const QStringRef& pvString);
 
+		/*! Parses an option string from the engine. */
+		EngineOption* parseOption(const QString& line);
+
 	protected slots:
 		// Inherited from ChessEngine
 		virtual void onTimeout();
@@ -68,7 +71,6 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		void initialize();
 
 	private:
-		EngineOption* parseOption(const QString& line);
 		void setFeature(const QString& name, const QString& val);
 		void setForceMode(bool enable);
 		void sendTimeLeft();
