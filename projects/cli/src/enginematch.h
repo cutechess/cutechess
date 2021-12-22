@@ -24,6 +24,8 @@
 #include <QString>
 #include <QTimer>
 #include <QElapsedTimer>
+#include <QFileSystemWatcher>
+#include <QFile>
 #include <openingbook.h>
 
 class ChessGame;
@@ -67,6 +69,7 @@ class EngineMatch : public QObject
 		void onTournamentFinished();
 		void onTournamentSuspended(int count);
 		void print(const QString& msg);
+		void onControlDirectoryChanged();
 
 	private:
 		void printRanking();
@@ -80,6 +83,9 @@ class EngineMatch : public QObject
 		OpeningBook::AccessMode m_bookMode;
 		QMap<QString, OpeningBook*> m_books;
 		QElapsedTimer m_startTime;
+		QFileSystemWatcher m_filesystemwatcher;
+		QFile m_suspendFile;
+		QFile m_resumeFile;
 };
 
 #endif // ENGINEMATCH_H

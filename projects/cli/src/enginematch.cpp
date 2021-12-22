@@ -33,10 +33,13 @@ EngineMatch::EngineMatch(Tournament* tournament, QObject* parent)
 	  m_matchState(FreeState),
 	  m_ratingInterval(0),
 	  m_outcomeInterval(0),
-	  m_bookMode(OpeningBook::Ram)
+	  m_bookMode(OpeningBook::Ram),
+	  m_suspendFile("_cc-suspend"),
+	  m_resumeFile("_cc-resume")
 {
 	Q_ASSERT(tournament != nullptr);
 
+	m_filesystemwatcher.addPath(".");
 	m_startTime.start();
 }
 
@@ -81,10 +84,20 @@ void EngineMatch::start()
 			this, SLOT(print(QString)));
 
 	QMetaObject::invokeMethod(m_tournament, "start", Qt::QueuedConnection);
+
+	if (m_resumeFile.exists())
+		m_resumeFile.remove();
+	if (m_suspendFile.exists())
+		m_suspendFile.remove();
+
+	connect(&m_filesystemwatcher, SIGNAL(directoryChanged(QString)),
+		SLOT(onControlDirectoryChanged()));
 }
 
 void EngineMatch::stop()
 {
+	disconnect(&m_filesystemwatcher);
+
 	QMetaObject::invokeMethod(m_tournament, "stop", Qt::QueuedConnection);
 }
 
@@ -214,4 +227,21 @@ void EngineMatch::printRanking()
 void EngineMatch::printOutcomes()
 {
 	qInfo("%s", qUtf8Printable(m_tournament->outcomes()));
+}
+
+void EngineMatch::onControlDirectoryChanged()
+{
+	if (m_matchState == FreeState && m_suspendFile.exists())
+	{
+		suspend();
+	}
+	else if (m_matchState == SuspendedState && m_resumeFile.exists())
+	{
+		resume();
+	}
+
+	if (m_resumeFile.exists())
+		m_resumeFile.remove();
+	if (m_suspendFile.exists())
+		m_suspendFile.remove();
 }
