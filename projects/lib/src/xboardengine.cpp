@@ -72,6 +72,7 @@ XboardEngine::XboardEngine(QObject* parent)
 	  m_forceMode(false),
 	  m_drawOnNextMove(false),
 	  m_comPhase(InitPhase),
+	  m_parserMode(LenientMode),
 	  m_ftName(false),
 	  m_ftPing(false),
 	  m_ftSetboard(false),
@@ -571,7 +572,10 @@ void XboardEngine::setFeature(const QString& name, const QString& val)
 		m_initTimer->stop();
 		
 		if (val == "1")
+		{
 			initialize();
+			m_parserMode = Version2Mode;
+		}
 		return;
 	}
 	else
@@ -739,6 +743,28 @@ void XboardEngine::parseLine(const QString& line)
 		if (str.startsWith("result"))
 			finishGame();
 	}
+	if (m_parserMode == Version2Mode)
+		return;
+
+	// parse result commands of old CECP engines
+	QString win = side() == Chess::Side::White ? "1-0" : "0-1";
+	QString loss = side() == Chess::Side::White ? "0-1" : "1-0";
+
+	if (command == "Draw")
+		parseLine("1/2-1/2 " + args);
+	else if (command == "game")
+		parseLine("1/2-1/2");
+	else if (command == "White")
+		parseLine(args == "resigns" ? "0-1" : "1-0");
+	else if (command == "Black")
+		parseLine(args == "resigns" ? "1-0" : "0-1");
+	else if (command == "computer")
+		parseLine(args == "resigns" ? loss : win);
+	else if (command == "opponent")
+		parseLine(loss);
+	else if (command == "checkmate")
+		parseLine( board()->sideToMove() == Chess::Side::White ? "1-0" : "0-1");
+	// must return after if-block or be at the end because of recursive call
 }
 
 void XboardEngine::sendOption(const QString& name, const QVariant& value)
