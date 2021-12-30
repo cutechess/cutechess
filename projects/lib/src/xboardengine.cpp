@@ -654,6 +654,7 @@ void XboardEngine::parseLine(const QString& line)
 		auto eval = parsePv(command);
 		if (!eval.isEmpty())
 		{
+			m_eval = eval;
 			emit thinking(eval);
 		}
 
