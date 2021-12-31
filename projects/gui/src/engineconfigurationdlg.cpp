@@ -120,6 +120,7 @@ void EngineConfigurationDialog::applyEngineInformation(
 	ui->m_protocolCombo->setCurrentIndex(i);
 
 	ui->m_initStringEdit->setPlainText(engine.initStrings().join("\n"));
+	ui->m_notesEdit->setPlainText(engine.notes());
 
 	if (engine.whiteEvalPov())
 		ui->m_whitePovCheck->setCheckState(Qt::Checked);
@@ -148,6 +149,8 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 	QString initStr(ui->m_initStringEdit->toPlainText());
 	if (!initStr.isEmpty())
 		engine.setInitStrings(initStr.split('\n'));
+
+	engine.setNotes(ui->m_notesEdit->toPlainText());
 
 	engine.setWhiteEvalPov(ui->m_whitePovCheck->checkState() == Qt::Checked);
 

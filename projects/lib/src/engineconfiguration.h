@@ -206,6 +206,10 @@ class LIB_EXPORT EngineConfiguration
 		/*! Sets result claim validation mode to \a validate. */
 		void setClaimsValidated(bool validate);
 
+		/*! Returns the notes regarding the engine. */
+		QString notes() const;
+		/*! Sets notes regarding the engine. */
+		void setNotes(const QString thenotes);
 		/*!
 		 * Assigns \a other to this engine configuration and returns
 		 * a reference to this object.
@@ -218,6 +222,7 @@ class LIB_EXPORT EngineConfiguration
 		QString m_workingDirectory;
 		QString m_stderrFile;
 		QString m_protocol;
+		QString m_notes;
 		QStringList m_arguments;
 		QStringList m_initStrings;
 		QStringList m_variants;
