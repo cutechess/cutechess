@@ -920,11 +920,16 @@ QString MainWindow::genericTitle(const TabData& gameData) const
 		result = gameData.m_pgn->result();
 	}
 
+	QString info;
+	Tournament* t = gameData.m_game ? gameData.m_tournament: nullptr;
+	if (t)
+		info = tr(" [%1/%2]").arg(QString::number(t->finishedGameCount()),
+					  QString::number(t->finalGameCount()));
 	if (result.isNone())
-		return tr("%1 vs %2").arg(white, black);
+		return tr("%1 vs %2%3").arg(white, black, info);
 	else
-		return tr("%1 vs %2 (%3)")
-		       .arg(white, black, result.toShortString());
+		return tr("%1 vs %2 (%3)%4")
+		       .arg(white, black, result.toShortString(), info);
 }
 
 void MainWindow::updateMenus()
