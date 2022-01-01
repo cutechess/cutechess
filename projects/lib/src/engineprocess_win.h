@@ -165,6 +165,7 @@ class LIB_EXPORT EngineProcess : public QIODevice
 		DWORD m_exitCode;
 		ExitStatus m_exitStatus;
 		QString m_workDir;
+		QString m_cmdLine;
 		QString m_stdErrFile;
 		OpenMode m_stdErrFileMode;
 		PROCESS_INFORMATION m_processInfo;
