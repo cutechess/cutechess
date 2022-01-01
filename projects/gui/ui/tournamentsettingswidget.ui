@@ -326,6 +326,9 @@
         <height>25</height>
        </rect>
       </property>
+      <property name="toolTip">
+       <string>Format accepts a comma separated list of fields or shortcuts</string>
+      </property>
       <property name="autoFillBackground">
        <bool>false</bool>
       </property>
