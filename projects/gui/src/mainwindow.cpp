@@ -922,7 +922,7 @@ QString MainWindow::genericTitle(const TabData& gameData) const
 
 	QString info;
 	Tournament* t = gameData.m_game ? gameData.m_tournament: nullptr;
-	if (t)
+	if (t && QSettings().value("ui/display_game_count_in_title", false).toBool())
 		info = tr(" [%1/%2]").arg(QString::number(t->finishedGameCount()),
 					  QString::number(t->finalGameCount()));
 	if (result.isNone())
