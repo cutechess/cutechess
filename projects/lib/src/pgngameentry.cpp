@@ -69,7 +69,7 @@ int s_stringToInt(const char *s, int size)
 	for (int i = 0; i < size; i++)
 	{
 		if (!isdigit(s[i]))
-			return 0;
+			return s[i] == '.' ? num : 0;
 		num = num * 10 + (s[i] - '0');
 	}
 
@@ -154,7 +154,6 @@ bool PgnGameEntry::match(const PgnGameFilter& filter) const
 			if (filter.minRound() != 0 || filter.maxRound() != 0)
 			{
 				int round = s_stringToInt(str, size);
-
 				if (round == 0
 				||  (filter.minRound() != 0 && round < filter.minRound())
 				||  (filter.maxRound() != 0 && round > filter.maxRound()))

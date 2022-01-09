@@ -501,8 +501,12 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 				policy = OpeningPolicy::DefaultPolicy;
 			else if (params["policy"] == "encounter")
 				policy = OpeningPolicy::EncounterPolicy;
+			else if (params["policy"] == "subround")
+				policy = OpeningPolicy::SubRoundPolicy;
 			else if (params["policy"] == "round")
 				policy = OpeningPolicy::RoundPolicy;
+			else if (params["policy"] == "keep")
+				policy = OpeningPolicy::KeepPolicy;
 			else if (ok)
 			{
 				qWarning("Invalid opening shift policy: \"%s\"",
