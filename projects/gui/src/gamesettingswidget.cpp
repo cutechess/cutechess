@@ -37,7 +37,7 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 	ui->setupUi(this);
 
 	ui->m_variantCombo->addItems(Chess::BoardFactory::variants());
-	connect(ui->m_variantCombo, SIGNAL(currentIndexChanged(QString)),
+	connect(ui->m_variantCombo, SIGNAL(currentTextChanged(const QString &)),
 		this, SIGNAL(variantChanged(QString)));
 	int index = ui->m_variantCombo->findText("standard");
 	ui->m_variantCombo->setCurrentIndex(index);
