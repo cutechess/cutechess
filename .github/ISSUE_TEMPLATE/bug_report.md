@@ -17,7 +17,7 @@ Include the full command-line used to run the application. In case the `-conf` p
 
 Describe what you'd like Cute Chess to do differently.
 
-##Actual behavior
+## Actual behavior
 
 What you observed.
 
