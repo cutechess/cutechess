@@ -74,7 +74,8 @@ MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
 }
 
 MainWindow::MainWindow(ChessGame* game)
-	: m_game(nullptr),
+	: m_tournamentDlg(nullptr),
+	  m_game(nullptr),
 	  m_closing(false),
 	  m_readyToClose(false),
 	  m_firstTabAutoCloseEnabled(true)
@@ -785,13 +786,17 @@ void MainWindow::onGameFinished(ChessGame* game)
 
 void MainWindow::newTournament()
 {
-	NewTournamentDialog dlg(CuteChessApplication::instance()->engineManager(), this);
-	if (dlg.exec() != QDialog::Accepted)
+	if (m_tournamentDlg == nullptr)
+		m_tournamentDlg = new NewTournamentDialog(
+					CuteChessApplication::instance()->engineManager(),
+					this);
+
+	if (m_tournamentDlg->exec() != QDialog::Accepted)
 		return;
 
 	GameManager* manager = CuteChessApplication::instance()->gameManager();
 
-	Tournament* t = dlg.createTournament(manager);
+	Tournament* t = m_tournamentDlg->createTournament(manager);
 	auto resultsDialog = CuteChessApplication::instance()->tournamentResultsDialog();
 	connect(t, SIGNAL(finished()),
 		this, SLOT(onTournamentFinished()));
