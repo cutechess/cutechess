@@ -31,6 +31,7 @@ class QMenu;
 class QAction;
 class QCloseEvent;
 class QTabBar;
+class NewTournamentDialog;
 class GameViewer;
 class MoveList;
 class PlainTextLog;
@@ -57,6 +58,8 @@ class MainWindow : public QMainWindow
 
 	public slots:
 		void addGame(ChessGame* game);
+		void resetTournamentDialog();
+		void onTournamentDialog();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);
@@ -134,6 +137,8 @@ class MainWindow : public QMainWindow
 		GameViewer* m_gameViewer;
 		MoveList* m_moveList;
 		PgnTagsModel* m_tagsModel;
+
+		QPointer<NewTournamentDialog> m_tournamentDlg;
 
 		QAction* m_quitGameAct;
 		QAction* m_newGameAct;
