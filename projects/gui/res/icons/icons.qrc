@@ -15,5 +15,6 @@
         <file>toolbutton/next_16x16.png</file>
         <file>toolbutton/previous_16x16.png</file>
         <file>toolbutton/remove_16x16.png</file>
+        <file>toolbutton/autoadd_16x16.png</file>
     </qresource>
 </RCC>

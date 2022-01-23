@@ -73,9 +73,16 @@ class EngineConfigurationDialog : public QDialog
 		 * warning message.
 		 */
 		void setReservedNames(const QSet<QString>& names);
+		/*!
+		 * Probes the engine executable in \a filename using the
+		 * engine interface \a protocol.
+		 */
+		void probe(const QString& filename,
+			   const QString& protocol);
 
 	signals:
 		void detectionFinished();
+		void hasError();
 	
 	private slots:
 		void browseCommand();

@@ -307,12 +307,14 @@ void EngineConfigurationDialog::detectEngineOptions()
 	else
 	{
 		m_hasError = true;
-		QMessageBox::critical(this, tr("Engine Error"), error);
+		if (isVisible())
+			QMessageBox::critical(this, tr("Engine Error"), error);
 
 		ui->m_detectBtn->setEnabled(true);
 		ui->m_restoreBtn->setEnabled(true);
 		ui->m_progressBar->hide();
 		emit detectionFinished();
+		emit hasError();
 	}
 }
 
@@ -343,8 +345,10 @@ void EngineConfigurationDialog::onEngineQuit()
 		if (m_engine->hasError())
 		{
 			m_hasError = true;
-			QMessageBox::critical(this, tr("Engine Error"),
-			                      m_engine->errorString());
+			if (isVisible())
+				QMessageBox::critical(this, tr("Engine Error"),
+						      m_engine->errorString());
+			emit hasError();
 		}
 		m_engine->deleteLater();
 		m_engine = nullptr;
@@ -404,4 +408,24 @@ void EngineConfigurationDialog::restoreDefaults()
 		option->setValue(option->defaultValue());
 
 	m_engineOptionModel->setOptions(m_options);
+}
+
+void EngineConfigurationDialog::probe(const QString& filename,
+				      const QString& protocol)
+{
+	setExecutable(filename);
+
+	// Handling of duplicate configuration names
+	int n = 2;
+	QString name = ui->m_nameEdit->text();
+	if (m_reservedNames.contains(name))
+		ui->m_nameEdit->setText(QString("%1 (%2)").arg(name, protocol));
+	while (m_reservedNames.contains(ui->m_nameEdit->text()))
+		ui->m_nameEdit->setText(QString("%1 (%2)(%3)").arg(name, protocol).arg(n++));
+
+	connect(this, SIGNAL(detectionFinished()),
+	        this, SLOT(onDetectionFinished()));
+
+	ui->m_protocolCombo->setCurrentText(protocol);
+	detectEngineOptions();
 }
