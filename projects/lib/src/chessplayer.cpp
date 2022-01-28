@@ -230,6 +230,10 @@ void ChessPlayer::startPondering()
 {
 }
 
+void ChessPlayer::stopPondering()
+{
+}
+
 void ChessPlayer::clearPonderState()
 {
 }
