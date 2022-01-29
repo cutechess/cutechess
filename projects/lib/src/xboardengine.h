@@ -81,6 +81,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		
 		bool m_forceMode;
 		bool m_drawOnNextMove;
+		enum {InitPhase, GamePhase} m_comPhase;
 		
 		// Engine features
 		bool m_ftName;

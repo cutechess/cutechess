@@ -71,6 +71,7 @@ XboardEngine::XboardEngine(QObject* parent)
 	: ChessEngine(parent),
 	  m_forceMode(false),
 	  m_drawOnNextMove(false),
+	  m_comPhase(InitPhase),
 	  m_ftName(false),
 	  m_ftPing(false),
 	  m_ftSetboard(false),
@@ -107,6 +108,7 @@ void XboardEngine::initialize()
 {
 	if (state() == Starting)
 	{
+		m_comPhase = InitPhase;
 		onProtocolStart();
 		emit ready();
 	}
@@ -118,6 +120,7 @@ void XboardEngine::startGame()
 	m_gotResult = false;
 	m_forceMode = false;
 	m_nextMove = Chess::Move();
+	m_comPhase = InitPhase;
 	write("new");
 	
 	if (board()->variant() != "standard")
@@ -212,6 +215,7 @@ void XboardEngine::endGame(const Chess::Result& result)
 		m_gotResult = true;
 
 	stopThinking();
+	m_comPhase = InitPhase;
 	setForceMode(true);
 	write("result " + result.toVerboseString());
 
@@ -349,6 +353,7 @@ void XboardEngine::makeMove(const Chess::Move& move)
 
 void XboardEngine::startThinking()
 {
+	m_comPhase = GamePhase;
 	setForceMode(false);
 	sendTimeLeft();
 
@@ -719,7 +724,7 @@ void XboardEngine::parseLine(const QString& line)
 			setFeature(feature.first, feature.second);
 		}
 	}
-	else if (command.startsWith("Illegal"))
+	else if (m_comPhase == GamePhase && command.startsWith("Illegal"))
 	{
 		forfeit(Chess::Result::Adjudication,
 			tr("%1 claims illegal %2")
