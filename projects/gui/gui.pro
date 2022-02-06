@@ -15,7 +15,7 @@ OBJECTS_DIR = .obj/
 MOC_DIR = .moc/
 RCC_DIR = .rcc/
 
-QT += svg widgets concurrent printsupport
+QT += svg widgets concurrent printsupport charts
 greaterThan(QT_MAJOR_VERSION, 5) {
     QT += core5compat
 }
@@ -40,7 +40,6 @@ UI_HEADERS_DIR = src
 include(src/src.pri)
 include(ui/ui.pri)
 include(res/res.pri)
-include(3rdparty/qcustomplot/qcustomplot.pri)
 
 CONFIG(debug, debug|release) {
     include(3rdparty/modeltest/modeltest.pri)

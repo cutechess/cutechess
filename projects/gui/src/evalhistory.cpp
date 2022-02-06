@@ -20,45 +20,71 @@
 #include "board/board.h"
 #include <QVBoxLayout>
 #include <QtGlobal>
-#include <qcustomplot.h>
 #include <chessgame.h>
 #include <moveevaluation.h>
 
+using namespace QtCharts;
+
+constexpr double cInitMin = +1.0e7;
+
 EvalHistory::EvalHistory(QWidget *parent)
 	: QWidget(parent),
-	  m_plot(new QCustomPlot(this)),
+	  m_chart(new QChart()),
+	  m_min(cInitMin),
+	  m_max(-cInitMin),
 	  m_game(nullptr),
 	  m_invertSides(false)
 {
-	auto x = m_plot->xAxis;
-	auto y = m_plot->yAxis;
-	auto ticker = new QCPAxisTickerFixed;
+	QChartView *chartView = new QChartView(m_chart);
+	chartView->setRenderHint(QPainter::Antialiasing);
+	QLineSeries *series[2] {new QLineSeries(), new QLineSeries()};
+	QLineSeries *base[2] {new QLineSeries(), new QLineSeries()};
+	QAreaSeries *areaSeries[2] {new QAreaSeries(series[0], base[0]),
+				    new QAreaSeries(series[1], base[1])};
+	m_chart->legend()->hide();
+	m_chart->setMargins(QMargins(0, 0, 0, 0));
+	m_chart->addSeries(areaSeries[0]);
+	m_chart->addSeries(areaSeries[1]);
+	m_chart->createDefaultAxes();
+	auto x = static_cast<QValueAxis *>(m_chart->axisX(areaSeries[0]));
+	auto y = static_cast<QValueAxis *>(m_chart->axisY(areaSeries[0]));
 
-	x->setLabel(tr("move"));
-	x->setRange(1, 5);
-	x->setTicker(QSharedPointer<QCPAxisTicker>(ticker));
-	x->setSubTicks(false);
-	x->setLabelColor(QApplication::palette().text().color());
-	x->setTickLabelColor(QApplication::palette().text().color());
-	x->setTickPen(QApplication::palette().text().color());
-	x->setBasePen(QApplication::palette().text().color());
+	x->setTitleText(tr("move"));
+	x->setLabelFormat("%i");
+	x->setRange(1, 2);
+	x->setTickCount(2);
+	x->setLabelsColor(QApplication::palette().text().color());
+	x->setGridLineColor(QApplication::palette().midlight().color());
 
-	y->setLabel(tr("score"));
+	y->setTitleText(tr("score"));
+	y->setLabelFormat("%.2f");
 	y->setRange(-1, 1);
-	y->setSubTicks(false);
-	y->setLabelColor(QApplication::palette().text().color());
-	y->setTickLabelColor(QApplication::palette().text().color());
-	y->setTickPen(QApplication::palette().text().color());
-	y->setBasePen(QApplication::palette().text().color());
+	y->setTickCount(5);
+	y->setLabelsColor(QApplication::palette().text().color());
+	y->setGridLineColor(QApplication::palette().midlight().color());
 
-	m_plot->setBackground(QApplication::palette().window());
+	m_chart->setBackgroundBrush(QApplication::palette().window());
+
+	auto cWhite = QColor(0xff, 0xce, 0x9e);
+	auto cBlack = QColor(0xd1, 0x8b, 0x47);
+	auto pWhite = QPen(cWhite.darker(150));
+	pWhite.setWidth(2);
+	auto pBlack = QPen(cBlack.darker());
+	pBlack.setWidth(2);
+
+	areaSeries[0]->setPen(pWhite);
+	cWhite.setAlpha(200);
+	areaSeries[0]->setBrush(QBrush(cWhite));
+	areaSeries[1]->setPen(pBlack);
+	cBlack.setAlpha(128);
+	areaSeries[1]->setBrush(QBrush(cBlack));
 
 	QVBoxLayout* layout = new QVBoxLayout();
-	layout->addWidget(m_plot);
+	layout->addWidget(chartView);
 	layout->setContentsMargins(0, 0, 0, 0);
 	setLayout(layout);
 
-	setMinimumHeight(120);
+	setMinimumHeight(130);
 }
 
 void EvalHistory::setGame(ChessGame* game)
@@ -66,7 +92,6 @@ void EvalHistory::setGame(ChessGame* game)
 	if (m_game)
 		m_game->disconnect(this);
 	m_game = game;
-	m_plot->clearGraphs();
 	if (!game)
 	{
 		replot(0);
@@ -91,22 +116,12 @@ void EvalHistory::setPgnGame(PgnGame* pgn)
 
 void EvalHistory::setScores(const QMap< int, int >& scores)
 {
-	m_plot->addGraph();
-	m_plot->addGraph();
-
-	auto cWhite = QColor(0xff, 0xce, 0x9e);
-	auto cBlack = QColor(0xd1, 0x8b, 0x47);
-	auto pWhite = QPen(cWhite.darker(150));
-	pWhite.setWidth(2);
-	auto pBlack = QPen(cBlack.darker());
-	pBlack.setWidth(2);
-
-	m_plot->graph(0)->setPen(pWhite);
-	cWhite.setAlpha(200);
-	m_plot->graph(0)->setBrush(QBrush(cWhite));
-	m_plot->graph(1)->setPen(pBlack);
-	cBlack.setAlpha(128);
-	m_plot->graph(1)->setBrush(QBrush(cBlack));
+	static_cast<QAreaSeries*>(m_chart->series()[0])->upperSeries()->clear();
+	static_cast<QAreaSeries*>(m_chart->series()[0])->lowerSeries()->clear();
+	static_cast<QAreaSeries*>(m_chart->series()[1])->upperSeries()->clear();
+	static_cast<QAreaSeries*>(m_chart->series()[1])->lowerSeries()->clear();
+	m_min = cInitMin;
+	m_max = -cInitMin;
 
 	int ply = -1;
 
@@ -130,27 +145,58 @@ void EvalHistory::addData(int ply, int score)
 	if (side == 1)
 		y = -y;
 
-	m_plot->graph(side)->addData(x, y);
+	static_cast<QAreaSeries *>(m_chart->series()[side])->upperSeries()->append(x, y);
+	static_cast<QAreaSeries *>(m_chart->series()[side])->lowerSeries()->append(x, 0.);
+	m_min = qMin(m_min, y);
+	m_max = qMax(m_max, y);
 }
 
 void EvalHistory::replot(int maxPly)
 {
 	if (maxPly == -1)
 	{
-		auto ticker = new QCPAxisTickerFixed;
-		m_plot->xAxis->setRange(1, 5);
-		m_plot->xAxis->setTicker(QSharedPointer<QCPAxisTicker>(ticker));
-		m_plot->yAxis->setRange(-1, 1);
+		m_chart->axisX()->setRange(1, 2);
+		m_chart->axisY()->setRange(-1, 1);
 	}
 	else
 	{
-		const int step = qMax(1, maxPly / 20);
-		auto ticker = m_plot->xAxis->ticker().dynamicCast<QCPAxisTickerFixed>();
-		Q_ASSERT(!ticker.isNull());
-		ticker->setTickStep(double(step));
-		m_plot->rescaleAxes();
+		m_chart->axisX()->setRange(1, 1 + maxPly / 2);
+		int step = 1 + maxPly / 20;
+		static_cast<QValueAxis *>(m_chart->axisX())->setTickCount(1 + maxPly / 2 / step);
+
+		double scaler = 10.0;
+		if (m_max - m_min > 5.0)
+			scaler = 1.0;
+		else if (m_max - m_min > 2.5)
+			scaler = 2.0;
+		else if (m_max - m_min > 1.0)
+			scaler = 4.0;
+
+		// Ordinate: Use integer units.
+		int max = m_max * scaler + .99999;
+		int min = m_min * scaler - .99999;
+
+		// Zero must be in range.
+		if (min > 0)
+			min = 0;
+		if (max < 0)
+			max = 0;
+		if (min == max)
+			min--, max++;
+
+		// Do not use too many ticks.
+		if (height() >= 180)
+			step = 1 + (max - min) / 6;
+		else
+			step = qMax(1, (max - min) / 2);
+
+		// Align max and min with step size, calculate tick count.
+		max = (max + step - 1) / step * step;
+		min = (min - step + 1) / step * step;
+		int ticks = 1 + (max - min) / step;
+		static_cast<QValueAxis *>(m_chart->axisY())->setTickCount(ticks);
+		m_chart->axisY()->setRange(min / scaler, max / scaler);
 	}
-	m_plot->replot();
 }
 
 void EvalHistory::onScore(int ply, int score)

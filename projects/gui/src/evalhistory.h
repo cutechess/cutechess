@@ -21,8 +21,8 @@
 
 #include <QWidget>
 #include <QPointer>
+#include <QtCharts>
 
-class QCustomPlot;
 class ChessGame;
 class PgnGame;
 
@@ -55,7 +55,9 @@ class EvalHistory : public QWidget
 		void replot(int maxPly);
 		void setScores(const QMap<int, int> &scores);
 
-		QCustomPlot* m_plot;
+		QChart* m_chart;
+		double m_min;
+		double m_max;
 		QPointer<ChessGame> m_game;
 		bool m_invertSides;
 };
