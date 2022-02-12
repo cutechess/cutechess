@@ -76,6 +76,7 @@ ChessEngine::ChessEngine(QObject* parent)
 	  m_pinging(false),
 	  m_whiteEvalPov(false),
 	  m_pondering(false),
+	  m_debugEnabled(false),
 	  m_pingTimer(new QTimer(this)),
 	  m_quitTimer(new QTimer(this)),
 	  m_idleTimer(new QTimer(this)),
@@ -141,6 +142,8 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 	m_whiteEvalPov = configuration.whiteEvalPov();
 	m_pondering = configuration.pondering();
 	m_restartMode = configuration.restartMode();
+	m_debugEnabled = configuration.debugEnabled();
+
 	setClaimsValidated(configuration.areClaimsValidated());
 }
 
@@ -274,6 +277,11 @@ bool ChessEngine::whiteEvalPov() const
 bool ChessEngine::pondering() const
 {
 	return m_pondering;
+}
+
+bool ChessEngine::debugEnabled() const
+{
+	return m_debugEnabled;
 }
 
 void ChessEngine::endGame(const Chess::Result& result)

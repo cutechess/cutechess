@@ -207,6 +207,14 @@ class LIB_EXPORT EngineConfiguration
 		void setClaimsValidated(bool validate);
 
 		/*!
+		 * Returns true if debug mode is enabled for the engine,
+		 * else false.
+		 */
+		bool debugEnabled() const;
+		/*! Sets the debug mode to \a enabled */
+		void setDebugEnabled(bool enabled);
+
+		/*!
 		 * Assigns \a other to this engine configuration and returns
 		 * a reference to this object.
 		 */
@@ -226,6 +234,7 @@ class LIB_EXPORT EngineConfiguration
 		bool m_pondering;
 		bool m_validateClaims;
 		RestartMode m_restartMode;
+		bool m_debugEnabled;
 };
 
 #endif // ENGINE_CONFIGURATION_H
