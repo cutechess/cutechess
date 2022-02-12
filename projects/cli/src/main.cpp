@@ -234,6 +234,10 @@ bool parseEngine(const QStringList& args, EngineData& data)
 		{
 			data.config.setPondering(true);
 		}
+		else if (name == "debug")
+		{
+			data.config.setDebugEnabled(true);
+		}
 		// Custom engine option
 		else if (name.startsWith("option."))
 			data.config.setOption(name.section('.', 1), val);
@@ -271,7 +275,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 	parser.addOption("-ratinginterval", QVariant::Int, 1, 1);
 	parser.addOption("-outcomeinterval", QVariant::Int, 1, 1);
 	parser.addOption("-resultformat", QVariant::String, 1, 1);
-	parser.addOption("-debug", QVariant::Bool, 0, 0);
+	parser.addOption("-debug", QVariant::String, 0, 1);
 	parser.addOption("-openings", QVariant::StringList);
 	parser.addOption("-bookmode", QVariant::String);
 	parser.addOption("-pgnout", QVariant::StringList, 1, 3);
@@ -479,6 +483,10 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		{
 			QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
 			match->setDebugMode(true);
+			if (value == "all")
+				eachOptions.append("debug");
+			else if (!value.isNull())
+				ok = false;
 		}
 		// Use an opening suite
 		else if (name == "-openings")

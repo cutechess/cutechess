@@ -232,6 +232,16 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * the engine does not support pondering.
 		 */
 		bool pondering() const;
+
+		/*!
+		 * Returns true if debugging is enabled for the engine;
+		 * otherwise returns false.
+		 *
+		 * \note Even if debugging is enabled, it's still possible that
+		 * the engine does not support debugging.
+		 */
+		bool debugEnabled() const;
+
 		/*!
 		 * Gives id number of the engine
 		 */
@@ -295,6 +305,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		bool m_whiteEvalPov;
 		bool m_pondering;
 		double m_timeoutScale;
+		bool m_debugEnabled;
 		QTimer* m_pingTimer;
 		QTimer* m_quitTimer;
 		QTimer* m_idleTimer;

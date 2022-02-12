@@ -223,5 +223,6 @@ Engine options:
 			pondering is disabled.
   tscale=FACTOR		Scale engine timeouts by FACTOR. Only use this option
 			if necessary.
+  debug			Activate debug mode per protocol (UCI only).
   option.OPTION=VALUE	Set custom option OPTION to value VALUE
 

@@ -94,11 +94,16 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 		[=](const QString& text)
 	{
 		if (text == "xboard")
+		{
 			ui->m_whitePovCheck->setEnabled(true);
+			ui->m_debugCheck->setChecked(false);
+			ui->m_debugCheck->setEnabled(false);
+		}
 		else
 		{
 			ui->m_whitePovCheck->setChecked(false);
 			ui->m_whitePovCheck->setEnabled(false);
+			ui->m_debugCheck->setChecked(false);
 		}
 	});
 
@@ -138,6 +143,9 @@ void EngineConfigurationDialog::applyEngineInformation(
 	if (engine.whiteEvalPov())
 		ui->m_whitePovCheck->setCheckState(Qt::Checked);
 
+	if (engine.debugEnabled())
+		ui->m_debugCheck->setCheckState(Qt::Checked);
+
 	const auto options = engine.options();
 	for (const EngineOption* option : options)
 		m_options << option->copy();
@@ -165,6 +173,7 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 		engine.setInitStrings(initStr.split('\n'));
 
 	engine.setWhiteEvalPov(ui->m_whitePovCheck->checkState() == Qt::Checked);
+	engine.setDebugEnabled(ui->m_debugCheck->checkState() == Qt::Checked);
 
 	QList<EngineOption*> optionCopies;
 	for (const EngineOption* option : qAsConst(m_options))

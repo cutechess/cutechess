@@ -77,6 +77,7 @@ ChessEngine::ChessEngine(QObject* parent)
 	  m_whiteEvalPov(false),
 	  m_pondering(false),
 	  m_timeoutScale(1.0),
+	  m_debugEnabled(false),
 	  m_pingTimer(new QTimer(this)),
 	  m_quitTimer(new QTimer(this)),
 	  m_idleTimer(new QTimer(this)),
@@ -143,6 +144,8 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 	m_pondering = configuration.pondering();
 	m_timeoutScale = configuration.timeoutScale();
 	m_restartMode = configuration.restartMode();
+	m_debugEnabled = configuration.debugEnabled();
+
 	setClaimsValidated(configuration.areClaimsValidated());
 
 	// Read protocol timeouts from QSettings.
@@ -293,6 +296,11 @@ bool ChessEngine::whiteEvalPov() const
 bool ChessEngine::pondering() const
 {
 	return m_pondering;
+}
+
+bool ChessEngine::debugEnabled() const
+{
+	return m_debugEnabled;
 }
 
 void ChessEngine::endGame(const Chess::Result& result)
