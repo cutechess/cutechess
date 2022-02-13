@@ -295,6 +295,12 @@ class LIB_EXPORT Board
 		 * The default implementation always returns a null result.
 		 */
 		virtual Result tablebaseResult(unsigned int* dtm = nullptr) const;
+		/*!
+		 * Returns true if it is possible for \a side to achieve a win
+		 * by any legal sequence of moves, else false. The default
+		 * implementation returns true.
+		 */
+		virtual bool winPossible(Side side) const;
 
 	protected:
 		/*!

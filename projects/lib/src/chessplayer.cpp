@@ -260,6 +260,10 @@ void ChessPlayer::claimResult(const Chess::Result& result)
 
 void ChessPlayer::forfeit(Chess::Result::Type type, const QString& description)
 {
+	Chess::Side opp = m_side.opposite();
+	if (!opp.isNull() && !board()->winPossible(opp))
+		m_side = Chess::Side::NoSide;
+
 	if (m_side.isNull())
 	{
 		claimResult(Chess::Result(type, m_side, description));

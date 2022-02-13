@@ -920,4 +920,9 @@ Result Board::tablebaseResult(unsigned int* dtm) const
 	return Result();
 }
 
+bool Board::winPossible(Chess::Side) const
+{
+	return true;
+}
+
 } // namespace Chess

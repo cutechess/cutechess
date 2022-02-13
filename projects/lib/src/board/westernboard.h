@@ -59,6 +59,7 @@ class LIB_EXPORT WesternBoard : public Board
 		virtual int height() const;
 		virtual Result result();
 		virtual int reversibleMoveCount() const;
+		virtual bool winPossible(Side side) const;
 
 	protected:
 		/*! The king's castling side. */
