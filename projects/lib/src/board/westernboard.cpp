@@ -1474,4 +1474,26 @@ Result WesternBoard::result()
 	return Result();
 }
 
+bool Chess::WesternBoard::winPossible(Chess::Side side) const
+{
+	// Find any piece besides the King
+	int minIndex = 2 * m_arwidth + 1;
+	for (int i = minIndex; i < arraySize() - minIndex - 1; i++)
+	{
+		Piece piece = pieceAt(i);
+		if (piece.side() == side && i != kingSquare(side))
+			return true;
+	}
+	if (variantHasDrops())
+	{
+		const QList<Piece>& reserveTypes = reservePieceTypes();
+		for (const Piece& ptype: reserveTypes)
+		{
+			if (reserveCount(ptype) > 0 && ptype.side() == side)
+				return true;
+		}
+	}
+	return false;
+}
+
 } // namespace Chess
