@@ -8,7 +8,7 @@ jobs:
         strategy:
           matrix:
             qt_version: [5.12.11]
-            os: [ubuntu-latest, macos-latest]
+            os: [windows-latest, ubuntu-latest, macos-latest]
         steps:
             - uses: actions/checkout@v2
 
@@ -60,7 +60,7 @@ jobs:
               if: matrix.os == 'windows-latest'
               shell: cmd
               run: |
-                  call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+                  call "C:/Program Files (x86)/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
                   qmake
                   nmake /NOLOGO
 
@@ -68,7 +68,7 @@ jobs:
               if: matrix.os == 'windows-latest'
               shell: cmd
               run: |
-                  call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+                  call "C:/Program Files (x86)/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
                   cd %GITHUB_WORKSPACE%\projects\lib\tests\
                   qmake
                   nmake /NOLOGO
@@ -78,7 +78,7 @@ jobs:
               shell: cmd
               if: matrix.os == 'windows-latest'
               run: |
-                  call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+                  call "C:/Program Files (x86)/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
                   cd %GITHUB_WORKSPACE%\projects\lib\components\json\tests\
                   qmake
                   nmake /NOLOGO
