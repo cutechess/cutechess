@@ -7,8 +7,8 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
           matrix:
-            qt_version: [5.12.11, 6.2.2]
-            os: [windows-latest, ubuntu-latest, macos-latest]
+            qt_version: [5.12.11]
+            os: [windows-2019, ubuntu-latest, macos-latest]
         steps:
             - uses: actions/checkout@v2
 
@@ -17,22 +17,23 @@ jobs:
               if: startsWith(matrix.qt_version, '5.')
               with:
                 version: ${{ matrix.qt_version }}
+                modules: 'qtcharts'
 
             - name: install qt 6.x
               uses: jurplel/install-qt-action@v2
               if: startsWith(matrix.qt_version, '6.')
               with:
                 version: ${{ matrix.qt_version }}
-                modules: 'qt5compat'
+                modules: 'qt5compat qtcharts'
 
             - name: build cute chess
-              if: matrix.os != 'windows-latest'
+              if: matrix.os != 'windows-2019'
               run: |
                   qmake
                   make
 
             - name: run unit tests
-              if: matrix.os != 'windows-latest'
+              if: matrix.os != 'windows-2019'
               run: |
                   cd ${GITHUB_WORKSPACE}/projects/lib/tests/
                   qmake
@@ -40,7 +41,7 @@ jobs:
                   make check
 
             - name: run unit tests (json)
-              if: matrix.os != 'windows-latest'
+              if: matrix.os != 'windows-2019'
               run: |
                   cd ${GITHUB_WORKSPACE}/projects/lib/components/json/tests/
                   qmake
@@ -56,7 +57,7 @@ jobs:
                   mandoc -T lint engines.json.5
 
             - name: build cute chess
-              if: matrix.os == 'windows-latest'
+              if: matrix.os == 'windows-2019'
               shell: cmd
               run: |
                   call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
@@ -64,7 +65,7 @@ jobs:
                   nmake /NOLOGO
 
             - name: run unit tests
-              if: matrix.os == 'windows-latest'
+              if: matrix.os == 'windows-2019'
               shell: cmd
               run: |
                   call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
@@ -75,7 +76,7 @@ jobs:
 
             - name: run unit tests (json)
               shell: cmd
-              if: matrix.os == 'windows-latest'
+              if: matrix.os == 'windows-2019'
               run: |
                   call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
                   cd %GITHUB_WORKSPACE%\projects\lib\components\json\tests\
