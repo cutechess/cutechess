@@ -439,12 +439,7 @@ EngineOption* XboardEngine::parseOption(const QString& line)
 	}
 	if (type == "spin" || type == "slider")
 	{
-		// XXX: we still support 5.11
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
 		QStringList params(line.mid(end + 1).split(' ', Qt::SkipEmptyParts));
-#else
-		QStringList params(line.mid(end + 1).split(' ', QString::SkipEmptyParts));
-#endif
 		if (params.size() != 3)
 			return nullptr;
 
@@ -465,12 +460,7 @@ EngineOption* XboardEngine::parseOption(const QString& line)
 	}
 	if (type == "combo")
 	{
-		// XXX: we still support 5.11
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
 		QStringList choices = line.mid(end + 1).split(" /// ", Qt::SkipEmptyParts);
-#else
-		QStringList choices = line.mid(end + 1).split(" /// ", QString::SkipEmptyParts);
-#endif
 		if (choices.isEmpty())
 			return nullptr;
 

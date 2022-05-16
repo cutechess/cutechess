@@ -1136,12 +1136,7 @@ ResultFormatter::ResultFormatter::ResultFormatter(const QMap<QString, int>& toke
 void ResultFormatter::setEntryFormat(const QString& format)
 {
 	m_entryFormat = format;
-	// XXX: we still support 5.11
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
 	m_tokenList = m_entryFormat.split(',', Qt::SkipEmptyParts);
-#else
-	m_tokenList = m_entryFormat.split(',', QString::SkipEmptyParts);
-#endif
 	m_tokenList.replaceInStrings(" ","");
 }
 
