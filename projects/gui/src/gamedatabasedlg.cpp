@@ -44,7 +44,7 @@
 #include "cutechessapp.h"
 #include "board/board.h"
 
-#ifdef QT_DEBUG
+#if 0
 #include <modeltest.h>
 #endif
 
@@ -263,13 +263,13 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 	ui->setupUi(this);
 
 	m_pgnDatabaseModel = new PgnDatabaseModel(m_dbManager, this);
-	#ifdef QT_DEBUG
+	#if 0
 	new ModelTest(m_pgnDatabaseModel, this);
 	#endif
 
 	// Setup a filtered model
 	m_pgnGameEntryModel = new PgnGameEntryModel(this);
-	#ifdef QT_DEBUG
+	#if 0
 	new ModelTest(m_pgnGameEntryModel, this);
 	#endif
 

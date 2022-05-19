@@ -1,5 +1,6 @@
 include(boardview/boardview.pri)
 DEPENDPATH += $$PWD
+INCLUDEPATH += $$PWD
 HEADERS += $$PWD/chessclock.h \
     $$PWD/engineconfigurationmodel.h \
     $$PWD/engineconfigurationdlg.h \

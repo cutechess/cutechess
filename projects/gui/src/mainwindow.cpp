@@ -60,7 +60,7 @@
 #include "boardview/boardscene.h"
 #include "tournamentresultsdlg.h"
 
-#ifdef QT_DEBUG
+#if 0
 #include <modeltest.h>
 #endif
 
@@ -92,7 +92,7 @@ MainWindow::MainWindow(ChessGame* game)
 
 	m_moveList = new MoveList(this);
 	m_tagsModel = new PgnTagsModel(this);
-	#ifdef QT_DEBUG
+	#if 0
 	new ModelTest(m_tagsModel, this);
 	#endif
 

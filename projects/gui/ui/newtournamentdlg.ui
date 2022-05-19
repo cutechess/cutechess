@@ -348,13 +348,13 @@
   <customwidget>
    <class>GameSettingsWidget</class>
    <extends>QWidget</extends>
-   <header>src/gamesettingswidget.h</header>
+   <header>gamesettingswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>TournamentSettingsWidget</class>
    <extends>QWidget</extends>
-   <header>src/tournamentsettingswidget.h</header>
+   <header>tournamentsettingswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
