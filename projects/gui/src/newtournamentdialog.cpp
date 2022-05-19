@@ -37,7 +37,7 @@
 #include "timecontroldlg.h"
 #include "engineselectiondlg.h"
 
-#ifdef QT_DEBUG
+#if 0
 #include <modeltest.h>
 #endif
 
@@ -51,7 +51,7 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	ui->setupUi(this);
 
 	m_srcEnginesModel = new EngineConfigurationModel(engineManager, this);
-	#ifdef QT_DEBUG
+	#if 0
 	new ModelTest(m_srcEnginesModel, this);
 	#endif
 

@@ -347,7 +347,7 @@
   <customwidget>
    <class>GameRepetitionSpinBox</class>
    <extends>QSpinBox</extends>
-   <header>src/gamerepetitionspinbox.h</header>
+   <header>gamerepetitionspinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

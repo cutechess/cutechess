@@ -34,7 +34,7 @@
 #include "engineoptionmodel.h"
 #include "engineoptiondelegate.h"
 
-#ifdef QT_DEBUG
+#if 0
 #include <modeltest.h>
 #endif
 
@@ -48,7 +48,7 @@ EngineConfigurationDialog::EngineConfigurationDialog(
 {
 	ui->setupUi(this);
 
-	#ifdef QT_DEBUG
+	#if 0
 	new ModelTest(m_engineOptionModel, this);
 	#endif
 

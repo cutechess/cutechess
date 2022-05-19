@@ -34,24 +34,16 @@ jobs:
             - name: build cute chess
               if: matrix.os != 'windows-latest'
               run: |
-                  qmake
-                  make
+                  mkdir build
+                  cd build
+                  cmake ..
+                  cmake --build .
 
             - name: run unit tests
               if: matrix.os != 'windows-latest'
               run: |
-                  cd ${GITHUB_WORKSPACE}/projects/lib/tests/
-                  qmake
-                  make
-                  make check
-
-            - name: run unit tests (json)
-              if: matrix.os != 'windows-latest'
-              run: |
-                  cd ${GITHUB_WORKSPACE}/projects/lib/components/json/tests/
-                  qmake
-                  make
-                  make check
+                  cd build
+                  make test
 
             - name: check manual pages
               if: matrix.os == 'ubuntu-latest'
@@ -66,25 +58,15 @@ jobs:
               shell: cmd
               run: |
                   call "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-                  qmake
-                  nmake /NOLOGO
+                  mkdir build
+                  cd build
+                  cmake ..
+                  cmake --build . --config release
 
             - name: run unit tests
               if: matrix.os == 'windows-latest'
               shell: cmd
               run: |
                   call "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-                  cd %GITHUB_WORKSPACE%\projects\lib\tests\
-                  qmake
-                  nmake /NOLOGO
-                  nmake /NOLOGO check
-
-            - name: run unit tests (json)
-              shell: cmd
-              if: matrix.os == 'windows-latest'
-              run: |
-                  call "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-                  cd %GITHUB_WORKSPACE%\projects\lib\components\json\tests\
-                  qmake
-                  nmake /NOLOGO
-                  nmake /NOLOGO check
+                  cd build
+                  ctest -C release

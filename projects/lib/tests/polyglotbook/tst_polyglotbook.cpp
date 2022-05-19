@@ -56,7 +56,7 @@ void tst_PolyglotBook::startPos()
 	expect["d4"] = 11712;
 
 	auto book = PolyglotBook(OpeningBook::Ram);
-	QVERIFY(book.read("book_small.bin"));
+	QVERIFY(book.read(QStringLiteral(CUTECHESS_TEST_DATA_DIR).append("/book_small.bin")));
 
 	Chess::StandardBoard board;
 	board.initialize();
@@ -68,7 +68,7 @@ void tst_PolyglotBook::startPos()
 
 	// Same test with direct disk access
 	book = PolyglotBook(OpeningBook::Disk);
-	QVERIFY(book.read("book_small.bin"));
+	QVERIFY(book.read(QStringLiteral(CUTECHESS_TEST_DATA_DIR).append("/book_small.bin")));
 
 	entries = this->entries(&book, &board);
 	QCOMPARE(entries, expect);

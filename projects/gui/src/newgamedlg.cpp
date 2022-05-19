@@ -36,7 +36,7 @@
 #include "timecontroldlg.h"
 #include "stringvalidator.h"
 
-#ifdef QT_DEBUG
+#if 0
 #include <modeltest.h>
 #endif
 
@@ -49,7 +49,7 @@ NewGameDialog::NewGameDialog(EngineManager* engineManager, QWidget* parent)
 	ui->setupUi(this);
 
 	m_engines = new EngineConfigurationModel(m_engineManager, this);
-	#ifdef QT_DEBUG
+	#if 0
 	new ModelTest(m_engines, this);
 	#endif
 
