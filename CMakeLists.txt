@@ -33,6 +33,8 @@ if(NOT Qt6_FOUND)
 	find_package(Qt5 5.15 REQUIRED COMPONENTS ${QT_COMPONENTS})
 endif()
 
+include(GNUInstallDirs)
+
 message(STATUS "Setting up build for Cute Chess version ${CUTECHESS_VERSION}")
 
 add_library(lib STATIC
@@ -310,3 +312,10 @@ if(WITH_TESTS)
 		add_unit_test(pipereader projects/lib/tests/pipereader/tst_pipereader.cpp)
 	endif()
 endif()
+
+install(TARGETS cli DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Runtime)
+install(TARGETS gui DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Runtime)
+install(FILES dist/linux/cutechess.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications COMPONENT Runtime)
+install(FILES projects/gui/res/icons/cutechess_256x256.png DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/application/256x256/apps/cutechess.png COMPONENT Runtime)
+install(FILES docs/cutechess-cli.6 DESTINATION ${CMAKE_INSTALL_MANDIR}/man6/ COMPONENT Documentation)
+install(FILES docs/engines.json.5 DESTINATION ${CMAKE_INSTALL_MANDIR}/man5/ COMPONENT Documentation)
