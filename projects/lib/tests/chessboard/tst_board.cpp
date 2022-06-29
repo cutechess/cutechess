@@ -984,6 +984,29 @@ void tst_Board::results_data() const
 		<< "9/9/1n7/9/9/9/3n5/9/9 w - - 0 24"
 		<< "0-1";
 
+	variant = "linesofaction";
+
+	QTest::newRow("LOA continue")
+		<< variant
+		<< "4P3/3PP3/4Ppp1/2p1PpP1/1PPp1pP1/1P1P1p2/3pp3/8 b - - 0 20"
+		<< "*";
+	QTest::newRow("LOA black win1")
+		<< variant
+		<< "4P3/3PP3/4Ppp1/4PpP1/1PPp1pP1/1P1Ppp2/3pp3/8 w - - 0 21"
+		<< "0-1";
+	QTest::newRow("LOA white win1")
+		<< variant
+		<< "4P3/3pP3/4Ppp1/2p1PpP1/2P2PP1/3PPp2/4pp2/8 b - - 0 22"
+		<< "1-0";
+	QTest::newRow("LOA black win2")
+		<< variant
+		<< "8/3PP3/4Ppp1/2P1PpP1/4PpP1/3PPp2/3ppp2/8 b - - 0 28"
+		<< "0-1";
+	QTest::newRow("LOA both finished")
+		<< variant
+		<< "8/4P3/4P3/3PPP2/4Ppp1/3PP1p1/5pp1/4pp2 w - - 0 35"
+		<< "0-1";
+
 	variant = "shogi";
 
 	QTest::newRow("shogi Sente win")
@@ -1686,6 +1709,13 @@ void tst_Board::perft_data() const
 		   "pppppppppppppppppppppppppppppppppp] w - - 0 1"
 		<< 2 // 3 plies: 11239200, 2 plies: 50400
 		<< Q_UINT64_C(50400);
+
+	variant = "linesofaction";
+	QTest::newRow("LOA startpos")
+		<< variant
+		<< "1PPPPPP1/p6p/p6p/p6p/p6p/p6p/p6p/1PPPPPP1 b - - 0 1"
+		<< 4 // 3 plies: 44952, 4 plies: 1563146, 5 plies: 55963208
+		<< Q_UINT64_C(1563146);
 }
 
 void tst_Board::perft()
