@@ -114,8 +114,8 @@ Chess::Result SyzygyTablebase::result(const Chess::Side& side,
 	}
 
 	s_mutex.lock();
-	unsigned result = tb_probe_root(white, black, kings, queens, rooks,
-		bishops, knights, pawns, rule50, 0, ep, wtm, nullptr);
+	unsigned result = tb_probe_wdl(white, black, kings, queens, rooks,
+		bishops, knights, pawns, rule50, 0, ep, wtm);
 	s_mutex.unlock();
 
 	Chess::Side winner(Chess::Side::NoSide); 
