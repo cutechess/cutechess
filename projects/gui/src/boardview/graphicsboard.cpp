@@ -58,18 +58,18 @@ GraphicsBoard::GraphicsBoard(int files,
 	  m_files(files),
 	  m_ranks(ranks),
 	  m_squareSize(squareSize),
+	  m_flipped(false),
 	  m_coordSize(squareSize / 2.0),
 	  m_lightColor(QColor(0xff, 0xce, 0x9e)),
 	  m_darkColor(QColor(0xd1, 0x8b, 0x47)),
 	  m_wallColor(QColor(0xee,0xee,0xee)),
 	  m_squares(files * ranks),
-	  m_highlightAnim(nullptr),
-	  m_flipped(false)
+	  m_highlightAnim(nullptr)
 {
 	Q_ASSERT(files > 0);
 	Q_ASSERT(ranks > 0);
 
-	m_rect.setSize(QSizeF(squareSize * files, squareSize * ranks));
+	m_rect.setSize(QSizeF(m_squareSize * m_files, m_squareSize * m_ranks));
 	m_rect.moveCenter(QPointF(0, 0));
 	m_textColor = QApplication::palette().text().color();
 
@@ -161,17 +161,32 @@ void GraphicsBoard::paint(QPainter* painter,
 	}
 }
 
+int GraphicsBoard::squareCol(qreal x) const
+{
+	return (x + m_rect.width() / 2) / m_squareSize;
+}
+
+int GraphicsBoard::squareRow(qreal y) const
+{
+	return (y + m_rect.height() / 2) / m_squareSize;
+}
+
 Chess::Square GraphicsBoard::squareAt(const QPointF& point) const
 {
 	if (!m_rect.contains(point))
 		return Chess::Square();
 
-	int col = (point.x() + m_rect.width() / 2) / m_squareSize;
-	int row = (point.y() + m_rect.height() / 2) / m_squareSize;
+	int col = squareCol(point.x());
+	int row = squareRow(point.y());
 
 	if (m_flipped)
 		return Chess::Square(m_files - col - 1, row);
 	return Chess::Square(col, m_ranks - row - 1);
+}
+
+QPointF GraphicsBoard::topLeft() const
+{
+	return QPointF(m_rect.left() + m_squareSize / 2, m_rect.top() + m_squareSize / 2);
 }
 
 QPointF GraphicsBoard::squarePos(const Chess::Square& square) const
@@ -179,21 +194,20 @@ QPointF GraphicsBoard::squarePos(const Chess::Square& square) const
 	if (!square.isValid())
 		return QPointF();
 
-	qreal x = m_rect.left() + m_squareSize / 2;
-	qreal y = m_rect.top() + m_squareSize / 2;
+	QPointF p = topLeft();
 
 	if (m_flipped)
 	{
-		x += m_squareSize * (m_files - square.file() - 1);
-		y += m_squareSize * square.rank();
+		p.rx() += m_squareSize * (m_files - square.file() - 1);
+		p.ry() += m_squareSize * square.rank();
 	}
 	else
 	{
-		x += m_squareSize * square.file();
-		y += m_squareSize * (m_ranks - square.rank() - 1);
+		p.rx() += m_squareSize * square.file();
+		p.ry() += m_squareSize * (m_ranks - square.rank() - 1);
 	}
 
-	return QPointF(x, y);
+	return p;
 }
 
 Chess::Piece GraphicsBoard::pieceTypeAt(const Chess::Square& square) const
