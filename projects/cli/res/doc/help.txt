@@ -22,6 +22,8 @@ Options:
 			'atomic': Atomic Chess
 			'berolina': Berolina Chess
 			'cambodian': Ouk Chatrang (Cambodian Chess)
+			'cannibalclobber': Cannibal Clobber (5x6)
+			'cannibalclobber10': Cannibal Clobber (10x10)
 			'capablanca': Capablanca Chess
 			'caparandom': Capablanca Random Chess
 			'cfour' : Cfour (7x6, line up 4 to win)
@@ -31,6 +33,8 @@ Options:
 			'chessgi': Chessgi (Drop Chess)
 			'chigorin': Chigorin Chess
 			'circulargryphon': Circular Gryphon Chess
+			'clobber': Clobber (5x6)
+			'clobber10': Clobber (10x10)
 			'codrus': Game of Codrus (Losing Chess variant)
 			'coregal': Co-regal Chess
 			'courier': Courier Chess
