@@ -42,6 +42,7 @@ class GraphicsBoard;
 class GraphicsPieceReserve;
 class GraphicsPiece;
 class PieceChooser;
+class BoardSettings;
 
 
 /*!
@@ -95,6 +96,10 @@ class BoardScene : public QGraphicsScene
 		void undoMove();
 		/*! Flips the board, with animation. */
 		void flip();
+		/*! Sets pointer \a settings to current BoardSettings */
+		void setBoardSettings(const BoardSettings* settings);
+		/*! Apply current BoardSettings */
+		void applyBoardSettings();
 		/*!
 		 * Cancels any ongoing user move and flashes \a result
 		 * over the board.
@@ -144,6 +149,11 @@ class BoardScene : public QGraphicsScene
 		void applyTransition(const Chess::BoardTransition& transition,
 				     MoveDirection direction);
 		void updateMoves();
+		/*! Selects new piece set \a name for rendering */
+		void setPieceSet(const QString & name);
+		/*! Selects piece set from board settings for rendering */
+		void setPieceSet();
+		void setPieceSizeFactor();
 
 		Chess::Board* m_board;
 		MoveDirection m_direction;
@@ -154,6 +164,7 @@ class BoardScene : public QGraphicsScene
 		GraphicsPieceReserve* m_reserve;
 		QPointer<PieceChooser> m_chooser;
 		QPointer<QAbstractAnimation> m_anim;
+		const BoardSettings* m_boardSettings;
 		QSvgRenderer* m_renderer;
 		QMultiMap<GraphicsPiece*, Chess::Square> m_targets;
 		QList<Chess::GenericMove> m_moves;
@@ -161,6 +172,7 @@ class BoardScene : public QGraphicsScene
 		GraphicsPiece* m_highlightPiece;
 		QGraphicsItemGroup* m_moveArrows;
 		QSettings m_settings;
+		double m_pieceSizeFactor;
 };
 
 #endif // BOARDSCENE_H

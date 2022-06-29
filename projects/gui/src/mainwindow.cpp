@@ -59,6 +59,7 @@
 #include "evalwidget.h"
 #include "boardview/boardscene.h"
 #include "tournamentresultsdlg.h"
+#include "boardsettingsdialog.h"
 
 #if 0
 #include <modeltest.h>
@@ -69,12 +70,14 @@ MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
 	  m_game(game),
 	  m_pgn(game->pgn()),
 	  m_tournament(tournament),
-	  m_finished(false)
+	  m_finished(false),
+	  m_boardSettings()
 {
 }
 
 MainWindow::MainWindow(ChessGame* game)
-	: m_game(nullptr),
+	: m_boardSettingsDialog(new BoardSettingsDialog()),
+	  m_game(nullptr),
 	  m_closing(false),
 	  m_readyToClose(false),
 	  m_firstTabAutoCloseEnabled(true)
@@ -132,6 +135,7 @@ MainWindow::MainWindow(ChessGame* game)
 
 MainWindow::~MainWindow()
 {
+	delete m_boardSettingsDialog;
 }
 
 void MainWindow::createActions()
@@ -165,6 +169,7 @@ void MainWindow::createActions()
 
 	m_flipBoardAct = new QAction(tr("&Flip Board"), this);
 	m_flipBoardAct->setShortcut(Qt::CTRL + Qt::Key_F);
+	m_showBoardSettingsAct = new QAction(tr("&Board Settings..."), this);
 
 	m_adjudicateDrawAct = new QAction(tr("Ad&judicate Draw"), this);
 	m_adjudicateWhiteWinAct = new QAction(tr("Adjudicate Win for White"), this);
@@ -263,6 +268,9 @@ void MainWindow::createActions()
 	connect(m_showSettingsAct, SIGNAL(triggered()),
 		app, SLOT(showSettingsDialog()));
 
+	connect(m_showBoardSettingsAct, SIGNAL(triggered()),
+		this, SLOT(showBoardSettingsDialog()));
+
 	connect(m_showTournamentResultsAct, SIGNAL(triggered()),
 		app, SLOT(showTournamentResultsDialog()));
 
@@ -308,6 +316,8 @@ void MainWindow::createMenus()
 
 	m_viewMenu = menuBar()->addMenu(tr("&View"));
 	m_viewMenu->addAction(m_flipBoardAct);
+	m_viewMenu->addSeparator();
+	m_viewMenu->addAction(m_showBoardSettingsAct);
 	m_viewMenu->addSeparator();
 
 	m_windowMenu = menuBar()->addMenu(tr("&Window"));
@@ -509,6 +519,22 @@ void MainWindow::destroyGame(ChessGame* game)
 
 void MainWindow::setCurrentGame(const TabData& gameData)
 {
+	bool nextTabEnabled = m_showNextTabAct->isEnabled();
+	if (nextTabEnabled)
+		m_showNextTabAct->setEnabled(false);
+
+	bool previousTabEnabled = m_showPreviousTabAct->isEnabled();
+	if (previousTabEnabled)
+		m_showPreviousTabAct->setEnabled(false);
+
+	doSetCurrentGame(gameData);
+
+	m_showNextTabAct->setEnabled(nextTabEnabled);
+	m_showPreviousTabAct->setEnabled(previousTabEnabled);
+}
+
+void MainWindow::doSetCurrentGame(const TabData& gameData)
+{
 	if (gameData.m_game == m_game && m_game != nullptr)
 		return;
 
@@ -553,6 +579,13 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 	lockCurrentGame();
 
 	m_engineDebugLog->clear();
+
+	if (m_boardSettingsDialog != nullptr && m_boardSettingsDialog->isVisible())
+	{
+		m_boardSettingsDialog->onContextChanged(&gameData.m_boardSettings);
+	}
+
+	m_gameViewer->boardScene()->setBoardSettings(&gameData.m_boardSettings);
 
 	m_moveList->setGame(m_game, gameData.m_pgn);
 	m_evalHistory->setGame(m_game);
@@ -1101,6 +1134,9 @@ void MainWindow::onGameManagerFinished()
 
 void MainWindow::closeAllGames()
 {
+	if (m_boardSettingsDialog)
+		m_boardSettingsDialog->close();
+
 	auto app = CuteChessApplication::instance();
 	app->closeDialogs();
 
@@ -1206,4 +1242,45 @@ void MainWindow::addDefaultWindowMenu()
 	m_windowMenu->addSeparator();
 	m_windowMenu->addAction(m_showPreviousTabAct);
 	m_windowMenu->addAction(m_showNextTabAct);
+}
+
+void MainWindow::showBoardSettingsDialog()
+{
+	if (m_boardSettingsDialog == nullptr)
+		m_boardSettingsDialog = new BoardSettingsDialog();
+	else
+	{
+		int index = m_tabBar->currentIndex();
+		m_boardSettingsDialog->onContextChanged(
+			&m_tabs[index].m_boardSettings);
+	}
+	connect(m_boardSettingsDialog, SIGNAL(accepted()), this,
+		SLOT(onBoardSettingsChanged()));
+
+	showDialog(m_boardSettingsDialog);
+}
+
+void MainWindow::showDialog(QWidget* dlg)
+{
+	Q_ASSERT(dlg != nullptr);
+
+	if (dlg->isMinimized())
+		dlg->showNormal();
+	else
+		dlg->show();
+
+	dlg->raise();
+	dlg->activateWindow();
+}
+
+void MainWindow::onBoardSettingsChanged()
+{
+	BoardSettingsDialog* dlg = qobject_cast<BoardSettingsDialog *>(QObject::sender());
+
+	disconnect(dlg, SIGNAL(accepted()), this, SLOT(onBoardSettingsChanged()));
+
+	int index = m_tabBar->currentIndex();
+	m_tabs[index].m_boardSettings = dlg->boardSettings();
+	m_gameViewer->boardScene()->setBoardSettings(&m_tabs[index].m_boardSettings);
+	m_gameViewer->boardScene()->applyBoardSettings();
 }
