@@ -64,6 +64,7 @@ Doxyfile
 # files created by Qt Creator
 *.pro.user*
 qtc-gdbmacros/
+CMakeLists.txt.user
 
 # files created by Mac OS X
 .DS_Store
