@@ -33,8 +33,8 @@ def current_branch() -> str:
 
 
 def release_exists(rel: str) -> bool:
-    return subprocess.run(["git", "tag", "-l", f"v{rel}"]).returncode == 0
-
+    return len(subprocess.run(["git", "tag", "-l", f"v{rel}"],
+               stdout=subprocess.PIPE).stdout.decode().strip()) != 0
 
 def working_tree_clean() -> bool:
     return subprocess.run(["git", "diff-index", "--quiet", "HEAD", "--"]).returncode == 0
@@ -47,7 +47,7 @@ def pull_remote_changes() -> bool:
 def update_version_file(new_version: str) -> bool:
     try:
         with open(".version", "w") as f:
-            f.write(new_version.encode())
+            f.write(new_version)
     except (OSError, IOError):
         return False
 
