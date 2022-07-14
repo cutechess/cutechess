@@ -16,42 +16,63 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TIMECONTROLDIALOG_H
-#define TIMECONTROLDIALOG_H
+#ifndef TIMECONTROLWIDGET_H
+#define TIMECONTROLWIDGET_H
 
-#include <QDialog>
+#include <QWidget>
 #include <timecontrol.h>
 
 namespace Ui {
-	class TimeControlDialog;
+	class TimeControlWidget;
 }
 
 /*!
  * \brief A dialog for setting a chess game's time controls
  */
-class TimeControlDialog : public QDialog
+class TimeControlWidget : public QWidget
 {
 	Q_OBJECT
 
 	public:
 		/*!
-		 * Creates a new time control dialog.
+		 * Creates a new time control widget.
 		 *
-		 * The dialog is initialized according to \a tc1,
-		 * and \a tc2
+		 * The widget is initialized according to \a tc.
 		 */
-		explicit TimeControlDialog(const TimeControl& tc1,
-					   const TimeControl& tc2 = TimeControl(),
-					   QWidget* parent = nullptr);
+		explicit TimeControlWidget(QWidget *parent = nullptr);
 		/*! Destroys the dialog. */
-		virtual ~TimeControlDialog();
+		virtual ~TimeControlWidget();
 
+		/*! Initialise time contol, signals and slots */
+		void init(const TimeControl& tc);
 		/*! Returns the time control that was set in the dialog. */
-		TimeControl timeControlWhite() const;
-		TimeControl timeControlBlack() const;
+		TimeControl timeControl() const;
+
+	signals:
+		void hourglassToggled(bool);
+
+	public slots: void setHourglassMode(bool enabled);
+		      void disableHourglassRadio();
+
+	private slots:
+		void onTournamentSelected();
+		void onTimePerMoveSelected();
+		void onInfiniteSelected();
+		void onHourglassSelected();
 
 	private:
-		Ui::TimeControlDialog *ui;
+		enum TimeUnit
+		{
+			Seconds,
+			Minutes,
+			Hours
+		};
+
+		int timeToMs() const;
+		void setTime(int ms);
+
+		Ui::TimeControlWidget *ui;
+		TimeControl m_tc;
 };
 
-#endif // TIMECONTROLDIALOG_H
+#endif // TIMECONTROLWIDGET_H

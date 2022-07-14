@@ -29,6 +29,7 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 	  ui(new Ui::SettingsDialog)
 {
 	ui->setupUi(this);
+	ui->m_gameSettings->enableSplitTimeControls(true);
 
 	readSettings();
 
