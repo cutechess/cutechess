@@ -276,6 +276,12 @@ add_executable(gui
 	projects/gui/res/icons/icons.qrc
 )
 
+if(WIN32)
+	target_sources(gui PRIVATE
+		projects/gui/res/icons/cutechess_win.rc
+	)
+endif()
+
 set_target_properties(gui PROPERTIES OUTPUT_NAME cutechess)
 set_target_properties(gui PROPERTIES AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/projects/gui/ui)
 
