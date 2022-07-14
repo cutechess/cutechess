@@ -258,7 +258,6 @@ add_executable(gui
 	projects/gui/src/pgnimporter.cpp
 
 	projects/gui/ui/settingsdlg.ui
-	projects/gui/ui/ui.pri
 	projects/gui/ui/engineconfigdlg.ui
 	projects/gui/ui/timecontroldlg.ui
 	projects/gui/ui/engineselectiondlg.ui
