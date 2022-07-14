@@ -77,7 +77,7 @@ if __name__ == "__main__":
         error("your working tree is not clean; commit or unstage changes")
 
     if release_exists(new_version):
-        error("f{new_version} already exists")
+        error(f"{new_version} already exists")
 
     if not pull_remote_changes():
         error("unable to pull remote changes")
