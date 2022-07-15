@@ -22,7 +22,7 @@ set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(QT_COMPONENTS Core Gui Widgets Concurrent Svg PrintSupport)
+set(QT_COMPONENTS Core Gui Widgets Concurrent Svg PrintSupport QuickWidgets Qml)
 if(WITH_TESTS)
 	enable_testing()
 	set(QT_COMPONENTS ${QT_COMPONENTS} Test)
@@ -274,6 +274,8 @@ add_executable(gui
 
 	projects/gui/res/chessboard/chessboard.qrc
 	projects/gui/res/icons/icons.qrc
+	
+	projects/gui/ui/qml.qrc
 )
 
 if(WIN32)
@@ -290,7 +292,7 @@ target_include_directories(gui PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/projects/gui/src>
 )
 
-target_link_libraries(gui Qt::Core Qt::Widgets Qt::Gui Qt::Concurrent Qt::Svg Qt::PrintSupport)
+target_link_libraries(gui Qt::Core Qt::Widgets Qt::Gui Qt::Concurrent Qt::Svg Qt::PrintSupport Qt::QuickWidgets Qt::Qml)
 if(Qt6_FOUND)
 	target_link_libraries(gui Qt::Core5Compat)
 endif()
