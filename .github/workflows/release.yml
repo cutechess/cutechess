@@ -5,7 +5,24 @@ on:
       - 'v*'
 
 jobs:
-    build:
+    githubrel:
+      name: "Create GitHub release"
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: create a draft github release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Cute Chess ${{ env.VERSION }}
+            draft: true
+
+    linuxrel:
+        needs: githubrel
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
         runs-on: ${{ matrix.os }}
         strategy:
@@ -45,15 +62,6 @@ jobs:
                 cd build
                 ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin qt --output appimage --custom-apprun=../dist/appimage/CuteChess-AppRun --icon-file=../projects/gui/res/icons/cutechess_256x256.png --executable cutechess --executable cutechess-cli
 
-            - name: create a draft github release
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                tag_name: ${{ github.ref }}
-                release_name: Cute Chess ${{ env.VERSION }}
-                draft: true
 
             - name: upload release asset
               uses: actions/upload-release-asset@v1
@@ -63,3 +71,63 @@ jobs:
                 upload_url: ${{ steps.create_release.outputs.upload_url }}
                 asset_path: build/Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
                 asset_name: Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
+
+    winrel:
+        needs: githubrel
+        name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
+        runs-on: ${{ matrix.os }}
+        env:
+          VCDIR: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise'
+        strategy:
+          matrix:
+            qt_version: [5.15.2]
+            os: [windows-latest]
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: install qt 5.x
+              uses: jurplel/install-qt-action@v2
+              if: startsWith(matrix.qt_version, '5.')
+              with:
+                version: ${{ matrix.qt_version }}
+                aqtversion: '==2.1.*'
+
+            - name: build cute chess
+              run: |
+                  mkdir build
+                  cd build
+                  cmake ..
+                  cmake --build . --config release
+
+            - name: set environment
+              run: |
+                chcp 65001 # set code page to utf-8
+                $version = Get-Content -Path .version
+                echo ("VERSION=" + $version) >> $env:GITHUB_ENV
+
+            - name: create a release zip file
+              run: |
+                mkdir cutechess-$env:VERSION-win64
+                cd cutechess-$env:VERSION-win64
+                cp ..\build\Release\cutechess.exe .
+                cp ..\build\Release\cutechess-cli.exe .
+                cp "$env:VCDIR\VC\Redist\MSVC\v143\vc_redist.x64.exe" .
+                cp "$env:Qt5_Dir\bin\Qt5Core.dll" .
+                cp "$env:Qt5_Dir\bin\Qt5Gui.dll" .
+                cp "$env:Qt5_Dir\bin\Qt5Svg.dll" .
+                cp "$env:Qt5_Dir\bin\Qt5PrintSupport.dll" .
+                cp "$env:Qt5_Dir\bin\Qt5Widgets.dll" .
+                cp "$env:Qt5_Dir\bin\Qt5ConCurrent.dll" .
+                mkdir platforms
+                cp "$env:Qt5_Dir\plugins\platforms\qwindows.dll" platforms\
+                cd ..
+                7z a cutechess-$env:VERSION-win64.zip cutechess-$env:VERSION-win64\
+
+            - name: upload release asset
+              uses: actions/upload-release-asset@v1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                upload_url: ${{ steps.create_release.outputs.upload_url }}
+                asset_path: cutechess-${{ env.VERSION }}-win64.zip
+                asset_name: cutechess-${{ env.VERSION }}-win64.zip
