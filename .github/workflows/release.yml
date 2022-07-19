@@ -73,6 +73,7 @@ jobs:
                 upload_url: ${{ needs.githubrel.outputs.upload_url }}
                 asset_path: build/Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
                 asset_name: Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
+                asset_content_type: application/octet-stream
 
     winrel:
         needs: githubrel
@@ -133,3 +134,4 @@ jobs:
                 upload_url: ${{ needs.githubrel.outputs.upload_url }}
                 asset_path: cutechess-${{ env.VERSION }}-win64.zip
                 asset_name: cutechess-${{ env.VERSION }}-win64.zip
+                asset_content_type: application/zip
