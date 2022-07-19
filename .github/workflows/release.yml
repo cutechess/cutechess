@@ -13,6 +13,9 @@ jobs:
       steps:
         - uses: actions/checkout@v3
 
+        - name: set version
+          run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
+
         - name: create a draft github release
           id: create_release
           uses: actions/create-release@v1
