@@ -42,8 +42,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "{#CuteChessPath}\projects\gui\cutechess.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#CuteChessPath}\projects\cli\cutechess-cli.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#CuteChessPath}\build\Release\cutechess.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#CuteChessPath}\build\Release\cutechess-cli.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#CuteChessPath}\translations\cutechess_zh_CN.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
 #ifdef MinGW
   Source: "{#MinGWLibPath}\mingwm10.dll"; DestDir: "{app}"; Flags: ignoreversion
