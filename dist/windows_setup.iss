@@ -32,7 +32,6 @@ PrivilegesRequiredOverridesAllowed=dialog
 AllowNoIcons=yes
 OutputDir=.
 OutputBaseFilename=cutechess_setup
-Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 
