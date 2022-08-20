@@ -9,7 +9,7 @@
 #define MyAppURL "https://github.com/cutechess/cutechess"
 #define MyAppExeName "cutechess.exe"
 #define MinGWLibPath "C:\QtSDK\mingw\bin"
-#define MSVCLibPath "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\1033"
+;#define MSVCPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
 #define QtLibPath "C:\Qt\5.7\msvc2015_64"
 #define CuteChessPath "C:\cutechess"
 #define DocPath "C:\cutechess_docs"
@@ -50,7 +50,7 @@ Source: "{#CuteChessPath}\translations\cutechess_zh_CN.qm"; DestDir: "{app}\tran
   Source: "{#MinGWLibPath}\libgcc_s_dw2-1.dll"; DestDir: "{app}"; Flags: ignoreversion
 #endif
 #ifdef MSVC
-  Source: "{#MSVCLibPath}\vcredist_x64.exe"; DestDir: "{app}"; Flags: ignoreversion
+  Source: "{#MSVCPath}\VC\Redist\MSVC\v143\vc_redist.x64.exe"; DestDir: "{app}"; Flags: ignoreversion
 #endif
 Source: "{#QtLibPath}\bin\Qt5Core.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\bin\Qt5Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
