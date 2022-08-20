@@ -31,7 +31,7 @@ DisableProgramGroupPage=yes
 PrivilegesRequiredOverridesAllowed=dialog
 AllowNoIcons=yes
 OutputDir=.
-OutputBaseFilename=cutechess_setup
+OutputBaseFilename=cutechess-{#MyAppVersion}-win64
 SolidCompression=yes
 WizardStyle=modern
 
