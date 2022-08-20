@@ -59,7 +59,7 @@ Source: "{#QtLibPath}\bin\Qt5PrintSupport.dll"; DestDir: "{app}"; Flags: ignorev
 Source: "{#QtLibPath}\bin\Qt5Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\bin\Qt5Concurrent.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
-Source: "{#DocPath}\COPYING"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#CuteChessPath}\COPYING"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#DocPath}\engines.json.5.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#DocPath}\cutechess-cli.6.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
