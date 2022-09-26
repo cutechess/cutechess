@@ -12,7 +12,6 @@
 ;#define MSVCPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
 #define QtLibPath "C:\Qt\5.7\msvc2015_64"
 #define CuteChessPath "C:\cutechess"
-#define DocPath "C:\cutechess_docs"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -60,8 +59,10 @@ Source: "{#QtLibPath}\bin\Qt5Widgets.dll"; DestDir: "{app}"; Flags: ignoreversio
 Source: "{#QtLibPath}\bin\Qt5Concurrent.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
 Source: "{#CuteChessPath}\COPYING"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#DocPath}\engines.json.5.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#DocPath}\cutechess-cli.6.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#CuteChessPath}\docs\cutechess-cli.6.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#CuteChessPath}\docs\cutechess-cli.6.html"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#CuteChessPath}\docs\cutechess-engines.json.5.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#CuteChessPath}\docs\cutechess-engines.json.5.html"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
