@@ -1,0 +1,155 @@
+CUTECHESS-ENGINES.JSON(5)     File Formats Manual    CUTECHESS-ENGINES.JSON(5)
+
+NAME
+     cutechess-engines.json - Cute Chess engine configuration file
+
+DESCRIPTION
+     cutechess-engines.json is the chess engine configuration file for
+     cutechess-cli(6).	An engine configuration defines a name, a command, a
+     working directory and many other options.	Engine configurations can be
+     used in cutechess-cli(6) with the conf command-line option.
+
+     Engine configurations are defined in JavaScript Object Notation (JSON)
+     format.  See JSON FORMAT.
+
+JSON FORMAT
+     JavaScript Object Notation (JSON) is a text-based format for structured
+     data.  JSON is a subset of ECMAScript (JavaScript).
+
+   Values
+     A JSON value must be one of: object, array, number, string, false, true
+     or null.
+
+   Objects
+     An object is structure of name-value pairs enclosed in curly brackets.  A
+     name is a string.	Name and value are separated by a single colon.	 Pairs
+     are separated by commas.
+
+     Example objects would be:
+
+	   { "Finland" : ".fi", "Sweden" : ".se" }
+
+	   {
+	     "firstName" : "JC",
+	     "lastName"	 : "Denton",
+	     "age"	 : 28,
+	     "languages" : [ "English", "French", "Spanish" ]
+	   }
+
+   Arrays
+     An array is a structure of zero or more values enclosed in square
+     brackets.	Values are separated by commas.
+
+     Example arrays would be:
+
+	   [ "Cute", "Chess" ]
+
+	   [
+	     [ 1, 0, 0 ],
+	     [ 0, 1, 0 ],
+	     [ 0, 0, 1 ]
+	   ]
+
+   Numbers
+     A number consists of an integer part and optional fractional and/or
+     exponent part.  The integer part can be prefixed with a minus sign.
+     Fractional part is a decimal point followed by one or more digits.
+     Exponent part begins with a letter E in upper or lowercase which may be
+     followed by a plus or minus sign.	The E and optional sign are followed
+     by one or more digits.
+
+     Octal and hex forms are not allowed.
+
+     Example numbers would be:
+
+	   128
+	   -1.04
+	   2e32
+	   -18E-20
+
+   Strings
+     A string is sequence of characters enclosed in quotation marks.  All
+     Unicode characters may be placed within the quotation marks except for
+     the characters that must be escaped: quotation mark, backslash, and
+     control characters.
+
+     Available two-character escape sequences are as follows:
+
+	   \\	   Backslash character.
+	   \/	   Forward slash character.
+	   \"	   Quotation mark.
+	   \b	   Bell character.
+	   \f	   Form feed character.
+	   \n	   Line feed character.
+	   \t	   Vertical tab character.
+	   \unum   Unicode character where num is a four hexadecimal digits
+		   that encode the character's code point.
+
+     Example strings would be:
+
+	   "Hello, world!"
+
+	   "Please place all items \"carefully\" in bins."
+
+	   "\u03a6 is one of the letters of Greek alphabet."
+
+ENGINE CONFIGURATION
+     The configuration file consist of an array of objects.  Each object
+     defines a single engine configuration.  Required options for each engine
+     configuration are:
+
+     name : string
+	     The name of the engine.
+
+     command : string
+	     The engine command.
+
+     protocol : "uci" | "xboard"
+	     The chess engine protocol used by this engine.
+
+     Other available options for an engine configuration are:
+
+     workingDirectory : string
+	     The working directory of the engine.
+
+     stderrFile : string
+	     File where the engine's standard error output is redirected.
+
+     initStrings : array of string
+	     Array of strings sent to the engine's standard input at startup.
+
+     whitepov : true | false
+	     When true invert the engine's scores when it plays black.	The
+	     default is false.
+
+	     This option should be used with engines that always report scores
+	     from white's perspective.
+
+     ponder : true | false
+	     When true enable pondering if the engine supports it.  The
+	     default is false.
+
+EXAMPLES
+     A minimal engine configuration file for the Sloppy chess engine:
+
+	   [
+	     {
+	       "name": "Sloppy",
+	       "command": "sloppy",
+	       "protocol": "xboard"
+	     }
+	   ]
+
+     Using the above engine configuration file with the conf command-line
+     option:
+
+	   $ cutechess-cli -engine conf=Sloppy -engine conf=Sloppy -each
+	   tc=40/60 -rounds 10
+
+SEE ALSO
+     cutechess-cli(6)
+
+     The application/json Media Type for JavaScript Object Notation (JSON),
+     RFC 4627, July 2006.
+
+Debian			       October 27, 2015				Debian

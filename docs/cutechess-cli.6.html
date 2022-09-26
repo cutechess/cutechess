@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="man-style.css" type="text/css" media="all"/>
+  <title>CUTECHESS-CLI(6)</title>
+</head>
+<body>
+<table class="head">
+  <tr>
+    <td class="head-ltitle">CUTECHESS-CLI(6)</td>
+    <td class="head-vol">Games Manual</td>
+    <td class="head-rtitle">CUTECHESS-CLI(6)</td>
+  </tr>
+</table>
+<div class="manual-text">
+<section class="Sh">
+<h1 class="Sh" id="NAME"><a class="permalink" href="#NAME">NAME</a></h1>
+<code class="Nm">cutechess-cli</code> &#x2014;
+<div class="Nd">Automate chess engine tournaments</div>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="SYNOPSIS"><a class="permalink" href="#SYNOPSIS">SYNOPSIS</a></h1>
+<table class="Nm">
+  <tr>
+    <td><code class="Nm">cutechess-cli</code></td>
+    <td><code class="Fl">-engine</code> <var class="Ar">engine-options</var>
+      <code class="Fl">-engine</code> <var class="Ar">engine-options</var>
+      [<code class="Fl">-engine</code> <var class="Ar">engine-options ...</var>]
+      [options]</td>
+  </tr>
+</table>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="DESCRIPTION"><a class="permalink" href="#DESCRIPTION">DESCRIPTION</a></h1>
+The <code class="Nm">cutechess-cli</code> utility automates chess engine
+  tournaments.
+<p class="Pp">Its options are as follows:</p>
+<dl class="Bl-tag">
+  <dt><a class="permalink" href="#engine"><code class="Fl" id="engine">-engine</code></a>
+    <var class="Ar">engine-options</var></dt>
+  <dd>Add an engine defined by <var class="Ar">engine-options</var> to the
+      tournament. See <a class="Sx" href="#Engine_Options">Engine
+    Options</a>.</dd>
+  <dt><a class="permalink" href="#each"><code class="Fl" id="each">-each</code></a>
+    <var class="Ar">engine-options</var></dt>
+  <dd>Apply <var class="Ar">engine-options</var> to each engine in the
+      tournament. See <a class="Sx" href="#Engine_Options">Engine
+    Options</a>.</dd>
+  <dt><a class="permalink" href="#variant"><code class="Fl" id="variant">-variant</code></a>
+    <var class="Ar">variant</var></dt>
+  <dd>Set the chess variant, where <var class="Ar">variant</var> is one of:
+    <p class="Pp"></p>
+    <div class="Bd-indent">
+    <dl class="Bl-tag Bl-compact">
+      <dt>3check</dt>
+      <dd>Three-check Chess</dd>
+      <dt>5check</dt>
+      <dd>Five-check Chess</dd>
+      <dt>ai-wok</dt>
+      <dd>Ai-Wok (Makruk variant)</dd>
+      <dt>almost</dt>
+      <dd>Almost Chess</dd>
+      <dt>amazon</dt>
+      <dd>Amazon Chess</dd>
+      <dt>andernach</dt>
+      <dd>Andernach Chess</dd>
+      <dt>antiandernach</dt>
+      <dd>Anti-Andernach Chess</dd>
+      <dt>antichess</dt>
+      <dd>Antichess / Losing Chess</dd>
+      <dt>asean</dt>
+      <dd>ASEAN-Chess</dd>
+      <dt>atomic</dt>
+      <dd>Atomic Chess</dd>
+      <dt>berolina</dt>
+      <dd>Berolina Chess</dd>
+      <dt>cambodian</dt>
+      <dd>Ouk Chatrang (Cambodian Chess)</dd>
+      <dt>capablanca</dt>
+      <dd>Capablanca Chess</dd>
+      <dt>caparandom</dt>
+      <dd>Capablanca Random Chess</dd>
+      <dt>cfour</dt>
+      <dd>Cfour (7x6, line up 4 to win)</dd>
+      <dt>chancellor</dt>
+      <dd>Chancellor Chess (9x9)</dd>
+      <dt>changeover</dt>
+      <dd>Change-Over Chess</dd>
+      <dt>checkless</dt>
+      <dd>Checkless Chess</dd>
+      <dt>chessgi</dt>
+      <dd>Chessgi / Drop Chess</dd>
+      <dt>chigorin</dt>
+      <dd>Chigorin Chess</dd>
+      <dt>circulargryphon</dt>
+      <dd>Circular Gryphon Chess</dd>
+      <dt>codrus</dt>
+      <dd>Game of Codrus (Losing Chess Variant)</dd>
+      <dt>coregal</dt>
+      <dd>Co-regal Chess</dd>
+      <dt>courier</dt>
+      <dd>Courier Chess (Medieval)</dd>
+      <dt>crazyhouse</dt>
+      <dd>Crazyhouse (Drop Chess Variant)</dd>
+      <dt>displacedgrid</dt>
+      <dd>Displaced Grid Chess</dd>
+      <dt>dobutsu</dt>
+      <dd>Dobutsu Shogi (3x4)</dd>
+      <dt>embassy</dt>
+      <dd>Embassy Chess</dd>
+      <dt>euroshogi</dt>
+      <dd>EuroShogi (8x8)</dd>
+      <dt>extinction</dt>
+      <dd>Extinction Chess</dd>
+      <dt>fischerandom</dt>
+      <dd>Fischer Random Chess / Chess 960</dd>
+      <dt>giveaway</dt>
+      <dd>Giveaway Chess (Losing Chess)</dd>
+      <dt>gomoku</dt>
+      <dd>Gomoku (15x15, exactly 5 in a row to win)</dd>
+      <dt>gomokufreestyle</dt>
+      <dd>Gomoku Free-Style (5 in a row to win)</dd>
+      <dt>gothic</dt>
+      <dd>Gothic Chess</dd>
+      <dt>grand</dt>
+      <dd>Grand Chess</dd>
+      <dt>grid</dt>
+      <dd>Grid Chess</dd>
+      <dt>gridolina</dt>
+      <dd>Berolina Grid Chess</dd>
+      <dt>gryphon</dt>
+      <dd>Gryphon Chess</dd>
+      <dt>gustav3</dt>
+      <dd>Gustav III's Chess</dd>
+      <dt>hoppelpoppel</dt>
+      <dd>Hoppel-Poppel (has N/B hybrids)</dd>
+      <dt>horde</dt>
+      <dd>Horde Chess (v2)</dd>
+      <dt>janus</dt>
+      <dd>Janus Chess</dd>
+      <dt>jesonmor</dt>
+      <dd>Jeson M&#x00F6;r</dd>
+      <dt>judkins</dt>
+      <dd>Judkins Shogi (6x6)</dd>
+      <dt>karouk</dt>
+      <dd>Kar Ouk (One-check Ouk)</dd>
+      <dt>kinglet</dt>
+      <dd>Kinglet Chess</dd>
+      <dt>kingofthehill</dt>
+      <dd>King of the Hill Chess</dd>
+      <dt>knightmate</dt>
+      <dd>Knightmate</dd>
+      <dt>knightrelay</dt>
+      <dd>Knight-Relay Chess</dd>
+      <dt>loop</dt>
+      <dd>Loop Chess (Drop Chess Variant)</dd>
+      <dt>losalamos</dt>
+      <dd>Los Alamos Chess</dd>
+      <dt>losers</dt>
+      <dd>Loser's Chess</dd>
+      <dt>makruk</dt>
+      <dd>Makruk (Thai Chess)</dd>
+      <dt>minishogi</dt>
+      <dd>Minishogi (5x5)</dd>
+      <dt>modern</dt>
+      <dd>Modern Chess (9x9)</dd>
+      <dt>newzealand</dt>
+      <dd>New Zealand Chess (has N/R hybrids)</dd>
+      <dt>placement</dt>
+      <dd>Placement Chess</dd>
+      <dt>pocketknight</dt>
+      <dd>Pocket Knight Chess</dd>
+      <dt>racingkings</dt>
+      <dd>Racing Kings Chess</dd>
+      <dt>rifle</dt>
+      <dd>Rifle Chess</dd>
+      <dt>seirawan</dt>
+      <dd>S-Chess (Seirawan Chess)</dd>
+      <dt>shatranj</dt>
+      <dd>Shatranj</dd>
+      <dt>shogi</dt>
+      <dd>Shogi</dd>
+      <dt>shoot</dt>
+      <dd>Shoot Chess</dd>
+      <dt>simplifiedgryphon</dt>
+      <dd>Simplified Gryphon Chess</dd>
+      <dt>sittuyin</dt>
+      <dd>Sittuyin (Myanmar Chess)</dd>
+      <dt>slippedgrid</dt>
+      <dd>Slipped Grid Chess</dd>
+      <dt>suicide</dt>
+      <dd>Suicide Chess (Losing Chess Variant)</dd>
+      <dt>superandernach</dt>
+      <dd>Super-Andernach Chess</dd>
+      <dt>threekings</dt>
+      <dd>Three Kings Chess</dd>
+      <dt>tictactoe</dt>
+      <dd>Tic-tac-toe</dd>
+      <dt>twokings</dt>
+      <dd>Two Kings Each Chess (Wild 9)</dd>
+      <dt>twokingssymmetric</dt>
+      <dd>Symmetrized Wild 9</dd>
+      <dt>standard</dt>
+      <dd>Standard Chess (default)</dd>
+    </dl>
+    </div>
+  </dd>
+  <dt><a class="permalink" href="#concurrency"><code class="Fl" id="concurrency">-concurrency</code></a>
+    <var class="Ar">n</var></dt>
+  <dd>Set the maximum number of concurrent games to
+    <var class="Ar">n</var>.</dd>
+  <dt><a class="permalink" href="#draw"><code class="Fl" id="draw">-draw</code></a>
+    <code class="Cm">movenumber</code>=<var class="Ar">number</var>
+    <code class="Cm">movecount</code>=<var class="Ar">count</var>
+    <code class="Cm">score</code>=<var class="Ar">score</var></dt>
+  <dd>Adjudicate the game as draw if the score of both engines is within
+      <var class="Ar">score</var> centipawns from zero for at least
+      <var class="Ar">count</var> consecutive moves, and at least
+      <var class="Ar">number</var> full moves have been played. Captures and
+      pawn moves will reset the counters.</dd>
+  <dt><a class="permalink" href="#resign"><code class="Fl" id="resign">-resign</code></a>
+    <code class="Cm">movecount</code>=<var class="Ar">count</var>
+    <code class="Cm">score</code>=<var class="Ar">score</var>
+    [<code class="Cm">twosided</code>=<var class="Ar">value</var>]</dt>
+  <dd>Adjudicate the game as a loss if an engine's score is at least
+      <var class="Ar">score</var> centipawns below zero for at least
+      <var class="Ar">count</var> consecutive moves. If
+      <var class="Ar">value</var> is true (default: false) then activate
+      two-sided resign adjudication. The winning side's scores must be at least
+      <var class="Ar">score</var> centipawns above zero for at least
+      <var class="Ar">count</var> consecutive moves</dd>
+  <dt><a class="permalink" href="#maxmoves"><code class="Fl" id="maxmoves">-maxmoves</code></a>
+    <var class="Ar">n</var></dt>
+  <dd>Adjudicate the game as a draw if at least <var class="Ar">n</var> full
+      moves have been played without result. Ignored if <var class="Ar">n</var>
+      equals zero (default).</dd>
+  <dt><a class="permalink" href="#tb"><code class="Fl" id="tb">-tb</code></a>
+    <var class="Ar">paths</var></dt>
+  <dd>Adjudicate games using Syzygy tablebases. <var class="Ar">Paths</var>
+      should be semicolon-delimited list of paths to the compressed tablebase
+      files. Only the WDL tablebase files are required.</dd>
+  <dt><a class="permalink" href="#tbpieces"><code class="Fl" id="tbpieces">-tbpieces</code></a>
+    <var class="Ar">N</var></dt>
+  <dd>Only use tablebase adjudication for positions with <var class="Ar">N</var>
+      pieces or less.</dd>
+  <dt><a class="permalink" href="#tbignore50"><code class="Fl" id="tbignore50">-tbignore50</code></a></dt>
+  <dd>Disable the fifty move rule for tablebase adjudication.</dd>
+  <dt><a class="permalink" href="#tournament"><code class="Fl" id="tournament">-tournament</code></a>
+    <var class="Ar">type</var></dt>
+  <dd>Set the tournament type, where <var class="Ar">type</var> is one of:
+    <p class="Pp"></p>
+    <div class="Bd-indent">
+    <dl class="Bl-tag Bl-compact">
+      <dt>round-robin</dt>
+      <dd>Round-robin tournament (default)</dd>
+      <dt>gauntlet</dt>
+      <dd>First engine(s) against the rest</dd>
+      <dt>knockout</dt>
+      <dd>Single-elimination tournament</dd>
+      <dt>pyramid</dt>
+      <dd>Every engine plays against all of its predecessors</dd>
+    </dl>
+    </div>
+  </dd>
+  <dt><a class="permalink" href="#event"><code class="Fl" id="event">-event</code></a>
+    <var class="Ar">arg</var></dt>
+  <dd>Set the event name to <var class="Ar">arg</var>.</dd>
+  <dt><a class="permalink" href="#games"><code class="Fl" id="games">-games</code></a>
+    <var class="Ar">n</var></dt>
+  <dd>Play <var class="Ar">n</var> games per encounter. This value should be set
+      to an even number in tournaments with more than two players to make sure
+      that each player plays an equal number of games with white and black
+      pieces.</dd>
+  <dt><a class="permalink" href="#rounds"><code class="Fl" id="rounds">-rounds</code></a>
+    <var class="Ar">n</var></dt>
+  <dd>Multiply the number of rounds to play by <var class="Ar">n</var>. For
+      two-player tournaments this option should be used to set the total number
+      of games to play.</dd>
+  <dt><a class="permalink" href="#sprt"><code class="Fl" id="sprt">-sprt</code></a>
+    <code class="Cm">elo0</code>=<var class="Ar">E0</var>
+    <code class="Cm">elo1</code>=<var class="Ar">E1</var>
+    <code class="Cm">alpha</code>=<var class="Ar">&#x03B1;</var>
+    <code class="Cm">beta</code>=<var class="Ar">&#x03B2;</var></dt>
+  <dd>Use a Sequential Probability Ratio Test as a termination criterion for the
+      match.
+    <p class="Pp">This option should only be used in matches between two players
+        to test if engine P1 is stronger than engine P2. Hypothesis H1 is that
+        P1 is stronger than P2 by at least <var class="Ar">E0</var> ELO points,
+        and H0 (the null hypothesis) is that P1 is not stronger than P2 by at
+        least <var class="Ar">E1</var> ELO points. The maximum probabilities for
+        type I and type II errors outside the interval [
+        <var class="Ar">E0</var>, <var class="Ar">E1</var> ] are
+        <var class="Ar">&#x03B1;</var> and <var class="Ar">&#x03B2;</var>.</p>
+    <p class="Pp">The match is stopped if either H0 or H1 is accepted or if the
+        maximum number of games set by <code class="Fl">-rounds</code> and / or
+        <code class="Fl">-games</code> is reached.</p>
+  </dd>
+  <dt><a class="permalink" href="#ratinginterval"><code class="Fl" id="ratinginterval">-ratinginterval</code></a>
+    <var class="Ar">n</var></dt>
+  <dd>Set the interval for printing the ratings to <var class="Ar">n</var>
+      games.</dd>
+  <dt><a class="permalink" href="#outcomeinterval"><code class="Fl" id="outcomeinterval">-outcomeinterval</code></a>
+    <var class="Ar">n</var></dt>
+  <dd>Set the interval for printing outcomes to <var class="Ar">n</var>
+    games.</dd>
+  <dt><a class="permalink" href="#debug"><code class="Fl" id="debug">-debug</code></a></dt>
+  <dd>Display all engine input and output.</dd>
+  <dt><a class="permalink" href="#openings"><code class="Fl" id="openings">-openings</code></a>
+    <code class="Cm">file</code>=<var class="Ar">file</var>
+    <code class="Cm">format</code>=[<code class="Cm">epd</code> |
+    <code class="Cm">pgn</code>]
+    <code class="Cm">order</code>=[<code class="Cm">random</code> |
+    <code class="Cm">sequential</code>]
+    <code class="Cm">plies</code>=<var class="Ar">plies</var>
+    <code class="Cm">start</code>=<var class="Ar">start</var>
+    <code class="Cm">policy</code>=[<code class="Cm">default</code> |
+    <code class="Cm">encounter</code> | <code class="Cm">round</code>]</dt>
+  <dd>Pick game openings from <var class="Ar">file</var>. The file can be either
+      in <code class="Cm">epd</code> (Extended Position Description) or
+      <code class="Cm">pgn</code> (Portable Game Notation) format. The default
+      format is <code class="Cm">pgn</code>. Openings can be picked in
+      <code class="Cm">random</code> or <code class="Cm">sequential</code>
+      (default) order. The opening depth is limited to
+      <var class="Ar">plies</var> number of plies. If
+      <var class="Ar">plies</var> is not set the opening depth is unlimited. In
+      sequential mode <var class="Ar">start</var> is the number of the first
+      opening that will be played. The minimum value for
+      <var class="Ar">start</var> is 1 (default).
+    <p class="Pp">The value of <var class="Ar">policy</var> rules when to shift
+        to a new opening. If set to <code class="Cm">encounter</code> a new
+        opening is used for any new pair of players,
+        <code class="Cm">round</code> shifts when a new round begins. The
+        <code class="Cm">default</code> shifts for any new pair of players and
+        also when the specified number of opening repetitions is reached.</p>
+  </dd>
+  <dt><a class="permalink" href="#bookmode"><code class="Fl" id="bookmode">-bookmode</code></a>
+    <var class="Ar">mode</var></dt>
+  <dd>Set Polyglot book access mode, where <var class="Ar">mode</var> is either
+      <code class="Cm">ram</code> (the whole book is loaded into RAM) or
+      <code class="Cm">disk</code> (the book is accessed directly on disk). The
+      default mode is <code class="Cm">ram</code>.</dd>
+  <dt><a class="permalink" href="#pgnout"><code class="Fl" id="pgnout">-pgnout</code></a>
+    <var class="Ar">file</var> [<code class="Cm">min</code>]
+    [<code class="Cm">fi</code>]</dt>
+  <dd>Save the games to <var class="Ar">file</var> in PGN format. Use the
+      <code class="Cm">min</code> argument to save in a minimal PGN format. Only
+      finished games will be saved if argument <code class="Cm">fi</code> is
+      given.</dd>
+  <dt><a class="permalink" href="#epdout"><code class="Fl" id="epdout">-epdout</code></a>
+    <var class="Ar">file</var></dt>
+  <dd>Save the games to <var class="Ar">file</var> in FEN format.</dd>
+  <dt><a class="permalink" href="#recover"><code class="Fl" id="recover">-recover</code></a></dt>
+  <dd>Restart crashed engines instead of stopping the game.</dd>
+  <dt><a class="permalink" href="#repeat"><code class="Fl" id="repeat">-repeat</code></a>
+    [<var class="Ar">n</var>]</dt>
+  <dd>Play each opening twice (or <var class="Ar">n</var> times). Unless the
+      <code class="Fl">-noswap</code> option is used, the players swap sides
+      after each game. So they get to play the opening on both sides. Please
+      note that a new encounter will use a new opening.</dd>
+  <dt><a class="permalink" href="#noswap"><code class="Fl" id="noswap">-noswap</code></a></dt>
+  <dd>Do not swap sides of paired engines.</dd>
+  <dt><a class="permalink" href="#reverse"><code class="Fl" id="reverse">-reverse</code></a></dt>
+  <dd>Use schedule with reverse sides.</dd>
+  <dt><a class="permalink" href="#seeds"><code class="Fl" id="seeds">-seeds</code></a>
+    <var class="Ar">n</var></dt>
+  <dd>Set the first <var class="Ar">n</var> engines as seeds in the tournament.
+      The default is 0.</dd>
+  <dt><a class="permalink" href="#site"><code class="Fl" id="site">-site</code></a>
+    <var class="Ar">arg</var></dt>
+  <dd>Set the site / location to <var class="Ar">arg</var>.</dd>
+  <dt><a class="permalink" href="#srand"><code class="Fl" id="srand">-srand</code></a>
+    <var class="Ar">seed</var></dt>
+  <dd>Set the random seed for the book move selector.</dd>
+  <dt><a class="permalink" href="#wait"><code class="Fl" id="wait">-wait</code></a>
+    <var class="Ar">n</var></dt>
+  <dd>Wait <var class="Ar">n</var> milliseconds between games. The default is
+    0.</dd>
+  <dt><a class="permalink" href="#resultformat"><code class="Fl" id="resultformat">-resultformat</code></a>
+    <var class="Ar">format</var></dt>
+  <dd>Specify the <var class="Ar">format</var> of result lists.
+      <var class="Ar">Format</var> can either be a comma separated list of
+      fields or a format name. Format <code class="Cm">help</code> shows
+      available named formats. The <code class="Cm">default</code> format lists
+      rank, name, elo, elo error, number of games, score percentage, and draw
+      percentage of every player.</dd>
+  <dt><a class="permalink" href="#version"><code class="Fl" id="version">-version</code></a></dt>
+  <dd>Display the version information.</dd>
+  <dt><a class="permalink" href="#help"><code class="Fl" id="help">-help</code></a></dt>
+  <dd>Display help information.</dd>
+  <dt><a class="permalink" href="#engines"><code class="Fl" id="engines">-engines</code></a></dt>
+  <dd>Display a list of configured engines and exit.</dd>
+</dl>
+<section class="Ss">
+<h2 class="Ss" id="Engine_Options"><a class="permalink" href="#Engine_Options">Engine
+  Options</a></h2>
+<dl class="Bl-tag">
+  <dt><a class="permalink" href="#conf"><code class="Ic" id="conf">conf</code></a>=<var class="Ar">arg</var></dt>
+  <dd>Use an engine with the name <var class="Ar">arg</var> from engine
+      configuration file.</dd>
+  <dt><a class="permalink" href="#name"><code class="Ic" id="name">name</code></a>=<var class="Ar">arg</var></dt>
+  <dd>Set the name to <var class="Ar">arg</var>.</dd>
+  <dt><a class="permalink" href="#cmd"><code class="Ic" id="cmd">cmd</code></a>=<var class="Ar">arg</var></dt>
+  <dd>Set the command to <var class="Ar">arg</var>.</dd>
+  <dt><a class="permalink" href="#dir"><code class="Ic" id="dir">dir</code></a>=<var class="Ar">arg</var></dt>
+  <dd>Set the working directory to <var class="Ar">arg</var>.</dd>
+  <dt><a class="permalink" href="#stderr"><code class="Ic" id="stderr">stderr</code></a>=<var class="Ar">arg</var></dt>
+  <dd>Redirect standard error output to file <var class="Ar">arg</var>.</dd>
+  <dt><a class="permalink" href="#proto"><code class="Ic" id="proto">proto</code></a>=[<code class="Cm">uci</code>
+    | <code class="Cm">xboard</code>]</dt>
+  <dd>Set the chess protocol.</dd>
+  <dt><a class="permalink" href="#tc"><code class="Ic" id="tc">tc</code></a>=[<var class="Ar">tcformat</var>
+    | <code class="Cm">inf</code>]</dt>
+  <dd>Set the time control. The format is moves/time+increment, where
+      <var class="Ar">moves</var> is the number of moves per tc,
+      <var class="Ar">time</var> is time per tc (either seconds or
+      minutes:seconds), and <var class="Ar">increment</var> is the time
+      increment per move in seconds.
+    <p class="Pp">Infinite time control can be set with
+        <code class="Cm">inf</code>.</p>
+  </dd>
+  <dt><a class="permalink" href="#option_&amp;."><code class="Ic" id="option_&amp;.">option.</code></a><var class="Ar">name</var>=<var class="Ar">value</var></dt>
+  <dd>Set custom engine option.</dd>
+  <dt><a class="permalink" href="#arg"><code class="Ic" id="arg">arg</code></a>=<var class="Ar">arg</var></dt>
+  <dd>Pass <var class="Ar">arg</var> to the engine as a command line
+    argument.</dd>
+  <dt><a class="permalink" href="#initstr"><code class="Ic" id="initstr">initstr</code></a>=<var class="Ar">arg</var></dt>
+  <dd>Send <var class="Ar">arg</var> to the engine's standard input at
+    startup.</dd>
+  <dt><a class="permalink" href="#restart"><code class="Ic" id="restart">restart</code></a>=[<code class="Cm">auto</code>
+    | <code class="Cm">on</code> | <code class="Cm">off</code>]</dt>
+  <dd>Set the engine restart mode. <code class="Cm">auto</code> means the engine
+      decides whether to restart (default), <code class="Cm">on</code> means the
+      engine is always restarted between games and <code class="Cm">off</code>
+      means the engine is never restarted between games. Setting this option
+      does not prevent engines from being restarted between rounds in a
+      tournament featuring more than two engines.</dd>
+  <dt><a class="permalink" href="#trust"><code class="Ic" id="trust">trust</code></a></dt>
+  <dd>Trust result claims from the engine without validation. By default all
+      claims are validated.</dd>
+  <dt><a class="permalink" href="#st"><code class="Ic" id="st">st</code></a>=<var class="Ar">n</var></dt>
+  <dd>Set the time limit for each move to <var class="Ar">n</var> seconds. This
+      option cannot be used in combination with the <code class="Ic">tc</code>
+      option.</dd>
+  <dt><a class="permalink" href="#timemargin"><code class="Ic" id="timemargin">timemargin</code></a>=<var class="Ar">n</var></dt>
+  <dd>Let engines go <var class="Ar">n</var> milliseconds over the time
+    limit.</dd>
+  <dt><a class="permalink" href="#book"><code class="Ic" id="book">book</code></a>=<var class="Ar">file</var></dt>
+  <dd>Use <var class="Ar">file</var> (Polyglot book file) as the opening
+    book.</dd>
+  <dt><a class="permalink" href="#bookdepth"><code class="Ic" id="bookdepth">bookdepth</code></a>=<var class="Ar">n</var></dt>
+  <dd>Set the maximum book depth (in fullmoves) to <var class="Ar">n</var>.</dd>
+  <dt><a class="permalink" href="#whitepov"><code class="Ic" id="whitepov">whitepov</code></a></dt>
+  <dd>Invert the engine's scores when it plays black. This option should be used
+      with engines that always report scores from white's perspective.</dd>
+  <dt><a class="permalink" href="#ponder"><code class="Ic" id="ponder">ponder</code></a></dt>
+  <dd>Enable pondering if the engine supports it.</dd>
+  <dt><a class="permalink" href="#depth"><code class="Ic" id="depth">depth</code></a>=<var class="Ar">plies</var></dt>
+  <dd>Set the search depth limit.</dd>
+  <dt><a class="permalink" href="#nodes"><code class="Ic" id="nodes">nodes</code></a>=<var class="Ar">count</var></dt>
+  <dd>Set the node count limit.</dd>
+</dl>
+</section>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="EXAMPLES"><a class="permalink" href="#EXAMPLES">EXAMPLES</a></h1>
+Play ten games between two Sloppy engines with a time control of 40 moves in 60
+  seconds:
+<p class="Pp"></p>
+<div class="Bd Bd-indent"><code class="Li">$ cutechess-cli -engine cmd=sloppy
+  -engine cmd=sloppy -each proto=xboard tc=40/60 -rounds 10</code></div>
+<p class="Pp">Play a single game between Atak and Glaurung engines with a time
+    control of 40 moves in one minute and 30 seconds with one second
+  increment:</p>
+<p class="Pp"></p>
+<div class="Bd Bd-indent"><code class="Li">$ cutechess-cli -engine name=Atak
+  cmd=Atak32.exe dir=C:\atak proto=xboard -engine cmd=glaurung proto=uci
+  option.Threads=1 -each tc=40/1:30+1</code></div>
+<ul class="Bl-bullet">
+  <li>Use the name=Atak parameter because it's a Xboard protocol 1 engine and
+      doesn't tell its name.</li>
+  <li>Use the dir=C:\atak parameter to point the location of the
+    executable.</li>
+  <li>Glaurung can tell its name and is in the PATH variable so only the command
+      is needed.</li>
+  <li>Set Glaurung to use 1 thread.</li>
+  <li>Set the time control to 40 moves in one minute and 30 seconds with one
+      second increment.</li>
+</ul>
+<p class="Pp">Play a Round-Robin tournament between Fruit, Crafty, Stockfish and
+    Sloppy:</p>
+<p class="Pp"></p>
+<div class="Bd Bd-indent"><code class="Li">$ cutechess-cli -engine conf=Fruit
+  -engine conf=Crafty -engine conf=Stockfish -engine conf=Sloppy -each tc=4
+  book=book.bin -games 2 -rounds 10 -repeat</code></div>
+<ul class="Bl-bullet">
+  <li>Play two games per encounter, effectively multiplying the number of games
+      by 2.</li>
+  <li>Play 10 times the minimum amount of rounds (3). So the total number of
+      rounds to play will be 30, and the total number of games 120.</li>
+  <li>In each two-game encounter colors are switched between games and the same
+      opening line is played in both games.</li>
+</ul>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="SEE_ALSO"><a class="permalink" href="#SEE_ALSO">SEE
+  ALSO</a></h1>
+<a class="Xr">cutechess-engines.json(5)</a>
+</section>
+<section class="Sh">
+<h1 class="Sh" id="AUTHORS"><a class="permalink" href="#AUTHORS">AUTHORS</a></h1>
+The <code class="Nm">cutechess-cli</code> utility was written by
+  <span class="An">Ilari Pihlajisto</span>,
+<br/>
+<span class="An">Arto Jonsson</span> and contributors. See the project page for
+  more details.
+</section>
+<section class="Sh">
+<h1 class="Sh" id="RESOURCES"><a class="permalink" href="#RESOURCES">RESOURCES</a></h1>
+<ul class="Bl-bullet">
+  <li>Project page:
+      <a class="Lk" href="http://github.com/cutechess/cutechess">http://github.com/cutechess/cutechess</a></li>
+</ul>
+</section>
+</div>
+<table class="foot">
+  <tr>
+    <td class="foot-date">June 28, 2020</td>
+    <td class="foot-os">Debian</td>
+  </tr>
+</table>
+</body>
+</html>
