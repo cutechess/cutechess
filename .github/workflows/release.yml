@@ -117,6 +117,10 @@ jobs:
                 cd cutechess-$env:VERSION-win64
                 cp ..\build\Release\cutechess.exe .
                 cp ..\build\Release\cutechess-cli.exe .
+                cp ..\docs\cutechess-cli.6.html .
+                cp ..\docs\cutechess-cli.6.txt .
+                cp ..\docs\cutechess-engines.json.5.html .
+                cp ..\docs\cutechess-engines.json.5.txt .
                 cp "$env:VCDIR\VC\Redist\MSVC\v143\vc_redist.x64.exe" .
                 cp "$env:Qt5_Dir\bin\Qt5Core.dll" .
                 cp "$env:Qt5_Dir\bin\Qt5Gui.dll" .
