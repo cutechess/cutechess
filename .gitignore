@@ -36,10 +36,6 @@ Makefile
 # doxygen generated api documents
 docs/api/html/
 
-# generated documentation files
-docs/*.html
-docs/*.txt
-
 # temporary directories used by qmake and compiler
 .rcc/
 .moc/
