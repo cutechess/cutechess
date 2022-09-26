@@ -51,7 +51,7 @@ jobs:
                   sudo apt install mandoc
                   cd ${GITHUB_WORKSPACE}/docs/
                   mandoc -T lint cutechess-cli.6
-                  mandoc -T lint engines.json.5
+                  mandoc -T lint cutechess-engines.json.5
 
             - name: build cute chess
               if: matrix.os == 'windows-latest'
