@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
     githubrel:
@@ -133,7 +134,11 @@ jobs:
                 cd ..
                 7z a cutechess-$env:VERSION-win64.zip cutechess-$env:VERSION-win64\
 
-            - name: upload release asset
+            - name: create an installer
+              run: |
+                issc -DMyAppVersion=$env:VERSION -DQtLibPath="$env:Qt5_Dir" -DMSVCPath="$env:VCDIR" -DCuteChessPath=. dist\windows_setup.iss
+
+            - name: upload zip release asset
               uses: actions/upload-release-asset@v1
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -142,3 +147,13 @@ jobs:
                 asset_path: cutechess-${{ env.VERSION }}-win64.zip
                 asset_name: cutechess-${{ env.VERSION }}-win64.zip
                 asset_content_type: application/zip
+
+            - name: upload installer release asset
+              uses: actions/upload-release-asset@v1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                upload_url: ${{ needs.githubrel.outputs.upload_url }}
+                asset_path: cutechess-${{ env.VERSION }}-win64.exe
+                asset_name: cutechess-${{ env.VERSION }}-win64.exe
+                asset_content_type: application/octet-stream
