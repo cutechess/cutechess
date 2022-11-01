@@ -27,58 +27,6 @@ jobs:
             release_name: Cute Chess ${{ env.VERSION }}
             draft: true
 
-    linuxrel:
-        needs: githubrel
-        name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
-        runs-on: ${{ matrix.os }}
-        strategy:
-          matrix:
-            qt_version: [6.3.0]
-            os: [ubuntu-latest]
-        steps:
-            - uses: actions/checkout@v3
-
-            - name: install qt 6.x
-              uses: jurplel/install-qt-action@v2
-              with:
-                version: ${{ matrix.qt_version }}
-                modules: 'qt5compat'
-                aqtversion: '==2.1.*'
-
-            - name: build cute chess
-              run: |
-                  mkdir build
-                  cd build
-                  cmake .. -DCMAKE_INSTALL_PREFIX=/usr
-                  cmake --build .
-                  make install DESTDIR=AppDir
-
-            - name: download appimage tools
-              run: |
-                cd build
-                curl -fsSLO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-                curl -fsLSO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
-                chmod +x linuxdeploy-*.AppImage
-
-            - name: set version
-              run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
-
-            - name: build appimage
-              run: |
-                cd build
-                ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin qt --output appimage --custom-apprun=../dist/appimage/CuteChess-AppRun --icon-file=../projects/gui/res/icons/cutechess_256x256.png --executable cutechess --executable cutechess-cli
-
-
-            - name: upload release asset
-              uses: actions/upload-release-asset@v1
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ needs.githubrel.outputs.upload_url }}
-                asset_path: build/Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
-                asset_name: Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
-                asset_content_type: application/octet-stream
-
     winrel:
         needs: githubrel
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
