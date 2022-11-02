@@ -3,7 +3,6 @@ on: [push, pull_request]
 
 jobs:
     winrel:
-        needs: githubrel
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
         runs-on: ${{ matrix.os }}
         env:
