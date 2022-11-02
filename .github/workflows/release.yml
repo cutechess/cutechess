@@ -1,38 +1,14 @@
 name: release cutechess
-on:
-  push:
-    tags:
-      - 'v*'
-  pull_request:
+on: [push, pull_request]
 
 jobs:
-    githubrel:
-      name: "Create GitHub release"
-      runs-on: ubuntu-latest
-      outputs:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-      steps:
-        - uses: actions/checkout@v3
-
-        - name: set version
-          run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
-
-        - name: create a draft github release
-          id: create_release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: Cute Chess ${{ env.VERSION }}
-            draft: true
-
     winrel:
         needs: githubrel
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
         runs-on: ${{ matrix.os }}
         env:
           VCDIR: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise'
+          ISDIR: 'C:\Program Files (x86)\Inno Setup 6'
         strategy:
           matrix:
             qt_version: [5.15.2]
@@ -60,48 +36,6 @@ jobs:
                 $version = Get-Content -Path .version
                 echo ("VERSION=" + $version) >> $env:GITHUB_ENV
 
-            - name: create a release zip file
-              run: |
-                mkdir cutechess-$env:VERSION-win64
-                cd cutechess-$env:VERSION-win64
-                cp ..\build\Release\cutechess.exe .
-                cp ..\build\Release\cutechess-cli.exe .
-                cp ..\docs\cutechess-cli.6.html .
-                cp ..\docs\cutechess-cli.6.txt .
-                cp ..\docs\cutechess-engines.json.5.html .
-                cp ..\docs\cutechess-engines.json.5.txt .
-                cp "$env:VCDIR\VC\Redist\MSVC\v143\vc_redist.x64.exe" .
-                cp "$env:Qt5_Dir\bin\Qt5Core.dll" .
-                cp "$env:Qt5_Dir\bin\Qt5Gui.dll" .
-                cp "$env:Qt5_Dir\bin\Qt5Svg.dll" .
-                cp "$env:Qt5_Dir\bin\Qt5PrintSupport.dll" .
-                cp "$env:Qt5_Dir\bin\Qt5Widgets.dll" .
-                cp "$env:Qt5_Dir\bin\Qt5ConCurrent.dll" .
-                mkdir platforms
-                cp "$env:Qt5_Dir\plugins\platforms\qwindows.dll" platforms\
-                cd ..
-                7z a cutechess-$env:VERSION-win64.zip cutechess-$env:VERSION-win64\
-
             - name: create an installer
               run: |
-                issc -DMyAppVersion=$env:VERSION -DQtLibPath="$env:Qt5_Dir" -DMSVCPath="$env:VCDIR" -DCuteChessPath=. dist\windows_setup.iss
-
-            - name: upload zip release asset
-              uses: actions/upload-release-asset@v1
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ needs.githubrel.outputs.upload_url }}
-                asset_path: cutechess-${{ env.VERSION }}-win64.zip
-                asset_name: cutechess-${{ env.VERSION }}-win64.zip
-                asset_content_type: application/zip
-
-            - name: upload installer release asset
-              uses: actions/upload-release-asset@v1
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ needs.githubrel.outputs.upload_url }}
-                asset_path: cutechess-${{ env.VERSION }}-win64.exe
-                asset_name: cutechess-${{ env.VERSION }}-win64.exe
-                asset_content_type: application/octet-stream
+                $env:ISDIR\iscc.exe" -DMyAppVersion=$env:VERSION -DQtLibPath="$env:Qt5_Dir" -DMSVCPath="$env:VCDIR" -DCuteChessPath=. dist\windows_setup.iss
