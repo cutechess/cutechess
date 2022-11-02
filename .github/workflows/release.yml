@@ -37,4 +37,4 @@ jobs:
 
             - name: create an installer
               run: |
-                $env:ISDIR\iscc.exe" -DMyAppVersion="$env:VERSION" -DQtLibPath="$env:Qt5_Dir" -DMSVCPath="$env:VCDIR" -DCuteChessPath="." dist\windows_setup.iss
+                "$env:ISDIR\iscc.exe" -DMyAppVersion="$env:VERSION" -DQtLibPath="$env:Qt5_Dir" -DMSVCPath="$env:VCDIR" -DCuteChessPath=. dist\windows_setup.iss
