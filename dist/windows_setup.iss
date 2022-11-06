@@ -4,14 +4,12 @@
 ;#define MinGW
 #define MSVC
 #define MyAppName "Cute Chess"
-#define MyAppVersion "1.2.0"
-#define MyAppPublisher "Cute Chess authors"
-#define MyAppURL "https://github.com/cutechess/cutechess"
+;#define MyAppVersion "1.2.0"
 #define MyAppExeName "cutechess.exe"
-#define MinGWLibPath "C:\QtSDK\mingw\bin"
+;#define MinGWLibPath "C:\QtSDK\mingw\bin"
 ;#define MSVCPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
-#define QtLibPath "C:\Qt\5.7\msvc2015_64"
-#define CuteChessPath "C:\cutechess"
+;#define QtLibPath "C:\Qt\5.7\msvc2015_64"
+;#define CuteChessPath "C:\cutechess"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -21,10 +19,10 @@ AppId={{7E0A39B7-4347-4A27-86CF-20E521C86E7C}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
-AppPublisher={#MyAppPublisher}
-AppPublisherURL={#MyAppURL}
-AppSupportURL={#MyAppURL}
-AppUpdatesURL={#MyAppURL}
+AppPublisher=Cute Chess authors
+AppPublisherURL=https://github.com/cutechess/cutechess
+AppSupportURL=https://github.com/cutechess/cutechess
+AppUpdatesURL=https://github.com/cutechess/cutechess
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 PrivilegesRequiredOverridesAllowed=dialog
@@ -43,7 +41,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "{#CuteChessPath}\build\Release\cutechess.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#CuteChessPath}\build\Release\cutechess-cli.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#CuteChessPath}\translations\cutechess_zh_CN.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
+;Source: "{#CuteChessPath}\translations\cutechess_zh_CN.qm"; DestDir: "{app}\translations"; Flags: ignoreversion
 #ifdef MinGW
   Source: "{#MinGWLibPath}\mingwm10.dll"; DestDir: "{app}"; Flags: ignoreversion
   Source: "{#MinGWLibPath}\libgcc_s_dw2-1.dll"; DestDir: "{app}"; Flags: ignoreversion
