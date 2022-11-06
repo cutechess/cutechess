@@ -4,14 +4,14 @@
 ;#define MinGW
 #define MSVC
 #define MyAppName "Cute Chess"
-#define MyAppVersion "1.2.0"
+;#define MyAppVersion "1.2.0"
 #define MyAppPublisher "Cute Chess authors"
 #define MyAppURL "https://github.com/cutechess/cutechess"
 #define MyAppExeName "cutechess.exe"
 #define MinGWLibPath "C:\QtSDK\mingw\bin"
 ;#define MSVCPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
-#define QtLibPath "C:\Qt\5.7\msvc2015_64"
-#define CuteChessPath "C:\cutechess"
+;define QtLibPath "C:\Qt\5.7\msvc2015_64"
+;#define CuteChessPath "C:\cutechess"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
