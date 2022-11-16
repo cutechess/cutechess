@@ -154,6 +154,6 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                 upload_url: ${{ needs.githubrel.outputs.upload_url }}
-                asset_path: cutechess-${{ env.VERSION }}-win64.exe
+                asset_path: dist/cutechess-${{ env.VERSION }}-win64.exe
                 asset_name: cutechess-${{ env.VERSION }}-win64.exe
                 asset_content_type: application/octet-stream
