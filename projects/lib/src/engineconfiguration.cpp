@@ -95,6 +95,9 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 				addOption(option);
 		}
 	}
+
+	if(map.contains("notes"))
+		setNotes(map["notes"].toString());
 }
 
 EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
@@ -103,6 +106,7 @@ EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
 	  m_workingDirectory(other.m_workingDirectory),
 	  m_stderrFile(other.m_stderrFile),
 	  m_protocol(other.m_protocol),
+	  m_notes(other.m_notes),
 	  m_arguments(other.m_arguments),
 	  m_initStrings(other.m_initStrings),
 	  m_variants(other.m_variants),
@@ -127,6 +131,7 @@ EngineConfiguration& EngineConfiguration::operator=(EngineConfiguration&& other)
 	m_workingDirectory = other.m_workingDirectory;
 	m_stderrFile = other.m_stderrFile;
 	m_protocol = other.m_protocol;
+	m_notes = other.m_notes;
 	m_arguments = other.m_arguments;
 	m_initStrings = other.m_initStrings;
 	m_variants = other.m_variants;
@@ -182,6 +187,9 @@ QVariant EngineConfiguration::toVariant() const
 
 		map.insert("options", optionsList);
 	}
+
+	if(!m_notes.isEmpty())
+		map.insert("notes", m_notes);
 
 	return map;
 }
@@ -361,6 +369,16 @@ void EngineConfiguration::setClaimsValidated(bool validate)
 	m_validateClaims = validate;
 }
 
+QString EngineConfiguration::notes() const
+{
+	return m_notes;
+}
+
+void EngineConfiguration::setNotes(const QString thenotes)
+{
+	m_notes = thenotes;
+}
+
 EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& other)
 {
 	if (this != &other)
@@ -370,6 +388,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		m_workingDirectory = other.m_workingDirectory;
 		m_stderrFile = other.m_stderrFile;
 		m_protocol = other.m_protocol;
+		m_notes = other.m_notes;
 		m_arguments = other.m_arguments;
 		m_initStrings = other.m_initStrings;
 		m_variants = other.m_variants;
