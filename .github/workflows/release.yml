@@ -131,6 +131,8 @@ jobs:
                 cp "$env:Qt5_Dir\bin\Qt5ConCurrent.dll" .
                 mkdir platforms
                 cp "$env:Qt5_Dir\plugins\platforms\qwindows.dll" platforms\
+                mkdir styles
+                cp "$env:Qt5_Dir\plugins\styles\qwindowsvistastyle.dll" styles\
                 cd ..
                 7z a cutechess-$env:VERSION-win64.zip cutechess-$env:VERSION-win64\
 
