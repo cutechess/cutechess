@@ -137,7 +137,9 @@ Options:
 			games set by '-rounds' and/or '-games' is reached.
   -ratinginterval N	Set the interval for printing the ratings to N games.
   -outcomeinterval N	Set the interval for printing outcomes to N games.
-  -debug		Display all engine input and output
+  -debug [all]		Display all engine input and output. In addition, all
+			eligible engines will be switched to debug mode if
+			argument 'all' is given.
   -openings file=FILE format=FORMAT order=ORDER plies=PLIES start=START policy=POLICY
 			Pick game openings from FILE. The file's format is
 			FORMAT, which can be either 'epd' or 'pgn' (default).
@@ -221,5 +223,6 @@ Engine options:
   nodes=N		Set the node count limit to N nodes
   ponder		Enable pondering if the engine supports it. By default
 			pondering is disabled.
+  debug			Activate debug mode per protocol (UCI only).
   option.OPTION=VALUE	Set custom option OPTION to value VALUE
 

@@ -148,6 +148,9 @@ void UciEngine::startGame()
 		m_startFen = board()->fenString(Chess::Board::XFen);
 	setVariant(board()->variant());
 
+	if (debugEnabled())
+		write("debug on");
+
 	write("ucinewgame");
 
 	if (m_canPonder)

@@ -295,8 +295,11 @@ games.
 Set the interval for printing outcomes to
 .Ar n
 games.
-.It Fl debug
+.It Fl debug Bo Cm all Bc
 Display all engine input and output.
+In addition, all eligible engines will be switched to debug mode if argument
+.Cm all
+is given.
 .It Fl openings Cm file Ns = Ns Ar file Cm format Ns = Ns Bo Cm epd | Cm pgn Ns Bc Cm order Ns = Ns Bo Cm random | Cm sequential Bc Cm plies Ns = Ns Ar plies Cm start Ns = Ns Ar start Cm policy Ns = Ns Bo Cm default | Cm encounter | Cm round Bc
 Pick game openings from
 .Ar file .
@@ -496,6 +499,8 @@ Enable pondering if the engine supports it.
 Set the search depth limit.
 .It Ic nodes Ns = Ns Ar count
 Set the node count limit.
+.It Ic debug
+Activate debug mode (per protocol, UCI only).
 .El
 .Sh EXAMPLES
 Play ten games between two Sloppy engines with a time control of 40

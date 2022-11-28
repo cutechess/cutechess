@@ -27,7 +27,8 @@ EngineConfiguration::EngineConfiguration()
 	  m_whiteEvalPov(false),
 	  m_pondering(false),
 	  m_validateClaims(true),
-	  m_restartMode(RestartAuto)
+	  m_restartMode(RestartAuto),
+	  m_debugEnabled(false)
 {
 }
 
@@ -41,7 +42,8 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 	  m_whiteEvalPov(false),
 	  m_pondering(false),
 	  m_validateClaims(true),
-	  m_restartMode(RestartAuto)
+	  m_restartMode(RestartAuto),
+	  m_debugEnabled(false)
 {
 }
 
@@ -50,7 +52,8 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 	  m_whiteEvalPov(false),
 	  m_pondering(false),
 	  m_validateClaims(true),
-	  m_restartMode(RestartAuto)
+	  m_restartMode(RestartAuto),
+	  m_debugEnabled(false)
 {
 	const QVariantMap map = variant.toMap();
 
@@ -80,6 +83,8 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 
 	if (map.contains("validateClaims"))
 		setClaimsValidated(map["validateClaims"].toBool());
+	if (map.contains("debug"))
+		setDebugEnabled(map["debug"].toBool());
 
 	if (map.contains("variants"))
 		setSupportedVariants(map["variants"].toStringList());
@@ -109,7 +114,8 @@ EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
 	  m_whiteEvalPov(other.m_whiteEvalPov),
 	  m_pondering(other.m_pondering),
 	  m_validateClaims(other.m_validateClaims),
-	  m_restartMode(other.m_restartMode)
+	  m_restartMode(other.m_restartMode),
+	  m_debugEnabled(other.debugEnabled())
 {
 	const auto options = other.options();
 	for (const EngineOption* option : options)
@@ -134,6 +140,7 @@ EngineConfiguration& EngineConfiguration::operator=(EngineConfiguration&& other)
 	m_pondering = other.m_pondering;
 	m_validateClaims = other.m_validateClaims;
 	m_restartMode = other.m_restartMode;
+	m_debugEnabled =other.m_debugEnabled;
 	m_options = other.m_options;
 
 	// other's destructor will cause a mess if its m_options isn't cleared
@@ -170,6 +177,8 @@ QVariant EngineConfiguration::toVariant() const
 
 	if (!m_validateClaims)
 		map.insert("validateClaims", false);
+	if (m_debugEnabled)
+		map.insert("debug", true);
 
 	if (m_variants.count("standard") != m_variants.count())
 		map.insert("variants", m_variants);
@@ -361,6 +370,16 @@ void EngineConfiguration::setClaimsValidated(bool validate)
 	m_validateClaims = validate;
 }
 
+bool EngineConfiguration::debugEnabled() const
+{
+	return m_debugEnabled;
+}
+
+void EngineConfiguration::setDebugEnabled(bool enabled)
+{
+	m_debugEnabled = enabled;
+}
+
 EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& other)
 {
 	if (this != &other)
@@ -377,6 +396,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		m_pondering = other.m_pondering;
 		m_validateClaims = other.m_validateClaims;
 		m_restartMode = other.m_restartMode;
+		m_debugEnabled = other.m_debugEnabled;
 
 		qDeleteAll(m_options);
 		m_options.clear();
