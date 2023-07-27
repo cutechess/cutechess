@@ -85,7 +85,7 @@ jobs:
           ISDIR: 'C:\Program Files (x86)\Inno Setup 6'
         strategy:
           matrix:
-            qt_version: [5.15.10]
+            qt_version: [5.15.2]
             os: [windows-latest]
         steps:
             - uses: actions/checkout@v3
