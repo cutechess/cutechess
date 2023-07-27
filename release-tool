@@ -2,11 +2,11 @@
 
 # tool to help make consistent Cute Chess releases
 
+import os
+import re
 import subprocess
 import sys
 import tempfile
-import os
-import re
 
 
 def usage() -> None:
@@ -20,7 +20,7 @@ def error(msg: str) -> None:
 
 
 def validate_version(ver: str) -> bool:
-    return re.match('^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)', ver)
+    return re.match("^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)", ver) is not None
 
 
 def git_dir_exists() -> bool:
@@ -28,16 +28,28 @@ def git_dir_exists() -> bool:
 
 
 def current_branch() -> str:
-    return subprocess.run(["git", "branch", "--show-current"],
-                          stdout=subprocess.PIPE).stdout.decode().strip()
+    return (
+        subprocess.run(["git", "branch", "--show-current"], stdout=subprocess.PIPE)
+        .stdout.decode()
+        .strip()
+    )
 
 
 def release_exists(rel: str) -> bool:
-    return len(subprocess.run(["git", "tag", "-l", f"v{rel}"],
-               stdout=subprocess.PIPE).stdout.decode().strip()) != 0
+    return (
+        len(
+            subprocess.run(["git", "tag", "-l", f"v{rel}"], stdout=subprocess.PIPE)
+            .stdout.decode()
+            .strip()
+        )
+        != 0
+    )
+
 
 def working_tree_clean() -> bool:
-    return subprocess.run(["git", "diff-index", "--quiet", "HEAD", "--"]).returncode == 0
+    return (
+        subprocess.run(["git", "diff-index", "--quiet", "HEAD", "--"]).returncode == 0
+    )
 
 
 def pull_remote_changes() -> bool:
@@ -54,8 +66,12 @@ def update_version_file(new_version: str) -> bool:
     # before entering to this function, working tree is clean
     # and ".version" should be already in the repo so
     # "commit -a" should be safe
-    return subprocess.run(["git", "commit", "-a", "-m",
-                          f"version {new_version}"]).returncode == 0
+    return (
+        subprocess.run(
+            ["git", "commit", "-a", "-m", f"version {new_version}"]
+        ).returncode
+        == 0
+    )
 
 
 if __name__ == "__main__":
@@ -65,7 +81,9 @@ if __name__ == "__main__":
     new_version = sys.argv[1]
 
     if not validate_version(new_version):
-        error(f"{new_version} does not conform to the semver standard MAJOR.MINOR.PATCH")
+        error(
+            f"{new_version} does not conform to the semver standard MAJOR.MINOR.PATCH"
+        )
 
     if not git_dir_exists():
         error("'.git' does not exist; move to the source root")
