@@ -27,11 +27,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `release-tool`, a developer tool, for creating consistent releases
 - Initial `clang-format` configuration
 - AppImage generation for releases
+- Setting to scale chess engine timeouts periods by @kiudee
 
 ### Fixed
 
 - Non-Latin 1 characters included in PGN tags (#423)
 - Modern Windows theme is now applied correctly
+- FRC: Fixed incorrect "illegal move" adjudications when castling (#616, #637, #755, #756)
+- Fixes for Shogi:
+    - Fix result strings for Shogi, Dobutsu Shogi and Judkins Shogi
+    - ShogiBoard: Assert both sides have exactly one King
+    - Add logic to ShogiBoard to keep track of perpetuals
+    - Add comment describing the 27-point rule to break Impassé (FESA rule 5.3)
+    - Fix Chick drop rules in Dobutsu Shogi
+    - Fix symbol of promoted Chick in Dobutsu Shogi
+    - Dobutsu: Modify adjudication of "try" win by Lion on farthest rank
+- Implement Dirichlet prior for SPRT; handle case where one or more of the counts (WDL) is 0 (#360)
 
 ### Changed
 
