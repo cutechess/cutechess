@@ -64,6 +64,7 @@ QString variantToXboard(const QString& str)
 }
 
 const int s_infiniteSec = 86400;
+const int s_initTimerDefaultInterval = 8000;
 
 } // anonymous namespace
 
@@ -84,11 +85,19 @@ XboardEngine::XboardEngine(QObject* parent)
 	  m_initTimer(new QTimer(this))
 {
 	m_initTimer->setSingleShot(true);
-	m_initTimer->setInterval(8000);
+	m_initTimer->setInterval(s_initTimerDefaultInterval);
 	connect(m_initTimer, SIGNAL(timeout()), this, SLOT(initialize()));
 
 	addVariant("standard");
 	setName("XboardEngine");
+}
+
+void XboardEngine::applyConfiguration(const EngineConfiguration& configuration)
+{
+	ChessEngine::applyConfiguration(configuration);
+
+	int timeout = s_initTimerDefaultInterval * configuration.timeoutScale();
+	m_initTimer->setInterval(timeout);
 }
 
 void XboardEngine::startProtocol()

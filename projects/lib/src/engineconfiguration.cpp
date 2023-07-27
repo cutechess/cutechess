@@ -27,6 +27,7 @@ EngineConfiguration::EngineConfiguration()
 	  m_whiteEvalPov(false),
 	  m_pondering(false),
 	  m_validateClaims(true),
+	  m_timeoutScale(1.0),
 	  m_restartMode(RestartAuto)
 {
 }
@@ -41,6 +42,7 @@ EngineConfiguration::EngineConfiguration(const QString& name,
 	  m_whiteEvalPov(false),
 	  m_pondering(false),
 	  m_validateClaims(true),
+	  m_timeoutScale(1.0),
 	  m_restartMode(RestartAuto)
 {
 }
@@ -50,6 +52,7 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 	  m_whiteEvalPov(false),
 	  m_pondering(false),
 	  m_validateClaims(true),
+	  m_timeoutScale(1.0),
 	  m_restartMode(RestartAuto)
 {
 	const QVariantMap map = variant.toMap();
@@ -59,6 +62,13 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 	setWorkingDirectory(map["workingDirectory"].toString());
 	setStderrFile(map["stderrFile"].toString());
 	setProtocol(map["protocol"].toString());
+
+	bool ok = true;
+	if (map.contains("timeoutScaleFactor"))
+	{
+		double tscale = map["timeoutScaleFactor"].toDouble(&ok);
+		setTimeoutScale(ok ? tscale : 1.0);
+	}
 
 	if (map.contains("initStrings"))
 		setInitStrings(map["initStrings"].toStringList());
@@ -109,6 +119,7 @@ EngineConfiguration::EngineConfiguration(const EngineConfiguration& other)
 	  m_whiteEvalPov(other.m_whiteEvalPov),
 	  m_pondering(other.m_pondering),
 	  m_validateClaims(other.m_validateClaims),
+	  m_timeoutScale(other.m_timeoutScale),
 	  m_restartMode(other.m_restartMode)
 {
 	const auto options = other.options();
@@ -133,6 +144,7 @@ EngineConfiguration& EngineConfiguration::operator=(EngineConfiguration&& other)
 	m_whiteEvalPov = other.m_whiteEvalPov;
 	m_pondering = other.m_pondering;
 	m_validateClaims = other.m_validateClaims;
+	m_timeoutScale = other.m_timeoutScale;
 	m_restartMode = other.m_restartMode;
 	m_options = other.m_options;
 
@@ -155,6 +167,7 @@ QVariant EngineConfiguration::toVariant() const
 	map.insert("workingDirectory", m_workingDirectory);
 	map.insert("stderrFile", m_stderrFile);
 	map.insert("protocol", m_protocol);
+	map.insert("timeoutScaleFactor", m_timeoutScale);
 
 	if (!m_initStrings.isEmpty())
 		map.insert("initStrings", m_initStrings);
@@ -361,6 +374,16 @@ void EngineConfiguration::setClaimsValidated(bool validate)
 	m_validateClaims = validate;
 }
 
+double EngineConfiguration::timeoutScale() const
+{
+	return m_timeoutScale;
+}
+
+void EngineConfiguration::setTimeoutScale(double value)
+{
+	m_timeoutScale = qBound(timeoutScaleMin, value, timeoutScaleMax);
+}
+
 EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& other)
 {
 	if (this != &other)
@@ -370,6 +393,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		m_workingDirectory = other.m_workingDirectory;
 		m_stderrFile = other.m_stderrFile;
 		m_protocol = other.m_protocol;
+		m_timeoutScale = other.m_timeoutScale;
 		m_arguments = other.m_arguments;
 		m_initStrings = other.m_initStrings;
 		m_variants = other.m_variants;

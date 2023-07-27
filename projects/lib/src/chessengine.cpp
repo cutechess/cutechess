@@ -22,7 +22,7 @@
 #include <QStringRef>
 #include <QtAlgorithms>
 #include "engineoption.h"
-
+#include <QSettings>
 
 int ChessEngine::s_count = 0;
 
@@ -76,6 +76,7 @@ ChessEngine::ChessEngine(QObject* parent)
 	  m_pinging(false),
 	  m_whiteEvalPov(false),
 	  m_pondering(false),
+	  m_timeoutScale(1.0),
 	  m_pingTimer(new QTimer(this)),
 	  m_quitTimer(new QTimer(this)),
 	  m_idleTimer(new QTimer(this)),
@@ -84,19 +85,19 @@ ChessEngine::ChessEngine(QObject* parent)
 	  m_restartMode(EngineConfiguration::RestartAuto)
 {
 	m_pingTimer->setSingleShot(true);
-	m_pingTimer->setInterval(15000);
+	m_pingTimer->setInterval(defaultPingTimeout);
 	connect(m_pingTimer, SIGNAL(timeout()), this, SLOT(onPingTimeout()));
 
 	m_quitTimer->setSingleShot(true);
-	m_quitTimer->setInterval(5000);
+	m_quitTimer->setInterval(defaultQuitTimeout);
 	connect(m_quitTimer, SIGNAL(timeout()), this, SLOT(onQuitTimeout()));
 
 	m_idleTimer->setSingleShot(true);
-	m_idleTimer->setInterval(15000);
+	m_idleTimer->setInterval(defaultIdleTimeout);
 	connect(m_idleTimer, SIGNAL(timeout()), this, SLOT(onIdleTimeout()));
 
 	m_protocolStartTimer->setSingleShot(true);
-	m_protocolStartTimer->setInterval(35000);
+	m_protocolStartTimer->setInterval(defaultProtocolStartTimeout);
 	connect(m_protocolStartTimer, SIGNAL(timeout()),
 		this, SLOT(onProtocolStartTimeout()));
 }
@@ -140,8 +141,26 @@ void ChessEngine::applyConfiguration(const EngineConfiguration& configuration)
 
 	m_whiteEvalPov = configuration.whiteEvalPov();
 	m_pondering = configuration.pondering();
+	m_timeoutScale = configuration.timeoutScale();
 	m_restartMode = configuration.restartMode();
 	setClaimsValidated(configuration.areClaimsValidated());
+
+	// Read protocol timeouts from QSettings.
+	// Scale timer intervals according to m_timeoutScale
+	QSettings settings;
+	settings.beginGroup("Timing");
+
+	int pingTimeout = m_timeoutScale * settings.value("PingTimeout", defaultPingTimeout).toInt();
+	int quitTimeout = m_timeoutScale * settings.value("QuitTimeout", defaultQuitTimeout).toInt();
+	int idleTimeout = m_timeoutScale * settings.value("IdleTimeout", defaultIdleTimeout).toInt();
+	double protocolStartTimeout = m_timeoutScale * settings.value("ProtocolStartTimeout",
+								      defaultProtocolStartTimeout).toInt();
+	settings.endGroup();
+
+	m_pingTimer->setInterval(pingTimeout);
+	m_quitTimer->setInterval(quitTimeout);
+	m_idleTimer->setInterval(idleTimeout);
+	m_protocolStartTimer->setInterval(protocolStartTimeout);
 }
 
 void ChessEngine::addOption(EngineOption* option)
