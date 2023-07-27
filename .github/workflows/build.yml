@@ -11,60 +11,34 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
           matrix:
-            qt_version: [5.15.2, 6.5.2]
-            os: [windows-latest, ubuntu-latest, macos-latest]
+            qt_version: [6.5.2]
+            os: [ubuntu-latest]
         steps:
             - uses: actions/checkout@v3
 
-            - name: install qt 5.x
-              uses: jurplel/install-qt-action@v3
-              if: startsWith(matrix.qt_version, '5.')
-              with:
-                version: ${{ matrix.qt_version }}
-
             - name: install qt 6.x
               uses: jurplel/install-qt-action@v3
-              if: startsWith(matrix.qt_version, '6.')
               with:
                 version: ${{ matrix.qt_version }}
                 modules: 'qt5compat'
 
             - name: build cute chess
-              if: matrix.os != 'windows-latest'
               run: |
                   mkdir build
                   cd build
-                  cmake ..
+                  cmake .. -DCMAKE_INSTALL_PREFIX=/usr
                   cmake --build .
+                  make install DESTDIR=AppDir
 
-            - name: run unit tests
-              if: matrix.os != 'windows-latest'
+            - name: download appimage tools
               run: |
-                  cd build
-                  make test
+                sudo apt install libfuse2 libxcb-cursor0
+                cd build
+                curl -fsSLO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+                curl -fsLSO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+                chmod +x linuxdeploy-*.AppImage
 
-            - name: check manual pages
-              if: matrix.os == 'ubuntu-latest'
+            - name: build appimage
               run: |
-                  sudo apt install mandoc
-                  cd ${GITHUB_WORKSPACE}/docs/
-                  mandoc -T lint cutechess-cli.6
-                  mandoc -T lint cutechess-engines.json.5
-
-            - name: build cute chess
-              if: matrix.os == 'windows-latest'
-              shell: cmd
-              run: |
-                  call "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-                  mkdir build
-                  cd build
-                  cmake ..
-                  cmake --build . --config release
-
-            - name: run unit tests
-              if: matrix.os == 'windows-latest'
-              shell: cmd
-              run: |
-                  call "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-                  cd build
-                  ctest -C release
+                cd build
+                ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin qt --output appimage --custom-apprun=../dist/appimage/CuteChess-AppRun --icon-file=../projects/gui/res/icons/cutechess_256x256.png --executable cutechess --executable cutechess-cli
