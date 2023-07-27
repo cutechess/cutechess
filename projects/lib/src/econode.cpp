@@ -115,7 +115,7 @@ void EcoNode::initialize(PgnStream& in)
 	}
 
 	s_root = new EcoNode;
-	EcoNode* current = s_root;
+	EcoNode* current;
 	QMap<QString, int> tmpOpenings;
 
 	PgnGame game;
