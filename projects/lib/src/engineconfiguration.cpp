@@ -64,9 +64,9 @@ EngineConfiguration::EngineConfiguration(const QVariant& variant)
 	setProtocol(map["protocol"].toString());
 
 	bool ok = true;
-	if (map.contains("timeout_scale_factor"))
+	if (map.contains("timeoutScaleFactor"))
 	{
-		double tscale = map["timeout_scale_factor"].toDouble(&ok);
+		double tscale = map["timeoutScaleFactor"].toDouble(&ok);
 		setTimeoutScale(ok ? tscale : 1.0);
 	}
 
@@ -167,7 +167,7 @@ QVariant EngineConfiguration::toVariant() const
 	map.insert("workingDirectory", m_workingDirectory);
 	map.insert("stderrFile", m_stderrFile);
 	map.insert("protocol", m_protocol);
-	map.insert("timeout_scale_factor", m_timeoutScale);
+	map.insert("timeoutScaleFactor", m_timeoutScale);
 
 	if (!m_initStrings.isEmpty())
 		map.insert("initStrings", m_initStrings);
