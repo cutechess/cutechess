@@ -21,7 +21,6 @@ jobs:
               if: startsWith(matrix.qt_version, '5.')
               with:
                 version: ${{ matrix.qt_version }}
-                aqtversion: '==2.1.*'
 
             - name: install qt 6.x
               uses: jurplel/install-qt-action@v3
@@ -29,7 +28,6 @@ jobs:
               with:
                 version: ${{ matrix.qt_version }}
                 modules: 'qt5compat'
-                aqtversion: '==2.1.*'
 
             - name: build cute chess
               if: matrix.os != 'windows-latest'

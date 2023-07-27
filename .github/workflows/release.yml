@@ -42,7 +42,6 @@ jobs:
               with:
                 version: ${{ matrix.qt_version }}
                 modules: 'qt5compat'
-                aqtversion: '==2.1.*'
 
             - name: build cute chess
               run: |
@@ -66,7 +65,6 @@ jobs:
               run: |
                 cd build
                 ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin qt --output appimage --custom-apprun=../dist/appimage/CuteChess-AppRun --icon-file=../projects/gui/res/icons/cutechess_256x256.png --executable cutechess --executable cutechess-cli
-
 
             - name: upload release asset
               uses: actions/upload-release-asset@v1
@@ -97,7 +95,6 @@ jobs:
               if: startsWith(matrix.qt_version, '5.')
               with:
                 version: ${{ matrix.qt_version }}
-                aqtversion: '==2.1.*'
 
             - name: build cute chess
               run: |
