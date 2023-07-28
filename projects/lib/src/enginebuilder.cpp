@@ -71,10 +71,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 	if (!stderrFile.isEmpty())
 		process->setStandardErrorFile(stderrFile, QIODevice::Append);
 
-	if (!m_config.arguments().isEmpty())
-		process->start(cmd, m_config.arguments());
-	else
-		process->start(cmd);
+	process->start(cmd, m_config.arguments());
 
 	bool ok = process->waitForStarted();
 	if (!ok)
