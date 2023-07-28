@@ -1,0 +1,27 @@
+name: 'Coverity Scan'
+
+on:
+  push:
+    branches: [coverity_scan]
+
+jobs:
+  coverity:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Install dependencies
+      run: |
+        sudo apt install qtbase5-dev qtbase5-dev-tools libqt5svg5-dev
+    - name: CMake
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+    - name: Coverity scan
+      uses: vapier/coverity-scan-action@v1
+      with:
+        project: 'cutechess/cutechess'
+        email: ${{ secrets.COVERITY_SCAN_EMAIL }}
+        token: ${{ secrets.COVERITY_SCAN_TOKEN }}
+        working-directory: ${{ github.workspace }}/build
