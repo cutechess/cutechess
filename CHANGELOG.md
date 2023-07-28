@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Initial `clang-format` configuration
 - AppImage generation for releases
 - Setting to scale chess engine timeouts periods by @kiudee
+- Draw nicer move arrows by @kdave
 
 ### Fixed
 
@@ -52,6 +53,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `libcutechess` is always built statically with CMake: API / ABI stability of
   the library cannot be guaranteed in the future due to lack of developer
   resources
+- Default build now includes debug symbols
 
 ### Removed
 
