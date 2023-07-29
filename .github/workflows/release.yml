@@ -47,7 +47,7 @@ jobs:
               run: |
                   mkdir build
                   cd build
-                  cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+                  cmake .. -DWITH_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr
                   cmake --build .
                   make install DESTDIR=AppDir
 
@@ -101,7 +101,7 @@ jobs:
               run: |
                   mkdir build
                   cd build
-                  cmake ..
+                  cmake .. -DWITH_TESTS=OFF
                   cmake --build . --config release
 
             - name: set environment
