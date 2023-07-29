@@ -284,6 +284,7 @@ endif()
 
 set_target_properties(gui PROPERTIES OUTPUT_NAME cutechess)
 set_target_properties(gui PROPERTIES AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/projects/gui/ui)
+set_target_properties(gui PROPERTIES WIN32_EXECUTABLE ON)
 
 target_include_directories(gui PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/projects/gui/3rdparty/qcustomplot>
