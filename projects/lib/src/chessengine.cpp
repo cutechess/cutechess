@@ -26,6 +26,18 @@
 
 int ChessEngine::s_count = 0;
 
+std::pair<QStringView, QStringView> ChessEngine::tokenize(QStringView sv)
+{
+	if (sv.isEmpty())
+		return std::make_pair(QStringView(), QStringView());
+
+	auto index = sv.indexOf(QChar(' '));
+	if (index == -1)
+		return std::make_pair(sv, QStringView());
+
+	return std::make_pair(sv.mid(0, index), sv.mid(index, sv.size() - 1).trimmed());
+}
+
 QStringRef ChessEngine::nextToken(const QStringRef& previous, bool untilEnd)
 {
 	const QString* str = previous.string();
