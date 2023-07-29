@@ -603,12 +603,14 @@ int XboardEngine::adaptScore(int score) const
 
 void XboardEngine::parseLine(const QString& line)
 {
-	const QStringRef command(firstToken(line));
+	auto input = tokenize(line);
+	auto command = input.first;
 	if (command.isEmpty())
 		return;
 
-	if (command == "1-0" || command == "0-1"
-	||  command == "*" || command == "1/2-1/2" || command == "resign")
+	if (command == QLatin1String("1-0") || command == QLatin1String("0-1")
+	|| command == QLatin1String("*") || command == QLatin1String("1/2-1/2")
+	|| command == QLatin1String("resign"))
 	{
 		if ((state() != Thinking && state() != Observing)
 		||  !board()->result().isNone())
@@ -617,17 +619,17 @@ void XboardEngine::parseLine(const QString& line)
 			return;
 		}
 
-		QString description(nextToken(command, true).toString());
+		auto description = input.second;
 		if (description.startsWith('{'))
-			description.remove(0, 1);
+			description = description.right(description.size() - 1);
 		if (description.endsWith('}'))
-			description.chop(1);
+			description = description.left(description.size() - 1);
 
-		if (command == "*")
+		if (command == QLatin1String("*"))
 			claimResult(Chess::Result(Chess::Result::NoResult,
 						  Chess::Side::NoSide,
-						  description));
-		else if (command == "1/2-1/2")
+						  description.toString()));
+		else if (command == QLatin1String("1/2-1/2"))
 		{
 			if (state() == Thinking && areClaimsValidated())
 				// The engine claims that its next move will draw the game
@@ -635,22 +637,22 @@ void XboardEngine::parseLine(const QString& line)
 			else
 				claimResult(Chess::Result(Chess::Result::Draw,
 							  Chess::Side::NoSide,
-							  description));
+							  description.toString()));
 		}
-		else if ((command == "1-0" && side() == Chess::Side::White)
-		     ||  (command == "0-1" && side() == Chess::Side::Black))
+		else if ((command == QLatin1String("1-0") && side() == Chess::Side::White)
+		     ||  (command == QLatin1String("0-1") && side() == Chess::Side::Black))
 			claimResult(Chess::Result(Chess::Result::Win,
 						  side(),
-						  description));
+						  description.toString()));
 		else
 			forfeit(Chess::Result::Resignation);
 
 		return;
 	}
 	else if (command.at(0).isDigit()
-	     && !command.contains("."))	// principal variation
+	     && !command.contains(QChar('.')))	// principal variation
 	{
-		auto eval = parsePv(command);
+		auto eval = parsePv(line);
 		if (!eval.isEmpty())
 		{
 			m_eval = eval;
@@ -661,10 +663,10 @@ void XboardEngine::parseLine(const QString& line)
 	}
 
 	// move format of old CECP engines: 1. ... e2e4
-	bool testDigitAndDot = command.at(0).isDigit() && command.contains(".");
+	bool testDigitAndDot = command.at(0).isDigit() && command.contains(QChar('.'));
 
-	const QString args(nextToken(command, true).toString());
-	if (command == "move" || (testDigitAndDot && args.startsWith("...")))
+	auto args = input.second;
+	if (command == QLatin1String("move") || (testDigitAndDot && args.startsWith(QLatin1String("..."))))
 	{
 		if (state() != Thinking)
 		{
@@ -677,9 +679,10 @@ void XboardEngine::parseLine(const QString& line)
 		}
 
 		// remove "..." of old format if necessary
-		int mark = (args.indexOf("..."));
-		const QString& movestr = mark < 0 ? args : args.mid(4);
-		const QString& newMovestr = transformMove(movestr, board()->height(), +1);
+		auto mark = args.indexOf(QLatin1String("..."));
+		auto movestr = mark < 0 ? args : args.mid(4);
+		// XXX: transformMove() should use QStringView as well
+		const QString& newMovestr = transformMove(movestr.toString(), board()->height(), +1);
 
 		Chess::Move move = board()->moveFromString(newMovestr);
 		if (move.isNull())
@@ -707,29 +710,30 @@ void XboardEngine::parseLine(const QString& line)
 
 		emitMove(move);
 	}
-	else if (command == "pong")
+	else if (command == QLatin1String("pong"))
 	{
 		if (args.toInt() == m_lastPing)
 			pong();
 	}
-	else if (command == "feature")
+	else if (command == QLatin1String("feature"))
 	{
-		for (const XboardFeature& feature : parseFeatures(args)) {
+		// XXX: parseFeatures() should use QStringView
+		for (const XboardFeature& feature : parseFeatures(args.toString())) {
 			setFeature(feature.first, feature.second);
 		}
 	}
-	else if (command.startsWith("Illegal"))
+	else if (command.startsWith(QLatin1String("Illegal")))
 	{
 		forfeit(Chess::Result::Adjudication,
 			tr("%1 claims illegal %2")
 			.arg(this->side().toString())
 			.arg(args));
 	}
-	else if (command == "Error")
+	else if (command == QLatin1String("Error"))
 	{
 		// If the engine complains about an unknown result command,
 		// we can assume that it's safe to finish the game.
-		QString str = args.section(':', 1).trimmed();
+		QString str = args.toString().section(':', 1).trimmed();
 		if (str.startsWith("result"))
 			finishGame();
 	}
@@ -774,23 +778,26 @@ QList<XboardFeature> XboardEngine::parseFeatures(const QString& featureArgs)
 	return features;
 }
 
-MoveEvaluation XboardEngine::parsePv(const QStringRef& pvString)
+MoveEvaluation XboardEngine::parsePv(QStringView pvString)
 {
 	bool ok = false;
 	int val = 0;
-	QStringRef ref(pvString);
 	MoveEvaluation eval;
 
+	auto tokens = tokenize(pvString);
+
 	// Search depth
-	QString depth(ref.toString());
+	auto depth = tokens.first;
 	if (!(depth.cend() - 1)->isDigit())
 		depth.chop(1);
 	eval.setDepth(depth.toInt());
 
+	tokens = tokenize(tokens.second);
+
 	// Evaluation
-	if ((ref = nextToken(ref)).isNull())
+	if (tokens.first.isEmpty())
 		return MoveEvaluation();
-	val = ref.toString().toInt(&ok);
+	val = tokens.first.toInt(&ok);
 	if (ok)
 	{
 		if (whiteEvalPov() && side() == Chess::Side::Black)
@@ -798,24 +805,30 @@ MoveEvaluation XboardEngine::parsePv(const QStringRef& pvString)
 		eval.setScore(adaptScore(val));
 	}
 
+	tokens = tokenize(tokens.second);
+
 	// Search time
-	if ((ref = nextToken(ref)).isNull())
+	if (tokens.first.isEmpty())
 		return MoveEvaluation();
-	val = ref.toString().toInt(&ok);
+	val = tokens.first.toInt(&ok);
 	if (ok)
 		eval.setTime(val * 10);
 
+	tokens = tokenize(tokens.second);
+
 	// Node count
-	if ((ref = nextToken(ref)).isNull())
+	if (tokens.first.isEmpty())
 		return MoveEvaluation();
-	val = ref.toString().toULongLong(&ok);
+	val = tokens.first.toULongLong(&ok);
 	if (ok)
 		eval.setNodeCount(val);
 
+	tokens = tokenize(tokens.second);
+
 	// Principal variation
-	if ((ref = nextToken(ref, true)).isNull())
+	if (tokens.first.isEmpty())
 		return MoveEvaluation();
-	eval.setPv(ref.toString());
+	eval.setPv(tokens.first.toString());
 
 	return eval;
 }
