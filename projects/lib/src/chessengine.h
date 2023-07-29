@@ -133,6 +133,20 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 	protected:
 		/*!
 		 * Reads the first whitespace-delimited token from a string
+		 * and returns a pair with the token in the first element
+		 * and the rest of the string in the second element of the pair.
+		 *
+		 * \note Leading and trailing whitespace need to be removed from
+		 * \a sv before calling this function.
+		 *
+		 * If \a sv doesn't contain any whitespace, the whole string
+		 * is returned in the first element of the pair.
+		 *
+		 * If \a sv is empty, a pair of empty QStringView is returned.
+		 */
+		static std::pair<QStringView, QStringView> tokenize(QStringView sv);
+		/*!
+		 * Reads the first whitespace-delimited token from a string
 		 * and returns a QStringRef reference to the token.
 		 *
 		 * If \a readToEnd is true, the whole string is read, except
