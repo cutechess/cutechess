@@ -747,7 +747,7 @@ int main(int argc, char* argv[])
 			out << "Using Qt version " << qVersion() << '\n';
 			out << "Running on " << QSysInfo::prettyProductName();
 			out << "/" << QSysInfo::currentCpuArchitecture() << '\n' << '\n';
-			out << "Copyright (C) 2008-2020 Ilari Pihlajisto, Arto Jonsson ";
+			out << "Copyright (C) 2008-2023 Ilari Pihlajisto, Arto Jonsson ";
 			out << "and contributors" << '\n';
 			out << "This is free software; see the source for copying ";
 			out << "conditions.  There is NO" << '\n' << "warranty; not even for ";
