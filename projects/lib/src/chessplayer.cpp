@@ -260,8 +260,13 @@ void ChessPlayer::claimResult(const Chess::Result& result)
 
 void ChessPlayer::forfeit(Chess::Result::Type type, const QString& description)
 {
+	// If the board is gone, it means the game already ended and has an
+	// appropriate result.
+	if (m_board == nullptr)
+		return;
+
 	Chess::Side opp = m_side.opposite();
-	if (!opp.isNull() && !board()->winPossible(opp))
+	if (!opp.isNull() && !m_board->winPossible(opp))
 		m_side = Chess::Side::NoSide;
 
 	if (m_side.isNull())
