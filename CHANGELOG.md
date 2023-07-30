@@ -3,15 +3,16 @@
 All notable changes to Cute Chess will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased](https://github.com/cutechess/cutechess/tree/master)
+## [1.3.1](https://github.com/cutechess/cutechess/releases/tag/v1.3.1) - 2023-07-30
 
 ### Added
 
+- CodeQL and Coverity code analysis support (#763)
+
 ### Fixed
 
-### Changed
-
-### Removed
+- Windows: Terminal window pops up with release builds (#765)
+- Crash when terminating match with SIGINT (#764)
 
 ## [1.3.0](https://github.com/cutechess/cutechess/releases/tag/v1.3.0) - 2023-07-28
 
