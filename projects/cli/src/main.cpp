@@ -467,7 +467,10 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 				for (auto it = map2.constBegin(); it != map2.constEnd(); ++it)
 					qInfo() << qUtf8Printable(it.key()) << "\n  "
 						<< qUtf8Printable(it.value());
-				return 0;
+
+				delete match;
+				delete tournament;
+				return nullptr;
 			}
 			tournament->setResultFormat(value.toString().left(256).trimmed());
 		}
