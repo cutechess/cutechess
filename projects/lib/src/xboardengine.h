@@ -59,7 +59,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		QList<XboardFeature> parseFeatures(const QString& featureArgs);
 
 		/*! Parses a principal valuation string from the engine. */
-		MoveEvaluation parsePv(const QStringRef& pvString);
+		MoveEvaluation parsePv(QStringView pvString);
 
 		/*! Parses an option string from the engine. */
 		EngineOption* parseOption(const QString& line);
