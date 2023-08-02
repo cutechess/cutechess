@@ -114,6 +114,7 @@ void KnockoutTournament::initializePairing()
 
 	m_rounds.clear();
 	m_rounds << pairs;
+	setCurrentSubRound(1);
 }
 
 int KnockoutTournament::gamesPerCycle() const
@@ -209,7 +210,11 @@ TournamentPair* KnockoutTournament::nextPair(int gameNumber)
 	for (TournamentPair* pair : last)
 	{
 		if (needMoreGames(pair))
+		{
+			setCurrentSubRound(1 + last.indexOf(pair));
+			setCurrentSubSubRound(pair->gamesStarted());
 			return pair;
+		}
 	}
 
 	QList<int> winners(lastRoundWinners());
@@ -223,6 +228,8 @@ TournamentPair* KnockoutTournament::nextPair(int gameNumber)
 	}
 	m_rounds << nextRound;
 	setCurrentRound(currentRound() + 1);
+	setCurrentSubRound(1);
+	setCurrentSubSubRound(0);
 
 	for (TournamentPair* pair : qAsConst(nextRound))
 	{
