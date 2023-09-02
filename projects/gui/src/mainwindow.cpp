@@ -74,7 +74,8 @@ MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
 }
 
 MainWindow::MainWindow(ChessGame* game)
-	: m_game(nullptr),
+	: m_tournamentDlg(nullptr),
+	  m_game(nullptr),
 	  m_closing(false),
 	  m_readyToClose(false),
 	  m_firstTabAutoCloseEnabled(true)
@@ -783,15 +784,39 @@ void MainWindow::onGameFinished(ChessGame* game)
 	}
 }
 
+void MainWindow::resetTournamentDialog()
+{
+	if (!m_tournamentDlg.isNull())
+	{
+		m_tournamentDlg->disconnect();
+		m_tournamentDlg->deleteLater();
+	}
+	m_tournamentDlg.clear();
+	newTournament();
+}
+
 void MainWindow::newTournament()
 {
-	NewTournamentDialog dlg(CuteChessApplication::instance()->engineManager(), this);
-	if (dlg.exec() != QDialog::Accepted)
+	if (m_tournamentDlg.isNull())
+		m_tournamentDlg = new NewTournamentDialog(
+					CuteChessApplication::instance()->engineManager(),
+					this);
+	m_tournamentDlg->disconnect();
+	connect(m_tournamentDlg, &NewTournamentDialog::finished,
+		this, &MainWindow::onTournamentDialog);
+	connect(m_tournamentDlg, &NewTournamentDialog::reset,
+		this, &MainWindow::resetTournamentDialog);
+	m_tournamentDlg->open();
+}
+
+void MainWindow::onTournamentDialog()
+{
+	if (static_cast<NewTournamentDialog *>(sender())->result() != QDialog::Accepted)
 		return;
 
 	GameManager* manager = CuteChessApplication::instance()->gameManager();
 
-	Tournament* t = dlg.createTournament(manager);
+	Tournament* t = m_tournamentDlg->createTournament(manager);
 	auto resultsDialog = CuteChessApplication::instance()->tournamentResultsDialog();
 	connect(t, SIGNAL(finished()),
 		this, SLOT(onTournamentFinished()));

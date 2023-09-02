@@ -123,6 +123,13 @@ NewTournamentDialog::NewTournamentDialog(EngineManager* engineManager,
 	ui->m_gameSettings->onHumanCountChanged(0);
 	onVariantChanged(ui->m_gameSettings->chessVariant());
 	readSettings();
+
+	ui->buttonBox->addButton(QDialogButtonBox::Reset);
+	connect(ui->buttonBox->button(QDialogButtonBox::Reset),
+		&QAbstractButton::clicked, this, [=]()
+	{
+		emit reset();
+	});
 }
 
 NewTournamentDialog::~NewTournamentDialog()
@@ -316,21 +323,14 @@ Tournament* NewTournamentDialog::createTournament(GameManager* gameManager) cons
 
 void NewTournamentDialog::readSettings()
 {
+	ui->m_nameEdit->setText(QSettings().value("pgn/event", "My Tournament").toString());
 	ui->m_siteEdit->setText(QSettings().value("pgn/site").toString());
 
-	QString pgnName = ui->m_pgnoutEdit->text();
-	if (pgnName.isEmpty())
-	{
-		pgnName = QSettings().value("tournament/default_pgn_output_file",
+	QString pgnName = QSettings().value("tournament/default_pgn_output_file",
 					    QString()).toString();
-		ui->m_pgnoutEdit->setText(pgnName);
-	}
+	ui->m_pgnoutEdit->setText(pgnName);
 
-	QString epdName = ui->m_epdoutEdit->text();
-	if (epdName.isEmpty())
-	{
-		epdName = QSettings().value("tournament/default_epd_output_file",
+	QString epdName = QSettings().value("tournament/default_epd_output_file",
 					    QString()).toString();
-		ui->m_epdoutEdit->setText(epdName);
-	}
+	ui->m_epdoutEdit->setText(epdName);
 }
