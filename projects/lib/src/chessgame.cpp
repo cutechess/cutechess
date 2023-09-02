@@ -60,6 +60,7 @@ ChessGame::ChessGame(Chess::Board* board, PgnGame* pgn, QObject* parent)
 	  m_startDelay(0),
 	  m_finished(false),
 	  m_gameInProgress(false),
+	  m_pausePending(false),
 	  m_paused(false),
 	  m_pgnInitialized(false),
 	  m_bookOwnership(false),
@@ -102,6 +103,11 @@ ChessPlayer* ChessGame::player(Chess::Side side) const
 bool ChessGame::isFinished() const
 {
 	return m_finished;
+}
+
+bool ChessGame::isPaused() const
+{
+	return m_paused;
 }
 
 bool ChessGame::boardShouldBeFlipped() const
@@ -301,7 +307,12 @@ void ChessGame::onMoveMade(const Chess::Move& move)
 void ChessGame::startTurn()
 {
 	if (m_paused)
+	{
+		playerToMove()->stopPondering();
+		playerToWait()->stopPondering();
+		m_pausePending =  false;
 		return;
+	}
 
 	Chess::Side side(m_board->sideToMove());
 	Q_ASSERT(!side.isNull());
@@ -657,6 +668,7 @@ void ChessGame::start()
 void ChessGame::pause()
 {
 	m_paused = true;
+	m_pausePending = true;
 }
 
 void ChessGame::resume()
@@ -665,6 +677,13 @@ void ChessGame::resume()
 		return;
 	m_paused = false;
 
+	// Case of pause cancelled early before taking effect in startTurn()
+	if(m_pausePending)
+	{
+		m_pausePending = false;
+		return;
+	}
+	// Case of paused game
 	QMetaObject::invokeMethod(this, "startTurn", Qt::QueuedConnection);
 }
 
