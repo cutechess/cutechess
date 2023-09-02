@@ -21,6 +21,7 @@
 
 #include <QWidget>
 #include <engineconfiguration.h>
+#include <QTimer>
 
 class EngineManager;
 class QSortFilterProxyModel;
@@ -57,18 +58,29 @@ class EngineManagementWidget : public QWidget
 		void updateUi();
 		void updateSearch(const QString& terms);
 		void addEngine();
+		void addEngines();
 		void configureEngine();
 		void configureEngine(const QModelIndex& index);
 		void removeEngine();
 		void cloneEngine();
 		void browseDefaultLocation();
+		void onDetectionTimer();
 
 	private:
 		void updateEngineCount();
+		void detectEngine(const QString& file,
+				  const QString& proto);
 
 		EngineManager* m_engineManager;
 		bool m_hasChanged;
 		QSortFilterProxyModel* m_filteredModel;
+		QTimer m_detectionTimer;
+		struct DetectionData
+		{
+			QString name;
+			QString protocol;
+		};
+		QVector<DetectionData> m_detectionList;
 		Ui::EngineManagementWidget* ui;
 };
 

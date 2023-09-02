@@ -26,17 +26,18 @@
 #include <algorithm>
 
 #include <enginemanager.h>
+#include <enginefactory.h>
 
 #include "cutechessapp.h"
 #include "engineconfigurationmodel.h"
 #include "engineconfigurationdlg.h"
-
 
 EngineManagementWidget::EngineManagementWidget(QWidget* parent)
 	: QWidget(parent),
 	  m_engineManager(CuteChessApplication::instance()->engineManager()),
 	  m_hasChanged(false),
 	  m_filteredModel(new QSortFilterProxyModel(this)),
+	  m_detectionTimer(nullptr),
 	  ui(new Ui::EngineManagementWidget)
 {
 	ui->setupUi(this);
@@ -66,6 +67,9 @@ EngineManagementWidget::EngineManagementWidget(QWidget* parent)
 	// Configure button
 	connect(ui->m_configureBtn, SIGNAL(clicked(bool)), this,
 		SLOT(configureEngine()));
+
+	// Auto Add button
+	connect(ui->m_autoAddBtn, SIGNAL(clicked(bool)), this, SLOT(addEngines()));
 	
 	// Remove button
 	connect(ui->m_removeBtn, SIGNAL(clicked(bool)), this, SLOT(removeEngine()));
@@ -78,6 +82,10 @@ EngineManagementWidget::EngineManagementWidget(QWidget* parent)
 	ui->m_defaultLocationEdit->setText(dir);
 	connect(ui->m_browseDefaultLocationBtn, SIGNAL(clicked()),
 		this, SLOT(browseDefaultLocation()));
+
+	// Auto engine detection timer
+	connect(&m_detectionTimer, &QTimer::timeout,
+		this, &EngineManagementWidget::onDetectionTimer);
 
 	updateEngineCount();
 }
@@ -168,6 +176,80 @@ void EngineManagementWidget::configureEngine(const QModelIndex& index)
 		m_hasChanged = true;
 	});
 	dlg->open();
+}
+
+void EngineManagementWidget::addEngines()
+{
+	const QStringList& protocols = EngineFactory::protocols();
+	QString defaultDir = QSettings().value("ui/default_engine_location").toString();
+
+	// Use file extensions only on Windows
+	#ifdef Q_OS_WIN32
+	const QString filter = tr("Executables (*.exe *.bat *.cmd);;All Files (*.*)");
+	#else
+	const QString filter = tr("All Files (*)");
+	#endif
+
+	auto fileDlg = new QFileDialog(
+		this, tr("Select Engine Executables"),
+		defaultDir, filter);
+	fileDlg->setAttribute(Qt::WA_DeleteOnClose);
+	fileDlg->setFileMode(QFileDialog::ExistingFiles);
+	fileDlg->setAcceptMode(QFileDialog::AcceptOpen);
+
+	connect(fileDlg, &QFileDialog::accepted, [=]()
+	{
+		const QStringList& files = fileDlg->selectedFiles();
+		for (const QString& proto: protocols)
+		{
+			for (const auto& file: files)
+				m_detectionList.append({file, proto});
+		}
+		m_detectionTimer.start(50);
+	});
+	fileDlg->open();
+}
+
+void EngineManagementWidget::onDetectionTimer()
+{
+	if (m_detectionList.isEmpty())
+	{
+		m_detectionTimer.stop();
+		return;
+	}
+	DetectionData candidate = m_detectionList.first();
+	detectEngine(candidate.name, candidate.protocol);
+	m_detectionList.removeFirst();
+}
+
+void EngineManagementWidget::detectEngine(const QString& file,
+					  const QString& proto)
+{
+	// Hidden EngineConfigurationDialog as worker
+	auto dlg = new EngineConfigurationDialog(
+		EngineConfigurationDialog::AddEngine, this);
+	dlg->setReservedNames(m_engineManager->engineNames());
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+
+	connect(dlg, &EngineConfigurationDialog::finished, [=](int result)
+	{
+		auto config = dlg->engineConfiguration();
+		if (result && config.options().count() > 0)
+		{
+			while (m_engineManager->engineNames().contains(config.name()))
+				config.setName( QString( "%1 (%2)[%3]")
+						.arg(config.name(), proto).arg(rand(), 8, 16));
+			m_engineManager->addEngine(config);
+			m_hasChanged = true;
+			updateEngineCount();
+		}
+	});
+	connect(dlg, &EngineConfigurationDialog::hasError, [=]()
+	{
+		dlg->close();
+	});
+
+	dlg->probe(file, proto);
 }
 
 void EngineManagementWidget::removeEngine()
