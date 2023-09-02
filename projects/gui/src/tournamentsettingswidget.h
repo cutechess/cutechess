@@ -46,13 +46,12 @@ class TournamentSettingsWidget : public QWidget
 		QString resultFormat() const;
 
 		void enableSettingsUpdates();
+		void readSettings();
 
 	signals:
 		void tournamentTypeChanged(const QString& tournamentType);
 
 	private:
-		void readSettings();
-
 		Ui::TournamentSettingsWidget *ui;
 };
 

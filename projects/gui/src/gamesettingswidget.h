@@ -53,6 +53,7 @@ class GameSettingsWidget : public QWidget
 
 		void applyEngineConfiguration(EngineConfiguration* config);
 		void enableSettingsUpdates();
+		void readSettings();
 
 	public slots:
 		void onHumanCountChanged(int count);
@@ -67,8 +68,6 @@ class GameSettingsWidget : public QWidget
 		void showTimeControlDialog();
 
 	private:
-		void readSettings();
-
 		Ui::GameSettingsWidget *ui;
 		TimeControl m_timeControl;
 		Chess::Board* m_board;
