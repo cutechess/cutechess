@@ -149,6 +149,10 @@ void EvalHistory::replot(int maxPly)
 		Q_ASSERT(!ticker.isNull());
 		ticker->setTickStep(double(step));
 		m_plot->rescaleAxes();
+		if (m_plot->yAxis->range().lower > 0)
+			m_plot->yAxis->setRange(0, m_plot->yAxis->range().upper);
+		else if (m_plot->yAxis->range().upper < 0)
+			m_plot->yAxis->setRange(m_plot->yAxis->range().lower, 0);
 	}
 	m_plot->replot();
 }
