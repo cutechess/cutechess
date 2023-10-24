@@ -193,9 +193,9 @@ Sprt::Status Sprt::status() const
 	status.lBound = std::log(m_beta / (1.0 - m_alpha));
 	status.uBound = std::log((1.0 - m_beta) / m_alpha);
 
-	if (status.llr > status.uBound)
+	if (status.llr >= status.uBound)
 		status.result = AcceptH1;
-	else if (status.llr < status.lBound)
+	else if (status.llr <= status.lBound)
 		status.result = AcceptH0;
 
 	return status;
