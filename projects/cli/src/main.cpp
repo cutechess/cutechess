@@ -93,6 +93,7 @@ bool parseEngine(const QStringList& args, EngineData& data)
 
 		if (name == "conf")
 		{
+			/*error check*/
 			if (!readEngineConfig(val, data.config))
 			{
 				qWarning() << "Unknown engine configuration:" << val;
@@ -166,7 +167,7 @@ bool parseEngine(const QStringList& args, EngineData& data)
 				qWarning() << "Invalid time control:" << val;
 				return false;
 			}
-
+			/*setting the time control accordingly*/
 			data.tc.setInfinity(tc.isInfinite());
 			data.tc.setHourglass(tc.isHourglass());
 			data.tc.setTimePerTc(tc.timePerTc());
@@ -201,6 +202,7 @@ bool parseEngine(const QStringList& args, EngineData& data)
 			data.book = val;
 		else if (name == "bookdepth")
 		{
+			/*error check for depth*/
 			if (val.toInt() <= 0)
 			{
 				qWarning() << "Invalid book depth limit:" << val;
