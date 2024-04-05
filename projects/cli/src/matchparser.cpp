@@ -80,6 +80,7 @@ bool MatchParser::contains(const QString& optionName) const
 	return false;
 }
 
+/*function to parse thru the options*/
 bool MatchParser::parse()
 {
 	QStringList::const_iterator it;
@@ -114,6 +115,7 @@ bool MatchParser::parse()
 			return false;
 		}
 
+		/*if you didnt give it enough options*/
 		if (list.size() < option.minArgs)
 		{
 			if (option.maxArgs == option.minArgs)
