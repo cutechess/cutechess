@@ -25,6 +25,7 @@
 #include <QGraphicsPolygonItem>
 #include <QGraphicsTextItem>
 #include <QSettings>
+#include <QFileInfo>
 #include <algorithm>
 #include <board/board.h>
 #include "graphicsboard.h"
@@ -40,13 +41,13 @@ const qreal s_squareSize = 50;
 
 BoardScene::BoardScene(QObject* parent)
 	: QGraphicsScene(parent),
-	  m_board(nullptr),
+      m_board(nullptr),
 	  m_direction(Forward),
 	  m_squares(nullptr),
 	  m_reserve(nullptr),
 	  m_chooser(nullptr),
 	  m_anim(nullptr),
-	  m_renderer(new QSvgRenderer(QString(":/default.svg"), this)),
+      m_renderer(new QSvgRenderer((QCoreApplication::applicationDirPath() + "/image/default.svg"), this)),
 	  m_highlightPiece(nullptr),
 	  m_moveArrows(nullptr)
 {
@@ -77,7 +78,21 @@ void BoardScene::setBoard(Chess::Board* board)
 	m_chooser = nullptr;
 	m_highlightPiece = nullptr;
 	m_moveArrows = nullptr;
-	m_board = board;
+    m_board = board;
+
+    setPiece(board);
+}
+
+void BoardScene::setPiece(Chess::Board* board)
+{
+    QString pieceFileName = QCoreApplication::applicationDirPath()
+                          + "/image/" + board->variant() + ".svg";
+    QFileInfo fileInfo(pieceFileName);
+
+    if(!fileInfo.exists() || !fileInfo.isFile())
+        m_renderer = new QSvgRenderer((QCoreApplication::applicationDirPath() + "/image/default.svg"), this);
+    else
+        m_renderer = new QSvgRenderer(pieceFileName, this);
 }
 
 void BoardScene::populate()
