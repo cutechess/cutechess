@@ -303,8 +303,8 @@ void NewTournamentDialog::onContextMenuRequest()
 		dlg->setWindowTitle(tr("Time Control - %0").arg(name));
 
 		if (dlg->exec() == QDialog::Accepted)
-			for (QModelIndex index: selected)
-				m_timeControls[index.row()] = dlg->timeControlWhite();
+			for (const QModelIndex& index: selected)
+				m_timeControls[index.row()] = dlg->timeControl();
 		delete dlg;
 	});
 

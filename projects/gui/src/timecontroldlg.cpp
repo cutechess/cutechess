@@ -19,49 +19,17 @@
 #include "timecontroldlg.h"
 #include "ui_timecontroldlg.h"
 
-TimeControlDialog::TimeControlDialog(const TimeControl& tc1,
-				     const TimeControl& tc2,
-				     QWidget *parent)
-	: QDialog(parent),
-	  ui(new Ui::TimeControlDialog)
+TimeControlDialog::TimeControlDialog(const TimeControl& tc,
+				     QWidget *parent) :
+	QDialog(parent),
+	ui(new Ui::TimeControlDialog)
 {
 	ui->setupUi(this);
 
-	// If tc2 has default value then use a simplified dialog
-	if (tc2 == TimeControl())
-	{
-		ui->m_timeControlGroupBoxBlack->setEnabled(false);
-		ui->m_timeControlGroupBoxWhite->setCheckable(false);
-	}
-
-	ui->m_timeControlGroupBoxBlack->setVisible(false);
-	adjustSize();
-
-	connect(ui->m_timeControlGroupBoxWhite, &QGroupBox::toggled, [=](bool checked)
-	{
-		ui->m_timeControlWidgetWhite->setEnabled(true);
-		ui->m_timeControlGroupBoxBlack->setEnabled(!checked);
-		ui->m_timeControlGroupBoxBlack->setVisible(!checked);
-		ui->m_timeControlWidgetBlack->setEnabled(!checked);
-
-		ui->m_timeControlGroupBoxWhite->setTitle(checked ? tr("Both Sides")
-								 : tr("White"));
-		adjustSize();
-	});
-
-	if (!tc1.isValid())
+	if (!tc.isValid())
 		return;
 
-	ui->m_timeControlWidgetWhite->init(tc1);
-	ui->m_timeControlWidgetBlack->init(tc2.isValid() ? tc2 : tc1);
-
-	ui->m_timeControlGroupBoxWhite->setChecked(tc1 == tc2 || !tc2.isValid());
-	ui->m_timeControlWidgetBlack->disableHourglassRadio();
-
-	connect (ui->m_timeControlWidgetWhite, SIGNAL(hourglassToggled(bool)),
-		 ui->m_timeControlWidgetBlack, SLOT(setHourglassMode(bool)));
-
-	ui->m_timeControlWidgetBlack->setHourglassMode(tc1.isHourglass());
+	ui->m_timeControlWidget->init(tc);
 }
 
 TimeControlDialog::~TimeControlDialog()
@@ -69,16 +37,7 @@ TimeControlDialog::~TimeControlDialog()
 	delete ui;
 }
 
-TimeControl TimeControlDialog::timeControlWhite() const
+TimeControl TimeControlDialog::timeControl() const
 {
-	return ui->m_timeControlWidgetWhite->timeControl();
+	return ui->m_timeControlWidget->timeControl();
 }
-
-TimeControl TimeControlDialog::timeControlBlack() const
-{
-	if (ui->m_timeControlWidgetBlack->isEnabled())
-		return ui->m_timeControlWidgetBlack->timeControl();
-	else
-		return ui->m_timeControlWidgetWhite->timeControl();
-}
-

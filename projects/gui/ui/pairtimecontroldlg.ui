@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PairTimeControlDialog</class>
+ <widget class="QDialog" name="PairTimeControlDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>417</width>
+    <height>343</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Time Control</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <item row="0" column="1">
+      <widget class="QToolButton" name="m_sameTc">
+       <property name="toolTip">
+        <string>Link/unlink white's and black's time controls</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/icons/icons.qrc">
+         <normaloff>:/icons/toolbutton/lock-open.svg</normaloff>
+         <normalon>:/icons/toolbutton/lock-closed.svg</normalon>:/icons/toolbutton/lock-open.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QFrame" name="frame_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QFrame {
+    border-top: 2px solid;
+    border-left: 2px solid;
+    border-right: 0px;
+    border-bottom: 0px;
+}</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth">
+            <number>2</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="2">
+      <widget class="QGroupBox" name="m_timeControlGroupBoxBlack">
+       <property name="accessibleDescription">
+        <string>Time Control for 2nd Player</string>
+       </property>
+       <property name="title">
+        <string>Black</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="TimeControlWidget" name="m_timeControlWidgetBlack" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QGroupBox" name="m_timeControlGroupBoxWhite">
+       <property name="toolTip">
+        <string>Select common or separate time controls</string>
+       </property>
+       <property name="title">
+        <string>White</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="TimeControlWidget" name="m_timeControlWidgetWhite" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QFrame" name="frame">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QFrame {
+    border-top: 2px solid;
+    border-left: 0px;
+    border-right: 2px solid;
+    border-bottom: 0px;
+}</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth">
+            <number>2</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TimeControlWidget</class>
+   <extends>QWidget</extends>
+   <header>timecontrolwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../res/icons/icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>PairTimeControlDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>PairTimeControlDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

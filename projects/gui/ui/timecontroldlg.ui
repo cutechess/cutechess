@@ -6,108 +6,34 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>610</width>
-    <height>462</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Time Control</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>430</y>
-     <width>281</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QGroupBox" name="m_timeControlGroupBoxWhite">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>282</width>
-     <height>409</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Select common or separate time controls</string>
-   </property>
-   <property name="title">
-    <string>Both Sides</string>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <widget class="TimeControlWidget" name="m_timeControlWidgetWhite" native="true">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>19</y>
-      <width>281</width>
-      <height>371</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="m_timeControlGroupBoxBlack">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>310</x>
-     <y>20</y>
-     <width>291</width>
-     <height>409</height>
-    </rect>
-   </property>
-   <property name="accessibleDescription">
-    <string>Time Control for 2nd Player</string>
-   </property>
-   <property name="title">
-    <string>B&amp;lack</string>
-   </property>
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-   <widget class="TimeControlWidget" name="m_timeControlWidgetBlack" native="true">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>20</y>
-      <width>281</width>
-      <height>371</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
-  <zorder>m_timeControlGroupBoxBlack</zorder>
-  <zorder>buttonBox</zorder>
-  <zorder>m_timeControlGroupBoxWhite</zorder>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="TimeControlWidget" name="m_timeControlWidget" native="true"/>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>
    <class>TimeControlWidget</class>
    <extends>QWidget</extends>
-   <header>src/timecontrolwidget.h</header>
+   <header>timecontrolwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

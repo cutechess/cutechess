@@ -20,45 +20,56 @@
 #include "ui_timecontrolwidget.h"
 
 
-TimeControlWidget::TimeControlWidget(QWidget *parent)
+TimeControlWidget::TimeControlWidget(QWidget* parent)
 	: QWidget(parent),
-	  ui(new Ui::TimeControlWidget)
+	  ui(new Ui::TimeControlWidget),
+	  m_tcMode(Tournament)
 {
 	ui->setupUi(this);
+
+	connect(ui->m_tournamentRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		if (checked)
+			setTimeControlMode(Tournament);
+	});
+	connect(ui->m_timePerMoveRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		if (checked)
+			setTimeControlMode(TimePerMove);
+	});
+	connect(ui->m_infiniteRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		if (checked)
+			setTimeControlMode(Infinite);
+	});
+	connect(ui->m_hourglassRadio, &QRadioButton::toggled, [=](bool checked)
+	{
+		if (checked)
+			setTimeControlMode(Hourglass);
+	});
 }
 
 void TimeControlWidget::init(const TimeControl& tc)
 {
-	connect(ui->m_tournamentRadio, SIGNAL(clicked()),
-		this, SLOT(onTournamentSelected()));
-	connect(ui->m_timePerMoveRadio, SIGNAL(clicked()),
-		this, SLOT(onTimePerMoveSelected()));
-	connect(ui->m_infiniteRadio, SIGNAL(clicked()),
-		this, SLOT(onInfiniteSelected()));
-	connect(ui->m_hourglassRadio, SIGNAL(clicked()),
-		this, SLOT(onHourglassSelected()));
-	connect(ui->m_hourglassRadio, SIGNAL(toggled(bool)),
-		this, SIGNAL(hourglassToggled(bool)));
-
 	if (!tc.isValid())
 		return;
 
 	if (tc.isInfinite())
 	{
 		ui->m_infiniteRadio->setChecked(true);
-		onInfiniteSelected();
+		setTimeControlMode(Infinite);
 	}
 	else if (tc.isHourglass())
 	{
 		ui->m_hourglassRadio->setChecked(true);
 		setTime(tc.timePerTc());
-		onHourglassSelected();
+		setTimeControlMode(Hourglass);
 	}
 	else if (tc.timePerMove() != 0)
 	{
 		ui->m_timePerMoveRadio->setChecked(true);
 		setTime(tc.timePerMove());
-		onTimePerMoveSelected();
+		setTimeControlMode(TimePerMove);
 	}
 	else
 	{
@@ -66,7 +77,7 @@ void TimeControlWidget::init(const TimeControl& tc)
 		ui->m_movesSpin->setValue(tc.movesPerTc());
 		ui->m_incrementSpin->setValue(double(tc.timeIncrement()) / 1000.0);
 		setTime(tc.timePerTc());
-		onTournamentSelected();
+		setTimeControlMode(Tournament);
 	}
 
 	ui->m_nodesSpin->setValue(tc.nodeLimit());
@@ -77,6 +88,111 @@ void TimeControlWidget::init(const TimeControl& tc)
 TimeControlWidget::~TimeControlWidget()
 {
 	delete ui;
+}
+
+void TimeControlWidget::syncWith(TimeControlWidget* other)
+{
+	disconnect(other, &TimeControlWidget::timeControlModeChanged,
+		   this, &TimeControlWidget::onOtherTimeControlModeChanged);
+
+	connect(other->ui->m_tournamentRadio, &QRadioButton::toggled,
+		this->ui->m_tournamentRadio, &QRadioButton::setChecked);
+	connect(other->ui->m_timePerMoveRadio, &QRadioButton::toggled,
+		this->ui->m_timePerMoveRadio, &QRadioButton::setChecked);
+	connect(other->ui->m_infiniteRadio, &QRadioButton::toggled,
+		this->ui->m_infiniteRadio, &QRadioButton::setChecked);
+	connect(other->ui->m_hourglassRadio, &QRadioButton::toggled,
+		this->ui->m_hourglassRadio, &QRadioButton::setChecked);
+	connect(other->ui->m_movesSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		this->ui->m_movesSpin, &QSpinBox::setValue);
+	connect(other->ui->m_timeSpin, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+		this->ui->m_timeSpin, &QDoubleSpinBox::setValue);
+	connect(other->ui->m_timeUnitCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+		this->ui->m_timeUnitCombo, &QComboBox::setCurrentIndex);
+	connect(other->ui->m_incrementSpin, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+		this->ui->m_incrementSpin, &QDoubleSpinBox::setValue);
+	connect(other->ui->m_nodesSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		this->ui->m_nodesSpin, &QSpinBox::setValue);
+	connect(other->ui->m_pliesSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		this->ui->m_pliesSpin, &QSpinBox::setValue);
+	connect(other->ui->m_marginSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		this->ui->m_marginSpin, &QSpinBox::setValue);
+}
+
+void TimeControlWidget::unsyncWith(TimeControlWidget* other)
+{
+	disconnect(other->ui->m_tournamentRadio, &QRadioButton::toggled,
+		   this->ui->m_tournamentRadio, &QRadioButton::setChecked);
+	disconnect(other->ui->m_timePerMoveRadio, &QRadioButton::toggled,
+		   this->ui->m_timePerMoveRadio, &QRadioButton::setChecked);
+	disconnect(other->ui->m_infiniteRadio, &QRadioButton::toggled,
+		   this->ui->m_infiniteRadio, &QRadioButton::setChecked);
+	disconnect(other->ui->m_hourglassRadio, &QRadioButton::toggled,
+		   this->ui->m_hourglassRadio, &QRadioButton::setChecked);
+	disconnect(other->ui->m_movesSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		   this->ui->m_movesSpin, &QSpinBox::setValue);
+	disconnect(other->ui->m_timeSpin, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+		   this->ui->m_timeSpin, &QDoubleSpinBox::setValue);
+	disconnect(other->ui->m_timeUnitCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+		   this->ui->m_timeUnitCombo, &QComboBox::setCurrentIndex);
+	disconnect(other->ui->m_incrementSpin, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+		   this->ui->m_incrementSpin, &QDoubleSpinBox::setValue);
+	disconnect(other->ui->m_nodesSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		   this->ui->m_nodesSpin, &QSpinBox::setValue);
+	disconnect(other->ui->m_pliesSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		   this->ui->m_pliesSpin, &QSpinBox::setValue);
+	disconnect(other->ui->m_marginSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+		   this->ui->m_marginSpin, &QSpinBox::setValue);
+
+	connect(other, &TimeControlWidget::timeControlModeChanged,
+		this, &TimeControlWidget::onOtherTimeControlModeChanged);
+}
+
+void TimeControlWidget::onOtherTimeControlModeChanged(Mode mode)
+{
+	if (mode == Hourglass || m_tcMode == Hourglass)
+	{
+		switch (mode)
+		{
+		case Tournament:
+			ui->m_tournamentRadio->setChecked(true);
+			break;
+		case TimePerMove:
+			ui->m_timePerMoveRadio->setChecked(true);
+			break;
+		case Infinite:
+			ui->m_infiniteRadio->setChecked(true);
+			break;
+		case Hourglass:
+			ui->m_hourglassRadio->setChecked(true);
+			break;
+		}
+	}
+}
+
+void TimeControlWidget::setTimeControlMode(Mode mode)
+{
+	if (m_tcMode == mode)
+		return;
+
+	switch (mode)
+	{
+	case Tournament:
+		onTournamentSelected();
+		break;
+	case TimePerMove:
+		onTimePerMoveSelected();
+		break;
+	case Infinite:
+		onInfiniteSelected();
+		break;
+	case Hourglass:
+		onHourglassSelected();
+		break;
+	}
+
+	m_tcMode = mode;
+	emit timeControlModeChanged(mode);
 }
 
 void TimeControlWidget::onTournamentSelected()
@@ -113,29 +229,6 @@ void TimeControlWidget::onHourglassSelected()
 	ui->m_timeUnitCombo->setEnabled(true);
 	ui->m_incrementSpin->setEnabled(false);
 	ui->m_marginSpin->setEnabled(true);
-}
-
-void TimeControlWidget::setHourglassMode(bool enabled)
-{
-	ui->m_groupBox->setEnabled(!enabled);
-
-	if (enabled)
-	{
-		ui->m_hourglassRadio->setChecked(true);
-		onHourglassSelected();
-	}
-	else
-	{
-		ui->m_tournamentRadio->setChecked(true);
-		onTournamentSelected();
-	}
-}
-
-void TimeControlWidget::disableHourglassRadio()
-{
-	ui->m_hourglassRadio->setEnabled(false);
-	if (ui->m_hourglassRadio->isChecked())
-		ui->m_groupBox->setEnabled(false);
 }
 
 int TimeControlWidget::timeToMs() const

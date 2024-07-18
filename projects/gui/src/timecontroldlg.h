@@ -16,8 +16,8 @@
     along with Cute Chess.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TIMECONTROLDIALOG_H
-#define TIMECONTROLDIALOG_H
+#ifndef TIMECONTROLDLG_H
+#define TIMECONTROLDLG_H
 
 #include <QDialog>
 #include <timecontrol.h>
@@ -27,31 +27,24 @@ namespace Ui {
 }
 
 /*!
- * \brief A dialog for setting a chess game's time controls
+ * \brief A dialog for setting a chess player's, or tournament's time controls
  */
 class TimeControlDialog : public QDialog
 {
 	Q_OBJECT
 
 	public:
-		/*!
-		 * Creates a new time control dialog.
-		 *
-		 * The dialog is initialized according to \a tc1,
-		 * and \a tc2
-		 */
-		explicit TimeControlDialog(const TimeControl& tc1,
-					   const TimeControl& tc2 = TimeControl(),
-					   QWidget* parent = nullptr);
-		/*! Destroys the dialog. */
-		virtual ~TimeControlDialog();
+		/*! Creates a new time control dialog */
+		explicit TimeControlDialog(const TimeControl& tc,
+								   QWidget *parent = nullptr);
+		/*! Destroys the dialog */
+		~TimeControlDialog();
 
-		/*! Returns the time control that was set in the dialog. */
-		TimeControl timeControlWhite() const;
-		TimeControl timeControlBlack() const;
+		/*! Returns the time control that was set in the dialog */
+		TimeControl timeControl() const;
 
 	private:
 		Ui::TimeControlDialog *ui;
 };
 
-#endif // TIMECONTROLDIALOG_H
+#endif // TIMECONTROLDLG_H

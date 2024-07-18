@@ -254,12 +254,16 @@ add_executable(gui
 	projects/gui/src/gamedatabasemanager.cpp
 	projects/gui/src/pgndatabase.cpp
 	projects/gui/src/pathlineedit.cpp
-	projects/gui/src/timecontroldlg.cpp
+	projects/gui/src/pairtimecontroldlg.cpp
+        projects/gui/src/timecontroldlg.cpp
+	projects/gui/src/timecontrolwidget.cpp
 	projects/gui/src/pgnimporter.cpp
 
 	projects/gui/ui/settingsdlg.ui
 	projects/gui/ui/engineconfigdlg.ui
-	projects/gui/ui/timecontroldlg.ui
+	projects/gui/ui/pairtimecontroldlg.ui
+        projects/gui/ui/timecontroldlg.ui
+	projects/gui/ui/timecontrolwidget.ui
 	projects/gui/ui/engineselectiondlg.ui
 	projects/gui/ui/importprogressdlg.ui
 	projects/gui/ui/gamedatabasesearchdlg.ui
