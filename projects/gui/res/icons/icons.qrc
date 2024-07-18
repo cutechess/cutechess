@@ -15,5 +15,7 @@
         <file>toolbutton/next_16x16.png</file>
         <file>toolbutton/previous_16x16.png</file>
         <file>toolbutton/remove_16x16.png</file>
+        <file>toolbutton/lock-closed.svg</file>
+        <file>toolbutton/lock-open.svg</file>
     </qresource>
 </RCC>

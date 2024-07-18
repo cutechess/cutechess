@@ -39,28 +39,55 @@ class TimeControlWidget : public QWidget
 		 *
 		 * The widget is initialized according to \a tc.
 		 */
-		explicit TimeControlWidget(QWidget *parent = nullptr);
+		explicit TimeControlWidget(QWidget* parent = nullptr);
+
 		/*! Destroys the dialog. */
 		virtual ~TimeControlWidget();
 
+		/*! Time control mode */
+		enum Mode
+		{
+			Tournament,	//!< Tournament time controls, e.g. 1h per 40 moves
+			TimePerMove,	//!< Same amount of time for each move
+			Infinite,	//!< Infinite thinking time
+			Hourglass	//!< Player B's time left goes up as A's goes down
+		};
+		Q_ENUM(Mode)
+
 		/*! Initialise time contol, signals and slots */
 		void init(const TimeControl& tc);
+
 		/*! Returns the time control that was set in the dialog. */
 		TimeControl timeControl() const;
 
-	signals:
-		void hourglassToggled(bool);
+		/*!
+		 * Starts propagating all inputs from \a other to this widget.
+		 *
+		 * \note The current state of \a other is NOT automatically
+		 * copied to this widget.
+		 */
+		void syncWith(TimeControlWidget* other);
 
-	public slots: void setHourglassMode(bool enabled);
-		      void disableHourglassRadio();
+		/*! Stops propagating inputs from \a other to this widget. */
+		void unsyncWith(TimeControlWidget* other);
+
+	public slots:
+		/*! Sets the time control mode to \a mode. */
+		void setTimeControlMode(Mode mode);
+
+	signals:
+		/*! Emitted when the time control mode changes. */
+		void timeControlModeChanged(Mode mode);
 
 	private slots:
+		void onOtherTimeControlModeChanged(Mode mode);
+
+	private:
 		void onTournamentSelected();
 		void onTimePerMoveSelected();
 		void onInfiniteSelected();
 		void onHourglassSelected();
 
-	private:
 		enum TimeUnit
 		{
 			Seconds,
@@ -73,6 +100,7 @@ class TimeControlWidget : public QWidget
 
 		Ui::TimeControlWidget *ui;
 		TimeControl m_tc;
+		Mode m_tcMode;
 };
 
 #endif // TIMECONTROLWIDGET_H

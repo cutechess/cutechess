@@ -27,8 +27,9 @@
 #include <openingsuite.h>
 #include <polyglotbook.h>
 #include "timecontroldlg.h"
+#include "pairtimecontroldlg.h"
 
-GameSettingsWidget::GameSettingsWidget(QWidget *parent)
+GameSettingsWidget::GameSettingsWidget(QWidget* parent)
 	: QWidget(parent),
 	  ui(new Ui::GameSettingsWidget),
 	  m_splitTimeControls(false),
@@ -45,12 +46,14 @@ GameSettingsWidget::GameSettingsWidget(QWidget *parent)
 
 	connect(ui->m_timeControlBtn, SIGNAL(clicked()),
 		this, SLOT(showTimeControlDialog()));
-	m_timeControl.setMovesPerTc(40);
-	m_timeControl.setTimePerTc(300000);
-	m_timeControl2.setMovesPerTc(40);
-	m_timeControl2.setTimePerTc(300000);
+	for (auto& tc : m_timeControl)
+	{
+		tc.setMovesPerTc(40);
+		tc.setTimePerTc(300000);
+	}
 
-	ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
+	//ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
+	ui->m_timeControlBtn->setText(timeControlText());
 
 	connect(ui->m_browseOpeningSuiteBtn, &QPushButton::clicked, this, [=]()
 	{
@@ -128,14 +131,20 @@ QString GameSettingsWidget::chessVariant() const
 	return ui->m_variantCombo->currentText();
 }
 
-TimeControl GameSettingsWidget::timeControl() const
+TimeControl GameSettingsWidget::timeControl(Chess::Side side) const
 {
-	return m_timeControl;
+	if (side == Chess::Side::NoSide)
+		side = Chess::Side::White;
+	return m_timeControl[side];
 }
 
-TimeControl GameSettingsWidget::timeControl2() const
+QString GameSettingsWidget::timeControlText() const
 {
-	return m_timeControl2;
+	if (!m_splitTimeControls || m_timeControl[Chess::Side::White] == m_timeControl[Chess::Side::Black])
+		return m_timeControl[Chess::Side::White].toVerboseString();
+
+	return m_timeControl[Chess::Side::White].toVerboseString() + " vs " +
+	       m_timeControl[Chess::Side::Black].toVerboseString();
 }
 
 bool GameSettingsWidget::pondering() const
@@ -239,10 +248,10 @@ void GameSettingsWidget::readSettings()
 	s.beginGroup("games");
 
 	ui->m_variantCombo->setCurrentText(s.value("variant").toString());
-	m_timeControl.readSettings(&s);
+	m_timeControl[Chess::Side::White].readSettings(&s);
 
 	s.beginGroup("second_time_control");
-	m_timeControl2.readSettings(&s);
+	m_timeControl[Chess::Side::Black].readSettings(&s);
 	s.endGroup(); // "second_time_control"
 
 	updateButtonText();
@@ -296,10 +305,10 @@ void GameSettingsWidget::enableSettingsUpdates()
 	{
 		QSettings s;
 		s.beginGroup("games");
-		m_timeControl.writeSettings(&s);
+		m_timeControl[Chess::Side::White].writeSettings(&s);
 
 		s.beginGroup("second_time_control");
-		m_timeControl2.writeSettings(&s);
+		m_timeControl[Chess::Side::Black].writeSettings(&s);
 		s.endGroup(); // "second_time_control"
 
 		s.endGroup(); // "games"
@@ -438,12 +447,7 @@ void GameSettingsWidget::validateFen(const QString& fen)
 
 void GameSettingsWidget::updateButtonText()
 {
-	QString str(m_timeControl.toVerboseString());
-
-	if (!(m_timeControl == m_timeControl2) && m_splitTimeControls)
-		str += " vs " + m_timeControl2.toVerboseString();
-
-	ui->m_timeControlBtn->setText(str);
+	ui->m_timeControlBtn->setText(timeControlText());
 }
 
 void GameSettingsWidget::enableSplitTimeControls(bool enable)
@@ -454,20 +458,37 @@ void GameSettingsWidget::enableSplitTimeControls(bool enable)
 
 void GameSettingsWidget::showTimeControlDialog()
 {
-	TimeControlDialog dlg(m_timeControl,
-			      m_splitTimeControls ? m_timeControl2 : TimeControl());
+	bool accepted = false;
 
-	if (dlg.exec() == QDialog::Accepted)
+	if (m_splitTimeControls)
 	{
-		m_timeControl = dlg.timeControlWhite();
-		m_timeControl2 = dlg.timeControlBlack();
-		QString str(m_timeControl.toVerboseString());
+		PairTimeControlDialog dlg(m_timeControl[Chess::Side::White],
+				      m_splitTimeControls ? m_timeControl[Chess::Side::Black] : TimeControl());
+		if (dlg.exec() == QDialog::Accepted)
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				auto side = Chess::Side::Type(i);
+				m_timeControl[side] = dlg.timeControl(side);
+			}
+			accepted = true;
+		}
+	} else {
+		TimeControlDialog dlg(m_timeControl[Chess::Side::White]);
+		if (dlg.exec() == QDialog::Accepted)
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				auto side = Chess::Side::Type(i);
+				m_timeControl[side] = dlg.timeControl();
+			}
+			accepted = true;
+		}
+	}
 
-		if (!(m_timeControl == m_timeControl2))
-			str += " vs " + m_timeControl2.toVerboseString();
-
-		ui->m_timeControlBtn->setText(str);
-
+	if (accepted)
+	{
+		updateButtonText();
 		emit timeControlChanged();
 	}
 }
