@@ -13,6 +13,9 @@ jobs:
           matrix:
             qt_version: [5.15.2, 6.5.2]
             os: [windows-latest, ubuntu-latest, macos-latest]
+            exclude:
+              - os: macos-latest
+                qt_version: 5.15.2
         steps:
             - uses: actions/checkout@v3
 
