@@ -127,6 +127,7 @@ jobs:
                 cp "$env:Qt6_Dir\bin\Qt6PrintSupport.dll" .
                 cp "$env:Qt6_Dir\bin\Qt6Widgets.dll" .
                 cp "$env:Qt6_Dir\bin\Qt6ConCurrent.dll" .
+                cp "$env:Qt6_Dir\bin\Qt6Core5Compat.dll" .
                 mkdir platforms
                 cp "$env:Qt6_Dir\plugins\platforms\qwindows.dll" platforms\
                 mkdir styles
