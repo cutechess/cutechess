@@ -3,6 +3,16 @@
 All notable changes to Cute Chess will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## Unreleased
+
+### Fixed
+
+- Cute Chess specific CodeQL static analysis queries have been re-enabled (#798)
+
+### Changed
+
+- Limit the CI build for the latest MacOS version to Qt 6 only (#799)
+
 ## [1.3.1](https://github.com/cutechess/cutechess/releases/tag/v1.3.1) - 2023-07-30
 
 ### Added
