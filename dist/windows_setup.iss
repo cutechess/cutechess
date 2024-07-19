@@ -49,14 +49,14 @@ Source: "{#CuteChessPath}\build\Release\cutechess-cli.exe"; DestDir: "{app}"; Fl
 #ifdef MSVC
   Source: "{#MSVCPath}\VC\Redist\MSVC\v143\vc_redist.x64.exe"; DestDir: "{app}"; Flags: ignoreversion
 #endif
-Source: "{#QtLibPath}\bin\Qt5Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\bin\Qt5Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\bin\Qt5Svg.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\bin\Qt5PrintSupport.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\bin\Qt5Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\bin\Qt5Concurrent.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt6Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt6Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt6Svg.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt6PrintSupport.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt6Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#QtLibPath}\bin\Qt6Concurrent.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
-Source: "{#QtLibPath}\plugins\styles\qwindowsvistastyle.dll"; DestDir: "{app}\styles"; Flags: ignoreversion
+Source: "{#QtLibPath}\plugins\styles\qmodernwindowsstyle.dll"; DestDir: "{app}\styles"; Flags: ignoreversion
 Source: "{#CuteChessPath}\COPYING"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#CuteChessPath}\docs\cutechess-cli.6.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#CuteChessPath}\docs\cutechess-cli.6.html"; DestDir: "{app}"; Flags: ignoreversion

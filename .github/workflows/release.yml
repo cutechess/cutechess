@@ -121,22 +121,22 @@ jobs:
                 cp ..\docs\cutechess-engines.json.5.html .
                 cp ..\docs\cutechess-engines.json.5.txt .
                 cp "$env:VCDIR\VC\Redist\MSVC\v143\vc_redist.x64.exe" .
-                cp "$env:Qt5_Dir\bin\Qt5Core.dll" .
-                cp "$env:Qt5_Dir\bin\Qt5Gui.dll" .
-                cp "$env:Qt5_Dir\bin\Qt5Svg.dll" .
-                cp "$env:Qt5_Dir\bin\Qt5PrintSupport.dll" .
-                cp "$env:Qt5_Dir\bin\Qt5Widgets.dll" .
-                cp "$env:Qt5_Dir\bin\Qt5ConCurrent.dll" .
+                cp "$env:Qt6_Dir\bin\Qt6Core.dll" .
+                cp "$env:Qt6_Dir\bin\Qt6Gui.dll" .
+                cp "$env:Qt6_Dir\bin\Qt6Svg.dll" .
+                cp "$env:Qt6_Dir\bin\Qt6PrintSupport.dll" .
+                cp "$env:Qt6_Dir\bin\Qt6Widgets.dll" .
+                cp "$env:Qt6_Dir\bin\Qt6ConCurrent.dll" .
                 mkdir platforms
-                cp "$env:Qt5_Dir\plugins\platforms\qwindows.dll" platforms\
+                cp "$env:Qt6_Dir\plugins\platforms\qwindows.dll" platforms\
                 mkdir styles
-                cp "$env:Qt5_Dir\plugins\styles\qwindowsvistastyle.dll" styles\
+                cp "$env:Qt6_Dir\plugins\styles\qmodernwindowsstyle.dll" styles\
                 cd ..
                 7z a cutechess-$env:VERSION-win64.zip cutechess-$env:VERSION-win64\
 
             - name: create an installer
               run: |
-                & "$env:ISDIR\iscc.exe" /DMyAppVersion=$env:VERSION /DQtLibPath=$env:Qt5_Dir /DMSVCPath=$env:VCDIR /DCuteChessPath=$env:GITHUB_WORKSPACE dist\windows_setup.iss
+                & "$env:ISDIR\iscc.exe" /DMyAppVersion=$env:VERSION /DQtLibPath=$env:Qt6_Dir /DMSVCPath=$env:VCDIR /DCuteChessPath=$env:GITHUB_WORKSPACE dist\windows_setup.iss
 
             - name: upload zip release asset
               uses: actions/upload-release-asset@v1
