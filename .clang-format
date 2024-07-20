@@ -16,18 +16,19 @@ BreakBeforeBraces: Custom
 BreakBeforeBinaryOperators: None
 BraceWrapping:
     AfterClass: true
-    AfterControlStatement: false
-    AfterEnum: false
+    AfterControlStatement: true
+    AfterEnum: true
     AfterFunction: true
     AfterNamespace: false
     AfterStruct: true
     AfterUnion: false
     BeforeCatch: false
-    BeforeElse: false
+    BeforeElse: true
+    BeforeLambdaBody: true
     IndentBraces: false
 ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH, forever, Q_FOREVER, QBENCHMARK, QBENCHMARK_ONCE ]
 NamespaceIndentation: None
 SortIncludes: false
 SpaceAfterTemplateKeyword: false
-BreakBeforeBinaryOperators: NonAssignment
+LambdaBodyIndentation: OuterScope
 ...
