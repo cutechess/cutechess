@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- Crash when tournament game fails to start (#794)
 - Cute Chess specific CodeQL static analysis queries have been re-enabled (#798)
 
 ### Changed
