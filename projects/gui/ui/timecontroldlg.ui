@@ -14,6 +14,9 @@
    <string>Time Control</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetFixedSize</enum>
+   </property>
    <item>
     <widget class="TimeControlWidget" name="m_timeControlWidget" native="true"/>
    </item>

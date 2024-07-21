@@ -11,9 +11,12 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Time Control</string>
+   <string>Time Controls</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetFixedSize</enum>
+   </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <property name="sizeConstraint">

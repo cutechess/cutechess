@@ -463,7 +463,8 @@ void GameSettingsWidget::showTimeControlDialog()
 	if (m_splitTimeControls)
 	{
 		PairTimeControlDialog dlg(m_timeControl[Chess::Side::White],
-				      m_splitTimeControls ? m_timeControl[Chess::Side::Black] : TimeControl());
+								  m_splitTimeControls ? m_timeControl[Chess::Side::Black] : TimeControl(),
+								  this->parentWidget());
 		if (dlg.exec() == QDialog::Accepted)
 		{
 			for (int i = 0; i < 2; i++)
@@ -474,7 +475,8 @@ void GameSettingsWidget::showTimeControlDialog()
 			accepted = true;
 		}
 	} else {
-		TimeControlDialog dlg(m_timeControl[Chess::Side::White]);
+		TimeControlDialog dlg(m_timeControl[Chess::Side::White],
+							  this->parentWidget());
 		if (dlg.exec() == QDialog::Accepted)
 		{
 			for (int i = 0; i < 2; i++)
