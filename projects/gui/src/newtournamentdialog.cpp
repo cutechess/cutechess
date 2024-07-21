@@ -309,7 +309,7 @@ void NewTournamentDialog::onContextMenuRequest()
 		if (!tc.isValid())
 			tc = ui->m_gameSettings->timeControl();
 
-		auto dlg = new TimeControlDialog(tc);
+		auto dlg = new TimeControlDialog(tc, this);
 		QString name {m_addedEnginesManager->engines().at(i).name()};
 		if (selected.count() > 1)
 			name.append(tr(" - %0 engines").arg(selected.count()));
