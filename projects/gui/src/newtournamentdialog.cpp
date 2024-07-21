@@ -21,7 +21,6 @@
 #include <QFileDialog>
 #include <QSettings>
 #include <QMenu>
-#include <functional>
 #include <algorithm>
 
 #include <board/boardfactory.h>
@@ -215,17 +214,31 @@ void NewTournamentDialog::configureEngine(const QModelIndex& index)
 
 void NewTournamentDialog::moveEngine(int offset)
 {
+	if (offset == 0)
+		return;
+
 	QModelIndex index(ui->m_playersList->currentIndex());
 	int row1 = index.row();
 	int row2 = row1 + offset;
-	EngineConfiguration tmp(m_addedEnginesManager->engineAt(row1));
-	TimeControl tc = m_timeControls.at(row1);
 
+	// It should be impossible for either row to be out of bounds,
+	// but we'll check it explicitly, which makes the compiler happy.
+	if (row1 < 0 || row1 >= m_timeControls.size())
+	{
+		qWarning("row1 out of bounds");
+		return;
+	}
+	if (row2 < 0 || row2 >= m_timeControls.size())
+	{
+		qWarning("row2 out of bounds");
+		return;
+	}
+
+	EngineConfiguration tmp(m_addedEnginesManager->engineAt(row1));
 	m_addedEnginesManager->updateEngineAt(row1, m_addedEnginesManager->engineAt(row2));
 	m_addedEnginesManager->updateEngineAt(row2, tmp);
 
-	m_timeControls[row1] = m_timeControls.at(row2);
-	m_timeControls[row2]= tc;
+	m_timeControls.swapItemsAt(row1, row2);
 
 	ui->m_playersList->setCurrentIndex(index.sibling(row2, 0));
 }
