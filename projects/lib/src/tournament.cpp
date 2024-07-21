@@ -730,11 +730,18 @@ void Tournament::onGameFinished(ChessGame* game)
 {
 	Q_ASSERT(game != nullptr);
 
+	if (!m_gameData.contains(game))
+	{
+		// Game failed to start, gameData was removed in onGameStartFailed.
+		// The game's PGN data is already destroyed, and tournament set to
+		// stop, so we can simply return here.
+		return;
+	}
+
 	PgnGame* pgn(game->pgn());
 
 	m_finishedGameCount++;
 
-	Q_ASSERT(m_gameData.contains(game));
 	GameData* data = m_gameData.take(game);
 	int gameNumber = data->number;
 	Sprt::GameResult sprtResult = Sprt::NoResult;
