@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+### Added
+
+- Players can have separate time controls (#806)
+
 ### Fixed
 
 - Cute Chess specific CodeQL static analysis queries have been re-enabled (#798)
@@ -12,7 +16,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Windows releases are now built with Qt 6 (#802)
-- Limit the CI build for the latest MacOS version to Qt 6 only (#799)
 
 ## [1.3.1](https://github.com/cutechess/cutechess/releases/tag/v1.3.1) - 2023-07-30
 
