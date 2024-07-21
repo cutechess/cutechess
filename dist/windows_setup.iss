@@ -58,6 +58,8 @@ Source: "{#QtLibPath}\bin\Qt6Concurrent.dll"; DestDir: "{app}"; Flags: ignorever
 Source: "{#QtLibPath}\bin\Qt6Core5Compat.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
 Source: "{#QtLibPath}\plugins\styles\qmodernwindowsstyle.dll"; DestDir: "{app}\styles"; Flags: ignoreversion
+Source: "{#QtLibPath}\plugins\iconengines\qsvgicon.dll"; DestDir: "{app}\plugins\iconengines"; Flags: ignoreversion
+Source: "{#QtLibPath}\plugins\imageformats\qsvg.dll"; DestDir: "{app}\plugins\imageformats"; Flags: ignoreversion
 Source: "{#CuteChessPath}\COPYING"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#CuteChessPath}\docs\cutechess-cli.6.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#CuteChessPath}\docs\cutechess-cli.6.html"; DestDir: "{app}"; Flags: ignoreversion
