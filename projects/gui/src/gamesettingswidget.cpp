@@ -52,7 +52,6 @@ GameSettingsWidget::GameSettingsWidget(QWidget* parent)
 		tc.setTimePerTc(300000);
 	}
 
-	//ui->m_timeControlBtn->setText(m_timeControl.toVerboseString());
 	ui->m_timeControlBtn->setText(timeControlText());
 
 	connect(ui->m_browseOpeningSuiteBtn, &QPushButton::clicked, this, [=]()
@@ -474,7 +473,9 @@ void GameSettingsWidget::showTimeControlDialog()
 			}
 			accepted = true;
 		}
-	} else {
+	}
+	else
+	{
 		TimeControlDialog dlg(m_timeControl[Chess::Side::White],
 							  this->parentWidget());
 		if (dlg.exec() == QDialog::Accepted)
