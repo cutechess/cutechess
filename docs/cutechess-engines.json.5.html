@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="man-style.css" type="text/css" media="all"/>
   <title>CUTECHESS-ENGINES.JSON(5)</title>
 </head>
@@ -16,159 +17,153 @@
 <div class="manual-text">
 <section class="Sh">
 <h1 class="Sh" id="NAME"><a class="permalink" href="#NAME">NAME</a></h1>
-<code class="Nm">cutechess-engines.json</code> &#x2014;
-<div class="Nd">Cute Chess engine configuration file</div>
+<p class="Pp"><code class="Nm">cutechess-engines.json</code> &#x2014;
+    <span class="Nd">Cute Chess engine configuration file</span></p>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="DESCRIPTION"><a class="permalink" href="#DESCRIPTION">DESCRIPTION</a></h1>
-<code class="Nm">cutechess-engines.json</code> is the chess engine configuration
-  file for <a class="Xr">cutechess-cli(6)</a>. An engine configuration defines a
-  name, a command, a working directory and many other options. Engine
-  configurations can be used in <a class="Xr">cutechess-cli(6)</a> with the
-  <code class="Cm">conf</code> command-line option.
+<p class="Pp"><code class="Nm">cutechess-engines.json</code> is the chess engine
+    configuration file for <a class="Xr">cutechess-cli(6)</a>. An engine
+    configuration defines a name, a command, a working directory and many other
+    options. Engine configurations can be used in
+    <a class="Xr">cutechess-cli(6)</a> with the <code class="Cm">conf</code>
+    command-line option.</p>
 <p class="Pp">Engine configurations are defined in JavaScript Object Notation
     (JSON) format. See <a class="Sx" href="#JSON_FORMAT">JSON FORMAT</a>.</p>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="JSON_FORMAT"><a class="permalink" href="#JSON_FORMAT">JSON
   FORMAT</a></h1>
-JavaScript Object Notation (JSON) is a text-based format for structured data.
-  JSON is a subset of ECMAScript (JavaScript).
+<p class="Pp">JavaScript Object Notation (JSON) is a text-based format for
+    structured data. JSON is a subset of ECMAScript (JavaScript).</p>
 <section class="Ss">
 <h2 class="Ss" id="Values"><a class="permalink" href="#Values">Values</a></h2>
-A JSON value must be one of: <var class="Ar">object</var>,
-  <var class="Ar">array</var>, <var class="Ar">number</var>,
-  <var class="Ar">string</var>, <code class="Cm">false</code>,
-  <code class="Cm">true</code> or <code class="Cm">null</code>.
+<p class="Pp">A JSON value must be one of: <var class="Ar">object</var>,
+    <var class="Ar">array</var>, <var class="Ar">number</var>,
+    <var class="Ar">string</var>, <code class="Cm">false</code>,
+    <code class="Cm">true</code> or <code class="Cm">null</code>.</p>
 </section>
 <section class="Ss">
 <h2 class="Ss" id="Objects"><a class="permalink" href="#Objects">Objects</a></h2>
-An <var class="Ar">object</var> is structure of name-<var class="Ar">value</var>
-  pairs enclosed in curly brackets. A name is a <var class="Ar">string</var>.
-  Name and value are separated by a single colon. Pairs are separated by commas.
+<p class="Pp">An <var class="Ar">object</var> is structure of
+    name-<var class="Ar">value</var> pairs enclosed in curly brackets. A name is
+    a <var class="Ar">string</var>. Name and value are separated by a single
+    colon. Pairs are separated by commas.</p>
 <p class="Pp">Example objects would be:</p>
-<div class="Bd Pp Bd-indent">
-<pre>
-{ &quot;Finland&quot; : &quot;.fi&quot;, &quot;Sweden&quot; : &quot;.se&quot; }
+<div class="Bd Pp Bd-indent Li">
+<pre>{ &quot;Finland&quot; : &quot;.fi&quot;, &quot;Sweden&quot; : &quot;.se&quot; }
 
 {
   &quot;firstName&quot; : &quot;JC&quot;,
   &quot;lastName&quot;  : &quot;Denton&quot;,
   &quot;age&quot;       : 28,
   &quot;languages&quot; : [ &quot;English&quot;, &quot;French&quot;, &quot;Spanish&quot; ]
-}
-</pre>
+}</pre>
 </div>
 </section>
 <section class="Ss">
 <h2 class="Ss" id="Arrays"><a class="permalink" href="#Arrays">Arrays</a></h2>
-An <var class="Ar">array</var> is a structure of zero or more
-  <var class="Ar">values</var> enclosed in square brackets. Values are separated
-  by commas.
+<p class="Pp">An <var class="Ar">array</var> is a structure of zero or more
+    <var class="Ar">values</var> enclosed in square brackets. Values are
+    separated by commas.</p>
 <p class="Pp">Example arrays would be:</p>
-<div class="Bd Pp Bd-indent">
-<pre>
-[ &quot;Cute&quot;, &quot;Chess&quot; ]
+<div class="Bd Pp Bd-indent Li">
+<pre>[ &quot;Cute&quot;, &quot;Chess&quot; ]
 
 [
   [ 1, 0, 0 ],
   [ 0, 1, 0 ],
   [ 0, 0, 1 ]
-]
-</pre>
+]</pre>
 </div>
 </section>
 <section class="Ss">
 <h2 class="Ss" id="Numbers"><a class="permalink" href="#Numbers">Numbers</a></h2>
-A <var class="Ar">number</var> consists of an integer part and optional
-  fractional and/or exponent part. The integer part can be prefixed with a minus
-  sign. Fractional part is a decimal point followed by one or more digits.
-  Exponent part begins with a letter E in upper or lowercase which may be
-  followed by a plus or minus sign. The E and optional sign are followed by one
-  or more digits.
+<p class="Pp">A <var class="Ar">number</var> consists of an integer part and
+    optional fractional and/or exponent part. The integer part can be prefixed
+    with a minus sign. Fractional part is a decimal point followed by one or
+    more digits. Exponent part begins with a letter E in upper or lowercase
+    which may be followed by a plus or minus sign. The E and optional sign are
+    followed by one or more digits.</p>
 <p class="Pp">Octal and hex forms are not allowed.</p>
 <p class="Pp">Example numbers would be:</p>
-<div class="Bd Pp Bd-indent">
-<pre>
-128
+<div class="Bd Pp Bd-indent Li">
+<pre>128
 -1.04
 2e32
--18E-20
-</pre>
+-18E-20</pre>
 </div>
 </section>
 <section class="Ss">
 <h2 class="Ss" id="Strings"><a class="permalink" href="#Strings">Strings</a></h2>
-A <var class="Ar">string</var> is sequence of characters enclosed in quotation
-  marks. All Unicode characters may be placed within the quotation marks except
-  for the characters that must be escaped: quotation mark, backslash, and
-  control characters.
+<p class="Pp">A <var class="Ar">string</var> is sequence of characters enclosed
+    in quotation marks. All Unicode characters may be placed within the
+    quotation marks except for the characters that must be escaped: quotation
+    mark, backslash, and control characters.</p>
 <p class="Pp">Available two-character escape sequences are as follows:</p>
 <p class="Pp"></p>
 <div class="Bd-indent">
 <dl class="Bl-tag Bl-compact">
-  <dt><a class="permalink" href="#_e_e"><code class="Cm" id="_e_e">\\</code></a></dt>
+  <dt><code class="Cm">\\</code></dt>
   <dd>Backslash character.</dd>
-  <dt><a class="permalink" href="#_e/"><code class="Cm" id="_e/">\/</code></a></dt>
+  <dt id="/"><a class="permalink" href="#/"><code class="Cm">\/</code></a></dt>
   <dd>Forward slash character.</dd>
-  <dt><a class="permalink" href="#_e_(dq"><code class="Cm" id="_e_(dq">\&quot;</code></a></dt>
+  <dt><code class="Cm">\&quot;</code></dt>
   <dd>Quotation mark.</dd>
-  <dt><a class="permalink" href="#_eb"><code class="Cm" id="_eb">\b</code></a></dt>
+  <dt id="b"><a class="permalink" href="#b"><code class="Cm">\b</code></a></dt>
   <dd>Bell character.</dd>
-  <dt><a class="permalink" href="#_ef"><code class="Cm" id="_ef">\f</code></a></dt>
+  <dt id="f"><a class="permalink" href="#f"><code class="Cm">\f</code></a></dt>
   <dd>Form feed character.</dd>
-  <dt><a class="permalink" href="#_en"><code class="Cm" id="_en">\n</code></a></dt>
+  <dt id="n"><a class="permalink" href="#n"><code class="Cm">\n</code></a></dt>
   <dd>Line feed character.</dd>
-  <dt><a class="permalink" href="#_et"><code class="Cm" id="_et">\t</code></a></dt>
+  <dt id="t"><a class="permalink" href="#t"><code class="Cm">\t</code></a></dt>
   <dd>Vertical tab character.</dd>
-  <dt><a class="permalink" href="#_eu"><code class="Cm" id="_eu">\u</code></a><var class="Ar">num</var></dt>
+  <dt id="u"><a class="permalink" href="#u"><code class="Cm">\u</code></a><var class="Ar">num</var></dt>
   <dd>Unicode character where <var class="Ar">num</var> is a four hexadecimal
       digits that encode the character's code point.</dd>
 </dl>
 </div>
 <p class="Pp">Example strings would be:</p>
-<div class="Bd Pp Bd-indent">
-<pre>
-&quot;Hello, world!&quot;
+<div class="Bd Pp Bd-indent Li">
+<pre>&quot;Hello, world!&quot;
 
 &quot;Please place all items \&quot;carefully\&quot; in bins.&quot;
 
-&quot;\u03a6 is one of the letters of Greek alphabet.&quot;
-</pre>
+&quot;\u03a6 is one of the letters of Greek alphabet.&quot;</pre>
 </div>
 </section>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="ENGINE_CONFIGURATION"><a class="permalink" href="#ENGINE_CONFIGURATION">ENGINE
   CONFIGURATION</a></h1>
-The configuration file consist of an <var class="Ar">array</var> of
-  <var class="Ar">objects</var>. Each object defines a single engine
-  configuration. Required options for each engine configuration are:
+<p class="Pp">The configuration file consist of an <var class="Ar">array</var>
+    of <var class="Ar">objects</var>. Each object defines a single engine
+    configuration. Required options for each engine configuration are:</p>
 <dl class="Bl-tag">
-  <dt><a class="permalink" href="#name"><code class="Ic" id="name">name</code></a>
+  <dt id="name"><a class="permalink" href="#name"><code class="Ic">name</code></a>
     <span class="No">:</span> <var class="Ar">string</var></dt>
   <dd>The name of the engine.</dd>
-  <dt><a class="permalink" href="#command"><code class="Ic" id="command">command</code></a>
+  <dt id="command"><a class="permalink" href="#command"><code class="Ic">command</code></a>
     <span class="No">:</span> <var class="Ar">string</var></dt>
   <dd>The engine command.</dd>
-  <dt><a class="permalink" href="#protocol"><code class="Ic" id="protocol">protocol</code></a>
+  <dt id="protocol"><a class="permalink" href="#protocol"><code class="Ic">protocol</code></a>
     <span class="No">: &quot;uci&quot;</span> |
-    <a class="permalink" href="#_(dqxboard_(dq"><span class="No" id="_(dqxboard_(dq">&quot;xboard&quot;</span></a></dt>
+    <span class="No">&quot;xboard&quot;</span></dt>
   <dd>The chess engine protocol used by this engine.</dd>
 </dl>
 <p class="Pp">Other available options for an engine configuration are:</p>
 <dl class="Bl-tag">
-  <dt><a class="permalink" href="#workingDirectory"><code class="Ic" id="workingDirectory">workingDirectory</code></a>
+  <dt id="workingDirectory"><a class="permalink" href="#workingDirectory"><code class="Ic">workingDirectory</code></a>
     <span class="No">:</span> <var class="Ar">string</var></dt>
   <dd>The working directory of the engine.</dd>
-  <dt><a class="permalink" href="#stderrFile"><code class="Ic" id="stderrFile">stderrFile</code></a>
+  <dt id="stderrFile"><a class="permalink" href="#stderrFile"><code class="Ic">stderrFile</code></a>
     <span class="No">:</span> <var class="Ar">string</var></dt>
   <dd>File where the engine's standard error output is redirected.</dd>
-  <dt><a class="permalink" href="#initStrings"><code class="Ic" id="initStrings">initStrings</code></a>
+  <dt id="initStrings"><a class="permalink" href="#initStrings"><code class="Ic">initStrings</code></a>
     <span class="No">:</span> <var class="Ar">array</var>
     <span class="No">of</span> <var class="Ar">string</var></dt>
   <dd>Array of strings sent to the engine's standard input at startup.</dd>
-  <dt><a class="permalink" href="#whitepov"><code class="Ic" id="whitepov">whitepov</code></a>
+  <dt id="whitepov"><a class="permalink" href="#whitepov"><code class="Ic">whitepov</code></a>
     <span class="No">:</span> <code class="Cm">true</code> |
     <a class="permalink" href="#false"><code class="Cm" id="false">false</code></a></dt>
   <dd>When <code class="Cm">true</code> invert the engine's scores when it plays
@@ -176,26 +171,25 @@ The configuration file consist of an <var class="Ar">array</var> of
     <p class="Pp">This option should be used with engines that always report
         scores from white's perspective.</p>
   </dd>
-  <dt><a class="permalink" href="#ponder"><code class="Ic" id="ponder">ponder</code></a>
+  <dt id="ponder"><a class="permalink" href="#ponder"><code class="Ic">ponder</code></a>
     <span class="No">:</span> <code class="Cm">true</code> |
-    <a class="permalink" href="#false_2"><code class="Cm" id="false_2">false</code></a></dt>
+    <a class="permalink" href="#false~2"><code class="Cm" id="false~2">false</code></a></dt>
   <dd>When <code class="Cm">true</code> enable pondering if the engine supports
       it. The default is <code class="Cm">false</code>.</dd>
 </dl>
 </section>
 <section class="Sh">
 <h1 class="Sh" id="EXAMPLES"><a class="permalink" href="#EXAMPLES">EXAMPLES</a></h1>
-A minimal engine configuration file for the Sloppy chess engine:
-<div class="Bd Pp Bd-indent">
-<pre>
-[
+<p class="Pp">A minimal engine configuration file for the Sloppy chess
+  engine:</p>
+<div class="Bd Pp Bd-indent Li">
+<pre>[
   {
     &quot;name&quot;: &quot;Sloppy&quot;,
     &quot;command&quot;: &quot;sloppy&quot;,
     &quot;protocol&quot;: &quot;xboard&quot;
   }
-]
-</pre>
+]</pre>
 </div>
 <p class="Pp">Using the above engine configuration file with the
     <code class="Cm">conf</code> command-line option:</p>
@@ -206,7 +200,7 @@ A minimal engine configuration file for the Sloppy chess engine:
 <section class="Sh">
 <h1 class="Sh" id="SEE_ALSO"><a class="permalink" href="#SEE_ALSO">SEE
   ALSO</a></h1>
-<a class="Xr">cutechess-cli(6)</a>
+<p class="Pp"><a class="Xr">cutechess-cli(6)</a></p>
 <p class="Pp"><cite class="Rs"><span class="RsT">The application/json Media Type
     for JavaScript Object Notation (JSON)</span>, <span class="RsR">RFC
     4627</span>, <span class="RsD">July 2006</span>.</cite></p>

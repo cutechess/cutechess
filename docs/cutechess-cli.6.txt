@@ -328,6 +328,12 @@ DESCRIPTION
      nodes=count
 	     Set the node count limit.
 
+     tscale=factor
+	     Scale engine timeouts by factor.  Only use this option if
+	     necessary.
+
+     debug   Activate debug mode (per protocol, UCI only).
+
 EXAMPLES
      Play ten games between two Sloppy engines with a time control of 40 moves
      in 60 seconds:
