@@ -105,9 +105,7 @@ void tst_XboardEngine::testParsePv()
 	QFETCH(QString, pvString);
 	QFETCH(MoveEvaluation, pv);
 
-	QStringRef pvStringRef(firstToken(pvString));
-
-	QCOMPARE(parsePv(pvStringRef), pv);
+	QCOMPARE(parsePv(pvString), pv);
 }
 
 void tst_XboardEngine::testParseOptionButton_data()
