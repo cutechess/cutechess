@@ -226,3 +226,21 @@ Engine options:
   debug			Activate debug mode per protocol (UCI only).
   option.OPTION=VALUE	Set custom option OPTION to value VALUE
 
+
+Signals:
+
+  cutechess-cli accepts three signals:
+
+  SIGINT		Stops the ongoing match. All games are terminated.
+			The program is aborted in case of error.
+  SIGUSR1		Suspends the ongoing match. No new games will be
+			started, active games will continue. The match is
+			suspended after every game has finished.
+  SIGUSR2		Resumes a suspended match.
+
+  Example of a sequence:
+
+	1. kill -SIGUSR1 PROCESSNUMBER  (suspends the ongoing match)
+	2. kill -SIGUSR1 PROCESSNUMBER  (will be ignored)
+	3. kill -SIGUSR2 PROCESSNUMBER  (ignored if games are still ongoing)
+	4. kill -SIGUSR2 PROCESSNUMBER  (resumes the suspended match)
