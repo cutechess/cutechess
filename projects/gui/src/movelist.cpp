@@ -25,7 +25,9 @@
 #include <QAction>
 #include <chessgame.h>
 #include <QMenu>
-
+#include <QClipboard>
+#include "cutechessapp.h"
+#include <QTextStream>
 
 MoveList::MoveList(QWidget* parent)
 	: QWidget(parent),
@@ -89,6 +91,21 @@ MoveList::MoveList(QWidget* parent)
 		{
 			toggleCommentAct->setEnabled(true);
 		});
+	});
+	QAction* copyListAct = new QAction("Copy with PGN header", m_moveList);
+	m_moveList->addAction(copyListAct);
+	connect(copyListAct, &QAction::triggered, this, [=]()
+	{
+		if (m_game.isNull() && m_pgn == nullptr)
+			return;
+
+		PgnGame::PgnMode mode = m_showComments ?PgnGame::PgnMode::Verbose:
+							PgnGame::PgnMode::Minimal;
+		QClipboard* cb = CuteChessApplication::clipboard();
+		QString str;
+		QTextStream s(&str);
+		m_pgn->write(s, mode, true);
+		cb->setText(s.readAll());
 	});
 	m_moveList->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
 
