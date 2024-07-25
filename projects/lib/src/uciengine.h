@@ -54,6 +54,7 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		virtual void parseLine(const QString& line);
 		virtual void sendOption(const QString& name, const QVariant& value);
 		virtual bool isPondering() const;
+		virtual bool hasCaseSensitiveOptions() const override;
 		
 	private:
 		enum PonderState
