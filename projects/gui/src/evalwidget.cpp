@@ -97,11 +97,18 @@ void EvalWidget::setPlayer(ChessPlayer* player)
 
 void EvalWidget::onEval(const MoveEvaluation& eval)
 {
-	auto nps = eval.nps();
+	double nps = double(eval.nps());
 	if (nps)
 	{
-		QString npsStr = nps < 10000 ? QString("%1").arg(nps)
-					     : QString("%1k").arg(nps / 1000);
+		QString npsStr;
+		if (nps < 1000)
+			npsStr = QString("%1").arg(nps);
+		else if (nps < 1000000)
+			npsStr = QString("%1K").arg(nps / 1000, 0, 'g', 3);
+		else if (nps < 1000000000)
+			npsStr = QString("%1M").arg(nps / 1000000, 0, 'g', 3);
+		else
+			npsStr = QString("%1G").arg(nps / 1000000000, 0, 'g', 3);
 		auto item = m_statsTable->itemPrototype()->clone();
 		item->setText(npsStr);
 		m_statsTable->setItem(0, NpsHeader, item);
@@ -153,16 +160,26 @@ void EvalWidget::onEval(const MoveEvaluation& eval)
 	else
 		time = QTime(0, 0).addMSecs(eval.time()).toString("hh:mm:ss");
 
-	QString nodeCount;
+	QString nodeCountStr;
 	if (eval.nodeCount())
-		nodeCount = QString::number(eval.nodeCount());
+	{
+		double nodeCount = double(eval.nodeCount());
+		if (nodeCount < 1000)
+			nodeCountStr = QString("%1").arg(nodeCount);
+		else if (nodeCount < 1000000)
+			nodeCountStr = QString("%1K").arg(nodeCount / 1000, 0, 'g', 3);
+		else if (nodeCount < 1000000000)
+			nodeCountStr = QString("%1M").arg(nodeCount / 1000000, 0, 'g', 3);
+		else
+			nodeCountStr = QString("%1G").arg(nodeCount / 1000000000, 0, 'g', 3);
+	}
 
 	QString score = eval.scoreText();
 
 	QVector<QTableWidgetItem*> items;
 	items << new QTableWidgetItem(depth)
 	      << new QTableWidgetItem(time)
-	      << new QTableWidgetItem(nodeCount)
+	      << new QTableWidgetItem(nodeCountStr)
 	      << new QTableWidgetItem(score)
 	      << new QTableWidgetItem(eval.pv());
 
