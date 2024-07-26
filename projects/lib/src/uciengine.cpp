@@ -123,6 +123,15 @@ void UciEngine::sendPosition()
 	write(positionString());
 }
 
+void UciEngine::go()
+{
+	// Fix position for pondering / game pause
+	if (pondering() && !isPondering() && state() == Observing)
+		sendPosition();
+
+	ChessEngine::go();
+}
+
 void UciEngine::startGame()
 {
 	Q_ASSERT(supportsVariant(board()->variant()));
@@ -315,6 +324,16 @@ bool UciEngine::isPondering() const
 void UciEngine::sendStop()
 {
 	write("stop");
+}
+
+void UciEngine::stopPondering()
+{
+	if (isPondering())
+	{
+		sendStop();
+		clearPonderState();
+		ping();
+	}
 }
 
 QString UciEngine::protocol() const
