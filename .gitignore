@@ -1,5 +1,6 @@
 # main executables
 projects/gui/cutechess
+projects/gui/image/
 projects/cli/cutechess-cli
 Cute Chess.app/
 cutechess.exe
