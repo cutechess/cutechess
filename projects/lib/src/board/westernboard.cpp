@@ -246,6 +246,8 @@ QString WesternBoard::sanMoveString(const Move& move)
 		QVarLengthArray<Move> moves;
 		generateMoves(moves, piece.type());
 
+		bool needSomething = false;
+
 		for (int i = 0; i < moves.size(); i++)
 		{
 			const Move& move2 = moves[i];
@@ -258,11 +260,14 @@ QString WesternBoard::sanMoveString(const Move& move)
 				continue;
 
 			Square square2(chessSquare(move2.sourceSquare()));
-			if (square2.file() != square.file())
-				needFile = true;
-			else if (square2.rank() != square.rank())
+			if (square2.file() == square.file())
 				needRank = true;
+			else if (square2.rank() == square.rank())
+				needFile = true;
+			needSomething = true;
 		}
+		if (needSomething && !needRank)
+			needFile = true;
 	}
 	if (needFile)
 		str += QChar('a' + square.file());
