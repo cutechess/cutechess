@@ -51,7 +51,9 @@ class LIB_EXPORT Tournament : public QObject
 		{
 			DefaultPolicy,     //!< Shift on repetition count and on new encounter
 			EncounterPolicy,   //!< Shift on new encounter
-			RoundPolicy        //!< Shift on new round
+			SubRoundPolicy,    //!< Shift on new sub-round
+			RoundPolicy,       //!< Shift on new round
+			KeepPolicy         //!< Keep the same opening
 		};
 
 		/*! Additional result types used for statistics. */
@@ -112,6 +114,10 @@ class LIB_EXPORT Tournament : public QObject
 		QString variant() const;
 		/*! Returns the currently executing round of the tournament. */
 		int currentRound() const;
+		/*! Returns the current sub-round of the tournament. */
+		int currentSubRound() const;
+		/*! Returns the current sub-sub-round of the tournament. */
+		int currentSubSubRound() const;
 		/*!
 		 * Returns the number of games to play per encounter.
 		 *
@@ -393,6 +399,10 @@ class LIB_EXPORT Tournament : public QObject
 	protected:
 		/*! Sets the currently executing tournament round to \a round. */
 		void setCurrentRound(int round);
+		/*! Sets the current tournament sub-round to \a subRound. */
+		void setCurrentSubRound(int subRound);
+		/*! Sets the current tournament sub-sub-round to \a subSubRound. */
+		void setCurrentSubSubRound(int subSubRound);
 		/*! Returns the number of games in progress. */
 		int gamesInProgress() const;
 		/*! Returns the pair that started the last game. */
@@ -694,6 +704,9 @@ class LIB_EXPORT Tournament : public QObject
 		QString m_variant;
 		int m_round;
 		int m_oldRound;
+		int m_subRound;
+		int m_oldSubRound;
+		int m_subSubRound;
 		int m_nextGameNumber;
 		int m_finishedGameCount;
 		int m_savedGameCount;

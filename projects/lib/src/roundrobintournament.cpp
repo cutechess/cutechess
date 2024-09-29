@@ -43,6 +43,9 @@ void RoundRobinTournament::initializePairing()
 		m_topHalf.append(i);
 	for (int i = count - 1; i >= count / 2; i--)
 		m_bottomHalf.append(i);
+
+	setCurrentRound(1);
+	setCurrentSubRound(1);
 }
 
 int RoundRobinTournament::gamesPerCycle() const
@@ -60,9 +63,16 @@ TournamentPair* RoundRobinTournament::nextPair(int gameNumber)
 	if (m_pairNumber >= m_topHalf.size())
 	{
 		m_pairNumber = 0;
-		setCurrentRound(currentRound() + 1);
+		setCurrentSubRound(currentSubRound() + 1);
+		setCurrentSubSubRound(0);
 		m_topHalf.insert(1, m_bottomHalf.takeFirst());
 		m_bottomHalf.append(m_topHalf.takeLast());
+	}
+
+	if (currentSubRound() >= playerCount() + playerCount() % 2)
+	{
+		setCurrentRound(currentRound() + 1);
+		setCurrentSubRound(1);
 	}
 
 	int white = m_topHalf.at(m_pairNumber);
