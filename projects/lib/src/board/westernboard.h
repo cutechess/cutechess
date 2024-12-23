@@ -217,6 +217,7 @@ class LIB_EXPORT WesternBoard : public Board
 		virtual Move moveFromSanString(const QString& str);
 		virtual void vMakeMove(const Move& move,
 				       BoardTransition* transition);
+		virtual void vApplyFutureDependentUpdate();
 		virtual void vUndoMove(const Move& move);
 		virtual void generateMovesForPiece(QVarLengthArray<Move>& moves,
 						   int pieceType,

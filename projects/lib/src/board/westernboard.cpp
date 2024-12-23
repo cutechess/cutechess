@@ -968,7 +968,11 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 				if (pstep.type == CaptureStep 
 				 && opPawn == pieceAt(epSq + pawnPushOffset(pstep, m_sign)))
 				{
+					// Because vApplyFutureDependentUpdate will call isLegalMove(epMove),
+					// we need to set the EP square here even if it will be reset
+					// later.
 					setEnpassantSquare(epSq, target);
+					setNeedsFutureDependentUpdateFlag();
 				}
 			}
 		}
@@ -1020,6 +1024,28 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 
 	m_history.append(md);
 	m_sign *= -1;
+}
+
+void WesternBoard::vApplyFutureDependentUpdate()
+{
+	const Move move = lastMove();
+	const int source = move.sourceSquare();
+	const int target = move.targetSquare();
+
+	// Previous move must have been a double pawn push.
+	Q_ASSERT((source / m_arwidth - target / m_arwidth) * -m_sign == 2);
+
+	const int epSq = (source + target) / 2;
+	const Piece pawn(sideToMove(), Pawn);
+	for (const PawnStep& pstep : m_pawnSteps)
+	{
+		const int epSource = epSq + pawnPushOffset(pstep, -m_sign);
+		if (pstep.type == CaptureStep && pawn == pieceAt(epSource) &&
+		    isLegalMove(Move(epSource, epSq)))
+			return;
+	}
+
+	setEnpassantSquare(0);
 }
 
 void WesternBoard::vUndoMove(const Move& move)

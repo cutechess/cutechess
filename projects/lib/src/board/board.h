@@ -350,6 +350,19 @@ class LIB_EXPORT Board
 		 */
 		virtual void vMakeMove(const Move& move,
 				       BoardTransition* transition) = 0;
+
+		/*!
+		 * Applies any modification that are dependent on the legality of a future state.
+		 *
+		 * This function is only to be called by makeMove after every other
+		 * state modifications have been done, and should take care of updating
+		 * properties that are dependent on the legality of a future move (eg: en passant square).
+		 */
+		virtual void vApplyFutureDependentUpdate();
+
+		/*! Signals that we should call vApplyFutureDependentUpdate in makeMove. */
+		void setNeedsFutureDependentUpdateFlag();
+
 		/*!
 		 * Reverses \a move on the board.
 		 *
@@ -543,6 +556,7 @@ class LIB_EXPORT Board
 		QString m_startingFen;
 		int m_maxPieceSymbolLength;
 		quint64 m_key;
+		bool m_needsFutureDependentUpdate;
 		Zobrist* m_zobrist;
 		QSharedPointer<Zobrist> m_sharedZobrist;
 		QVarLengthArray<PieceData> m_pieceData;

@@ -710,6 +710,22 @@ void Board::makeMove(const Move& move, BoardTransition* transition)
 	xorKey(m_zobrist->side());
 	m_side = m_side.opposite();
 	m_moveHistory << md;
+
+	if (m_needsFutureDependentUpdate)
+	{
+		// We may need to recursively call makeMove multiple times
+		// if there is a dependency on more than 1 move in the future,
+		// so we should reset the flag here.
+		m_needsFutureDependentUpdate = false;
+		vApplyFutureDependentUpdate();
+	}
+}
+
+void Board::vApplyFutureDependentUpdate() {}
+
+void Board::setNeedsFutureDependentUpdateFlag()
+{
+	m_needsFutureDependentUpdate = true;
 }
 
 void Board::undoMove()
