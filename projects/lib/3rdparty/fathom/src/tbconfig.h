@@ -66,7 +66,7 @@
  * Define TB_NO_STDBOOL if you do not want to use <stdbool.h> or it is not
  * available or unnecessary (e.g. C++).
  */
-#define TB_NO_STDBOOL
+/* #define TB_NO_STDBOOL */
 
 /*
  * Define TB_NO_THREADS if your program is not multi-threaded.
