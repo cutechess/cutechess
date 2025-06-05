@@ -3,7 +3,7 @@
 All notable changes to Cute Chess will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased](https://github.com/cutechess/cutechess/tree/master)
+## [1.4.0](https://github.com/cutechess/cutechess/releases/tag/v1.4.0) - 2025-06-05
 
 ### Added
 
@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Crash when tournament game fails to start (#794)
 - Cute Chess specific CodeQL static analysis queries have been re-enabled (#798)
+- Broken build with GCC 15 (#831)
 
 ### Changed
 
