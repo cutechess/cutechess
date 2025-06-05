@@ -50,6 +50,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        sudo apt update
         sudo apt install qtbase5-dev qtbase5-dev-tools libqt5svg5-dev
 
     # Initializes the CodeQL tools for scanning.
