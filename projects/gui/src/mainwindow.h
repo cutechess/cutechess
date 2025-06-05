@@ -100,6 +100,7 @@ class MainWindow : public QMainWindow
 			QPointer<ChessGame> m_game;
 			PgnGame* m_pgn;
 			Tournament* m_tournament;
+			QString m_titleSuffix;
 			bool m_finished;
 		};
 

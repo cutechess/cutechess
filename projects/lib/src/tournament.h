@@ -330,6 +330,13 @@ class LIB_EXPORT Tournament : public QObject
 		 * Returns true if the tournament is stopping, else false.
 		 */
 		bool isStopping() const;
+		/*!
+		 * Returns the game number for \a game.
+		 *
+		 * If \a game does not belong to this tournament, returns 0.
+		 * \note The game numbers start at 1.
+		 */
+		int gameNumber(ChessGame* game) const;
 
 	public slots:
 		/*! Starts the tournament. */

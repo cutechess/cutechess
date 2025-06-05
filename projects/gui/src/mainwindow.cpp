@@ -52,7 +52,6 @@
 #include "newtournamentdialog.h"
 #include "chessclock.h"
 #include "plaintextlog.h"
-#include "gamedatabasemanager.h"
 #include "pgntagsmodel.h"
 #include "gametabbar.h"
 #include "evalhistory.h"
@@ -71,6 +70,13 @@ MainWindow::TabData::TabData(ChessGame* game, Tournament* tournament)
 	  m_tournament(tournament),
 	  m_finished(false)
 {
+	if (tournament)
+	{
+		int gameNum = tournament->gameNumber(game);
+		int totalGames = tournament->finalGameCount();
+		if (gameNum > 0 && totalGames > 0)
+			m_titleSuffix = tr(" [%1/%2]").arg(gameNum).arg(totalGames);
+	}
 }
 
 MainWindow::MainWindow(ChessGame* game)
@@ -921,10 +927,10 @@ QString MainWindow::genericTitle(const TabData& gameData) const
 	}
 
 	if (result.isNone())
-		return tr("%1 vs %2").arg(white, black);
+		return tr("%1 vs %2%3").arg(white, black, gameData.m_titleSuffix);
 	else
-		return tr("%1 vs %2 (%3)")
-		       .arg(white, black, result.toShortString());
+		return tr("%1 vs %2 (%3)%4")
+			   .arg(white, black, result.toShortString(), gameData.m_titleSuffix);
 }
 
 void MainWindow::updateMenus()

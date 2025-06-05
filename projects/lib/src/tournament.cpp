@@ -892,6 +892,14 @@ bool Tournament::isStopping() const
 	return m_stopping;
 }
 
+int Tournament::gameNumber(ChessGame* game) const
+{
+	const auto gameData = m_gameData.value(game, nullptr);
+	if (gameData == nullptr)
+		return 0;
+	return gameData->number;
+}
+
 
 QString Tournament::resultsForSides(int index) const
 {
