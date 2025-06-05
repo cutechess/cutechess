@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - Players can have separate time controls (#806)
+- Current / total game number in tab/window title (#658)
 
 ### Fixed
 
