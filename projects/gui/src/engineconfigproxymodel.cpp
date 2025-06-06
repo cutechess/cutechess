@@ -17,6 +17,7 @@
 */
 
 #include "engineconfigproxymodel.h"
+#include "engineconfigurationmodel.h"
 #include <QStringList>
 
 EngineConfigurationProxyModel::EngineConfigurationProxyModel(QObject *parent)
@@ -35,7 +36,8 @@ bool EngineConfigurationProxyModel::filterAcceptsRow(int sourceRow,
 {
 	if (!m_filterVariant.isEmpty())
 	{
-		QModelIndex variantsIndex = sourceModel()->index(sourceRow, 4, sourceParent);
+		QModelIndex variantsIndex = sourceModel()->index(
+			sourceRow, EngineConfigurationModel::VariantsColumn, sourceParent);
 		QStringList variants(sourceModel()->data(variantsIndex).toStringList());
 
 		if (!variants.contains(m_filterVariant))

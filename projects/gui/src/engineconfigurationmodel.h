@@ -22,7 +22,6 @@
 #include <QAbstractListModel>
 class EngineManager;
 
-
 /*!
  * \brief The EngineConfigurationModel class represents a chess engine
  * configuration based model.
@@ -45,6 +44,16 @@ class EngineConfigurationModel : public QAbstractListModel
 	Q_OBJECT
 
 	public:
+		/*! Columns in the model. */
+		enum Column
+		{
+			NameColumn,		//!< Engine name
+			CommandColumn,	//!< Engine start command
+			WorkdirColumn,	//!< Engine's working directory
+			ProtocolColumn,	//!< Engine's chess communication protocol
+			VariantsColumn,	//!< Chess variants supported by engine
+		};
+
 		/*!
 		 * Creates an empty model.
 		*/

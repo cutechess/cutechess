@@ -33,7 +33,6 @@
 #include "engineconfigurationmodel.h"
 #include "engineconfigproxymodel.h"
 #include "engineconfigurationdlg.h"
-#include "pairtimecontroldlg.h"
 #include "stringvalidator.h"
 
 #if 0

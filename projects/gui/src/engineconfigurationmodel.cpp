@@ -80,15 +80,15 @@ QVariant EngineConfigurationModel::data(const QModelIndex& index, int role) cons
 
 		switch (index.column())
 		{
-		case 0:
+		case NameColumn:
 			return engine.name();
-		case 1:
+		case CommandColumn:
 			return engine.command();
-		case 2:
+		case WorkdirColumn:
 			return engine.workingDirectory();
-		case 3:
+		case ProtocolColumn:
 			return engine.protocol();
-		case 4:
+		case VariantsColumn:
 			return engine.supportedVariants();
 		default:
 			return QVariant();
@@ -123,15 +123,15 @@ QVariant EngineConfigurationModel::headerData(int section, Qt::Orientation orien
 	{
 		switch (section)
 		{
-		case 0:
+		case NameColumn:
 			return tr("Name");
-		case 1:
+		case CommandColumn:
 			return tr("Command");
-		case 2:
+		case WorkdirColumn:
 			return tr("Working Directory");
-		case 3:
+		case ProtocolColumn:
 			return tr("Protocol");
-		case 4:
+		case VariantsColumn:
 			return tr("Variants");
 		default:
 			return QVariant();

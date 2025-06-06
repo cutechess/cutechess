@@ -22,7 +22,6 @@
 #include <QSortFilterProxyModel>
 #include <QFileDialog>
 #include <QSettings>
-#include <functional>
 #include <algorithm>
 
 #include <enginemanager.h>
