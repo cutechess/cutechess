@@ -717,8 +717,7 @@ void XboardEngine::parseLine(const QString& line)
 	}
 	else if (command == QLatin1String("feature"))
 	{
-		// XXX: parseFeatures() should use QStringView
-		for (const XboardFeature& feature : parseFeatures(args.toString())) {
+		for (const XboardFeature& feature : parseFeatures(args)) {
 			setFeature(feature.first, feature.second);
 		}
 	}
@@ -759,10 +758,12 @@ void XboardEngine::sendOption(const QString& name, const QVariant& value)
 	}
 }
 
-QList<XboardFeature> XboardEngine::parseFeatures(const QString& featureArgs)
+QList<XboardFeature> XboardEngine::parseFeatures(QStringView featureArgs)
 {
 	QList<XboardFeature> features;
 	QRegularExpression re("(\\w+)\\s*=\\s*(\"[^\"]+\"|\\w+)");
+	// XXX: use QRegularExpression::globalMatchView() on Qt 6.5+ and
+	//      make a copy of the string only on `features.append(...)`
 	auto i = re.globalMatch(featureArgs);
 
 	while (i.hasNext())
