@@ -160,7 +160,7 @@ void NewTournamentDialog::addEngine()
 	if (value != QDialog::Accepted)
 		return;
 
-	const QModelIndexList list(dlg.selection().indexes());
+	const QModelIndexList list(dlg.selectedRows());
 	for (const QModelIndex& index : list)
 	{
 		m_addedEnginesManager->addEngine(m_srcEngineManager->engineAt(index.row()));

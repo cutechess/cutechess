@@ -46,6 +46,19 @@ QItemSelection EngineSelectionDialog::selection() const
 	return m_model->mapSelectionToSource(ui->m_enginesList->selectionModel()->selection());
 }
 
+QModelIndexList EngineSelectionDialog::selectedRows(int column) const
+{
+	const auto sel = selection();
+	QModelIndexList ret;
+	for (const QModelIndex &index : sel.indexes())
+	{
+		if (index.column() == column)
+			ret.append(index);
+	}
+
+	return ret;
+}
+
 QListView* EngineSelectionDialog::enginesList() const
 {
 	return ui->m_enginesList;

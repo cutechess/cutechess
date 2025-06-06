@@ -39,6 +39,7 @@ class EngineSelectionDialog : public QDialog
 		virtual ~EngineSelectionDialog();
 
 		QItemSelection selection() const;
+		QModelIndexList selectedRows(int column = 0) const;
 		QListView * enginesList() const;
 
 	private:
