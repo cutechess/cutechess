@@ -147,7 +147,7 @@ bool OpeningSuite::initialize()
 		}
 
 		if (m_startIndex >= m_filePositions.size())
-			qWarning("Start index larger than book size, wrapping after %d.", m_filePositions.size());
+			qWarning("Start index larger than book size, wrapping after %lld.", m_filePositions.size());
 
 		m_gameIndex += m_startIndex % m_filePositions.size();
 	}
