@@ -120,6 +120,7 @@ jobs:
                 cp ..\docs\cutechess-cli.6.txt .
                 cp ..\docs\cutechess-engines.json.5.html .
                 cp ..\docs\cutechess-engines.json.5.txt .
+                cp ..\COPYING .
                 cp "$env:VCDIR\VC\Redist\MSVC\v143\vc_redist.x64.exe" .
                 cp "$env:Qt6_Dir\bin\Qt6Core.dll" .
                 cp "$env:Qt6_Dir\bin\Qt6Gui.dll" .
