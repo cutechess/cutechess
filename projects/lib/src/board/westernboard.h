@@ -253,6 +253,7 @@ class LIB_EXPORT WesternBoard : public Board
 		CastlingSide castlingSide(const Move& move) const;
 		void setEnpassantSquare(int square,
 					int target=0);
+		void maybeEnableEnpassant(const Move& move);
 		void setCastlingSquare(Side side,
 				       CastlingSide cside,
 				       int square);

@@ -208,6 +208,36 @@ void tst_Board::moveStrings_data() const
 		<< "h2a2"
 		<< "8/8/k1K5/8/8/8/7R/8 w - - 99 1"
 		<< "8/8/k1K5/8/8/8/R7/8 b - - 100 1";
+	QTest::newRow("illegal en passant discovered check")
+		<< "standard"
+		<< "e7e5"
+		<< "3b3k/3Rp3/8/r2P4/7K/8/8/NR6 b - - 7 2"
+		<< "3b3k/3R4/8/r2Pp3/7K/8/8/NR6 w - - 0 3";
+	QTest::newRow("illegal en passant horizontal pin")
+		<< "standard"
+		<< "e7e5"
+		<< "b6k/3Rp3/8/r2P3K/8/8/8/NR6 b - - 7 2"
+		<< "b6k/3R4/8/r2Pp2K/8/8/8/NR6 w - - 0 3";
+	QTest::newRow("illegal en passant diagonal pin")
+		<< "standard"
+		<< "e7e5"
+		<< "b6k/3Rp3/8/r2P4/8/8/8/NR5K b - - 7 2"
+		<< "b6k/3R4/8/r2Pp3/8/8/8/NR5K w - - 0 3";
+	QTest::newRow("legal en passant")
+		<< "standard"
+		<< "e7e5"
+		<< "b3r2k/3Rp3/8/3P4/8/8/8/NR2K3 b - - 7 2"
+		<< "b3r2k/3R4/8/3Pp3/8/8/8/NR2K3 w - e6 0 3";
+	QTest::newRow("legal en passant 2")
+		<< "standard"
+		<< "d2d4"
+		<< "8/8/6k1/8/4p3/8/2QP4/3K4 w - - 0 1"
+		<< "8/8/6k1/8/3Pp3/8/2Q5/3K4 b - d3 0 1";
+	QTest::newRow("legal en passant 3")
+		<< "standard"
+		<< "d2d4"
+		<< "8/8/8/4k3/4p3/8/2QP4/3K4 w - - 0 1"
+		<< "8/8/8/4k3/3Pp3/8/2Q5/3K4 b - d3 0 1";
 	QTest::newRow("atomic1")
 		<< "atomic"
 		<< "Rxh3"
