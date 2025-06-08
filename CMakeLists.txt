@@ -20,8 +20,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 set(QT_COMPONENTS Core Gui Widgets Concurrent Svg PrintSupport)
 if(WITH_TESTS)
 	enable_testing()
