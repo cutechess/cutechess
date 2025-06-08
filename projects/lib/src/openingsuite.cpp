@@ -113,14 +113,13 @@ bool OpeningSuite::initialize()
 		return false;
 	}
 
-	if (m_format == PgnFormat)
-		m_pgnStream = new PgnStream(m_file);
-
 	if (m_format == EpdFormat)
 	{
 		m_file->reset();
 		m_epdStream = new QTextStream(m_file);
 	}
+	else if (m_format == PgnFormat)
+		m_pgnStream = new PgnStream(m_file);
 
 	if (m_order == RandomOrder)
 	{
@@ -132,6 +131,8 @@ bool OpeningSuite::initialize()
 				pos = getEpdPos();
 			else if (m_format == PgnFormat)
 				pos = getPgnPos();
+			else
+				return false; // should be unreachable
 
 			if (pos.pos == -1)
 				break;
@@ -147,7 +148,7 @@ bool OpeningSuite::initialize()
 		}
 
 		if (m_startIndex >= m_filePositions.size())
-			qWarning("Start index larger than book size, wrapping after %lld.", m_filePositions.size());
+			qWarning("Start index larger than book size, wrapping after %d.", m_filePositions.size());
 
 		m_gameIndex += m_startIndex % m_filePositions.size();
 	}
