@@ -17,7 +17,10 @@ class tst_Board: public QObject
 		
 		void moveStrings_data() const;
 		void moveStrings();
-		
+
+		void sanStrings_data() const;
+		void sanStrings();
+
 		void results_data() const;
 		void results();
 
@@ -638,6 +641,101 @@ void tst_Board::moveStrings()
 	}
 	else
 		QCOMPARE(m_board->fenString(), endfen);
+}
+
+void tst_Board::sanStrings_data() const
+{
+	QTest::addColumn<QString>("variant");
+	QTest::addColumn<QString>("fen");
+	QTest::addColumn<QString>("lanmove");
+	QTest::addColumn<QString>("sanmove");
+
+	QTest::newRow("standard e4 opening")
+		<< "standard"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "e2e4"
+		<< "e4";
+	QTest::newRow("standard Nf3 opening")
+		<< "standard"
+		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+		<< "g1f3"
+		<< "Nf3";
+	QTest::newRow("standard file disambigiation")
+		<< "standard"
+		<< "3r3r/2k5/8/R7/4Q2Q/8/1K6/R6Q b - - 0 1"
+		<< "d8f8"
+		<< "Rdf8";
+	QTest::newRow("standard rank disambiguation")
+		<< "standard"
+		<< "3r3r/2k5/8/R7/4Q2Q/8/1K6/R6Q w - - 0 1"
+		<< "a1a3"
+		<< "R1a3";
+	QTest::newRow("standard file and rank disambiguation")
+		<< "standard"
+		<< "3r3r/2k5/8/R7/4Q2Q/8/1K6/R6Q w - - 0 1"
+		<< "h4e1"
+		<< "Qh4e1";
+	QTest::newRow("standard mate")
+		<< "standard"
+		<< "8/8/8/5R2/8/5K1k/8/8 w - - 0 1"
+		<< "f5h5"
+		<< "Rh5#";
+	QTest::newRow("standard pawn capture with check")
+		<< "standard"
+		<< "r1bqkb1r/ppp1pppp/2n1Pn2/3p4/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1"
+		<< "e6f7"
+		<< "exf7+";
+	QTest::newRow("standard bishop capture")
+		<< "standard"
+		<< "r1bqkb1r/ppp1pppp/2n1Pn2/3p4/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
+		<< "c8e6"
+		<< "Bxe6";
+	QTest::newRow("standard short castle")
+		<< "standard"
+		<< "rnbqk2r/ppppbppp/5n2/4p3/4P3/5N2/PPPPBPPP/RNBQK2R w KQkq - 4 4"
+		<< "e1g1"
+		<< "O-O";
+	QTest::newRow("standard long castle")
+		<< "standard"
+		<< "r2q1rk1/ppp1bpp1/2n2n1p/3pp3/4P1b1/1PNP1N2/PBPQBPPP/R3K2R w KQ - 0 9"
+		<< "e1c1"
+		<< "O-O-O";
+	QTest::newRow("standard pawn promotion with check")
+		<< "standard"
+		<< "4k3/1P6/8/8/8/8/8/4K3 w - - 0 1"
+		<< "b7b8r"
+		<< "b8=R+";
+	// PR #823: Qb5d3+ -> Q5d3+
+	QTest::newRow("standard rank disambiguation 2")
+		<< "standard"
+		<< "8/1k5p/4P3/1q3b2/6PP/7K/5QR1/1q1q4 b - - 0 53"
+		<< "b5d3"
+		<< "Q5d3+";
+}
+
+void tst_Board::sanStrings()
+{
+	QFETCH(QString, variant);
+	QFETCH(QString, fen);
+	QFETCH(QString, lanmove);
+	QFETCH(QString, sanmove);
+
+	setVariant(variant);
+	QVERIFY(m_board->setFenString(fen));
+
+	// Test that Board generates expected SAN string for lanmove
+	Chess::Move mLan = m_board->moveFromString(lanmove);
+	QVERIFY(m_board->isLegalMove(mLan));
+	QString tSan = m_board->moveString(mLan, Chess::Board::StandardAlgebraic);
+	QCOMPARE(tSan, sanmove);
+
+	// Test that expected SAN string can be parsed into a move
+	// that's understood by Board, and if it's converted back to LAN
+	// format, the string matches lanmove.
+	Chess::Move mSan = m_board->moveFromString(sanmove);
+	QVERIFY(m_board->isLegalMove(mSan));
+	QString tLan = m_board->moveString(mSan, Chess::Board::LongAlgebraic);
+	QCOMPARE(tLan, lanmove);
 }
 
 void tst_Board::results_data() const
