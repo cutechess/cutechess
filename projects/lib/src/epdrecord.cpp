@@ -161,7 +161,7 @@ bool EpdRecord::hasOpcode(const QString& opcode) const
 
 QString EpdRecord::fen() const
 {
-	return m_fen;
+	return m_fen.trimmed();
 }
 
 QStringList EpdRecord::operands(const QString& opcode) const
