@@ -50,6 +50,7 @@ void GauntletTournament::initializePairing()
 
 	m_opponent = seedCount();
 	m_currentPlayer = 0;
+	setCurrentSubRound(1);
 }
 
 int GauntletTournament::gamesPerCycle() const
@@ -67,10 +68,13 @@ TournamentPair* GauntletTournament::nextPair(int gameNumber)
 	if (m_opponent >= playerCount())
 	{
 		m_opponent = seedCount();
+		setCurrentSubRound(currentSubRound() + 1);
+		setCurrentSubSubRound(0);
 		if (++m_currentPlayer >= seedCount())
 		{
 			m_currentPlayer = 0;
 			setCurrentRound(currentRound() + 1);
+			setCurrentSubRound(1);
 		}
 	}
 

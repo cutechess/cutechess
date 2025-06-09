@@ -38,6 +38,7 @@ void PyramidTournament::initializePairing()
 	m_pairNumber = 0;
 	m_currentPlayer = 1;
 	setCurrentRound(1);
+	setCurrentSubRound(1);
 }
 
 int PyramidTournament::gamesPerCycle() const
@@ -55,9 +56,14 @@ TournamentPair* PyramidTournament::nextPair(int gameNumber)
 	if (m_pairNumber >= m_currentPlayer)
 	{
 		m_pairNumber = 0;
-		setCurrentRound(currentRound() + 1);
+		setCurrentSubRound(currentSubRound() + 1);
+		setCurrentSubSubRound(0);
 		if (++m_currentPlayer >= playerCount())
+		{
 			m_currentPlayer = 1;
+			setCurrentRound(currentRound() + 1);
+			setCurrentSubRound(1);
+		}
 	}
 
 	int white = m_currentPlayer;
