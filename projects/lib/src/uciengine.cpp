@@ -322,6 +322,11 @@ QString UciEngine::protocol() const
 	return "uci";
 }
 
+bool UciEngine::hasCaseSensitiveOptions() const
+{
+	return false;
+}
+
 bool UciEngine::sendPing()
 {
 	write("isready");
