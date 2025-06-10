@@ -857,7 +857,7 @@ QString UciEngine::sanPv(const QVarLengthArray<QStringRef>& tokens)
 
 void UciEngine::sendOption(const QString& name, const QVariant& value)
 {
-	if (!value.isNull())
+	if (!value.isNull() || getOption(name)->valueType() != QVariant::Invalid)
 		write(QString("setoption name %1 value %2").arg(name, value.toString()));
 	else
 		write(QString("setoption name %1").arg(name));
