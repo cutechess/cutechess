@@ -11,7 +11,7 @@ jobs:
       outputs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
       steps:
-        - uses: actions/checkout@v4
+        - uses: actions/checkout@v6
 
         - name: set version
           run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
@@ -35,7 +35,7 @@ jobs:
             qt_version: [6.7.2]
             os: [ubuntu-latest]
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
 
             - name: install qt 6.x
               uses: jurplel/install-qt-action@v3
@@ -89,7 +89,7 @@ jobs:
             qt_version: [6.7.2]
             os: [windows-latest]
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
 
             - name: install qt 6.x
               uses: jurplel/install-qt-action@v3

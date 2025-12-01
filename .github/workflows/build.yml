@@ -17,7 +17,7 @@ jobs:
               - os: macos-latest
                 qt_version: 5.15.2
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
 
             - name: install qt 5.x
               uses: jurplel/install-qt-action@v3
