@@ -1,28 +1,23 @@
 image: debian/stable
 packages:
-    - qtbase5-dev
-    - qt5-qmake
-    - qtbase5-dev-tools
-    - libqt5svg5-dev
-    - mandoc
+  - cmake
+  - qt6-base-dev
+  - qt6-svg-dev
+  - qt6-base-dev-tools
+  - qt6-5compat-dev
+  - mandoc
 sources:
-    - https://github.com/cutechess/cutechess
+  - https://github.com/cutechess/cutechess
 tasks:
-    - build: |
-        cd cutechess
-        qmake
-        make
-    - test_lib: |
-        cd cutechess/projects/lib/tests
-        qmake
-        make
-        make check
-    - test_json: |
-        cd cutechess/projects/lib/components/json/tests
-        qmake
-        make
-        make check
-    - test_manuals: |
-        cd cutechess/docs
-        mandoc -T lint cutechess-cli.6
-        mandoc -T lint engines.json.5
+  - build: |
+      cd cutechess
+      export LANG=C.UTF-8
+      cmake -S . -B build
+      cmake --build build
+  - test: |
+      cd cutechess
+      ctest --test-dir build
+  - test_manuals: |
+      cd cutechess/docs
+      mandoc -T lint cutechess-cli.6
+      mandoc -T lint cutechess-engines.json.5
