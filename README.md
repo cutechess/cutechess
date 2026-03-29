@@ -15,22 +15,22 @@ See the [Releases](https://github.com/cutechess/cutechess/releases) page.
 ### Building from source
 
 Cute Chess requires Qt 5.15 or greater, a compiler with C++11 support and `cmake`.
-Cute Chess depends on the following Qt 5 modules:
+Cute Chess depends on the following Qt modules:
 
-* qt5-widgets
-* qt5-svg
-* qt5-concurrent
-* qt5-printsupport
-* qt5-testlib (optional: unit tests)
+* qt-widgets
+* qt-svg
+* qt-concurrent
+* qt-printsupport
+* qt5-compat (if building with Qt 6)
+* qt-testlib (optional: unit tests)
 
 Run these commands:
 
-    $ mkdir build
-    $ cd build
-    $ cmake ..
-    $ make
+    cmake -S . -B build
+    cmake --build build
 
-Documentation is available as Unix manual pages in the `docs/` directory.
+Documentation is available as plain-text, HTML and Unix manual pages in the
+`docs/` directory.
 
 For detailed build instruction for various operating systems, see the
 [Building from source](https://github.com/cutechess/cutechess/wiki/Building-from-source)
