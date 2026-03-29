@@ -58,6 +58,7 @@
 #include "evalwidget.h"
 #include "boardview/boardscene.h"
 #include "tournamentresultsdlg.h"
+#include "capturedpieceswidget.h"
 
 #if 0
 #include <modeltest.h>
@@ -387,6 +388,14 @@ void MainWindow::createDockWindows()
 	splitDockWidget(moveListDock, whiteEvalDock, Qt::Horizontal);
 	splitDockWidget(whiteEvalDock, blackEvalDock, Qt::Vertical);
 
+	// Captured pieces
+	QDockWidget* capturedDock = new QDockWidget(tr("Captured pieces"), this);
+	capturedDock->setObjectName("CapturedPiecesDock");
+	m_capturedPiecesWidget = new CapturedPiecesWidget(capturedDock);
+	capturedDock->setWidget(m_capturedPiecesWidget);
+	addDockWidget(Qt::RightDockWidgetArea, capturedDock);
+	splitDockWidget(capturedDock, moveListDock, Qt::Horizontal);
+
 	// Tags
 	QDockWidget* tagsDock = new QDockWidget(tr("Tags"), this);
 	tagsDock->setObjectName("TagsDock");
@@ -404,6 +413,7 @@ void MainWindow::createDockWindows()
 	// Add toggle view actions to the View menu
 	m_viewMenu->addAction(moveListDock->toggleViewAction());
 	m_viewMenu->addAction(tagsDock->toggleViewAction());
+	m_viewMenu->addAction(capturedDock->toggleViewAction());
 	m_viewMenu->addAction(engineDebugDock->toggleViewAction());
 	m_viewMenu->addAction(evalHistoryDock->toggleViewAction());
 	m_viewMenu->addAction(whiteEvalDock->toggleViewAction());
@@ -587,6 +597,9 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 		for (auto evalWidget : m_evalWidgets)
 			evalWidget->setPlayer(nullptr);
 
+		if (m_capturedPiecesWidget)
+			m_capturedPiecesWidget->setGame(nullptr);
+
 		return;
 	}
 	else
@@ -631,6 +644,8 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 
 	updateMenus();
 	updateWindowTitle();
+	if (m_capturedPiecesWidget)
+		m_capturedPiecesWidget->setGame(m_game);
 	unlockCurrentGame();
 }
 
