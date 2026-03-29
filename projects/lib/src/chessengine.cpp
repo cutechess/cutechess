@@ -186,12 +186,24 @@ void ChessEngine::addOption(EngineOption* option)
 
 EngineOption* ChessEngine::getOption(const QString& name) const
 {
-	for (EngineOption* option : qAsConst(m_options))
+	if (hasCaseSensitiveOptions())
 	{
-		if (option->alias() == name || option->name() == name)
-			return option;
+		for (EngineOption* option : qAsConst(m_options))
+		{
+			if (option->alias() == name || option->name() == name)
+				return option;
+		}
 	}
-
+	else
+	{
+		QString lowerCaseName = name.toLower();
+		for (EngineOption* option : qAsConst(m_options))
+		{
+			if (option->alias().toLower() == lowerCaseName
+			||  option->name().toLower() == lowerCaseName)
+				return option;
+		}
+	}
 	return nullptr;
 }
 
@@ -345,6 +357,11 @@ bool ChessEngine::supportsVariant(const QString& variant) const
 int ChessEngine::id() const
 {
 	return m_id;
+}
+
+bool ChessEngine::hasCaseSensitiveOptions() const
+{
+	return true;
 }
 
 bool ChessEngine::stopThinking()

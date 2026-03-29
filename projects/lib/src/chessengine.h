@@ -260,6 +260,11 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		 * Gives id number of the engine
 		 */
 		int id() const;
+		/*!
+		 * Returns true if option names are case sensitive else false.
+		 * The default value is true.
+		 */
+		virtual bool hasCaseSensitiveOptions() const;
 
 	protected slots:
 		// Inherited from ChessPlayer
