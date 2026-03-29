@@ -375,9 +375,9 @@ QDate PgnGame::date() const
 	return QDate::fromString(m_tags.value("Date"), "yyyy.MM.dd");
 }
 
-int PgnGame::round() const
+QString PgnGame::round() const
 {
-	return m_tags.value("Round").toInt();
+	return m_tags.value("Round");
 }
 
 QString PgnGame::playerName(Chess::Side side) const
@@ -445,9 +445,17 @@ void PgnGame::setDate(const QDate& date)
 	setTag("Date", date.toString("yyyy.MM.dd"));
 }
 
-void PgnGame::setRound(int round)
+void PgnGame::setRound(int round, int subRound, int subSubRound)
 {
-	setTag("Round", QString::number(round));
+	QString str = QString::number(round);
+	if (subRound > 0)
+	{
+		str += "." + QString::number(subRound);
+
+		if (subSubRound > 0)
+			str += "." + QString::number(subSubRound);
+	}
+	setTag("Round", str);
 }
 
 void PgnGame::setPlayerName(Chess::Side side, const QString& name)
