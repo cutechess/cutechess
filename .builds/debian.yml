@@ -7,7 +7,7 @@ packages:
   - qt6-5compat-dev
   - mandoc
 sources:
-  - https://github.com/cutechess/cutechess
+  - https://git.sr.ht/~artoj/cutechess
 tasks:
   - build: |
       cd cutechess
