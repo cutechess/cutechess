@@ -350,11 +350,11 @@ void tst_JsonParser::advanced_data() const
 	QTest::addColumn<QVariant>("expected");
 
 	QTest::newRow("advanced #1")
-		<< "sample1.json"
+		<< "/sample1.json"
 		<< QVariant::Map
 		<< sample1();
 	QTest::newRow("advanced #2")
-		<< "sample2.json"
+		<< "/sample2.json"
 		<< QVariant::List
 		<< sample2();
 }
@@ -365,7 +365,7 @@ void tst_JsonParser::advanced() const
 	QFETCH(QVariant::Type, type);
 	QFETCH(QVariant, expected);
 
-	QFile file(filename);
+	QFile file(QStringLiteral(CUTECHESS_JSON_TEST_DATA_DIR).append(filename));
 	QVERIFY(file.open(QIODevice::Text | QIODevice::ReadOnly));
 	QTextStream stream(&file);
 	JsonParser parser(stream);
