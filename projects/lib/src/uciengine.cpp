@@ -44,6 +44,9 @@ QString variantFromUci(QString str, bool uciPrefix = true)
 		return QString();
 
 	str = str.toLower();
+	if (str == "fischerandom")
+		return QString();
+
 	if (str == "chess960")
 		str = "fischerandom";
 
@@ -741,14 +744,17 @@ void UciEngine::addVariantsFromOption(const EngineOption* option)
 		return;
 	}
 
+	m_comboVariants.clear();
 	const auto choices = combo->choices();
 	for (const auto& choice : choices)
 	{
 		QString variant = variantFromUci(choice, false);
 		if (!variant.isEmpty())
+		{
 			addVariant(variant);
+			m_comboVariants << variant;
+		}
 	}
-	m_comboVariants = choices;
 }
 
 void UciEngine::setVariant(const QString& variant)
