@@ -266,7 +266,7 @@ class LIB_EXPORT ChessEngine : public ChessPlayer
 		virtual void onTimeout();
 
 		/*! Reads input from the engine. */
-		void onReadyRead();
+		void onReadyRead(int channel);
 
 		/*! Called when the engine doesn't respond to ping. */
 		void onPingTimeout();
