@@ -67,6 +67,7 @@ void PathLineEdit::setPath(const QString& path)
 
 	if (!finalPath.isEmpty())
 		setText(finalPath);
+	setModified(true);
 }
 
 void PathLineEdit::browse()
