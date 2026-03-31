@@ -76,6 +76,7 @@ class MainWindow : public QMainWindow
 		void closeTab(int index);
 		void destroyGame(ChessGame* game);
 		void onTournamentFinished();
+		void onTournamentSuspended(int numberOfFinishedGames);
 		void onGameManagerFinished();
 		void onGameStartFailed(ChessGame* game);
 		void onGameFinished(ChessGame* game);
@@ -151,6 +152,8 @@ class MainWindow : public QMainWindow
 		QAction* m_flipBoardAct;
 		QAction* m_newTournamentAct;
 		QAction* m_stopTournamentAct;
+		QAction* m_suspendTournamentAct;
+		QAction* m_resumeTournamentAct;
 		QAction* m_showTournamentResultsAct;
 		QAction* m_minimizeAct;
 		QAction* m_showGameDatabaseWindowAct;

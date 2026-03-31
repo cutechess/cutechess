@@ -34,6 +34,7 @@
 #include <QDesktopWidget>
 #endif
 #include <QSysInfo>
+#include <QPointer>
 
 #include <board/boardfactory.h>
 #include <chessgame.h>
@@ -188,6 +189,9 @@ void MainWindow::createActions()
 
 	m_newTournamentAct = new QAction(tr("&New..."), this);
 	m_stopTournamentAct = new QAction(tr("&Stop"), this);
+	m_suspendTournamentAct = new QAction(tr("S&uspend"), this);
+	m_resumeTournamentAct = new QAction(tr("R&esume"), this);
+
 	m_showTournamentResultsAct = new QAction(tr("&Results..."), this);
 
 	m_showSettingsAct = new QAction(tr("&Settings"), this);
@@ -304,9 +308,15 @@ void MainWindow::createMenus()
 
 	m_tournamentMenu = menuBar()->addMenu(tr("&Tournament"));
 	m_tournamentMenu->addAction(m_newTournamentAct);
+	m_tournamentMenu->addSeparator();
 	m_tournamentMenu->addAction(m_stopTournamentAct);
+	m_tournamentMenu->addAction(m_suspendTournamentAct);
+	m_tournamentMenu->addAction(m_resumeTournamentAct);
+	m_tournamentMenu->addSeparator();
 	m_tournamentMenu->addAction(m_showTournamentResultsAct);
 	m_stopTournamentAct->setEnabled(false);
+	m_suspendTournamentAct->setEnabled(false);
+	m_resumeTournamentAct->setEnabled(false);
 
 	m_toolsMenu = menuBar()->addMenu(tr("T&ools"));
 	m_toolsMenu->addAction(m_showSettingsAct);
@@ -789,6 +799,8 @@ void MainWindow::onGameFinished(ChessGame* game)
 	}
 }
 
+
+
 void MainWindow::newTournament()
 {
 	NewTournamentDialog dlg(CuteChessApplication::instance()->engineManager(), this);
@@ -797,7 +809,7 @@ void MainWindow::newTournament()
 
 	GameManager* manager = CuteChessApplication::instance()->gameManager();
 
-	Tournament* t = dlg.createTournament(manager);
+	QPointer<Tournament> t = dlg.createTournament(manager);
 	auto resultsDialog = CuteChessApplication::instance()->tournamentResultsDialog();
 	connect(t, SIGNAL(finished()),
 		this, SLOT(onTournamentFinished()));
@@ -807,6 +819,8 @@ void MainWindow::newTournament()
 		resultsDialog, SLOT(update()));
 	connect(t, SIGNAL(gameFinished(ChessGame*, int, int, int)),
 		this, SLOT(onGameFinished(ChessGame*)));
+	connect(t, SIGNAL(suspended(int)),
+		this, SLOT(onTournamentSuspended(int)));
 	t->start();
 
 	connect(m_stopTournamentAct, &QAction::triggered, [=]()
@@ -819,10 +833,35 @@ void MainWindow::newTournament()
 			return;
 		}
 
-		t->stop();
+		if (t)
+			t->stop();
+	});
+	connect(m_suspendTournamentAct, &QAction::triggered, [=]()
+	{
+		auto btn = QMessageBox::question(this, tr("Suspend tournament"),
+			   tr("Do you want to suspend the ongoing tournament?"
+			   "\nActive games will go on."));
+		if (btn != QMessageBox::Yes)
+			return;
+		if (t)
+		{
+			m_suspendTournamentAct->setEnabled(false);
+			t->suspend();
+		}
+	});
+	connect(m_resumeTournamentAct, &QAction::triggered, [=]()
+	{
+		m_resumeTournamentAct->setEnabled(false);
+		if (t)
+		{
+			t->resume();
+			m_suspendTournamentAct->setEnabled(true);
+		}
 	});
 	m_newTournamentAct->setEnabled(false);
 	m_stopTournamentAct->setEnabled(true);
+	m_suspendTournamentAct->setEnabled(true);
+	m_resumeTournamentAct->setEnabled(false);
 	resultsDialog->setTournament(t);
 }
 
@@ -832,6 +871,8 @@ void MainWindow::onTournamentFinished()
 	Q_ASSERT(tournament != nullptr);
 
 	m_stopTournamentAct->disconnect();
+	m_suspendTournamentAct->disconnect();
+	m_resumeTournamentAct->disconnect();
 
 	QString error = tournament->errorString();
 	QString name = tournament->name();
@@ -839,6 +880,8 @@ void MainWindow::onTournamentFinished()
 	tournament->deleteLater();
 	m_newTournamentAct->setEnabled(true);
 	m_stopTournamentAct->setEnabled(false);
+	m_suspendTournamentAct->setEnabled(false);
+	m_resumeTournamentAct->setEnabled(false);
 
 	if (m_closing)
 	{
@@ -857,6 +900,17 @@ void MainWindow::onTournamentFinished()
 	}
 
 	CuteChessApplication::alert(this);
+}
+
+void MainWindow::onTournamentSuspended(int numberOfFinishedGames)
+{
+	m_suspendTournamentAct->setEnabled(false);
+	m_resumeTournamentAct->setEnabled(true);
+	QMessageBox::information(this,
+				 tr("Tournament Status"),
+				 tr("Tournament suspended after %1 finished games.")
+				 .arg(numberOfFinishedGames),
+				 QMessageBox::NoButton);
 }
 
 void MainWindow::onWindowMenuAboutToShow()

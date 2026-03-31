@@ -45,6 +45,14 @@
 #include "matchparser.h"
 #include "enginematch.h"
 
+#ifndef SIGUSR1
+#define SIGUSR1 SIGFPE
+#endif
+
+#ifndef SIGUSR2
+#define SIGUSR2 SIGILL
+#endif
+
 namespace {
 
 EngineMatch* s_match = nullptr;
@@ -56,6 +64,17 @@ void sigintHandler(int param)
 		s_match->stop();
 	else
 		abort();
+}
+
+void sigusrHandler(int param)
+{
+	if (s_match == nullptr)
+		abort();
+
+	if (param == SIGUSR1)
+		s_match->suspend();
+	else if (param == SIGUSR2)
+		s_match->resume();
 }
 
 
@@ -741,6 +760,8 @@ int main(int argc, char* argv[])
 
 	setvbuf(stdout, nullptr, _IONBF, 0);
 	signal(SIGINT, sigintHandler);
+	signal(SIGUSR1, sigusrHandler);
+	signal(SIGUSR2, sigusrHandler);
 
 	CuteChessCoreApplication app(argc, argv);
 
