@@ -27,6 +27,10 @@ class tst_Board: public QObject
 		void perft_data() const;
 		void perft();
 
+		// Class initializations
+		void cinit_data() const;
+		void cinit();
+
 		void cleanupTestCase();
 	
 	private:
@@ -1833,6 +1837,224 @@ void tst_Board::perft_data() const
 		<< Q_UINT64_C(50400);
 }
 
+void tst_Board::cinit_data() const
+{
+	QTest::addColumn<QString>("variant");
+	variant="ai-wok";
+	QTest::newRow("ai-wok startpos")
+		<< variant;
+	variant="almost";
+	QTest::newRow("almost startpos")
+		<< variant;
+	variant="amazon";
+	QTest::newRow("amazon startpos")
+		<< variant;
+	variant="andernach";
+	QTest::newRow("andernach startpos")
+		<< variant;
+	variant="superandernach";
+	QTest::newRow("superandernach startpos")
+		<< variant;
+	variant="antiandernach";
+	QTest::newRow("antiandernach startpos")
+		<< variant;
+	variant="antichess";
+	QTest::newRow("antichess startpos")
+		<< variant;
+	variant="asean";
+	QTest::newRow("asean startpos")
+		<< variant;
+	variant="atomic";
+	QTest::newRow("atomic startpos")
+		<< variant;
+	variant="berolina";
+	QTest::newRow("berolina startpos")
+		<< variant;
+	variant="capablanca";
+	QTest::newRow("capablanca startpos")
+		<< variant;
+	variant="caparandom";
+	QTest::newRow("capablanca startpos1")
+		<< variant;
+	QTest::newRow("capablanca startpos2")
+		<< variant;
+	QTest::newRow("capablanca startpos3")
+		<< variant;
+	QTest::newRow("capablanca startpos4")
+		<< variant;
+	variant="chancellor";
+	QTest::newRow("chancellor startpos")
+		<< variant;
+	variant="checkless";
+	QTest::newRow("checkless startpos")
+		<< variant;
+	variant="chessgi";
+	QTest::newRow("chessgi startpos")
+		<< variant;
+	variant="chigorin";
+	QTest::newRow("chigorin startpos")
+		<< variant;
+	variant="chessgi";
+	QTest::newRow("chessgi startpos")
+		<< variant;
+	variant="codrus";
+	QTest::newRow("codrus startpos")
+		<< variant;
+	variant="codrus";
+	QTest::newRow("codrus startpos")
+		<< variant;
+	variant="cfour";
+	QTest::newRow("cfour startpos")
+		<< variant;
+	variant="coregal";
+	QTest::newRow("coregal startpos")
+		<< variant;
+	variant="courier";
+	QTest::newRow("courier startpos")
+		<< variant;
+	variant="crazyhouse";
+	QTest::newRow("crazyhouse startpos")
+		<< variant;
+	variant="dobutsu";
+	QTest::newRow("dobutsu startpos")
+		<< variant;
+	variant="embassy";
+	QTest::newRow("embassy startpos")
+		<< variant;
+	variant="euroshogi";
+	QTest::newRow("euroshogi startpos")
+		<< variant;
+	variant="extinction";
+	QTest::newRow("extinction startpos")
+		<< variant;
+	variant="fischerandom";
+	QTest::newRow("fischerandom startpos1")
+		<< variant;
+	variant="fischerandom";
+	QTest::newRow("fischerandom startpos2")
+		<< variant;
+	variant="fischerandom";
+	QTest::newRow("fischerandom startpos3")
+		<< variant;
+	variant="fischerandom";
+	QTest::newRow("fischerandom startpos4")
+		<< variant;
+	variant="giveaway";
+	QTest::newRow("giveaway startpos")
+		<< variant;
+	variant="gothic";
+	QTest::newRow("gothic startpos")
+		<< variant;
+	variant="grand";
+	QTest::newRow("grand startpos")
+		<< variant;
+	variant="grid";
+	QTest::newRow("grid startpos")
+		<< variant;
+	variant="gustav3";
+	QTest::newRow("gustav3 startpos")
+		<< variant;
+	variant="hoppelpoppel";
+	QTest::newRow("hoppelpoppel startpos")
+		<< variant;
+	variant="horde";
+	QTest::newRow("horde startpos")
+		<< variant;
+	variant="janus";
+	QTest::newRow("janus startpos")
+		<< variant;
+	variant="jesonmor";
+	QTest::newRow("jesonmor startpos")
+		<< variant;
+	variant="judkins";
+	QTest::newRow("judkins startpos")
+		<< variant;
+	variant="kingofthehill";
+	QTest::newRow("kingofthehill startpos")
+		<< variant;
+	variant="knightmate";
+	QTest::newRow("knightmate startpos")
+		<< variant;
+	variant="knightrelay";
+	QTest::newRow("knightrelay startpos")
+		<< variant;
+	variant="loop";
+	QTest::newRow("loop startpos")
+		<< variant;
+	variant="losalamos";
+	QTest::newRow("losalamos startpos")
+		<< variant;
+	variant="losers";
+	QTest::newRow("losers startpos")
+		<< variant;
+	variant="makruk";
+	QTest::newRow("makruk startpos")
+		<< variant;
+	variant="minishogi";
+	QTest::newRow("minishogi startpos")
+		<< variant;
+	variant="modern";
+	QTest::newRow("modern startpos")
+		<< variant;
+	variant="1check";
+	QTest::newRow("1check startpos")
+		<< variant;
+	variant="2check";
+	QTest::newRow("2check startpos")
+		<< variant;
+	variant="3check";
+	QTest::newRow("3check startpos")
+		<< variant;
+	variant="cambodian";
+	QTest::newRow("cambodian startpos")
+		<< variant;
+	variant="placement";
+	QTest::newRow("placement startpos")
+		<< variant;
+	variant="pocketknight";
+	QTest::newRow("pocketknight startpos")
+		<< variant;
+	variant="racingkings";
+	QTest::newRow("racingkings startpos")
+		<< variant;
+	variant="rifle";
+	QTest::newRow("rifle startpos")
+		<< variant;
+	variant="seirawan";
+	QTest::newRow("seirawan startpos")
+		<< variant;
+	variant="shatranj";
+	QTest::newRow("shatranj startpos")
+		<< variant;
+	variant="shogi";
+	QTest::newRow("shogi startpos")
+		<< variant;
+	variant="sittuyin";
+	QTest::newRow("sittuyin startpos")
+		<< variant;
+	variant="standard";
+	QTest::newRow("standard startpos")
+		<< variant;
+	variant="suicide";
+	QTest::newRow("suicide startpos")
+		<< variant;
+	variant="threekings";
+	QTest::newRow("threekings startpos")
+		<< variant;
+	variant="twokings";
+	QTest::newRow("twokings startpos")
+		<< variant;
+}
+
+void tst_Board::cinit()
+{
+	QFETCH(QString, variant);
+
+	setVariant(variant);
+	auto fen=m_board->defaultFenString();
+	QVERIFY(m_board->setFenString(fen));
+	QCOMPARE(m_board->fenString()==fen);
+}
 void tst_Board::perft()
 {
 	QFETCH(QString, variant);

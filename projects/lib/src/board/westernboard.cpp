@@ -112,7 +112,10 @@ void WesternBoard::vInitialize()
 	m_castleTarget[Side::White][KingSide] = (height() + 1) * m_arwidth + 1 + castlingFile(KingSide);
 	m_castleTarget[Side::Black][QueenSide] = 2 * m_arwidth + 1 + castlingFile(QueenSide);
 	m_castleTarget[Side::Black][KingSide] = 2 * m_arwidth + 1 + castlingFile(KingSide);
-
+	assert(m_castleTarget[Side::White][QueenSide] >= 0 && m_castleTarget[Side::White][QueenSide] < width() * height());
+	assert(m_castleTarget[Side::White][KingSide] >= 0 && m_castleTarget[Side::White][KingSide] < width() * height());
+	assert(m_castleTarget[Side::Black][QueenSide] >= 0 && m_castleTarget[Side::Black][QueenSide] < width() * height());
+	assert(m_castleTarget[Side::Black][KingSide] >= 0 && m_castleTarget[Side::Black][KingSide] < width() * height());
 	m_knightOffsets.resize(8);
 	m_knightOffsets[0] = -2 * m_arwidth - 1;
 	m_knightOffsets[1] = -2 * m_arwidth + 1;
@@ -862,6 +865,7 @@ void WesternBoard::maybeEnableEnpassant(const Move& move)
 		if (pstep.type != CaptureStep)
 			continue;
 		int opPawnSq = epSq + pawnPushOffset(pstep, m_sign);
+		assert(opPawnSq >= 0 && opPawnSq < width() * height()); // possibly not needed
 		if (pieceAt(opPawnSq) == opPawn)
 		{
 			// Only set en-passant square if the capture would not
@@ -1142,6 +1146,8 @@ bool WesternBoard::defendedByKnight(Side side, int square) const
 	for (int i = 0; i < m_knightOffsets.size(); i++)
 	{
 		int targetSquare = square + m_knightOffsets[i];
+		if (targetSquare < 0 && targetSquare >= width() * height())
+			continue;
 		Piece piece = pieceAt(targetSquare);
 		if (piece.side() == side
 		&&  pieceHasCaptureMovement(piece, targetSquare, KnightMovement))
@@ -1169,6 +1175,7 @@ bool WesternBoard::inCheck(Side side, int square) const
 		if (pStep.type == CaptureStep)
 		{
 			int fromSquare = square - pawnPushOffset(pStep, -sign);
+			assert (fromSquare < 0 && fromSquare >= width() * height()); // possibly not needed
 			if (pieceAt(fromSquare) == Piece(opSide, Pawn))
 				return true;
 		}
@@ -1181,6 +1188,8 @@ bool WesternBoard::inCheck(Side side, int square) const
 	for (int i = 0; i < m_knightOffsets.size(); i++)
 	{
 		int targetSquare = square + m_knightOffsets[i];
+		if (targetSquare < 0 && targetSquare >= width() * height())
+			continue;
 		piece = pieceAt(targetSquare);
 		if (piece.side() == opSide
 		&&  pieceHasCaptureMovement(piece, targetSquare, KnightMovement))
@@ -1192,6 +1201,8 @@ bool WesternBoard::inCheck(Side side, int square) const
 	{
 		int offset = m_bishopOffsets[i];
 		int targetSquare = square + offset;
+		if (targetSquare < 0 && targetSquare >= width() * height())
+			continue;
 		if (m_kingCanCapture
 		&&  pieceAt(targetSquare) == opKing)
 			return true;
@@ -1213,6 +1224,8 @@ bool WesternBoard::inCheck(Side side, int square) const
 	{
 		int offset = m_rookOffsets[i];
 		int targetSquare = square + offset;
+		if (targetSquare < 0 && targetSquare >= width() * height())
+			continue;
 		if (m_kingCanCapture
 		&&  pieceAt(targetSquare) == opKing)
 			return true;
