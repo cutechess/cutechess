@@ -136,6 +136,12 @@ class LIB_EXPORT ChessPlayer : public QObject
 		 */
 		virtual void startPondering();
 
+		/*!
+		 * Tells the player to stop pondering (thinking on the
+		 * opponent's move). The default implementation does nothing.
+		 */
+		virtual void stopPondering();
+
 		/*! Clears the player's pondering state. */
 		virtual void clearPonderState();
 

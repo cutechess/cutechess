@@ -44,6 +44,7 @@
 #include <chessplayer.h>
 #include <humanbuilder.h>
 #include <tournament.h>
+#include <humanplayer.h>
 
 #include "cutechessapp.h"
 #include "gameviewer.h"
@@ -172,6 +173,12 @@ void MainWindow::createActions()
 	m_flipBoardAct = new QAction(tr("&Flip Board"), this);
 	m_flipBoardAct->setShortcut(Qt::CTRL + Qt::Key_F);
 
+	m_pauseGameAct = new QAction(tr("Pa&use"), this);
+	m_pauseGameAct->setShortcut(QKeySequence(Qt::Key_P));
+
+	m_resumeGameAct = new QAction(tr("&Resume"), this);
+	m_resumeGameAct->setShortcut(QKeySequence(Qt::Key_Space));
+
 	m_adjudicateDrawAct = new QAction(tr("Ad&judicate Draw"), this);
 	m_adjudicateWhiteWinAct = new QAction(tr("Adjudicate Win for White"), this);
 	m_adjudicateBlackWinAct = new QAction(tr("Adjudicate Win for Black"), this);
@@ -246,6 +253,9 @@ void MainWindow::createActions()
 	connect(m_saveGameAct, SIGNAL(triggered()), this, SLOT(save()));
 	connect(m_saveGameAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
+	connect(m_pauseGameAct, SIGNAL(triggered()), this, SLOT(pauseGame()));
+	connect(m_resumeGameAct, SIGNAL(triggered()), this, SLOT(resumeGame()));
+
 	connect(m_adjudicateDrawAct, SIGNAL(triggered()), this, SLOT(adjudicateDraw()));
 	connect(m_adjudicateWhiteWinAct, SIGNAL(triggered()), this, SLOT(adjudicateWhiteWin()));
 	connect(m_adjudicateBlackWinAct, SIGNAL(triggered()), this, SLOT(adjudicateBlackWin()));
@@ -293,6 +303,11 @@ void MainWindow::createMenus()
 	m_gameMenu->addAction(m_copyFenAct);
 	m_gameMenu->addAction(m_copyPgnAct);
 	m_gameMenu->addAction(m_pasteFenAct);
+	m_gameMenu->addSeparator();
+	m_gameMenu->addAction(m_pauseGameAct);
+	m_pauseGameAct->setEnabled(false);
+	m_gameMenu->addAction(m_resumeGameAct);
+	m_resumeGameAct->setEnabled(false);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_adjudicateDrawAct);
 	m_gameMenu->addAction(m_adjudicateWhiteWinAct);
@@ -528,6 +543,9 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 			           m_gameViewer->chessClock(Chess::Side::White), nullptr);
 			disconnect(player, nullptr,
 			           m_gameViewer->chessClock(Chess::Side::Black), nullptr);
+			if (player->isHuman())
+				disconnect((HumanPlayer *)player, SIGNAL(wokeUp()),
+					   this, SLOT(updateMenus()));
 		}
 	}
 
@@ -628,6 +646,16 @@ void MainWindow::setCurrentGame(const TabData& gameData)
 
 	if (m_game->boardShouldBeFlipped())
 		m_gameViewer->boardScene()->flip();
+
+	m_pauseGameAct->setEnabled(m_game != nullptr && !m_game->isPaused());
+	m_resumeGameAct->setEnabled(m_game != nullptr && !m_pauseGameAct->isEnabled());
+
+	if (!m_game.isNull() && m_game->playerToMove()->isHuman())
+		connect((HumanPlayer *)m_game->playerToMove(), SIGNAL(wokeUp()),
+			this, SLOT(updateMenus()));
+	if (!m_game.isNull() && m_game->playerToWait()->isHuman())
+		connect((HumanPlayer *)m_game->playerToWait(), SIGNAL(wokeUp()),
+			this, SLOT(updateMenus()));
 
 	updateMenus();
 	updateWindowTitle();
@@ -944,6 +972,9 @@ void MainWindow::updateMenus()
 	m_adjudicateWhiteWinAct->setEnabled(gameOn);
 	m_adjudicateDrawAct->setEnabled(gameOn);
 	m_resignGameAct->setEnabled(gameOn && isHumanGame);
+	m_pauseGameAct->setEnabled(gameOn && !m_game->isPaused());
+	m_resumeGameAct->setEnabled(gameOn && !m_pauseGameAct->isEnabled());
+
 }
 
 QString MainWindow::nameOnClock(const QString& name, Chess::Side side) const
@@ -1154,6 +1185,30 @@ bool MainWindow::askToSave()
 			return false;
 	}
 	return true;
+}
+
+void MainWindow::pauseGame()
+{
+	if (!m_game)
+		return;
+
+	QMetaObject::invokeMethod(m_game, "pause",
+				  Qt::QueuedConnection);
+
+	m_pauseGameAct->setEnabled(false);
+	m_resumeGameAct->setEnabled(true);
+}
+
+void MainWindow::resumeGame()
+{
+	if (!m_game)
+		return;
+
+	QMetaObject::invokeMethod(m_game, "resume",
+				  Qt::QueuedConnection);
+
+	m_resumeGameAct->setEnabled(false);
+	m_pauseGameAct->setEnabled(true);
 }
 
 void MainWindow::adjudicateDraw()

@@ -48,6 +48,7 @@ class LIB_EXPORT ChessGame : public QObject
 		ChessPlayer* playerToMove() const;
 		ChessPlayer* playerToWait() const;
 		bool isFinished() const;
+		bool isPaused() const;
 		bool boardShouldBeFlipped() const;
 		void setBoardShouldBeFlipped(bool flip);
 
@@ -130,6 +131,7 @@ class LIB_EXPORT ChessGame : public QObject
 		int m_startDelay;
 		bool m_finished;
 		bool m_gameInProgress;
+		bool m_pausePending;
 		bool m_paused;
 		bool m_pgnInitialized;
 		bool m_bookOwnership;
