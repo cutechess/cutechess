@@ -363,6 +363,16 @@ void MainWindow::createDockWindows()
 	engineDebugDock->close();
 	addDockWidget(Qt::BottomDockWidgetArea, engineDebugDock);
 
+	// Applicatino debug
+	auto appDebugDock = new QDockWidget(tr("Application Debug"), this);
+	appDebugDock->setObjectName("ApplicationDebugDock");
+	m_appDebugLog = new PlainTextLog(appDebugDock);
+	connect(CuteChessApplication::instance(),
+	    &CuteChessApplication::applicationStringMessage, m_appDebugLog,
+	    &PlainTextLog::appendPlainText);
+	appDebugDock->setWidget(m_appDebugLog);
+	addDockWidget(Qt::BottomDockWidgetArea, appDebugDock);
+
 	// Evaluation history
 	auto evalHistoryDock = new QDockWidget(tr("Evaluation history"), this);
 	evalHistoryDock->setObjectName("EvalHistoryDock");
@@ -405,6 +415,7 @@ void MainWindow::createDockWindows()
 	m_viewMenu->addAction(moveListDock->toggleViewAction());
 	m_viewMenu->addAction(tagsDock->toggleViewAction());
 	m_viewMenu->addAction(engineDebugDock->toggleViewAction());
+	m_viewMenu->addAction(appDebugDock->toggleViewAction());
 	m_viewMenu->addAction(evalHistoryDock->toggleViewAction());
 	m_viewMenu->addAction(whiteEvalDock->toggleViewAction());
 	m_viewMenu->addAction(blackEvalDock->toggleViewAction());
