@@ -410,7 +410,13 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 		eval->setPvNumber(tokens[0].toString().toInt());
 		break;
 	case InfoPv:
-		eval->setPv(m_useDirectPv ?  directPv(tokens) : sanPv(tokens));
+		if (this->state() == Thinking
+		|| (this->state() == Observing && pondering()))
+			eval->setPv(m_useDirectPv ? directPv(tokens) : sanPv(tokens));
+		else if (this->state() != FinishingGame)
+			qWarning("Unexpected PV from %s: %s",
+				 qUtf8Printable(name()),
+				 qUtf8Printable(directPv(tokens)));
 		break;
 	case InfoScore:
 		{
