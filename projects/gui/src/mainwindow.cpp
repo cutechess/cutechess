@@ -43,6 +43,7 @@
 #include <playerbuilder.h>
 #include <chessplayer.h>
 #include <humanbuilder.h>
+#include <enginebuilder.h>
 #include <tournament.h>
 
 #include "cutechessapp.h"
@@ -53,6 +54,7 @@
 #include "chessclock.h"
 #include "plaintextlog.h"
 #include "pgntagsmodel.h"
+#include "pgnstream.h"
 #include "gametabbar.h"
 #include "evalhistory.h"
 #include "evalwidget.h"
@@ -164,10 +166,12 @@ void MainWindow::createActions()
 	copyFenSequence->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 	m_gameViewer->addAction(copyFenSequence);
 
-	m_pasteFenAct = new QAction(tr("&Paste FEN"), this);
-	m_pasteFenAct->setShortcut(QKeySequence(QKeySequence::Paste));
+	m_pasteAct = new QAction(tr("&Paste FEN/PGN"), this);
+	m_pasteAct->setShortcut(QKeySequence(QKeySequence::Paste));
+	m_pasteToCurrentAct = new QAction(tr("Paste FEN/PGN and Use &Target Settings"), this);
+	m_pasteToCurrentAct->setShortcut(QKeySequence(QKeySequence::Replace));
 
-	m_copyPgnAct = new QAction(tr("Copy PG&N"), this);
+	m_copyPgnAct = new QAction(tr("Copy P&GN"), this);
 
 	m_flipBoardAct = new QAction(tr("&Flip Board"), this);
 	m_flipBoardAct->setShortcut(Qt::CTRL + Qt::Key_F);
@@ -220,7 +224,8 @@ void MainWindow::createActions()
 
 	connect(m_newGameAct, SIGNAL(triggered()), this, SLOT(newGame()));
 	connect(m_copyFenAct, SIGNAL(triggered()), this, SLOT(copyFen()));
-	connect(m_pasteFenAct, SIGNAL(triggered()), this, SLOT(pasteFen()));
+	connect(m_pasteAct, SIGNAL(triggered()), this, SLOT(pasteDefault()));
+	connect(m_pasteToCurrentAct, SIGNAL(triggered()), this, SLOT(pasteCurrent()));
 	connect(copyFenSequence, SIGNAL(triggered()), this, SLOT(copyFen()));
 	connect(m_copyPgnAct, SIGNAL(triggered()), this, SLOT(copyPgn()));
 	connect(m_flipBoardAct, SIGNAL(triggered()),
@@ -292,7 +297,8 @@ void MainWindow::createMenus()
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_copyFenAct);
 	m_gameMenu->addAction(m_copyPgnAct);
-	m_gameMenu->addAction(m_pasteFenAct);
+	m_gameMenu->addAction(m_pasteAct);
+	m_gameMenu->addAction(m_pasteToCurrentAct);
 	m_gameMenu->addSeparator();
 	m_gameMenu->addAction(m_adjudicateDrawAct);
 	m_gameMenu->addAction(m_adjudicateWhiteWinAct);
@@ -944,6 +950,7 @@ void MainWindow::updateMenus()
 	m_adjudicateWhiteWinAct->setEnabled(gameOn);
 	m_adjudicateDrawAct->setEnabled(gameOn);
 	m_resignGameAct->setEnabled(gameOn && isHumanGame);
+	m_pasteToCurrentAct->setEnabled(!m_game.isNull());
 }
 
 QString MainWindow::nameOnClock(const QString& name, Chess::Side side) const
@@ -982,40 +989,126 @@ void MainWindow::copyFen()
 		cb->setText(fen);
 }
 
-void MainWindow::pasteFen()
+PlayerBuilder* MainWindow::findPlayerBuilder(int side, bool useDefault) const
+{
+	const QList<EngineConfiguration> engines
+		= CuteChessApplication::instance()->engineManager()->engines();
+
+	PlayerBuilder * builder = nullptr;
+	if (!useDefault
+	&&  !m_players[side].isNull()
+	&&  !m_players[side]->isHuman())
+	{
+		for (const EngineConfiguration config: engines)
+		{
+			if (config.name() == m_players[side]->name())
+			{
+				builder = new EngineBuilder(config);
+				break;
+			}
+		}
+	}
+	if (!builder)
+	{
+		bool ignoreFlag = QSettings()
+				  .value("games/human_can_play_after_timeout", true)
+				  .toBool();
+		builder = new HumanBuilder(CuteChessApplication::userName(),
+						  ignoreFlag);
+	}
+	return builder;
+}
+
+void MainWindow::showPasteErrorDialog(const QString& variant, const QString& text)
+{
+	QMessageBox msgBox(QMessageBox::Critical,
+			    tr("Paste error"),
+			    tr("Invalid FEN or PGN string for the \"%1\" variant:")
+			    .arg(variant),
+			    QMessageBox::Ok, this);
+	msgBox.setInformativeText(text);
+	msgBox.exec();
+
+	return;
+}
+
+void MainWindow::pasteDefault()
+{
+	doPaste(true);
+}
+
+void MainWindow::pasteCurrent()
+{
+	doPaste(false);
+}
+
+void MainWindow::doPaste(bool useDefault)
 {
 	auto cb = CuteChessApplication::clipboard();
-	if (cb->text().isEmpty())
+	const QString& text = cb->text();
+	if (text.isEmpty())
 		return;
 
+	// Use default if there is no target game
+	if (m_game.isNull())
+		useDefault = true;
+
+	// If feasible then use the variant of the current game
 	QString variant = m_game.isNull() || m_game->board() == nullptr ?
 				"standard" : m_game->board()->variant();
 
-	auto board = Chess::BoardFactory::create(variant);
-	if (!board->setFenString(cb->text()))
-	{
-		QMessageBox msgBox(QMessageBox::Critical,
-				   tr("FEN error"),
-				   tr("Invalid FEN string for the \"%1\" variant:")
-				   .arg(variant),
-				   QMessageBox::Ok, this);
-		msgBox.setInformativeText(cb->text());
-		msgBox.exec();
+	// Assume the clipboard text is PGN and try to read it
+	QByteArray buffer = text.toLatin1();
+	PgnStream pgnStream(&buffer, variant);
+	PgnGame pgnGame;
+	bool pgnOk = pgnGame.read(pgnStream);
 
-		delete board;
+	// For PGN the default paste operation shall use the same variant
+	if (pgnOk && useDefault)
+		variant = pgnGame.variant();
+
+	// Create new Board and ChessGame
+	auto board = Chess::BoardFactory::create(variant);
+	PgnGame *pgn = new PgnGame();
+	auto game = new ChessGame(board, pgn);
+
+	// For PGN try to set all listed moves
+	pgnOk = pgnOk && game->setMoves(pgnGame);
+
+	// Exit if neither PGN nor board set-up by FEN worked
+	if (!pgnOk &&  !board->setFenString(text))
+	{
+		delete game;
+		delete pgn;
+		showPasteErrorDialog(variant, text);
 		return;
 	}
-	auto game = new ChessGame(board, new PgnGame());
-	game->setTimeControl(TimeControl("inf"));
-	game->setStartingFen(cb->text());
-	game->pause();
+	// Only for FEN input
+	if(!pgnOk)
+		game->setStartingFen(text);
 
+	// Infinite time control for default paste
+	if (useDefault || m_players[0].isNull() || m_players[1].isNull())
+		game->setTimeControl(TimeControl("inf"));
+	// Inherit time controls from template game
+	else
+	{
+		game->setTimeControl(*m_players[0]->timeControl(), Chess::Side::White);
+		game->setTimeControl(*m_players[1]->timeControl(), Chess::Side::Black);
+	}
+
+	PlayerBuilder* builders[2]{ findPlayerBuilder(0, useDefault),
+				    findPlayerBuilder(1, useDefault) };
+
+	if (builders[game->board()->sideToMove()]->isHuman())
+		game->pause();
+
+	// Start the game in a new tab
 	connect(game, &ChessGame::initialized, this, &MainWindow::addGame);
 	connect(game, &ChessGame::startFailed, this, &MainWindow::onGameStartFailed);
 
 	CuteChessApplication::instance()->gameManager()->newGame(game,
-		new HumanBuilder(CuteChessApplication::userName()),
-		new HumanBuilder(CuteChessApplication::userName()));
+		builders[Chess::Side::White], builders[Chess::Side::Black]);
 }
 
 void MainWindow::showAboutDialog()
