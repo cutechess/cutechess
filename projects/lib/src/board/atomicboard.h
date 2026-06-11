@@ -47,7 +47,7 @@ class LIB_EXPORT AtomicBoard : public WesternBoard
 		// Inherited from WesternBoard
 		virtual void vInitialize();
 		virtual bool inCheck(Side side, int square = 0) const;
-		virtual bool kingCanCapture() const;
+		virtual bool pieceCanCapture(int pieceType) const;
 		virtual bool vSetFenString(const QStringList& fen);
 		virtual bool vIsLegalMove(const Move& move);
 		virtual void vMakeMove(const Move& move,

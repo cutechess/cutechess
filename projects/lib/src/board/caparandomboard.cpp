@@ -77,18 +77,18 @@ bool CaparandomBoard::pawnsAreSafe(const QVector<int>& pieces) const
 		{
 			if (j < 0 || j >= size)
 				continue;
-			if (pieceTypeHasMovement(pieces.at(j), KnightMovement))
+			if (pieceHasMovement(pieces.at(j), KnightMovement))
 				safe = true;
 		}
 		for (int j = i - 1; j <= i + 1; j += 2)
 		{
 			if (j < 0 || j >= size)
 				continue;
-			if (pieceTypeHasMovement(pieces.at(j), BishopMovement)
+			if (pieceHasMovement(pieces.at(j), BishopMovement)
 			||  pieces.at(j) == King)
 				safe = true;
 		}
-		if (pieceTypeHasMovement(pieces.at(i), RookMovement) || pieces.at(i) == King)
+		if (pieceHasMovement(pieces.at(i), RookMovement) || pieces.at(i) == King)
 			safe = true;
 
 		if (!safe)

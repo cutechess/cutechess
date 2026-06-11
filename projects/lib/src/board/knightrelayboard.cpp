@@ -40,29 +40,22 @@ bool KnightRelayBoard::hasEnPassantCaptures() const
 	return false;
 }
 
-bool KnightRelayBoard::pieceHasCaptureMovement(Piece piece, int square, unsigned movement) const
+bool KnightRelayBoard::pieceCanCapture(int pieceType) const
 {
-	if (piece.type() == Knight)
-		return false;
-
-	return pieceHasMovement(piece.type(), square, movement);
-}
-
-bool KnightRelayBoard::pieceHasMovement(Piece piece, int square, unsigned movement) const
-{
-	if (movement == KnightMovement && defendedByKnight(piece.side(), square))
-		return true;
-
-	return StandardBoard::pieceHasMovement(piece, square, movement);
+	return pieceType != Knight;
 }
 
 bool KnightRelayBoard::vIsLegalMove(const Move& move)
 {
+	// Knights cannot be captured
 	if (captureType(move) == Knight)
 		return false;
 
+	Piece piece(pieceAt(move.sourceSquare()));
+
 	// Pawns can promote normally, but not by knight-move relay.
-	if (pieceAt(move.sourceSquare()).type() == Pawn
+	// They also cannot knight-move to the first rank.
+	if (piece.type() == Pawn
 	&&  move.promotion() == Piece::NoPiece)
 	{
 		int targetRank = chessSquare(move.targetSquare()).rank();
@@ -71,6 +64,39 @@ bool KnightRelayBoard::vIsLegalMove(const Move& move)
 	}
 
 	return StandardBoard::vIsLegalMove(move);
+}
+
+void KnightRelayBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
+                                             int pieceType,
+                                             int square) const
+{
+	// Generate standard chess moves
+	StandardBoard::generateMovesForPiece(moves, pieceType, square);
+	if (pieceType == King || pieceType == Knight)
+		return;
+
+	// If the piece is not a knight or the king, but is defended by a
+	// friendly knight, generate relayed knight moves.
+	bool hasKnightRelayMoves = false;
+	Chess::Side side(sideToMove());
+	QVarLengthArray<Move> knightMoves;
+	for (int offset: m_knightOffsets)
+	{
+		int tgSq = square + offset;
+		Piece piece(pieceAt(tgSq));
+		Chess::Side tgSide(piece.side());
+		int tgType(piece.type());
+
+		if (tgSide == side)
+		{
+			if (tgType == Knight)
+				hasKnightRelayMoves = true;
+		}
+		else if (tgType != Knight && !piece.isWall())
+			knightMoves << Chess::Move(square, tgSq);
+	}
+	if (hasKnightRelayMoves)
+		moves.append(knightMoves.constData(), knightMoves.size());
 }
 
 } // namespace Chess

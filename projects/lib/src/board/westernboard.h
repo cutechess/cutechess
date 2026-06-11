@@ -112,11 +112,11 @@ class LIB_EXPORT WesternBoard : public Board
 		virtual bool kingsCountAssertion(int whiteKings,
 						 int blackKings) const;
 		/*!
-		 * Returns true if the king can capture opposing pieces.
+		 * Returns true if \a pieceType can capture opposing pieces.
 		 * The default value is true.
 		 * \sa AtomicBoard
 		 */
-		virtual bool kingCanCapture() const;
+		virtual bool pieceCanCapture(int pieceType) const;
 		/*!
 		* Returns true if castling is allowed.
 		* The default value is true.
@@ -189,10 +189,6 @@ class LIB_EXPORT WesternBoard : public Board
 		 */
 		virtual int castlingFile(CastlingSide castlingSide) const;
 		/*!
-		 * Returns true if \a side knight-defends \a square.
-		 */
-		virtual bool defendedByKnight(Side side, int square) const;
-		/*!
 		 * Returns true if \a side is under attack at \a square.
 		 * If \a square is 0, then the king square is used.
 		 */
@@ -224,6 +220,10 @@ class LIB_EXPORT WesternBoard : public Board
 		virtual bool vIsLegalMove(const Move& move);
 		virtual bool isLegalPosition();
 		virtual int captureType(const Move& move) const;
+
+		QVarLengthArray<int> m_knightOffsets;
+		QVarLengthArray<int> m_bishopOffsets;
+		QVarLengthArray<int> m_rookOffsets;
 
 	private:
 		struct CastlingRights
@@ -269,7 +269,6 @@ class LIB_EXPORT WesternBoard : public Board
 		int m_enpassantTarget;
 		int m_plyOffset;
 		int m_reversibleMoveCount;
-		bool m_kingCanCapture;
 		bool m_hasCastling;
 		bool m_pawnHasDoubleStep;
 		bool m_hasEnPassantCaptures;
@@ -279,10 +278,6 @@ class LIB_EXPORT WesternBoard : public Board
 		CastlingRights m_castlingRights;
 		int m_castleTarget[2][2];
 		const WesternZobrist* m_zobrist;
-
-		QVarLengthArray<int> m_knightOffsets;
-		QVarLengthArray<int> m_bishopOffsets;
-		QVarLengthArray<int> m_rookOffsets;
 };
 
 

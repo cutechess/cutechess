@@ -82,7 +82,7 @@ void CourierBoard::generateMovesForPiece(QVarLengthArray< Move >& moves,
 					  int square) const
 {
 	Chess::ShatranjBoard::generateMovesForPiece(moves, pieceType, square);
-	if (pieceTypeHasMovement(pieceType, WazirMovement))
+	if (pieceHasMovement(pieceType, WazirMovement))
 		generateHoppingMoves(square, m_wazirOffsets, moves);
 }
 
@@ -98,7 +98,7 @@ bool CourierBoard::inCheck(Side side, int square) const
 	{
 		piece = pieceAt(square + m_wazirOffsets[i]);
 		if (piece.side() == opSide
-		&&  pieceTypeHasMovement(piece.type(), WazirMovement))
+		&&  pieceHasMovement(piece.type(), WazirMovement))
 			return true;
 	}
 	return ShatranjBoard::inCheck(side, square);

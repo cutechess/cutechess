@@ -45,9 +45,9 @@ QString AtomicBoard::defaultFenString() const
 	return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 }
 
-bool AtomicBoard::kingCanCapture() const
+bool AtomicBoard::pieceCanCapture(int pieceType) const
 {
-	return false;
+	return pieceType != King;
 }
 
 void AtomicBoard::vInitialize()
