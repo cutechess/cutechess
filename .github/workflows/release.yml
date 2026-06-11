@@ -1,80 +1,12 @@
 name: release cutechess
 on:
-  push:
-    tags:
-      - 'v*'
+  pull_request:
+    branches: [ master ]
 
 permissions: {}
 
 jobs:
-    githubrel:
-      name: "Create GitHub release"
-      runs-on: ubuntu-latest
-      permissions:
-        contents: write
-      steps:
-        - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-          with:
-            persist-credentials: false
-
-        - name: set version
-          run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
-
-        - name: create a draft github release
-          run: gh release create --draft --verify-tag --fail-on-no-commits --title "Cute Chess ${{ env.VERSION }}" ${GITHUB_REF_NAME}
-          env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    linuxrel:
-        needs: githubrel
-        name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
-        runs-on: ${{ matrix.os }}
-        permissions:
-          contents: write
-        strategy:
-          matrix:
-            qt_version: [6.8.3]
-            os: [ubuntu-latest]
-        steps:
-            - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-              with:
-                persist-credentials: false
-
-            - name: install qt 6.x
-              uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
-              with:
-                version: ${{ matrix.qt_version }}
-                modules: 'qt5compat'
-
-            - name: build cute chess
-              run: |
-                  cmake -S . -B build -DWITH_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr -G "Unix Makefiles"
-                  cmake --build build
-                  make -C build install DESTDIR=AppDir
-
-            - name: download appimage tools
-              run: |
-                sudo apt install libfuse2 libxcb-cursor0
-                cd build
-                curl -fsSLO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-                curl -fsLSO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
-                chmod +x linuxdeploy-*.AppImage
-
-            - name: set version
-              run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
-
-            - name: build appimage
-              run: |
-                cd build
-                ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin qt --output appimage --custom-apprun=../dist/appimage/CuteChess-AppRun --icon-file=../projects/gui/res/icons/cutechess_256x256.png --executable cutechess --executable cutechess-cli
-
-            - name: upload release asset
-              run: gh release upload ${GITHUB_REF_NAME} build/Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
-              env:
-                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     winrel:
-        needs: githubrel
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
         runs-on: ${{ matrix.os }}
         permissions:
@@ -97,58 +29,6 @@ jobs:
                 version: ${{ matrix.qt_version }}
                 modules: 'qt5compat'
 
-            - name: build cute chess
-              run: |
-                  cmake -S . -B build -DWITH_TESTS=OFF
-                  cmake --build build --config release
-
-            - name: set environment
-              run: |
-                chcp 65001 # set code page to utf-8
-                $version = Get-Content -Path .version
-                echo ("VERSION=" + $version) >> $env:GITHUB_ENV
-
             - name: create a release zip file
               run: |
-                mkdir cutechess-$env:VERSION-win64
-                cd cutechess-$env:VERSION-win64
-                cp ..\build\Release\cutechess.exe .
-                cp ..\build\Release\cutechess-cli.exe .
-                cp ..\docs\cutechess-cli.6.html .
-                cp ..\docs\cutechess-cli.6.txt .
-                cp ..\docs\cutechess-engines.json.5.html .
-                cp ..\docs\cutechess-engines.json.5.txt .
-                cp ..\COPYING .
-                cp "$env:VCDIR\VC\Redist\MSVC\v143\vc_redist.x64.exe" .
-                cp "$env:Qt6_Dir\bin\Qt6Core.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Gui.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Svg.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6PrintSupport.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Widgets.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6ConCurrent.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Core5Compat.dll" .
-                mkdir platforms
-                cp "$env:Qt6_Dir\plugins\platforms\qwindows.dll" platforms\
-                mkdir styles
-                cp "$env:Qt6_Dir\plugins\styles\qmodernwindowsstyle.dll" styles\
-                mkdir plugins
-                mkdir plugins\iconengines
-                cp "$env:Qt6_Dir\plugins\iconengines\qsvgicon.dll" plugins\iconengines
-                mkdir plugins\imageformats
-                cp "$env:Qt6_Dir\plugins\imageformats\qsvg.dll" plugins\imageformats
-                cd ..
-                7z a cutechess-$env:VERSION-win64.zip cutechess-$env:VERSION-win64\
-
-            - name: create an installer
-              run: |
-                & "$env:ISDIR\iscc.exe" /DMyAppVersion=$env:VERSION /DQtLibPath=$env:Qt6_Dir /DMSVCPath=$env:VCDIR /DCuteChessPath=$env:GITHUB_WORKSPACE dist\windows_setup.iss
-
-            - name: upload zip release asset
-              run: gh release upload ${GITHUB_REF_NAME} cutechess-${{ env.VERSION }}-win64.zip
-              env:
-                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: upload installer release asset
-              run: gh release upload ${GITHUB_REF_NAME} dist/cutechess-${{ env.VERSION }}-win64.exe
-              env:
-                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                dir "$env:Qt6_Dir\bin\"
