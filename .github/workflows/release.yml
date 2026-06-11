@@ -10,8 +10,8 @@ jobs:
     githubrel:
       name: "Create GitHub release"
       runs-on: ubuntu-latest
-      outputs:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+      permissions:
+        contents: write
       steps:
         - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
           with:
@@ -21,19 +21,14 @@ jobs:
           run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
 
         - name: create a draft github release
-          id: create_release
-          uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1.1.4
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: Cute Chess ${{ env.VERSION }}
-            draft: true
+          run: gh release create --draft --verify-tag --fail-on-no-commits --title "Cute Chess ${{ env.VERSION }}" ${GITHUB_REF}
 
     linuxrel:
         needs: githubrel
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
         runs-on: ${{ matrix.os }}
+        permissions:
+          contents: write
         strategy:
           matrix:
             qt_version: [6.8.3]
@@ -72,19 +67,14 @@ jobs:
                 ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin qt --output appimage --custom-apprun=../dist/appimage/CuteChess-AppRun --icon-file=../projects/gui/res/icons/cutechess_256x256.png --executable cutechess --executable cutechess-cli
 
             - name: upload release asset
-              uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1.0.2
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ needs.githubrel.outputs.upload_url }}
-                asset_path: build/Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
-                asset_name: Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
-                asset_content_type: application/octet-stream
+              run: gh release upload ${GITHUB_REF} build/Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
 
     winrel:
         needs: githubrel
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
         runs-on: ${{ matrix.os }}
+        permissions:
+          contents: write
         env:
           VCDIR: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise'
           ISDIR: 'C:\Program Files (x86)\Inno Setup 6'
@@ -150,21 +140,7 @@ jobs:
                 & "$env:ISDIR\iscc.exe" /DMyAppVersion=$env:VERSION /DQtLibPath=$env:Qt6_Dir /DMSVCPath=$env:VCDIR /DCuteChessPath=$env:GITHUB_WORKSPACE dist\windows_setup.iss
 
             - name: upload zip release asset
-              uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1.0.2
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ needs.githubrel.outputs.upload_url }}
-                asset_path: cutechess-${{ env.VERSION }}-win64.zip
-                asset_name: cutechess-${{ env.VERSION }}-win64.zip
-                asset_content_type: application/zip
+              run: gh release upload ${GITHUB_REF} cutechess-${{ env.VERSION }}-win64.zip
 
             - name: upload installer release asset
-              uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1.0.2
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ needs.githubrel.outputs.upload_url }}
-                asset_path: dist/cutechess-${{ env.VERSION }}-win64.exe
-                asset_name: cutechess-${{ env.VERSION }}-win64.exe
-                asset_content_type: application/octet-stream
+              run: gh release upload ${GITHUB_REF} dist/cutechess-${{ env.VERSION }}-win64.exe
