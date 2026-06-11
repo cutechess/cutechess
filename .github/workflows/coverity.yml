@@ -12,7 +12,7 @@ jobs:
       uses: actions/checkout@v6
     - name: Install dependencies
       run: |
-        sudo apt install qtbase5-dev qtbase5-dev-tools libqt5svg5-dev
+        sudo apt install qt6-base-dev qt6-svg-dev qt6-base-dev-tools qt6-5compat-dev
     - name: CMake
       run: |
         cmake -S . -B build
