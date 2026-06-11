@@ -35,16 +35,13 @@ jobs:
             - name: build cute chess
               if: matrix.os != 'windows-latest'
               run: |
-                  mkdir build
-                  cd build
-                  cmake ..
-                  cmake --build .
+                  cmake -S . -B build
+                  cmake --build build
 
             - name: run unit tests
               if: matrix.os != 'windows-latest'
               run: |
-                  cd build
-                  make test
+                  ctest --test-dir build
 
             - name: check manual pages
               if: matrix.os == 'ubuntu-latest'
@@ -59,15 +56,12 @@ jobs:
               shell: cmd
               run: |
                   call "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-                  mkdir build
-                  cd build
-                  cmake ..
-                  cmake --build . --config release
+                  cmake -S . -B build
+                  cmake --build build --config release
 
             - name: run unit tests
               if: matrix.os == 'windows-latest'
               shell: cmd
               run: |
                   call "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-                  cd build
-                  ctest -C release
+                  ctest --test-dir build

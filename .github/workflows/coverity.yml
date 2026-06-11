@@ -15,9 +15,8 @@ jobs:
         sudo apt install qtbase5-dev qtbase5-dev-tools libqt5svg5-dev
     - name: CMake
       run: |
-        mkdir build
-        cd build
-        cmake ..
+        cmake -S . -B build
+        cmake --build build
     - name: Coverity scan
       uses: vapier/coverity-scan-action@v1
       with:

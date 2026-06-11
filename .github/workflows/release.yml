@@ -45,10 +45,8 @@ jobs:
 
             - name: build cute chess
               run: |
-                  mkdir build
-                  cd build
-                  cmake .. -DWITH_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr
-                  cmake --build .
+                  cmake -S . -B build -DWITH_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr -G "Unix Makefiles"
+                  cmake --build build
                   make install DESTDIR=AppDir
 
             - name: download appimage tools
@@ -99,10 +97,8 @@ jobs:
 
             - name: build cute chess
               run: |
-                  mkdir build
-                  cd build
-                  cmake .. -DWITH_TESTS=OFF
-                  cmake --build . --config release
+                  cmake -S . -B build -DWITH_TESTS=OFF
+                  cmake --build build --config release
 
             - name: set environment
               run: |
