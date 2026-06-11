@@ -22,6 +22,8 @@ jobs:
 
         - name: create a draft github release
           run: gh release create --draft --verify-tag --fail-on-no-commits --title "Cute Chess ${{ env.VERSION }}" ${GITHUB_REF}
+          env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     linuxrel:
         needs: githubrel
@@ -68,6 +70,8 @@ jobs:
 
             - name: upload release asset
               run: gh release upload ${GITHUB_REF} build/Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
+              env:
+                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     winrel:
         needs: githubrel
@@ -141,6 +145,10 @@ jobs:
 
             - name: upload zip release asset
               run: gh release upload ${GITHUB_REF} cutechess-${{ env.VERSION }}-win64.zip
+              env:
+                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: upload installer release asset
               run: gh release upload ${GITHUB_REF} dist/cutechess-${{ env.VERSION }}-win64.exe
+              env:
+                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
