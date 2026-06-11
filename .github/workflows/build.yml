@@ -11,23 +11,13 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
           matrix:
-            qt_version: [5.15.2, 6.7.2]
+            qt_version: [6.8.3]
             os: [windows-latest, ubuntu-latest, macos-latest]
-            exclude:
-              - os: macos-latest
-                qt_version: 5.15.2
         steps:
             - uses: actions/checkout@v6
 
-            - name: install qt 5.x
-              uses: jurplel/install-qt-action@v4
-              if: startsWith(matrix.qt_version, '5.')
-              with:
-                version: ${{ matrix.qt_version }}
-
             - name: install qt 6.x
               uses: jurplel/install-qt-action@v4
-              if: startsWith(matrix.qt_version, '6.')
               with:
                 version: ${{ matrix.qt_version }}
                 modules: 'qt5compat'
