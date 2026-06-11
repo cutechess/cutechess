@@ -120,28 +120,28 @@ jobs:
                 cp ..\docs\cutechess-engines.json.5.txt .
                 cp ..\COPYING .
                 cp "$env:VCDIR\VC\Redist\MSVC\v143\vc_redist.x64.exe" .
-                cp "$env:Qt6_Dir\bin\Qt6Core.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Gui.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Svg.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6PrintSupport.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Widgets.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6ConCurrent.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Core5Compat.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6Core.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6Gui.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6Svg.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6PrintSupport.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6Widgets.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6ConCurrent.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6Core5Compat.dll" .
                 mkdir platforms
-                cp "$env:Qt6_Dir\plugins\platforms\qwindows.dll" platforms\
+                cp "$env:QT_ROOT_DIR\plugins\platforms\qwindows.dll" platforms\
                 mkdir styles
-                cp "$env:Qt6_Dir\plugins\styles\qmodernwindowsstyle.dll" styles\
+                cp "$env:QT_ROOT_DIR\plugins\styles\qmodernwindowsstyle.dll" styles\
                 mkdir plugins
                 mkdir plugins\iconengines
-                cp "$env:Qt6_Dir\plugins\iconengines\qsvgicon.dll" plugins\iconengines
+                cp "$env:QT_ROOT_DIR\plugins\iconengines\qsvgicon.dll" plugins\iconengines
                 mkdir plugins\imageformats
-                cp "$env:Qt6_Dir\plugins\imageformats\qsvg.dll" plugins\imageformats
+                cp "$env:QT_ROOT_DIR\plugins\imageformats\qsvg.dll" plugins\imageformats
                 cd ..
                 7z a cutechess-$env:VERSION-win64.zip cutechess-$env:VERSION-win64\
 
             - name: create an installer
               run: |
-                & "$env:ISDIR\iscc.exe" /DMyAppVersion=$env:VERSION /DQtLibPath=$env:Qt6_Dir /DMSVCPath=$env:VCDIR /DCuteChessPath=$env:GITHUB_WORKSPACE dist\windows_setup.iss
+                & "$env:ISDIR\iscc.exe" /DMyAppVersion=$env:VERSION /DQtLibPath=$env:QT_ROOT_DIR /DMSVCPath=$env:VCDIR /DCuteChessPath=$env:GITHUB_WORKSPACE dist\windows_setup.iss
 
             - name: upload zip release asset
               run: gh release upload ${GITHUB_REF_NAME} cutechess-${{ env.VERSION }}-win64.zip
