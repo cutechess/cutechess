@@ -31,4 +31,4 @@ jobs:
 
             - name: create a release zip file
               run: |
-                dir "$env:Qt6_Dir\bin\"
+                dir "$env:QT_ROOT_DIR\bin\"
