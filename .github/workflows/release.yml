@@ -4,6 +4,8 @@ on:
     tags:
       - 'v*'
 
+permissions: {}
+
 jobs:
     githubrel:
       name: "Create GitHub release"
@@ -11,14 +13,16 @@ jobs:
       outputs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
       steps:
-        - uses: actions/checkout@v6
+        - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+          with:
+            persist-credentials: false
 
         - name: set version
           run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
 
         - name: create a draft github release
           id: create_release
-          uses: actions/create-release@v1
+          uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1.1.4
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
@@ -35,10 +39,12 @@ jobs:
             qt_version: [6.8.3]
             os: [ubuntu-latest]
         steps:
-            - uses: actions/checkout@v6
+            - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+              with:
+                persist-credentials: false
 
             - name: install qt 6.x
-              uses: jurplel/install-qt-action@v4
+              uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
               with:
                 version: ${{ matrix.qt_version }}
                 modules: 'qt5compat'
@@ -66,7 +72,7 @@ jobs:
                 ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin qt --output appimage --custom-apprun=../dist/appimage/CuteChess-AppRun --icon-file=../projects/gui/res/icons/cutechess_256x256.png --executable cutechess --executable cutechess-cli
 
             - name: upload release asset
-              uses: actions/upload-release-asset@v1
+              uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1.0.2
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
@@ -87,10 +93,12 @@ jobs:
             qt_version: [6.8.3]
             os: [windows-latest]
         steps:
-            - uses: actions/checkout@v6
+            - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+              with:
+                persist-credentials: false
 
             - name: install qt 6.x
-              uses: jurplel/install-qt-action@v4
+              uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
               with:
                 version: ${{ matrix.qt_version }}
                 modules: 'qt5compat'
@@ -142,7 +150,7 @@ jobs:
                 & "$env:ISDIR\iscc.exe" /DMyAppVersion=$env:VERSION /DQtLibPath=$env:Qt6_Dir /DMSVCPath=$env:VCDIR /DCuteChessPath=$env:GITHUB_WORKSPACE dist\windows_setup.iss
 
             - name: upload zip release asset
-              uses: actions/upload-release-asset@v1
+              uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1.0.2
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
@@ -152,7 +160,7 @@ jobs:
                 asset_content_type: application/zip
 
             - name: upload installer release asset
-              uses: actions/upload-release-asset@v1
+              uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1.0.2
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
