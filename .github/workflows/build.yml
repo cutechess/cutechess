@@ -5,6 +5,8 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions: {}
+
 jobs:
     build:
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
@@ -14,10 +16,12 @@ jobs:
             qt_version: [6.8.3]
             os: [windows-latest, ubuntu-latest, macos-latest]
         steps:
-            - uses: actions/checkout@v6
+            - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+              with:
+                persist-credentials: false
 
             - name: install qt 6.x
-              uses: jurplel/install-qt-action@v4
+              uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
               with:
                 version: ${{ matrix.qt_version }}
                 modules: 'qt5compat'

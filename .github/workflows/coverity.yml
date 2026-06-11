@@ -4,12 +4,17 @@ on:
   push:
     branches: [coverity_scan]
 
+permissions: {}
+
 jobs:
   coverity:
     runs-on: ubuntu-latest
+    permissions: read
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      with:
+        persist-credentials: false
     - name: Install dependencies
       run: |
         sudo apt install qt6-base-dev qt6-svg-dev qt6-base-dev-tools qt6-5compat-dev
@@ -18,7 +23,7 @@ jobs:
         cmake -S . -B build
         cmake --build build
     - name: Coverity scan
-      uses: vapier/coverity-scan-action@v1
+      uses: vapier/coverity-scan-action@2068473c7bdf8c2fb984a6a40ae76ee7facd7a85 # v1.8.0
       with:
         project: 'cutechess/cutechess'
         email: ${{ secrets.COVERITY_SCAN_EMAIL }}
