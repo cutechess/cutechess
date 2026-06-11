@@ -50,7 +50,7 @@ jobs:
               run: |
                   cmake -S . -B build -DWITH_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr -G "Unix Makefiles"
                   cmake --build build
-                  make install DESTDIR=AppDir
+                  make -C build install DESTDIR=AppDir
 
             - name: download appimage tools
               run: |
