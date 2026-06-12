@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <QSignalSpy>
 #include <pipereader_win.h>
 

@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <tournamentpair.h>
 
 class tst_TournamentPair: public QObject

@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <QDir>
 #include <board/standardboard.h>
 #include <board/syzygytablebase.h>

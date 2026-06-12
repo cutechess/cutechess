@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <xboardengine.h>
 #include <enginebuttonoption.h>
 #include <enginecheckoption.h>

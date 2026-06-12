@@ -23,7 +23,7 @@
     OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <jsonparser.h>
 
 class tst_JsonParser: public QObject

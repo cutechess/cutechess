@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <QtConcurrentRun>
 #include <board/board.h>
 #include <board/boardfactory.h>

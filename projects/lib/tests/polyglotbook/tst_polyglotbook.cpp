@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <QMap>
 #include <polyglotbook.h>
 #include <board/standardboard.h>
