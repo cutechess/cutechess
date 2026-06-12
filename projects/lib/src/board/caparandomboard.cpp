@@ -132,7 +132,7 @@ QString CaparandomBoard::defaultFenString() const
 	QString fen;
 
 	// Black pieces
-	for (int pieceType : qAsConst(pieces))
+	for (int pieceType : std::as_const(pieces))
 		fen += pieceSymbol(Piece(Side::Black, pieceType));
 	fen += '/';
 	// Black pawns
@@ -149,7 +149,7 @@ QString CaparandomBoard::defaultFenString() const
 		fen += pieceSymbol(Piece(Side::White, Pawn));
 	fen += '/';
 	// White pieces
-	for (int pieceType : qAsConst(pieces))
+	for (int pieceType : std::as_const(pieces))
 		fen += pieceSymbol(Piece(Side::White, pieceType));
 
 	// Side to move, castling rights, enpassant square, etc.

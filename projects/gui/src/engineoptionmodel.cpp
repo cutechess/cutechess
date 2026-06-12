@@ -87,7 +87,7 @@ QVariant EngineOptionModel::data(const QModelIndex& index, int role) const
 
 			case 1:
 				// see Qt::CheckStateRole
-				if (option->value().type() == QVariant::Bool)
+				if (option->value().typeId() == QMetaType::Bool)
 					return QVariant();
 
 				return option->value();
@@ -101,7 +101,7 @@ QVariant EngineOptionModel::data(const QModelIndex& index, int role) const
 	}
 	else if (role == Qt::CheckStateRole)
 	{
-		if (index.column() == 1 && option->value().type() == QVariant::Bool)
+		if (index.column() == 1 && option->value().typeId() == QMetaType::Bool)
 			return option->value().toBool() ? Qt::Checked : Qt::Unchecked;
 
 		return QVariant();
@@ -168,7 +168,7 @@ Qt::ItemFlags EngineOptionModel::flags(const QModelIndex& index) const
 			return defaultFlags;
 
 		// make check options checkable
-		if (option->value().type() == QVariant::Bool)
+		if (option->value().typeId() == QMetaType::Bool)
 			return Qt::ItemFlags(defaultFlags | Qt::ItemIsUserCheckable);
 
 		return Qt::ItemFlags(defaultFlags | Qt::ItemIsEditable);

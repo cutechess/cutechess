@@ -356,7 +356,7 @@ Move WesternBoard::moveFromSanString(const QString& str)
 	if (m_multiDigitNotation)
 	{
 		int count = 0;
-		for (const QChar& ch : qAsConst(mstr))
+		for (const QChar& ch : std::as_const(mstr))
 		{
 			if (ch.isDigit())
 			{

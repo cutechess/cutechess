@@ -21,9 +21,9 @@
 EngineTextOption::EngineTextOption(const QString& name,
                                    const QVariant& value,
                                    const QVariant& defaultValue,
-				   const QString& alias,
-				   EditorType editorType)
-	: EngineOption(name, QVariant::String, value, defaultValue, alias),
+                                   const QString& alias,
+                                   EditorType editorType)
+    : EngineOption(name, QMetaType::QString, value, defaultValue, alias),
 	  m_editorType(editorType)
 {
 }
@@ -35,7 +35,7 @@ EngineOption* EngineTextOption::copy() const
 
 bool EngineTextOption::isValid(const QVariant& value) const
 {
-	return value.canConvert(QVariant::String);
+	return value.canConvert(QMetaType(QMetaType::QString));
 }
 
 QVariant EngineTextOption::toVariant() const

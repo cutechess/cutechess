@@ -103,12 +103,12 @@ bool JsonSerializer::serializeNode(QTextStream& stream,
 {
 	const QString indent(indentLevel, '\t');
 
-	switch (node.type())
+	switch (node.typeId())
 	{
-	case QVariant::Invalid:
+	case QMetaType::UnknownType:
 		stream << "null";
 		break;
-	case QVariant::Map:
+	case QMetaType::QVariantMap:
 		{
 			stream << "{\n";
 
@@ -128,8 +128,8 @@ bool JsonSerializer::serializeNode(QTextStream& stream,
 			stream << indent << '}';
 		}
 		break;
-	case QVariant::List:
-	case QVariant::StringList:
+	case QMetaType::QVariantList:
+	case QMetaType::QStringList:
 		{
 			stream << "[\n";
 
@@ -147,12 +147,12 @@ bool JsonSerializer::serializeNode(QTextStream& stream,
 			stream << indent << ']';
 		}
 		break;
-	case QVariant::String:
-	case QVariant::ByteArray:
+	case QMetaType::QString:
+	case QMetaType::QByteArray:
 		stream << '\"' << jsonString(node.toString()) << '\"';
 		break;
 	default:
-		if (node.canConvert(QVariant::String))
+		if (node.canConvert(QMetaType(QMetaType::QString)))
 			stream << node.toString();
 		else
 		{

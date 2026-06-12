@@ -66,7 +66,7 @@ bool GameDatabaseManager::writeState(const QString& fileName)
 	out << (qint32)m_databases.count();
 
 	// Write the contents of the databases
-	for (const PgnDatabase* db : qAsConst(m_databases))
+	for (const PgnDatabase* db : std::as_const(m_databases))
 	{
 		out << db->fileName();
 		out << db->lastModified();

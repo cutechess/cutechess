@@ -185,7 +185,7 @@ void EngineManagementWidget::removeEngine()
 
 	if (!selected.isEmpty())
 	{
-		for (const QModelIndex& index : qAsConst(selected))
+		for (const QModelIndex& index : std::as_const(selected))
 			m_engineManager->removeEngineAt(index.row());
 		m_hasChanged = true;
 		updateEngineCount();

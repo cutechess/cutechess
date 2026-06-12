@@ -183,7 +183,7 @@ void NewTournamentDialog::removeEngine()
 		return b < a;
 	});
 
-	for (const QModelIndex& index : qAsConst(selected))
+	for (const QModelIndex& index : std::as_const(selected))
 	{
 		m_addedEnginesManager->removeEngineAt(index.row());
 		m_timeControls.remove(index.row());

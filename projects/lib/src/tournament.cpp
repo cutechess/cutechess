@@ -117,7 +117,7 @@ Tournament::~Tournament()
 	qDeleteAll(m_pairs);
 
 	QSet<const OpeningBook*> books;
-	for (const TournamentPlayer& player : qAsConst(m_players))
+	for (const TournamentPlayer& player : std::as_const(m_players))
 	{
 		books.insert(player.book());
 		delete player.builder();
@@ -1163,7 +1163,7 @@ QString ResultFormatter::entryFormat() const
 QString ResultFormatter::entry(const QMap<int, QString>& data) const
 {
 	QString ret;
-	for (const QString& token: qAsConst(m_tokenList))
+	for (const QString& token: m_tokenList)
 	{
 		int key = m_tokenMap.value(token, -1);
 		if (key >= 0)

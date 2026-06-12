@@ -749,7 +749,7 @@ void XboardEngine::sendOption(const QString& name, const QVariant& value)
 		else
 		{
 			QString tmp;
-			if (value.type() == QVariant::Bool)
+			if (value.typeId() == QMetaType::Bool)
 				tmp = value.toBool() ? "1" : "0";
 			else
 				tmp = value.toString();

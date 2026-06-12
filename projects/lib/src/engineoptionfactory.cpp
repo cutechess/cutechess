@@ -45,9 +45,9 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 	if (type == "button")
 		return new EngineButtonOption(name);
 
-	if (value.type() != QVariant::Bool &&
-		value.type() != QVariant::String &&
-		value.type() != QVariant::Int)
+	if (value.typeId() != QMetaType::Bool &&
+		value.typeId() != QMetaType::QString &&
+		value.typeId() != QMetaType::Int)
 	{
 		qWarning("Invalid value type for option: %s",
 			 qUtf8Printable(name));
@@ -56,9 +56,9 @@ EngineOption* EngineOptionFactory::create(const QVariantMap& map)
 
 	if (defaultValue.isNull())
 		defaultValue = value;
-	else if (defaultValue.type() != QVariant::Bool &&
-		defaultValue.type() != QVariant::String &&
-		defaultValue.type() != QVariant::Int)
+	else if (defaultValue.typeId() != QMetaType::Bool &&
+		defaultValue.typeId() != QMetaType::QString &&
+		defaultValue.typeId() != QMetaType::Int)
 	{
 		qWarning("Invalid default value type for option: %s",
 			 qUtf8Printable(name));

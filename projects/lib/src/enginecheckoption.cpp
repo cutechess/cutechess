@@ -22,7 +22,7 @@ EngineCheckOption::EngineCheckOption(const QString& name,
                                      const QVariant& value,
                                      const QVariant& defaultValue,
                                      const QString& alias)
-	: EngineOption(name, QVariant::Bool, value, defaultValue, alias)
+    : EngineOption(name, QMetaType::Bool, value, defaultValue, alias)
 {
 }
 
@@ -33,7 +33,7 @@ EngineOption* EngineCheckOption::copy() const
 
 bool EngineCheckOption::isValid(const QVariant& value) const
 {
-	if (value.canConvert(QVariant::Bool))
+	if (value.canConvert(QMetaType(QMetaType::Bool)))
 	{
 		QString str(value.toString());
 		return (str == "true" || str == "false");

@@ -19,7 +19,7 @@
 #include "enginebuttonoption.h"
 
 EngineButtonOption::EngineButtonOption(const QString& name)
-	: EngineOption(name, QVariant::Invalid)
+    : EngineOption(name, QMetaType::UnknownType)
 {
 }
 

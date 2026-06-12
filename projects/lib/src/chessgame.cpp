@@ -494,7 +494,7 @@ void ChessGame::generateOpening()
 		return;
 
 	// First play moves that are already in the opening
-	for (const Chess::Move& move : qAsConst(m_moves))
+	for (const Chess::Move& move : std::as_const(m_moves))
 	{
 		Q_ASSERT(m_board->isLegalMove(move));
 

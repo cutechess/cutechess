@@ -256,37 +256,37 @@ bool parseEngine(const QStringList& args, EngineData& data)
 EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 {
 	MatchParser parser(args);
-	parser.addOption("-srand", QVariant::UInt, 1, 1);
-	parser.addOption("-tournament", QVariant::String, 1, 1);
-	parser.addOption("-engine", QVariant::StringList, 1, -1, true);
-	parser.addOption("-each", QVariant::StringList, 1);
-	parser.addOption("-variant", QVariant::String, 1, 1);
-	parser.addOption("-concurrency", QVariant::Int, 1, 1);
-	parser.addOption("-draw", QVariant::StringList);
-	parser.addOption("-resign", QVariant::StringList);
-	parser.addOption("-maxmoves", QVariant::Int, 1, 1);
-	parser.addOption("-tb", QVariant::String, 1, 1);
-	parser.addOption("-tbpieces", QVariant::Int, 1, 1);
-	parser.addOption("-tbignore50", QVariant::Bool, 0, 0);
-	parser.addOption("-event", QVariant::String, 1, 1);
-	parser.addOption("-games", QVariant::Int, 1, 1);
-	parser.addOption("-rounds", QVariant::Int, 1, 1);
-	parser.addOption("-sprt", QVariant::StringList);
-	parser.addOption("-ratinginterval", QVariant::Int, 1, 1);
-	parser.addOption("-outcomeinterval", QVariant::Int, 1, 1);
-	parser.addOption("-resultformat", QVariant::String, 1, 1);
-	parser.addOption("-debug", QVariant::String, 0, 1);
-	parser.addOption("-openings", QVariant::StringList);
-	parser.addOption("-bookmode", QVariant::String);
-	parser.addOption("-pgnout", QVariant::StringList, 1, 3);
-	parser.addOption("-epdout", QVariant::String, 1, 1);
-	parser.addOption("-repeat", QVariant::Int, 0, 1);
-	parser.addOption("-noswap", QVariant::Bool, 0, 0);
-	parser.addOption("-reverse", QVariant::Bool, 0, 0);
-	parser.addOption("-recover", QVariant::Bool, 0, 0);
-	parser.addOption("-site", QVariant::String, 1, 1);
-	parser.addOption("-wait", QVariant::Int, 1, 1);
-	parser.addOption("-seeds", QVariant::UInt, 1, 1);
+	parser.addOption("-srand", QMetaType::UInt, 1, 1);
+	parser.addOption("-tournament", QMetaType::QString, 1, 1);
+	parser.addOption("-engine", QMetaType::QStringList, 1, -1, true);
+	parser.addOption("-each", QMetaType::QStringList, 1);
+	parser.addOption("-variant", QMetaType::QString, 1, 1);
+	parser.addOption("-concurrency", QMetaType::Int, 1, 1);
+	parser.addOption("-draw", QMetaType::QStringList);
+	parser.addOption("-resign", QMetaType::QStringList);
+	parser.addOption("-maxmoves", QMetaType::Int, 1, 1);
+	parser.addOption("-tb", QMetaType::QString, 1, 1);
+	parser.addOption("-tbpieces", QMetaType::Int, 1, 1);
+	parser.addOption("-tbignore50", QMetaType::Bool, 0, 0);
+	parser.addOption("-event", QMetaType::QString, 1, 1);
+	parser.addOption("-games", QMetaType::Int, 1, 1);
+	parser.addOption("-rounds", QMetaType::Int, 1, 1);
+	parser.addOption("-sprt", QMetaType::QStringList);
+	parser.addOption("-ratinginterval", QMetaType::Int, 1, 1);
+	parser.addOption("-outcomeinterval", QMetaType::Int, 1, 1);
+	parser.addOption("-resultformat", QMetaType::QString, 1, 1);
+	parser.addOption("-debug", QMetaType::QString, 0, 1);
+	parser.addOption("-openings", QMetaType::QStringList);
+	parser.addOption("-bookmode", QMetaType::QString);
+	parser.addOption("-pgnout", QMetaType::QStringList, 1, 3);
+	parser.addOption("-epdout", QMetaType::QString, 1, 1);
+	parser.addOption("-repeat", QMetaType::Int, 0, 1);
+	parser.addOption("-noswap", QMetaType::Bool, 0, 0);
+	parser.addOption("-reverse", QMetaType::Bool, 0, 0);
+	parser.addOption("-recover", QMetaType::Bool, 0, 0);
+	parser.addOption("-site", QMetaType::QString, 1, 1);
+	parser.addOption("-wait", QMetaType::Int, 1, 1);
+	parser.addOption("-seeds", QMetaType::UInt, 1, 1);
 	if (!parser.parse())
 		return nullptr;
 
@@ -597,7 +597,7 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		{
 			int rep = value.toInt(&ok);
 
-			if (option.value.type() == QVariant::Bool)
+			if (option.value.typeId() == QMetaType::Bool)
 				rep = 2; // default
 			if (ok && rep >= 1)
 			{
@@ -651,13 +651,13 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		if (!ok)
 		{
 			// Empty values default to boolean type
-			if (value.isValid() && value.type() == QVariant::Bool)
+			if (value.isValid() && value.typeId() == QMetaType::Bool)
 				qWarning("Empty value for option \"%s\"",
 					 qUtf8Printable(name));
 			else
 			{
 				QString val;
-				if (value.type() == QVariant::StringList)
+				if (value.typeId() == QMetaType::QStringList)
 					val = value.toStringList().join(" ");
 				else
 					val = value.toString();
