@@ -20,16 +20,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(QT_COMPONENTS Core Gui Widgets Concurrent Svg PrintSupport)
+set(QT_COMPONENTS Core Gui Widgets Concurrent Svg PrintSupport Core5Compat)
 if(WITH_TESTS)
 	enable_testing()
 	set(QT_COMPONENTS ${QT_COMPONENTS} Test)
 endif()
 
-find_package(Qt6 COMPONENTS ${QT_COMPONENTS} Core5Compat QUIET)
-if(NOT Qt6_FOUND)
-	find_package(Qt5 5.15 REQUIRED COMPONENTS ${QT_COMPONENTS})
-endif()
+find_package(Qt6 REQUIRED COMPONENTS ${QT_COMPONENTS} QUIET)
 
 include(GNUInstallDirs)
 
@@ -179,10 +176,7 @@ target_include_directories(lib PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/projects/lib/components/json/src>
 )
 
-target_link_libraries(lib Qt::Core)
-if(Qt6_FOUND)
-	target_link_libraries(lib Qt::Core5Compat)
-endif()
+target_link_libraries(lib Qt::Core Qt::Core5Compat)
 
 add_executable(cli
 	projects/cli/src/cutechesscoreapp.cpp
@@ -195,10 +189,7 @@ add_executable(cli
 
 set_target_properties(cli PROPERTIES OUTPUT_NAME cutechess-cli)
 
-target_link_libraries(cli Qt::Core)
-if(Qt6_FOUND)
-	target_link_libraries(cli Qt::Core5Compat)
-endif()
+target_link_libraries(cli Qt::Core Qt::Core5Compat)
 target_link_libraries(cli lib)
 add_dependencies(cli lib)
 
@@ -293,10 +284,7 @@ target_include_directories(gui PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/projects/gui/src>
 )
 
-target_link_libraries(gui Qt::Core Qt::Widgets Qt::Gui Qt::Concurrent Qt::Svg Qt::PrintSupport)
-if(Qt6_FOUND)
-	target_link_libraries(gui Qt::Core5Compat)
-endif()
+target_link_libraries(gui Qt::Core Qt::Widgets Qt::Gui Qt::Concurrent Qt::Svg Qt::PrintSupport Qt::Core5Compat)
 target_link_libraries(gui lib)
 
 if(WITH_TESTS)
