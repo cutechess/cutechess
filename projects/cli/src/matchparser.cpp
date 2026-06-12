@@ -26,10 +26,10 @@ MatchParser::MatchParser(const QStringList& args)
 }
 
 void MatchParser::addOption(const QString& name,
-			    QVariant::Type type,
-			    int minArgs,
-			    int maxArgs,
-			    bool duplicates)
+                            QMetaType::Type type,
+                            int minArgs,
+                            int maxArgs,
+                            bool duplicates)
 {
 	PrivateOption option =
 	{
@@ -140,11 +140,11 @@ bool MatchParser::parse()
 		}
 		
 		QVariant value;
-		if (option.type == QVariant::StringList)
+		if (option.type == QMetaType::QStringList)
 			value.setValue(list);
 		else
 			value.setValue(list.join(" "));
-		if (!value.convert(option.type))
+		if (!value.convert(QMetaType(option.type)))
 		{
 			qWarning("Invalid value for option \"%s\": \"%s\"",
 				 qUtf8Printable(name),

@@ -45,8 +45,8 @@ int main(int argc, char* argv[])
 	CuteChessApplication app(argc, argv);
 
 	QTranslator translator;
-	translator.load(QLocale(), "cutechess", "_", "translations", ".qm");
-	app.installTranslator(&translator);
+	if (translator.load(QLocale(), "cutechess", "_", "translations", ".qm"))
+		app.installTranslator(&translator);
 
 	QStringList arguments = app.arguments();
 	arguments.takeFirst(); // application name

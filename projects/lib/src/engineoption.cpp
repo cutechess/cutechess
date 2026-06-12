@@ -20,20 +20,20 @@
 
 
 EngineOption::EngineOption(const QString& name,
-			   QVariant::Type valueType,
-			   const QVariant& value,
-			   const QVariant& defaultValue,
-			   const QString& alias)
+                           QMetaType::Type valueType,
+                           const QVariant& value,
+                           const QVariant& defaultValue,
+                           const QString& alias)
 	: m_valueType(valueType),
 	  m_name(name),
 	  m_value(value),
 	  m_defaultValue(defaultValue),
 	  m_alias(alias)
 {
-	if (valueType != QVariant::Invalid)
+	if (valueType != QMetaType::UnknownType)
 	{
-		m_value.convert(valueType);
-		m_defaultValue.convert(valueType);
+		m_value.convert(QMetaType(valueType));
+		m_defaultValue.convert(QMetaType(valueType));
 	}
 }
 
@@ -41,7 +41,7 @@ EngineOption::~EngineOption()
 {
 }
 
-QVariant::Type EngineOption::valueType() const
+QMetaType::Type EngineOption::valueType() const
 {
 	return m_valueType;
 }
@@ -91,13 +91,13 @@ void EngineOption::setName(const QString& name)
 void EngineOption::setValue(const QVariant& value)
 {
 	m_value = value;
-	m_value.convert(m_valueType);
+	m_value.convert(QMetaType(m_valueType));
 }
 
 void EngineOption::setDefaultValue(const QVariant& value)
 {
 	m_defaultValue = value;
-	m_defaultValue.convert(m_valueType);
+	m_defaultValue.convert(QMetaType(m_valueType));
 }
 
 void EngineOption::setAlias(const QString& alias)
