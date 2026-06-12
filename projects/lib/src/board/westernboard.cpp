@@ -31,7 +31,6 @@ WesternBoard::WesternBoard(WesternZobrist* zobrist)
 	  m_enpassantTarget(0),
 	  m_plyOffset(0),
 	  m_reversibleMoveCount(0),
-	  m_kingCanCapture(true),
 	  m_hasCastling(true),
 	  m_pawnHasDoubleStep(true),
 	  m_hasEnPassantCaptures(true),
@@ -66,7 +65,7 @@ bool WesternBoard::kingsCountAssertion(int whiteKings, int blackKings) const
 	return whiteKings == 1 && blackKings == 1;
 }
 
-bool WesternBoard::kingCanCapture() const
+bool WesternBoard::pieceCanCapture(int pieceType) const
 {
 	return true;
 }
@@ -93,7 +92,6 @@ bool WesternBoard::variantHasChanneling(Side, int) const
 
 void WesternBoard::vInitialize()
 {
-	m_kingCanCapture = kingCanCapture();
 	m_hasCastling = hasCastling();
 	m_pawnHasDoubleStep = pawnHasDoubleStep();
 	m_hasEnPassantCaptures = hasEnPassantCaptures();
@@ -846,6 +844,9 @@ void WesternBoard::setEnpassantSquare(int square, int target)
 
 void WesternBoard::maybeEnableEnpassant(const Move& move)
 {
+	if (!m_hasEnPassantCaptures)
+		return;
+
 	Side side = sideToMove();
 	int source = move.sourceSquare();
 	int target = move.targetSquare();
@@ -1129,25 +1130,12 @@ void WesternBoard::generateMovesForPiece(QVarLengthArray<Move>& moves,
 		return;
 	}
 
-	if (pieceHasMovement(pieceType, square, KnightMovement))
+	if (pieceHasMovement(pieceType, KnightMovement))
 		generateHoppingMoves(square, m_knightOffsets, moves);
-	if (pieceHasMovement(pieceType, square, BishopMovement))
+	if (pieceHasMovement(pieceType, BishopMovement))
 		generateSlidingMoves(square, m_bishopOffsets, moves);
-	if (pieceHasMovement(pieceType, square, RookMovement))
+	if (pieceHasMovement(pieceType, RookMovement))
 		generateSlidingMoves(square, m_rookOffsets, moves);
-}
-
-bool WesternBoard::defendedByKnight(Side side, int square) const
-{
-	for (int i = 0; i < m_knightOffsets.size(); i++)
-	{
-		int targetSquare = square + m_knightOffsets[i];
-		Piece piece = pieceAt(targetSquare);
-		if (piece.side() == side
-		&&  pieceHasCaptureMovement(piece, targetSquare, KnightMovement))
-			return true;
-	}
-    return false;
 }
 
 bool WesternBoard::inCheck(Side side, int square) const
@@ -1162,15 +1150,17 @@ bool WesternBoard::inCheck(Side side, int square) const
 	}
 
 	// Pawn attacks
-	int sign = (side == Side::White) ? 1 : -1;
-
-	for (const PawnStep& pStep: m_pawnSteps)
+	if (pieceCanCapture(Pawn))
 	{
-		if (pStep.type == CaptureStep)
+		int sign = (side == Side::White) ? 1 : -1;
+		for (const PawnStep& pStep: m_pawnSteps)
 		{
-			int fromSquare = square - pawnPushOffset(pStep, -sign);
-			if (pieceAt(fromSquare) == Piece(opSide, Pawn))
-				return true;
+			if (pStep.type == CaptureStep)
+			{
+				int fromSquare = square - pawnPushOffset(pStep, -sign);
+				if (pieceAt(fromSquare) == Piece(opSide, Pawn))
+					return true;
+			}
 		}
 	}
 
@@ -1180,19 +1170,21 @@ bool WesternBoard::inCheck(Side side, int square) const
 	// Knight, archbishop, chancellor attacks
 	for (int i = 0; i < m_knightOffsets.size(); i++)
 	{
-		int targetSquare = square + m_knightOffsets[i];
-		piece = pieceAt(targetSquare);
+		piece = pieceAt(square + m_knightOffsets[i]);
 		if (piece.side() == opSide
-		&&  pieceHasCaptureMovement(piece, targetSquare, KnightMovement))
+		&&  pieceHasMovement(piece.type(), KnightMovement)
+		&&  pieceCanCapture(piece.type()))
 			return true;
 	}
-	
+
+	const bool kingCanCapture = pieceCanCapture(King);
+
 	// Bishop, queen, archbishop, king attacks
 	for (int i = 0; i < m_bishopOffsets.size(); i++)
 	{
 		int offset = m_bishopOffsets[i];
 		int targetSquare = square + offset;
-		if (m_kingCanCapture
+		if (kingCanCapture
 		&&  pieceAt(targetSquare) == opKing)
 			return true;
 		while ((piece = pieceAt(targetSquare)).isEmpty()
@@ -1200,7 +1192,8 @@ bool WesternBoard::inCheck(Side side, int square) const
 		{
 			if (!piece.isEmpty())
 			{
-				if (pieceHasCaptureMovement(piece, targetSquare, BishopMovement))
+				if (pieceHasMovement(piece.type(), BishopMovement)
+				&&  pieceCanCapture(piece.type()))
 					return true;
 				break;
 			}
@@ -1213,7 +1206,7 @@ bool WesternBoard::inCheck(Side side, int square) const
 	{
 		int offset = m_rookOffsets[i];
 		int targetSquare = square + offset;
-		if (m_kingCanCapture
+		if (kingCanCapture
 		&&  pieceAt(targetSquare) == opKing)
 			return true;
 		while ((piece = pieceAt(targetSquare)).isEmpty()
@@ -1221,7 +1214,8 @@ bool WesternBoard::inCheck(Side side, int square) const
 		{
 			if (!piece.isEmpty())
 			{
-				if (pieceHasCaptureMovement(piece, targetSquare, RookMovement))
+				if (pieceHasMovement(piece.type(), RookMovement)
+				&&  pieceCanCapture(piece.type()))
 					return true;
 				break;
 			}
@@ -1268,18 +1262,19 @@ bool WesternBoard::vIsLegalMove(const Move& move)
 	Q_ASSERT(!move.isNull());
 
 	Side side(sideToMove());
+	Piece piece(pieceAt(move.sourceSquare()));
+
+	if (captureType(move) != Piece::NoPiece
+	&&  !pieceCanCapture(piece.type()))
+		return false;
 
 	if (move.sourceSquare() == m_kingSquare[side])
 	{
-		if (!m_kingCanCapture
-		&&  captureType(move) != Piece::NoPiece)
-			return false;
-
 		// No castling when in check
-		Piece piece = pieceAt(move.targetSquare());
+		Piece pieceAtTarget(pieceAt(move.targetSquare()));
 		if (m_hasCastling
-		&&  piece.type() == Rook
-		&&  piece.side() == side
+		&&  pieceAtTarget.type() == Rook
+		&&  pieceAtTarget.side() == side
 		&&  inCheck(side))
 			return false;
 	}

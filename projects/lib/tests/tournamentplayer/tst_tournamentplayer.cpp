@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <tournamentplayer.h>
 #include <openingbook.h>
 

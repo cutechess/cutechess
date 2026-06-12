@@ -4,60 +4,77 @@ on:
     tags:
       - 'v*'
 
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+env:
+  LINUXDEPLOY_VERSION: "1-alpha-20251107-1"
+  LINUXDEPLOY_SHA256SUM: "c20cd71e3a4e3b80c3483cef793cda3f4e990aca14014d23c544ca3ce1270b4d"
+  LINUXDEPLOY_PLUGIN_QT_VERSION: "1-alpha-20250213-1"
+  LINUXDEPLOY_PLUGIN_QT_SHA256SUM: "15106be885c1c48a021198e7e1e9a48ce9d02a86dd0a1848f00bdbf3c1c92724"
+
 jobs:
     githubrel:
       name: "Create GitHub release"
       runs-on: ubuntu-latest
-      outputs:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+      permissions:
+        contents: write
       steps:
-        - uses: actions/checkout@v4
+        - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+          with:
+            persist-credentials: false
 
         - name: set version
           run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
 
         - name: create a draft github release
-          id: create_release
-          uses: actions/create-release@v1
+          run: gh release create --draft --verify-tag --fail-on-no-commits --title "Cute Chess ${VERSION}" ${GITHUB_REF_NAME}
           env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: Cute Chess ${{ env.VERSION }}
-            draft: true
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     linuxrel:
         needs: githubrel
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
         runs-on: ${{ matrix.os }}
+        permissions:
+          contents: write
         strategy:
           matrix:
-            qt_version: [6.7.2]
+            qt_version: [6.8.3]
             os: [ubuntu-latest]
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+              with:
+                persist-credentials: false
 
             - name: install qt 6.x
-              uses: jurplel/install-qt-action@v3
+              uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
               with:
                 version: ${{ matrix.qt_version }}
                 modules: 'qt5compat'
 
             - name: build cute chess
               run: |
-                  mkdir build
-                  cd build
-                  cmake .. -DWITH_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr
-                  cmake --build .
-                  make install DESTDIR=AppDir
+                  cmake -S . -B build -DWITH_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr -G "Unix Makefiles"
+                  cmake --build build
+                  make -C build install DESTDIR=AppDir
 
             - name: download appimage tools
               run: |
                 sudo apt install libfuse2 libxcb-cursor0
                 cd build
-                curl -fsSLO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-                curl -fsLSO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+                curl -fsSLO https://github.com/linuxdeploy/linuxdeploy/releases/download/${LINUXDEPLOY_VERSION}/linuxdeploy-x86_64.AppImage
+                curl -fsLSO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/${LINUXDEPLOY_PLUGIN_QT_VERSION}/linuxdeploy-plugin-qt-x86_64.AppImage
                 chmod +x linuxdeploy-*.AppImage
+
+            - name: verify the integrity of appimage tools
+              run: |
+                cd build
+                echo ${LINUXDEPLOY_SHA256SUM} linuxdeploy-x86_64.AppImage | sha256sum --check --status
+                echo ${LINUXDEPLOY_PLUGIN_QT_SHA256SUM} linuxdeploy-plugin-qt-x86_64.AppImage | sha256sum --check --status
 
             - name: set version
               run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
@@ -68,41 +85,38 @@ jobs:
                 ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin qt --output appimage --custom-apprun=../dist/appimage/CuteChess-AppRun --icon-file=../projects/gui/res/icons/cutechess_256x256.png --executable cutechess --executable cutechess-cli
 
             - name: upload release asset
-              uses: actions/upload-release-asset@v1
+              run: gh release upload ${GITHUB_REF_NAME} build/Cute_Chess-${VERSION}-x86_64.AppImage
               env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ needs.githubrel.outputs.upload_url }}
-                asset_path: build/Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
-                asset_name: Cute_Chess-${{ env.VERSION }}-x86_64.AppImage
-                asset_content_type: application/octet-stream
+                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     winrel:
         needs: githubrel
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
         runs-on: ${{ matrix.os }}
+        permissions:
+          contents: write
         env:
           VCDIR: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise'
           ISDIR: 'C:\Program Files (x86)\Inno Setup 6'
         strategy:
           matrix:
-            qt_version: [6.7.2]
+            qt_version: [6.8.3]
             os: [windows-latest]
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+              with:
+                persist-credentials: false
 
             - name: install qt 6.x
-              uses: jurplel/install-qt-action@v3
+              uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
               with:
                 version: ${{ matrix.qt_version }}
                 modules: 'qt5compat'
 
             - name: build cute chess
               run: |
-                  mkdir build
-                  cd build
-                  cmake .. -DWITH_TESTS=OFF
-                  cmake --build . --config release
+                  cmake -S . -B build -DWITH_TESTS=OFF
+                  cmake --build build --config release
 
             - name: set environment
               run: |
@@ -122,45 +136,35 @@ jobs:
                 cp ..\docs\cutechess-engines.json.5.txt .
                 cp ..\COPYING .
                 cp "$env:VCDIR\VC\Redist\MSVC\v143\vc_redist.x64.exe" .
-                cp "$env:Qt6_Dir\bin\Qt6Core.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Gui.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Svg.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6PrintSupport.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Widgets.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6ConCurrent.dll" .
-                cp "$env:Qt6_Dir\bin\Qt6Core5Compat.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6Core.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6Gui.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6Svg.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6PrintSupport.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6Widgets.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6ConCurrent.dll" .
+                cp "$env:QT_ROOT_DIR\bin\Qt6Core5Compat.dll" .
                 mkdir platforms
-                cp "$env:Qt6_Dir\plugins\platforms\qwindows.dll" platforms\
+                cp "$env:QT_ROOT_DIR\plugins\platforms\qwindows.dll" platforms\
                 mkdir styles
-                cp "$env:Qt6_Dir\plugins\styles\qmodernwindowsstyle.dll" styles\
+                cp "$env:QT_ROOT_DIR\plugins\styles\qmodernwindowsstyle.dll" styles\
                 mkdir plugins
                 mkdir plugins\iconengines
-                cp "$env:Qt6_Dir\plugins\iconengines\qsvgicon.dll" plugins\iconengines
+                cp "$env:QT_ROOT_DIR\plugins\iconengines\qsvgicon.dll" plugins\iconengines
                 mkdir plugins\imageformats
-                cp "$env:Qt6_Dir\plugins\imageformats\qsvg.dll" plugins\imageformats
+                cp "$env:QT_ROOT_DIR\plugins\imageformats\qsvg.dll" plugins\imageformats
                 cd ..
                 7z a cutechess-$env:VERSION-win64.zip cutechess-$env:VERSION-win64\
 
             - name: create an installer
               run: |
-                & "$env:ISDIR\iscc.exe" /DMyAppVersion=$env:VERSION /DQtLibPath=$env:Qt6_Dir /DMSVCPath=$env:VCDIR /DCuteChessPath=$env:GITHUB_WORKSPACE dist\windows_setup.iss
+                & "$env:ISDIR\iscc.exe" /DMyAppVersion=$env:VERSION /DQtLibPath=$env:QT_ROOT_DIR /DMSVCPath=$env:VCDIR /DCuteChessPath=$env:GITHUB_WORKSPACE dist\windows_setup.iss
 
             - name: upload zip release asset
-              uses: actions/upload-release-asset@v1
+              run: gh release upload ${env:GITHUB_REF_NAME} cutechess-${env:VERSION}-win64.zip
               env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ needs.githubrel.outputs.upload_url }}
-                asset_path: cutechess-${{ env.VERSION }}-win64.zip
-                asset_name: cutechess-${{ env.VERSION }}-win64.zip
-                asset_content_type: application/zip
+                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: upload installer release asset
-              uses: actions/upload-release-asset@v1
+              run: gh release upload ${env:GITHUB_REF_NAME} dist/cutechess-${env:VERSION}-win64.exe
               env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ needs.githubrel.outputs.upload_url }}
-                asset_path: dist/cutechess-${{ env.VERSION }}-win64.exe
-                asset_name: cutechess-${{ env.VERSION }}-win64.exe
-                asset_content_type: application/octet-stream
+                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -330,12 +330,8 @@ class LIB_EXPORT Board
 				  const QString& symbol,
 				  unsigned movement = 0,
 				  const QString & gsymbol = QString());
-		/*! Returns true if \a piece on \a square can capture like \a movement. */
-		virtual bool pieceHasCaptureMovement(Piece piece, int square, unsigned movement) const;
-		/*! Returns true if \a piece on \a square can move like \a movement. */
-		virtual bool pieceHasMovement(Piece piece, int square, unsigned movement) const;
 		/*! Returns true if \a pieceType can move like \a movement. */
-		virtual bool pieceTypeHasMovement(int pieceType, unsigned movement) const;
+		bool pieceHasMovement(int pieceType, unsigned movement) const;
 
 		/*!
 		 * Makes \a move on the board.
@@ -610,19 +606,7 @@ inline const Move& Board::lastMove() const
 	return m_moveHistory.last().move;
 }
 
-inline bool Board::pieceHasCaptureMovement(Piece piece, int square, unsigned movement) const
-{
-    return Board::pieceHasMovement(piece.type(), square, movement);
-}
-
-inline bool Board::pieceHasMovement(Piece piece, int square, unsigned movement) const
-{
-    Q_UNUSED(square);
-
-    return Board::pieceTypeHasMovement(piece.type(), movement);
-}
-
-inline bool Board::pieceTypeHasMovement(int pieceType, unsigned movement) const
+inline bool Board::pieceHasMovement(int pieceType, unsigned movement) const
 {
 	Q_ASSERT(pieceType != Piece::NoPiece);
 	Q_ASSERT(pieceType < m_pieceData.size());

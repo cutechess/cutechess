@@ -45,12 +45,14 @@ class LIB_EXPORT KnightRelayBoard : public StandardBoard
 
 	protected:
 		// Inherited from StandardBoard
-		virtual bool pieceHasMovement(Piece piece, int square, unsigned movement) const;
-		virtual bool pieceHasCaptureMovement(Piece piece, int square, unsigned movement) const;
 		virtual bool vIsLegalMove(const Move& move);
 
 		// Inherited from WesternBoard
 		virtual bool hasEnPassantCaptures() const;
+		virtual bool pieceCanCapture(int pieceType) const;
+		virtual void generateMovesForPiece(QVarLengthArray<Move>& moves,
+										   int pieceType,
+										   int square) const;
 };
 
 } // namespace Chess

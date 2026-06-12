@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <mersenne.h>
 
 class tst_Mersenne: public QObject
