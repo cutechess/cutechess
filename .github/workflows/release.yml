@@ -20,7 +20,6 @@ env:
 
 jobs:
     linuxrel:
-        needs: githubrel
         name: "${{ matrix.os }} Qt ${{ matrix.qt_version }}"
         runs-on: ${{ matrix.os }}
         permissions:
