@@ -167,7 +167,7 @@ void MainWindow::createActions()
 	m_copyPgnAct = new QAction(tr("Copy PG&N"), this);
 
 	m_flipBoardAct = new QAction(tr("&Flip Board"), this);
-	m_flipBoardAct->setShortcut(Qt::CTRL + Qt::Key_F);
+	m_flipBoardAct->setShortcut(Qt::CTRL | Qt::Key_F);
 
 	m_adjudicateDrawAct = new QAction(tr("Ad&judicate Draw"), this);
 	m_adjudicateWhiteWinAct = new QAction(tr("Adjudicate Win for White"), this);
@@ -195,7 +195,7 @@ void MainWindow::createActions()
 	m_showGameWallAct = new QAction(tr("&Active Games"), this);
 
 	m_minimizeAct = new QAction(tr("&Minimize"), this);
-	m_minimizeAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_M));
+	m_minimizeAct->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_M));
 
 	// Using three key codes on Qt 6 results in compilation error
 	m_showPreviousTabAct = new QAction(tr("Show &Previous Tab"), this);
@@ -209,7 +209,7 @@ void MainWindow::createActions()
 	#ifdef Q_OS_MAC
 	m_showNextTabAct->setShortcut(QKeySequence(Qt::MetaModifier + Qt::Key_Tab));
 	#else
-	m_showNextTabAct->setShortcut(QKeySequence(Qt::ControlModifier + Qt::Key_Tab));
+	m_showNextTabAct->setShortcut(QKeySequence(Qt::ControlModifier | Qt::Key_Tab));
 	#endif
 
 	m_aboutAct = new QAction(tr("&About Cute Chess..."), this);

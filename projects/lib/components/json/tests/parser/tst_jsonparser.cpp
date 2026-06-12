@@ -45,94 +45,94 @@ class tst_JsonParser: public QObject
 		QVariant sample2() const;
 };
 Q_DECLARE_METATYPE(QVariant)
-Q_DECLARE_METATYPE(QVariant::Type)
+Q_DECLARE_METATYPE(QMetaType::Type)
 
 
 void tst_JsonParser::basics_data() const
 {
 	QTest::addColumn<QString>("input");
-	QTest::addColumn<QVariant::Type>("type");
+	QTest::addColumn<QMetaType::Type>("type");
 	QTest::addColumn<QVariant>("expected");
 
 	QTest::newRow("null")
 		<< "null"
-		<< QVariant::Invalid
+		<< QMetaType::UnknownType
 		<< QVariant();
 
 	QTest::newRow("true")
 		<< "true"
-		<< QVariant::Bool
+		<< QMetaType::Bool
 		<< QVariant(true);
 	QTest::newRow("false")
 		<< "false"
-		<< QVariant::Bool
+		<< QMetaType::Bool
 		<< QVariant(false);
 
 	QTest::newRow("int")
 		<< "1234567890"
-		<< QVariant::Int
+		<< QMetaType::Int
 		<< QVariant(1234567890);
 	QTest::newRow("negative int")
 		<< "-1234567890"
-		<< QVariant::Int
+		<< QMetaType::Int
 		<< QVariant(-1234567890);
 	QTest::newRow("64-bit int")
 		<< "3567830610840546163"
-		<< QVariant::LongLong
+		<< QMetaType::LongLong
 		<< QVariant(Q_INT64_C(3567830610840546163));
 	QTest::newRow("negative 64-bit int")
 		<< "-3567830610840546163"
-		<< QVariant::LongLong
+		<< QMetaType::LongLong
 		<< QVariant(Q_INT64_C(-3567830610840546163));
 
 	QTest::newRow("double")
 		<< "0.012"
-		<< QVariant::Double
+		<< QMetaType::Double
 		<< QVariant(0.012);
 	QTest::newRow("negative double")
 		<< "-0.012"
-		<< QVariant::Double
+		<< QMetaType::Double
 		<< QVariant(-0.012);
 	QTest::newRow("exponent double #1")
 		<< "1.234567891234E8"
-		<< QVariant::Double
+		<< QMetaType::Double
 		<< QVariant(123456789.1234);
 	QTest::newRow("exponent double #2")
 		<< "1.234567891234e8"
-		<< QVariant::Double
+		<< QMetaType::Double
 		<< QVariant(123456789.1234);
 	QTest::newRow("exponent double #3")
 		<< "1.234567891234E+8"
-		<< QVariant::Double
+		<< QMetaType::Double
 		<< QVariant(123456789.1234);
 	QTest::newRow("exponent double #4")
 		<< "3.71E-05"
-		<< QVariant::Double
+		<< QMetaType::Double
 		<< QVariant(0.0000371);
 
 	QTest::newRow("string #1")
 		<< "\"\""
-		<< QVariant::String
+		<< QMetaType::QString
 		<< QVariant(QString());
 	QTest::newRow("string #2")
 		<< "\"JSON string\""
-		<< QVariant::String
+		<< QMetaType::QString
 		<< QVariant("JSON string");
 	QTest::newRow("string #3")
 		<< "\"line 1\\nline 2\\nline 3\\n\""
-		<< QVariant::String
+		<< QMetaType::QString
 		<< QVariant("line 1\nline 2\nline 3\n");
 	QTest::newRow("string #4")
 		<< "\"Path = \\\"C:\\\\Program files\\\\foo\\\"\""
-		<< QVariant::String
+		<< QMetaType::QString
 		<< QVariant("Path = \"C:\\Program files\\foo\"");
 	QTest::newRow("string #5")
 		<< "\"\\/\\b\\f\\n\\r\\t\""
-		<< QVariant::String
+		<< QMetaType::QString
 		<< QVariant("/\b\f\n\r\t");
 	QTest::newRow("string #6")
 		<< "\"\\u2654\\u2659\\u265A\\u265f\""
-		<< QVariant::String
+		<< QMetaType::QString
 		<< QVariant(QString("%1%2%3%4")
 			.arg(QChar(0x2654))
 			.arg(QChar(0x2659))
@@ -144,7 +144,7 @@ void tst_JsonParser::basics_data() const
 
 	QTest::newRow("object #1")
 		<< "{}"
-		<< QVariant::Map
+		<< QMetaType::QVariantMap
 		<< QVariant(obj);
 
 	obj["foo"] = "bar";
@@ -152,14 +152,14 @@ void tst_JsonParser::basics_data() const
 	obj["state"] = QVariant();
 	QTest::newRow("object #2")
 		<< "{\"foo\" : \"bar\", \"number\" : -25, \"state\" : null}"
-		<< QVariant::Map
+		<< QMetaType::QVariantMap
 		<< QVariant(obj);
 
 	obj.clear();
 	obj["empty array"] = QVariantList();
 	QTest::newRow("object #3")
 		<< "{\"empty array\" : []}"
-		<< QVariant::Map
+		<< QMetaType::QVariantMap
 		<< QVariant(obj);
 
 
@@ -167,34 +167,34 @@ void tst_JsonParser::basics_data() const
 
 	QTest::newRow("array #1")
 		<< "[]"
-		<< QVariant::List
+		<< QMetaType::QVariantList
 		<< QVariant(list);
 
 	list << QVariant();
 	QTest::newRow("array #2")
 		<< "[null]"
-		<< QVariant::List
+		<< QMetaType::QVariantList
 		<< QVariant(list);
 
 	list.clear();
 	list << QVariant() << QVariantMap() << "string data" << 1234567890;
 	QTest::newRow("array #3")
 		<< "[null, {}, \"string data\", 1234567890]"
-		<< QVariant::List
+		<< QMetaType::QVariantList
 		<< QVariant(list);
 }
 
 void tst_JsonParser::basics() const
 {
 	QFETCH(QString, input);
-	QFETCH(QVariant::Type, type);
+	QFETCH(QMetaType::Type, type);
 	QFETCH(QVariant, expected);
 
 	QTextStream stream(&input, QIODevice::ReadOnly);
 	JsonParser parser(stream);
 	QVariant data(parser.parse());
 
-	QCOMPARE(data.type(), type);
+	QCOMPARE(data.typeId(), type);
 	QCOMPARE(data, expected);
 }
 
@@ -346,23 +346,23 @@ QVariant tst_JsonParser::sample2() const
 void tst_JsonParser::advanced_data() const
 {
 	QTest::addColumn<QString>("filename");
-	QTest::addColumn<QVariant::Type>("type");
+	QTest::addColumn<QMetaType::Type>("type");
 	QTest::addColumn<QVariant>("expected");
 
 	QTest::newRow("advanced #1")
 		<< "/sample1.json"
-		<< QVariant::Map
+		<< QMetaType::QVariantMap
 		<< sample1();
 	QTest::newRow("advanced #2")
 		<< "/sample2.json"
-		<< QVariant::List
+		<< QMetaType::QVariantList
 		<< sample2();
 }
 
 void tst_JsonParser::advanced() const
 {
 	QFETCH(QString, filename);
-	QFETCH(QVariant::Type, type);
+	QFETCH(QMetaType::Type, type);
 	QFETCH(QVariant, expected);
 
 	QFile file(QStringLiteral(CUTECHESS_JSON_TEST_DATA_DIR).append(filename));
@@ -371,7 +371,7 @@ void tst_JsonParser::advanced() const
 	JsonParser parser(stream);
 	QVariant data(parser.parse());
 
-	QCOMPARE(data.type(), type);
+	QCOMPARE(data.typeId(), type);
 	QCOMPARE(data, expected);
 }
 

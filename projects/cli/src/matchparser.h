@@ -62,7 +62,7 @@ class MatchParser
 		 * \param name The name of the option.
 		 * \param type The storage type of the option's value.
 		 *             For options with multiple arguments this
-		 *             should be set to QVariant::QStringList.
+		 *             should be set to QMetaType::QStringList.
 		 * \param minArgs The minimum number of arguments.
 		 * \param maxArgs The maximum number of arguments. A value
 		 *                of -1 represents infinity.
@@ -70,10 +70,10 @@ class MatchParser
 		 *                   instances of this option.
 		 */
 		void addOption(const QString& name,
-			       QVariant::Type type,
-			       int minArgs = 0,
-			       int maxArgs = -1,
-			       bool duplicates = false);
+					   QMetaType::Type type,
+					   int minArgs = 0,
+					   int maxArgs = -1,
+					   bool duplicates = false);
 		/*!
 		 * Returns the value of the option with the name \a name
 		 * and removes the option from the parser.
@@ -93,7 +93,7 @@ class MatchParser
 	private:
 		struct PrivateOption
 		{
-			QVariant::Type type;
+			QMetaType::Type type;
 			int priority;
 			int minArgs;
 			int maxArgs;

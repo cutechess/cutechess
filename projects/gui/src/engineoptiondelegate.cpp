@@ -53,7 +53,7 @@ QWidget* EngineOptionDelegate::createEditor(QWidget* parent,
                                             const QStyleOptionViewItem& option,
                                             const QModelIndex& index) const
 {
-	if (index.data(Qt::EditRole).canConvert(QVariant::Map))
+	if (index.data(Qt::EditRole).canConvert(QMetaType(QMetaType::QVariantMap)))
 	{
 		const QVariantMap map = index.data(Qt::EditRole).toMap();
 
@@ -110,7 +110,7 @@ void EngineOptionDelegate::setEditorData(QWidget* editor,
 {
 	// TODO: default options
 
-	if (index.data(Qt::EditRole).canConvert(QVariant::Map))
+	if (index.data(Qt::EditRole).canConvert(QMetaType(QMetaType::QVariantMap)))
 	{
 		const QVariantMap map = index.data(Qt::EditRole).toMap();
 
@@ -156,7 +156,7 @@ void EngineOptionDelegate::setModelData(QWidget* editor,
                                         QAbstractItemModel* model,
                                         const QModelIndex& index) const
 {
-	if (index.data(Qt::EditRole).canConvert(QVariant::Map))
+	if (index.data(Qt::EditRole).canConvert(QMetaType(QMetaType::QVariantMap)))
 	{
 		const QVariantMap map = index.data(Qt::EditRole).toMap();
 

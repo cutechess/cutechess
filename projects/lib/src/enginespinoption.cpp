@@ -24,7 +24,7 @@ EngineSpinOption::EngineSpinOption(const QString& name,
                                    int min,
                                    int max,
                                    const QString& alias)
-	: EngineOption(name, QVariant::Int, value, defaultValue, alias),
+    : EngineOption(name, QMetaType::Int, value, defaultValue, alias),
 	  m_min(min),
 	  m_max(max)
 {
