@@ -33,18 +33,6 @@ jobs:
               with:
                 persist-credentials: false
 
-            - name: install qt 6.x
-              uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
-              with:
-                version: ${{ matrix.qt_version }}
-                modules: 'qt5compat'
-
-            - name: build cute chess
-              run: |
-                  cmake -S . -B build -DWITH_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr -G "Unix Makefiles"
-                  cmake --build build
-                  make -C build install DESTDIR=AppDir
-
             - name: download appimage tools
               run: |
                 sudo apt install libfuse2 libxcb-cursor0
@@ -58,11 +46,3 @@ jobs:
                 cd build
                 echo ${LINUXDEPLOY_SHA256SUM} linuxdeploy-x86_64.AppImage | sha256sum --check --status
                 echo ${LINUXDEPLOY_PLUGIN_QT_SHA256SUM} linuxdeploy-plugin-qt-x86_64.AppImage | sha256sum --check --status
-
-            - name: set version
-              run: echo "VERSION=$(cat .version)" >> $GITHUB_ENV
-
-            - name: build appimage
-              run: |
-                cd build
-                ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin qt --output appimage --custom-apprun=../dist/appimage/CuteChess-AppRun --icon-file=../projects/gui/res/icons/cutechess_256x256.png --executable cutechess --executable cutechess-cli
