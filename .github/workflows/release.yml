@@ -36,13 +36,11 @@ jobs:
             - name: download appimage tools
               run: |
                 sudo apt install libfuse2 libxcb-cursor0
-                cd build
                 curl -fsSLO https://github.com/linuxdeploy/linuxdeploy/releases/download/${LINUXDEPLOY_VERSION}/linuxdeploy-x86_64.AppImage
                 curl -fsLSO https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/${LINUXDEPLOY_PLUGIN_QT_VERSION}/linuxdeploy-plugin-qt-x86_64.AppImage
                 chmod +x linuxdeploy-*.AppImage
 
             - name: verify integrity of appimage tools
               run: |
-                cd build
                 echo ${LINUXDEPLOY_SHA256SUM} linuxdeploy-x86_64.AppImage | sha256sum --check --status
                 echo ${LINUXDEPLOY_PLUGIN_QT_SHA256SUM} linuxdeploy-plugin-qt-x86_64.AppImage | sha256sum --check --status
