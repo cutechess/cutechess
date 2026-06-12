@@ -186,7 +186,7 @@ void ChessEngine::addOption(EngineOption* option)
 
 EngineOption* ChessEngine::getOption(const QString& name) const
 {
-	for (EngineOption* option : qAsConst(m_options))
+	for (EngineOption* option : m_options)
 	{
 		if (option->alias() == name || option->name() == name)
 			return option;
@@ -514,7 +514,7 @@ void ChessEngine::flushWriteBuffer()
 	if (m_pinging || state() == NotStarted)
 		return;
 
-	for (const QString& line : qAsConst(m_writeBuffer))
+	for (const QString& line : std::as_const(m_writeBuffer))
 		write(line);
 	m_writeBuffer.clear();
 }

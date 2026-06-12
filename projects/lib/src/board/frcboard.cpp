@@ -68,8 +68,7 @@ bool FrcBoard::isRandomVariant() const
 
 QString FrcBoard::defaultFenString() const
 {
-	const int empty = Piece::NoPiece;
-	QVector<int> pieces(8, empty);
+	QVector<int> pieces(8, Piece::NoPiece);
 
 	addPiece(pieces, Bishop, Mersenne::random() % 4, 0, 2);
 	addPiece(pieces, Bishop, Mersenne::random() % 4, 1, 2);
@@ -83,7 +82,7 @@ QString FrcBoard::defaultFenString() const
 	QString fen;
 
 	// Black pieces
-	for (int pieceType : qAsConst(pieces))
+	for (int pieceType : std::as_const(pieces))
 		fen += pieceSymbol(Piece(Side::Black, pieceType));
 	fen += '/';
 	// Black pawns
@@ -100,7 +99,7 @@ QString FrcBoard::defaultFenString() const
 		fen += pieceSymbol(Piece(Side::White, Pawn));
 	fen += '/';
 	// White pieces
-	for (int pieceType : qAsConst(pieces))
+	for (int pieceType : std::as_const(pieces))
 		fen += pieceSymbol(Piece(Side::White, pieceType));
 
 	// Side to move, castling rights, enpassant square, etc.

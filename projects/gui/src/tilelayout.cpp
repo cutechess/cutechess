@@ -55,7 +55,7 @@ QLayoutItem* TileLayout::itemAt(int index) const
 QSize TileLayout::minimumSize() const
 {
 	QSize size;
-	for (const QLayoutItem* item : qAsConst(m_items))
+	for (const QLayoutItem* item : m_items)
 		size = size.expandedTo(item->minimumSize());
 
 	if (!size.isValid())
@@ -73,7 +73,7 @@ void TileLayout::setGeometry(const QRect& rect)
 QSize TileLayout::sizeHint() const
 {
 	QSize size;
-	for (const QLayoutItem* item : qAsConst(m_items))
+	for (const QLayoutItem* item : m_items)
 		size = size.expandedTo(item->sizeHint());
 
 	return size;
@@ -159,7 +159,7 @@ void TileLayout::doLayout(const QRect& rect) const
 	int itemHeight = (effectiveRect.height() - (rows - 1) * spaceY) / rows;
 
 	int col = 0;
-	for (QLayoutItem* item : qAsConst(m_items))
+	for (QLayoutItem* item : m_items)
 	{
 		int nextX = x + itemWidth + spaceX;
 		if (++col > cols)

@@ -97,7 +97,7 @@ static quint64 smpPerft(Chess::Board* board, int depth)
 		futures << QtConcurrent::run(perftRoot, board, move, depth);
 
 	quint64 nodeCount = 0;
-	for (const QFuture<quint64>& future : qAsConst(futures))
+	for (const QFuture<quint64>& future : std::as_const(futures))
 		nodeCount += future.result();
 
 	return nodeCount;

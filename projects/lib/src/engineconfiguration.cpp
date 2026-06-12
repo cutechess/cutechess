@@ -199,7 +199,7 @@ QVariant EngineConfiguration::toVariant() const
 	if (!m_options.isEmpty())
 	{
 		QVariantList optionsList;
-		for (const EngineOption* option : qAsConst(m_options))
+		for (const EngineOption* option : m_options)
 			optionsList.append(option->toVariant());
 
 		map.insert("options", optionsList);
@@ -323,7 +323,7 @@ void EngineConfiguration::addOption(EngineOption* option)
 
 void EngineConfiguration::setOption(const QString& name, const QVariant& value)
 {
-	for (EngineOption* option : qAsConst(m_options))
+	for (EngineOption* option : std::as_const(m_options))
 	{
 		if (option->name() == name)
 		{
@@ -425,7 +425,7 @@ EngineConfiguration& EngineConfiguration::operator=(const EngineConfiguration& o
 		qDeleteAll(m_options);
 		m_options.clear();
 
-		for (const EngineOption* option : qAsConst(other.m_options))
+		for (const EngineOption* option : std::as_const(other.m_options))
 			m_options.append(option->copy());
 	}
 	return *this;

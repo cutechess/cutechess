@@ -224,7 +224,7 @@ TournamentPair* KnockoutTournament::nextPair(int gameNumber)
 	m_rounds << nextRound;
 	setCurrentRound(currentRound() + 1);
 
-	for (TournamentPair* pair : qAsConst(nextRound))
+	for (TournamentPair* pair : std::as_const(nextRound))
 	{
 		if (pair->isValid())
 			return pair;

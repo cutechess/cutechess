@@ -176,7 +176,7 @@ EngineConfiguration EngineConfigurationDialog::engineConfiguration()
 	engine.setDebugEnabled(ui->m_debugCheck->checkState() == Qt::Checked);
 
 	QList<EngineOption*> optionCopies;
-	for (const EngineOption* option : qAsConst(m_options))
+	for (const EngineOption* option : std::as_const(m_options))
 		optionCopies << option->copy();
 
 	engine.setOptions(optionCopies);
@@ -424,7 +424,7 @@ void EngineConfigurationDialog::resizeColumns()
 
 void EngineConfigurationDialog::restoreDefaults()
 {
-	for (EngineOption* option : qAsConst(m_options))
+	for (EngineOption* option : std::as_const(m_options))
 		option->setValue(option->defaultValue());
 
 	m_engineOptionModel->setOptions(m_options);
