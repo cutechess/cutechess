@@ -356,12 +356,13 @@ void EngineProcess::start(const QString& program,
 	QStringList args;
 
 	QRegularExpression rx("((?:[^\\s\"]+)|(?:\"(?:\\\\\"|[^\"])*\"))");
-	int pos = 0;
-	while ((pos = rx.indexIn(program, pos)) != -1)
+	QRegularExpressionMatchIterator it = rx.globalMatch(program);
+	while (it.hasNext())
 	{
-		args << rx.cap();
-		pos += rx.matchedLength();
+		QRegularExpressionMatch match = it.next();
+        args << match.captured(0); // captured(0) replaces the old cap() / cap(0)
 	}
+	
 	if (args.isEmpty())
 		return;
 
