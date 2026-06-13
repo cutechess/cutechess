@@ -1016,7 +1016,7 @@ void MainWindow::showAboutDialog()
 	html += "<h3>" + QString("Cute Chess %1")
 		.arg(CuteChessApplication::applicationVersion()) + "</h3>";
 	html += "<p>" + tr("Using Qt version %1").arg(qVersion()) + "</p>";
-	html += "<p>" + tr("Running on %1/%2").arg(QSysInfo::prettyProductName()).arg(QSysInfo::currentCpuArchitecture()) + "</p>";
+	html += "<p>" + tr("Running on %1/%2").arg(QSysInfo::prettyProductName(), QSysInfo::currentCpuArchitecture()) + "</p>";
 	html += "<p>" + tr("Copyright 2008-2020 "
 			   "Cute Chess authors") + "</p>";
 	html += "<p>" + tr("This is free software; see the source for copying "

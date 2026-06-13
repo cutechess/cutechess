@@ -72,7 +72,7 @@ void TournamentResultsDialog::update()
 		double scoreRatio = std::numeric_limits<double>::quiet_NaN();
 		if (totalResults > 0)
 			scoreRatio = double(fcp.score()) / (totalResults * 2);
-		text = tr("Score of %1 vs %2: %3 - %4 - %5 [%6]\n")
+		text = tr("Score of %1 vs %2: %3 - %4 - %5 [%6]\n") // clazy:exclude=qstring-arg
 		       .arg(fcp.name())
 		       .arg(scp.name())
 		       .arg(fcp.wins())

@@ -706,7 +706,7 @@ void ChessGame::startGame()
 		if (player->state() == ChessPlayer::Disconnected)
 		{
 			setError(tr("Could not initialize player %1: %2")
-			         .arg(player->name()).arg(player->errorString()));
+			         .arg(player->name(), player->errorString()));
 			m_result = Chess::Result(Chess::Result::ResultError);
 			stop();
 			emitStartFailed();

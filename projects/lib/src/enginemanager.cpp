@@ -108,8 +108,8 @@ void EngineManager::loadEngines(const QString& fileName)
 
 	if (parser.hasError())
 	{
-		qWarning("%s", qUtf8Printable(QString("bad engine configuration file line %1 in %2: %3")
-			.arg(parser.errorLineNumber()).arg(fileName).arg(parser.errorString()))); // clazy:exclude=qstring-arg
+		qWarning("%s", qUtf8Printable(QString("bad engine configuration file line %1 in %2: %3") // clazy:exclude=qstring-arg
+			.arg(parser.errorLineNumber()).arg(fileName).arg(parser.errorString())));
 		return;
 	}
 
