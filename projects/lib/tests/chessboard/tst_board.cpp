@@ -63,7 +63,7 @@ static quint64 perftVal(Chess::Board* board, int depth)
 		return moves.size();
 
 	QVector<Chess::Move>::const_iterator it;
-	for (it = moves.begin(); it != moves.end(); ++it)
+	for (it = moves.constBegin(); it != moves.constEnd(); ++it)
 	{
 		board->makeMove(*it);
 		nodeCount += perftVal(board, depth - 1);
