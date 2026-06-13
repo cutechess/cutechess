@@ -603,7 +603,8 @@ int XboardEngine::adaptScore(int score) const
 
 void XboardEngine::parseLine(const QString& line)
 {
-	auto input = tokenize(line);
+	const QStringView trimmedLine(QStringView(line).trimmed());
+	auto input = tokenize(trimmedLine);
 	auto command = input.first;
 	if (command.isEmpty())
 		return;
@@ -652,7 +653,7 @@ void XboardEngine::parseLine(const QString& line)
 	else if (command.at(0).isDigit()
 	     && !command.contains(QChar('.')))	// principal variation
 	{
-		auto eval = parsePv(line);
+		auto eval = parsePv(trimmedLine);
 		if (!eval.isEmpty())
 		{
 			m_eval = eval;
@@ -824,12 +825,10 @@ MoveEvaluation XboardEngine::parsePv(QStringView pvString)
 	if (ok)
 		eval.setNodeCount(val);
 
-	tokens = tokenize(tokens.second);
-
 	// Principal variation
-	if (tokens.first.isEmpty())
+	if (tokens.second.isEmpty())
 		return MoveEvaluation();
-	eval.setPv(tokens.first.toString());
+	eval.setPv(tokens.second.toString());
 
 	return eval;
 }
