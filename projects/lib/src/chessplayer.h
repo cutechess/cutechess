@@ -247,6 +247,15 @@ class LIB_EXPORT ChessPlayer : public QObject
 		/*! Returns the chessboard on which the player is playing. */
 		Chess::Board* board();
 
+		/*!
+		 * Sets the chessboard and the player's side directly.
+		 *
+		 * Normally the board and side are set up by newGame(), but this
+		 * function makes it possible to set them in isolation, eg. for
+		 * testing the parsing of engine output.
+		 */
+		void setBoard(Chess::Board* board, Chess::Side side = Chess::Side());
+
 		/*! Starts the chess game set up by newGame(). */
 		virtual void startGame() = 0;
 

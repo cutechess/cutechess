@@ -451,7 +451,7 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 	}
 }
 
-void UciEngine::parseInfo(const QStringRef& line)
+MoveEvaluation UciEngine::parseInfo(const QStringRef& line)
 {
 	static const QString types[] =
 	{
@@ -481,33 +481,15 @@ void UciEngine::parseInfo(const QStringRef& line)
 	// The "string" info is not supported and it can't be parsed
 	// like other info lines.
 	if (token == "string")
-		return;
+		return eval;
 
 	while (!token.isNull())
 	{
 		token = parseUciTokens(token, types, 16, tokens, type);
 		parseInfo(tokens, type, &eval);
 	}
-	if (eval.isEmpty())
-		return;
 
-	if (!m_ponderMove.isNull())
-		eval.setPonderMove(m_ponderMoveSan);
-	if (m_movesPondered)
-		eval.setPonderhitRate((m_ponderHits * 1000) / m_movesPondered);
-
-	// Only the primary PV can be considered the current eval
-	if (eval.pvNumber() <= 1)
-	{
-		m_eval.merge(eval);
-		if (eval.depth() && eval.depth() != m_currentEval.depth())
-			m_currentEval.clear();
-		m_currentEval.merge(eval);
-
-		emit thinking(m_currentEval);
-	}
-	else
-		emit thinking(eval);
+	return eval;
 }
 
 EngineOption* UciEngine::parseOption(const QStringRef& line)
@@ -605,7 +587,28 @@ void UciEngine::parseLine(const QString& line)
 	{
 		if (m_ignoreThinking)
 			return;
-		parseInfo(command);
+
+		MoveEvaluation eval = parseInfo(command);
+		if (eval.isEmpty())
+			return;
+
+		if (!m_ponderMove.isNull())
+			eval.setPonderMove(m_ponderMoveSan);
+		if (m_movesPondered)
+			eval.setPonderhitRate((m_ponderHits * 1000) / m_movesPondered);
+
+		// Only the primary PV can be considered the current eval
+		if (eval.pvNumber() <= 1)
+		{
+			m_eval.merge(eval);
+			if (eval.depth() && eval.depth() != m_currentEval.depth())
+				m_currentEval.clear();
+			m_currentEval.merge(eval);
+
+			emit thinking(m_currentEval);
+		}
+		else
+			emit thinking(eval);
 	}
 	else if (command == "bestmove")
 	{

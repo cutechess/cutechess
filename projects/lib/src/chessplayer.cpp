@@ -170,6 +170,12 @@ Chess::Board* ChessPlayer::board()
 	return m_board;
 }
 
+void ChessPlayer::setBoard(Chess::Board* board, Chess::Side side)
+{
+	m_board = board;
+	m_side = side;
+}
+
 const ChessPlayer* ChessPlayer::opponent() const
 {
 	return m_opponent;
