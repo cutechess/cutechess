@@ -43,6 +43,7 @@ bool MoveEvaluation::operator==(const MoveEvaluation& other) const
 	&&  m_score == other.m_score
 	&&  m_time == other.m_time
 	&&  m_pvNumber == other.m_pvNumber
+	&&  m_pv == other.m_pv
 	&&  m_hashUsage == other.m_hashUsage
 	&&  m_ponderhitRate == other.m_ponderhitRate
 	&&  m_nodeCount == other.m_nodeCount
@@ -62,6 +63,7 @@ bool MoveEvaluation::operator!=(const MoveEvaluation& other) const
 	||  m_score != other.m_score
 	||  m_time != other.m_time
 	||  m_pvNumber != other.m_pvNumber
+	||  m_pv != other.m_pv
 	||  m_hashUsage != other.m_hashUsage
 	||  m_ponderhitRate != other.m_ponderhitRate
 	||  m_nodeCount != other.m_nodeCount
@@ -79,6 +81,7 @@ bool MoveEvaluation::isEmpty() const
 	&&  m_score == NULL_SCORE
 	&&  m_time < 500
 	&&  m_pvNumber == 0
+	&&  m_pv.isEmpty()
 	&&  m_hashUsage == 0
 	&&  m_ponderhitRate == 0
 	&&  m_nodeCount == 0

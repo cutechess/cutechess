@@ -98,6 +98,16 @@ void tst_XboardEngine::testParsePv_data() const
 	QTest::newRow("search depth, evaluation, search time, node count and pv 2")
 	    << "12 -18 518 12708664 Nf6 Nc3 d5 exd5 Nxd5 Nf3 Nc6 Be2 Nf4 O-O Bf5 d3"
 	    << eval2;
+
+	MoveEvaluation eval3;
+	eval2.setDepth(12);
+	eval2.setScore(-18);
+	eval2.setTime(518 * 10);
+	eval2.setNodeCount(12708664);
+	eval2.setPv("Nf6 Nc3 d5 exd5 Nxd5 Nf3 Nc6 Be2 Nf4 O-O Bf5 d3");
+	QTest::newRow("search depth, evaluation, search time, node count and pv 3")
+		<< "\t12 -18 518 12708664 Nf6 Nc3 d5 exd5 Nxd5 Nf3 Nc6 Be2 Nf4 O-O Bf5 d3"
+		<< eval2;
 }
 
 void tst_XboardEngine::testParsePv()
