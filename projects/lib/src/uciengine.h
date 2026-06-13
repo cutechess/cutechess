@@ -55,14 +55,8 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		virtual void sendOption(const QString& name, const QVariant& value);
 		virtual bool isPondering() const;
 		
-	private:
-		enum PonderState
-		{
-			NotPondering,
-			Pondering,
-			PonderHit
-		};
-
+		// These functions decode output from the engine. They're
+		// protected (instead of private) so that they can be tested.
 		static QStringRef parseUciTokens(const QStringRef& first,
 						 const QString* types,
 						 int typeCount,
@@ -71,16 +65,25 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		void parseInfo(const QVarLengthArray<QStringRef>& tokens,
 			       int type,
 			       MoveEvaluation* eval);
-		void parseInfo(const QStringRef& line);
+		MoveEvaluation parseInfo(const QStringRef& line);
 		EngineOption* parseOption(const QStringRef& line);
+		QString directPv(const QVarLengthArray<QStringRef>& tokens);
+		QString sanPv(const QVarLengthArray<QStringRef>& tokens);
+
+	private:
+		enum PonderState
+		{
+			NotPondering,
+			Pondering,
+			PonderHit
+		};
+
 		void addVariantsFromOption(const EngineOption* option);
 		void setVariant(const QString& variant);
 		QString positionString();
 		void sendPosition();
 		void setPonderMove(const QString& moveString);
-		QString directPv(const QVarLengthArray<QStringRef>& tokens);
-		QString sanPv(const QVarLengthArray<QStringRef>& tokens);
-		
+
 		QString m_variantOption;
 		QString m_startFen;
 		QString m_moveStrings;
