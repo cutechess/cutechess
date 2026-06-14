@@ -10,6 +10,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Ctrl+A would select each engine multiple times in the engine selection dialog (#832)
+- Off-by-one bug in `WesternBoard::winPossible` (#848). If the supposedly winning
+  side had a piece on the H1 square, it didn't count.
+- Knight-Relay games would immediately crash in cutechess-gui (#776)
+- A variant that returns `false` from `hasEnPassantCaptures` did not really fully
+  disable en-passant captures; they could still be made in the GUI.
+- UCI "setoption" always needs the "value" keyword (#663)
+- Full principal variation is parsed from XBoard engines' output
 
 ### Changed
 
