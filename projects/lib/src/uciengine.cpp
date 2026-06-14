@@ -69,15 +69,17 @@ QString variantToUci(const QString& str, bool uciPrefix = true)
 	return tmp;
 }
 
-QStringRef joinTokens(const QVarLengthArray<QStringRef>& tokens)
+QStringView joinTokens(const QVarLengthArray<QStringView>& tokens)
 {
 	Q_ASSERT(!tokens.isEmpty());
 
-	const QStringRef& last = tokens[tokens.size() - 1];
-	int start = tokens[0].position();
-	int end = last.position() + last.size();
+	// All tokens are views into the same underlying string, so the span
+	// from the first token to the end of the last token can be recovered
+	// with pointer arithmetic. This preserves any whitespace between them.
+	const QStringView& first = tokens.front();
+	const QStringView& last = tokens.back();
 
-	return QStringRef(last.string(), start, end - start);
+	return QStringView(first.data(), (last.data() + last.size()) - first.data());
 }
 
 } // namespace
@@ -333,25 +335,28 @@ void UciEngine::sendQuit()
 	write("quit");
 }
 
-QStringRef UciEngine::parseUciTokens(const QStringRef& first,
-				     const QString* types,
-				     int typeCount,
-				     QVarLengthArray<QStringRef>& tokens,
-				     int& type)
+QStringView UciEngine::parseUciTokens(QStringView first,
+                                      const QString* types,
+                                      int typeCount,
+                                      QVarLengthArray<QStringView>& tokens,
+                                      int& type)
 {
-	QStringRef token(first);
 	type = -1;
 	tokens.clear();
 
-	do
+	QStringView remaining(first);
+	while (!remaining.isEmpty())
 	{
+		auto split = tokenize(remaining);
+		QStringView token(split.first);
+
 		bool newType = false;
 		for (int i = 0; i < typeCount; i++)
 		{
 			if (token == types[i])
 			{
 				if (type != -1)
-					return token;
+					return remaining;
 				type = i;
 				newType = true;
 				break;
@@ -359,15 +364,16 @@ QStringRef UciEngine::parseUciTokens(const QStringRef& first,
 		}
 		if (!newType && type != -1)
 			tokens.append(token);
-	}
-	while (!(token = nextToken(token)).isNull());
 
-	return token;
+		remaining = split.second;
+	}
+
+	return remaining;
 }
 
-void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
-			  int type,
-			  MoveEvaluation* eval)
+void UciEngine::parseInfo(const QVarLengthArray<QStringView>& tokens,
+                          int type,
+                          MoveEvaluation* eval)
 {
 	enum Keyword
 	{
@@ -417,9 +423,9 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 			int score = 0;
 			for (int i = 1; i < tokens.size(); i++)
 			{
-				if (tokens[i - 1] == "cp")
+				if (tokens[i - 1] == QLatin1String("cp"))
 					score = tokens[i].toString().toInt();
-				else if (tokens[i - 1] == "mate")
+				else if (tokens[i - 1] == QLatin1String("mate"))
 				{
 					score = tokens[i].toString().toInt();
 					if (score > 0)
@@ -427,8 +433,8 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 					else if (score < 0)
 						score = -eval->MATE_SCORE - score * 2;
 				}
-				else if (tokens[i - 1] == "lowerbound"
-				     ||  tokens[i - 1] == "upperbound")
+				else if (tokens[i - 1] == QLatin1String("lowerbound")
+				     ||  tokens[i - 1] == QLatin1String("upperbound"))
 					return;
 				i++;
 			}
@@ -451,7 +457,7 @@ void UciEngine::parseInfo(const QVarLengthArray<QStringRef>& tokens,
 	}
 }
 
-MoveEvaluation UciEngine::parseInfo(const QStringRef& line)
+MoveEvaluation UciEngine::parseInfo(QStringView line)
 {
 	static const QString types[] =
 	{
@@ -474,25 +480,25 @@ MoveEvaluation UciEngine::parseInfo(const QStringRef& line)
 	};
 
 	int type = -1;
-	QStringRef token(nextToken(line));
-	QVarLengthArray<QStringRef> tokens;
+	QStringView remaining(tokenize(line).second);
+	QVarLengthArray<QStringView> tokens;
 	MoveEvaluation eval;
 
 	// The "string" info is not supported and it can't be parsed
 	// like other info lines.
-	if (token == "string")
+	if (tokenize(remaining).first == QLatin1String("string"))
 		return eval;
 
-	while (!token.isNull())
+	while (!remaining.isEmpty())
 	{
-		token = parseUciTokens(token, types, 16, tokens, type);
+		remaining = parseUciTokens(remaining, types, 16, tokens, type);
 		parseInfo(tokens, type, &eval);
 	}
 
 	return eval;
 }
 
-EngineOption* UciEngine::parseOption(const QStringRef& line)
+EngineOption* UciEngine::parseOption(QStringView line)
 {
 	enum Keyword
 	{
@@ -521,12 +527,12 @@ EngineOption* UciEngine::parseOption(const QStringRef& line)
 	int max = 0;
 	
 	int keyword = -1;
-	QStringRef token(nextToken(line));
-	QVarLengthArray<QStringRef> tokens;
+	QStringView remaining(tokenize(line).second);
+	QVarLengthArray<QStringView> tokens;
 
-	while (!token.isNull())
+	while (!remaining.isEmpty())
 	{
-		token = parseUciTokens(token, types, 6, tokens, keyword);
+		remaining = parseUciTokens(remaining, types, 6, tokens, keyword);
 		if (tokens.isEmpty() || keyword == -1)
 			continue;
 
@@ -581,14 +587,18 @@ EngineOption* UciEngine::parseOption(const QStringRef& line)
 
 void UciEngine::parseLine(const QString& line)
 {
-	const QStringRef command(firstToken(line));
+	auto input = tokenize(line);
+	auto command = input.first;
+	auto args = input.second;
+	if (command.isEmpty())
+		return;
 
-	if (command == "info")
+	if (command == QLatin1String("info"))
 	{
 		if (m_ignoreThinking)
 			return;
 
-		MoveEvaluation eval = parseInfo(command);
+		MoveEvaluation eval = parseInfo(line);
 		if (eval.isEmpty())
 			return;
 
@@ -610,7 +620,7 @@ void UciEngine::parseLine(const QString& line)
 		else
 			emit thinking(eval);
 	}
-	else if (command == "bestmove")
+	else if (command == QLatin1String("bestmove"))
 	{
 		bool wasPondering = isPondering();
 		m_ponderState = NotPondering;
@@ -648,8 +658,8 @@ void UciEngine::parseLine(const QString& line)
 			return;
 		}
 
-		QStringRef token(nextToken(command));
-		QString moveString(token.toString());
+		auto bestmove = tokenize(args);
+		QString moveString(bestmove.first.toString());
 		m_moveStrings += " " + moveString;
 		Chess::Move move = board()->moveFromString(moveString);
 		if (move.isNull())
@@ -658,16 +668,17 @@ void UciEngine::parseLine(const QString& line)
 			return;
 		}
 
-		if (m_canPonder && (token = nextToken(token)) == "ponder")
+		auto ponder = tokenize(bestmove.second);
+		if (m_canPonder && ponder.first == QLatin1String("ponder"))
 		{
 			board()->makeMove(move);
-			setPonderMove(nextToken(token).toString());
+			setPonderMove(tokenize(ponder.second).first.toString());
 			board()->undoMove();
 		}
 
 		emitMove(move);
 	}
-	else if (command == "readyok")
+	else if (command == QLatin1String("readyok"))
 	{
 		if (m_rePing)
 		{
@@ -678,7 +689,7 @@ void UciEngine::parseLine(const QString& line)
 		else
 			pong();
 	}
-	else if (command == "uciok")
+	else if (command == QLatin1String("uciok"))
 	{
 		if (state() == Starting)
 		{
@@ -686,24 +697,24 @@ void UciEngine::parseLine(const QString& line)
 			ping();
 		}
 	}
-	else if (command == "id")
+	else if (command == QLatin1String("id"))
 	{
-		QStringRef tag(nextToken(command));
-		if (tag == "name" && name() == "UciEngine")
-			setName(nextToken(tag, true).toString());
+		auto tag = tokenize(args);
+		if (tag.first == QLatin1String("name") && name() == "UciEngine")
+			setName(tag.second.toString());
 	}
-	else if (command == "registration")
+	else if (command == QLatin1String("registration"))
 	{
-		if (nextToken(command) == "error")
+		if (tokenize(args).first == QLatin1String("error"))
 		{
 			qWarning("Failed to register UCI engine %s",
 				 qUtf8Printable(name()));
 			write("register later");
 		}
 	}
-	else if (command == "option")
+	else if (command == QLatin1String("option"))
 	{
-		EngineOption* option = parseOption(command);
+		EngineOption* option = parseOption(line);
 		QString variant;
 
 		if (option == nullptr || !option->isValid())
@@ -807,7 +818,7 @@ void UciEngine::setPonderMove(const QString& moveString)
 	}
 }
 
-QString UciEngine::directPv(const QVarLengthArray<QStringRef>& tokens)
+QString UciEngine::directPv(const QVarLengthArray<QStringView>& tokens)
 {
 	QString pv;
 	for( auto token : tokens)
@@ -818,7 +829,7 @@ QString UciEngine::directPv(const QVarLengthArray<QStringRef>& tokens)
 	return pv;
 }
 
-QString UciEngine::sanPv(const QVarLengthArray<QStringRef>& tokens)
+QString UciEngine::sanPv(const QVarLengthArray<QStringView>& tokens)
 {
 	Chess::Board* board = this->board();
 	QString pv;

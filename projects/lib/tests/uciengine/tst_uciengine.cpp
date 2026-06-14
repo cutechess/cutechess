@@ -158,7 +158,7 @@ void tst_UciEngine::testParseInfo()
 	QVERIFY(board->setFenString(board->defaultFenString()));
 	setBoard(board);
 
-	QCOMPARE(parseInfo(firstToken(infoString)), eval);
+	QCOMPARE(parseInfo(infoString), eval);
 
 	setBoard(nullptr);
 	delete board;
@@ -179,7 +179,7 @@ void tst_UciEngine::testParseOptionButton()
 	QFETCH(QString, optionString);
 	QFETCH(QString, name);
 
-	auto opt = dynamic_cast<EngineButtonOption*>(parseOption(firstToken(optionString)));
+	auto opt = dynamic_cast<EngineButtonOption*>(parseOption(optionString));
 	QVERIFY(opt != nullptr);
 	QCOMPARE(opt->name(), name);
 	delete opt;
@@ -207,7 +207,7 @@ void tst_UciEngine::testParseOptionCheck()
 	QFETCH(QString, name);
 	QFETCH(bool, value);
 
-	auto opt = dynamic_cast<EngineCheckOption*>(parseOption(firstToken(optionString)));
+	auto opt = dynamic_cast<EngineCheckOption*>(parseOption(optionString));
 	QVERIFY(opt != nullptr);
 	QCOMPARE(opt->name(), name);
 	QCOMPARE(opt->value(), QVariant(value));
@@ -251,7 +251,7 @@ void tst_UciEngine::testParseOptionSpin()
 	QFETCH(int, min);
 	QFETCH(int, max);
 
-	auto opt = dynamic_cast<EngineSpinOption*>(parseOption(firstToken(optionString)));
+	auto opt = dynamic_cast<EngineSpinOption*>(parseOption(optionString));
 	QVERIFY(opt != nullptr);
 	QCOMPARE(opt->name(), name);
 	QCOMPARE(opt->value(), QVariant(value));
@@ -283,7 +283,7 @@ void tst_UciEngine::testParseOptionString()
 	QFETCH(QString, name);
 	QFETCH(QString, value);
 
-	auto opt = dynamic_cast<EngineTextOption*>(parseOption(firstToken(optionString)));
+	auto opt = dynamic_cast<EngineTextOption*>(parseOption(optionString));
 	QVERIFY(opt != nullptr);
 	QCOMPARE(opt->name(), name);
 	QCOMPARE(opt->value(), QVariant(value));
@@ -312,7 +312,7 @@ void tst_UciEngine::testParseOptionCombo()
 	QFETCH(QString, value);
 	QFETCH(QStringList, choices);
 
-	auto opt = dynamic_cast<EngineComboOption*>(parseOption(firstToken(optionString)));
+	auto opt = dynamic_cast<EngineComboOption*>(parseOption(optionString));
 	QVERIFY(opt != nullptr);
 	QCOMPARE(opt->name(), name);
 	QCOMPARE(opt->value(), QVariant(value));
