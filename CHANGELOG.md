@@ -3,15 +3,12 @@
 All notable changes to Cute Chess will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased](https://github.com/cutechess/cutechess/tree/master)
-
-### Added
+## [1.5.1](https://github.com/cutechess/cutechess/releases/tag/v1.5.1) - 2026-06-14
 
 ### Fixed
 
-### Changed
-
-### Removed
+- Windows release generation would fail because of mismatched Visual Studio
+  versions in the Github runner
 
 ## [1.5.0](https://github.com/cutechess/cutechess/releases/tag/v1.5.0) - 2026-06-14
 
