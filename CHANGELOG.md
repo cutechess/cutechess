@@ -27,6 +27,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Removed
 
+- The `QStringRef` class, which is part of Qt 5 Core Compatibility APIs, was replaced
+  by `QStringView`.
 
 ## [1.4.0](https://github.com/cutechess/cutechess/releases/tag/v1.4.0) - 2025-06-05
 
