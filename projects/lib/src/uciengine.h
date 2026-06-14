@@ -57,18 +57,18 @@ class LIB_EXPORT UciEngine : public ChessEngine
 		
 		// These functions decode output from the engine. They're
 		// protected (instead of private) so that they can be tested.
-		static QStringRef parseUciTokens(const QStringRef& first,
-						 const QString* types,
-						 int typeCount,
-						 QVarLengthArray<QStringRef>& tokens,
-						 int& type);
-		void parseInfo(const QVarLengthArray<QStringRef>& tokens,
+		static QStringView parseUciTokens(QStringView first,
+						  const QString* types,
+						  int typeCount,
+						  QVarLengthArray<QStringView>& tokens,
+						  int& type);
+		void parseInfo(const QVarLengthArray<QStringView>& tokens,
 			       int type,
 			       MoveEvaluation* eval);
-		MoveEvaluation parseInfo(const QStringRef& line);
-		EngineOption* parseOption(const QStringRef& line);
-		QString directPv(const QVarLengthArray<QStringRef>& tokens);
-		QString sanPv(const QVarLengthArray<QStringRef>& tokens);
+		MoveEvaluation parseInfo(QStringView line);
+		EngineOption* parseOption(QStringView line);
+		QString directPv(const QVarLengthArray<QStringView>& tokens);
+		QString sanPv(const QVarLengthArray<QStringView>& tokens);
 
 	private:
 		enum PonderState
