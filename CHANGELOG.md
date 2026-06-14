@@ -14,8 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Drop Qt 5 support (#865). The minimum officially supported Qt version is now
-  6.8. The current Debian stable ("trixie") has version 6.8 and the latest
-  Ubuntu LTS ("noble") has version 6.10.
+  6.8. Earlier versions of Qt 6 may still work but are not officially supported.
+  The current Debian stable ("trixie") has version 6.8 and the latest Ubuntu LTS
+  ("noble") has version 6.10.
 
 ### Removed
 
