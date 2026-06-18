@@ -45,7 +45,8 @@ EngineProcess::~EngineProcess()
 {
 	if (m_started)
 	{
-		qWarning("EngineProcess: Destroyed while process is still running.");
+		qWarning("EngineProcess: Destroyed while process is still running.\r\n"
+			 "Command line: %s", m_cmdLine.toLatin1().data());
 		kill();
 		waitForFinished();
 	}
@@ -295,6 +296,7 @@ void EngineProcess::start(const QString& program,
 
 	BOOL ok = FALSE;
 	QString cmd = cmdLine(m_workDir, program, arguments);
+	m_cmdLine = cmd;
 	QString wdir = QDir::toNativeSeparators(m_workDir);
 	ZeroMemory(&m_processInfo, sizeof(m_processInfo));
 
