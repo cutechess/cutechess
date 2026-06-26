@@ -181,7 +181,8 @@ DESCRIPTION
      -outcomeinterval n
 	     Set the interval for printing outcomes to n games.
 
-     -debug [all]  Display all engine input and output.
+     -debug [all]  Display all engine input and output.  Passing the
+                  value all also enables per-engine protocol debugging.
 
      -openings file=file format=[epd | pgn] order=[random | sequential]
 	     plies=plies start=start policy=[default | encounter | round]
