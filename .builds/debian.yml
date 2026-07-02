@@ -4,7 +4,6 @@ packages:
   - qt6-base-dev
   - qt6-svg-dev
   - qt6-base-dev-tools
-  - qt6-5compat-dev
   - mandoc
 sources:
   - https://git.sr.ht/~artoj/cutechess
