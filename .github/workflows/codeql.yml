@@ -57,7 +57,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install qt6-base-dev qt6-svg-dev qt6-base-dev-tools qt6-5compat-dev
+        sudo apt install qt6-base-dev qt6-svg-dev qt6-base-dev-tools
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL

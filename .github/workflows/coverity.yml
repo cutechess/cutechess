@@ -22,7 +22,7 @@ jobs:
         persist-credentials: false
     - name: Install dependencies
       run: |
-        sudo apt install qt6-base-dev qt6-svg-dev qt6-base-dev-tools qt6-5compat-dev
+        sudo apt install qt6-base-dev qt6-svg-dev qt6-base-dev-tools
     - name: CMake
       run: |
         cmake -S . -B build

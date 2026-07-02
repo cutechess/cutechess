@@ -54,7 +54,6 @@ jobs:
               uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
               with:
                 version: ${{ matrix.qt_version }}
-                modules: 'qt5compat'
 
             - name: build cute chess
               run: |
@@ -111,7 +110,6 @@ jobs:
               uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
               with:
                 version: ${{ matrix.qt_version }}
-                modules: 'qt5compat'
 
             - name: build cute chess
               run: |
@@ -142,7 +140,6 @@ jobs:
                 cp "$env:QT_ROOT_DIR\bin\Qt6PrintSupport.dll" .
                 cp "$env:QT_ROOT_DIR\bin\Qt6Widgets.dll" .
                 cp "$env:QT_ROOT_DIR\bin\Qt6ConCurrent.dll" .
-                cp "$env:QT_ROOT_DIR\bin\Qt6Core5Compat.dll" .
                 mkdir platforms
                 cp "$env:QT_ROOT_DIR\plugins\platforms\qwindows.dll" platforms\
                 mkdir styles

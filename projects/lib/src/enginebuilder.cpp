@@ -18,7 +18,7 @@
 
 #include "enginebuilder.h"
 #include <QDir>
-#include "engineprocess.h"
+#include <QProcess>
 #include "enginefactory.h"
 
 
@@ -55,7 +55,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 		return nullptr;
 	}
 
-	EngineProcess* process = new EngineProcess();
+	QProcess* process = new QProcess();
 
 	if (workDir.isEmpty())
 	{
@@ -70,6 +70,18 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 
 	if (!stderrFile.isEmpty())
 		process->setStandardErrorFile(stderrFile, QIODevice::Append);
+
+#ifdef Q_OS_WIN32
+	// On Windows we need an absolute path to the executable, so if
+	// cmd isn't already one, we'll build the path using workDir.
+	if (!QFile::exists(cmd) && !workDir.isEmpty())
+	{
+		if (!workDir.endsWith('\\') && !workDir.endsWith('/'))
+			cmd.prepend('/');
+		cmd.prepend(workDir);
+		cmd = QDir::toNativeSeparators(cmd);
+	}
+#endif // Q_OS_WIN32
 
 	process->start(cmd, m_config.arguments());
 

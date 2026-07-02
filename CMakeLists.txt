@@ -20,7 +20,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(QT_COMPONENTS Core Gui Widgets Concurrent Svg PrintSupport Core5Compat)
+set(QT_COMPONENTS Core Gui Widgets Concurrent Svg PrintSupport)
 if(WITH_TESTS)
 	enable_testing()
 	set(QT_COMPONENTS ${QT_COMPONENTS} Test)
@@ -157,13 +157,6 @@ add_library(lib STATIC
 	projects/lib/res/eco/eco.qrc
 )
 
-if(WIN32)
-	target_sources(lib PRIVATE
-		projects/lib/src/engineprocess_win.cpp
-		projects/lib/src/pipereader_win.cpp
-	)
-endif()
-
 target_compile_definitions(lib PUBLIC LIB_EXPORT=)
 target_compile_definitions(lib PUBLIC CUTECHESS_VERSION="${CUTECHESS_VERSION}")
 target_compile_definitions(lib PRIVATE Z_PREFIX)
@@ -176,7 +169,7 @@ target_include_directories(lib PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/projects/lib/components/json/src>
 )
 
-target_link_libraries(lib Qt::Core Qt::Core5Compat)
+target_link_libraries(lib Qt::Core)
 
 add_executable(cli
 	projects/cli/src/cutechesscoreapp.cpp
@@ -189,7 +182,7 @@ add_executable(cli
 
 set_target_properties(cli PROPERTIES OUTPUT_NAME cutechess-cli)
 
-target_link_libraries(cli Qt::Core Qt::Core5Compat)
+target_link_libraries(cli Qt::Core)
 target_link_libraries(cli lib)
 add_dependencies(cli lib)
 
@@ -284,7 +277,7 @@ target_include_directories(gui PRIVATE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/projects/gui/src>
 )
 
-target_link_libraries(gui Qt::Core Qt::Widgets Qt::Gui Qt::Concurrent Qt::Svg Qt::PrintSupport Qt::Core5Compat)
+target_link_libraries(gui Qt::Core Qt::Widgets Qt::Gui Qt::Concurrent Qt::Svg Qt::PrintSupport)
 target_link_libraries(gui lib)
 
 if(WITH_TESTS)
@@ -308,9 +301,6 @@ if(WITH_TESTS)
 	add_unit_test(uciengine projects/lib/tests/uciengine/tst_uciengine.cpp)
 	add_unit_test(jsonparser projects/lib/components/json/tests/parser/tst_jsonparser.cpp)
 	add_unit_test(jsonserializer projects/lib/components/json/tests/serializer/tst_jsonserializer.cpp)
-	if(WIN32)
-		add_unit_test(pipereader projects/lib/tests/pipereader/tst_pipereader.cpp)
-	endif()
 endif()
 
 install(TARGETS cli DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Runtime)

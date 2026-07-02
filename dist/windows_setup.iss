@@ -55,7 +55,6 @@ Source: "{#QtLibPath}\bin\Qt6Svg.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\bin\Qt6PrintSupport.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\bin\Qt6Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\bin\Qt6Concurrent.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtLibPath}\bin\Qt6Core5Compat.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#QtLibPath}\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms"; Flags: ignoreversion
 Source: "{#QtLibPath}\plugins\styles\qmodernwindowsstyle.dll"; DestDir: "{app}\styles"; Flags: ignoreversion
 Source: "{#QtLibPath}\plugins\iconengines\qsvgicon.dll"; DestDir: "{app}\plugins\iconengines"; Flags: ignoreversion
