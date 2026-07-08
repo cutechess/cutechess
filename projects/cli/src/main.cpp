@@ -483,9 +483,11 @@ EngineMatch* parseMatch(const QStringList& args, QObject* parent)
 		{
 			QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
 			match->setDebugMode(true);
-			if (value == "all")
+			if (value.typeId() == QMetaType::Bool)
+				; // No explicit argument given: enable debug mode only.
+			else if (value.toString() == "all")
 				eachOptions.append("debug");
-			else if (!value.isNull())
+			else if (!value.toString().isEmpty())
 				ok = false;
 		}
 		// Use an opening suite
