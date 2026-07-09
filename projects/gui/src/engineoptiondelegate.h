@@ -34,6 +34,17 @@ class EngineOptionDelegate : public QStyledItemDelegate
 		virtual void setEditorData(QWidget* editor, const QModelIndex& index) const;
 		virtual void setModelData(QWidget* editor, QAbstractItemModel* model,
 					  const QModelIndex& index) const;
+#ifdef Q_OS_MACOS
+		// QMacStyle doesn't paint the item-view check indicator, so boolean
+		// options otherwise render as blank, un-clickable cells. Draw the
+		// checkbox and handle its toggling ourselves on macOS; other platforms
+		// keep Qt's built-in check-indicator handling unchanged.
+		virtual void paint(QPainter* painter, const QStyleOptionViewItem& option,
+				   const QModelIndex& index) const;
+		virtual bool editorEvent(QEvent* event, QAbstractItemModel* model,
+					 const QStyleOptionViewItem& option,
+					 const QModelIndex& index);
+#endif
 
 	public slots:
 		void setEngineDirectory(const QString& dir);

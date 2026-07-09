@@ -25,6 +25,31 @@
 #include <QtDebug>
 #include "pathlineedit.h"
 
+#ifdef Q_OS_MACOS
+#include <QApplication>
+#include <QStyle>
+#include <QStyleOptionButton>
+#include <QPainter>
+#include <QPixmap>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <QAbstractItemModel>
+
+namespace
+{
+// Rect of the check indicator within a value cell. Ask the style for the exact
+// rect it uses for item-view check indicators so the size and vertical
+// centering match everything else. Expects an option already passed through
+// initStyleOption() (so HasCheckIndicator and widget are set).
+QRect macCheckIndicatorRect(const QStyleOptionViewItem& option)
+{
+	QStyle* style = option.widget ? option.widget->style() : QApplication::style();
+	return style->subElementRect(QStyle::SE_ItemViewItemCheckIndicator,
+				     &option, option.widget);
+}
+} // anonymous namespace
+#endif
+
 EngineOptionDelegate::EngineOptionDelegate(QWidget* parent)
 	: QStyledItemDelegate(parent)
 {
@@ -179,3 +204,83 @@ void EngineOptionDelegate::setModelData(QWidget* editor,
 	}
 	QStyledItemDelegate::setModelData(editor, model, index);
 }
+
+#ifdef Q_OS_MACOS
+void EngineOptionDelegate::paint(QPainter* painter,
+				 const QStyleOptionViewItem& option,
+				 const QModelIndex& index) const
+{
+	const QVariant checkData = index.data(Qt::CheckStateRole);
+	if (!checkData.isValid())
+	{
+		QStyledItemDelegate::paint(painter, option, index);
+		return;
+	}
+
+	QStyleOptionViewItem opt(option);
+	initStyleOption(&opt, index);
+
+	// Resolve the indicator rect while HasCheckIndicator is still set, then
+	// paint the cell without it (QMacStyle never draws it anyway).
+	const QRect target = macCheckIndicatorRect(opt);
+	opt.features &= ~QStyleOptionViewItem::HasCheckIndicator;
+	opt.text.clear();
+	QStyledItemDelegate::paint(painter, opt, index);
+
+	// Draw the checkbox ourselves. QMacStyle ignores the option rect for
+	// PE_IndicatorCheckBox and paints at the painter origin, so render the
+	// indicator into an origin-anchored pixmap and blit it into place.
+	const qreal ratio = painter->device()->devicePixelRatioF();
+	QPixmap pixmap(target.size() * ratio);
+	pixmap.setDevicePixelRatio(ratio);
+	pixmap.fill(Qt::transparent);
+
+	QPainter pixmapPainter(&pixmap);
+	QStyleOptionButton indicator;
+	indicator.rect = QRect(QPoint(0, 0), target.size());
+	indicator.state = QStyle::State_Enabled
+		| (static_cast<Qt::CheckState>(checkData.toInt()) == Qt::Checked
+		   ? QStyle::State_On : QStyle::State_Off);
+	QApplication::style()->drawPrimitive(QStyle::PE_IndicatorCheckBox,
+					     &indicator, &pixmapPainter);
+	pixmapPainter.end();
+
+	painter->drawPixmap(target.topLeft(), pixmap);
+}
+
+bool EngineOptionDelegate::editorEvent(QEvent* event,
+				       QAbstractItemModel* model,
+				       const QStyleOptionViewItem& option,
+				       const QModelIndex& index)
+{
+	const QVariant checkData = index.data(Qt::CheckStateRole);
+	const Qt::ItemFlags flags = index.flags();
+	if (!checkData.isValid()
+	||  !(flags & Qt::ItemIsUserCheckable)
+	||  !(flags & Qt::ItemIsEnabled))
+		return QStyledItemDelegate::editorEvent(event, model, option, index);
+
+	// Toggle on a left-button release over the indicator, or Space / Select.
+	if (event->type() == QEvent::MouseButtonRelease)
+	{
+		QStyleOptionViewItem opt(option);
+		initStyleOption(&opt, index);
+		auto* mouseEvent = static_cast<QMouseEvent*>(event);
+		if (mouseEvent->button() != Qt::LeftButton
+		||  !macCheckIndicatorRect(opt).contains(mouseEvent->position().toPoint()))
+			return false;
+	}
+	else if (event->type() == QEvent::KeyPress)
+	{
+		auto* keyEvent = static_cast<QKeyEvent*>(event);
+		if (keyEvent->key() != Qt::Key_Space && keyEvent->key() != Qt::Key_Select)
+			return false;
+	}
+	else
+		return false;
+
+	const Qt::CheckState current = static_cast<Qt::CheckState>(checkData.toInt());
+	const Qt::CheckState next = (current == Qt::Checked) ? Qt::Unchecked : Qt::Checked;
+	return model->setData(index, next, Qt::CheckStateRole);
+}
+#endif
