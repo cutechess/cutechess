@@ -21,7 +21,6 @@ Cute Chess depends on the following Qt modules:
 * qt-svg
 * qt-concurrent
 * qt-printsupport
-* qt5-compat
 * qt-testlib (optional: unit tests)
 
 Run these commands:
