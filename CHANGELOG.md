@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- Engine processes now use Qt's `QProcess` also on Windows, instead of Cute Chess's
+  custom EngineProcess implementation.
+
 ### Removed
 
 ## [1.5.1](https://github.com/cutechess/cutechess/releases/tag/v1.5.1) - 2026-06-14
