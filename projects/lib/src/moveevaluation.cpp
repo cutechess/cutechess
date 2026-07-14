@@ -137,7 +137,7 @@ QString MoveEvaluation::scoreText() const
 		{
 			if (m_score < 0)
 				str += "-";
-			str += "M" + QString::number(absScore);
+			str += "M" + QString::number((absScore + 1) / 2);
 		}
 		else
 			str += QString::number(double(m_score) / 100.0, 'f', 2);

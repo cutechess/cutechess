@@ -574,10 +574,19 @@ QMap< int, int > PgnGame::extractScores() const
 		bool isMateScore = s.contains('M');
 		if (isMateScore)
 			s.remove('M');
-		int score = 100 * s.toDouble();
+		int score = 0;
 		if (isMateScore)
-			score = score > 0 ? MoveEvaluation::MATE_SCORE - score / 100 
-					  : score / 100 - MoveEvaluation::MATE_SCORE;
+		{
+			int mateMoves = qRound(s.toDouble());
+			if (mateMoves > 0)
+				score = MoveEvaluation::MATE_SCORE - (2 * mateMoves - 1);
+			else
+				score = -MoveEvaluation::MATE_SCORE - 2 * mateMoves;
+		}
+		else
+		{
+			score = 100 * s.toDouble();
+		}
 		scores[count] = score;
 	}
 	return scores;
