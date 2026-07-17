@@ -43,7 +43,11 @@ bool EngineOptionDelegate::eventFilter(QObject* object, QEvent* event)
 	{
 		auto editor = qobject_cast<PathLineEdit*>(object);
 		if (editor)
+		{
+			if (editor->isModified())
+				commitData(editor);
 			return false;
+		}
 	}
 
 	return QStyledItemDelegate::eventFilter(object, event);
