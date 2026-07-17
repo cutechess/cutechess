@@ -42,6 +42,7 @@ class Tournament;
 class GameTabBar;
 class EvalHistory;
 class EvalWidget;
+class PlayerBuilder;
 
 /**
  * MainWindow
@@ -81,7 +82,9 @@ class MainWindow : public QMainWindow
 		void onGameFinished(ChessGame* game);
 		void editMoveComment(int ply, const QString& comment);
 		void copyFen();
-		void pasteFen();
+		void pasteDefault();
+		void pasteCurrent();
+		void doPaste(bool useDefault = false);
 		void copyPgn();
 		void showAboutDialog();
 		void closeAllGames();
@@ -122,6 +125,8 @@ class MainWindow : public QMainWindow
 		int tabIndex(Tournament* tournament, bool freeTab = false) const;
 		void addDefaultWindowMenu();
 		void adjudicateGame(Chess::Side winner);
+		PlayerBuilder* findPlayerBuilder(int side, bool useDefault) const;
+		void showPasteErrorDialog(const QString& variant, const QString& text);
 
 		QMenu* m_gameMenu;
 		QMenu* m_tournamentMenu;
@@ -146,7 +151,8 @@ class MainWindow : public QMainWindow
 		QAction* m_saveGameAct;
 		QAction* m_saveGameAsAct;
 		QAction* m_copyFenAct;
-		QAction* m_pasteFenAct;
+		QAction* m_pasteAct;
+		QAction* m_pasteToCurrentAct;
 		QAction* m_copyPgnAct;
 		QAction* m_flipBoardAct;
 		QAction* m_newTournamentAct;
