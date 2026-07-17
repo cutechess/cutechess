@@ -22,6 +22,7 @@
 #include <QDialog>
 #include <QTimer>
 #include <QItemSelection>
+#include <QAction>
 
 #include <pgngame.h>
 
@@ -64,6 +65,7 @@ class GameDatabaseDialog : public QDialog
 		void copyGame();
 		void copyFen();
 		void updateUi();
+		void removeSelectedDatabases();
 
 	private:
 		friend class PgnGameIterator;
@@ -77,6 +79,7 @@ class GameDatabaseDialog : public QDialog
 		PgnDatabaseModel* m_pgnDatabaseModel;
 		PgnGameEntryModel* m_pgnGameEntryModel;
 		QMap<int, PgnDatabase*> m_selectedDatabases;
+		QAction* m_removeDatabaseAct;
 
 		QTimer m_searchTimer;
 		QString m_searchTerms;

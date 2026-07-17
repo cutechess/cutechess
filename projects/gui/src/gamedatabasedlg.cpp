@@ -273,9 +273,15 @@ GameDatabaseDialog::GameDatabaseDialog(GameDatabaseManager* dbManager, QWidget* 
 	new ModelTest(m_pgnGameEntryModel, this);
 	#endif
 
+	m_removeDatabaseAct = new QAction("Remove Selected Databases");
+
 	ui->m_databasesListView->setModel(m_pgnDatabaseModel);
 	ui->m_databasesListView->setAlternatingRowColors(true);
 	ui->m_databasesListView->setUniformRowHeights(true);
+	ui->m_databasesListView->addAction(m_removeDatabaseAct);
+	ui->m_databasesListView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	connect(m_removeDatabaseAct, SIGNAL(triggered()), this,
+		SLOT(removeSelectedDatabases()));
 
 	ui->m_gamesListView->setModel(m_pgnGameEntryModel);
 	ui->m_gamesListView->setAlternatingRowColors(true);
@@ -579,6 +585,24 @@ void GameDatabaseDialog::updateUi()
 	ui->m_exportBtn->setEnabled(enable);
 	ui->m_copyGameBtn->setEnabled(enable);
 	ui->m_copyFenBtn->setEnabled(enable);
+}
+
+void GameDatabaseDialog::removeSelectedDatabases()
+{
+	QMessageBox dlg;
+	dlg.setText(tr("Do you want to remove %0 databases?")
+			.arg(m_selectedDatabases.count()));
+	dlg.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+
+	if (dlg.exec() == QMessageBox::Ok)
+	{
+		while (!m_selectedDatabases.empty())
+		{
+			int last = m_selectedDatabases.lastKey();
+			m_dbManager->removeDatabase(last);
+			m_selectedDatabases.remove(last);
+		}
+	}
 }
 
 #include "gamedatabasedlg.moc"
