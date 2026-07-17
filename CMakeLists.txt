@@ -193,6 +193,7 @@ add_executable(gui
 	projects/gui/src/boardview/graphicsboard.cpp
 	projects/gui/src/boardview/graphicspiecereserve.cpp
 	projects/gui/src/boardview/piecechooser.cpp
+	projects/gui/src/capturedpieceswidget.cpp
 
 	projects/gui/src/mainwindow.cpp
 	projects/gui/src/gameviewer.cpp

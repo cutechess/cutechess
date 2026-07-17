@@ -42,6 +42,7 @@ class Tournament;
 class GameTabBar;
 class EvalHistory;
 class EvalWidget;
+class CapturedPiecesWidget;
 
 /**
  * MainWindow
@@ -135,6 +136,7 @@ class MainWindow : public QMainWindow
 		GameViewer* m_gameViewer;
 		MoveList* m_moveList;
 		PgnTagsModel* m_tagsModel;
+		CapturedPiecesWidget* m_capturedPiecesWidget;
 
 		QAction* m_quitGameAct;
 		QAction* m_newGameAct;
