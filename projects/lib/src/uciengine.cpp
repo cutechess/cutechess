@@ -832,6 +832,7 @@ QString UciEngine::directPv(const QVarLengthArray<QStringView>& tokens)
 QString UciEngine::sanPv(const QVarLengthArray<QStringView>& tokens)
 {
 	Chess::Board* board = this->board();
+	QString fen = board->fenString();
 	QString pv;
 	int movesMade = 0;
 
@@ -854,6 +855,9 @@ QString UciEngine::sanPv(const QVarLengthArray<QStringView>& tokens)
 			qWarning("PV: %s %s",
 				 qUtf8Printable(pv),
 				 qUtf8Printable(tokenString));
+			qWarning("PV from FEN: %s", qUtf8Printable(fen));
+			qWarning("Current FEN: %s",
+				 qUtf8Printable(board->fenString()));
 			break;
 		}
 		if (!pv.isEmpty())
