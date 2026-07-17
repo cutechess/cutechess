@@ -114,19 +114,23 @@ class LIB_EXPORT PgnGame
 		bool read(PgnStream& in, int maxMoves = INT_MAX - 1,
 				  bool addEco = true);
 		/*!
-		 * Writes the game to a text stream.
+		 * Writes the game to a text stream. If \a aligned is true,
+		 * then only one full move per line is listed.
 		 *
 		 * Returns true if successful; otherwise returns false.
 		 */
-		bool write(QTextStream& out, PgnMode mode = Verbose) const;
+		bool write(QTextStream& out, PgnMode mode = Verbose,
+			   bool aligned = false) const;
 		/*!
 		 * Writes the game to a file.
 		 * If the file already exists, the game will be appended
-		 * to the end of the file.
+		 * to the end of the file. If \a aligned is true,
+		 * then only one full move per line is listed.
 		 *
 		 * Returns true if successful; otherwise returns false.
 		 */
-		bool write(const QString& filename, PgnMode mode = Verbose) const;
+		bool write(const QString& filename, PgnMode mode = Verbose,
+			   bool aligned = false) const;
 		
 		/*!
 		 * Returns true if the game's variant is "standard" and it's

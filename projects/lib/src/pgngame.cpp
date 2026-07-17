@@ -269,7 +269,7 @@ bool PgnGame::read(PgnStream& in, int maxMoves, bool addEco)
 	return true;
 }
 
-bool PgnGame::write(QTextStream& out, PgnMode mode) const
+bool PgnGame::write(QTextStream& out, PgnMode mode, bool aligned) const
 {
 	if (m_tags.isEmpty())
 		return false;
@@ -310,11 +310,18 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 			str = QString::number(++movenum) + ". ";
 
 		str += data.moveString;
+		if (aligned && (mode == Verbose || side == Chess::Side::White))
+			str = QString("%1").arg(str, -12);
+
 		if (mode == Verbose && !data.comment.isEmpty())
 			str += QString(" {%1}").arg(data.comment);
+		if (mode == Verbose && aligned && side == Chess::Side::White)
+			str = QString("%1").arg(str, -36);
 
 		// Limit the lines to 80 characters
-		if (lineLength == 0 || lineLength + str.size() >= 80)
+		if (lineLength == 0 || lineLength + str.size() >= 80
+		// or list one full move per line for listed mode.
+		|| (aligned && side == Chess::Side::White))
 		{
 			out << "\n" << str;
 			lineLength = str.size();
@@ -340,14 +347,14 @@ bool PgnGame::write(QTextStream& out, PgnMode mode) const
 	return (out.status() == QTextStream::Ok);
 }
 
-bool PgnGame::write(const QString& filename, PgnMode mode) const
+bool PgnGame::write(const QString& filename, PgnMode mode, bool aligned) const
 {
 	QFile file(filename);
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Append))
 		return false;
 
 	QTextStream out(&file);
-	return write(out, mode);
+	return write(out, mode, aligned);
 }
 
 bool PgnGame::isStandard() const
