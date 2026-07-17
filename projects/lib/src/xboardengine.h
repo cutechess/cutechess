@@ -41,6 +41,7 @@ class LIB_EXPORT XboardEngine : public ChessEngine
 		virtual void endGame(const Chess::Result& result);
 		virtual void makeMove(const Chess::Move& move);
 		virtual QString protocol() const;
+		virtual void stopPondering();
 
 	protected:
 		// Inherited from ChessEngine

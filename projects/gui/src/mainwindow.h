@@ -85,6 +85,8 @@ class MainWindow : public QMainWindow
 		void copyPgn();
 		void showAboutDialog();
 		void closeAllGames();
+		void pauseGame();
+		void resumeGame();
 		void adjudicateDraw();
 		void adjudicateWhiteWin();
 		void adjudicateBlackWin();
@@ -138,6 +140,8 @@ class MainWindow : public QMainWindow
 
 		QAction* m_quitGameAct;
 		QAction* m_newGameAct;
+		QAction* m_pauseGameAct;
+		QAction* m_resumeGameAct;
 		QAction* m_adjudicateBlackWinAct;
 		QAction* m_adjudicateWhiteWinAct;
 		QAction* m_adjudicateDrawAct;

@@ -390,6 +390,12 @@ QString XboardEngine::protocol() const
 	return "xboard";
 }
 
+void XboardEngine::stopPondering()
+{
+	if (pondering())
+		setForceMode(true);
+}
+
 bool XboardEngine::sendPing()
 {
 	if (!m_ftPing)
