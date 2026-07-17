@@ -545,6 +545,33 @@ of rounds to play will be 30, and the total number of games 120.
 In each two-game encounter colors are switched between games and the
 same opening line is played in both games.
 .El
+.Sh SIGNALS
+cutechess-cli accepts three signals:
+.Bl -hang
+.It Ic SIGINT
+Stops the ongoing match.
+All games are terminated.
+The program is aborted in case of error.
+.It Ic SIGUSR1
+Suspends the ongoing match.
+No new games will be started, active games will
+continue.
+The match is suspended after every game has finished.
+.It Ic SIGUSR2
+Resumes a suspended match.
+.El
+.Pp
+Example of a sequence of signals:
+.Bl -enum -compact
+.It
+kill -SIGUSR1 PROCESSNUMBER  (suspends the ongoing match)
+.It
+kill -SIGUSR1 PROCESSNUMBER  (will be ignored)
+.It
+kill -SIGUSR2 PROCESSNUMBER  (ignored if games are still ongoing)
+.It
+kill -SIGUSR2 PROCESSNUMBER  (resumes the suspended match)
+.El
 .Sh SEE ALSO
 .Xr cutechess-engines.json 5
 .Sh AUTHORS

@@ -49,6 +49,7 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_openingDepth(1024),
 	  m_seedCount(0),
 	  m_stopping(false),
+	  m_suspend(false),
 	  m_openingRepetitions(1),
 	  m_openingPolicy(DefaultPolicy),
 	  m_recover(false),
@@ -810,6 +811,10 @@ void Tournament::onGameFinished(ChessGame* game)
 
 	delete data;
 	game->deleteLater();
+
+	if (m_suspend && !m_stopping && !areAllGamesFinished()
+	&&  gamesInProgress() == 0)
+		emit suspended(m_finishedGameCount);
 }
 
 void Tournament::onGameDestroyed(ChessGame* game)
@@ -885,6 +890,25 @@ void Tournament::stop()
 	const auto games = m_gameData.keys();
 	for (ChessGame* game : games)
 		QMetaObject::invokeMethod(game, "stop", Qt::QueuedConnection);
+}
+
+void Tournament::suspend()
+{
+	if (m_suspend)
+		return;
+	m_suspend = true;
+	disconnect(m_gameManager, SIGNAL(ready()),
+		   this, SLOT(startNextGame()));
+}
+
+void Tournament::resume()
+{
+	if (!m_suspend)
+		return;
+	m_suspend = false;
+	startNextGame();
+	connect(m_gameManager, SIGNAL(ready()),
+		this, SLOT(startNextGame()));
 }
 
 bool Tournament::isStopping() const

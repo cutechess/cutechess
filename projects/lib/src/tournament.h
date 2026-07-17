@@ -349,6 +349,17 @@ class LIB_EXPORT Tournament : public QObject
 		 * is fully stopped.
 		 */
 		void stop();
+		/*!
+		 * Suspends the tournament.
+		 *
+		 * This does not affect ongoing games, but no new games
+		 * will be started.
+		 */
+		void suspend();
+		/*!
+		 * Resumes a suspended tournament.
+		 */
+		void resume();
 
 	signals:
 		/*!
@@ -396,7 +407,12 @@ class LIB_EXPORT Tournament : public QObject
 		 * is sent.
 		 */
 		void finished();
-
+		/*!
+		 * This signal is emitted when the tournament is suspended and
+		 * the last active game has been finished. The total number of
+		 * finished games is given by \a finishedGameCount.
+		 */
+		void suspended(int finishedGameCount);
 	protected:
 		/*! Sets the currently executing tournament round to \a round. */
 		void setCurrentRound(int round);
@@ -711,6 +727,7 @@ class LIB_EXPORT Tournament : public QObject
 		int m_openingDepth;
 		int m_seedCount;
 		bool m_stopping;
+		bool m_suspend;
 		int m_openingRepetitions;
 		OpeningPolicy m_openingPolicy;
 		bool m_recover;
