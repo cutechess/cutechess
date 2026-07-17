@@ -39,6 +39,9 @@ Tournament::Tournament(GameManager* gameManager, QObject *parent)
 	  m_variant("standard"),
 	  m_round(0),
 	  m_oldRound(-1),
+	  m_subRound(0),
+	  m_oldSubRound(-1),
+	  m_subSubRound(0),
 	  m_nextGameNumber(0),
 	  m_finishedGameCount(0),
 	  m_savedGameCount(0),
@@ -171,6 +174,16 @@ int Tournament::currentRound() const
 	return m_round;
 }
 
+int Tournament::currentSubRound() const
+{
+	return m_subRound;
+}
+
+int Tournament::currentSubSubRound() const
+{
+	return m_subSubRound;
+}
+
 int Tournament::gamesPerEncounter() const
 {
 	return m_gamesPerEncounter;
@@ -236,6 +249,16 @@ void Tournament::setCurrentRound(int round)
 {
 	Q_ASSERT(round >= 1);
 	m_round = round;
+}
+
+void Tournament::setCurrentSubRound(int subRound)
+{
+	m_subRound = subRound;
+}
+
+void Tournament::setCurrentSubSubRound(int subSubRound)
+{
+	m_subSubRound = subSubRound;
 }
 
 int Tournament::gamesInProgress() const
@@ -472,7 +495,7 @@ void Tournament::startGame(TournamentPair* pair)
 
 	game->pgn()->setEvent(m_name);
 	game->pgn()->setSite(m_site);
-	game->pgn()->setRound(m_round);
+	game->pgn()->setRound(m_round, m_subRound, m_subSubRound);
 
 	if (m_finishedGameCount > 0)
 		game->setStartDelay(m_startDelay);
@@ -534,16 +557,20 @@ void Tournament::startNextGame()
 		pair->swapPlayers();
 
 	if ((!samePlayers && m_players.size() > 2
-	     && m_openingPolicy != OpeningPolicy::RoundPolicy)
-	|| (m_round > m_oldRound
-	     && m_openingPolicy == OpeningPolicy::RoundPolicy))
+	     && (  m_openingPolicy == OpeningPolicy::EncounterPolicy
+		|| m_openingPolicy == OpeningPolicy::DefaultPolicy))
+	|| (m_openingPolicy == OpeningPolicy::SubRoundPolicy
+	     && (m_round > m_oldRound || m_subRound != m_oldSubRound))
+	|| (m_openingPolicy == OpeningPolicy::RoundPolicy
+		&& m_round > m_oldRound))
 	{
 		m_startFen.clear();
 		m_openingMoves.clear();
 		m_repetitionCounter = 1;
 		m_oldRound = m_round;
+		m_oldSubRound = m_subRound;
 	}
-
+	m_subSubRound++;
 	startGame(pair);
 }
 
@@ -850,7 +877,7 @@ void Tournament::start()
 	m_finalGameCount = 0;
 	m_stopping = false;
 
-	if (m_openingPolicy == EncounterPolicy || m_openingPolicy == RoundPolicy)
+	if (m_openingPolicy != DefaultPolicy)
 		setOpeningRepetitions(INT_MAX);
 
 	m_gameData.clear();

@@ -145,8 +145,8 @@ class LIB_EXPORT PgnGame
 		QString site() const;
 		/*! Returns the starting date of the game. */
 		QDate date() const;
-		/*! Returns the the playing round ordinal of the game. */
-		int round() const;
+		/*! Returns the the playing round of the game. */
+		QString round() const;
 		/*! Returns the player's name who plays \a side. */
 		QString playerName(Chess::Side side) const;
 		/*! Returns the result of the game. */
@@ -170,7 +170,7 @@ class LIB_EXPORT PgnGame
 		/*! Sets the starting date of the game. */
 		void setDate(const QDate& date);
 		/*! Sets the playing round ordinal of the game. */
-		void setRound(int round);
+		void setRound(int round, int subRound = 0, int SubSubRound = 0);
 		/*! Sets the player's name who plays \a side. */
 		void setPlayerName(Chess::Side side, const QString& name);
 		/*! Sets the result of the game. */

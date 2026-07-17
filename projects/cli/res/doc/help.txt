@@ -149,10 +149,11 @@ Options:
 			be played. The minimum value for START is 1 (default).
 			The POLICY rules when to shift to a new opening.
 			It can be one of 'encounter'- which uses a new
-			opening for any new pair of players, 'round'- which
-			shifts only for a new round, or 'default'- which shifts
-			for any new pair of players and also when the number of
-			opening repetitions is reached.
+			opening for any new pair of players, 'round' or'subround'
+			- which shifts only for a new round (sub-round),
+			'keep' - which does not change the opening, or
+			'default' - which shifts for any new pair of players and
+			also when the number of opening repetitions is reached.
   -bookmode MODE	Set Polyglot book mode to MODE, which can be one of:
 			'ram': The whole book is loaded into RAM (default)
 			'disk': The book is accessed directly on disk.

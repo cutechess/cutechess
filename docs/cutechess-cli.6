@@ -297,7 +297,7 @@ Set the interval for printing outcomes to
 games.
 .It Fl debug
 Display all engine input and output.
-.It Fl openings Cm file Ns = Ns Ar file Cm format Ns = Ns Bo Cm epd | Cm pgn Ns Bc Cm order Ns = Ns Bo Cm random | Cm sequential Bc Cm plies Ns = Ns Ar plies Cm start Ns = Ns Ar start Cm policy Ns = Ns Bo Cm default | Cm encounter | Cm round Bc
+.It Fl openings Cm file Ns = Ns Ar file Cm format Ns = Ns Bo Cm epd | Cm pgn Ns Bc Cm order Ns = Ns Bo Cm random | Cm sequential Bc Cm plies Ns = Ns Ar plies Cm start Ns = Ns Ar start Cm policy Ns = Ns Bo Cm default | Cm encounter | Cm subround | Cm round | Cm keep Bc
 Pick game openings from
 .Ar file .
 The file can be either in
@@ -331,8 +331,12 @@ rules when to shift to a new opening.
 If set to
 .Cm encounter
 a new opening is used for any new pair of players,
+.Cm subround
+shifts when a new sub-round begins,
 .Cm round
-shifts when a new round begins.
+shifts when a new round begins, and with
+.Cm keep
+the opening stays unchanged.
 The
 .Cm default
 shifts for any new pair of players and also when the
