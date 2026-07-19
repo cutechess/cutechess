@@ -415,6 +415,10 @@ void MainWindow::readSettings()
 
 	restoreGeometry(s.value("geometry").toByteArray());
 	restoreState(s.value("window_state").toByteArray());
+	if (s.value("window_maximized", false).toBool())
+        showMaximized();
+    else
+        showNormal();
 
 	s.endGroup();
 	s.endGroup();
@@ -428,6 +432,7 @@ void MainWindow::writeSettings()
 
 	s.setValue("geometry", saveGeometry());
 	s.setValue("window_state", saveState());
+	s.setValue("window_maximized", isMaximized());
 
 	s.endGroup();
 	s.endGroup();
