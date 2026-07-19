@@ -137,7 +137,8 @@ Options:
 			games set by '-rounds' and/or '-games' is reached.
   -ratinginterval N	Set the interval for printing the ratings to N games.
   -outcomeinterval N	Set the interval for printing outcomes to N games.
-  -debug		Display all engine input and output
+  -debug [all]		Display all engine input and output. Use 'all' to also
+			enable per-engine debug mode (UCI only).
   -openings file=FILE format=FORMAT order=ORDER plies=PLIES start=START policy=POLICY
 			Pick game openings from FILE. The file's format is
 			FORMAT, which can be either 'epd' or 'pgn' (default).
