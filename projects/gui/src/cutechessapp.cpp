@@ -301,3 +301,30 @@ void CuteChessApplication::closeDialogs()
 	if (m_gameWall)
 		m_gameWall->close();
 }
+
+void CuteChessApplication::messageHandler(QtMsgType type, const QMessageLogContext &context, const QString& msg)
+{
+	emit applicationMessage(type, context, msg);
+	emit applicationStringMessage(qPrintable(qFormatLogMessage(type, context, msg)));
+}
+
+void CuteChessApplication::printApplicationMessage(QtMsgType type, const QMessageLogContext &context, const QString& msg)
+{
+	static QTextStream out(stdout);
+	static QTextStream err(stderr);
+
+	switch (type)
+	{
+	case QtDebugMsg:
+	case QtInfoMsg:
+		out << qPrintable(qFormatLogMessage(type, context, msg)) << endl;
+		break;
+	case QtWarningMsg:
+	case QtCriticalMsg:
+		err << qPrintable(qFormatLogMessage(type, context, msg)) << endl;
+		break;
+	case QtFatalMsg:
+		err << qPrintable(qFormatLogMessage(type, context, msg)) << endl;
+		abort();
+	}
+}

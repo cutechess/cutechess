@@ -48,6 +48,7 @@ class CuteChessApplication : public QApplication
 		QList<MainWindow*> gameWindows();
 		void showGameWindow(int index);
 		TournamentResultsDialog* tournamentResultsDialog();
+		void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString& msg);
 
 		static CuteChessApplication* instance();
 		static QString userName();
@@ -61,6 +62,11 @@ class CuteChessApplication : public QApplication
 		void showGameWall();
 		void closeDialogs();
 		void onQuitAction();
+		void printApplicationMessage(QtMsgType type, const QMessageLogContext &context, const QString& msg);
+
+	signals:
+		void applicationMessage(QtMsgType type, const QMessageLogContext &context, const QString& msg);
+		void applicationStringMessage(const QString& msg);
 
 	private:
 		void showDialog(QWidget* dlg);
