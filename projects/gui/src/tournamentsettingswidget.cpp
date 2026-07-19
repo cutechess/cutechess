@@ -76,6 +76,24 @@ TournamentSettingsWidget::TournamentSettingsWidget(QWidget *parent)
 	});
 
 	readSettings();
+
+	// Build text for tool tip of result formats
+	QString s("\n\nField tokens:\n   ");
+	for (const QString& token: tournament.resultFieldTokens())
+	{
+			s.append(qUtf8Printable(token));
+			s.append(" ");
+	}
+	s.append("\n\nNamed shortcuts:");
+	const auto& map2(tournament.resultFieldGroups());
+	for (auto it = map2.constBegin(); it != map2.constEnd(); ++it)
+	{
+		s.append("\n");
+		s.append(qUtf8Printable(it.key()));
+		s.append("\n   ");
+		s.append(qUtf8Printable(it.value()));
+	}
+	ui->m_resultFormatEdit->setToolTip(ui->m_resultFormatEdit->toolTip().append(s));
 }
 
 TournamentSettingsWidget::~TournamentSettingsWidget()
