@@ -186,7 +186,7 @@ void ChessGame::stop(bool emitMoveChanged)
 	m_pgn->setResult(m_result);
 	m_pgn->setResultDescription(m_result.description());
 
-	if (emitMoveChanged && plies > 1)
+	if (emitMoveChanged && plies > 0)
 	{
 		const PgnGame::MoveData& md(moves.at(plies - 1));
 		emit moveChanged(plies - 1, md.move, md.moveString, md.comment);
