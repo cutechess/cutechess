@@ -1,6 +1,7 @@
 /*
  * tbconfig.h
  * (C) 2015 basil, all rights reserved,
+ * Modifications Copyright 2016-2017 Jon Dart
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -43,20 +44,6 @@
 /* #define TB_CUSTOM_LSB(x) <DEFINITION> */
 
 /*
- * Define TB_CUSTOM_BSWAP32 to override the internal bswap32
- * implementation. To do this supply a macro or function definition
- * here:
- */
-/* #define TB_CUSTOM_BSWAP32(x) <DEFINITION> */
-
-/*
- * Define TB_CUSTOM_BSWAP64 to override the internal bswap64
- * implementation. To do this supply a macro or function definition
- * here:
- */
-/* #define TB_CUSTOM_BSWAP64(x) <DEFINITION> */
-
-/*
  * Define TB_NO_STDINT if you do not want to use <stdint.h> or it is not
  * available.
  */
@@ -80,8 +67,31 @@
 
 /*
  * Define TB_NO_HW_POP_COUNT if there is no hardware popcount instruction.
+ *
+ * Note: if defined, TB_CUSTOM_POP_COUNT is always used in preference
+ * to any built-in popcount functions.
+ *
+ * If no custom popcount function is defined, and if the following
+ * define is not set, the code will attempt to use an available hardware
+ * popcnt (currently supported on x86_64 architecture only) and otherwise
+ * will fall back to a software implementation.
  */
 #define TB_NO_HW_POP_COUNT
+
+/***************************************************************************/
+/* SCORING CONSTANTS                                                       */
+/***************************************************************************/
+/*
+ * Fathom can produce scores for tablebase moves. These depend on the
+ * value of a pawn, and the magnitude of mate scores. The following
+ * constants are representative values but will likely need
+ * modification to adapt to an engine's own internal score values.
+ */
+#define TB_VALUE_PAWN 100  /* value of pawn in endgame */
+#define TB_VALUE_MATE 32000
+#define TB_VALUE_INFINITE 32767 /* value above all normal score values */
+#define TB_VALUE_DRAW 0
+#define TB_MAX_MATE_PLY 255
 
 /***************************************************************************/
 /* ENGINE INTEGRATION CONFIG                                               */

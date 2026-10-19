@@ -162,6 +162,12 @@ target_compile_definitions(lib PUBLIC CUTECHESS_VERSION="${CUTECHESS_VERSION}")
 target_compile_definitions(lib PRIVATE Z_PREFIX)
 set_target_properties(lib PROPERTIES OUTPUT_NAME cutechess)
 
+# MSVC's C compiler lacks the C11 atomics Fathom needs; build it as C++
+if(MSVC)
+	set_source_files_properties(projects/lib/3rdparty/fathom/src/tbprobe.c
+		PROPERTIES LANGUAGE CXX)
+endif()
+
 target_include_directories(lib PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/projects/lib/src>
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/projects/lib/src/board>

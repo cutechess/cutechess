@@ -116,14 +116,21 @@ Chess::Result SyzygyTablebase::result(const Chess::Side& side,
 	s_mutex.lock();
 	unsigned result = tb_probe_root(white, black, kings, queens, rooks,
 		bishops, knights, pawns, rule50, 0, ep, wtm, nullptr);
+	// Without DTZ tables only a WDL probe works, and it is exact only
+	// when the 50-move counter has just been reset.
+	bool wdlOnly = (result == TB_RESULT_FAILED && rule50 == 0);
+	if (wdlOnly)
+		result = tb_probe_wdl(white, black, kings, queens, rooks,
+			bishops, knights, pawns, 0, 0, ep, wtm);
 	s_mutex.unlock();
 
-	Chess::Side winner(Chess::Side::NoSide); 
+	Chess::Side winner(Chess::Side::NoSide);
 	if (result == TB_RESULT_FAILED)
 		return Chess::Result();
-	if (result == TB_RESULT_CHECKMATE)
+	// A WDL probe returns a bare WDL value, which can equal these codes
+	if (!wdlOnly && result == TB_RESULT_CHECKMATE)
 		winner = (wtm? Chess::Side::Black: Chess::Side::White);
-	else if (result == TB_RESULT_STALEMATE)
+	else if (!wdlOnly && result == TB_RESULT_STALEMATE)
 		winner = Chess::Side::NoSide;
 	else
 	{
@@ -148,6 +155,6 @@ Chess::Result SyzygyTablebase::result(const Chess::Side& side,
 		}
 	}
 	if (dtz != nullptr)
-		*dtz = TB_GET_DTZ(result);
+		*dtz = (wdlOnly? 0: TB_GET_DTZ(result));
 	return Chess::Result(Chess::Result::Adjudication, winner, "SyzygyTB");
 }

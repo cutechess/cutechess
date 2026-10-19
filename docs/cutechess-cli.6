@@ -224,6 +224,8 @@ Adjudicate games using Syzygy tablebases.
 .Ar Paths
 should be semicolon-delimited list of paths to the compressed tablebase files.
 Only the WDL tablebase files are required.
+With WDL files alone, positions are adjudicated only right after a capture or
+pawn move; the DTZ files allow adjudication after any move.
 .It Fl tbpieces Ar N
 Only use tablebase adjudication for positions with
 .Ar N

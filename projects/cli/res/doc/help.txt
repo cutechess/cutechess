@@ -106,7 +106,9 @@ Options:
   -tb PATHS		Adjudicate games using Syzygy tablebases. PATHS should
 			be semicolon-delimited list of paths to the compressed
 			tablebase files. Only the WDL tablebase files are
-			required.
+			required. With WDL files alone, positions are
+			adjudicated only right after a capture or pawn move;
+			the DTZ files allow adjudication after any move.
   -tbpieces N		Only use tablebase adjudication for positions with
 			N pieces or less.
   -tbignore50		Disable the fifty move rule for tablebase adjudication.

@@ -83,7 +83,9 @@ class LIB_EXPORT SyzygyTablebase
 		 *
 		 * If the position is a win for either player, \a dtz is
 		 * set to the distance to zero, ie. the number of plies it
-		 * takes to force a non-reversible move or mate.
+		 * takes to force a non-reversible move or mate. Without DTZ
+		 * tables \a dtz is 0, and only positions with \a rule50 at 0
+		 * can be probed.
 		 *
 		 * If the position isn't found in the tablebases, a null result
 		 * is returned.
