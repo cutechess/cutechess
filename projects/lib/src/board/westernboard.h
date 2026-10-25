@@ -242,6 +242,7 @@ class LIB_EXPORT WesternBoard : public Board
 			CastlingRights castlingRights;
 			CastlingSide castlingSide;
 			int reversibleMoveCount;
+			int kingSquare;
 		};
 
 		void generateCastlingMoves(QVarLengthArray<Move>& moves) const;

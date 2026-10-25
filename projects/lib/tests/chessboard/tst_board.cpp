@@ -376,6 +376,11 @@ void tst_Board::moveStrings_data() const
 		<< "Qxa7 e3 a5 Kb4 Nc6 Nc4+ Ke7 Ba6 Ng4 h4 Be2"
 		<< "8/R4k2/5n2/8/5n2/2K5/q3P2P/8 b - - 0 1"
 		<< "8/4k3/R1b5/8/1K3n1N/8/4r3/8 w - - 1 7";
+	QTest::newRow("antichess king capture coord1")
+		<< "antichess"
+		<< "a1g1 h2g1q"
+		<< "8/8/8/8/8/8/7p/R5k1 w - - 0 1"
+		<< "8/8/8/8/8/8/8/6q1 w - - 0 2";
 	QTest::newRow("giveaway san1")
 		<< "giveaway"
 		<< "e3"
@@ -627,6 +632,7 @@ void tst_Board::moveStrings()
 	const auto moveList = moves.split(' ', Qt::SkipEmptyParts);
 	for (const auto& moveStr : moveList)
 	{
+		m_board->result();
 		Chess::Move move = m_board->moveFromString(moveStr);
 		QVERIFY(m_board->isLegalMove(move));
 		m_board->makeMove(move);
@@ -1237,8 +1243,8 @@ void tst_Board::perft_data() const
 	QTest::newRow("atomic startpos")
 		<< variant
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-		<< 5 // 3 plies: 8902, 4 plies: 197326, 5 plies: 4865037, 6 plies: 118951457
-		<< Q_UINT64_C(4865037);
+		<< 5 // 3 plies: 8902, 4 plies: 197326, 5 plies: 4865039, 6 plies: 119088052
+		<< Q_UINT64_C(4865039);
 	QTest::newRow("atomic pos1")
 		<< variant
 		<< "8/8/8/8/8/8/3k4/rR4K1 w Q - 0 1"
@@ -1499,6 +1505,11 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"
 		<< 5 // 4 plies: 153299, 5 plies: 2732672, 6 plies: 46264162, 7 plies: 762010688
 		<< Q_UINT64_C(2732672);
+	QTest::newRow("antichess captured king")
+		<< variant
+		<< "2b5/4p2p/4K3/8/3P4/8/P7/8 b - - 0 1"
+		<< 7 // 4 plies: 52, 5 plies: 467, 6 plies: 811, 7 plies: 6321
+		<< Q_UINT64_C(6321);
 
 	variant = "giveaway";
 
@@ -1507,6 +1518,11 @@ void tst_Board::perft_data() const
 		<< "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 		<< 5 // 4 plies: 153299, 5 plies: 2732672, 6 plies: 46264162, 7 plies: 762096669
 		<< Q_UINT64_C(2732672);
+	QTest::newRow("giveaway captured king")
+		<< variant
+		<< "4k3/8/8/8/8/5n2/P7/4KB1R b K - 0 1"
+		<< 5 // 3 plies: 137, 4 plies: 1603, 5 plies: 14691, 6 plies: 210526
+		<< Q_UINT64_C(14691);
 
 	variant = "suicide";
 

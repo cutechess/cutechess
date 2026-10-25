@@ -294,7 +294,10 @@ Move WesternBoard::moveFromLanString(const QString& str)
 	int source = move.sourceSquare();
 	int target = move.targetSquare();
 
+	// In variants where the king can be captured (e.g. antichess),
+	// the king square can be outdated, so make sure that a king moves
 	if (source == m_kingSquare[side]
+	&&  pieceAt(source).type() == King
 	&&  qAbs(source - target) != 1)
 	{
 		const int* rookSq = m_castlingRights.rookSquare[side];
@@ -944,7 +947,7 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 	Q_ASSERT(target != 0);
 
 	MoveData md = { capture, epSq, epTgt, m_castlingRights,
-			NoCastlingSide, m_reversibleMoveCount };
+			NoCastlingSide, m_reversibleMoveCount, m_kingSquare[side] };
 
 	if (source == 0)
 	{
@@ -1069,11 +1072,11 @@ void WesternBoard::vUndoMove(const Move& move)
 	setEnpassantSquare(md.enpassantSquare, md.enpassantTarget);
 	m_reversibleMoveCount = md.reversibleMoveCount;
 	m_castlingRights = md.castlingRights;
+	m_kingSquare[side] = md.kingSquare;
 
 	CastlingSide cside = md.castlingSide;
 	if (cside != NoCastlingSide)
 	{
-		m_kingSquare[side] = source;
 		// Move the rook back after castling
 		int tmp = m_castleTarget[side][cside];
 		setSquare(tmp, Piece::NoPiece);
@@ -1084,10 +1087,6 @@ void WesternBoard::vUndoMove(const Move& move)
 		setSquare(source, Piece(side, King));
 		m_history.pop_back();
 		return;
-	}
-	else if (target == m_kingSquare[side])
-	{
-		m_kingSquare[side] = source;
 	}
 	else if (target == m_enpassantSquare)
 	{
