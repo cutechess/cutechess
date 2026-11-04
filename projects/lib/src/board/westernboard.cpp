@@ -1069,7 +1069,6 @@ void WesternBoard::vUndoMove(const Move& move)
 	setEnpassantSquare(md.enpassantSquare, md.enpassantTarget);
 	m_reversibleMoveCount = md.reversibleMoveCount;
 	m_castlingRights = md.castlingRights;
-
 	CastlingSide cside = md.castlingSide;
 	if (cside != NoCastlingSide)
 	{

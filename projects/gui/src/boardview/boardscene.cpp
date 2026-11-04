@@ -464,19 +464,34 @@ void BoardScene::tryMove(GraphicsPiece* piece, const QPointF& targetPos)
 		m_anim = pieceAnimation(piece, m_sourcePos);
 		m_anim->start(QAbstractAnimation::DeleteWhenStopped);
 	}
-	// Normal move
+	// Normal move, including castling to the king's destination square
 	else if (piece->container() == m_squares)
 	{
 		Chess::Square source(m_squares->squareAt(m_squares->mapFromScene(m_sourcePos)));
 
 		QList<Chess::Piece> promotions;
 		const auto moves = m_moves;
+		Chess::GenericMove selectedMove;
 		for (const auto& move : moves)
 		{
+			Chess::Square displayTarget(move.targetSquare());
+			const QString san = m_board->moveString(
+				m_board->moveFromGenericMove(move),
+				Chess::Board::StandardAlgebraic);
+			if (san.startsWith("O-O"))
+			{
+				int direction = displayTarget.file()
+					> move.sourceSquare().file() ? 1 : -1;
+				displayTarget = Chess::Square(
+					move.sourceSquare().file() + 2 * direction,
+					move.sourceSquare().rank());
+			}
+
 			if (move.sourceSquare() != source
-			||  move.targetSquare() != target)
+			||  displayTarget != target)
 				continue;
 
+			selectedMove = move;
 			if (move.promotion() != 0)
 				promotions << Chess::Piece(m_board->sideToMove(),
 							   move.promotion());
@@ -485,7 +500,7 @@ void BoardScene::tryMove(GraphicsPiece* piece, const QPointF& targetPos)
 		}
 		Q_ASSERT(!promotions.isEmpty());
 
-		Chess::GenericMove move(source, target, 0);
+		Chess::GenericMove move(selectedMove);
 		if (promotions.size() > 1)
 		{
 			m_promotionMove = move;
@@ -640,6 +655,20 @@ void BoardScene::updateMoves()
 		Q_ASSERT(piece != nullptr);
 
 		Chess::Square target(gmove.targetSquare());
+		if (gmove.sourceSquare().isValid())
+		{
+			const QString san = m_board->moveString(
+				m_board->moveFromGenericMove(gmove),
+				Chess::Board::StandardAlgebraic);
+			if (san.startsWith("O-O"))
+			{
+				int direction = target.file() > gmove.sourceSquare().file()
+					? 1 : -1;
+				target = Chess::Square(gmove.sourceSquare().file()
+						       + 2 * direction,
+						       gmove.sourceSquare().rank());
+			}
+		}
 		if (!m_targets.contains(piece, target))
 			m_targets.insert(piece, target);
 	}
