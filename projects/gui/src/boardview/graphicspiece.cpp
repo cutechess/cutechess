@@ -71,6 +71,13 @@ void GraphicsPiece::paint(QPainter* painter,
 	bounds.moveCenter(m_rect.center());
 
 	m_renderer->render(painter, m_elementId, bounds);
+
+	if (m_piece.type() == 6)
+	{
+		painter->setBrush(QColor(255, 0, 0, 120));
+		painter->setPen(Qt::NoPen);
+		painter->drawEllipse(bounds);
+	}
 }
 
 Chess::Piece GraphicsPiece::pieceType() const
