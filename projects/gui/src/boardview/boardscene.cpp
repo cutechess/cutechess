@@ -475,11 +475,10 @@ void BoardScene::tryMove(GraphicsPiece* piece, const QPointF& targetPos)
 		for (const auto& move : moves)
 		{
 			Chess::Square displayTarget(move.targetSquare());
-			if (move.sourceSquare().isValid()
-			&&  m_board->pieceSymbol(
-					m_board->pieceAt(move.sourceSquare())).toUpper() == "K"
-			&&  m_board->pieceSymbol(
-					m_board->pieceAt(move.targetSquare())).toUpper() == "R")
+			const QString san = m_board->moveString(
+				m_board->moveFromGenericMove(move),
+				Chess::Board::StandardAlgebraic);
+			if (san.startsWith("O-O"))
 			{
 				int direction = displayTarget.file()
 					> move.sourceSquare().file() ? 1 : -1;
@@ -658,13 +657,10 @@ void BoardScene::updateMoves()
 		Chess::Square target(gmove.targetSquare());
 		if (gmove.sourceSquare().isValid())
 		{
-			const Chess::Piece sourcePiece =
-				m_board->pieceAt(gmove.sourceSquare());
-			const Chess::Piece targetPiece =
-				m_board->pieceAt(gmove.targetSquare());
-			if (m_board->pieceSymbol(sourcePiece).toUpper() == "K"
-			&&  m_board->pieceSymbol(targetPiece).toUpper() == "R"
-			&&  targetPiece.side() == sourcePiece.side())
+			const QString san = m_board->moveString(
+				m_board->moveFromGenericMove(gmove),
+				Chess::Board::StandardAlgebraic);
+			if (san.startsWith("O-O"))
 			{
 				int direction = target.file() > gmove.sourceSquare().file()
 					? 1 : -1;
