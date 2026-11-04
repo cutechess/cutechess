@@ -156,6 +156,10 @@ WesternBoard::CastlingSide WesternBoard::castlingSide(const Move& move) const
 {
 	int target = move.targetSquare();
 	const int* rookSq = m_castlingRights.rookSquare[sideToMove()];
+	if (target == m_castleTarget[sideToMove()][QueenSide])
+		return rookSq[QueenSide] != 0 ? QueenSide : NoCastlingSide;
+	if (target == m_castleTarget[sideToMove()][KingSide])
+		return rookSq[KingSide] != 0 ? KingSide : NoCastlingSide;
 	if (target == rookSq[QueenSide])
 		return QueenSide;
 	if (target == rookSq[KingSide])
@@ -288,26 +292,7 @@ QString WesternBoard::sanMoveString(const Move& move)
 
 Move WesternBoard::moveFromLanString(const QString& str)
 {
-	Move move(Board::moveFromLanString(str));
-
-	Side side = sideToMove();
-	int source = move.sourceSquare();
-	int target = move.targetSquare();
-
-	if (source == m_kingSquare[side]
-	&&  qAbs(source - target) != 1)
-	{
-		const int* rookSq = m_castlingRights.rookSquare[side];
-		if (target == m_castleTarget[side][QueenSide])
-			target = rookSq[QueenSide];
-		else if (target == m_castleTarget[side][KingSide])
-			target = rookSq[KingSide];
-
-		if (target != 0)
-			return Move(source, target);
-	}
-
-	return move;
+	return Board::moveFromLanString(str);
 }
 
 Move WesternBoard::moveFromSanString(const QString& str)
@@ -340,7 +325,7 @@ Move WesternBoard::moveFromSanString(const QString& str)
 			return Move();
 
 		int source = m_kingSquare[side];
-		int target = m_castlingRights.rookSquare[side][cside];
+		int target = m_castleTarget[side][cside];
 
 		Move move(source, target);
 		if (isLegalMove(move))
@@ -969,7 +954,7 @@ void WesternBoard::vMakeMove(const Move& move, BoardTransition* transition)
 		if (cside != NoCastlingSide)
 		{
 			md.castlingSide = cside;
-			int rookSource = target;
+			int rookSource = rookSq[cside];
 			target = m_castleTarget[side][cside];
 			int rookTarget = (cside == QueenSide) ? target + 1 : target -1;
 			if (rookTarget == source || target == source)
@@ -1069,6 +1054,7 @@ void WesternBoard::vUndoMove(const Move& move)
 	setEnpassantSquare(md.enpassantSquare, md.enpassantTarget);
 	m_reversibleMoveCount = md.reversibleMoveCount;
 	m_castlingRights = md.castlingRights;
+	const int* rookSq = m_castlingRights.rookSquare[side];
 
 	CastlingSide cside = md.castlingSide;
 	if (cside != NoCastlingSide)
@@ -1080,7 +1066,7 @@ void WesternBoard::vUndoMove(const Move& move)
 		tmp = (cside == QueenSide) ? tmp + 1 : tmp - 1;
 		setSquare(tmp, Piece::NoPiece);
 
-		setSquare(target, Piece(side, Rook));
+		setSquare(rookSq[cside], Piece(side, Rook));
 		setSquare(source, Piece(side, King));
 		m_history.pop_back();
 		return;
@@ -1271,10 +1257,8 @@ bool WesternBoard::vIsLegalMove(const Move& move)
 	if (move.sourceSquare() == m_kingSquare[side])
 	{
 		// No castling when in check
-		Piece pieceAtTarget(pieceAt(move.targetSquare()));
 		if (m_hasCastling
-		&&  pieceAtTarget.type() == Rook
-		&&  pieceAtTarget.side() == side
+		&&  castlingSide(move) != NoCastlingSide
 		&&  inCheck(side))
 			return false;
 	}
@@ -1396,7 +1380,7 @@ void WesternBoard::generateCastlingMoves(QVarLengthArray<Move>& moves) const
 	{
 		if (canCastle(CastlingSide(i)))
 		{
-			int target = m_castlingRights.rookSquare[side][i];
+			int target = m_castleTarget[side][i];
 			moves.append(Move(source, target));
 		}
 	}

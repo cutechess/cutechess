@@ -464,7 +464,7 @@ void BoardScene::tryMove(GraphicsPiece* piece, const QPointF& targetPos)
 		m_anim = pieceAnimation(piece, m_sourcePos);
 		m_anim->start(QAbstractAnimation::DeleteWhenStopped);
 	}
-	// Normal move
+	// Normal move, including castling to the king's destination square
 	else if (piece->container() == m_squares)
 	{
 		Chess::Square source(m_squares->squareAt(m_squares->mapFromScene(m_sourcePos)));
