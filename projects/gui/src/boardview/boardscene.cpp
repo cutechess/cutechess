@@ -471,12 +471,28 @@ void BoardScene::tryMove(GraphicsPiece* piece, const QPointF& targetPos)
 
 		QList<Chess::Piece> promotions;
 		const auto moves = m_moves;
+		Chess::GenericMove selectedMove;
 		for (const auto& move : moves)
 		{
+			Chess::Square displayTarget(move.targetSquare());
+			if (move.sourceSquare().isValid()
+			&&  m_board->pieceSymbol(
+					m_board->pieceAt(move.sourceSquare())).toUpper() == "K"
+			&&  m_board->pieceSymbol(
+					m_board->pieceAt(move.targetSquare())).toUpper() == "R")
+			{
+				int direction = displayTarget.file()
+					> move.sourceSquare().file() ? 1 : -1;
+				displayTarget = Chess::Square(
+					move.sourceSquare().file() + 2 * direction,
+					move.sourceSquare().rank());
+			}
+
 			if (move.sourceSquare() != source
-			||  move.targetSquare() != target)
+			||  displayTarget != target)
 				continue;
 
+			selectedMove = move;
 			if (move.promotion() != 0)
 				promotions << Chess::Piece(m_board->sideToMove(),
 							   move.promotion());
@@ -485,7 +501,7 @@ void BoardScene::tryMove(GraphicsPiece* piece, const QPointF& targetPos)
 		}
 		Q_ASSERT(!promotions.isEmpty());
 
-		Chess::GenericMove move(source, target, 0);
+		Chess::GenericMove move(selectedMove);
 		if (promotions.size() > 1)
 		{
 			m_promotionMove = move;
@@ -640,6 +656,23 @@ void BoardScene::updateMoves()
 		Q_ASSERT(piece != nullptr);
 
 		Chess::Square target(gmove.targetSquare());
+		if (gmove.sourceSquare().isValid())
+		{
+			const Chess::Piece sourcePiece =
+				m_board->pieceAt(gmove.sourceSquare());
+			const Chess::Piece targetPiece =
+				m_board->pieceAt(gmove.targetSquare());
+			if (m_board->pieceSymbol(sourcePiece).toUpper() == "K"
+			&&  m_board->pieceSymbol(targetPiece).toUpper() == "R"
+			&&  targetPiece.side() == sourcePiece.side())
+			{
+				int direction = target.file() > gmove.sourceSquare().file()
+					? 1 : -1;
+				target = Chess::Square(gmove.sourceSquare().file()
+						       + 2 * direction,
+						       gmove.sourceSquare().rank());
+			}
+		}
 		if (!m_targets.contains(piece, target))
 			m_targets.insert(piece, target);
 	}
