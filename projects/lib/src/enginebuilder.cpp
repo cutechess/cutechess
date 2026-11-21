@@ -74,7 +74,7 @@ ChessPlayer* EngineBuilder::create(QObject* receiver,
 #ifdef Q_OS_WIN32
 	// On Windows we need an absolute path to the executable, so if
 	// cmd isn't already one, we'll build the path using workDir.
-	if (!QFile::exists(cmd) && !workDir.isEmpty())
+	if (!QDir::isAbsolutePath(cmd) && !workDir.isEmpty())
 	{
 		if (!workDir.endsWith('\\') && !workDir.endsWith('/'))
 			cmd.prepend('/');
