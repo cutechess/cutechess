@@ -681,7 +681,8 @@ void ChessGame::initializePgn()
 	m_pgn->setPlayerName(Chess::Side::Black, m_player[Chess::Side::Black]->name());
 	m_pgn->setResult(m_result);
 
-	if (m_timeControl[Chess::Side::White] == m_timeControl[Chess::Side::Black])
+	if (m_timeControl[Chess::Side::White].toString()
+	==  m_timeControl[Chess::Side::Black].toString())
 		m_pgn->setTag("TimeControl", m_timeControl[0].toString());
 	else
 	{
